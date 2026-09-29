@@ -86,6 +86,18 @@ Her deponun tek yazarı vardır; yazar olmayan yalnız okur. Aynı kayıtları i
 
 **Açık depo ve özel içerik [K6 ve K8 kararlarının sonucu]:** `devos` açık olduğu için ona yazılan her şey gönderildiği anda herkese görünür. Bu yüzden: (1) Açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md`, düşünme disiplinlerinin uyarlaması, Batu'nun kararları ve beklentileri) yazılabilir. Kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım yazılamaz. (2) Ham kanıtın ve kurulum defterinin özel içerik taşıyabilecek kısımları veritabanında ve gizli dosya deposunda tutulur; açık depoya yalnız güvenli özet ve kimlik girer. (3) Sızıntı kontrolü, ilk açık yazımdan önce oturumun içinde çalışır (Bölüm 6.7). Kalan risk (kontrolün oturumun içinde çalışması nedeniyle atlatılabilmesi) Batu'nun K6 kararıyla kabul edilmiştir.
 
+### 0.6 Dil [Batu kararı K9, 29 Eylül 2026]
+
+**Kural:** DevOS'un bütün dosyaları (kod, yorumlar, belgeler, `CLAUDE.md`, rol ve yöntem metinleri, sınavlar), veritabanı kayıtları, commit ve PR metinleri, iç iş kayıtları ve ajanlar arası bütün iletişim **İngilizcedir**. Batu ile iletişim — karar mesajları, raporlar, kullanım kılavuzu ve Batu'ya giden her metin — **Türkçedir**.
+
+**Sonuçları:**
+
+1. **Plan paketi:** Bu plan ve ekleri şu an Türkçedir. C00'ın ilk işi, plan paketini İngilizceye çevirmek ve çevirinin sadakatini bağımsız bir oturuma inceletmektir. Çeviri bir yeniden yazım değildir: çeviri sırasında fark edilen iyileştirmeler ayrı öneri olarak kaydedilir. İnceleme geçene kadar Türkçe metin bağlayıcıdır; geçtikten sonra İngilizce metin tek bağlayıcı metindir ve Türkçe sürümler depodan kaldırılır (Batu'daki kopya okuma amaçlıdır). Batu'ya dönük Türkçe bir özet (genel resim, Batu'nun kararları ve yapacakları) DevOS tarafından ayrıca tutulur.
+2. **Batu'nun sözleri:** Batu'nun kararları, kısıtları ve beklentileri kayda hem **Türkçe aslıyla** hem **İngilizce yorumuyla** girer. Batu'ya bir karar sunulurken Türkçe metin İngilizce kayıttan üretilir ve ilgili yerlerde Batu'nun kendi Türkçe ifadesi gösterilir. Yorum ile asıl arasında anlam farkı fark edilirse bu bir bulgudur.
+3. **Arama:** Kütüphanenin büyük kısmı Türkçedir; ajanlar İngilizce çalışır. Bu yüzden kütüphane aramaları gerektiğinde iki dilde yapılır ve C04'teki arama ölçüsü diller arası soruları (İngilizce soru, Türkçe kaynak) ayrıca ölçer. Çok dilli anlam modelinin önemi bu kararla artar.
+4. **Karar issue'ları:** Batu'ya atanan karar issue'ları Türkçe; aynı kararın veritabanı kaydı İngilizcedir.
+5. **SOUL:** SOUL'un kodu ve belgeleri de DevOS'un ürettiği dosyalar olarak İngilizcedir. SOUL'un son kullanıcılarla hangi dillerde konuşacağı ayrı bir ürün kararıdır ve SOUL gereksinim kaydına açık soru olarak girer.
+
 ---
 
 ## 1. Hedef
@@ -400,7 +412,8 @@ Her kabiliyet için: hangi ihtiyacı karşıladığı, hangi mekanizmayla karş�
 3. **Kullanıcı modeli** (`UserModel`): Batu'nun uzman olduğu alanlar (finans, raporlama, SAP, Fabric, Power BI), bilgisinin sınırlı olduğu alanlar, ona ait karar türleri.
 4. **Kısıt sorgulama:** Her kısıt (`Constraint`) sorgulanabilir statüdedir. Koordinatör her iş planlanırken ve denetim oturumu her incelemede, işin gereğinin bir kısıtla çelişip çelişmediğine bakar; çelişki bulununca karar kaydı açılır.
 5. **Emek politikası:** Bölüm 6.10.
-6. **Batu'nun onayının kapsamı:** Teknik doğruluğu denetim ortamı belirler. Batu'ya yüksek etkili değişikliklerde amaç ve risk açısından sade bir kabul sorusu gelir (Ek E biçimi). Batu'nun onay sayısı C06–C07'de ölçülür; onayın biçimsel bir imzaya dönüşmesi izlenir.
+6. **Dil:** Batu ile Türkçe, sistemin içinde İngilizce (Bölüm 0.6).
+7. **Batu'nun onayının kapsamı:** Teknik doğruluğu denetim ortamı belirler. Batu'ya yüksek etkili değişikliklerde amaç ve risk açısından sade bir kabul sorusu gelir (Ek E biçimi). Batu'nun onay sayısı C06–C07'de ölçülür; onayın biçimsel bir imzaya dönüşmesi izlenir.
 
 **Sınama:** C06 karar akışı; C07'de kısıtla çelişen bir durumun doğru sunulması; Ek E'ye uyumun Batu tarafından değerlendirilmesi.
 
@@ -566,7 +579,7 @@ devos/
 - **Dışarıya çağrı:** Olağan akışta veritabanı routine tetiklemez; oturumlar zamanlanmıştır. Yalnız acil durumlar (Batu'nun beklenen kararı geldi ve iş bekliyor; kurtarma) yedek bütçeden API tetiği kullanır; her tetik niyet, dönen oturum kimliği ve sonuçla kaydedilir.
 - **Arama:** Tam metin arama, pgvector ile anlam araması, ilişki sorguları; kaynak gövdesi okuma (`read_source`). Etkilenen kayıt sorgusu benzersiz kayıtları ve tamlık bilgisini döndürür; devam sorgusu aynı anlık görüntüye bağlıdır ya da açıkça yeniden başlar (Ek G).
 - **Dosya deposu:** Büyük kaynak ve kanıt gövdeleri gizli alanlarda.
-- **İki proje:** Canlı proje ve test projesi.
+- **İki proje:** Canlı proje `devos` (ref `zyqgltzfzkdvrmvxlamz`, `https://zyqgltzfzkdvrmvxlamz.supabase.co`, us-east-1) ve test projesi `devos-test` (ref `cqbzxexxwrrbrlszoseg`, us-east-1). 29 Eylül 2026'da ücretsiz planda açıldı. Herkese açık anahtarlar gizli bilgi değildir ve kurucu onları proje panelinden ya da Supabase bağlantısından okur.
 - **Veritabanı değişiklikleri** yalnız `supabase/migrations/` altındaki sürümlü dosyalarla uygulanır. Kurucunun Supabase bağlantısı salt okuma kipinde ve tek projeyle sınırlıdır.
 
 ### 6.3 Claude Code cloud ortamları ve anahtar akışı
@@ -787,6 +800,7 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 
 **Yapılacaklar:**
 
+0. **Plan paketinin çevirisi (Bölüm 0.6):** Plan, Ek A–G ve gerekçe belgeleri İngilizceye çevrilir; ayrı bir oturum çeviriyi Türkçe asılla bölüm bölüm karşılaştırır; farklar düzeltilir; sonra İngilizce metin bağlayıcı olur.
 1. **Hazırlık doğrulaması:** Yeni depolar ve Supabase projeleri mevcut mu? Claude GitHub uygulaması gereken depolarda kurulu mu? B3'e göre makine hesabı kurulmuş mu? `agentic-os-search`'te D030 kaydı var mı ve depo eski yönü güncel olarak göstermiyor mu? Eksik varsa kurucu işe başlamaz; eksiği Batu'ya karar biçiminde bildirir.
 2. **Okuma:** Plan, Ek A–G ve değerlendirme ile araştırma belgeleri baştan sona okunur.
 3. **ECC işlev karşılaştırması:** Her bileşen DevOS ihtiyaçlarıyla tek tek karşılaştırılır. Sonuç: benimsenecek, devre dışı bırakılacak ve kararsız kalan parçaların listesi.
@@ -795,7 +809,7 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 6. **Öncül envanteri:** Planın dayandığı öncüller tek tek yazılır ve sıfırdan seçim testine sokulur.
 7. Sonuçlar karara bağlanır; plan gerekirse güncellenir (Bölüm 14).
 
-**Kabul:** ✔ Hazırlık listesinin her maddesi kanıtla doğrulanmış. ✔ ECC tablosu, bağımsız inceleme, karşı tasarım karşılaştırması ve öncül envanteri kayıtlı; her bulgunun karşılığı yazılı. ✘ Kurucu kütüphane depolarına hiçbir şey yazmadı. ✘ Hiçbir gizli bilgi depoda, ortam değişkeninde ya da sohbette görünmüyor.
+**Kabul:** ✔ Çevirinin sadakat incelemesi geçmiş; çeviri sırasında önerilen değişiklikler ayrı kayıtlı. ✔ Hazırlık listesinin her maddesi kanıtla doğrulanmış. ✔ ECC tablosu, bağımsız inceleme, karşı tasarım karşılaştırması ve öncül envanteri kayıtlı; her bulgunun karşılığı yazılı. ✘ Kurucu kütüphane depolarına hiçbir şey yazmadı. ✘ Hiçbir gizli bilgi depoda, ortam değişkeninde ya da sohbette görünmüyor.
 
 **Kriterler:** 18, 21, 25–27, 29, 34.
 
@@ -856,7 +870,7 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 **Yapılacaklar:**
 
 1. İçe alma işleri: `agentic-os-search` sürekli, eski deneme depoları bir kez; kaynak türü, epistemik statü, işlem yetkisi ve gizlilik sınıfıyla.
-2. **Arama ölçüsü:** Ayrı bir oturum, gerçek kütüphaneden en az 50 soru ve doğru kaynaklarını hazırlar; ayar soruları ve son değerlendirme soruları ayrılır. Başarı eşiği ölçümden önce yazılır.
+2. **Arama ölçüsü:** Ayrı bir oturum, gerçek kütüphaneden en az 50 soru ve doğru kaynaklarını hazırlar; ayar soruları ve son değerlendirme soruları ayrılır; soruların en az üçte biri diller arasıdır (İngilizce soru, Türkçe kaynak). Başarı eşiği ölçümden önce yazılır.
 3. **Anlam modeli seçimi:** Aday modeller (en az iki çok dilli açık model ve karşılaştırma için `gte-small`) ayar sorularıyla denenir; seçim bittikten sonra son değerlendirme sorularıyla bir kez ölçülür.
 4. `read_source`, "nerede bulurum" rehberi, `session_brief()`, bağlam paketi akışı.
 5. Sızıntı kontrolü için parmak izleri ve anlam eşiğinin ayarı.
@@ -986,7 +1000,7 @@ Bunlar "kurulumda sınanacak" diye çözülmüş sayılmaz. Her biri için ne ol
 
 ### 11.1 Verilmiş kararlar
 
-**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur.
+**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6).
 
 SOUL tanımı; SOUL'un açık kaynak olması; DevOS'un Claude Code cloud'da çalışması; Max 200 $ planı, ekstra kullanımın kapalı olması, ortamda Anthropic API anahtarı olmaması; Supabase'in kişisel hesapta kullanılması; depoların herkese açık olabilmesi; yeni depolar (`devos`, `soul-system`, `devos-evals`, `devos-backup`) ve eski depolara dokunulmaması; eski deneme depolarının kütüphaneye alınması; eski raporların ChatGPT tarafından arşivlenmesi ve deponun kurucu başlamadan hemen önce düzeltilmesi; tek yazar ilkesi; güvencelerin her işte tam, emek derinliğinin varsayılan olarak yüksek olması; testlerde yalnız sahte veri; telefondan kullanım; Academy notunun karar değil keşif notu olması; bu planın uyduğu ilkeler (Bölüm 0.3).
 
@@ -1063,6 +1077,9 @@ Zamanı gelince kurucu her birini adım adım yazar. Anahtar ve belirteç gibi g
 | DevOS'un Batu'nun kendi Claude kullanımıyla aynı sınırları paylaşması | Batu'nun işi yavaşlar ya da DevOS durur | Yoğun saatler dışına zamanlama; kullanım takibi; gerekirse karar |
 | Routine'in GitHub bağlantısı koparsa 72 saat sonra kendini kapatması | Sistem sessizce durur | DevOS'tan bağımsız izleme yolu (Ek G, G7) |
 | Açık depoda sızıntı (K6 kararıyla kabul edilen kalan risk) | Özel içerik görünür olur ve geri alınamayabilir | İlk yazımdan önce koda dayalı kontrol; türetilmiş içerik kuralı; ham kanıt açık depoda değil |
+| Gizli depolarda (`devos-evals`, `devos-backup`) dal koruması yok (GitHub Free) | Bu depolara yazma yetkisi olan bir oturum geçmişi değiştirebilir | `devos-evals` yalnız sınav routine'ine, `devos-backup` yalnız yedek işlerine bağlı; Claude GitHub uygulaması `devos-backup`'a kurulmaz; değişiklikler git geçmişinde izlenir; gerekirse GitHub Pro kararı Batu'ya |
+| Çeviri kayması (plan paketinin çevirisi ya da Batu'nun Türkçe ifadelerinin İngilizce yorumu) | Talimat ya da karar anlamı değişir | Bağımsız sadakat incelemesi; Batu'nun sözlerinin aslıyla birlikte saklanması; sunumda aslının gösterilmesi |
+| Türkçe kütüphanede İngilizce arama | Kaynaklar bulunamaz | İki dilde arama; diller arası arama ölçüsü; çok dilli anlam modeli |
 | Beta ve önizleme özelliklerine bağımlılık (routines, Projects, dynamic workflows) | Davranış değişebilir | Yetki anahtardan gelir, açılış yolundan değil; isteğe bağlı katmanlar zorunlu değil; değişiklikler bakım işlerince izlenir |
 | Aynı model ailesinin ortak kör noktaları | İnceleme üreticinin hatasını tekrarlar | U-3; B2 |
 | Platform özellikleri hızla değişiyor | Plan eskir | [C01] doğrulamaları; bakım işleri değişiklikleri izler |

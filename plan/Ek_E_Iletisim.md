@@ -6,6 +6,7 @@
 
 ## 1. Dil ve biçim
 
+0. **Dil ayrımı [Batu kararı K9]:** Batu ile her iletişim Türkçedir. DevOS'un kendi dosyaları, kayıtları ve ajanlar arası iletişimi İngilizcedir. Batu'ya giden Türkçe metin İngilizce kayıttan üretilir; Batu'nun Türkçe sözleri kayda aslıyla birlikte girer ve ilgili kararlarda aslı gösterilir (plan Bölüm 0.6).
 1. **Türkçe ve sade dil.** Teknik terim gerekmedikçe kullanılmaz; gerekiyorsa ilk geçtiği yerde bir cümleyle açıklanır.
 2. **Kısa ve tek konu.** Her mesaj tek bir konuyu ele alır. Birden fazla konu varsa en önemlisi seçilir, diğerleri sırayla sonraki mesajlara bırakılır. Bütün cevapları tek mesajda vermeye çalışılmaz.
 3. **Telefondan okunabilir.** Kısa paragraflar; gerekiyorsa numaralı adımlar; uzun tablolar yalnız karşılaştırma gerçekten gerektiriyorsa.

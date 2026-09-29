@@ -22,8 +22,9 @@ Bu ilkeler her aile için geçerlidir; bir aile bunlardan birini bozuyorsa tasar
 8. **Kimlik zinciri.** Rol sınıfı, çağrının taşıdığı **ortam belirtecinden** çıkarılır (belirtecin yalnız özeti `env_tokens` tablosunda durur). Bir işle ilgili her etki, `claim` sırasında yalnız o oturuma dönen **üstlenme belirtecini** ister (özeti `assignment` kaydında durur). Oturum kimliği ve rol adı beyandır: kayda yazılır, `declared` olarak etiketlenir, yetki kararı bunlara dayanmaz. Yetki ayrılığı kuralları ortam düzeyinde tanımlanır. Yetki dönemi ayrı bir kavramdır.
 9. **Yetki dönemi.** Tek bir küresel `authority_epoch` sayacı vardır. Geri yükleme ve anahtar değişimi dönemi artırır; eski dönemin üstlenmeleri ve izinleri etki üretemez.
 10. **Gizlilik sınıfı.** Her bilgi kaydı `public` ya da `private` sınıfı taşır. Özel kaynaktan türetilen içerik varsayılan olarak `private_derived` sınıfındadır; açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS'un tasarım belgeleri girebilir; kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım giremez (plan, K8). İkinci model ailesine yalnız `public` içerik gider.
-12. **Biçim kapısı.** Veritabanı bir alanın dolu olduğunu zorlayabilir, içeriğinin anlamlı olduğunu değil. Bu tür kurallar `format_gate` diye etiketlenir; içerik denetim ortamında ve örneklemle değerlendirilir.
 11. **Silme.** Bir kaynağın saklama izni geri çekildiğinde ham gövde, parçalar, vektörler, arama dizinleri, bağlam paketleri ve türetilmiş alıntılar birlikte ele alınır. Yalnız "silindi" işareti koymak yeterli değildir. Yedekler geri yüklendiğinde güncel saklama politikası yeniden uygulanmadan arama ve bağlam hizmeti açılmaz.
+12. **Biçim kapısı.** Veritabanı bir alanın dolu olduğunu zorlayabilir, içeriğinin anlamlı olduğunu değil. Bu tür kurallar `format_gate` diye etiketlenir; içerik denetim ortamında ve örneklemle değerlendirilir.
+13. **Dil.** Kayıtların ve alanların dili İngilizcedir; yalnız Batu'nun sözlerinin aslı (`*_original_tr`) ve Batu'ya gösterilen metinler (`*_tr`) Türkçedir. Kütüphaneden gelen kaynaklar kendi dilleriyle saklanır ve `language` alanı taşır.
 
 ---
 
@@ -217,15 +218,15 @@ Her aile için: amaç, temel alanlar, kurallar, durumlar ve geçişler. "Kim" s�
 
 ### 3.16 UserModel ve Constraint — kullanıcı modeli ve kısıt
 
-**UserModel alanları:** `id`, `domain`, `level` (expert / knowledgeable / limited), `evidence` (Batu'nun ifadesi ya da kararı), `decision_types_owned`, `updated_at`.
+**UserModel alanları:** `id`, `domain`, `level` (expert / knowledgeable / limited), `evidence_original_tr` (Batu'nun Türkçe ifadesi, aynen), `evidence_interpretation_en`, `decision_types_owned`, `updated_at`.
 
-**Constraint alanları:** `id`, `statement`, `source` (Batu kararı), `kind` (bütçe / araç / kapsam / zaman / diğer), `questionable` (her zaman true), `conflicts` (tespit edilen çelişkiler), `status` (active / revised / withdrawn).
+**Constraint alanları:** `id`, `statement` (İngilizce), `statement_original_tr` (Batu'nun Türkçe ifadesi, aynen), `source` (Batu kararı), `kind` (bütçe / araç / kapsam / zaman / diğer), `questionable` (her zaman true), `conflicts` (tespit edilen çelişkiler), `status` (active / revised / withdrawn).
 
 **Kural:** Bir kısıtla işin gereği arasında çelişki kaydedildiğinde otomatik bir Batu kararı açılır (3.17).
 
 ### 3.17 Decision — karar
 
-**Alanlar:** `id`, `revision`, `class` (routine / high_impact / batu), `question`, `why_this_owner`, `options` (her biri: tanım, amaç, fayda, bedel, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_at`.
+**Alanlar:** `id`, `revision`, `class` (routine / high_impact / batu), `question` (İngilizce), `presented_text_tr` (`batu` sınıfında Batu'ya gösterilen Türkçe metin), `answer_original_tr` (Batu'nun cevabı, aynen), `answer_interpretation_en`, `why_this_owner`, `options` (her biri: tanım, amaç, fayda, bedel, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_at`.
 
 **Kurallar:**
 - `high_impact` ve `batu` sınıfı kararlar, alternatif araştırmasının sonucu (karşılaştırılan seçenekler ya da `single_viable_path_reason`, ya da `open_exploration` durumu), ölçütler, kanıt, varsayımlar, `premises` (öncül envanteri), geri alınabilirlik ve yeniden açma koşulları girilmeden `open` durumuna geçemez (biçim kapısı).
