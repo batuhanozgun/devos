@@ -4,7 +4,7 @@ You are working in the DevOS repository during installation. Before doing anythi
 
 1. Read `plan/Builder_Operating_Model.md` §3 and Appendix R1.
 2. Read `plan/ledger.md` (state file: current state, run lock, work list, open items).
-3. Respect the lease. If the run lock is held by a live, unexpired session, do not take over: report what you found and stop. Exception, **for runs only** (your first message is the Appendix R1 run goal): a lease held by your own parent session (`parent_session_id` in `get_session`) is a hand-over, and you take it. Reviewers, probes and the dispatcher never take the lease.
+3. Respect the lease. If the run lock has not expired, do not take over, whatever the holder's status (a holder idle between turns is normal): report what you found and stop. Exception, **for runs only** (your first message is the Appendix R1 run goal): a lease held by your own parent session (`parent_session_id` in `get_session`) is a hand-over, and you take it. Reviewers, probes and the dispatcher never take the lease.
    Never check out another revision in this working tree; use `git show` or a scratch clone (the hook is read from the working tree).
 4. Read the latest stage digest and the current stage's log entries since the last hand-over (`plan/ledger/`).
 5. Check `DURUM.md` against the state file.

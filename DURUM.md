@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 23:01 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
+**Son güncelleme:** 1 Ekim 2026, 23:17 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
 
 **Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
 
@@ -11,7 +11,7 @@
 
 **Sırada**
 - Çalışma düzeni `main`'e alındı. Yeni bir oturum, yalnız "devam et" denince kaldığı yeri doğru buldu (ikinci denemede geçti).
-- Nabız oturumu denemesi (sen yazmadan işin sürmesi): bir "dağıtıcı" oturum ve 6 saatte bir onu uyandıran zamanlanmış bir görev.
+- Nabız denemesi (sen yazmadan işin sürmesi) ilk seferde geçmedi: zamanlanmış görev çalıştı, ama dağıtıcı oturum gelen mesajı okuyamadı (kendi engelim bu aracı kapatıyordu) ve kaydını birleştiremedi. Düzeltme yazıldı, bağımsız incelemede; ardından deneme tekrarlanacak.
 - Ardından C00'ın ağır işleri: çeviri, bağımsız plan incelemesi, karşı tasarım. Bunlar haftalık kullanım sınırı yenilendikten sonra (3 Ekim 20:00).
 
 **Senden beklenen:** İki karar, [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda: kullanım politikası (D-002) ve bağlantı engelinin kalan riski (D-003). İkisi de işi durdurmuyor; cevap gelene kadar önerdiğim varsayılanlar uygulanıyor.

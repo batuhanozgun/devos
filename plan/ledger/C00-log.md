@@ -477,3 +477,26 @@ These are tightening changes and wording, applied after the PASS as the reviewer
 - **T-B1r: PASS** (EV-C00-005). The probe `session_01Bwo8rhCyxLS2Ae4So2uVex` met all three conditions. It also found that the stamps in `DURUM.md` and the state file were 6 minutes in the future. The builder had written 20:05Z by estimate when the time was 19:58Z, the same defect as R-C00-BOM-6 n8. **Corrected** to the actual time. **Rule:** stamps are taken from `date -u` at writing time, never estimated.
 - **Issue [#6](https://github.com/batuhanozgun/devos/issues/6)** "Batu'dan beklenenler" was opened at 19:59Z by the machine account and assigned to `batuhanozgun`, with a mention. It carries the briefing, which meets W-C00-05 (g), and D-002 and D-003 in Appendix E format; both are non-blocking, with defaults. D-003 lists the §9 "Not protected" routes, including the shell routes (R-1). One sentence of the D-003 recommendation was corrected one minute after posting: it first said that all remaining routes need deliberate bypass, but the shell and library-push routes can also be reached by an injected instruction that names them. The edit history of the issue shows the correction. W-C00-05 (h) is met; T-D1 receipt waits for Batu's first answer.
 - **No hand-over now.** After context compaction, this session uses about 147k of 1M tokens (15%), below the 50% threshold of S4. The builder therefore runs T-A2 itself and does not pay a run's boot cost. Usage: `seven_day` `allowed_warning`. Reported session cost so far: 42.4 USD-equivalent at list price, a relative measure only (§8).
+
+### L-029 · 2026-10-01 · T-A2 fails; dispatcher design changed (operating model v1.7)
+
+**Result** (EV-C00-005). The one-shot routine fired at 20:08:36Z and delivered the message to the dispatcher `session_01FTnQrWv6hTTZyUV7zrJRBh`. **FAIL** on conditions 1 and 3:
+- **Message unreadable.** Routine messages, and this session's own `send_later` messages, arrive as **queued notifications**, readable only with `ReadNotifications`. The builder's hook blocked that tool: the over-blocking that §9 had listed as "safe" since v1.6. The builder had seen the same notices in its own session and had not drawn the conclusion. That is a reasoning failure, recorded here.
+- **Merge denied.** The session's automatic permission classifier denied the dispatcher's merge of its own record PR [#9](https://github.com/batuhanozgun/devos/pull/9) as a "merge without review", and later its read of `main` too.
+
+Condition 2 was met: the decision was "start nothing", with the right reasons. The dispatcher's content (heartbeat 23:09 TR; decision; findings) is recorded here.
+
+**PR #9 handling.** The builder **closed PR #9 without merging**. Merging it from this session would be a route around the classifier's denial. Its two findings are taken over below.
+
+**Heartbeat.** The routine `trig_01D8eBZEmGsHvijrs4dQxNc8` is **disabled** until the fix is merged, so that it does not fire into a dispatcher that cannot act.
+
+**Findings and changes** (v1.7; all high-impact; review R-C00-BOM-7 before merge):
+
+| ID | Finding | Change |
+|---|---|---|
+| F1 | Routine and `send_later` messages are notifications; `ReadNotifications` was blocked | The hook allows `ReadNotifications`. It reads only this session's own queue, and its contents are untrusted data. The test moves it from a negative to a positive control. §9 updated; it is removed from the over-blocking list. |
+| F2 | The classifier denies a dispatcher's self-merge | The dispatcher never merges. It keeps one standing PR from `claude/dispatcher`; each run reads and merges it at the boot check (§2.3, §3.2, R2). Stated cost: the heartbeat on `main` lags while no run is active. |
+| F3 | Lease liveness used `get_session` "working"; an idle holder between turns would look dead (found by the dispatcher) | The lease is live until expiry, whatever the holder's status (§2.2, `CLAUDE.md` step 3, R2, failure table) |
+| F4 | Whether the classifier lets the dispatcher start a run is unknown | Stated as an untested premise (§2.3, Appendix M); T-A2r tests it, with a denial treated as an S3 blocker |
+
+**T-A2r** is pre-registered in EV-C00-005. Written at 2026-10-01T20:17Z.

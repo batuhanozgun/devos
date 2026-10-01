@@ -65,7 +65,6 @@ t 2 '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","isolation
 t 2 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"worktree"}}'
 t 2 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"some_future_value"}}'
 t 2 '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}"}}'
-t 2 '{"tool_name":"ReadNotifications"}'
 t 2 '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"owner":"batuhanozgun","threadId":"x"}}'
 t 2 '[]'
 t 2 '"x"'
@@ -104,6 +103,7 @@ t 0 "{\"tool_name\":\"mcp__github__create_pull_request\",\"tool_input\":{$D}}"
 t 0 '{"tool_name":"mcp__github__merge_pull_request","tool_input":{"owner":"BatuhanOzgun","repo":"DevOS","pullNumber":4}}'
 t 0 '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"threadId":"x"}}'
 t 0 '{"tool_name":"Bash"}'
+t 0 '{"tool_name":"ReadNotifications"}'
 t 0 '{"tool_name":"PushNotification","tool_input":{"message":"x"}}'
 t 0 '{"tool_name":"mcp__claude-code-remote__subscribe_pr_activity","tool_input":{"owner":"batuhanozgun","repo":"devos","pullNumber":4}}'
 # --- wrapper: a hook that cannot run must still block (the settings command, run under sh)

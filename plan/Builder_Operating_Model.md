@@ -1,10 +1,11 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.6 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
+**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
 
 **History:**
 - v1.0 was committed as `a58413a` (SHA-256 `e37de022…afb4`) 17 seconds *after* the counter-design was pushed (`73baa5a`). That the builder had not read the counter-design before then rests on the builder's own account; git order does not prove it.
 - v1.1 adds the counter-design's improvements and the probe results (§14).
+- v1.7 answers test T-A2 (FAIL, L-029). Routine messages arrive as notifications, so the hook now allows `ReadNotifications`. The dispatcher does not merge; a run merges its standing record PR at boot. The lease is live until it expires, whatever the holder's status.
 - v1.6 answers R-C00-BOM-5 (FAIL; one blocking finding): subagents run in-process only, because a remote subagent is a new cloud session outside the `create_session` rules; `Workflow` is blocked until its agent options are known; a child session may not push to `main`; the recorder parses the response instead of searching it; the shell routes that hold session credentials are stated as residual risk.
 - v1.5 answers R-C00-BOM-4 (FAIL): every tool, MCP or not, now goes through the hook's allow lists (matcher `.*`). This closes `SendMessage` and `ListAgents`, which reach the account's other sessions. Own session and routine IDs are recorded automatically by a `PostToolUse` hook. The hand-over exception is limited to runs. The revision check fetches the remote ref. The redaction check derives its pattern from history instead of printing it.
 - v1.4 answers R-C00-BOM-3 (FAIL). After the third round of findings in the same layer, the builder ran a frame review (§9, "Threat model") instead of patching again. The session-tool layer is now an allow list; a new session's revision must carry `.claude/settings.json`; MCP resource readers are blocked; the lease hand-over is defined; the redaction is checked tree-wide.
@@ -60,9 +61,9 @@ This document designs the builder's operating model as a whole. Every mechanism 
 ### 2.2 Lease
 
 - The state file `plan/ledger.md` has a **Run lock** row: the holder's session ID, plus an expiry of the last checkpoint plus 3 hours, renewed at every checkpoint merge.
-- A booting session treats the lease as live if it has not expired **and** `get_session` shows the holder working. Otherwise it may take over.
+- The lease is live until its expiry, **whatever the holder's status**. A holder that is idle between turns, for example waiting on its own wake-up, is normal; the first rule looked at `get_session` status and would have allowed a wrong takeover (T-A2 finding, L-029). A session may take over only after expiry. The expiry is at most 3h15m ahead, so a dead holder blocks work for at most that long.
 - Two sessions taking over at once collide on the lease row when they merge. Git serialises the merges, so the loser exits.
-- **Hand-over.** The predecessor runs its stop check (`BUILDER_RUN=1`) first, then creates the successor as its last act. **Only a run** (a session whose first message is the R1 run goal) may take over a lease whose holder is its own `parent_session_id` (shown by `get_session` on itself), even while that holder is still alive. Reviewers, probes and the dispatcher are also children of the builder, and they never take the lease. Any other live, unexpired lease means: report and stop.
+- **Hand-over.** The predecessor runs its stop check (`BUILDER_RUN=1`) first, then creates the successor as its last act. **Only a run** (a session whose first message is the R1 run goal) may take over a lease whose holder is its own `parent_session_id` (shown by `get_session` on itself), even while that holder is still alive. Reviewers, probes and the dispatcher are also children of the builder, and they never take the lease. Any other unexpired lease means: report and stop.
 
 ### 2.3 Dispatcher and heartbeat
 
@@ -72,6 +73,12 @@ This document designs the builder's operating model as a whole. Every mechanism 
   - if the lease is stale, work is pending, nothing is waiting for Batu, and usage allows, start a run;
   - otherwise update the heartbeat line in `DURUM.md`.
 - **Heartbeat:** a recurring routine bound to the dispatcher session (`persistent_session_id`), every 6 hours. It is created through the tool, so it carries no connectors.
+- **Delivery (observed, T-A2).** A routine's message, and a `send_later` message, reaches the bound session as a **queued notification**, readable only with `ReadNotifications`. The hook allows that tool. What it returns is untrusted data: the dispatcher acts on it only when the text is the Appendix R2 check.
+- **The dispatcher does not merge (observed, T-A2).** The session's automatic permission classifier denied the dispatcher's merge of its own record PR as a merge without review. The builder does not route around a denial. Instead:
+  - the dispatcher keeps one standing branch, `claude/dispatcher`, and one open record PR from it, which it updates on every heartbeat;
+  - every run merges that PR at boot (§3.2), after reading it. That is a merge by another session that has read the change.
+  - Consequence: while no run is active, the heartbeat line on `main` lags. In those states, `DURUM.md`'s first lines already say why no run is active (waiting for Batu, or a usage hold).
+- **Untested premise:** that the classifier lets the dispatcher start a run with `create_session`. T-A2r tests it.
 - **Usage-limit waits:** one-shot wake-ups (`send_later`) into the dispatcher at the reset time plus 15 minutes.
 
 **Assumptions.**
@@ -84,7 +91,7 @@ This document designs the builder's operating model as a whole. Every mechanism 
 
 | Failure | What catches it |
 |---|---|
-| A run dies without a successor | The next heartbeat, within 6 hours |
+| A run dies without a successor | The next heartbeat after the lease expires (expiry plus at most 6 hours) |
 | The dispatcher dies | Runs recreate it when missing (boot step 7). `DURUM.md` shows the last heartbeat time, so Batu sees silence without asking. |
 | The heartbeat routine is disabled | Same visibility; the next run recreates it |
 
@@ -118,7 +125,7 @@ The session states what it found (one paragraph in its log entry) before it acts
 - **Record PRs** (state file, log, evidence, `DURUM.md`) are merged at once.
 - **Change PRs** (anything a work item produces) are merged when the item's acceptance condition is shown with evidence. If the change is high-impact, a review PASS is also required (§5).
 - **Checkpoint:** after each finished item, and before any stop, everything is merged. Nothing stays unmerged across a stop (PC-03).
-- **Boot check:** list unmerged `claude/` branches of `devos`. Merge each one, or record it as abandoned with a reason.
+- **Boot check:** list unmerged `claude/` branches of `devos`. Merge each one, or record it as abandoned with a reason. This includes the dispatcher's standing record PR from `claude/dispatcher` (§2.3): a run reads it and merges it.
 
 ### 3.3 Files and keeping the ledger from sprawling
 
@@ -236,8 +243,8 @@ Boot step 5 checks it, and `builder_check.sh` checks that it is not older than t
 
 | Surface | Rule (allow list) | Verification |
 |---|---|---|
-| Every tool call | The hook's matcher is `.*`: every tool, MCP or not, goes through the allow lists below. Anything not named is blocked, including tools that may appear later. | Unit-tested (matcher coverage). Live: reviewer session `session_01Y99Zfo6NNQUsTwGzyKckus`, a builder-created session, was blocked from the unlisted non-MCP tool `ReadNotifications` with the hook's message (about 19:20Z; R-C00-BOM-5). |
-| Non-MCP tools | Allowed only: the file, shell and search tools, **in-process** subagents (`Agent`/`Task` with no `isolation` field; any isolation value, including `remote`, is blocked, because a remote subagent is a new cloud session that none of the session-tool rules sees), task tools, web fetch and search, questions to Batu, and push notification (it reaches only Batu's own devices; second channel, Appendix E §8). **Blocked:** `SendMessage` and `ListAgents` (they reach the account's other sessions), artifact and design tools, MCP resource readers, connector and plugin suggestion tools, worktree switching, and `Workflow` (blocked until its agent options are known: R-C00-BOM-5 N-B1). | Unit-tested, with mutation checks (T-H4) |
+| Every tool call | The hook's matcher is `.*`: every tool, MCP or not, goes through the allow lists below. Anything not named is blocked, including tools that may appear later. | Unit-tested (matcher coverage). Live: reviewer session `session_01Y99Zfo6NNQUsTwGzyKckus`, a builder-created session, was blocked from the then-unlisted non-MCP tool `ReadNotifications` with the hook's message (about 19:20Z; R-C00-BOM-5). That tool has been allowed since v1.7. |
+| Non-MCP tools | Allowed only: `ReadNotifications` (this session's own queue; routine and `send_later` messages arrive there, T-A2; contents are untrusted data), the file, shell and search tools, **in-process** subagents (`Agent`/`Task` with no `isolation` field; any isolation value, including `remote`, is blocked, because a remote subagent is a new cloud session that none of the session-tool rules sees), task tools, web fetch and search, questions to Batu, and push notification (it reaches only Batu's own devices; second channel, Appendix E §8). **Blocked:** `SendMessage` and `ListAgents` (they reach the account's other sessions), artifact and design tools, MCP resource readers, connector and plugin suggestion tools, worktree switching, and `Workflow` (blocked until its agent options are known: R-C00-BOM-5 N-B1). | Unit-tested, with mutation checks (T-H4) |
 | MCP servers | Only the GitHub tools, the session tools and the read-only Supabase connector (display name, or opaque ID `86834617…`, identified by inference). Everything else is blocked. | Allow path live in a builder-created session (T-H6); block path unit-tested |
 | GitHub writes | Only `batuhanozgun/devos`, case-insensitive. Repository creation and forking are blocked. Review-thread tools are allowed without a repository field for **any** thread ID (they cannot be scoped; low impact); with a repository field they must name `devos`. | Unit-tested; live (T-H6) |
 | Session tools | Allow list. `create_session` needs a full checkout of `devos` in the builder environment, on `main` or this session's branch, with no permission widening (`bypassPermissions` and extra tools are blocked) and no `outcome_branch` of `main` (PC-02: `main` changes only through a pull request). The **remote** revision is fetched and must carry `.claude/settings.json`; a failed fetch blocks. `add_repo` is allowed for `devos`, or for the library read-only. Tools acting on an existing session or routine need an owned ID. `create_trigger` must carry no connectors, may fire only into owned sessions, and must use the builder environment. A trigger with `create_new_session_on_fire` is allowed; that rests on BP-05 (such sessions observed with no tools, T-A1b). Every unlisted session tool is blocked. | Unit-tested; live (T-H5, T-H6); the `outcome_branch` rule is unit-tested only |
@@ -257,7 +264,7 @@ Boot step 5 checks it, and `builder_check.sh` checks that it is not older than t
 - Whether hooks run for tool calls made inside in-process subagents is documented but not observed (R-C00-BOM-5 R-4).
 - Agent **definitions** are not inspected: the hook sees only the `Agent` tool input, so an agent type whose definition set an isolation mode would pass (R-C00-BOM-6 n1; unverified whether definitions can). Rule: the builder creates no agent definitions; one in `.claude/agents/` would be a high-impact change.
 - The read-only Supabase restriction belongs to the database role, not the hook.
-- Known over-blocking, which is safe and must not be "fixed" by widening the rules: `add_repo` for the old experiment repositories (they are read in C04 through a separate job); `ReadNotifications` (PR events still wake the session; the builder reads PR state with the GitHub tools instead); `ScheduleWakeup` and `CronCreate` (the builder uses `send_later` and `create_trigger`); `Workflow`; subagents with worktree isolation. Session IDs given in the `cse_` form are normalised.
+- Known over-blocking, which is safe and must not be "fixed" by widening the rules: `add_repo` for the old experiment repositories (they are read in C04 through a separate job); `ScheduleWakeup` and `CronCreate` (the builder uses `send_later` and `create_trigger`); `Workflow`; subagents with worktree isolation. Session IDs given in the `cse_` form are normalised.
 
 ## 10. Thinking discipline (F)
 
@@ -283,7 +290,7 @@ The trigger check of the nine questions is recorded as one line per work item wh
 
 | Failure | Detection | Response |
 |---|---|---|
-| Session dies | Lease expiry plus `get_session` | Dispatcher or the next run takes over; work since the last checkpoint is redone |
+| Session dies | Lease expiry | Dispatcher or the next run takes over; work since the last checkpoint is redone |
 | Branches diverge | Boot branch listing; merge conflict | Merge `main` into the branch (no rebase on shared branches); otherwise record the branch as abandoned |
 | Ledger conflict | Merge conflict on the state file | Regenerate the state file from `main`'s log and evidence; log a finding |
 | Wrong "goal met" | The check output is missing or FAIL at the next boot; the closure review | Reopen the item; log a finding; tighten R1 |
@@ -322,7 +329,7 @@ The trigger check of the nine questions is recorded as one line per work item wh
 | T-E1 | A review session's result reaches the builder through the repository | The counter-design file was fetched from `claude/counter-design-builder-model` with no involvement from Batu | **PASS** |
 | T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | pending |
 | T-B1 | A new session continues correctly from `main` alone | A fresh session started with only "continue" boots via `CLAUDE.md`, and names the next action pre-registered in `evidence/C00/EV-C00-005` before the test, without doing other work | **FAIL** (L-027): lease respected, no writes, Next action row named; the usage clause was missing. Retest **T-B1r: PASS** (L-028) |
-| T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | pending |
+| T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | **FAIL** (L-029): the routine fired and the dispatcher decided correctly, but it could not read the message (hook blocked `ReadNotifications`), and the permission classifier denied the merge of its record PR. Design changed (v1.7); retest T-A2r pending |
 | T-D1 | Batu's channel works | The issue exists and is assigned to Batu; the machine account's mention produces a notification. Only Batu can confirm receipt, so this is checked with his first answer. | Issue [#6](https://github.com/batuhanozgun/devos/issues/6) exists and is assigned to `batuhanozgun` (L-028); receipt pending his first answer |
 
 ---
@@ -370,7 +377,7 @@ Reading v1.0 against the counter-design shows v1.0's main blind spot: it treated
 ## Appendix R2 · Dispatch check (dispatcher session, on each heartbeat)
 
 ```text
-Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-for-Batu, usage) and DURUM.md. Check the lease holder with get_session. Start a run (create_session on devos main, model claude-opus-5-5, first message: Appendix R1) only if: the lease is stale, work is pending, nothing blocking waits for Batu, and the usage status allows it under section 8. Otherwise start nothing. In both cases update the heartbeat line in DURUM.md through a record PR, and log one line of your decision.
+Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-for-Batu, usage) and DURUM.md. The lease is stale only when its expiry has passed (section 2.2). Start a run (create_session on devos main, model claude-opus-5-5, first message: Appendix R1) only if: the lease is stale, work is pending, nothing blocking waits for Batu, and the usage status allows it under section 8. Otherwise start nothing. In both cases update the heartbeat line in DURUM.md and add one log line with your decision, on your standing branch claude/dispatcher and its one open record PR; do not merge it (a run merges it at boot).
 ```
 
 ## Appendix M · Mechanism register (plan 6.12, items 1 and 4)
@@ -387,7 +394,7 @@ Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-fo
 | Hand-over at 50% context (2.1 S4) | Detail lost in compaction | Lossy compaction of long sessions | Compaction loses detail (documented); 50% leaves room for the stop work | Extra boots | Threshold too low wastes boots; too high risks compaction | Long runs compact and drift |
 | Explicit model for runs (2.1) | Runs on a smaller model | Routine and seed sessions default to another model | BP-05 | none | A newer model ID not updated | Heavy work silently on a weaker model |
 | Lease (2.2) | Two builders writing at once | No built-in mutual exclusion across sessions | BP-02; git serialises merges | One row, renewed per checkpoint | Stale lease blocks work until expiry (at most 3h15m) | Conflicting writes; breach of the single-writer rule |
-| Dispatcher and heartbeat (2.3) | A dead chain is never restarted | Routine sessions cannot do builder work | BP-05; persistent-session triggers deliver (documented) | About 4 short turns per day | Dispatcher dies; visible as heartbeat age in `DURUM.md`; recreated at boot | Silent stop after any crash |
+| Dispatcher and heartbeat (2.3) | A dead chain is never restarted | Routine sessions cannot do builder work | BP-05; persistent-session triggers deliver as queued notifications (observed, T-A2); the classifier allows the dispatcher to start a run (untested, T-A2r) | About 4 short turns per day | Dispatcher dies; visible as heartbeat age in `DURUM.md`, which lags while no run is active; recreated at boot. A classifier denial of `create_session` would stop unattended restarts | Silent stop after any crash |
 | Wake-up at the usage reset (2.3, 8) | Work does not resume after a limit | Sessions cannot run while limited | BP-08 | One one-shot trigger | Container not reclaimed in time (untested, T-A2) | Waits for the next heartbeat instead |
 | Boot order via `CLAUDE.md` (3.1) | A new session starts from the wrong state | No memory across sessions | BP-02; `CLAUDE.md` loads in every session (documented) | About 30–60k tokens per boot | Stale state file; caught by the `DURUM.md` cross-check | A new session guesses the state (D8 failure) |
 | Checkpoints, record and change PRs (3.2) | Work stays on a branch (failure 2) | Branches are invisible to the next session | BP-02 | One PR per checkpoint | Unmerged branch after a crash; caught by the boot branch listing | Failure 2 recurs |
