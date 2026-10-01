@@ -18,7 +18,7 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | C00 in progress. Step 2 (reading) is complete (L-001). Step 1 (preparation verification) is partly done: the library access check is in EV-C00-001. Step 0 (translation) has not started. | 2026-10-01T16:10Z |
+| Stage | C00 in progress, under the `/goal` target of L-004. Step 2 (reading) is complete (L-001). Step 1 has had a first pass (L-006, EV-C00-002); confirmations from Batu are pending (OI-008). Step 0 (translation) has not started. Waiting for Batu's decision D-001 (L-007). | 2026-10-01T17:05Z |
 | Binding plan text | Turkish plan package at `devos` commit `6186e5d`, plus the recorded change K10 (L-004) | 2026-10-01 |
 | Working rhythm | Each stage runs under a `/goal` target (K10, L-004). The C00 goal condition is in L-004; it has not been started yet. | 2026-10-01 |
 | Builder's access to `agentic-os-search` | **Not known to be read-only.** On GitHub, the machine account has write (push) permission (observed). At session level, whether `access: "read"` blocks writes is not verified (OI-001). The repository is therefore treated as writable by this session. The only thing keeping it read-only is a plan rule (plan Section 0.5) that only the builder's compliance enforces. Details: L-003, EV-C00-001. | 2026-10-01T16:10Z |
@@ -125,6 +125,27 @@ Stop when one of these holds, and state which one with ledger and evidence IDs: 
 
 **Answer:** Unchanged from L-003. On GitHub, the machine account has push permission (observed). Session-level enforcement of the `read` attachment is not verified (OI-001). "Read-only" is a plan rule that only the builder's compliance enforces; it is not a technical boundary. No new observation has been made since L-003, and the builder has made no write to the library.
 
+### L-006 · 2026-10-01 · C00 step 1, preparation verification: first pass
+
+Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is documented only and 4 are not visible from this session. One item (Batu's other projects) is outside C00 scope. No item is observed missing. Items needing Batu's confirmation: `devos-backup` exists; extra usage is off; phone apps are set up; the GitHub access key was deleted (OI-008). One observation is technically enforced: the builder's Supabase connection runs read-only at database level.
+
+### L-007 · 2026-10-01 · Weekly usage limit at warning level; decision D-001 sent to Batu
+
+**Observation.** The session record shows the account's seven-day rate limit at status `allowed_warning`, resetting at about 2026-10-03 17:00Z. The fraction used is not shown. The limit is shared with Batu's own Claude use (plan U-5; Section 13, "DevOS'un Batu'nun kendi Claude kullanımıyla aynı sınırları paylaşması").
+
+**Why this is Batu's decision.** Spending the remaining weekly allowance affects Batu's other work (plan Section 0.3, item 3; Appendix E §3). The heavy part of C00 is costly: translating about 340 KB of Turkish text with parallel subagents, the fidelity-review session, the independent review session and the counter-design session. Lowering quality to save usage is not an option (plan Section 0.3, item 1). Speed is the only variable (plan K-7, item 9).
+
+**Decision record D-001** (class `batu`):
+
+| Field | Content |
+|---|---|
+| Question | Should C00's heavy work run now, or after the weekly limit resets? |
+| Options | (1) Light work now, heavy work after the reset (about 2026-10-03 20:00 Turkey time). Light work: record the preparation verification, the gap list and the premise inventory. Heavy work: translation, the review sessions, the counter-design. (2) Full pace now. (3) Wait for the reset. Paid extra usage is not offered as an option: Batu's decision keeps it off (criterion 25). |
+| Recommendation | (1). It protects Batu's own Claude use and costs about two days on the heavy steps; quality is unchanged. |
+| Assumption | The warning status means a large share of the weekly limit is used; the exact share is unknown. |
+| If unanswered | Under K10 the builder stops, spends no further usage and waits. Silence is not approval. |
+| Status | open; presented to Batu in Turkish on 2026-10-01 |
+
 ---
 
 ## 4. Findings
@@ -163,6 +184,7 @@ Stop when one of these holds, and state which one with ledger and evidence IDs: 
 | OI-005 | Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whether safeguard 3 closes the session's git path. | C01 row 12; the effect-channel inventory |
 | OI-006 | EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). | Re-observe and store the raw output when the raw-evidence store exists (C02). Until then, EV-C00-001 is context only and cannot close a condition. |
 | OI-007 | FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder's Supabase connection is read-only", asserted from the connector's name. **Negative control:** an access statement without an enforcement layer and verification status is rejected. **Positive control:** a correctly labelled statement passes. **Break test:** remove the requirement, and the negative example must then pass. | Structural part (a format gate on effect-channel inventory records): C02/C03. Behavioural part (the DR10 hidden exam, prepared by the exam environment): C05. |
+| OI-008 | Preparation items not visible from the builder session: `devos-backup` exists; extra usage is off; phone apps are set up; the GitHub access key was deleted (EV-C00-002, items 4, 13, 14, 16). | To be asked of Batu in a separate message, after D-001 (Appendix E: one topic per message). Needed for C00 acceptance condition 2. |
 
 ---
 
