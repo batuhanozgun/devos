@@ -174,6 +174,29 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 - **Blocker B-001 (stop condition 3):** every remaining C00 step is heavy work: translation, the fidelity review, the ECC comparison, the independent review, the counter-design, and step 7. Under Batu's decision D-001, heavy work waits for the weekly usage reset at 2026-10-03 17:00Z. The builder must not pass this blocker on its own.
 - **Resume:** the builder scheduled a one-shot wake-up of this session for 2026-10-03 17:15Z (`send_later`, trigger `trig_01PPvVV1VzS8o5fBWWRtvFZj`; Batu can cancel it from his Routines list). Per the routines documentation, one-shot runs do not count toward the daily routine limit. Whether the `/goal` target survives until then is unknown; if it does not, Batu restarts it with the text in L-004.
 
+### L-011 · 2026-10-01 · Plan change K11: the builder manages branches and merges
+
+**Batu's decision:**
+
+> Original (tr): "Repolardaki branchları ben takip etmiyorum ve main'e ne zaman alınacağı konusunda bir fikrim yok. Repolardaki branch yaratmak, branch'ı main'e taşımak, silmek hepsi senin yönetiminde olsun."
+>
+> Interpretation (en): Batu does not follow the repositories' branches and has no view on when they should be merged into `main`. Creating branches, merging them into `main` and deleting them are all to be managed by the builder.
+
+**Builder's interpretation, stated so that Batu can correct it:**
+
+- *Scope:* the repositories where DevOS is the writer (`devos` now; `soul-system` and `devos-evals` through their own flows later). Library repositories (`agentic-os-search`, the legacy repositories) are never touched (plan 0.5).
+- *Route:* `main` is changed only through a pull request. Branch protection is never disabled or bypassed.
+- *Limit:* the decision covers the mechanics and timing of merges. It does not remove plan 6.7: high-impact changes (rules, role definitions, schema, security and publication settings, `.claude/settings.json`, the decision channel) still need Batu's acceptance from the point of view of purpose and risk. Batu gets a plain acceptance question before such a merge.
+- *Record:* every merge and branch deletion is logged here.
+
+**Plan change record (plan Section 14):**
+
+| Field | Content |
+|---|---|
+| Old state | The plan defined merging for phase B (a publication job, required checks, audit verdicts; 6.8) but not for the installation period, when none of those exist yet. |
+| New state | Plan Section 9, introduction: the "Dal yönetimi" paragraph with the four limits above; the plan header and Section 11.1 list K11. |
+| Affected stages | C00 to C12, until the publication chain of C08 takes over. |
+
 ---
 
 ## 4. Findings
