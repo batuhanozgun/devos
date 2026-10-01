@@ -23,6 +23,15 @@
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\""
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/selftest_block_get_me.py\""
+          }
+        ]
       }
     ]
   }
