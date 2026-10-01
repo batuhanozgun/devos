@@ -18,7 +18,7 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | C00 in progress, under the `/goal` target of L-004. Step 2 (reading) is complete (L-001). Step 1 has had a first pass (L-006, EV-C00-002); confirmations from Batu are pending (OI-008). Step 0 (translation) has not started. D-001 answered: light work now, heavy work after the weekly reset (L-007). Gap list and premise inventory, first versions: L-008. OI-008 answered (L-009); waiting for the H0–H10 item list from the planning chat (G-010). | 2026-10-01T17:55Z |
+| Stage | C00 in progress. Done: reading (L-001); preparation verification (L-006, L-009, L-010; acceptance condition 2 met); first gap list and premise inventory (L-008). **Paused until 2026-10-03 17:00Z** under D-001 (blocker B-001, L-010); resume scheduled for 17:15Z. Remaining: translation and its review, the ECC comparison, the independent review, the counter-design, step 7. | 2026-10-01T18:00Z |
 | Binding plan text | Turkish plan package at `devos` commit `6186e5d`, plus the recorded change K10 (L-004) | 2026-10-01 |
 | Working rhythm | Each stage runs under a `/goal` target (K10, L-004). The C00 goal condition is in L-004; it has not been started yet. | 2026-10-01 |
 | Builder's access to `agentic-os-search` | **Not known to be read-only.** On GitHub, the machine account has write (push) permission (observed). At session level, whether `access: "read"` blocks writes is not verified (OI-001). The repository is therefore treated as writable by this session. The only thing keeping it read-only is a plan rule (plan Section 0.5) that only the builder's compliance enforces. Details: L-003, EV-C00-001. | 2026-10-01T16:10Z |
@@ -161,6 +161,18 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 - Batu confirmed EV-C00-002 items 4, 13, 14 and 16 (`devos-backup` exists, extra usage off, phone apps set, GitHub access key deleted). The verification level is Batu's statement, not the builder's observation. All 17 items are now observed, documented or confirmed, except item 17 (outside scope) and G-010.
 - G-010: Batu does not know the preparation plan H0–H10; the planning chat (Claude) wrote it. He offered to relay a question to that chat. The builder sent him a request text (Turkish) that asks only for the item list with done/not-done status, and no conversation content, because `devos` is public. This is a one-off relay during installation; criterion 21 targets phase B.
 - OI-003 stays open: the deleted key does not explain the session's `GH_TOKEN` / `GITHUB_TOKEN` variables.
+
+### L-010 · 2026-10-01 · Preparation plan H0–H10 received; preparation verification complete; heavy work paused until the weekly reset
+
+- Batu relayed the planning chat's answer and the preparation plan document (H-2.1). The builder read it in full. A safe summary is in EV-C00-002 (section "Preparation plan H0–H10"); the document itself is not copied into the public repository.
+- **C00 acceptance condition 2 is met:** every preparation item is verified, each at a stated level (observed, documented, confirmed by Batu, or stated by the planning chat).
+- Facts that bear on open items:
+  - OI-003: the `devos-kurulum` environment was created with no environment variables (H5), so `GH_TOKEN` and `GITHUB_TOKEN` come from the platform, not from Batu. Their scope is still unknown.
+  - G-001 and safeguard 2: as of H8 (2026-10-01) the machine account had no commits in `agentic-os-search`.
+  - The ruleset on `devos` `main` was disabled three times during preparation (logged; the path closed with the token's deletion).
+  - G-010 is resolved.
+- **Blocker B-001 (stop condition 3):** every remaining C00 step is heavy work: translation, the fidelity review, the ECC comparison, the independent review, the counter-design, and step 7. Under Batu's decision D-001, heavy work waits for the weekly usage reset at 2026-10-03 17:00Z. The builder must not pass this blocker on its own.
+- **Resume:** the builder scheduled a one-shot wake-up of this session for 2026-10-03 17:15Z (`send_later`, trigger `trig_01PPvVV1VzS8o5fBWWRtvFZj`; Batu can cancel it from his Routines list). Per the routines documentation, one-shot runs do not count toward the daily routine limit. Whether the `/goal` target survives until then is unknown; if it does not, Batu restarts it with the text in L-004.
 
 ---
 

@@ -59,3 +59,25 @@ Status of these items changes from "not visible" to **confirmed by Batu** (Batu'
 | 14 | Phone apps installed, notifications on | "Evet" | Yes |
 | 16 | The GitHub access key was deleted | "Evet" | Yes. This does not explain the `GH_TOKEN` / `GITHUB_TOKEN` variables in the session; OI-003 stays open. |
 | G-010 | Does the preparation plan (H0–H10) contain items beyond Section 12? | "Ne planı? Ben bilmiyorum Claude Chat hazırladı o planları, ne lazımsa soralım, sana cevap ya da dosya versin." | Batu does not know the H0–H10 plan; it was prepared in the planning chat with Claude. He offers to ask that chat for whatever is needed, as an answer or a file. |
+
+## Preparation plan H0–H10 (G-010 resolved)
+
+**Source.** The preparation plan document "DevOS — Hazırlık Planı" (version H-2.1, 29 September 2026, Turkish), written in the planning chat with Claude and given to the builder by Batu on 2026-10-01, with the planning chat's English status summary. The document stays with Batu and is not copied here. It mentions Batu's unrelated projects, and `devos` is public. The builder read it in full.
+
+**Verification level:** the planning chat's statement (another Claude conversation), cross-checked against the builder's own observations where they overlap.
+
+| Item | Planning chat's status | Cross-check by the builder |
+|---|---|---|
+| H0 Decisions K1–K9, B1–B3 | done | Consistent with plan Section 11.1. K1–K5 (repository naming and legacy repositories) are recorded only in the preparation plan, not in plan 2.1. |
+| H1 Plan 2.1 | done | `devos` at `6186e5d` |
+| H2 Appendices A–G and two independent reviews | done | Review evaluation files present in `plan/` |
+| H3 GitHub preparation | done | Repositories observed (items 1–3); `devos-backup` confirmed by Batu (item 4). **Audit note:** during preparation, `main` of `devos` was advanced three times by briefly disabling the ruleset "main-korumasi" (initial content, `3ad7b8f`, `6186e5d`), because the preparation token could not open pull requests. Each time is logged in the preparation plan. The token is deleted (H9), so that path is closed. |
+| H4 Supabase projects | done | Items 5–6 |
+| H5 Batu's account tasks | done | Items 7–11 match. H5 also says the `devos-kurulum` environment was created **with no environment variables**. The `GH_TOKEN` and `GITHUB_TOKEN` variables seen in the session were therefore not set by Batu; they are most likely injected by the platform. Their scope is still unknown (OI-003). H5 item 2b (share the account's connector names with the builder) is covered by the builder seeing the connector list in its own session (G-006). |
+| H6 Intermediate check | done | Not re-run |
+| H7 ChatGPT correction task | done | Outcome observed (item 12) |
+| H8 Verification of ChatGPT's correction | done | D030 and the root README observed (item 12). Per the planning chat: 39 commits in `8cd01e4..dc91f6b`, no deletions, `AGENT.md` and `agent/**` unchanged, **no commits by the machine account**. One permanent gap remains: the P5 S00–S12 package is missing from the archive. |
+| H9 Preparation GitHub token deleted | done ("Bad credentials" on reuse) | Confirmed by Batu (item 16) |
+| H10 Builder started | done | This session |
+
+**Result:** no preparation item is missing. C00 acceptance condition 2 ("every item of the preparation list verified with evidence") is met. The verification level differs per item and is stated in the tables above.
