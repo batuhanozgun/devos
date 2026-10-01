@@ -421,3 +421,9 @@ This closes condition C4 of R-C00-BOM-3.
 **Final check runs (after this entry was written):**
 - `tools/test_tool_allowlist.sh`: 107 ok, `ALLOWLIST_TEST PASS` (one `info` line: `main` has no `.claude/settings.json` yet).
 - `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.
+
+### L-024 · 2026-10-01 · T-H7 passes live; review R-C00-BOM-6 started
+
+- The builder created the narrow re-check R-C00-BOM-6 (`session_01SizJjhJaxprbrieGQ84VFG`, full checkout of `7fb2ca8`, outcome branch `claude/review-R-C00-BOM-6`).
+- The `PostToolUse` recorder appended `session_01SizJjhJaxprbrieGQ84VFG` to `owned_ids.txt` on its own; `git diff` showed exactly that one added line and no edit by the builder. **T-H7: PASS.** The response carried the ID at `ccr.id`, as the parser expects.
+- This record is committed after the review target (`c166639..7fb2ca8`); it changes only §9, §13 and Appendix M wording about T-H7 and the owned-ID file.
