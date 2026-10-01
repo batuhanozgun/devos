@@ -452,3 +452,10 @@ These are tightening changes and wording, applied after the PASS as the reviewer
 **Final check runs (after this entry was written):**
 - `tools/test_tool_allowlist.sh`: 111 ok, `ALLOWLIST_TEST PASS`.
 - `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.
+
+### L-026 · 2026-10-01 · PR #4 merged; T-B1 started
+
+- **Merge.** [PR #4](https://github.com/batuhanozgun/devos/pull/4) merged into `main` as `bfa7ae1` (merge commit, so every reviewed SHA stays reachable), after R-C00-BOM-6 PASS (L-025). The PR description was updated first; it still described v1.1. The barrier is now on `main`. Every new session created on `main` carries it. W-C00-05 acceptance (e) is met in part: merged; `DURUM.md` is live.
+- **Branch.** `claude/epic-hamilton-9tisc4` was reset to `origin/main` for the record PR that follows.
+- **T-B1 started** at 19:56Z: `session_01Cm2bFNA5Yxtgk5jPYekAQu`, on `main` (`bfa7ae1`), configured model, first message "continue", no outcome branch. The recorder added its ID to `owned_ids.txt` without a hand edit. This is the second live pass of T-H7, and the first one on `main`'s hook.
+- **Reading of condition 3, written before the result was read.** The pre-registration (EV-C00-005) says "names the next action **as recorded in the state file**", and then gives the text of the row as it stood then. Between the pre-registration and the test, the row changed through merged work (L-023, L-025). The binding part is "as recorded in the state file". The test therefore passes condition 3 only if the session names the Next action row on `bfa7ae1`: merge PR #4, hand over to a fresh run, then T-B1, T-A2 and the Batu issue. It must also say that heavy C00 items wait for the weekly reset. This is not a loosening. The probe must match the file it actually reads, exactly as the condition intends. A stale answer that names only the old text fails.
