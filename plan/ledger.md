@@ -197,6 +197,12 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | New state | Plan Section 9, introduction: the "Dal yönetimi" paragraph with the four limits above; the plan header and Section 11.1 list K11. |
 | Affected stages | C00 to C12, until the publication chain of C08 takes over. |
 
+### L-012 · 2026-10-01 · First merge into `main` under K11
+
+- PR [batuhanozgun/devos#1](https://github.com/batuhanozgun/devos/pull/1), head `8669e93`, merged as `9ae67ef` (merge commit) by the machine account. Contents: L-001 to L-011, EV-C00-001 to EV-C00-004, plan changes K10 and K11. Nothing high-impact under plan 6.7.
+- Branch `claude/epic-hamilton-9tisc4` was not deleted: it is this session's working branch. It was reset to the new `main`, so follow-up work starts from merged history.
+- **Observation, with enforcement layer (rule 5):** the machine account opened and merged its own pull request with no approval. The `main` ruleset requires a pull request but enforced no approval (observed: GitHub layer). So the plan 6.7 rule that high-impact changes need Batu's acceptance is, at present, **instruction only**: the builder's compliance. GitHub-native approvals (the reason for B3 = a) are not yet required anywhere. Recorded as gap G-015; a technical fix (for example, a required review from code owners for high-impact paths, plan 6.1 `CODEOWNERS`) belongs to C01 row 8 and C08. Any change to the repository settings is an account action for Batu and will be brought to him with its steps.
+
 ---
 
 ## 4. Findings
