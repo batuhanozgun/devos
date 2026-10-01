@@ -389,7 +389,7 @@ Yeni bir uzmanlık gerektiğinde rol, bir uzmanı işe hazırlar gibi hazırlan�
 4. **Mesleki süreklilik düzeni:** Rolün öğrenme kayıtlarının, çıkmaz yollarının ve yeterlik profilinin nasıl tutulacağı.
 5. **Sınav:** Ayrı bir oturumun hazırladığı gizli sınav; olumlu ve olumsuz örneklerle.
 6. **Bağımsız inceleme:** Rol paketinin, onu hazırlamayan bir oturumca incelenmesi: sözleşme çelişkisiz mi, paket işe yeterli mi, sınav rolü gerçekten ölçüyor mu?
-7. **Onay:** Rol tanımı yüksek etkili değişikliktir; Batu'nun onayıyla etkinleşir.
+7. **Onay:** Rol tanımı yüksek etkili değişikliktir; bağımsız denetimin onayıyla etkinleşir (plan PC-05). Rolün eklenmesi kapsamı ya da maliyeti değiştiriyorsa o yönüyle Batu'ya karar olarak gelir.
 8. **İzleme ve emeklilik:** Gerçek işteki performans izlenir; kullanılmayan rol gerekçeyle emekliye ayrılır, geçmişi korunur.
 
 **Bu protokolü uygulayan roller** (DR02 tasarlar, DR15 yöntemlerini hazırlar, DR04 sınavını tasarlar, DR13-G inceler) aynı ortak tabanı ve aynı yüksek standardı taşır; rol hazırlayan rolün standardı düşükse hazırladığı roller de düşük olur.

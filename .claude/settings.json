@@ -12,5 +12,18 @@
       "mcp__Granola",
       "mcp__Context7"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\""
+          }
+        ]
+      }
+    ]
   }
 }

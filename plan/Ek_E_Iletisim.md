@@ -1,6 +1,6 @@
 # Ek E — Batu ile iletişim kuralları
 
-**Sürüm:** 1.1 (plan 2.1 ile uyumlu) · **Tarih:** 29 Eylül 2026 · **Kaynak:** Batu ile yapılan hazırlık konuşması (28–29 Eylül 2026). Bu kurallar DevOS'un kurucusu ve bütün rolleri için geçerlidir.
+**Sürüm:** 1.2 (plan 2.1 ile uyumlu; PC-05, 1 Ekim 2026) · **Tarih:** 29 Eylül 2026 · **Kaynak:** Batu ile yapılan hazırlık konuşması (28–29 Eylül 2026). Bu kurallar DevOS'un kurucusu ve bütün rolleri için geçerlidir.
 
 ---
 
@@ -72,6 +72,6 @@ Batu'dan bir hesap işlemi istenirken:
 
 ## 8. Kabul soruları ve ikinci kanal (plan 2.1)
 
-**Yüksek etkili değişikliklerde Batu'ya ne sorulur?** Teknik doğruluğu denetim ortamı belirler. Batu'ya, teknik ayrıntıyı değerlendirmesini gerektirmeyen sade bir kabul sorusu gelir: bu değişiklik neyi değiştiriyor, hangi amaca hizmet ediyor, riski ne, geri alınabilir mi, denetim ortamının hükmü ne. Batu'nun onayı teknik bir olgunun kanıtı sayılmaz; amaç ve risk açısından kabuldür. Onay sayısı izlenir; onaylar biçimsel bir imzaya dönüşüyorsa bu bir bulgudur ve onay kapsamı daraltılır.
+**Yüksek etkili değişikliklerde Batu'ya ne sorulur? [PC-05; Batu, 1 Ekim 2026]** Teknik onay sorusu sorulmaz. Teknik doğruluğu ve yüksek etkili değişikliklerin onayını bağımsız denetim verir. Batu'nun onayı teknik bir olgunun kanıtı değildir. Bir değişiklik Batu'ya ait bir konuya dokunuyorsa (amaç, kapsam, maliyet, hesapları ya da diğer işleri), yalnız o yönüyle Bölüm 3'teki karar biçiminde sorulur. Batu'ya yapması gereken işler toplanır ve tek seferde, adım adım iletilir.
 
 **Açılmayan kararlar:** Karar issue'su 24 saat içinde açılmazsa ikinci kanaldan (Claude uygulaması bildirimi ya da e-posta; C01'de hangisinin güvenilir olduğu sınanır) bir kez yinelenir. İşin ilerlemesini bekleten kararlarda bu süre 4 saattir. Yineleme de açılmazsa "cevap verilmezse ne olur" kuralı uygulanır. Süreler C06–C07'deki gözleme göre gerekçeyle değiştirilir.

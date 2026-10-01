@@ -9,8 +9,7 @@ Bu sürüm 2.0'ın yerine geçer. 2.1'de değişenler:
 - **Karşılaştırmalı araştırmanın** düzeltmeleri işlendi: tek yazar kuralı, parçalı iş ve yapılandırılmış devir, alt ajan görev tanımı, döngü sınırları, mekanizma varsayım envanteri, başarısızlık sınıflaması ve sessiz başarısızlık denetimi.
 - **Çerçeve körlüğüne karşı mekanizma** eklendi (Bölüm 6.12).
 - Batu'nun K6 ve K7 kararları işlendi.
-- **2.1 sonrası kayıtlı değişiklik (1 Ekim 2026):** K10 — kurulum çalışma ritmi: her aşama bir `/goal` hedefiyle yürütülür (Bölüm 9 girişi; Ek F; `plan/ledger.md` L-004).
-- **1 Ekim 2026:** K11: kurulum döneminde dal yönetimi (açma, `main`'e alma, silme) kurucudadır (Bölüm 9 girişi; `plan/ledger.md` L-011).
+- **2.1 sonrası kayıtlı plan değişiklikleri (1 Ekim 2026; kurucunun değişiklikleri `PC-` önekiyle numaralanır, `K` önekli numaralar yalnız Batu'nun kararlarıdır):** PC-01 kurulum ritmi (`/goal`); PC-02 dal yönetimi; PC-03 süreklilik; PC-04 kurucunun çalışma düzeni (`plan/Builder_Operating_Model.md`); PC-05 yüksek etkili değişikliklerin teknik onayı bağımsız denetimdedir, Batu'da değil. Kayıtlar `plan/ledger.md`'de.
 
 Değerlendirme ve araştırma belgeleri: `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md` (C00'da `devos/plan/` altına alınır).
 ---
@@ -417,7 +416,7 @@ Her kabiliyet için: hangi ihtiyacı karşıladığı, hangi mekanizmayla karş�
 4. **Kısıt sorgulama:** Her kısıt (`Constraint`) sorgulanabilir statüdedir. Koordinatör her iş planlanırken ve denetim oturumu her incelemede, işin gereğinin bir kısıtla çelişip çelişmediğine bakar; çelişki bulununca karar kaydı açılır.
 5. **Emek politikası:** Bölüm 6.10.
 6. **Dil:** Batu ile Türkçe, sistemin içinde İngilizce (Bölüm 0.6).
-7. **Batu'nun onayının kapsamı:** Teknik doğruluğu denetim ortamı belirler. Batu'ya yüksek etkili değişikliklerde amaç ve risk açısından sade bir kabul sorusu gelir (Ek E biçimi). Batu'nun onay sayısı C06–C07'de ölçülür; onayın biçimsel bir imzaya dönüşmesi izlenir.
+7. **Batu'nun onayının kapsamı [PC-05; Batu, 1 Ekim 2026]:** Teknik doğruluğu ve yüksek etkili değişikliklerin teknik onayını bağımsız denetim verir (kurulumda ayrı inceleme oturumları, C03'ten sonra denetim ortamı). Batu'ya teknik onay sorusu gelmez. Batu'ya yalnız ona ait kararlar gelir: amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler ve kabul. Bir değişiklik bunlardan birine dokunuyorsa (örneğin bir kısıtı ya da maliyeti değiştiriyorsa) o yönüyle Ek E biçiminde karar olarak gelir.
 
 **Sınama:** C06 karar akışı; C07'de kısıtla çelişen bir durumun doğru sunulması; Ek E'ye uyumun Batu tarafından değerlendirilmesi.
 
@@ -509,7 +508,7 @@ Her bileşen için önce ihtiyaç, sonra seçimden önce değerlendirilen altern
 
 ### 5.6 Yayın ve ürün deposu
 
-**İhtiyaç:** Hiçbir değişikliğin kontrollerden geçmeden ana ürüne girmemesi; yüksek etkili değişikliklerde Batu'nun onayı; "PR açıldı" ile "gerçekten girdi"nin ayrılması.
+**İhtiyaç:** Hiçbir değişikliğin kontrollerden geçmeden ana ürüne girmemesi; yüksek etkili değişikliklerde bağımsız denetimin onayı (PC-05); "PR açıldı" ile "gerçekten girdi"nin ayrılması.
 
 **Seçim:** GitHub PR akışı: routine'ler varsayılan olarak yalnız `claude/` ile başlayan dallara gönderim yapabiliyor **[Doğrulandı: ikincil kaynak]**; `main` dalı korunur ve kurallar yöneticileri de kapsar; zorunlu kontroller (testler, şema, bağlantılar, katalog kaydı, sızıntı kontrolleri, gereken işlerde bağımsız inceleme hükmü); yüksek etkili dosyalarda Batu'nun onayı (B3'e göre GitHub onayı ya da karar paneli); rutin değişikliklerde kontroller geçince otomatik birleşme; niyet ve gözlem kayıtları. **[Öneri]** Alternatif yok denecek kadar dar: GitHub platformun zorunlu parçası.
 
@@ -571,7 +570,7 @@ devos/
   sources/INDEX.md          # kütüphane kaynaklarının kimlik listesi (içerik değil)
 ```
 
-`.claude/settings.json` ve `.claude/protocols/` yüksek etkili dosyalardır; değişiklikleri denetim ortamının incelemesinden ve Batu'nun kabulünden geçer. Oturum içinde bu dosyaların düzenlenmesini engelleyen bir kanca da vardır. **[Öneri]**
+`.claude/settings.json` ve `.claude/protocols/` yüksek etkili dosyalardır; değişiklikleri bağımsız denetimin onayından geçer (PC-05; denetim ortamı kurulana kadar ayrı inceleme oturumu). Oturum içinde bu dosyaların düzenlenmesini engelleyen bir kanca da vardır. **[Öneri]**
 
 ### 6.2 Supabase: canlı durum ve kural kapısı
 
@@ -659,9 +658,9 @@ Kütüphaneden gelen her kayıt "özel" gizlilik sınıfı taşır. Kütüphane 
 
 - Ajanlar yalnız `devos_api` fonksiyonlarını çağırabilir; tablolara yazamaz.
 - Yetki ortam belirtecinden ve üstlenme belirtecinden gelir; rol adı ve oturum kimliği beyandır (K-9).
-- **Yetki ayrılığı ortam düzeyindedir:** Çalışma ortamının ürettiğini yalnız denetim ortamı bağlayıcı biçimde inceleyebilir ve kabul edebilir; sınav cevaplarını yalnız sınav ortamı görebilir; kural ve kontrol değişikliğini çalışma ortamı önerir, denetim ortamı inceler, Batu kabul eder. Bu ayrımlar veritabanında zorlanır. Oturum içindeki ayrımlar (örneğin iki alt ajan arası) beyana dayalıdır ve öyle etiketlenir.
+- **Yetki ayrılığı ortam düzeyindedir:** Çalışma ortamının ürettiğini yalnız denetim ortamı bağlayıcı biçimde inceleyebilir ve kabul edebilir; sınav cevaplarını yalnız sınav ortamı görebilir; kural ve kontrol değişikliğini çalışma ortamı önerir, denetim ortamı inceler ve onaylar (PC-05). Bu ayrımlar veritabanında zorlanır. Oturum içindeki ayrımlar (örneğin iki alt ajan arası) beyana dayalıdır ve öyle etiketlenir.
 - **Doğrulayıcı onarmaz:** Denetim oturumu bulduğu sorunu aynı eylemde düzeltmez; düzeltme çalışma ortamında ayrı bir iştir.
-- **Yüksek etkili değişiklikler** (kurallar, rol tanımları, veritabanı şeması, güvenlik ve yayın ayarları, `.claude/settings.json`, karar kanalı): denetim ortamının teknik incelemesi + Batu'nun amaç ve risk açısından kabulü.
+- **Yüksek etkili değişiklikler** (kurallar, rol tanımları, veritabanı şeması, güvenlik ve yayın ayarları, `.claude/settings.json`, karar kanalı): denetim ortamının teknik incelemesi ve onayı (PC-05). Değişiklik Batu'ya ait bir konuya (amaç, kapsam, maliyet, hesapları) dokunuyorsa o yönüyle ayrıca Batu'ya karar olarak gelir.
 - **Dış etkileşim:** Dışarıdan açılan issue ve PR'lar hiçbir routine'i tetiklemez; dış içerik ajanlar için yalnız veridir.
 - **Açık depoya yazımdan önce sızıntı kontrolü** (oturum içinde, koda dayalı): (1) eklenen metin gizli kütüphanenin parmak izleriyle karşılaştırılır; uzun eşleşme gönderimi durdurur; (2) anlam vektörü karşılaştırılır; eşiğin üstündeki yakınlık gönderimi incelemeye düşürür. Kontrol dala gönderim, PR gövdesi, yorum ve issue yazımını kapsar. Denetim kaydına eşleşen metnin kendisi yazılmaz. PR üzerindeki aynı kontrol ikinci katmandır. Eşik C03'te bilinen örneklerle ayarlanır.
 - **Etki kanalı envanteri:** Bölüm 0.3 madde 13; her kanalın olumsuz testi C03'te.
@@ -673,7 +672,7 @@ Kütüphaneden gelen her kayıt "özel" gizlilik sınıfı taşır. Kütüphane 
 2. PR açılmadan önce niyet kaydı (`Operation`) oluşturulur.
 3. Zorunlu kontroller çalışır.
 4. **Birleştirme tek bir sıradadır:** Birleştirmeyi bir yayın işi yapar; birleştirmeden hemen önce veritabanındaki güncel yetkiyi ve dönemi yeniden okur. Kontrolün geçtiği an ile birleşme anı arasındaki pencere ölçülür ve yazılır; bu pencerede yetki iptal edilirse birleştirme yapılmaz. Zorunlu kontroller birleşme anında kendiliğinden yeniden koşmadığı için bu yeniden okuma gereklidir.
-5. Rutin değişiklikler kontroller ve yeniden okuma geçince birleşir; yüksek etkili değişikliklerde denetim ortamının hükmü ve Batu'nun kabulü de gerekir.
+5. Rutin değişiklikler kontroller ve yeniden okuma geçince birleşir; yüksek etkili değişikliklerde denetim ortamının onaylayan hükmü de gerekir (PC-05).
 6. Birleşmeden sonra gerçekleşen sonuç gözlem (`Observation`) olarak yazılır; geçmiş gözlem silinmez (F07).
 
 `main` dalı korunur; kurallar yöneticileri de kapsar. Otomatik birleşmenin oturumun GitHub bağlantısıyla çalışıp çalışmadığı **[Doğrulama bekliyor: C01]**. Yayın kesintileri Ek G'de.
@@ -750,7 +749,7 @@ Her rol için bir yeterlik profili tutulur: hangi iş türünde, hangi model ve 
 
 ### 7.4 Rol yaşam döngüsü ve başlangıç kümesi
 
-Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem incelemesi → sözleşme → uzmanlık paketi → mesleki süreklilik düzeni → gizli sınav → bağımsız inceleme → Batu'nun kabulü → izleme ve gerektiğinde emeklilik (Ek A Bölüm 6).
+Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem incelemesi → sözleşme → uzmanlık paketi → mesleki süreklilik düzeni → gizli sınav → bağımsız inceleme ve onay (PC-05) → izleme ve gerektiğinde emeklilik (Ek A Bölüm 6).
 
 **Başlangıç kümesi:** 18 rol sözleşmesi korunur, ama roller ihtiyaç doğdukça etkinleşir. Paket, sınav ve yeterlik profili rol etkinleşirken hazırlanır. Başlangıç kümesi C07'nin gerektirdiği rollerle sınırlıdır: DR01, DR02, DR06-G, DR06-Y, DR08, DR13-G, DR13-Y, DR16 ve üretim gerekiyorsa DR05. Diğerleri gerçek bir ihtiyaç doğduğunda aynı protokolle etkinleşir. Her rol varlığını kanıtla hak eder; etkin bir rolün katkısı ölçülemiyorsa bu bir bulgudur.
 
@@ -780,23 +779,18 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 
 **Her aşamanın kapanışı:** Kabul koşulları sonuç görülmeden yazılır; kanıt ortak kanıt zarfıyla kaydedilir (Bölüm 8); aşama kapanışı denetim ortamında gözden geçirilir.
 
-**Kurulum çalışma ritmi [Batu kararı K10, 1 Ekim 2026; kayıtlı plan değişikliği, `plan/ledger.md` L-004]:** Her aşama bir `/goal` hedefiyle yürütülür. Hedef, şu üç duruş koşulundan biri gerçekleşince sağlanmış olur:
+**Kurucunun çalışma düzeni [PC-04, 1 Ekim 2026; `plan/Builder_Operating_Model.md`; defter: `plan/ledger.md`]:** Kurucu da bir çalışma sistemidir. Kurulum dönemindeki çalışma düzeni ayrı bir İngilizce belgede tasarlanmıştır; bu bölüm onun özetidir ve çelişki halinde o belge esastır. Özü:
 
-1. **Aşama bitti:** Aşamanın bütün kabul koşulları kanıtıyla defterde, değişiklikler gönderilmiş, aşama kapanışı denetime hazır.
-2. **Batu'nun bir kararı ya da işlemi gerekiyor:** Ek E biçiminde Batu'ya iletildi ve deftere yazıldı.
-3. **Kurucunun aşamayacağı bir engel var:** Gerekçesiyle deftere yazıldı ve Batu'ya bildirildi. Döngü sınırına ya da "ilerleme yok" durumuna ulaşmak (K-7, madde 7) bu koşula girer.
+1. **Koşular (run):** İş, ilk mesajı `/goal <koşu koşulu>` olan kurucu oturumlarında yürür. Kurucu bir sonraki koşuyu kendisi başlatır; Batu komut yazmaz **[Gözlendi: T-A1a, T-A1b, 1 Ekim 2026]**. Bir koşu şu durumlarda durur: aşama bitti; Batu'ya ait işler toplanıp tek seferde iletildi ve yapılabilecek başka iş kalmadı; kurucunun aşamayacağı bir engel var (döngü sınırı ve "ilerleme yok" dahil); bağlam dolmak üzere (devir); kullanım sınırı nedeniyle bekleme.
+2. **Tek doğru kaynak `main`'dir.** Her tamamlanan işten sonra ve her duruştan önce iş `main`'e alınır. Yeni bir oturum yalnız `main`'den, belgede yazılı açılış sırasıyla devam eder. Durum dosyası kısa tutulur; kayıtlar aşama başına ayrı ve yalnız eklenen dosyalardadır.
+3. **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmayı görür. Bu yüzden her duruşta kurucu, `tools/builder_check.sh` adlı denetim betiğinin çıktısını konuşmaya olduğu gibi koyar. Aşama kabulü, işi yapmamış bir oturumun kapanış incelemesiyle verilir.
+4. **Batu'ya yalnız ona ait kararlar gelir** (amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler, kabul). Bunlar ve Batu'nun yapması gereken işler toplanır; tek bir GitHub issue'sunda, adım adım iletilir. Durum Türkçe `DURUM.md` sayfasında her zaman günceldir.
+5. **Bağımsız inceleme** ayrı oturumlarca yapılır. Sonuçlar Batu üzerinden değil, depo üzerinden (inceleme dalındaki dosya) gelir.
+6. **Connector engeli:** `.claude/settings.json` içindeki yasak kuralları ve izin listesi kancası, hesaptaki connector'ları teknik olarak engeller **[Gözlendi: 1 Ekim 2026]**.
 
-Kurucu her aşamanın başında hedef koşulunun metnini (İngilizce) yazar, deftere kaydeder ve Batu'ya verir. Her duruşta hangi koşulun neden gerçekleştiğini kanıt kimliğiyle yazar.
+**PC-01 (1 Ekim 2026; önceki adı "K10"):** Kurulum aşamaları `/goal` hedefiyle yürür; duruş koşulları: aşama bitti, Batu'nun bir kararı ya da işlemi gerekiyor, kurucunun aşamayacağı bir engel var. **[Batu, 1 Ekim 2026]**: `/goal` kullanımı ve bu üç duruş koşulu. Kurucunun eki: hedefin sağlanması aşama kabulü değildir. "Hedefi Batu başlatır" maddesi, kurucunun hedefi kendisi başlatabildiği gözlenince PC-04 ile kaldırıldı.
 
-*Nasıl çalışır* **[Doğrulandı: code.claude.com/docs/en/goal, 1 Ekim 2026]:** `/goal` doğal dille yazılmış bir tamamlanma koşulu koyar (en fazla 4.000 karakter). Her turdan sonra küçük ve hızlı bir model (varsayılan Haiku), konuşmada görünenlere bakarak koşulun sağlanıp sağlanmadığına karar verir; sağlanmadıysa Claude yeni bir tura başlar. Değerlendiricinin kararı üç türlüdür: henüz sağlanmadı, sağlandı, sağlanması imkânsız. Hedef `/goal clear` ile kaldırılır. İzin kipini değiştirmez; turların gözetimsiz ilerlemesi için oturum otomatik kipte olmalıdır. Alt ajan ya da arka plan işi sürerken değerlendirme ertelenir. Devam ettirilen oturumda etkin hedef geri yüklenir; tur sayacı, süre ve kullanım ölçümü sıfırlanır. Düzeltilmesi gereken bir hata (kimlik doğrulama, bağlam taşması, model erişimi) hedefi kaldırır.
-
-*Sınırlar ve kurallar:*
-
-- **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmada görüneni okur. Aşama kabulü yine önceden yazılmış kabul koşulları, ortak kanıt zarfı ve denetim incelemesiyle verilir (Bölüm 8 ve yukarıdaki kapanış kuralı). `/goal` yalnız çalışmanın ne zaman durup Batu'ya döneceğini düzenler.
-- **`/goal` bir kullanıcı komutudur.** Kurucu onu kendisi başlatamaz **[Varsayım: C01'de gözlenecek]**. Bu yüzden kurulum döneminde her aşama başında hedefi Batu, kurucunun verdiği metinle başlatır. Bu, yalnız kurulum dönemine ait küçük bir işlemdir; B aşamasındaki oturumlar routine'lerle başlar (Bölüm 6.4).
-- Duruş koşulu 2'de kurucu, Batu'nun cevabını beklerken Batu'nun kararına bağlı olmayan işleri sürdürmez. Önce durur ve döner; bağımsız iş varsa bunu duruş mesajında belirtir. Sessizlik onay sayılmaz.
-
-**Dal yönetimi [Batu kararı K11, 1 Ekim 2026; kayıtlı plan değişikliği, `plan/ledger.md` L-011]:** DevOS'un yazar olduğu depolarda dal açmak, dalı PR ile `main`'e almak ve dalı silmek kurucunun yönetimindedir; Batu dalları izlemez. Sınırlar: (1) Kütüphane depolarına (`agentic-os-search`, eski deneme depoları) hiçbir zaman dokunulmaz (Bölüm 0.5). (2) `main`'e giriş yalnız PR iledir; dal korumasını kapatmak ya da atlatmak yoktur. (3) Birleştirme için Batu'dan onay istenmez [K11 düzeltmesi, 1 Ekim 2026; L-013]. Kurucu bir değişikliği gerçekten Batu'nun amaç ya da risk değerlendirmesi gerektirdiği için Batu'ya getirirse, o onayda bu tür onayların Batu'ya gelmesinin gerekip gerekmediği de birlikte karara bağlanır ve deftere yazılır. Bu, Bölüm 6.7'deki "Batu'nun kabulü" şartının kurulum dönemindeki uygulamasını değiştirir; denetim ortamı kurulduktan sonra (C02–C03) yüksek etkili değişikliklerin teknik incelemesi denetim ortamındadır. (4) Her birleştirme ve dal silme deftere yazılır. (5) **Süreklilik:** Yeni bir oturum `main`'den başlar. Bu yüzden kurucu her duruştan önce (K10) işini `main`'e alır; böylece oturum kesilse ya da bağlamı dolsa bile yeni oturum yalnız `main`'deki defterden doğru yerden devam edebilir (Ek D, D7).
+**PC-02 (1 Ekim 2026; önceki adı "K11"):** Dal yönetimi kurucudadır. **[Batu, 1 Ekim 2026]**: dal açmak, `main`'e almak ve silmek kurucunun yönetimindedir; birleştirme için Batu'dan onay istenmez. Kurucunun sınırları: (1) Kütüphane depolarına hiçbir zaman dokunulmaz (Bölüm 0.5). (2) `main`'e giriş yalnız PR iledir; dal koruması kapatılmaz ve atlatılmaz. (3) Her birleştirme ve dal silme deftere yazılır. (4) Süreklilik (PC-03): her duruştan önce iş `main`'e alınır.
 
 **Aşamaların özeti:**
 
@@ -1022,7 +1016,7 @@ Bunlar "kurulumda sınanacak" diye çözülmüş sayılmaz. Her biri için ne ol
 
 ### 11.1 Verilmiş kararlar
 
-**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6). **1 Ekim 2026 eklenen: K10** — Kurulum döneminde her aşama bir `/goal` hedefiyle yürütülür; duruş koşulları: aşama bitti, Batu'nun bir kararı ya da işlemi gerekiyor, ya da kurucunun aşamayacağı bir engel var (Bölüm 9 girişi). **K11** — DevOS'un yazar olduğu depolarda dal açma, `main`'e alma ve silme kurucunun yönetimindedir; birleştirme için Batu'dan onay istenmez; Batu'ya gelen bir onayda bu tür onayların gerekip gerekmediği birlikte karara bağlanır (Bölüm 9 girişi).
+**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6). **1 Ekim 2026'da Batu'nun verdikleri** (kayıt numaraları kurucunun plan değişiklikleridir; Batu'nun sözleri `plan/ledger/C00-log.md`'de aslıyla): kurulum aşamalarının `/goal` hedefiyle ve üç duruş koşuluyla yürümesi (PC-01); dal yönetiminin kurucuda olması ve birleştirme için Batu'dan onay istenmemesi (PC-02); kurucunun kendi çalışma düzenini tasarlayıp sınaması ve beklentileri (PC-04); teknik onayın Batu'da değil bağımsız denetimde olması (PC-05).
 
 SOUL tanımı; SOUL'un açık kaynak olması; DevOS'un Claude Code cloud'da çalışması; Max 200 $ planı, ekstra kullanımın kapalı olması, ortamda Anthropic API anahtarı olmaması; Supabase'in kişisel hesapta kullanılması; depoların herkese açık olabilmesi; yeni depolar (`devos`, `soul-system`, `devos-evals`, `devos-backup`) ve eski depolara dokunulmaması; eski deneme depolarının kütüphaneye alınması; eski raporların ChatGPT tarafından arşivlenmesi ve deponun kurucu başlamadan hemen önce düzeltilmesi; tek yazar ilkesi; güvencelerin her işte tam, emek derinliğinin varsayılan olarak yüksek olması; testlerde yalnız sahte veri; telefondan kullanım; Academy notunun karar değil keşif notu olması; bu planın uyduğu ilkeler (Bölüm 0.3).
 

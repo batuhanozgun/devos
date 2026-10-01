@@ -1,192 +1,256 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.0 draft · **Date:** 2026-10-01 · **Status:** [Proposal], to be tested (Section 13) and compared with the independent counter-design (Section 14) before it becomes binding through plan change PC-04.
+**Version:** 1.1 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
 
-**Why this exists.** Plan 2.1 designs DevOS's working structure in detail but treats the builder as "a session that executes the plan". The builder is itself a working system. Without an operating model, the first day produced five failures (Batu, 2026-10-01): the builder waited for Batu after every step; work stayed on a branch instead of reaching `main`; Batu had to carry a message between chats; the builder brought Batu a technical approval question; and working rules were added piecemeal (K10, K11, now PC-01, PC-02). This document designs the builder's operating model as a whole, to the standard the plan applies to DevOS: every mechanism names the problem it solves, the assumption it rests on, its cost and how it fails (plan 6.12).
+**History:**
+- v1.0 was drafted and fixed (commit `a58413a`, SHA-256 `e37de022…afb4`) before the independent counter-design was read.
+- v1.1 adds the counter-design's improvements and the probe results (§14).
 
-**Scope.** Installation period only (stages C00–C12). From C06 onward, DevOS's own working structure (plan 6.3–6.5) takes over the parts it covers. Where the two overlap, the plan wins once the DevOS component exists and is tested.
+**Why this exists.** Plan 2.1 designs DevOS's working structure in detail but treats the builder as "a session that executes the plan". On day one this caused five failures, all named by Batu on 2026-10-01:
+1. the builder waited after every step;
+2. work stayed on a branch;
+3. Batu had to carry a message between chats;
+4. Batu was asked a technical approval question;
+5. rules were added piecemeal.
+
+This document designs the builder's operating model as a whole. Every mechanism names the problem it solves, the assumption it rests on, its cost and how it fails (plan 6.12).
+
+**Scope.** Installation (C00–C12). Once a DevOS component exists and is tested (for example the audit environment from C03, or routines from C06), it takes over the matching part of this model.
+
+**Main insight (frame review, from the counter-design).** Most of the five failures were not missing automation. The builder did not know it was *allowed* to proceed. The decision-routing rule in §6 matters more than any continuity mechanism: **if a perfect engineer would not need Batu's preference to answer a question, it is not Batu's question.**
 
 ---
 
 ## 1. Premises
 
-| ID | Premise | Origin | From-scratch test |
+| ID | Premise | Origin | Status |
 |---|---|---|---|
-| BP-01 | Batu is not a message carrier, decides only his own matters, and must see status without asking. | Batu, 2026-10-01 (expectations 1–5) | Yes: these are requirements, not choices |
-| BP-02 | The single source of truth is the `devos` repository's `main` branch. A conversation, a branch or a session's memory is never the source of truth. | prior design (plan D7, K-8) + PC-03 | Yes. A database becomes the live state from C02 on, but the installation records stay in the repository until the ledger transfer. |
-| BP-03 | A builder session started by the builder itself, with a first message `/goal <condition>`, runs under that goal without Batu typing. | observed (probe T-A1a) | Yes |
-| BP-04 | Fresh sessions are cheaper and safer than one long session: long sessions get compacted and can lose detail. | documented (plan K-7 item 4; research on long-running agents) | Yes |
-| BP-05 | Project permission rules in `.claude/settings.json` are enforced by the harness, not the model. | observed (Section 9: the deny rules removed the connector tools from this session at once) | Yes |
-| BP-06 | Separate sessions give thinking independence (fresh context, chosen inputs), not authority independence; they run on the same model family. | prior design (plan K-7) | Yes. Authority independence arrives with the audit environment in C02–C03. |
-| BP-07 | The weekly usage limit is shared with Batu's own use; its status is readable from any session's record, but the fraction used is not. | observed | Yes |
-| BP-08 | GitHub is the only channel Batu reliably sees on his phone, besides the Claude app. | plan 5.5 and 6.9 (decision channel), Batu confirmed the phone apps (EV-C00-002) | Yes |
+| BP-01 | Batu is not a message carrier. He decides only his own matters and sees status without asking. | Batu, 2026-10-01 | requirement |
+| BP-02 | `main` of `devos` is the only source of truth; a conversation or a branch is not memory. | plan D7; PC-03 | design choice |
+| BP-03 | A session whose first message is `/goal <condition>` runs under that goal, even when another session created it. | T-A1a, T-A1c (observed) | observed |
+| BP-04 | Sessions created by the builder with `create_session` carry no account connectors. | T-A1c: the session's own report listed only the GitHub server and the session tools | observed (self-report) |
+| BP-05 | Routine sessions created through the session tool carry no connectors and no tools at all, have no repository, and **run on a smaller default model** (Sonnet), not the configured one. | T-A1b (observed) | observed |
+| BP-06 | Permission rules and hooks in `.claude/settings.json` are enforced by the harness. | T-H1, T-H2 (observed) | observed |
+| BP-07 | Separate sessions give thinking independence, not authority independence (same model family, same account). | plan K-7 | design limit |
+| BP-08 | The weekly usage limit is shared with Batu. Its status is readable from any session record; the fraction used is not. | observed | observed |
+| BP-09 | Batu receives GitHub notifications on his phone from issues where the machine account mentions or assigns him. | plan 5.5 and 6.9; EV-C00-002 item 14 | documented; tested by T-D1 |
 
 ---
 
-## 2. The run: the unit of continuous work (A)
+## 2. Continuity: runs, lease, dispatcher (A)
 
-**Problem.** The builder stopped after each step and waited; continuing depended on Batu typing (failures 1 and 5).
+**Problem.** Work stopped until Batu typed (failures 1 and 5).
 
-**Mechanism.**
+### 2.1 Runs
 
-1. Work happens in **runs**. A run is a builder session whose first message is `/goal <run condition>` (Appendix R1 gives the template). The run works through the work list (Section 4) until one of the stop conditions holds:
-   - **S1: stage done.** Every acceptance condition of the stage is shown with evidence, the closure review has been requested, and everything is merged.
-   - **S2: blocked on Batu.** Every item the run can still do is done, and the rest needs Batu. His items are batched into one request (Section 6).
-   - **S3: blocker.** A blocker the builder cannot pass, or the loop limit (Section 4.4) is reached.
-   - **S4: hand-over.** The context is more than 60% used, or the work list says a fresh context is better for the next item. The run then starts its successor (item 2).
-   - **S5: usage hold.** Under the usage policy (Section 8) the remaining items must wait for the reset.
-2. **Starting the next run.** The builder starts its own successor; Batu types nothing.
-   - Immediately: `create_session` on `devos` `main` with the run template (observed: T-A1a).
-   - Later, for example after a usage reset: a one-shot `send_later` wake-up or a one-shot trigger. Both are observed to exist; one-shot runs are reported not to count toward the 15 daily routine runs.
-3. **Safety net (watchdog).** One recurring routine, created through the session tool so that it carries no connectors (observed: T-A1b), runs once a day at 03:30 Turkey time. It checks four things: a run is supposed to be active, no session holding the run lock is alive, nothing is waiting for Batu, and the usage status allows work. If all four hold, it starts a run. Otherwise it only updates the status page. Cost: 1 of 15 daily routine runs.
-4. **Run lock.** `plan/ledger.md` "Current state" holds the active run's session ID. A new run starts only if that session is not running, which is checked with `get_session`. This prevents two builders from writing at once (single-writer rule).
+- Work happens in **runs**. A run is a builder session created with `create_session` on `devos` `main`, with the configured model passed explicitly (`claude-opus-5-5`; BP-05), and a first message `/goal <run template>` (Appendix R1).
+- A run takes work items from the work list (§4) in priority order. It ends at the first of these stop conditions:
+  - **S1, stage done:** all items are done, the closure review has passed, and everything is merged.
+  - **S2, Batu:** the only remaining items need Batu, and his batch has been sent (§6).
+  - **S3, blocker:** a blocker the builder cannot pass, including a loop limit or no progress (§4.4).
+  - **S4, hand-over:** the context is over 50% used, or a natural boundary where a fresh context is better.
+  - **S5, usage hold:** the usage policy (§8) requires waiting.
+- **Successor.** At S4, and at S1 when the next stage can start, the run's last act after merging is to create its successor run. At S5 it schedules a one-shot wake-up instead (§2.3). Batu types nothing.
 
-**Assumptions.** Self-started goals work (BP-03, observed); tool-created triggers carry no connectors (observed in configuration; T-A1b result in Section 13); one-shot runs do not count toward the routine limit (documented, unverified).
+### 2.2 Lease
 
-**Cost.** Each run re-reads the start set (Section 3.1), about 30–60k tokens. A daily watchdog session costs a little usage even when it finds nothing to do.
+- The state file `plan/ledger.md` has a **Run lock** row: the holder's session ID, plus an expiry of the last checkpoint plus 3 hours, renewed at every checkpoint merge.
+- A booting session treats the lease as live if it has not expired **and** `get_session` shows the holder working. Otherwise it may take over.
+- Two sessions taking over at once collide on the lease row when they merge. Git serialises the merges, so the loser exits.
 
-**Failure modes.** A run dies without starting its successor: the watchdog resumes within a day. The `/goal` evaluator judges "met" wrongly: the stop report (Section 3.4) and the closure review catch it, because a met goal is never acceptance. Two runs alive at once: the run lock and the single-writer rule; on conflict, the later run stops.
+### 2.3 Dispatcher and heartbeat
 
-**Rejected alternatives.**
+- **Why a dispatcher:** routine sessions have no tools, no repository and a smaller model (BP-05), so a routine cannot do builder work or even start a run.
+- **Dispatcher session:** a small, long-lived session created by the builder, with `devos` checked out and the configured model. Its only job is the **dispatch check**:
+  - read `main`;
+  - if the lease is stale, work is pending, nothing is waiting for Batu, and usage allows, start a run;
+  - otherwise update the heartbeat line in `DURUM.md`.
+- **Heartbeat:** a recurring routine bound to the dispatcher session (`persistent_session_id`), every 6 hours. It is created through the tool, so it carries no connectors.
+- **Usage-limit waits:** one-shot wake-ups (`send_later`) into the dispatcher at the reset time plus 15 minutes.
 
-- *One long session that Batu keeps open.* It depends on Batu and on compaction.
-- *Claude Code Projects.* Its availability on Batu's account is unknown, it gives no authority separation (plan 5.2), and the run chain already covers coordination. It will be reconsidered after C01 row 14.
-- *Batu typing `/goal` at each stage* (the original PC-01). Replaced, because self-start is observed to work.
+**Assumptions.**
+- A recurring routine that fires into an existing session delivers a message there. This is documented; whether it counts toward the 15 daily runs is unknown, which is a C01 row 5 item. At most 4 runs per day are used.
+- The dispatcher's context grows slowly. It is replaced by a fresh dispatcher when its context exceeds 30%.
+
+**Cost.** About 4 short dispatcher turns per day; run boot reads of about 30–60k tokens.
+
+**How it fails, and what catches it:**
+
+| Failure | What catches it |
+|---|---|
+| A run dies without a successor | The next heartbeat, within 6 hours |
+| The dispatcher dies | Runs recreate it when missing (boot step 7). `DURUM.md` shows the last heartbeat time, so Batu sees silence without asking. |
+| The heartbeat routine is disabled | Same visibility; the next run recreates it |
+
+**Rejected:**
+- *Claude Code Projects:* availability unknown, no authority separation, not needed. Reconsider at C01 row 14.
+- *Batu typing `/goal`:* replaced, since self-start is observed.
+- *A heartbeat every 2 hours:* 12 routine runs a day would crowd out the routine budget DevOS needs from C06 and spend shared usage; 6 hours is enough for a resume latency that Batu does not watch.
+- *Pure routine-started runs:* wrong model and no tools (BP-05).
 
 ---
 
 ## 3. Memory and a single source of truth (B)
 
-### 3.1 Start procedure (every run, in this order)
+### 3.1 Boot (every session, in this order)
+
+`CLAUDE.md` at the repository root points every session to this list, so even a session started with only "continue" boots correctly.
 
 1. `plan/Builder_Operating_Model.md` §3 (this procedure) and Appendix R1.
-2. `plan/ledger.md`: current state, run lock, work list, open items, pending Batu items. This is the **state file**: short and always current.
-3. The last log entries of the current stage (`plan/ledger/<stage>-log.md`), back to the previous run's hand-over entry.
-4. `DURUM.md`. It must agree with the state file; if not, the state file wins and the disagreement is a finding.
-5. Batu's answers: the decision issues on GitHub (Section 6) and any chat message in this run.
-6. The plan sections named by the next work item, read in full (D8; a summary does not replace the mandatory reading).
+2. `plan/ledger.md`, the **state file**: current state, run lock, work list, open items, decisions index.
+3. The lease: continue, take over, or exit (§2.2).
+4. The latest stage digest (`plan/ledger/<stage>-digest.md`, written at closure), then the log entries of the current stage since the last hand-over entry (`plan/ledger/<stage>-log.md`).
+5. `DURUM.md`, which must agree with the state file. On disagreement the state file wins, and the mismatch is recorded as a finding.
+6. Batu's answers: comments by Batu's GitHub account (`batuhanozgun`) on the "Batu'dan beklenenler" issue. Comments from any other account are ignored and noted (§6).
+7. If the dispatcher or the heartbeat is missing, recreate it (§2.3).
+8. The plan sections the next work item names, read in full (D8).
 
-**Problem it solves:** a new session must continue correctly from `main` alone (Batu's test 3a).
+The session states what it found (one paragraph in its log entry) before it acts.
 
-### 3.2 Closing the gap between `main` and the working branch
+### 3.2 `main` and the working branch
 
-- Each run works on its own branch from `main`.
-- **Checkpoint:** after every finished work item, and before every stop, the run commits, opens a pull request and merges it into `main` (PC-02, PC-03). A run never stops with unmerged work.
-- The branch is deleted once its last merge is done, except a session's harness-designated branch, which is reset to `main` and deleted when that session ends.
+- **Record PRs** (state file, log, evidence, `DURUM.md`) are merged at once.
+- **Change PRs** (anything a work item produces) are merged when the item's acceptance condition is shown with evidence. If the change is high-impact, a review PASS is also required (§5).
+- **Checkpoint:** after each finished item, and before any stop, everything is merged. Nothing stays unmerged across a stop (PC-03).
+- **Boot check:** list unmerged `claude/` branches of `devos`. Merge each one, or record it as abandoned with a reason.
 
-**Assumption:** the builder can merge its own pull requests (observed: devos#1–#3). G-015 records that this means no GitHub-level review is enforced.
+### 3.3 Files and keeping the ledger from sprawling
 
-### 3.3 Keeping the ledger from sprawling
-
-| File | Content | Rule |
+| File | Role | Rule |
 |---|---|---|
-| `plan/ledger.md` | State file: current state, run lock, work list of the current stage, open items, pending Batu items, index of decisions and plan changes | Kept short. Closed items move to the log. |
-| `plan/ledger/<stage>-log.md` | Append-only log entries (L-nnn) of that stage | Never rewritten; corrections are new entries |
-| `evidence/<stage>/` | Evidence records (EV-…) | One file per claim |
-| `DURUM.md` | Turkish status page for Batu (Section 7) | Rewritten at every checkpoint |
+| `plan/ledger.md` | State file | Short, and rewritten to stay current. Closed items move to the log. |
+| `plan/ledger/<stage>-log.md` | Log entries `L-nnn` | Append-only. A single writer at a time is guaranteed by the lease. |
+| `plan/ledger/<stage>-digest.md` | Stage digest: decisions, plan changes, open risks | Written at stage closure; boot reads digests instead of old logs |
+| `evidence/<stage>/` | Evidence records `EV-…` | One file per claim |
+| `DURUM.md` | Turkish status page for Batu (§7) | Rewritten at every checkpoint |
+| `CLAUDE.md` | Boot pointer for every session | Short; replaced by the common rules of plan Appendix D at C05 |
 
-### 3.4 Context compaction, and the `/goal` evaluator seeing only the conversation
+**Rejected:** one file per log entry, as the counter-design proposed. The lease already removes concurrent writers, and one file per stage is easier for a reader to follow. Reconsider if conflicts appear.
 
-- **Write before proceeding.** No decision, result or finding exists until it is written to the state file, a log entry or an evidence record and merged. A run never relies on conversation memory older than its last checkpoint.
-- **Hand-over at 60% context (S4),** before compaction is likely.
-- **Stop report.** At every stop the run prints a fixed block into the conversation, so the evaluator judges from evidence rather than from claims: the stop condition (S1–S5); the work items closed in this run, with evidence IDs; the output of `git fetch && git status && git log origin/main -1`; and a check that the branch has no commits ahead of `main`.
-- **A met goal is not acceptance.** Stage acceptance needs the independent closure review (Section 5).
+### 3.4 Compaction, and the `/goal` evaluator seeing only the conversation
+
+- **Write-ahead:** before a long step, its intent and its acceptance check are committed. After a compaction, the session re-runs boot steps 2–5 instead of trusting its summary.
+- **Hand-over at 50% context** (S4) keeps compaction rare.
+- **Stop report:** the run pastes the unedited output of `tools/builder_check.sh`, which checks a clean tree, no unmerged commits, the required files on `main`, `DURUM.md` being current and the run lock row. It adds the stop condition and the evidence IDs. The run template (R1) says the goal is met only when that output ends in `BUILDER_CHECK PASS` and a stop condition is named. So the evaluator judges machine output, not a claim.
+- **A met goal ends a session; it never marks anything done.** "Done" is set only in the state file, with evidence (§4.3).
 
 ---
 
 ## 4. Work tracking (C)
 
-1. **Work list.** When a stage starts, the builder converts its "Yapılacaklar" and acceptance conditions into a work list in the state file: `W-<stage>-nn`, item, acceptance condition, dependencies, status (todo / doing / done / blocked-Batu / blocked), evidence. Acceptance conditions are written and merged **before** work on the item starts (plan 8.6, Section 9).
-2. **Priority.** First, items that resolve the largest uncertainty with the highest cost of being wrong (plan Section 9 ordering principle). Second, items that create Batu actions, so his list is ready early and goes out as one batch. Third, heavy items, which are scheduled under the usage policy.
-3. **Done.** An item is done when its acceptance condition is shown with an evidence record and merged. A stage is done when every item is done and the independent closure review has passed.
-4. **Loop limits.** Each item has an effort budget, as a rough number of runs or hours stated at start. The run stops (S3) if two consecutive checkpoints show no progress on the same item, or the budget is exceeded without a documented reason.
+1. **Work list.** At stage start, the first work item splits the stage's tasks and acceptance conditions into items `W-<stage>-nn`. Each item has: acceptance condition, dependencies, impact class (normal or high), Batu needs, status, evidence. The list is merged **before** any change work on its items: git order proves the conditions came first.
+2. **Priority.** First, plan dependency order. Then, items that produce Batu needs, so his batch goes out early. Then, items that retire the riskiest assumption (probes before builds). Then, heavy items, scheduled under the usage policy.
+3. **Done.** An item is done when its acceptance condition is shown with an evidence record, review PASS is in hand if high-impact, and it is merged. A stage is done when every item is done and the closure review has passed. Changing an acceptance condition after work started is a high-impact change and needs a review PASS.
+4. **Loop limits.** Each item states an effort budget in runs. Two consecutive checkpoints with no progress on the same item, or an exceeded budget without a recorded reason, stops the run with S3.
+5. **Process overhead check.** At stage closure the closure review reports the share of runs and items that were process (records, reviews, heartbeats) rather than stage work. Above about a quarter, it is flagged as a finding. This guards against process becoming its own goal (plan K-10).
 
 ---
 
 ## 5. Independence and quality (E)
 
-| What | Who reviews | When | How the result reaches the builder |
-|---|---|---|---|
-| High-impact changes: rules, roles, schema, security settings, `.claude/settings.json`, plan changes that alter a guarantee | A separate **review session** that sees only the change, the criteria and the sources, not the builder's reasoning | Before merge | It commits a review file to its own branch `claude/review-<topic>`; the builder fetches that branch. Batu carries nothing. |
-| Stage closure | A **closure review session** that did not do the stage's work | At S1 | Same route; the stage is closed only on a pass |
-| C00 specials: translation fidelity, plan review, counter-design | Separate sessions with restricted inputs (sparse checkout, a brief) | As the stage requires | Same route |
-| Non-binding checks during work | Fresh-context subagents | Any time | In-session; labelled "thinking independence, same session" |
+| What | Reviewer | When |
+|---|---|---|
+| High-impact change: rules, roles, schema, security settings, `.claude/**`, `CLAUDE.md`, this document, the review prompt, acceptance-condition changes | Review session | Before merge |
+| Stage closure | Closure-review session that did no work in the stage; it also asks whether the stage achieves its purpose in the plan, not just its item list | At S1 |
+| C00 specials: translation fidelity, plan review, DevOS counter-design | Separate sessions with restricted input | Per stage |
+| Non-binding checks during work | Fresh-context subagents (label: thinking independence, same session) | Any time |
 
-- Review sessions are started by the builder (`create_session`) and inherit the repository's deny rules. Their input restriction is a sparse checkout plus an instruction; that restriction is at instruction level, and it is recorded as such.
-- Independence level is recorded in every evidence record. Until the audit environment exists (C02–C03), technical approval comes from review sessions: same model family, thinking independence only (BP-06). From C03 on, the audit environment's verdict replaces them for binding approvals.
-- Every review finding gets a written disposition (accepted, accepted in part, rejected, each with a reason).
+- **How a review starts.** The builder calls `create_session` with the fixed prompt in `plan/builder/REVIEW_PROMPT.md`, filled with the review ID, the target (PR or files), the criteria and an output path. The template is high-impact, so softening it needs a review.
+- **How the result arrives.** The reviewer commits `evidence/<stage>/reviews/<ID>.md` to its own branch `claude/review-<ID>`, with verdict PASS, FAIL or PASS-WITH-CONDITIONS and reasons. It cannot see the builder's conversation. The builder fetches the branch (in the same run, or a later run at boot), merges the verdict file in a record PR, and writes a disposition for every finding. Batu carries nothing.
+- **Disagreement.** The builder may answer in a file; a second, fresh reviewer decides. Only a disagreement about purpose or scope goes to Batu.
+- **Recorded independence:** same model family, separate session, restricted input. This is thinking independence (BP-07). From C03, the audit environment's verdicts replace review sessions for binding approvals.
 
 ---
 
 ## 6. Decision routing (D)
 
-| Decision type | Who decides | Example |
+| Class | Who decides | Examples |
 |---|---|---|
-| Technical design, tools, sequencing, technical plan changes | Builder, with written reasons | This document; the migration path (G-004) |
-| Technical approval of high-impact changes; stage closure | Independent review session; from C03 the audit environment | `.claude/settings.json` changes |
-| Purpose, scope, cost or paid features, choices affecting Batu's accounts or other work (including usage pacing that affects his own use), acceptance of results (for example C07 value, C12 handover) | **Batu** | D-001 |
+| Technical, normal | Builder, with a log entry | file layout, item split, scripts, ordering |
+| Technical, high-impact | Builder proposes; **independent review approves** (PC-05) | `.claude/**`, schema migrations, roles, this document |
+| Batu's | **Batu** | purpose, scope, money or paid features, his accounts and his other work (including how much shared usage the builder may spend), acceptance of results (for example C07 value, C12 handover) |
 
-**Format and channel for Batu:**
+**Test for "is it Batu's?":** would a perfect engineer still need Batu's preference to answer it? If not, it is not his.
 
-- Every Batu decision follows Appendix E §3: question, why it is his, options with purpose, benefit and cost, recommendation, what he needs to know, and what happens if he does not answer.
-- It is opened as a **GitHub issue assigned to Batu** by the machine account (plan 6.9; notifications reach his phone), with the Turkish text in the issue and the English record in the ledger.
-- Batu answers in the issue; the next run reads the answer and checks that the author is Batu's account. An answer given in a builder chat is also accepted and recorded.
-- **Batching:** everything Batu must do, decisions and account actions, is collected into one issue per batch with numbered steps. A run never waits on a single Batu item while other work is possible.
+**Channel.**
+- **One** GitHub issue, "Batu'dan beklenenler", opened by the machine account and assigned to Batu.
+- Each batch is a comment that mentions him. It contains numbered decisions in Appendix E §3 format (Turkish) and numbered account actions, given step by step.
+- He answers in the issue. Only comments by `batuhanozgun` count (the repository is public). Answers go into the log verbatim, with the English interpretation.
+- An answer given in a builder chat is also accepted and recorded.
 
-**Plan change numbering (J):** K-numbers are Batu's formal decisions (K1–K9, B1–B3) only. The builder's plan changes are **PC-nn**. Inside a plan change, the parts that are Batu's own decisions are marked "[Batu, date]", with his Turkish words in the log. Renumbering: K10 → PC-01, K11 → PC-02 (including its correction), the continuity rule → PC-03, this operating model → PC-04, and the approval clause (Batu's expectation 2) → PC-05.
+**Batching.** Batu's needs collect in the state file. They are sent when one becomes blocking, or once per stage, whichever comes first. A run never waits on one Batu item while other work is possible.
+
+**Silence.** Plan Appendix E §8 applies: one reminder through the second channel after 24 hours (4 hours if work is blocked). Silence is never approval. A stated default applies only if it is reversible and free.
+
+**Numbering (J).**
+- `K`/`B` numbers are Batu's formal decisions only (K1–K9, B1–B3). New Batu decisions are recorded as `D-nnn` decision records, owner Batu.
+- The builder's plan changes are `PC-nn`, with Batu's own parts marked "[Batu, date]".
+- Renumbering: K10 becomes PC-01, K11 becomes PC-02 (with its correction), the continuity rule becomes PC-03, this model PC-04, and the approval clause PC-05.
 
 ---
 
-## 7. Status page (Batu's expectation 5)
+## 7. Status page (expectation 5)
 
-`DURUM.md` at the repository root, in Turkish, at most about 25 lines, rewritten at every checkpoint. It contains:
-
-- current stage and run, and when it was last updated;
-- what was done last (three items at most, plain words);
+`DURUM.md`, Turkish, at most about 20 lines, rewritten at every checkpoint. It shows:
+- the stage and the active run;
+- the time of its last update and of the last heartbeat;
+- what was done last (up to three items);
 - what comes next;
-- **what is expected from Batu**: "nothing", or a link to the open issue;
-- usage status (normal / warning / hold until …);
-- known risks Batu should know about (two at most).
+- **what is expected from Batu**: "nothing", or a link to the issue;
+- usage status;
+- up to two risks.
 
-The start procedure checks it against the state file (Section 3.1). A stale page is a finding.
+Boot step 5 checks it, and `builder_check.sh` checks that it is not older than the ledger.
 
 ---
 
 ## 8. Usage and capacity (G)
 
-- **Reading.** Before every run, and before every heavy item, the builder reads `rate_limit_info` from its own session record.
-- **Policy:**
-  - `allowed`: proceed.
-  - `allowed_warning`: light items only, unless Batu has decided otherwise for that week (D-001 standing rule).
-  - `rejected`, or a session failing on the limit: stop with S5 and schedule a one-shot wake-up at the reset time plus 15 minutes.
-- **Timing.** Heavy items (translation, review sessions, large reads) run in Turkey night hours (00:00–07:00) where possible, to reduce contention with Batu's daytime use, including the 5-hour limit.
-- **Record.** Each run's hand-over entry logs the usage status and the session's reported cost figure (a relative measure only).
-- **Informing Batu.** `DURUM.md` always shows the status. Batu gets a decision only when a choice affects his own use: the first warning of a week, or a hold longer than two days.
-
-**Assumption:** the session record's status reflects the shared account limit (observed in several sessions: same `resetsAt`). The fraction used cannot be seen.
+- **Read** `rate_limit_info` at boot and before each heavy item, and record it in the state file.
+- **Standing policy.** This is Batu's decision D-002; the default below applies until he answers.
+  - `allowed`: proceed; review sessions may run in parallel (at most 2).
+  - `allowed_warning`: one session at a time, light items only, and heavy items wait for the reset.
+  - `rejected`, or a session failing on the limit: S5, and a wake-up at the reset time plus 15 minutes.
+  - Heavy work is preferably started between 23:00 and 08:00 Turkey time.
+- **Informing Batu.** `DURUM.md` always shows the status. Batu gets a decision only if a choice would affect his own use beyond D-002.
+- **Record.** Each run's hand-over entry logs the usage status and the session's reported cost figure, as a relative measure only.
 
 ---
 
 ## 9. Security (H)
 
-1. **Connector barrier, enforced by the harness.** `.claude/settings.json` denies every account connector except the GitHub tools, the session tools and the read-only Supabase connector: mail, calendar, drive, docs, Gamma, Figma, Wispr Flow, RankedIn, Granola and Context7.
-   - **Observed:** writing the rules removed those tools from the running session immediately ("Denied by a permission rule").
-   - Every session started on `devos` loads the same file.
-2. **Routines** are created only through the session tool; the observed configuration stores no connectors.
-3. **Supabase:** the builder's connection is read-only at database level (observed, EV-C00-002 item 7).
-4. **Residual risks:**
-   - A session can edit `.claude/settings.json` itself, because the rule file lives in the repository. Changes to it are high-impact: they go through a pull request with a review session, and any change is visible in git history.
-   - GitHub write access to the library repository remains a rule (L-003).
-   - Sessions Batu opens himself outside `devos` are outside this barrier.
+Three layers, each enforced outside the model:
+
+1. **Structural.** Runs, reviewers and the dispatcher are created through the session tool, so they carry no account connectors (BP-04). Routines carry none either (BP-05).
+2. **Harness.** `.claude/settings.json`:
+   - (a) deny rules for every known account connector (observed effective, T-H1);
+   - (b) a `PreToolUse` hook, `.claude/hooks/tool_allowlist.py`, that allows only the GitHub tools, the session tools and the read-only Supabase tools, and blocks every other `mcp__*` tool, including connectors added later. It is observed effective (T-H2), and a broken hook fails closed.
+3. **Database.** The builder's Supabase role is read-only (observed).
+
+**Residual risks:**
+- A session can edit its own `.claude/**`. Such changes are high-impact: review before merge, and visible in git.
+- Write access to the library repository is still protected by a rule only (L-003).
+- Sessions Batu opens himself outside `devos` are outside this barrier.
 
 ---
 
 ## 10. Thinking discipline (F)
 
-- At the start of each work item the builder runs the nine trigger questions (Appendix D) and records the result as one line in the work-list row, for example `D: 1,3,4,5,7,8 loaded; 2,6,9 not triggered`.
-- **D8** is the start procedure; **D7** is the checkpoint rule; **D4** governs the review table; **D2** applies especially to Batu's own suggestions, which are weighed and not adopted because he said so.
-- **D9:** design items consult the library: search the catalogue first, read selectively.
-- **Frame check on this model.** This model's premises are listed in Section 1. If a second mechanism is ever proposed for a problem one mechanism already addresses, that is a squeeze signal: the builder writes a frame review before adding it (plan 6.12). The counter-design (Section 14) is this model's first frame test.
+| Discipline | How it applies to the builder |
+|---|---|
+| D1 Decision-critical assumptions | Each work item lists the assumptions it depends on; probes come first (§4.2) |
+| D2 Free of non-evidential pressure | Batu's approval, urgency and the `/goal` verdict are never evidence. Batu's suggestions are weighed, not obeyed as facts. |
+| D3 Goal alignment | The closure review asks the purpose question; `DURUM.md` states the stage purpose |
+| D4 Verification validity | Conditions come before results; reviewers re-run checks; the closure reviewer did not do the work |
+| D5 Source vs. view | Every statement is labelled observed, documented or assumed (ledger rule 4) |
+| D6 Causal depth | Every failure gets a cause analysis; a repeated cause becomes a plan change |
+| D7 Continuity | §2–§3 |
+| D8 Pre-work state | Boot (§3.1); the session states what it found before acting |
+| D9 Library use | Design items name the library notes they consulted, or say "none relevant" |
+
+The trigger check of the nine questions is recorded as one line per work item when the item starts.
+
+**Frame review of this model.** The premises are in §1. The counter-design is the first frame test (§14). A second mechanism proposed for a problem one mechanism already covers is a squeeze signal and needs a frame review first.
 
 ---
 
@@ -194,46 +258,87 @@ The start procedure checks it against the state file (Section 3.1). A stale page
 
 | Failure | Detection | Response |
 |---|---|---|
-| A session dies mid-run | The watchdog finds the run lock held by a dead session | A new run starts from `main`. Unmerged work is lost only back to the last checkpoint. |
-| Branches diverge | `git status` in the stop report; a merge conflict | Merge `main` into the branch and resolve. The state file is resolved by re-deriving it from the log, which is append-only. |
-| Conflict in the ledger | The start procedure's consistency check | The state file is rebuilt from log entries and evidence; the conflict is logged as a finding |
-| Wrong "goal met" | The stop report shows open items, or the closure review fails | The next run reopens the items; the event is logged as a finding (FND) |
-| Batu silent for a long time | A pending issue is older than 24 hours (4 hours if work is blocked) | Repeat once through the second channel (plan Appendix E §8); work that does not depend on him continues; silence is never approval |
-| Usage limit reached | Session failure or status `rejected` | S5, a wake-up at reset + 15 minutes, `DURUM.md` shows the hold |
-| A review session fails or is never delivered | No commit on its review branch within the expected time | Restart once; on a second failure, log a blocker (S3) |
+| Session dies | Lease expiry plus `get_session` | Dispatcher or the next run takes over; work since the last checkpoint is redone |
+| Branches diverge | Boot branch listing; merge conflict | Merge `main` into the branch (no rebase on shared branches); otherwise record the branch as abandoned |
+| Ledger conflict | Merge conflict on the state file | Regenerate the state file from `main`'s log and evidence; log a finding |
+| Wrong "goal met" | The check output is missing or FAIL at the next boot; the closure review | Reopen the item; log a finding; tighten R1 |
+| Batu silent | Issue older than 24 hours (4 if blocking) | One reminder; continue unblocked work; `DURUM.md` puts it in its first line |
+| Usage limit | Status at boot; failed session | S5, a wake-up at the reset time; `DURUM.md` shows the hold |
+| Reviewer never delivers | No commit on its branch after 2 hours | One replacement reviewer; a second failure is S3 |
+| Classifier denial | Tool error | Record it; try a compliant route; otherwise mark the item blocked with the exact denial |
+| Dispatcher or heartbeat lost | Boot step 7; `DURUM.md` heartbeat age | Recreate it |
 
 ---
 
 ## 12. What changes for Batu
 
-- He no longer types `/goal`.
-- He reads `DURUM.md` (or the GitHub app) to see status.
-- He answers decisions in GitHub issues assigned to him; one batched request carries everything he must do.
+- He types no commands.
+- He reads `DURUM.md` for status.
+- He answers only in the "Batu'dan beklenenler" issue, which arrives as one batch, step by step.
 - He gives no technical approvals.
+- He decides only his own matters; the first is D-002, the standing usage policy.
 
 ---
 
 ## 13. Tests (acceptance written before results)
 
-| ID | Claim | Acceptance condition |
-|---|---|---|
-| T-A1a | A builder-started session can run under `/goal` | The session's record shows the goal set and evaluated. **Done:** met (session `session_018kpRnAaG9R3vaRTg5wMyye`). |
-| T-A1b | A tool-created one-shot routine starts a session that sets `/goal` and has no connectors | The record shows the goal set, and the session's own answer lists no account connector server |
-| T-H1 | Repository deny rules block connectors | In a running session the denied tools become unavailable. **Done:** observed in the builder session. |
-| T-B1 | A new session can continue from `main` alone | A fresh run started by the builder with the R1 template, on `main` only, writes a resume report naming the correct next work item, which the builder pre-registers in the state file before the test. It does no other work. |
-| T-E1 | A review session's result reaches the builder through the repository | The counter-design session's file is fetched from its branch with no involvement from Batu. |
-| T-E2 | An independent review of this model returns through the repository | Same route, with findings and dispositions recorded |
+| ID | Claim | Acceptance | Result |
+|---|---|---|---|
+| T-A1a | A builder-created session can run under `/goal` | Goal set and evaluated in the session record | **PASS** (`session_018kpRnAaG9R3vaRTg5wMyye`) |
+| T-A1b | A tool-created one-shot routine starts a goal session with no connectors | Goal set; the session reports no connector servers | **PASS**, with a finding: the routine session ran on a smaller model and had no tools or repository (BP-05) |
+| T-A1c | A builder-created session has no account connectors | The session's own list shows no mail, calendar or file servers | **PASS** (self-report: the GitHub server and the session tools only) |
+| T-H1 | Repository deny rules remove connector tools | The tools become unavailable in the running session | **PASS** |
+| T-H2 | The allowlist hook blocks non-listed MCP tools before execution and allows listed ones | A temporary hook blocked `mcp__github__get_me`; with only the allowlist hook installed, the same call succeeded. Unit inputs: three blocked, five allowed, unreadable input blocked. | **PASS** |
+| T-E1 | A review session's result reaches the builder through the repository | The counter-design file was fetched from `claude/counter-design-builder-model` with no involvement from Batu | **PASS** |
+| T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | pending |
+| T-B1 | A new session continues correctly from `main` alone | A fresh session started with only "continue" boots via `CLAUDE.md`, and names the next action pre-registered in `evidence/C00/EV-C00-005` before the test, without doing other work | pending |
+| T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | pending |
+| T-D1 | Batu's channel works | The issue exists and is assigned to Batu; the machine account's mention produces a notification. Only Batu can confirm receipt, so this is checked with his first answer. | pending |
 
 ---
 
 ## 14. Counter-design comparison
 
-Filled in after the independent counter-design (`briefs/builder-operating-model/COUNTER_DESIGN.md` on branch `claude/counter-design-builder-model`) is in. This draft was fixed before that file was read; its hash is recorded in the log.
+The counter-design (`briefs/builder-operating-model/COUNTER_DESIGN.md`, commit `73baa5a`, written by a session that saw only the brief) converged with v1.0 on the core:
+- self-started goal sessions;
+- a liveness lock;
+- `main` as the only memory, with merges at every checkpoint;
+- a Turkish status page;
+- one GitHub channel for Batu;
+- review results through branches;
+- a separate prefix for plan changes;
+- a harness-level connector barrier.
+
+| Difference | Counter-design | v1.0 | Disposition in v1.1 |
+|---|---|---|---|
+| What fixes the failures | Permission to proceed (decision routing) more than automation | Continuity first | **Adopted** as the main insight and the "perfect engineer" test |
+| `/goal` evidence | The goal is met only with a pasted check-script output | A stop report with git output | **Adopted:** `tools/builder_check.sh` and R1 |
+| Boot entry | `CLAUDE.md` points to boot, so a session started with "continue" works | Boot listed only in this document | **Adopted** |
+| Lease | Expiry plus liveness; git as the lock | Run lock without expiry | **Adopted** |
+| Heartbeat | Recurring routine every 2 hours doing the work | Daily routine doing the work | **Changed after probes:** routine sessions cannot work (BP-05), so a dispatcher session receives the heartbeat every 6 hours |
+| Connector barrier | Allowlist hook (connector names are opaque) | Deny list | **Adopted both:** deny list plus allowlist hook (T-H1, T-H2) |
+| Ledger | One file per entry plus digests | One log per stage | **Digest adopted**; one file per entry rejected (the lease removes concurrent writers; readability) |
+| Batu channel | One pinned issue with batch comments | One issue per batch | **Adopted** (simpler for Batu) |
+| Review prompt | Fixed template file, high-impact | Ad hoc prompts | **Adopted:** `plan/builder/REVIEW_PROMPT.md` |
+| Disagreement | Second fresh reviewer | Not covered | **Adopted** |
+| Record vs. change PRs | Distinguished | Not distinguished | **Adopted** |
+| Process overhead | Flag it if over about a quarter of the work | Not covered | **Adopted** (§4.5) |
+| Usage | A standing usage policy decided once by Batu | Inform at the first warning | **Adopted** as D-002 |
+| Item granularity | One leg per item | A run per several items, hand-over at 60% | Middle ground: hand-over at 50% or at natural boundaries |
+| Model of runs | Not covered | Not covered | **New from the probes:** always pass the configured model explicitly |
+
+Reading v1.0 against the counter-design shows v1.0's main blind spot: it treated Batu's failures as a continuity problem. The counter-design framed them as a problem of permission to act. Both are needed; v1.1 states the second first.
 
 ---
 
 ## Appendix R1 · Run template
 
 ```text
-/goal You are a DevOS builder run. First follow the start procedure in plan/Builder_Operating_Model.md section 3.1 on the devos repository main branch, and register this session as the active run in plan/ledger.md. Then work through the current stage's work list by priority, merging into main at every checkpoint. Stop only when one stop condition S1-S5 of section 2 holds. At the stop, print the stop report of section 3.4, update DURUM.md, merge everything into main, and start the successor run or schedule the wake-up if section 2 requires it. Never use account connectors. Batu's silence is never approval.
+/goal You are a DevOS builder run on the devos repository. Follow the boot in plan/Builder_Operating_Model.md section 3.1, take or confirm the lease in plan/ledger.md, then work through the work list by priority, merging into main at every checkpoint. Stop at the first stop condition S1-S5 of section 2.1. This goal is met only when your last message names the stop condition, lists the evidence IDs of items closed in this run, and contains the unedited output of tools/builder_check.sh ending in BUILDER_CHECK PASS. Before stopping, update DURUM.md and start the successor run or schedule the wake-up if section 2 requires it. Never use account connectors. Batu's silence is never approval.
+```
+
+## Appendix R2 · Dispatch check (dispatcher session, on each heartbeat)
+
+```text
+Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-for-Batu, usage) and DURUM.md. Check the lease holder with get_session. Start a run (create_session on devos main, model claude-opus-5-5, first message: Appendix R1) only if: the lease is stale, work is pending, nothing blocking waits for Batu, and the usage status allows it under section 8. Otherwise start nothing. In both cases update the heartbeat line in DURUM.md through a record PR, and log one line of your decision.
 ```

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# builder_check.sh: machine check printed in every stop report (Builder Operating Model, 3.4).
+# The /goal evaluator sees only the conversation; this output gives it evidence instead of claims.
+# Usage: tools/builder_check.sh   (run from the repository root)
+set -u
+fail=0
+ok()  { echo "PASS  $1"; }
+bad() { echo "FAIL  $1"; fail=1; }
+
+git fetch -q origin main 2>/dev/null || bad "cannot fetch origin/main"
+
+[ -z "$(git status --porcelain)" ] && ok "working tree clean" || bad "uncommitted changes present"
+
+ahead=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo "?")
+[ "$ahead" = "0" ] && ok "no commits ahead of origin/main" || bad "$ahead commit(s) not merged into main"
+
+for f in plan/ledger.md DURUM.md plan/Builder_Operating_Model.md CLAUDE.md; do
+  git cat-file -e "origin/main:$f" 2>/dev/null && ok "$f present on main" || bad "$f missing on main"
+done
+
+l=$(git log -1 --format=%ct origin/main -- plan/ledger.md 2>/dev/null || echo 0)
+d=$(git log -1 --format=%ct origin/main -- DURUM.md 2>/dev/null || echo 0)
+[ "${d:-0}" -ge "${l:-0}" ] && ok "DURUM.md updated with or after the latest ledger change" || bad "DURUM.md older than the ledger"
+
+git show origin/main:plan/ledger.md 2>/dev/null | grep -q '^| Run lock |' && ok "run lock row present" || bad "run lock row missing"
+
+echo "main=$(git rev-parse --short origin/main) head=$(git rev-parse --short HEAD) at $(date -u +%Y-%m-%dT%H:%MZ)"
+[ $fail -eq 0 ] && echo "BUILDER_CHECK PASS" || echo "BUILDER_CHECK FAIL"
+exit $fail
