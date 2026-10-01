@@ -186,7 +186,7 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 
 - *Scope:* the repositories where DevOS is the writer (`devos` now; `soul-system` and `devos-evals` through their own flows later). Library repositories (`agentic-os-search`, the legacy repositories) are never touched (plan 0.5).
 - *Route:* `main` is changed only through a pull request. Branch protection is never disabled or bypassed.
-- *Limit:* the decision covers the mechanics and timing of merges. It does not remove plan 6.7: high-impact changes (rules, role definitions, schema, security and publication settings, `.claude/settings.json`, the decision channel) still need Batu's acceptance from the point of view of purpose and risk. Batu gets a plain acceptance question before such a merge.
+- *Limit:* ~~high-impact changes still need Batu's acceptance before a merge~~. Replaced by L-013.
 - *Record:* every merge and branch deletion is logged here.
 
 **Plan change record (plan Section 14):**
@@ -196,6 +196,26 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | Old state | The plan defined merging for phase B (a publication job, required checks, audit verdicts; 6.8) but not for the installation period, when none of those exist yet. |
 | New state | Plan Section 9, introduction: the "Dal yönetimi" paragraph with the four limits above; the plan header and Section 11.1 list K11. |
 | Affected stages | C00 to C12, until the publication chain of C08 takes over. |
+
+### L-012 · 2026-10-01 · First merge into `main` under K11
+
+- PR [batuhanozgun/devos#1](https://github.com/batuhanozgun/devos/pull/1), head `8669e93`, merged as `9ae67ef` (merge commit) by the machine account. Contents: L-001 to L-011, EV-C00-001 to EV-C00-004, plan changes K10 and K11. Nothing high-impact under plan 6.7.
+- Branch `claude/epic-hamilton-9tisc4` was not deleted: it is this session's working branch. It was reset to the new `main`, so follow-up work starts from merged history.
+- **Observation, with enforcement layer (rule 5):** the machine account opened and merged its own pull request with no approval. The `main` ruleset requires a pull request but enforced no approval (observed: GitHub layer). So the plan 6.7 rule that high-impact changes need Batu's acceptance is, at present, **instruction only**: the builder's compliance. GitHub-native approvals (the reason for B3 = a) are not yet required anywhere. Recorded as gap G-015; a technical fix (for example, a required review from code owners for high-impact paths, plan 6.1 `CODEOWNERS`) belongs to C01 row 8 and C08. Any change to the repository settings is an account action for Batu and will be brought to him with its steps.
+
+### L-013 · 2026-10-01 · K11 corrected: no merge approvals from Batu
+
+**Batu's decision:**
+
+> Original (tr): "Benim neyi ne zaman birleştireceğin konusunda bir fikrim yok. niye öyle yazmış bilmiyorum plana. saçmalık. İstersen her bana getirdiğin onayda konuşuruz bu tarz onayları bana getirmene gerek var mı diye karar veririz."
+>
+> Interpretation (en): Batu has no view on what should be merged when, and rejects the plan's requirement for his acceptance before merges. If the builder brings him an approval, they decide on that occasion whether that kind of approval needs to come to him at all.
+
+**Change:** K11 limit 3 (L-011) is replaced. Batu is not asked to approve merges. If the builder brings him something because it genuinely needs his judgment of purpose or risk, they decide then whether that category of approval should keep coming to him, and the answer is logged. Plan Section 9 ("Dal yönetimi") and Section 11.1 are updated. This changes how the plan 6.7 "Batu's acceptance" requirement applies during installation. Once the audit environment exists (C02–C03), the technical review of high-impact changes takes place there.
+
+**Residual risk (stated, not hidden):** until the audit environment exists, nothing outside the builder's own judgment gates high-impact changes to `main` (G-015). Mitigation: before a high-impact merge, the builder gets a review from a fresh-context subagent (thinking independence only, plan K-7) and logs it. G-015 is updated accordingly.
+
+**Branches:** `claude/epic-hamilton-9tisc4` is not an old branch. It is this session's working branch, reset to `main` after the merge (L-012). It stays until this line of work ends and is then deleted. Merged branches that no longer have a purpose are deleted at merge.
 
 ---
 
