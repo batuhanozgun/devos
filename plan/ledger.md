@@ -17,11 +17,11 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T20:05Z |
-| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T23:05Z unless renewed. | 2026-10-01T20:05Z |
-| Next action | Finish W-C00-05 (PR #4 merged, L-026): retest T-B1r; open the "Batu'dan beklenenler" issue with the briefing and D-002, D-003 (T-D1); hand over to a run; T-A2. Heavy C00 items (W-C00-06 to 11) wait for the weekly usage reset at 2026-10-03T17:00Z (D-001); light work only until then. | 2026-10-01T20:05Z |
+| Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T20:01Z |
+| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T23:01Z unless renewed. | 2026-10-01T20:01Z |
+| Next action | Finish W-C00-05: T-A2 (dispatcher session, heartbeat routine, one-shot wake-up, dispatch check recorded). T-B1r passed and issue #6 is open (L-028). Heavy C00 items (W-C00-06 to 11) wait for the weekly usage reset at 2026-10-03T17:00Z (D-001); light work only until then. | 2026-10-01T20:01Z |
 | Usage | `seven_day` `allowed_warning`; resets 2026-10-03T17:00Z. Light work only, under D-001; a scheduled wake-up is set for 2026-10-03T17:15Z. | 2026-10-01T18:40Z |
-| Waiting for Batu | Nothing blocking. One decision will be raised with the operating-model briefing: D-002, a standing usage policy. | 2026-10-01T18:40Z |
+| Waiting for Batu | Nothing blocking. D-002 (usage policy) and D-003 (residual barrier risk) are in [issue #6](https://github.com/batuhanozgun/devos/issues/6), opened 2026-10-01T19:59Z; defaults apply until he answers. Reminder through the second channel after 24 hours (Appendix E §8). | 2026-10-01T20:01Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 
 ---
