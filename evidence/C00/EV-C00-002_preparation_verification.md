@@ -47,3 +47,15 @@ The session record reports the account's **seven-day** rate limit with status `a
 - That `devos-backup` exists, that extra usage is off, or that the GitHub access key was deleted.
 - That other library files are free of leftover "current" or "next" statements (C04 import will tag authority status).
 - How much of the weekly limit remains.
+
+## Batu's confirmations (2026-10-01)
+
+Status of these items changes from "not visible" to **confirmed by Batu** (Batu's statement; not observed by the builder).
+
+| # | Item | Batu's answer (tr) | Interpretation (en) |
+|---|---|---|---|
+| 4 | `devos-backup` exists | "Evet." | Yes |
+| 13 | Extra usage is off | "Evet" | Yes |
+| 14 | Phone apps installed, notifications on | "Evet" | Yes |
+| 16 | The GitHub access key was deleted | "Evet" | Yes. This does not explain the `GH_TOKEN` / `GITHUB_TOKEN` variables in the session; OI-003 stays open. |
+| G-010 | Does the preparation plan (H0–H10) contain items beyond Section 12? | "Ne planı? Ben bilmiyorum Claude Chat hazırladı o planları, ne lazımsa soralım, sana cevap ya da dosya versin." | Batu does not know the H0–H10 plan; it was prepared in the planning chat with Claude. He offers to ask that chat for whatever is needed, as an answer or a file. |
