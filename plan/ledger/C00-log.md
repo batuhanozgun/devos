@@ -339,7 +339,7 @@ A fresh-context subagent (read-only; it used only `list_events` and a local pars
 | Finding | Disposition |
 |---|---|
 | B1 a1–a3, b, c1, c2, d1, d2, e | **Accepted.** Session-tool allow list; revision check (main or this session's branch, carrying `.claude/settings.json`); `create_trigger`: owned persistent sessions only, builder environment, `connectors` absent or `[]`; event and trigger reads on owned IDs only; listing other sessions and routines blocked; MCP resource readers blocked and matched. Negative controls for each case. Test: 71 checks; 4 mutations detected. |
-| B2 redaction incomplete | **Accepted.** Redacted tree-wide. Command run: `git grep -n -i -E 'gmail\|google[ _]calendar\|google[ _]drive\|gamma\|figma\|wispr\|rankedin\|claude[ _]docs\|context7\|granola'` over tracked files; result: no match (exit 1). The names remain in git history (not rewritten on a public repository). L-018's M9 disposition was wrong; corrected here. |
+| B2 redaction incomplete | **Accepted.** Redacted tree-wide. *(This row first contained the search pattern itself, which re-published the names; that was corrected in L-021, see there.)* The names remain in git history, which is not rewritten on a public repository. L-018's M9 disposition was wrong; corrected here. |
 | m1 thread tools | **Accepted**: documented as allowed for any thread ID, with low impact. |
 | m2 test gaps | **Accepted**: `fork_repository` on `devos` tested; the test reads the command and matcher from `settings.json` and checks matcher coverage. |
 | m3 lease hand-over | **Accepted**: the successor may take over a lease held by its own parent session (§2.2, `CLAUDE.md` step 3). |
@@ -361,3 +361,26 @@ Probe `session_01RAbbNoiRDeWLcXwxUKeJ4F`, a full checkout of `05ba7c9`. Report: 
 - `list_sessions` was blocked.
 
 This closes condition C4 of R-C00-BOM-3.
+
+### L-021 · 2026-10-01 · Independent review R-C00-BOM-4: FAIL; dispositions; operating model v1.5
+
+**Review.** `session_01DFNHvJPFx5znGmPUAc52U4`; verdict `evidence/C00/reviews/R-C00-BOM-4.md`, from `claude/review-R-C00-BOM-4`. **FAIL** (B1, B2; major M1, M2; 9 minor). It judged the threat-model frame honest, and the session-tool layer resolved.
+
+| Finding | Disposition |
+|---|---|
+| B1: the non-MCP layer was default-allow; `SendMessage` and `ListAgents` reach the account's other sessions | **Accepted.** Matcher `.*`; non-MCP tools are an allow list; `SendMessage`, `ListAgents`, worktree switching, suggestion tools, artifact tools and resource readers are blocked; negative controls added. |
+| B2: L-019 re-published the names in its search pattern; one product name remained | **Accepted.** The pattern is removed from L-019 (the row now says so). The two remaining mentions are redacted. `tools/check_service_names.sh` derives its pattern at run time from commit `3cd686a`, so the check never prints the names; generic words are excluded. Run after this entry was written: `SERVICE_NAMES CLEAN`. This was the fourth instance of the FND-001 class in a disposition record. **Rule from now on:** a disposition that claims a check is clean must be written *before* the final run of the check, and must quote that run's output. |
+| M1: hand-over exception too broad | **Accepted.** Only runs (first message = the R1 goal) take a lease from their parent; `CLAUDE.md` and §2.2 updated. |
+| M2: injected instructions could widen the owned-ID list | **Accepted.** A `PostToolUse` hook records own IDs automatically; any hand edit is high-impact. Live test T-H7 is pending, at the next `create_session`. |
+| m1: T-H6 over-credited | **Accepted**: "allow path live; block path unit-tested". |
+| m2: revision check used local refs | **Accepted**: the hook fetches the remote ref and checks `FETCH_HEAD`; a failed fetch blocks. |
+| m3: a checkout swaps the enforced hook | **Accepted**: working-tree rule in §9 and `CLAUDE.md`; worktree switching blocked. |
+| m4: test gaps | **Accepted**: PR-tool and thread-tool controls added; wrapper cases run through the settings command under `sh`; recorder test added (84 checks). |
+| m5: owned-ID header | **Accepted**: aligned with §9 and lists every tool that reads the file. |
+| m6: `DURUM.md` stale and overstated | **Accepted**: item 2 now says the fixes are under review; restamped. |
+| m7: BP-06 cited T-H1 | **Accepted**: it now cites T-H2, T-H3 and T-H6. |
+| m8: regex accepted a trailing newline | **Accepted**: `fullmatch`. |
+| m9: permission widening in `create_session` | **Accepted**: blocked. |
+| D-003 brief must list the accepted routes | **Accepted**: noted in the decision index. |
+
+**Loop check (§4.4).** Four review rounds have run on W-C00-05. Each round had fewer blocking findings in the core, and found new surfaces at the edge. Progress is real, so this is not an S3 stop. The budget for the item is set now: if R-C00-BOM-5 still fails, the builder stops patching. It records the remaining findings as residual risks for D-003, and asks a second reviewer whether they block (§5, disagreement rule).

@@ -31,7 +31,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILDER_ENV = "env_01AMBDuHjjTsXMeXFyYgk1zR"     # devos-kurulum
-DEVOS_URL = re.compile(r"^https://github\.com/batuhanozgun/devos(\.git)?/?$", re.I)
+DEVOS_URL = re.compile(r"https://github\.com/batuhanozgun/devos(\.git)?/?", re.I)
 
 ALLOWED_PREFIXES = (
     "mcp__github__",
@@ -39,8 +39,19 @@ ALLOWED_PREFIXES = (
     "mcp__Supabase_DevOS_Salt-okuma__",
     "mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__",   # read-only Supabase connector, opaque ID (inferred: T-H3)
 )
-BLOCKED_NON_MCP = {"Artifact", "ArtifactData", "ArtifactComments", "DesignSync",
-                   "ListMcpResourcesTool", "ReadMcpResourceTool", "ReadMcpResourceDirTool"}
+# Non-MCP tools are an allow list too (R-C00-BOM-4 B1). Anything not named here is blocked,
+# including tools that reach the account's other sessions (SendMessage, ListAgents),
+# publishing surfaces, connector and plugin suggestion tools, MCP resource readers
+# and worktree switching (which would change the enforced hook).
+ALLOWED_NON_MCP = {
+    "Bash", "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit",
+    "Agent", "Task", "ToolSearch", "Skill", "Workflow", "StructuredOutput",
+    "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput",
+    "TodoWrite", "Monitor", "WebFetch", "WebSearch",
+    "AskUserQuestion", "EnterPlanMode", "ExitPlanMode", "SendUserFile",
+    "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
+    "ReportFindings", "SubagentHandback",
+}
 
 WRITE_REPOS = {("batuhanozgun", "devos")}
 READ_ONLY_GITHUB = {"get_me", "pull_request_read", "issue_read", "actions_get", "actions_list"}
@@ -81,25 +92,30 @@ def git(*args):
 
 
 def revision_has_barrier(rev):
-    """The revision a new session checks out must carry .claude/settings.json (known locally)."""
+    """The remote revision a new session will check out must carry .claude/settings.json.
+    It is fetched first (R-C00-BOM-4 m2); a failed fetch blocks."""
     if rev in (None, "", "main"):
-        ref = "origin/main"
+        ref = "main"
     elif rev == git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip():
-        ref = "HEAD"
+        ref = rev
     else:
         return False
-    return git("cat-file", "-e", f"{ref}:.claude/settings.json").returncode == 0
+    if git("fetch", "-q", "origin", ref).returncode != 0:
+        return False
+    return git("cat-file", "-e", "FETCH_HEAD:.claude/settings.json").returncode == 0
 
 
 def check_session_tool(tool, args):
     owned = owned_ids()
     if tool == "create_session":
-        if not DEVOS_URL.match(str(args.get("source_url", ""))):
+        if not DEVOS_URL.fullmatch(str(args.get("source_url", ""))):
             return block("create_session needs a full checkout of batuhanozgun/devos (source_url)")
         if args.get("sparse_checkout_paths"):
             return block("create_session with a sparse checkout runs without the barrier")
         if args.get("environment_id") not in (None, BUILDER_ENV):
             return block("create_session only in the builder environment")
+        if args.get("permission_mode") == "bypassPermissions" or args.get("extra_allowed_tools"):
+            return block("create_session may not widen permissions")
         if not revision_has_barrier(args.get("source_revision")):
             return block("create_session only on main or this session's branch, and only if that revision carries .claude/settings.json")
         return 0
@@ -150,10 +166,10 @@ def check(data):
     args = data.get("tool_input") or {}
     if not isinstance(args, dict):
         return block("tool input is not an object; blocking")
-    if name in BLOCKED_NON_MCP:
-        return block(f"'{name}' publishes or reaches account data")
     if not name.startswith("mcp__"):
-        return 0
+        if name in ALLOWED_NON_MCP:
+            return 0
+        return block(f"tool '{name}' is not on the allow list")
     if not name.startswith(ALLOWED_PREFIXES):
         return block(f"'{name}' is not an allowed MCP server for DevOS sessions")
     if name.startswith("mcp__claude-code-remote__"):
@@ -164,7 +180,7 @@ def check(data):
             return block(f"'{tool}' is not allowed for DevOS sessions")
         if tool in READ_ONLY_GITHUB or tool.startswith(READ_ONLY_GITHUB_PREFIXES):
             return 0
-        if tool in REPOLESS_GITHUB_ALLOWED and "repo" not in args:
+        if tool in REPOLESS_GITHUB_ALLOWED and "repo" not in args and "owner" not in args:
             return 0
         owner, repo = str(args.get("owner", "")).lower(), str(args.get("repo", "")).lower()
         if (owner, repo) not in WRITE_REPOS:

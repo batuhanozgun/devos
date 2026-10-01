@@ -36,7 +36,7 @@ Nothing in the target is a public-repository safety problem (criterion 6 passes)
 - **What remains:** only layer 2b, the allowlist hook. It blocks every `mcp__<id>__…` name (unit-checked below). Whether it is active in this session was **not** checked, because that would mean calling a connector tool.
 - **Failure scenario:**
   - A reviewer started from a sparse checkout (as the counter-design session was), or any session started on `main` before this PR merges, has no `.claude/settings.json` at all. `main` does not contain it today.
-  - Such a session carries live mail, calendar and Drive tools, and nothing blocks them except an instruction.
+  - Such a session carries live mail, calendar and file-storage tools, and nothing blocks them except an instruction.
   - Batu has been told in `DURUM.md` that they are technically blocked.
 - **Severity:** blocking. This is Batu's question H, and a false security statement on his status page.
 - **Fix:**

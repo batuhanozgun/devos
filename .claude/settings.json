@@ -2,11 +2,22 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__.*|Artifact|ArtifactData|ArtifactComments|DesignSync|ListMcpResourcesTool|ReadMcpResourceTool|ReadMcpResourceDirTool",
+        "matcher": ".*",
         "hooks": [
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"; rc=$?; [ $rc -eq 0 ] || exit 2"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__claude-code-remote__create_session|mcp__claude-code-remote__create_trigger",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/record_owned_id.py\" || true"
           }
         ]
       }

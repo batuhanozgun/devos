@@ -64,7 +64,7 @@ Public-repository safety passes (criterion 7), with one minor note (M9).
 
 - **Failure scenario:**
   - The builder starts the dispatcher, a reviewer or a probe with `create_session` and forgets `source_url`. Or, for "input restriction", it uses a sparse checkout, as it did for the counter-design session (FND-002).
-  - That session has live mail, calendar and Drive tools, and nothing but an instruction stops them.
+  - That session has live mail, calendar and file-storage tools, and nothing but an instruction stops them.
   - `DURUM.md` tells Batu: "Engel, `devos`'un tam kopyasıyla açılan oturumlarda geçerli". That sentence is literally true. But Batu cannot tell that the builder itself decides which sessions get a full checkout, and that the hook does not enforce it.
 - **Overstatement:** §9 opens with "Only the following is observed" and lists item 3, "Full checkouts", as a protection. It is a rule that the builder follows, not an observed or enforced barrier (ledger rule 4: name the enforcement layer).
 - **Severity:** blocking. This is question H. The fix that R-C00-BOM-1 asked for (full checkouts for every builder-created session) was implemented as an instruction, while the hook could enforce it.
