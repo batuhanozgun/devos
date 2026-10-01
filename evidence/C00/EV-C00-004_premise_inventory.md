@@ -1,0 +1,34 @@
+# EV-C00-004 · Premise inventory of the plan (C00 step 6), first version
+
+A safe summary; no library content. Prepared by the builder (`same_session`). Method: plan Section 6.12, item 1. For each premise: where it comes from, whether it still holds, and the from-scratch test ("if we were choosing today, from nothing, would we choose this again?"). Plan 2.1 already ran this test on its working structure (`Uyandirma_ve_Kapasite_Arastirmasi.md`, Section 1); those rows are not repeated unless new evidence bears on them.
+
+**Origin values:** Batu decision · source (documented fact) · prior design · assumption.
+**Verdict values:** holds · holds with a condition · questionable (evidence against, or untested in a way that matters) · fails.
+
+| ID | Premise | Origin | Still holds? | From scratch? | Verdict and consequence |
+|---|---|---|---|---|---|
+| P-01 | DevOS must work while Batu's computer is off and without Batu carrying messages (criteria 21, 22). | Batu decision | Yes | Yes | holds |
+| P-02 | Claude Code cloud is the runtime (5.1). | Batu decision | Yes; the session, routines and environments exist (EV-C00-002 item 11) | Yes, under the subscription-only constraint (criterion 25) | holds with a condition: several features it relies on are beta or preview (risks table) |
+| P-03 | Routines only start sessions; most roles run as subagents within a session (K-7). | prior design (2.1, after a frame review) | Untested in the account (C01 rows 1, 4) | Yes | holds with a condition: C01 rows 1 and 4 |
+| P-04 | **Authority separation = separate environments, each with its own credential that the database can verify** (6.3, 6.7). | prior design | **Partly.** It holds for the database, by design. It does not hold for GitHub: every environment acts as the same machine account, and a session can attach repositories itself (G-007, L-002). | For the database, yes. For repository reads such as exam answer keys, no. | **questionable**: authority separation needs a credential boundary on every channel that carries authority, not only on the database. Input to the counter-design and to G-007. |
+| P-05 | One GitHub machine account for all system activity gives GitHub-native approvals (B3 = a). | Batu decision | Yes for approvals; it is also the reason for P-04's GitHub gap | For approvals, yes. For isolation, it needs a complement. | holds with a condition: pair it with non-GitHub isolation for exams (G-007). Any change to the account setup is Batu's decision. |
+| P-06 | Supabase is the live state and the rule gate; agents write only through `devos_api` (5.3, K-9). | prior design, accepted by Batu | Yes, provided no other write path exists. The builder's own connection is observed read-only (EV-C00-002 item 7). | Yes | holds with a condition: a migration path must exist (G-004), and no agent may hold the service key (K-9 item 3) |
+| P-07 | The builder can carry out the installation alone; Batu only enters keys, creates routines and decides (12). | prior design | **Partly.** There is no defined route for applying migrations (G-004), and `/goal` must be started by Batu (K10). | Yes, if the missing routes are designed | questionable until G-004 is resolved |
+| P-08 | `devos` is public; an in-session, code-based leak check before each public write limits the risk (K6). | Batu decision | The decision holds. The check does not exist before C03 (G-002). | The decision is Batu's; the timing of the check is not chosen well | holds with a condition: G-002 |
+| P-09 | Eighteen role contracts are kept; roles are activated only when needed (7.4). | prior design + review | Untested | **Open.** Plan 2.1's own research flags the conflict with "start simple" (`Calisma_Duzeni_Karsilastirmali_Arastirma.md`, Section 6). | questionable: the counter-design (step 5) is the planned test |
+| P-10 | About 27 record families are needed from C02 (Ek B). | prior design | Untested | **Open**, for the same reason as P-09 | questionable: the counter-design is the planned test; the result may narrow C02's initial scope without lowering guarantees |
+| P-11 | Hidden exams measure role competence, and the tested role cannot see the answers (7.3). | prior design | **Not as designed** (G-007) | The measurement idea, yes; the isolation route, no | questionable until G-007 is resolved |
+| P-12 | Database format gates plus sample review give honest structural guarantees (8.12). | prior design + review | Yes | Yes | holds |
+| P-13 | The Max subscription has enough capacity, under "high effort in every job" (U-5). | assumption | **Evidence against in phase A:** the weekly limit reached warning level on the first day of C00 (L-007) | Cannot be confirmed without measurement | questionable: measure per stage (G-009); options to Batu if it does not hold |
+| P-14 | A free-tier Supabase project is enough until C04 measures the size (B1). | Batu decision | Yes | Yes | holds |
+| P-15 | The Gemini free tier serves as the second model, with public content only (B2). | Batu decision | Untested (C01 row 16) | Yes | holds with a condition |
+| P-16 | A multilingual open embedding model can run in the session and in Actions within the limits (5.4). | assumption | Untested (C01 row 7) | Yes, if the measurements pass | holds with a condition |
+| P-17 | Everything inside DevOS is in English; everything addressed to Batu is in Turkish (K9). | Batu decision | Yes | Yes | holds; G-008 protects Batu's original words |
+| P-18 | Thinking independence can come from subagents with a fresh context; authority independence cannot (K-7). | prior design (research) | Yes | Yes | holds. Today's evidence supports it: three fresh-context subagents found 44 issues the builder had missed (EV-C00-001 review note). |
+| P-19 | Library access in phase A is protected by three safeguards (0.5). | prior design | **Only safeguard 1 (the instruction) is in force** (L-003, G-001) | No, not as sequenced | questionable: G-001 |
+| P-20 | The builder's account-level connectors do not matter, because only routines run unattended (K-9 item 4). | implicit assumption | No: the builder session has write-capable connectors (G-006) | No | questionable: G-006 |
+| P-21 | Every stage is built at final quality; nothing is a throwaway interim (9 intro). | Batu decision (principles) | Yes | Yes | holds |
+
+## Frame signal
+
+Three premises (P-04, P-11, P-19) fail for the same reason. The plan places authority boundaries where it controls the credential, which is the database. It assumes that GitHub-side boundaries follow from the repository list, but the session can change that list itself. This is a squeeze signal in the sense of plan 6.12: the right response is to question the frame ("which credential does each channel actually use, and who can change it?"), not to add rules. The effect-channel inventory (0.3 item 13) is the place to answer it, channel by channel, with enforcement layer and verification status (ledger rule 5).
