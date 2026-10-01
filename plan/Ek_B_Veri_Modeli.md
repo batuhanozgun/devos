@@ -351,7 +351,7 @@ Sıklıklar başlangıç değerleridir; C06 ve C11'deki gözlemlerle gerekçeli 
 - Acil durumlarda (Batu'nun beklenen kararı geldi ve iş bekliyor; kurtarma) yedek bütçeden API tetiği kullanılır. Tetik yalnız iş kimliğini gönderir; oturum asıl bilgiyi veritabanından okur.
 - Her tetik `LaunchRecord` olarak kaydedilir; belirsiz sonuç uzlaştırılmadan tekrarlanmaz.
 - Her oturum açılışta `register_session` ile kendini kaydeder.
-- **Bağımsız izleme:** DevOS bileşenlerinden bağımsız bir yol (örneğin `devos-backup`'ta zamanlanmış bir GitHub Actions işi), son oturum kaydının, son yedeğin ve son içe almanın zamanını denetler; beklenen aralık aşılırsa Batu'ya atanmış bir issue açar. Bu yol, routine'lerin kendini kapatmasını ve Actions dakikalarının bitmesini de fark eder.
+- **Bağımsız izleme:** DevOS bileşenlerinden bağımsız bir yol (örneğin `devos-backup`'ta zamanlanmış bir GitHub Actions işi), son oturum kaydının, son yedeğin ve son içe almanın zamanını denetler; beklenen aralık aşılırsa Batu'ya atanmış bir issue açar. Bu yol, routine'lerin kendini kapatmasını ve Actions dakikalarının bitmesini de fark eder. Ayrıca `agentic-os-search`'te makine hesabının yaptığı her commit'i Batu'ya bildirir (tek yazar ilkesinin gözlemi).
 
 ---
 
