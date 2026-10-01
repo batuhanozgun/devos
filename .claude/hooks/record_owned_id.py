@@ -17,7 +17,13 @@ def main():
         if not pat:
             return 0
         resp = d.get("tool_response")
-        text = resp if isinstance(resp, str) else json.dumps(resp)
+        # Observed format (L-022): a list of {"type": "text", "text": "<JSON string>"}.
+        if isinstance(resp, list):
+            text = "".join(str(i.get("text", "")) for i in resp if isinstance(i, dict))
+        elif isinstance(resp, str):
+            text = resp
+        else:
+            text = json.dumps(resp)
         m = re.search(pat, text)
         if not m:
             return 0

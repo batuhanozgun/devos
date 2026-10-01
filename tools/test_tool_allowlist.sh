@@ -109,6 +109,9 @@ rd=$(mktemp -d); cp .claude/hooks/record_owned_id.py "$rd/"; printf 'x\n' > "$rd
 printf '{"tool_name":"mcp__claude-code-remote__create_session","tool_response":{"ccr":{"id":"session_TESTREC123","parent_session_id":"session_PARENT"}}}' | python3 "$rd/record_owned_id.py"; r1=$?
 printf '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_response":"{\\"trigger\\":{\\"id\\":\\"trig_TESTREC456\\"}}"}' | python3 "$rd/record_owned_id.py"
 printf '{"tool_name":"mcp__claude-code-remote__send_message","tool_response":{"id":"session_SHOULDNOT"}}' | python3 "$rd/record_owned_id.py"
+# observed real format: a list of text items holding a JSON string
+python3 -c 'import json;print(json.dumps({"tool_name":"mcp__claude-code-remote__create_session","tool_response":[{"type":"text","text":json.dumps({"ccr":{"id":"session_REALFORMAT789","parent_session_id":"session_PARENT"}})}]}))' | python3 "$rd/record_owned_id.py"
+grep -qx session_REALFORMAT789 "$rd/owned_ids.txt" && echo "ok   recorder reads the observed list-of-text format" || { echo "BAD  recorder misses the observed format"; fail=1; }
 if [ "$r1" = "0" ] && grep -qx session_TESTREC123 "$rd/owned_ids.txt" && grep -qx trig_TESTREC456 "$rd/owned_ids.txt" && ! grep -q SHOULDNOT "$rd/owned_ids.txt" && ! grep -q session_PARENT "$rd/owned_ids.txt"; then echo "ok   recorder appends created IDs only"; else echo "BAD  recorder"; fail=1; fi
 rm -rf "$rd"
 [ $fail -eq 0 ] && echo "ALLOWLIST_TEST PASS" || echo "ALLOWLIST_TEST FAIL"
