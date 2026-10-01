@@ -427,3 +427,28 @@ This closes condition C4 of R-C00-BOM-3.
 - The builder created the narrow re-check R-C00-BOM-6 (`session_01SizJjhJaxprbrieGQ84VFG`, full checkout of `7fb2ca8`, outcome branch `claude/review-R-C00-BOM-6`).
 - The `PostToolUse` recorder appended `session_01SizJjhJaxprbrieGQ84VFG` to `owned_ids.txt` on its own; `git diff` showed exactly that one added line and no edit by the builder. **T-H7: PASS.** The response carried the ID at `ccr.id`, as the parser expects.
 - This record is committed after the review target (`c166639..7fb2ca8`); it changes only §9, §13 and Appendix M wording about T-H7 and the owned-ID file.
+
+### L-025 · 2026-10-01 · Review R-C00-BOM-6: PASS; minor findings applied; corrections to L-023
+
+**Review.** `session_01SizJjhJaxprbrieGQ84VFG`; verdict `evidence/C00/reviews/R-C00-BOM-6.md`, copied from `claude/review-R-C00-BOM-6` (`9d206ed`). **PASS** on `7fb2ca8`: C1–C3 of R-C00-BOM-5 met, no blocking finding, no condition. It reproduced 107 ok and `SERVICE_NAMES CLEAN`, and ran 17 mutations (16 detected; the miss is n2 below). W-C00-05 acceptance (d) is met.
+
+**Corrections to L-023 (n6), stated here because the log is append-only:**
+- R-1 was **not** "added to the D-003 brief": no brief exists yet. It is in §9 "Not protected", which the D-003 row says the brief must carry.
+- m6: the live server-list comparison was stated in the script header only. It is now a stage-closure step: at each stage closure, compare the derived terms with a probe session's live server list, without writing the names to the tree (W-<stage> closure item).
+
+| Finding | Disposition |
+|---|---|
+| n1: agent definitions are not inspected | **Accepted**: §9 "Not protected" bullet; rule: the builder creates no agent definitions. |
+| n2: recorder prefix guard had no isolating control | **Accepted**: two controls (a session ID in a trigger response; an `env_` ID in `ccr`); the mutation `if i:` now fails the test (checked in a scratch worktree). |
+| n3: wrapped `content` list and JSON-encoded list missed | **Accepted**: both read; tests added; §9 names the expected format so that a miss reads as a format change. |
+| n4: docstring said "documented" | **Accepted**: "observed". |
+| n5: unpushed branch skips two controls silently | **Accepted**: the `info` line names the skipped controls; §13 says T-H4 counts only on a pushed branch. |
+| n6 | Corrections above. |
+| n7: §9 session-tools verification column | **Accepted**: `outcome_branch` marked unit-tested only. |
+| n8: `isalnum`, `DURUM.md` wording and stamps, recorder called directly | **Accepted**: ASCII regex; `DURUM.md` reworded and stamped at writing time; §13 notes the direct call. |
+
+These are tightening changes and wording, applied after the PASS as the reviewer allowed ("may ride along"). They do not widen any rule.
+
+**Final check runs (after this entry was written):**
+- `tools/test_tool_allowlist.sh`: 111 ok, `ALLOWLIST_TEST PASS`.
+- `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.

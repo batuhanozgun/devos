@@ -1,16 +1,16 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 22:35 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
+**Son güncelleme:** 1 Ekim 2026, 22:55 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
 
 **Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
 
 **En son yapılanlar**
 1. Kurucunun çalışma düzeni tasarlandı. Bağımsız bir karşı tasarımla karşılaştırıldı ve düzeltildi.
-2. Hesaptaki connector'lara (e-posta, takvim, dosya) karşı teknik bir engel kuruluyor. Beş bağımsız inceleme turunda açıklar bulundu; beşinci turda kalan tek önemli açık (alt ajanların ayrı bir bulut oturumunda çalıştırılması) kapatıldı. Bu son düzeltme dar bir incelemede. Engel bütün araçlara bakacak ve yalnız açıkça izin verilenleri geçirecek. Görevi kazayı ve dışarıdan sızan talimatı durdurmak; kurucunun kendisi isterse onu değiştirebilir. Bu kalan riski sana bir karar olarak getireceğim. Engel bu değişiklik `main`'e girince devreye giriyor.
+2. Hesaptaki connector'lara (e-posta, takvim, dosya) karşı teknik bir engel kuruluyor. Beş bağımsız inceleme turunda açıklar bulundu. Beşinci turun en önemli açığı (alt ajanların ayrı bir bulut oturumunda çalıştırılması) kapatıldı ve altıncı, dar inceleme bunu doğruladı (PASS). Engel bütün araçlara bakacak ve yalnız açıkça izin verilenleri geçirecek. Görevi kazayı ve dışarıdan sızan talimatı durdurmak; kurucunun kendisi isterse onu değiştirebilir. Bu kalan riski sana bir karar olarak getireceğim. Engel bu değişiklik `main`'e girince devreye giriyor.
 3. Planda teknik onayın senden alınıp bağımsız denetime verildiği değişiklik (PC-05) yazıldı.
 
 **Sırada**
-- Son düzeltmenin dar incelemesi; ardından PR'ın `main`'e alınması.
+- PR'ın `main`'e alınması ve işin yeni bir oturuma devri.
 - Son iki deneme: yeni oturumun kaldığı yerden devam etmesi ve nabız oturumu.
 - Ardından C00'ın ağır işleri: çeviri, bağımsız plan incelemesi, karşı tasarım. Bunlar haftalık kullanım sınırı yenilendikten sonra (3 Ekim 20:00).
 

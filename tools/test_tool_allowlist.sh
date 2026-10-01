@@ -79,7 +79,7 @@ t 0 '{"tool_name":"mcp__claude-code-remote__send_later","tool_input":{"delay_min
 t 0 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
 br=$(git rev-parse --abbrev-ref HEAD)
 # Branch controls need this branch on the remote; the hook fetches it (not hermetic, R-C00-BOM-5 m2).
-if git ls-remote --exit-code --heads origin "$br" >/dev/null 2>&1; then bok=0; else bok=2; echo "info branch $br is not on the remote: branch controls expect a block"; fi
+if git ls-remote --exit-code --heads origin "$br" >/dev/null 2>&1; then bok=0; else bok=2; echo "info branch $br is not on the remote: branch controls expect a block, and the devos-x URL and outcome_branch main controls are SKIPPED; T-H4 counts only on a pushed branch"; fi
 t $bok "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\"}}"
 # isolating controls: these pass every rule except the one named (m3)
 [ $bok = 0 ] && t 2 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos-x\",\"source_revision\":\"$br\"}}"
@@ -133,10 +133,14 @@ rec create_session '{"parent":{"id":"session_PARENTX"},"id":"session_NEW4"}'
 rec create_session '[{"type":"text","text":"{\"ccr\":{\"id\":\"session_AMBIG5\"}}"},{"type":"text","text":"{\"ccr\":{\"id\":\"session_AMBIG6\"}}"}]'
 rec create_session '[{"type":"text","text":"Session created."},{"type":"text","text":"{\"ccr\":{\"id\":\"session_WITHPROSE7\"}}"}]'
 rec create_trigger '[{"type":"text","text":"{\"trigger\":{\"id\":\"trig_LIST8\",\"persistent_session_id\":\"session_OTHER\"}}"}]'
-for want in session_PRETTY1 session_CSEFORM2 session_NEWAFTER3 session_NEW4 session_WITHPROSE7 trig_LIST8; do
+rec create_trigger '{"id":"session_WRONGPREFIX9"}'
+rec create_session '{"ccr":{"id":"env_WRONGPREFIX10"}}'
+rec create_session '{"content":[{"type":"text","text":"{\"ccr\":{\"id\":\"session_WRAPPED11\"}}"}]}'
+rec create_session '"[{\"type\":\"text\",\"text\":\"{\\\"ccr\\\":{\\\"id\\\":\\\"session_ENCLIST12\\\"}}\"}]"'
+for want in session_PRETTY1 session_CSEFORM2 session_NEWAFTER3 session_NEW4 session_WITHPROSE7 trig_LIST8 session_WRAPPED11 session_ENCLIST12; do
   grep -qx "$want" "$rd/owned_ids.txt" && echo "ok   recorder records $want" || { echo "BAD  recorder missed $want"; fail=1; }
 done
-for bad in session_FOREIGN session_PARENTX session_AMBIG5 session_AMBIG6 session_OTHER cse_CSEFORM2; do
+for bad in session_FOREIGN session_PARENTX session_AMBIG5 session_AMBIG6 session_OTHER cse_CSEFORM2 session_WRONGPREFIX9 env_WRONGPREFIX10; do
   grep -qx "$bad" "$rd/owned_ids.txt" && { echo "BAD  recorder recorded $bad"; fail=1; } || echo "ok   recorder ignores $bad"
 done
 if [ "$r1" = "0" ] && grep -qx session_TESTREC123 "$rd/owned_ids.txt" && grep -qx trig_TESTREC456 "$rd/owned_ids.txt" && ! grep -q SHOULDNOT "$rd/owned_ids.txt" && ! grep -q session_PARENT "$rd/owned_ids.txt"; then echo "ok   recorder appends created IDs only"; else echo "BAD  recorder"; fail=1; fi

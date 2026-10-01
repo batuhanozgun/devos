@@ -5,12 +5,12 @@ has to add IDs by hand, so a hand edit of owned_ids.txt is never routine and
 stays a high-impact change. Never blocks; on any doubt it records nothing.
 
 The response is parsed, not searched (R-C00-BOM-5 N-M1). The new ID is taken
-only from its documented place: "ccr.id" for create_session (as get_session
-returns it), "trigger.id" for create_trigger, or a top-level "id" when that
+only from its observed place (L-022, L-024): "ccr.id" for create_session (seen on get_session and
+create_session), "trigger.id" for create_trigger, or a top-level "id" when that
 object is absent. If the parsed payloads name no ID or more than one, nothing
 is recorded.
 """
-import json, os, sys
+import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WATCH = {"mcp__claude-code-remote__create_session": ("ccr", "session_"),
@@ -25,11 +25,16 @@ def norm(i):
 def payloads(resp):
     """Observed format (L-022): a list of {"type": "text", "text": "<JSON string>"}.
     Text items that are not JSON objects are skipped."""
+    if isinstance(resp, str):
+        try:
+            resp = json.loads(resp)
+        except ValueError:
+            return []
+    if isinstance(resp, dict) and isinstance(resp.get("content"), list):
+        resp = resp["content"]          # a wrapped content list (R-C00-BOM-6 n3)
     if isinstance(resp, dict):
         return [resp]
-    if isinstance(resp, str):
-        texts = [resp]
-    elif isinstance(resp, list):
+    if isinstance(resp, list):
         texts = [i.get("text") for i in resp if isinstance(i, dict) and isinstance(i.get("text"), str)]
     else:
         return []
@@ -50,7 +55,7 @@ def new_id(tool, resp):
     for p in payloads(resp):
         obj = p.get(key) if isinstance(p.get(key), dict) else p
         i = norm(obj.get("id"))
-        if i.startswith(prefix) and len(i) > len(prefix) and i[len(prefix):].isalnum():
+        if re.fullmatch(re.escape(prefix) + r"[A-Za-z0-9]+", i):
             found.add(i)
     return found.pop() if len(found) == 1 else None
 

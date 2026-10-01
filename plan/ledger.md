@@ -19,7 +19,7 @@
 |---|---|---|
 | Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T18:40Z |
 | Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T22:16Z unless renewed. | 2026-10-01T19:16Z |
-| Next action | Finish W-C00-05: narrow re-check R-C00-BOM-6 of the v1.6 fixes (L-023); on PASS merge PR #4, hand over to a fresh run, then tests T-B1, T-A2, T-H7 and the Batu issue (D-002, D-003). | 2026-10-01T19:35Z |
+| Next action | Finish W-C00-05: narrow re-check R-C00-BOM-6 of the v1.6 fixes (L-023); R-C00-BOM-6 PASS (L-025): merge PR #4, hand over to a fresh run, then tests T-B1, T-A2 and the Batu issue (D-002, D-003). | 2026-10-01T19:55Z |
 | Usage | `seven_day` `allowed_warning`; resets 2026-10-03T17:00Z. Light work only, under D-001; a scheduled wake-up is set for 2026-10-03T17:15Z. | 2026-10-01T18:40Z |
 | Waiting for Batu | Nothing blocking. One decision will be raised with the operating-model briefing: D-002, a standing usage policy. | 2026-10-01T18:40Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
