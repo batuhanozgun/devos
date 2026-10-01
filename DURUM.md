@@ -1,23 +1,22 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 23:48 (Türkiye saati) · **Son nabız:** 1 Ekim 2026, 23:58 (Türkiye saati): dağıtıcı yeni bir çalışma oturumu başlattı
+**Son güncelleme:** 2 Ekim 2026, 00:05 (Türkiye saati) · **Son nabız:** 1 Ekim 2026, 23:58 (Türkiye saati): dağıtıcı yeni bir çalışma oturumu başlattı
 
-**Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
+**Şu an:** Çalışan oturum yok. Haftalık kullanım sınırı yenilenene kadar bekleniyor (3 Ekim 20:15'te dağıtıcı otomatik olarak uyandırılacak). Senin bir şey yapmana gerek yok.
+
+**Aşama:** C00 (başlangıç kontrolleri). Kurucunun çalışma düzeni (W-C00-05) tamamlandı.
 
 **En son yapılanlar**
-1. Kurucunun çalışma düzeni tasarlandı. Bağımsız bir karşı tasarımla karşılaştırıldı ve düzeltildi.
-2. Hesaptaki connector'lara (e-posta, takvim, dosya) karşı teknik bir engel kuruluyor. Beş bağımsız inceleme turunda açıklar bulundu. Beşinci turun en önemli açığı (alt ajanların ayrı bir bulut oturumunda çalıştırılması) kapatıldı ve altıncı, dar inceleme bunu doğruladı (PASS). Engel bütün araçlara bakacak ve yalnız açıkça izin verilenleri geçirecek. Görevi kazayı ve dışarıdan sızan talimatı durdurmak; kurucunun kendisi isterse onu değiştirebilir. Bu kalan riski sana bir karar olarak getireceğim. Engel bu değişiklik `main`'e girince devreye giriyor.
-3. Planda teknik onayın senden alınıp bağımsız denetime verildiği değişiklik (PC-05) yazıldı.
+1. Sen hiçbir şey yazmadan iş devam etti: zamanlanmış görev dağıtıcı oturumu uyandırdı, dağıtıcı yeni bir çalışma oturumu açtı, o oturum da kayıtları `main`'e aldı (T-A2r, geçti; bir kez gözlendi).
+2. Çalışma düzeninin bütün kabul koşulları kanıtlarıyla eşleştirildi; belge artık bağlayıcı. Son kontrolü, aşama sonunda işi yapmamış ayrı bir oturum yapacak.
+3. Küçük bir eksik bulundu: dağıtıcının açtığı oturumların kimlikleri `main`'e yazılamıyor. Etkisi şimdilik düşük; düzeltme bir sonraki çalışmada bağımsız incelemeyle gelecek.
 
-**Sırada**
-- Çalışma düzeni `main`'e alındı. Yeni bir oturum, yalnız "devam et" denince kaldığı yeri doğru buldu (ikinci denemede geçti).
-- Nabız denemesi (sen yazmadan işin sürmesi) ilk seferde geçmedi: zamanlanmış görev çalıştı, ama dağıtıcı oturum gelen mesajı okuyamadı (kendi engelim bu aracı kapatıyordu) ve kaydını birleştiremedi. Düzeltme bağımsız incelemeden geçti ve `main`'e alındı. Değişen: dağıtıcı mesajları okuyabiliyor, kendi kaydını artık birleştirmiyor (bir sonraki çalışma oturumu, kapsamını denetleyip birleştiriyor). Bu yüzden çalışan oturum yokken buradaki "Son nabız" satırı geride kalabilir. Deneme şimdi tekrarlanıyor: ilk kurucu oturum işi bıraktı; dağıtıcının sen hiçbir şey yazmadan yeni bir çalışma oturumu açması bekleniyor. Açılırsa iş orada sürecek.
-- Ardından C00'ın ağır işleri: çeviri, bağımsız plan incelemesi, karşı tasarım. Bunlar haftalık kullanım sınırı yenilendikten sonra (3 Ekim 20:00).
+**Sırada:** Sınır yenilenince C00'ın ağır işleri: plan paketinin çevirisi, bağımsız plan incelemesi, bağımsız karşı tasarım, ECC karşılaştırması.
 
-**Senden beklenen:** İki karar, [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda: kullanım politikası (D-002) ve bağlantı engelinin kalan riski (D-003). İkisi de işi durdurmuyor; cevap gelene kadar önerdiğim varsayılanlar uygulanıyor.
+**Senden beklenen:** Acil bir şey yok. İki karar [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda duruyor: kullanım politikası (D-002) ve bağlantı engelinin kalan riski (D-003). İkisi de işi durdurmuyor; cevap gelene kadar önerdiğim varsayılanlar uygulanıyor.
 
-**Kullanım:** Haftalık sınır "uyarı" düzeyinde. Sınır 3 Ekim 20:00'de yenileniyor; o zamana kadar yalnız hafif işler yapılıyor.
+**Kullanım:** Haftalık sınır "uyarı" düzeyinde; 3 Ekim 20:00'de yenileniyor. Yapılabilecek hafif iş kalmadığı için o zamana kadar yeni çalışma oturumu açılmıyor.
 
 **Bilmen gereken riskler**
-- Kurulumun bu ilk döneminde bağımsız denetim ortamı henüz yok. Önemli değişiklikleri aynı modelden ama ayrı oturumlar inceliyor.
-- Kütüphane deposuna yazmama kuralını hâlâ yalnız kurucunun kendisi uyguluyor (bkz. defter L-003).
+- Bağımsız denetim ortamı henüz yok; önemli değişiklikleri aynı modelden ama ayrı oturumlar inceliyor.
+- Otomatik izin denetçisi aynı işlemde bazen farklı karar veriyor; bir reddedişte kurucu durur, başka yoldan zorlamaz. Bu yüzden gözetimsiz devam şimdilik "bir kez gözlendi" düzeyinde.
