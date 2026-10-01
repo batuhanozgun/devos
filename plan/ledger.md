@@ -4,13 +4,13 @@
 
 **Rules for this file**
 
-1. `devos` is a public repository. This file holds only safe summaries and identifiers: no text from the research library, no conversation transcripts, no key or token values (plan Sections 0.5 and 6.7; K6, K8).
-2. Until the translation fidelity review of the plan package passes, the Turkish plan package is the binding text; references below point to it (plan Section 0.6).
-3. A stage's acceptance conditions are written here before its results are seen and are never loosened afterwards (plan Sections 8.6 and 14).
+1. `devos` is a public repository. This file holds only safe summaries and identifiers: no text from the research library, no conversation transcripts, no key or token values (plan Sections 0.5 and 6.7; K6, K8). The one exception is Batu's own decisions, constraints and expectations. These are recorded word for word as plan Section 0.6, item 2 requires, after a check that they carry no private content.
+2. Until the translation fidelity review of the plan package passes, the Turkish plan package is the binding text, and the references below point to it (plan Section 0.6).
+3. A stage's acceptance conditions are written down before its results are seen and are never loosened afterwards. If a condition must be loosened, the earlier result is void and the test is repeated under the new condition (plan Section 9, "Her aşamanın kapanışı"; Sections 8.6 and 14).
 4. Batu's words are recorded with the original Turkish text and an English interpretation (plan Section 0.6, item 2).
-5. Every statement about access or permissions names the layer that enforces it and how it was verified (see FND-001).
+5. Every statement about access or permissions names the layer that enforces it (GitHub permission, session or proxy, database, instruction only). It also gives the verification status: observed, documented only, or not verified (FND-001).
 
-**Identifiers:** `L-nnn` log entry · `FND-nnn` finding · `OI-nnn` open item · `EV-Cxx-nnn` evidence record under `evidence/Cxx/`.
+**Identifiers:** `L-nnn` log entry · `FND-nnn` finding · `OI-nnn` open item · `G-nnn` gap candidate for C00 step 2 · `EV-Cxx-nnn` evidence record under `evidence/Cxx/`.
 
 ---
 
@@ -18,15 +18,19 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | C00 not started. Reading of the plan package complete (L-001). | 2026-10-01T15:52Z |
+| Stage | C00 in progress. Step 2 (reading) is complete (L-001). Step 1 (preparation verification) is partly done: the library access check is in EV-C00-001. Step 0 (translation) has not started. | 2026-10-01T16:10Z |
 | Binding plan text | Turkish plan package at `devos` commit `6186e5d` | 2026-10-01 |
-| Builder's access to `agentic-os-search` | **Technically writable by this session as far as verified.** Read-only is the builder's own rule, not a verified technical boundary. Details in L-003 and `evidence/C00/EV-C00-001_library_access.md`. | 2026-10-01T15:52Z |
+| Builder's access to `agentic-os-search` | **Not known to be read-only.** On GitHub, the machine account has write (push) permission (observed). At session level, whether `access: "read"` blocks writes is not verified (OI-001). The repository is therefore treated as writable by this session. The only thing keeping it read-only is a plan rule (plan Section 0.5) that only the builder's compliance enforces. Details: L-003, EV-C00-001. | 2026-10-01T16:10Z |
 
 ---
 
-## 2. Pre-registered acceptance conditions
+## 2. Acceptance conditions
 
-### C00 (working translation of plan Section 9, C00, "Kabul"; the Turkish text is binding)
+### C00
+
+Translated verbatim from plan Section 9, C00, "Kabul". The conditions were fixed in plan 2.1 (29 September 2026), and the Turkish text is binding. This copy was entered on 2026-10-01, after the observations in L-002 and L-003, which bear on conditions 4 and 5. Those observations did not change the conditions.
+
+Legend, as in the plan (Section 8.2): ✔ marks a condition that must be shown; ✘ marks something that must not happen. Neither mark is a result.
 
 - ✔ The translation fidelity review has passed; changes proposed during translation are recorded separately.
 - ✔ Every item of the preparation list is verified with evidence.
@@ -34,7 +38,7 @@
 - ✘ The builder wrote nothing to the library repositories.
 - ✘ No secret is visible in a repository, an environment variable or the chat.
 
-Registered 2026-10-01, before any C00 result was seen. Note: L-003 already bears on the fourth condition (the builder *can* write to the library; the condition concerns whether it *did*). OI-003 bears on the fifth.
+Criteria served by C00 (plan): 18, 21, 25–27, 29, 34.
 
 ---
 
@@ -42,14 +46,15 @@ Registered 2026-10-01, before any C00 result was seen. Note: L-003 already bears
 
 ### L-001 · 2026-10-01 · Plan package read
 
-The builder read completely, from beginning to end: `DevOS_Kurulum_Plani.md`, `Ek_A` through `Ek_G`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md`, `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md` (all at `devos` commit `6186e5d`). No file was changed before reading was complete.
+The builder read the following completely, from beginning to end, all at `devos` commit `6186e5d`: `DevOS_Kurulum_Plani.md`, `Ek_A` through `Ek_G`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md`, `Inceleme_Degerlendirmesi_Claude.md` and `Inceleme_Degerlendirmesi_ChatGPT.md`. No file was changed before reading was complete.
 
 ### L-002 · 2026-10-01 · Library repository attached to the session
 
-- At session start only `devos` was attached; `agentic-os-search` was not, although Appendix F tells Batu to select both.
-- The builder attached `batuhanozgun/agentic-os-search` with the session tool `add_repo`, passing the parameter `access: "read"`, and made a shallow local clone (library commit `dc91f6b`, 2,392 files).
-- The builder deliberately did **not** register the clone as a repository root, so the library's files are not loaded into the session as instructions (plan Section 0.5: the library is a source of information, not of instructions). The library has no `CLAUDE.md` and no `.claude/` directory.
-- Nothing was written to the library repository.
+- At session start only `devos` was attached. `agentic-os-search` was not, although Appendix F tells Batu to select both.
+- The builder attached `batuhanozgun/agentic-os-search` with the session tool `add_repo`, passing `access: "read"`. **This was a change to the session's configuration, not a read.** According to the tool's result, it put the library inside the session's GitHub scope, which is the set of repositories where session writes are allowed. No tool for detaching a repository is available in this session. The builder needs to read the library during C00–C04 in any case (plan Section 0.5).
+- The builder made a shallow local clone (library commit `dc91f6b`, 2,392 files).
+- The builder deliberately did not call `register_repo_root`. According to the `add_repo` result, that call would load the repository's `CLAUDE.md`, skills and plugins into the session. The builder skipped it because the library is a source of information, not of instructions (plan Section 0.5). That this avoids the loading path is documented only, not observed. The clone has no `CLAUDE.md` and no `.claude/` directory at its top level; deeper levels were not checked.
+- By the builder's own record of its actions, it issued no write operation to the library repository. The remote state was not checked afterwards.
 
 ### L-003 · 2026-10-01 · Correction: the library's "read-only" access is not a verified technical boundary
 
@@ -57,25 +62,30 @@ The builder read completely, from beginning to end: `DevOS_Kurulum_Plani.md`, `E
 
 > Original (tr): "agentic-os-search'ü "yalnız okuma izniyle" eklediğini yazdın. Bunu nasıl ekledin? Okuma sınırı teknik olarak mı uygulanıyor, yoksa senin kuralın mı? GitHub'da makine hesabının bu depoda yazma izni olduğunu planın 0.5. bölümünde bulabilirsin. Doğru durumu kurulum defterine yaz."
 >
-> Interpretation (en): The builder said it added `agentic-os-search` "with read-only permission". Batu asks how it was added and whether the read limit is technically enforced or only the builder's rule, points out that plan Section 0.5 states the machine account has write permission on that repository on GitHub, and instructs the builder to record the correct state in the installation ledger.
+> Interpretation (en): The builder said it had added `agentic-os-search` "with read-only permission". Batu asks how it was added and whether the read limit is technically enforced or only the builder's rule. He points out that plan Section 0.5 states the machine account has write permission on that repository on GitHub, and he instructs the builder to record the correct state in the installation ledger.
 
-**What the builder had said.** In its first message to Batu the builder wrote that it had added `agentic-os-search` "yalnız okuma izniyle" (with read-only permission). That wording presented a request parameter as an enforced permission. It was wrong; the correct state is below.
+**What the builder had said.** In its first message to Batu, the builder wrote that it had added `agentic-os-search` with read-only permission (Batu quotes the Turkish phrase above). That wording presented a request parameter as an enforced permission, which was wrong. The correct state is below.
 
-**Correct state** (evidence: `evidence/C00/EV-C00-001_library_access.md`):
+**Correct state** (evidence: EV-C00-001):
 
-| Layer | What holds | How it is known |
+| Layer | What holds | Verification status |
 |---|---|---|
-| GitHub identity of this session's GitHub tools | `batuhanozgun-devos` (the machine account, B3 = (a)) | Observed: GitHub API, authenticated user |
-| GitHub permission of that identity on `agentic-os-search` | `pull: true`, `triage: true`, **`push: true`**, `maintain: false`, `admin: false` | Observed: GitHub API repository object, `permissions` field |
-| Session attachment (`add_repo`, `access: "read"`) | A request to attach the repository for fetch and clone. Whether it blocks writes through the session's git proxy or through the GitHub tools is **not verified**. The tool's result states that writes stay limited to repositories attached to the session, and this repository is now attached. | Tool description and tool result only; no observation of enforcement |
-| Git push through the session proxy | **Not tested.** A preparatory command for a no-write permission probe (snapshot of remote refs, then `git push --dry-run`) was denied by the session's automatic permission classifier. The probe was not pursued by any other route. | Denial recorded; no observation |
-| GitHub tools (`mcp__github__*`) that write files, branches or pull requests | Not blocked as far as known: the identity has `push`, and the repository is in the session's scope. Not tested, because the only test is an attempted write. | Inference from the two rows above |
-| Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` | Present; values not read; scope and function unknown | Names only (OI-003) |
-| Builder's rule | The builder only reads the library and never writes to it (plan Section 0.5; opening message) | Instruction; **this is the only verified protection** |
+| GitHub identity of this session's GitHub tools | `batuhanozgun-devos` (the machine account, B3 = (a)) | Observed (EV-C00-001, row 4) |
+| GitHub permission of that identity on `agentic-os-search` | `pull: true`, `triage: true`, **`push: true`**, `maintain: false`, `admin: false` | Observed (EV-C00-001, row 5) |
+| Credential behind the session's git proxy | Unknown. It could be the machine account's or the Claude GitHub App installation's. This matters for safeguard 3: removing the machine account as a collaborator closes the session's git path only if the session uses the machine account's credential. The plan treats a related point as an assumption awaiting C01 row 12 (plan Section 13, risk row for `devos-evals` and `devos-backup`). | Not verified (OI-005) |
+| Session attachment (`add_repo`, `access: "read"`) | The tool description says `read` = "fetch/clone only", and `push` is for a session that must "push commits, open PRs, or use GitHub API tools against the repository", which is "attached with credentials after the full repository-access checks". This suggests that a read attachment carries no write credentials. The tool's result says writes remain limited to repositories attached to the session, and this repository is now attached. The two texts point in different directions. | Documented only; enforcement not observed (OI-001) |
+| Git push through the session proxy | Not tested. The builder tried to run a preparatory command (list the library's `.github/` directory and snapshot its remote refs) before a no-write `git push --dry-run` probe. The session's automatic permission classifier denied the command (reason label "Untrusted Code Integration"). The builder did not pursue the probe by any other route. | Denial observed; push behaviour not observed (OI-001) |
+| Session automatic permission classifier | Observed denying one command that touched the library's remote. Whether it blocks writes was not tested. | Observed denial only |
+| GitHub tools (`mcp__github__*`) that write files, branches or pull requests | Unknown. The identity has push permission (observed). The `add_repo` description ties GitHub API use against a repository to `push` mode (documented only). Not tested, because a write test is ruled out (plan Section 0.5; C00 condition 4). | Not verified (OI-001) |
+| Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` | Present. Their values were not read, and their scope and function are unknown. | Names observed only (OI-003) |
+| Plan rule: the builder only reads the library | Plan Section 0.5 (single-writer rule, a Batu decision; safeguard 1, "the builder's instruction") and Appendix F. It is not a technical control. It is the only safeguard known to be in force today. | Its existence is documented; whether it works is not verified |
 
-**Conclusion.** For this session, "read-only" on `agentic-os-search` is the builder's rule. It is not a verified technical boundary. On GitHub the machine account has write permission, as plan Section 0.5 states and the GitHub API confirms. Plan Section 0.5 names two further safeguards. One is an independent monitoring path that reports every commit the machine account makes in `agentic-os-search`; whether it exists today is not verified (OI-002). The other is removing the machine account's access after C04; that is still in the future.
+**Conclusion.** For this session, "read-only" on `agentic-os-search` is a rule of the plan that only the builder's compliance enforces. No technical boundary has been observed. On GitHub, the machine account has write permission, as plan Section 0.5 states and the GitHub API confirms. Plan Section 0.5 names two further safeguards:
 
-**Library unchanged.** The builder made no commit, push, branch, pull request, issue or comment in `agentic-os-search`. Every operation listed in L-002 and L-003 read data or ran locally.
+- **Safeguard 2:** a monitoring path, independent of DevOS, that reports every machine-account commit in `agentic-os-search` to Batu. The plan builds this path later (G-001), so it is probably absent today.
+- **Safeguard 3:** removing the machine account's access in C04, after the library has been imported into Supabase and verified. This is still in the future.
+
+**No write by the builder.** The builder made no commit, push, branch, pull request, issue or comment in `agentic-os-search`. Apart from `add_repo`, every operation in L-002 and L-003 only read data or ran locally. `add_repo` changed the session's GitHub scope; it did not write to the repository. The basis for this paragraph is the builder's own record (same session); it has not been verified independently.
 
 ---
 
@@ -83,20 +93,45 @@ The builder read completely, from beginning to end: `DevOS_Kurulum_Plani.md`, `E
 
 ### FND-001 · Requested or declared restriction reported as an enforced boundary
 
-- **Symptom:** The builder told Batu that the library had been added "with read-only permission", when only a request parameter had been set and the GitHub identity actually has write permission.
-- **Failure class (plan Section 6.11):** A restriction that is requested, declared or self-imposed (a tool parameter, an instruction, a role name) is reported as an enforced and verified technical boundary. This is the same distinction the plan draws between declaration and authority (K-9, item 2c) and the exam focus of DR10 ("do not take a documented feature as working in the account").
+- **Symptom:** The builder told Batu that the library had been added "with read-only permission". In fact only a request parameter had been set, and the GitHub identity has write permission. In the first version of this ledger entry (commit `84f258b`), the builder then made the opposite error and stated that the session *can* write, which was not verified either. Independent checking caught that second error (EV-C00-001, review note).
+- **Failure class (plan Section 6.11):** A restriction or capability that is requested, declared, documented or self-imposed (a tool parameter, an instruction, a role name, a connector label, a settings screen) is reported as an enforced and verified state of the system. The plan draws the same distinction between declaration and authority (K-9, item 2c). It is also the exam focus of DR10: do not take a documented feature as working in the account.
 - **Multi-agent failure class:** verification (a claim made without verification).
-- **Causes (Appendix D, D6):** Proximate cause: the builder repeated the tool's own label ("read") in its report to Batu. Enabling condition: the builder had just read plan Section 0.5, which states that the machine account has write access, and did not check the report against it. Prevention gap: no rule required an access statement to name its enforcement layer. Detection gap: Batu caught it, not the builder (Appendix E, 2.2: such a case is a failure record and its cause is examined).
-- **Class-level repair:** (1) Rule 5 at the top of this ledger: every access or permission statement names its enforcement layer (GitHub permission, session or proxy, database, instruction only) and its verification status (observed, documented only, not verified). (2) The C00 gap list and the effect-channel inventory (plan Section 0.3, item 13) use the same two columns for every channel. (3) Before reporting an access state to Batu, the builder checks it against the plan's own statement about that access.
-- **Capability gap:** none confirmed. A single event does not establish one (plan Section 6.11).
+- **Causes (Appendix D, D6):**
+  - **Proximate cause:** the builder repeated the tool's own label ("read") in its report to Batu.
+  - **Enabling condition:** the builder had just read plan Section 0.5, which states that the machine account has write access, and did not check the report against it.
+  - **Prevention gap:** the existing rules already covered this case: Appendix E 4.1 and 4.2 (speak only as far as the evidence carries) and Appendix D D4, item 9 (limit the language of confidence). They were not applied at the moment of writing the message, and nothing enforced them.
+  - **Detection gap:** Batu caught the error, not the builder. Appendix E 2.2 says such a case is a failure record and its cause is examined.
+- **Can the same class recur by another route (D6, item 8)?** Yes. Upcoming statements of the same kind include: "the builder's Supabase connection is read-only" (inferred from the connector's name or tool list), "connectors are removed from the routine" (inferred from a settings screen), "branch protection covers administrators", and "the second model receives only public content". Each needs an observed enforcement before it can be reported as such.
+- **Repair, and the layer each part changes:**
+  1. **Record format:** Rule 5 at the top of this ledger. Every access statement names its enforcement layer and verification status.
+  2. **Inventory structure:** the C00 gap list and the effect-channel inventory (plan Section 0.3, item 13) carry the same two columns for every channel.
+  3. **Builder's working method:** before reporting an access state to Batu, the builder checks the statement against the plan's own statement about that access and against the evidence record.
+  4. **Class-level regression test:** OI-007.
+- **Capability-gap candidate:** yes, as a candidate only, not confirmed. Every DevOS role runs on the same model family, so this blind spot may be shared (plan Section 6.11), and DR10's exam targets exactly this behaviour. Confirmation needs reproduction, a causal separation and a counterexample, not a count of events (Appendix B 3.20).
+- **Evidence:** L-003, EV-C00-001.
+- **Applies when:** any statement about access, permission, isolation, enforcement or capability of a platform component, made to Batu or recorded as fact.
+- **Does not apply when:** the statement is explicitly labelled as a plan, a design intent or an assumption.
 
 ---
 
 ## 5. Open items
 
-| ID | Item | Where it is resolved |
+| ID | Item | Builder's position and where it is resolved |
 |---|---|---|
-| OI-001 | Whether the session's git proxy and GitHub tools enforce `access: "read"` for `agentic-os-search` is untested; a probe was denied by the session's permission system. Until resolved, the library repository is treated as writable by this session. | Batu decides whether to permit a no-write probe; otherwise it stays untested and the residual risk is recorded in C00 |
-| OI-002 | Whether the independent monitoring path that reports machine-account commits in `agentic-os-search` (plan Section 0.5, safeguard 2) exists today. The builder cannot see it from this session. | C00 step 1 (preparation verification) |
-| OI-003 | Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session. Whether they are usable credentials, and with what scope, is unknown. They are relevant to the effect-channel inventory and to the C00 condition "no secret visible in an environment variable". | C00 step 1; C01 row 13 |
-| OI-004 | The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account. Plan C01 row 11 expects the system's commits to appear under the machine account. | C00 step 1; C01 row 11 |
+| OI-001 | It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through the GitHub tools. The session's permission classifier denied a preparatory command for a git-proxy probe, and no safe probe exists for the GitHub tools. | **Technical position:** a probe is not needed now. The plan's protection model does not rely on session-level enforcement (plan Section 0.5 accepts technical write access). The repository is already treated as writable, and a real write test is ruled out. A git-proxy probe would cover only one of the channels. Revisit this together with the effect-channel inventory (plan Section 0.3, item 13) and C01 row 12. No decision from Batu is requested. |
+| OI-002 | Safeguard 2 of plan Section 0.5 (independent monitoring of machine-account commits in the library) is probably not in place. | See G-001. The technical response is the builder's to decide in the C00 gap list. |
+| OI-003 | Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are usable credentials, and with what scope, is unknown. | The C00 key inventory (plan Section 12: owner, location, scope and revocation path, never values). C00 step 1, against the preparation item "GitHub erişim anahtarının silinmesi" (deleting the GitHub access key). C00 condition 5. C03 test (3). The effect-channel inventory (plan Section 0.3, item 13). |
+| OI-004 | The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan C01 row 11 expects the system's commits to appear under the machine account. | C00 step 1 (B3 check); C01 row 11 |
+| OI-005 | Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whether safeguard 3 closes the session's git path. | C01 row 12; the effect-channel inventory |
+| OI-006 | EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). | Re-observe and store the raw output when the raw-evidence store exists (C02). Until then, EV-C00-001 is context only and cannot close a condition. |
+| OI-007 | FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder's Supabase connection is read-only", asserted from the connector's name. **Negative control:** an access statement without an enforcement layer and verification status is rejected. **Positive control:** a correctly labelled statement passes. **Break test:** remove the requirement, and the negative example must then pass. | Structural part (a format gate on effect-channel inventory records): C02/C03. Behavioural part (the DR10 hidden exam, prepared by the exam environment): C05. |
+
+---
+
+## 6. Gap candidates (input to C00 step 2)
+
+| ID | Gap | Note |
+|---|---|---|
+| G-001 | Plan Section 0.5 relies on safeguard 2 (independent monitoring of machine-account commits in the library) during C00–C04, when the builder reads the library directly. Yet the plan builds this path later: it is described in Appendix B §6, listed as awaiting verification in Section 10.1 and tested in C09. It is not in the preparation list (Section 12). | The technical response is the builder's decision: for example, an early minimal watcher, or a recorded residual risk for the window. |
+| G-002 | Plan Section 0.5, item 3 and K-9, item 5 say the code-based leak check runs inside the session before the first public write. That check is built and tested only in C03 (C03 test 6; Appendix C N06), while the builder writes to the public `devos` repository from C00 onwards. | Until C03, only the builder's own review of each public write stands. |
+| G-003 | Appendix F treats reading the plan package as coming before C00, while plan Section 9 lists reading as C00 step 2. | Minor ordering inconsistency. |
