@@ -18,7 +18,7 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | C00 in progress, under the `/goal` target of L-004. Step 2 (reading) is complete (L-001). Step 1 has had a first pass (L-006, EV-C00-002); confirmations from Batu are pending (OI-008). Step 0 (translation) has not started. Waiting for Batu's decision D-001 (L-007). | 2026-10-01T17:05Z |
+| Stage | C00 in progress, under the `/goal` target of L-004. Step 2 (reading) is complete (L-001). Step 1 has had a first pass (L-006, EV-C00-002); confirmations from Batu are pending (OI-008). Step 0 (translation) has not started. D-001 answered: light work now, heavy work after the weekly reset (L-007). Gap list and premise inventory, first versions: L-008. Next: Batu's confirmations for OI-008. | 2026-10-01T17:40Z |
 | Binding plan text | Turkish plan package at `devos` commit `6186e5d`, plus the recorded change K10 (L-004) | 2026-10-01 |
 | Working rhythm | Each stage runs under a `/goal` target (K10, L-004). The C00 goal condition is in L-004; it has not been started yet. | 2026-10-01 |
 | Builder's access to `agentic-os-search` | **Not known to be read-only.** On GitHub, the machine account has write (push) permission (observed). At session level, whether `access: "read"` blocks writes is not verified (OI-001). The repository is therefore treated as writable by this session. The only thing keeping it read-only is a plan rule (plan Section 0.5) that only the builder's compliance enforces. Details: L-003, EV-C00-001. | 2026-10-01T16:10Z |
@@ -144,7 +144,17 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | Recommendation | (1). It protects Batu's own Claude use and costs about two days on the heavy steps; quality is unchanged. |
 | Assumption | The warning status means a large share of the weekly limit is used; the exact share is unknown. |
 | If unanswered | Under K10 the builder stops, spends no further usage and waits. Silence is not approval. |
-| Status | open; presented to Batu in Turkish on 2026-10-01 |
+| Status | answered 2026-10-01 |
+| Answer (tr) | "Hafif işlerle ilerle." |
+| Answer interpretation (en) | Option (1): proceed with the light work now; the heavy work waits for the weekly reset (about 2026-10-03 17:00Z). |
+| Answered by | Batu, in the builder session's chat |
+
+### L-008 · 2026-10-01 · Light work under D-001: gap list and premise inventory
+
+- **Gap list, first version:** EV-C00-003, 14 entries. Two are high and likely to change the plan before C02. G-004: no path is defined for applying database migrations. G-007: exam isolation does not hold at GitHub level, because every environment uses the same machine account and a session can attach repositories itself.
+- **Premise inventory, first version:** EV-C00-004, 21 premises. Eight hold, six hold with a condition, seven are questionable, none fails outright. P-04, P-11 and P-19 share one cause and are recorded as a frame signal (plan 6.12): authority boundaries are designed for the database credential, not for every channel.
+- Both records were written in the builder's own session (`same_session`). They are not shown to the independent review or counter-design sessions.
+- Heavy work stays deferred under D-001: translation, the fidelity review, the independent review, the counter-design and the ECC comparison. The ECC comparison is moderate reading but is held back with the rest, to keep within the agreed light scope.
 
 ---
 
@@ -184,11 +194,11 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | OI-005 | Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whether safeguard 3 closes the session's git path. | C01 row 12; the effect-channel inventory |
 | OI-006 | EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). | Re-observe and store the raw output when the raw-evidence store exists (C02). Until then, EV-C00-001 is context only and cannot close a condition. |
 | OI-007 | FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder's Supabase connection is read-only", asserted from the connector's name. **Negative control:** an access statement without an enforcement layer and verification status is rejected. **Positive control:** a correctly labelled statement passes. **Break test:** remove the requirement, and the negative example must then pass. | Structural part (a format gate on effect-channel inventory records): C02/C03. Behavioural part (the DR10 hidden exam, prepared by the exam environment): C05. |
-| OI-008 | Preparation items not visible from the builder session: `devos-backup` exists; extra usage is off; phone apps are set up; the GitHub access key was deleted (EV-C00-002, items 4, 13, 14, 16). | To be asked of Batu in a separate message, after D-001 (Appendix E: one topic per message). Needed for C00 acceptance condition 2. |
+| OI-008 | Preparation items not visible from the builder session: `devos-backup` exists; extra usage is off; phone apps are set up; the GitHub access key was deleted (EV-C00-002, items 4, 13, 14, 16). | Sent to Batu on 2026-10-01 after D-001 was answered, together with G-010 (whether the preparation plan H0–H10 has items beyond Section 12); both are preparation verification, so one topic. Needed for C00 acceptance condition 2. |
 
 ---
 
-## 6. Gap candidates (input to C00 step 2)
+## 6. Gap candidates (superseded by EV-C00-003)
 
 | ID | Gap | Note |
 |---|---|---|
