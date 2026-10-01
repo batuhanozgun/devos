@@ -281,11 +281,11 @@ Rollerin hepsi her an etkin olmak zorunda değildir. Bir işte rollerin aynı ot
 - **Nasıl gerçekleşir:** Bu rol büyük ölçüde mekaniktir: veritabanı fonksiyonları, erişim kuralları, dal koruması ve PR kontrolleri. Bir LLM rolünün iyi niyetine bırakılmaz. LLM tarafı yalnız kontrol değişikliği önerilerini hazırlar.
 - **Girdi (öneri tarafı):** Tespit edilen kontrol açığı, etkilenen etki yolları, mevcut kurallar.
 - **Çıktı:** Kontrol değişikliği önerisi ve gerekçesi; hangi olumsuz ve olumlu testlerin değişeceği.
-- **Tüketici:** DR13-Y (bağımsız inceleme) ve Batu (yüksek etkili değişiklik onayı).
+- **Tüketici:** DR13-Y (bağımsız inceleme ve onay; plan PC-05). Değişiklik Batu'ya ait bir konuya dokunuyorsa (kapsam, maliyet, hesapları) o yönüyle Batu'ya karar olarak gider.
 - **Yetki sınırı:** Çağıranın rol adı ya da kendi beyanı yetki kaynağı değildir. Kontrol değişikliği ile izin değişikliği ayrı korunan yoldadır. Bu rolün mantığını aynı çalışanın doğrudan değiştirebildiği bir düzen güven sınırı sayılmaz.
 - **Kabul:** Yanlış kapsam, kimlik, revizyon ya da dönem engellenirken doğru dar çalışma mümkün.
 - **Kesinti:** Yetki kaynağına ulaşılamıyorsa korunan etki kapalı kalır.
-- **Ortam:** Öneri tarafı `devos-calisma`; inceleme `devos-denetim`; kabul Batu.
+- **Ortam:** Öneri tarafı `devos-calisma`; inceleme ve onay `devos-denetim` (plan PC-05).
 - **Bilgi haritası:** `anthropic-ai-native-sdlc-playbook` (öneriden deterministik kontrole geçiş, geçişli ajan yetkisi); `the-carbon-layer` altındaki yalıtım ve anahtar sınırı incelemesi; `openproject` (tür ve rol bazlı durum geçişi yetkisi); `flowable` (karar politikası).
 - **Yöntemler:** doğrulama bağımsızlığı.
 - **Sınav odağı:** kontrolü gevşeterek "sorunu çözme" önerisini fark etme.
@@ -389,7 +389,7 @@ Yeni bir uzmanlık gerektiğinde rol, bir uzmanı işe hazırlar gibi hazırlan�
 4. **Mesleki süreklilik düzeni:** Rolün öğrenme kayıtlarının, çıkmaz yollarının ve yeterlik profilinin nasıl tutulacağı.
 5. **Sınav:** Ayrı bir oturumun hazırladığı gizli sınav; olumlu ve olumsuz örneklerle.
 6. **Bağımsız inceleme:** Rol paketinin, onu hazırlamayan bir oturumca incelenmesi: sözleşme çelişkisiz mi, paket işe yeterli mi, sınav rolü gerçekten ölçüyor mu?
-7. **Onay:** Rol tanımı yüksek etkili değişikliktir; Batu'nun onayıyla etkinleşir.
+7. **Onay:** Rol tanımı yüksek etkili değişikliktir; bağımsız denetimin onayıyla etkinleşir (plan PC-05). Rolün eklenmesi kapsamı ya da maliyeti değiştiriyorsa o yönüyle Batu'ya karar olarak gelir.
 8. **İzleme ve emeklilik:** Gerçek işteki performans izlenir; kullanılmayan rol gerekçeyle emekliye ayrılır, geçmişi korunur.
 
 **Bu protokolü uygulayan roller** (DR02 tasarlar, DR15 yöntemlerini hazırlar, DR04 sınavını tasarlar, DR13-G inceler) aynı ortak tabanı ve aynı yüksek standardı taşır; rol hazırlayan rolün standardı düşükse hazırladığı roller de düşük olur.

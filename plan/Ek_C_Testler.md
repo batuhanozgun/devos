@@ -161,7 +161,7 @@ Bunlar yalnız veritabanı testleriyle değil, gerçek oturumlarla sınanır. He
 | K08 | Yedek eski yetkiyi canlandırıyor | F03 sınıf testi ve gerçek geri yükleme tatbikatı | C09 |
 | K09 | Yeni tasarım, eski bütün | Tasarım değiştiği halde parçaları eski kalan ürün "güncel" sayılmaz; yeniden yapılacak işler açılır | C08, C11 |
 | K10 | İki iyi yöntemin kötü birleşimi | Ayrı ayrı sınavı geçen iki yöntemin birlikte uygulanması ayrıca sınanır; koşul ve karşı kanıt kaybı yakalanır | C10 |
-| K11 | Kontrol değişikliğinin onayı | Kontrolün kendisini değiştiren bir öneri yüksek etkili değişiklik olarak denetim ortamına ve Batu'ya gider; kontrol kendi değişikliğini onaylayamaz | C10 |
+| K11 | Kontrol değişikliğinin onayı | Kontrolün kendisini değiştiren bir öneri yüksek etkili değişiklik olarak denetim ortamının onayına gider (plan PC-05); kontrol kendi değişikliğini onaylayamaz | C10 |
 | K13 | Kontrol doğru çalışıyor ama zorunlu gereksinim tanımı eksik (P4 §21.11'in özgün sorusu) | Hiçbir kontrol değişikliği yapılmadan, kurallara uygun ama gerekli bir dayanağı kaçıran bir işlem yürütülür; mekanik kontroller geçer. Başarı: dış çerçeveden bakan bir inceleme (denetim ortamı ya da çerçeve denetimi) eksik gereksinimi yakalar. Mekanik güvenlik anlamsal yeterlik değildir | C07, C10 |
 | K12 | Tamamlanmış rapor, kabul edilmemiş sistem | C12 kabul dosyası her kriter için kanıt ve bağımsızlık düzeyi taşır; kurulumun bitmesi DevOS'un yeterliği olarak sunulmaz | C12 |
 

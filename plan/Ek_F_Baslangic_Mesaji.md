@@ -1,10 +1,10 @@
 # Ek F — Kurucunun başlangıç mesajı / Builder's opening message
 
-**Sürüm:** 1.3 (plan 2.1 ile uyumlu; K9 dil kararı; K10 çalışma ritmi, 1 Ekim 2026) · **Tarih:** 29 Eylül 2026
+**Sürüm:** 1.4 (plan 2.1 ile uyumlu; K9 dil kararı; PC-01 ve PC-04, 1 Ekim 2026) · **Tarih:** 29 Eylül 2026
 
 **Batu için:** Hazırlık planının son adımında Claude Code'da yeni bir oturum açacaksın: ortam olarak `devos-kurulum`'u, depo olarak `devos` ve `agentic-os-search`'ü seçeceksin. Aşağıdaki çizginin altındaki metnin tamamını kopyalayıp ilk mesaj olarak yapıştıracaksın. Metin İngilizce, çünkü DevOS'un kendi içindeki dili İngilizce (K9); kurucu seninle Türkçe konuşacak. Başka bir şey yazman gerekmiyor.
 
-**Çalışma ritmi (K10, 1 Ekim 2026):** Her aşama bir `/goal` hedefiyle yürür. Kurucu her aşamanın başında sana hedef metnini verir. Sen oturuma `/goal ` yazıp bu metni yapıştırırsın; oturumun otomatik kipte olması gerekir. Kurucu üç durumda durup sana döner: aşama bitti; senin bir kararın ya da işlemin gerekiyor; ya da aşamayacağı bir engel var. Hedefi erken durdurmak istersen `/goal clear` yazarsın.
+**Çalışma düzeni (PC-04, 1 Ekim 2026):** Bu mesaj yalnız ilk kurucu oturumu içindi. Tasarıma göre sonraki oturumları kurucu kendisi başlatır ve `/goal` yazman gerekmez. Bunun bir kısmı gözlendi; gözetimsiz devam henüz sınanıyor (T-A2). Durumu `devos` deposundaki `DURUM.md` sayfasından görürsün. Senden beklenenler tek bir GitHub issue'sunda, adım adım gelir; cevabını orada verirsin.
 
 ---
 
@@ -49,7 +49,7 @@ Do not build anything or change any file before you have finished reading.
 5. Write down the premises the plan relies on and put each one through the from-scratch test (premise inventory).
 6. Save the results under `devos/evidence/C00/` as safe summaries (no private content) and report to Batu in Turkish, following Appendix E: short messages, one topic each.
 
-**Working rhythm (Batu's decision K10, 1 October 2026; plan Section 9, introduction).** Each stage runs under a `/goal` target. At the start of each stage, write the goal condition (in English), record it in the ledger and give it to Batu, who starts it with `/goal`. The goal is met when one of three stop conditions holds: (1) the stage is complete: every acceptance condition is shown with evidence in the ledger, changes are pushed, and the stage closure is ready for audit review; (2) a decision or action by Batu is needed and has been sent to him in Appendix E format and recorded; (3) you have hit a blocker you cannot pass, including a loop limit or no progress, and it is recorded with its reason and reported to Batu. At every stop, state which condition holds, with evidence IDs. The goal evaluator is a small model that reads only the conversation, so a met goal is never stage acceptance.
+**Operating model (PC-04, 1 October 2026).** Follow `plan/Builder_Operating_Model.md`. Work runs in builder sessions that start with `/goal <run condition>`; you start each successor run yourself (Batu types nothing). `main` is the single source of truth: merge at every checkpoint and before every stop. At every stop, paste the unedited output of `tools/builder_check.sh`. A met goal is never stage acceptance. Batu's items are batched into one GitHub issue, and `DURUM.md` (Turkish) stays current. This paragraph replaces the earlier "Working rhythm" paragraph (PC-01, formerly "K10").
 
 **Records:** Until Supabase is set up, keep your progress in `devos/plan/ledger.md`, in English. Write each stage's acceptance conditions before you see results; never loosen a condition after seeing the result.
 
