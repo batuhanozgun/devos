@@ -27,7 +27,9 @@ if [ -z "$lock" ]; then bad "run lock row missing"
 else
   ok "run lock row present"
   sid="${CLAUDE_CODE_REMOTE_SESSION_ID:-}"; sid="${sid#cse_}"
-  if [ -n "$sid" ] && printf '%s' "$lock" | grep -q "$sid"; then ok "run lock names this session"
+  holder=$(printf '%s' "$lock" | grep -oE '`session_[A-Za-z0-9]+`' | head -1 | tr -d '`')
+  [ "${BUILDER_RUN:-0}" = "1" ] && echo "MODE  run" || echo "MODE  report"
+  if [ -n "$sid" ] && [ "$holder" = "session_$sid" ]; then ok "run lock holder is this session ($holder)"
   elif [ "${BUILDER_RUN:-0}" = "1" ]; then bad "run lock does not name this session (BUILDER_RUN=1)"
   else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher; runs set BUILDER_RUN=1)"; fi
   exp=$(printf '%s' "$lock" | grep -oE 'Expires [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z' | head -1 | cut -d' ' -f2)

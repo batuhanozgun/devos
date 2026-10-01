@@ -1,10 +1,11 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.3 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
+**Version:** 1.4 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
 
 **History:**
 - v1.0 was committed as `a58413a` (SHA-256 `e37de022…afb4`) 17 seconds *after* the counter-design was pushed (`73baa5a`). That the builder had not read the counter-design before then rests on the builder's own account; git order does not prove it.
 - v1.1 adds the counter-design's improvements and the probe results (§14).
+- v1.4 answers R-C00-BOM-3 (FAIL). After the third round of findings in the same layer, the builder ran a frame review (§9, "Threat model") instead of patching again. The session-tool layer is now an allow list; a new session's revision must carry `.claude/settings.json`; MCP resource readers are blocked; the lease hand-over is defined; the redaction is checked tree-wide.
 - v1.3 answers R-C00-BOM-2 (FAIL): the hook now also enforces the session tools (full `devos` checkouts only, owned targets only), non-MCP publishing surfaces are blocked, the hook wrapper fails closed when the script cannot run, the deny rules are removed (register rule), the run-lease check is a gate for runs, and the mechanism register is completed.
 - v1.2 answers independent review R-C00-BOM-1 (FAIL): the connector premise BP-04 was false and is withdrawn (§9 rewritten); the PC-05 edits are completed; a mechanism register is added (Appendix M); the hook now fails closed and limits GitHub writes to `devos`.
 
@@ -29,10 +30,10 @@ This document designs the builder's operating model as a whole. Every mechanism 
 |---|---|---|---|---|
 | BP-01 | Batu is not a message carrier. He decides only his own matters and sees status without asking. | Batu, 2026-10-01 | requirement | Yes: Batu's requirements |
 | BP-02 | `main` of `devos` is the only source of truth; a conversation or a branch is not memory. | plan D7; PC-03 | design choice | Yes, until the database exists (C02); then the database is live state and `main` stays the record of files |
-| BP-03 | A session whose first message is `/goal <condition>` runs under that goal, even when another session created it. | T-A1a, T-A1c (observed) | observed | Yes; it is the only observed way to continue without Batu typing |
+| BP-03 | A session whose first message is `/goal <condition>` runs under that goal, even when another session created it. | T-A1a, T-A1b (observed) | observed | Yes; it is the only observed way to continue without Batu typing |
 | BP-04 | ~~Builder-created sessions carry no account connectors.~~ **Withdrawn: false.** Builder-created sessions inherit the account's connectors under opaque IDs (`mcp__<uuid>__…`), some of which finish connecting only after the session starts. GitHub and the session tools keep their display names. | R-C00-BOM-1 (B1); T-H3 | observed (the T-A1c self-report had missed servers still connecting) | n/a (withdrawn) |
 | BP-05 | Routine sessions created through the session tool carry no connectors and no tools at all, have no repository, and **run on a smaller default model** (Sonnet), not the configured one. | T-A1b (observed) | observed | n/a (an observed limit, not a choice) |
-| BP-06 | Hooks in the checked-out `.claude/settings.json` are enforced by the harness, including in builder-created sessions. Deny rules by display name work only where connectors carry display names (the session Batu started). | T-H1, T-H2, T-H3 (observed) | observed | Yes; the only enforcement layer outside the model in phase A |
+| BP-06 | Hooks in the checked-out `.claude/settings.json` are enforced by the harness, including in builder-created sessions. (The display-name deny rules this premise also covered were removed in v1.3.) | T-H1, T-H2, T-H3 (observed) | observed | Yes; the only enforcement layer outside the model in phase A |
 | BP-07 | Separate sessions give thinking independence, not authority independence (same model family, same account). | plan K-7 | design limit | Yes, as a stated limit; replaced by the audit environment at C03 |
 | BP-08 | The weekly usage limit is shared with Batu. Its status is readable from any session record; the fraction used is not. | observed | observed | n/a (observed fact) |
 | BP-09 | Batu receives GitHub notifications on his phone from issues where the machine account mentions or assigns him. | plan 5.5 and 6.9; EV-C00-002 item 14 | documented; tested by T-D1 | Yes, pending T-D1 |
@@ -59,6 +60,7 @@ This document designs the builder's operating model as a whole. Every mechanism 
 - The state file `plan/ledger.md` has a **Run lock** row: the holder's session ID, plus an expiry of the last checkpoint plus 3 hours, renewed at every checkpoint merge.
 - A booting session treats the lease as live if it has not expired **and** `get_session` shows the holder working. Otherwise it may take over.
 - Two sessions taking over at once collide on the lease row when they merge. Git serialises the merges, so the loser exits.
+- **Hand-over.** The predecessor runs its stop check (`BUILDER_RUN=1`) first, then creates the successor as its last act. A booting session may take over a lease whose holder is its own `parent_session_id` (shown by `get_session` on itself), even while that holder is still alive. Any other live, unexpired lease means: report and stop.
 
 ### 2.3 Dispatcher and heartbeat
 
@@ -222,25 +224,31 @@ Boot step 5 checks it, and `builder_check.sh` checks that it is not older than t
 
 ## 9. Security (H)
 
-**The barrier.** One harness hook, `.claude/hooks/tool_allowlist.py`. It is run through a wrapper in `.claude/settings.json` that turns any non-zero exit other than 2 into 2, so a hook that cannot run (a syntax error, a failed import, a missing `python3` or a missing file) also blocks. It applies to every session whose checkout contains `.claude/` at this revision. Hooks from the checkout are observed to run in builder-created sessions (T-H3).
+**Threat model (frame review after R-C00-BOM-1 to R-C00-BOM-3).** Three review rounds found new routes around the session-tool rules each time. That is a squeeze signal (plan 6.12), so the builder questioned the frame instead of adding a fourth patch. A hook that lives in a repository the builder can edit **cannot be a barrier against a builder that intends to bypass it**. What it can do is stop **accidents and injected instructions** (for example text in a fetched page or a library file that tells the session to send mail). The design goal is therefore:
+- every route an honest builder might take by mistake is blocked technically, by allow lists rather than deny lists;
+- deliberate bypass is visible in git and stated as a residual risk;
+- a stronger barrier would need a credential the builder does not hold. That arrives with the audit environment (C02–C03), or would need an account-level change. The account-level change is Batu's decision (D-003).
 
-**What it enforces:**
+**The barrier.** One harness hook, `.claude/hooks/tool_allowlist.py`. It runs through a wrapper in `.claude/settings.json` that maps any non-zero exit other than 2 to 2, so a hook that cannot run also blocks. It applies in sessions whose checkout contains `.claude/` at this revision. Hooks from the checkout run in builder-created sessions (T-H3).
 
-| Surface | Rule | Verification |
+| Surface | Rule (allow list) | Verification |
 |---|---|---|
-| MCP servers | Only the GitHub tools, the session tools and the read-only Supabase connector (display name, or opaque ID `86834617…`, identified by inference: same tool set, the account's only Supabase connector per preparation H5, same ID in two sessions). Everything else is blocked, including connectors under opaque IDs and connectors added later. | Unit-tested (T-H4); live for the session-tool rule (T-H5) |
-| GitHub writes | Only `batuhanozgun/devos` (case-insensitive). Repository creation and forking are blocked. Review-thread tools without a repository field are allowed; they act on threads of PRs the builder opened. | Unit-tested |
-| Session tools | `create_session` only with a **full** checkout of `devos` in the builder environment (no sparse checkout, no other environment). `add_repo` only for `devos`, or the library with read access. Tools that act on an existing session or routine (send, fire, update, delete, archive, interrupt, title, tags) only on IDs in `.claude/hooks/owned_ids.txt`. `create_trigger` never with connectors. | Unit-tested; one live block (T-H5) |
-| Non-MCP surfaces | Artifact publishing and reading, and design sync, are blocked | Unit-tested |
+| MCP servers | Only the GitHub tools, the session tools and the read-only Supabase connector (display name, or opaque ID `86834617…`, identified by inference). Everything else is blocked, including connectors under opaque IDs and later ones. | Unit-tested (T-H4); live in a builder-created session (T-H6) |
+| GitHub writes | Only `batuhanozgun/devos`, case-insensitive. Repository creation and forking are blocked. Review-thread tools without a repository field are allowed for **any** thread ID (they cannot be scoped by repository; low impact). | Unit-tested; live (T-H6) |
+| Session tools | Allow list only. `create_session` needs a full checkout of `devos` in the builder environment, on `main` or this session's branch, and the revision must carry `.claude/settings.json` as known to this checkout. `add_repo` is allowed for `devos`, or for the library with read access. Tools acting on an existing session or routine (send, fire, update, delete, archive, interrupt, title, tags, event reads, trigger reads) need an ID in `owned_ids.txt`. `create_trigger` must carry no connectors, may fire only into owned sessions, and must use the builder environment. Every unlisted session tool is blocked, including listing other sessions and routines. | Unit-tested; one live block in the builder's first session (T-H5); live in a builder-created session (T-H6) |
+| Non-MCP surfaces | Artifact tools, design sync and the MCP resource readers are blocked | Unit-tested |
 
-**Why there is no separate hook for editing `.claude/**`** (plan 6.1 proposes one). A session-local block on `Edit` and `Write` can be bypassed through the shell and would also block reviewed changes. Changes to `.claude/**` and to `owned_ids.txt` are high-impact: they go through a review before merge and are visible in git. From C03, the audit environment's credential separation is the real protection.
+**Owned-ID list.** An ID returned by the builder's own `create_session` or `create_trigger` call is added to `.claude/hooks/owned_ids.txt` at once. This is a record change, merged at the next checkpoint and checked at closure. Adding any other ID, or removing one, is a high-impact change.
+
+**Why there is no separate hook for editing `.claude/**`** (plan 6.1 proposes one). A session-local block on `Edit` and `Write` can be bypassed through the shell, and it would also block reviewed changes. Under the threat model above it adds nothing that git history does not already show. Changes to `.claude/**` go through review before merge, but that is enforced by **instruction only**: `main` has no required approval (G-015).
 
 **Not protected (residual risk, stated):**
-- `git push` to the library repository through the session's git proxy (OI-001). The hook blocks attaching it with push access, but not a push from a clone that is already attached.
-- A session edits its own `.claude/**`. The edit takes effect within seconds in that session; it is visible in git and reviewed before merge, but not prevented in the session.
-- Sessions started from a revision without `.claude/` (any session started before this change merges, or by Batu outside `devos`).
-- Non-MCP tools not listed above that reach account data or publish, if new ones appear. The register check at each stage closure re-lists the session's tool surfaces.
-- The read-only Supabase restriction is the database role's. The hook allows every tool of that connector.
+- A session that deliberately edits its own `.claude/**` (it takes effect within seconds), or that pushes a branch without `.claude/` and creates a session on it. The second route is blocked unless the branch is this session's own branch.
+- `git push` to the library repository from a clone already attached (OI-001).
+- Sessions Batu opens himself, and any session started before this change merges.
+- Non-MCP tools not listed that may appear later; the register check re-lists them at each stage closure.
+- The read-only Supabase restriction belongs to the database role, not the hook.
+- Known over-blocking, which is safe and must not be "fixed" by widening the rules: `add_repo` for the old experiment repositories (they are read in C04 through a separate job); session IDs given in the `cse_` form are normalised.
 
 ## 10. Thinking discipline (F)
 
@@ -294,11 +302,12 @@ The trigger check of the nine questions is recorded as one line per work item wh
 |---|---|---|---|
 | T-A1a | A builder-created session can run under `/goal` | Goal set and evaluated in the session record | **PASS** (`session_018kpRnAaG9R3vaRTg5wMyye`) |
 | T-A1b | A tool-created one-shot routine starts a goal session with no connectors | Goal set; the session reports no connector servers | **PASS**, with a finding: the routine session ran on a smaller model and had no tools or repository (BP-05) |
-| T-A1c | A builder-created session has no account connectors | The session's own list shows no mail, calendar or file servers | **FAIL** (revised). The self-reported opaque server `1a59c906…` is the Claude Docs connector (T-H3), not GitHub, and other connectors were still connecting. Found by R-C00-BOM-1. |
+| T-A1c | A builder-created session has no account connectors | The session's own list shows no mail, calendar or file servers | **FAIL** (revised). The self-reported opaque server `1a59c906…` is an account connector (T-H3; service name withheld), not GitHub, and other connectors were still connecting. Found by R-C00-BOM-1. |
 | T-H3 | Hooks from the checkout run in builder-created sessions; tool names there | A temporary hook blocking `*__get_me` blocks the GitHub `get_me` call in a builder-created session; the session lists its servers | **PASS** (`session_01Mzm3osD53QgSNyVYoX9mS3`, report `evidence/C00/probes/T-H3.md` on `claude/probe-hook-report`): GitHub and the session tools have display names; the 10 account connectors have opaque IDs |
-| T-H4 | The hook decides correctly, and the test detects breakage | `tools/test_tool_allowlist.sh`, run through the settings wrapper: 45 controls pass (26 negative, 15 positive, 4 wrapper fail-closed cases). With one rule removed (the sparse-checkout check), the test fails. | **PASS** (v1.3) |
-| T-H5 | The session-tool rule blocks live | In the builder session, `send_message` to a session ID not in `owned_ids.txt` is blocked before it is sent | **PASS**: blocked with the hook's message |
-| T-H1 | Repository deny rules remove connector tools | The tools become unavailable in the running session | **PASS** in the builder's first session only (display names); not effective under opaque IDs |
+| T-H4 | The hook decides correctly, and the test detects breakage | `tools/test_tool_allowlist.sh`, with the command and matcher read from `settings.json`: v1.4 has 71 checks (matcher coverage, negative and positive controls, wrapper fail-closed cases). Removing any of four rules (GitHub block list, revision check, session allow list, owned persistent session) makes the test fail. | **PASS** (v1.4) |
+| T-H5 | The session-tool rule blocks live | In the builder session, `send_message` to a session ID not in `owned_ids.txt` is blocked before it is sent | **PASS**: blocked with the hook's message (builder session `session_016Hi3ZYgAf2amYNGc43a3tr`, about 18:48Z; the tool error is the record) |
+| T-H6 | The allowlist hook blocks live in a **builder-created** session | In a builder-created full-checkout session: a GitHub write to a repository other than `devos`, `send_message` to a foreign ID and `create_session` without `source_url` are blocked; `get_me` is allowed | pending |
+| T-H1 | Repository deny rules remove connector tools | The tools become unavailable in the running session | **Retired**: the mechanism was removed in v1.3. It passed only in the builder's first session. |
 | T-H2 | The allowlist hook blocks non-listed MCP tools before execution and allows listed ones | A temporary hook blocked `mcp__github__get_me`; with only the allowlist hook installed, the same call succeeded. Unit inputs: three blocked, five allowed, unreadable input blocked. | **PASS** |
 | T-E1 | A review session's result reaches the builder through the repository | The counter-design file was fetched from `claude/counter-design-builder-model` with no involvement from Batu | **PASS** |
 | T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | pending |
@@ -345,7 +354,7 @@ Reading v1.0 against the counter-design shows v1.0's main blind spot: it treated
 ## Appendix R1 · Run template
 
 ```text
-/goal You are a DevOS builder run on the devos repository. Follow the boot in plan/Builder_Operating_Model.md section 3.1, take or confirm the lease in plan/ledger.md, then work through the work list by priority, merging into main at every checkpoint. Stop at the first stop condition S1-S5 of section 2.1. This goal is met only when your last message names the stop condition, lists the evidence IDs of items closed in this run, and contains the unedited output of `BUILDER_RUN=1 tools/builder_check.sh` ending in BUILDER_CHECK PASS. Before stopping, update DURUM.md and start the successor run or schedule the wake-up if section 2 requires it. Never use account connectors. Batu's silence is never approval.
+/goal You are a DevOS builder run on the devos repository. Follow the boot in plan/Builder_Operating_Model.md section 3.1, take or confirm the lease in plan/ledger.md, then work through the work list by priority, merging into main at every checkpoint. Stop at the first stop condition S1-S5 of section 2.1. This goal is met only when your last message names the stop condition, lists the evidence IDs of items closed in this run, and contains the unedited output of `BUILDER_RUN=1 tools/builder_check.sh`, showing `MODE  run` and ending in BUILDER_CHECK PASS. Before stopping, update DURUM.md and start the successor run or schedule the wake-up if section 2 requires it. Never use account connectors. Batu's silence is never approval.
 ```
 
 ## Appendix R2 · Dispatch check (dispatcher session, on each heartbeat)
@@ -391,9 +400,9 @@ Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-fo
 | Second-channel reminder (6) | A missed notification stalls a decision | Notifications are not guaranteed | Appendix E §8 timing is right for Batu | One reminder | Both channels missed; work waits (stated) | Decisions stall unnoticed |
 | `DURUM.md` (7) | Batu must ask for status (expectation 5) | Status lives in English records | Runs rewrite it at every checkpoint, which the check script verifies by time only | One rewrite per checkpoint | Stale content; caught at closure | Batu asks, or reads English records |
 | Usage policy D-002 (8) | Builder exhausts Batu's shared limit | Fraction used is invisible | BP-08 | Slower heavy work at warning level | Status lags real use | Batu's own use blocked without warning |
-| Allowlist hook with wrapper (9) | Connector use, writes to wrong repositories, sessions without the barrier, acting on others' sessions | Instruction is not a barrier | BP-06 | One script per guarded call | An edited hook in a session (stated residual) | Connectors and other repositories reachable (R-C00-BOM-1 B1, R-C00-BOM-2 B1) |
-| Owned-ID list (9) | Session tools acting on Batu's own sessions or routines | Session tools reach every session of the account | The list is kept current when the builder creates sessions | One line per created session or routine | Missing ID blocks the builder (fails closed) | The builder could message or rewrite Batu's own sessions |
+| Allowlist hook with wrapper (9) | Accidental or injected connector use, writes to wrong repositories, sessions without the barrier, acting on others' sessions | Instruction is not a barrier | BP-06; threat model of §9 (accidents and injection, not deliberate bypass) | One script per guarded call | An edited hook in a session; a session started from a revision without `.claude/` (blocked unless it is this session's branch); a hook timeout (untested) | Connectors and other repositories reachable (R-C00-BOM-1 B1, R-C00-BOM-2 B1) |
+| Owned-ID list (9) | Session tools acting on Batu's own sessions or routines | Session tools reach every session of the account | IDs returned by the builder's own create calls are added at once, as record changes | One line per created session or routine | Missing ID blocks the builder (fails closed) | The builder could message or rewrite Batu's own sessions |
 | Squeeze-signal frame review (10) | Mechanisms pile up instead of questioning the frame | Bias towards adding fixes | A second mechanism for one problem is a usable signal | A short review when triggered | Signal missed; caught at the register check | Frame blindness (plan 6.12) |
 | Discipline line per item (10) | Disciplines skipped silently | Inconsistent self-application | A one-line record makes skipping visible | One line per item | Box-ticking; checked by the closure review | No trace of D1–D9 use |
 
-**Removed at the v1.3 register check:** the display-name deny rules. Their removal test showed no loss: the hook blocks the same tools, and the rules did not match opaque IDs.
+**Removed at the v1.3 register check:** the display-name deny rules. Their removal test showed no loss while the hook runs: the hook blocks the same tools, and the rules did not match opaque IDs. They were, however, a second layer independent of `python3` in the builder's first session. The wrapper makes the hook block if `python3` is missing, which covers that case.

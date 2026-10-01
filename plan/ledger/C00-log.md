@@ -323,3 +323,30 @@ A fresh-context subagent (read-only; it used only `list_events` and a local pars
 | M10: non-MCP account surfaces outside the hook | **Accepted.** Artifact tools and design sync are blocked by the hook; other new surfaces are a stated residual risk, re-listed at each register check. |
 
 **Correction to L-016.** Its dispositions for M6 ("Stamps corrected") and M9 (fixed in the English text only) overstated what was done; they are corrected here.
+
+### L-019 · 2026-10-01 · Independent review R-C00-BOM-3: FAIL; frame review; operating model v1.4
+
+**Review.** `session_01PEMTsgPZVoFoz44RHzPELw`, full checkout of `c0007ea`; verdict `evidence/C00/reviews/R-C00-BOM-3.md`, from `claude/review-R-C00-BOM-3`. **FAIL**: B1 (the session-tool rules were bypassable through `source_revision`, `create_trigger.persistent_session_id`, unlisted session tools and MCP resource readers), B2 (the M9 redaction was recorded as done but was incomplete), 9 minor findings, and conditions C1–C4.
+
+**Frame review (plan 6.12; squeeze signal).** This was the third review round that found new routes in the same layer, so the builder questioned the frame before patching again. Result: a hook in a repository the builder can edit cannot stop a builder that intends to bypass it. It can stop accidents and injected instructions. The design was changed accordingly, instead of adding a fourth set of deny rules:
+1. The session-tool layer is now an **allow list**: unlisted tools are blocked.
+2. A new session's revision must carry `.claude/settings.json`, as known to this checkout.
+3. The threat model and the residual risk are stated (operating model §9).
+4. The stronger barrier is a credential the builder does not hold (audit environment, C02–C03), or an account-level change. Choosing between them is Batu's decision **D-003**, to be asked in the issue batch.
+
+**Dispositions:**
+
+| Finding | Disposition |
+|---|---|
+| B1 a1–a3, b, c1, c2, d1, d2, e | **Accepted.** Session-tool allow list; revision check (main or this session's branch, carrying `.claude/settings.json`); `create_trigger`: owned persistent sessions only, builder environment, `connectors` absent or `[]`; event and trigger reads on owned IDs only; listing other sessions and routines blocked; MCP resource readers blocked and matched. Negative controls for each case. Test: 71 checks; 4 mutations detected. |
+| B2 redaction incomplete | **Accepted.** Redacted tree-wide. Command run: `git grep -n -i -E 'gmail\|google[ _]calendar\|google[ _]drive\|gamma\|figma\|wispr\|rankedin\|claude[ _]docs\|context7\|granola'` over tracked files; result: no match (exit 1). The names remain in git history (not rewritten on a public repository). L-018's M9 disposition was wrong; corrected here. |
+| m1 thread tools | **Accepted**: documented as allowed for any thread ID, with low impact. |
+| m2 test gaps | **Accepted**: `fork_repository` on `devos` tested; the test reads the command and matcher from `settings.json` and checks matcher coverage. |
+| m3 lease hand-over | **Accepted**: the successor may take over a lease held by its own parent session (§2.2, `CLAUDE.md` step 3). |
+| m4 `builder_check.sh` | **Accepted**: the holder is matched on the first backticked ID; `MODE run` or `MODE report` is printed; R1 requires `MODE run`. |
+| m5 owned-ID workflow | **Accepted**: adding IDs returned by the builder's own create calls is a record change; other changes are high-impact. |
+| m6 stale statements | **Accepted**: BP-03 cites T-A1a and T-A1b; T-H1 is retired; the deny-rule sentence in BP-06 is removed. |
+| m7 review before merge is instruction only | **Accepted**: stated as such (G-015). |
+| m8 T-H5 not traceable | **Accepted**: session and approximate time recorded; the tool error is the record. |
+| m9 defence in depth | **Accepted**: noted in the register. |
+| C4 live check in a builder-created session | **Accepted**: test T-H6 (pending at this entry). |

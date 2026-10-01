@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__.*|Artifact|ArtifactData|ArtifactComments|DesignSync",
+        "matcher": "mcp__.*|Artifact|ArtifactData|ArtifactComments|DesignSync|ListMcpResourcesTool|ReadMcpResourceTool|ReadMcpResourceDirTool",
         "hooks": [
           {
             "type": "command",

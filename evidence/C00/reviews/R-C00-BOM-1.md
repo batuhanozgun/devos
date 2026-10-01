@@ -32,7 +32,7 @@ Nothing in the target is a public-repository safety problem (criterion 6 passes)
   - `get_session` shows that this session was created by `session_016Hi3ZYgAf2amYNGc43a3tr` through the session tool.
   - Its tool list includes the account's connector servers: mail, calendar, file storage and several further third-party services, plus Supabase and one more that needs authentication. [Service names redacted by the builder on 2026-10-01 (R-C00-BOM-2 M9): personal account metadata; the rest of this review is unchanged.]
   - Five of these servers were still "connecting" at session start and appeared only later. A self-report taken early in a session (as in T-A1c) can therefore miss them.
-- **Second problem, with the deny list (T-H1, layer 2a).** In this session the connector servers are named by opaque IDs (for example `mcp__9c01eb9f-…__send_message` for Gmail), not by display names. The deny rules in `.claude/settings.json` use display names (`mcp__Gmail`, `mcp__Google_Drive`, …), so they cannot match these tools. The denied tools are in fact still listed in this session, although the settings file is present in the checkout. T-H1's PASS therefore holds at most for the session where it was observed. It is not a general property.
+- **Second problem, with the deny list (T-H1, layer 2a).** In this session the connector servers are named by opaque IDs (for example `mcp__9c01eb9f-…__send_message` for the mail connector), not by display names. The deny rules in `.claude/settings.json` use display names (`mcp__<display name>`, …), so they cannot match these tools. The denied tools are in fact still listed in this session, although the settings file is present in the checkout. T-H1's PASS therefore holds at most for the session where it was observed. It is not a general property.
 - **What remains:** only layer 2b, the allowlist hook. It blocks every `mcp__<id>__…` name (unit-checked below). Whether it is active in this session was **not** checked, because that would mean calling a connector tool.
 - **Failure scenario:**
   - A reviewer started from a sparse checkout (as the counter-design session was), or any session started on `main` before this PR merges, has no `.claude/settings.json` at all. `main` does not contain it today.
@@ -86,7 +86,7 @@ The PC-05 scope list in `plan/ledger.md` §4 and L-015 item 5 omits §5.5, C01 r
 
   | Input | Exit code |
   |---|---|
-  | Opaque-ID Gmail tool, `mcp__Gmail__send`, `mcp__github_evil__x`, `mcp__githubX`, unknown Supabase ID | 2 (block) |
+  | Opaque-ID mail-connector tool, `mcp__SomeConnector__send`, `mcp__github_evil__x`, `mcp__githubX`, unknown Supabase ID | 2 (block) |
   | `mcp__github__merge_pull_request`, `mcp__github__create_repository`, `mcp__claude-code-remote__create_trigger`, `mcp__Supabase_DevOS_Salt-okuma__execute_sql`, `Bash`, `Read` | 0 (allow) |
   | Non-JSON input | 2 |
   | Valid JSON that is not an object (`[]`, `"x"`) | **1**, with a traceback |

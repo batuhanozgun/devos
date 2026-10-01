@@ -5,13 +5,19 @@
    tool is blocked, including account connectors under opaque IDs.
 2. GitHub write scope: GitHub write tools may target only batuhanozgun/devos;
    repository creation and forking are blocked.
-3. Session-tool scope (R-C00-BOM-2 B1): new sessions only with a full
-   checkout of devos in the builder's environment; repositories may be
-   attached only as devos, or the library read-only; tools that act on an
-   existing session or routine only for IDs in owned_ids.txt; routines
-   never with connectors.
+3. Session tools are an allow list: new sessions only with a full checkout
+   of devos in the builder environment, on main or this session's branch,
+   and only if that revision carries .claude/settings.json; repositories
+   only devos, or the library read-only; tools that act on an existing
+   session or routine (including reading its events) only for IDs in
+   owned_ids.txt; routines never with connectors and only into owned
+   sessions; every unlisted session tool is blocked.
 4. Non-MCP surfaces that publish or reach account data (artifacts, design
-   sync) are blocked.
+   sync, MCP resource readers) are blocked.
+
+Threat model: this hook guards against accidents and injected instructions.
+It cannot stop a session that deliberately edits it; that residual risk is
+stated in Builder Operating Model section 9.
 
 Exit code 2 blocks. Every error path that runs inside this script returns 2.
 The settings command wraps the script so that any other non-zero exit
@@ -20,6 +26,7 @@ The settings command wraps the script so that any other non-zero exit
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +39,8 @@ ALLOWED_PREFIXES = (
     "mcp__Supabase_DevOS_Salt-okuma__",
     "mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__",   # read-only Supabase connector, opaque ID (inferred: T-H3)
 )
-BLOCKED_NON_MCP = {"Artifact", "ArtifactData", "ArtifactComments", "DesignSync"}
+BLOCKED_NON_MCP = {"Artifact", "ArtifactData", "ArtifactComments", "DesignSync",
+                   "ListMcpResourcesTool", "ReadMcpResourceTool", "ReadMcpResourceDirTool"}
 
 WRITE_REPOS = {("batuhanozgun", "devos")}
 READ_ONLY_GITHUB = {"get_me", "pull_request_read", "issue_read", "actions_get", "actions_list"}
@@ -40,13 +48,16 @@ READ_ONLY_GITHUB_PREFIXES = ("get_", "list_", "search_")
 REPOLESS_GITHUB_ALLOWED = {"resolve_review_thread", "unresolve_review_thread"}
 BLOCKED_GITHUB = {"create_repository", "fork_repository"}
 
-TARGETED_SESSION_TOOLS = {
+OWNED_TARGET_FIELDS = {   # session tools that act on one existing session or routine
     "send_message": "session_id", "archive_session": "session_id",
     "unarchive_session": "session_id", "interrupt_session": "session_id",
-    "set_session_title": "session_id",
+    "set_session_title": "session_id", "list_events": "session_id",
+    "get_event": "session_id",
     "fire_trigger": "trigger_id", "update_trigger": "trigger_id",
-    "delete_trigger": "trigger_id",
+    "delete_trigger": "trigger_id", "get_trigger": "trigger_id",
 }
+FREE_SESSION_TOOLS = {"send_later", "list_environments", "list_repos", "read_documentation"}
+DEVOS_PR_TOOLS = {"subscribe_pr_activity", "unsubscribe_pr_activity"}
 
 
 def block(msg):
@@ -59,7 +70,29 @@ def owned_ids():
         return {l.strip() for l in f if l.strip() and not l.startswith("#")}
 
 
+def norm(i):
+    i = str(i or "")
+    return "session_" + i[4:] if i.startswith("cse_") else i
+
+
+def git(*args):
+    root = os.path.dirname(os.path.dirname(HERE))
+    return subprocess.run(["git", "-C", root, *args], capture_output=True, text=True, timeout=20)
+
+
+def revision_has_barrier(rev):
+    """The revision a new session checks out must carry .claude/settings.json (known locally)."""
+    if rev in (None, "", "main"):
+        ref = "origin/main"
+    elif rev == git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip():
+        ref = "HEAD"
+    else:
+        return False
+    return git("cat-file", "-e", f"{ref}:.claude/settings.json").returncode == 0
+
+
 def check_session_tool(tool, args):
+    owned = owned_ids()
     if tool == "create_session":
         if not DEVOS_URL.match(str(args.get("source_url", ""))):
             return block("create_session needs a full checkout of batuhanozgun/devos (source_url)")
@@ -67,6 +100,8 @@ def check_session_tool(tool, args):
             return block("create_session with a sparse checkout runs without the barrier")
         if args.get("environment_id") not in (None, BUILDER_ENV):
             return block("create_session only in the builder environment")
+        if not revision_has_barrier(args.get("source_revision")):
+            return block("create_session only on main or this session's branch, and only if that revision carries .claude/settings.json")
         return 0
     if tool == "add_repo":
         owner, repo = str(args.get("owner", "")).lower(), str(args.get("repo", "")).lower()
@@ -76,20 +111,34 @@ def check_session_tool(tool, args):
             return 0
         return block(f"add_repo {owner}/{repo} with access {args.get('access', 'read')} is not allowed")
     if tool == "create_trigger":
-        if args.get("connectors"):
+        if args.get("connectors") not in (None, []):
             return block("routines may not carry connectors")
+        if args.get("persistent_session_id") and norm(args["persistent_session_id"]) not in owned:
+            return block("a routine may fire only into a builder-owned session")
+        if args.get("environment_id") not in (None, BUILDER_ENV):
+            return block("routines only in the builder environment")
+        return 0
+    if tool == "get_session":
+        if "session_id" in args and norm(args["session_id"]) not in owned:
+            return block("get_session only on this session or builder-owned sessions")
         return 0
     if tool == "set_session_tags":
         ids = args.get("session_ids") or []
-        if not isinstance(ids, list) or not set(map(str, ids)) <= owned_ids():
+        if not isinstance(ids, list) or not {norm(i) for i in ids} <= owned:
             return block("set_session_tags only on builder-owned sessions")
         return 0
-    if tool in TARGETED_SESSION_TOOLS:
-        target = str(args.get(TARGETED_SESSION_TOOLS[tool], ""))
-        if target not in owned_ids():
+    if tool in OWNED_TARGET_FIELDS:
+        target = norm(args.get(OWNED_TARGET_FIELDS[tool]))
+        if target not in owned:
             return block(f"{tool} on '{target}', which is not a builder-owned ID (owned_ids.txt)")
         return 0
-    return 0   # read-only and self-scoped session tools (get_*, list_*, send_later, ...)
+    if tool in DEVOS_PR_TOOLS:
+        if (str(args.get("owner", "")).lower(), str(args.get("repo", "")).lower()) != ("batuhanozgun", "devos"):
+            return block(f"{tool} only for batuhanozgun/devos")
+        return 0
+    if tool in FREE_SESSION_TOOLS:
+        return 0
+    return block(f"session tool '{tool}' is not on the allow list")
 
 
 def check(data):

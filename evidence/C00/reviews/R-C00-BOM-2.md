@@ -60,7 +60,7 @@ Public-repository safety passes (criterion 7), with one minor note (M9).
   | `add_repo` with `{"owner":"batuhanozgun","repo":"agentic-os-search","access":"push"}` | Attaches the library repo with push credentials. With `git push` this is a library write. §9 names `git push` (OI-001) but not this step. |
   | `send_message` with `{"session_id":"…","message":"…"}` | Sends a prompt to any session of the account, including sessions Batu opened himself with connectors and no hook |
   | `update_trigger` or `fire_trigger` with `{"trigger_id":"trig_…"}` | Rewrites or fires any routine of the account, including Batu's own routines that may store connectors |
-  | `create_trigger` with `"connectors":["Gmail"]` | Rejected server-side today ("not available for this organization", T-A0), so the hook is the only barrier if that changes |
+  | `create_trigger` with `"connectors":["SomeConnector"]` | Rejected server-side today ("not available for this organization", T-A0), so the hook is the only barrier if that changes |
 
 - **Failure scenario:**
   - The builder starts the dispatcher, a reviewer or a probe with `create_session` and forgets `source_url`. Or, for "input restriction", it uses a sparse checkout, as it did for the counter-design session (FND-002).

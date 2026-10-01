@@ -18,7 +18,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T18:40Z |
-| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T21:52Z unless renewed. | 2026-10-01T18:52Z |
+| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T22:03Z unless renewed. | 2026-10-01T19:03Z |
 | Next action | Finish W-C00-05: independent review of the operating model, tests T-B1 and T-A2, then merge and start runs under the operating model. | 2026-10-01T18:40Z |
 | Usage | `seven_day` `allowed_warning`; resets 2026-10-03T17:00Z. Light work only, under D-001; a scheduled wake-up is set for 2026-10-03T17:15Z. | 2026-10-01T18:40Z |
 | Waiting for Batu | Nothing blocking. One decision will be raised with the operating-model briefing: D-002, a standing usage policy. | 2026-10-01T18:40Z |
@@ -75,6 +75,7 @@ Criteria served by C00 (plan): 18, 21, 25–27, 29, 34.
 | PC-02 | Branch management. **[Batu, 2026-10-01]:** the builder creates, merges and deletes branches; Batu gives no merge approvals. Builder: PR-only into `main`; never touch library repositories; log every merge. | Batu + builder | C00-log L-011, L-013 (filed as "K11") |
 | PC-03 | Continuity: merge into `main` before every stop | builder (after Batu's concern) | C00-log L-014 |
 | PC-04 | Builder operating model for the installation period (`plan/Builder_Operating_Model.md`) | builder; **[Batu, 2026-10-01]**: the requirement and expectations 1–5 | C00-log L-015 onward |
+| D-003 | Residual risk: the connector barrier is a hook the builder can edit; it stops accidents and injection, not deliberate bypass. Accept for installation, or make an account-level change. | Batu (to be asked in the issue batch) | C00-log L-019 |
 | PC-05 | Technical approval of high-impact changes moves from Batu to independent review. Places: plan 4 K-11 item 7, 5.5, 5.6 (İhtiyaç and Seçim), 6.1, 6.7 (two), 6.8 item 5, 6.9, 7.4, C01 row 11; Appendix A DR12 and §6 step 7; Appendix C K11; Appendix E §8. **[Batu, 2026-10-01]**, expectation 2. | Batu | C00-log L-015, L-016 |
 
 ---
