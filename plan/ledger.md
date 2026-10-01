@@ -217,6 +217,14 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 
 **Branches:** `claude/epic-hamilton-9tisc4` is not an old branch. It is this session's working branch, reset to `main` after the merge (L-012). It stays until this line of work ends and is then deleted. Merged branches that no longer have a purpose are deleted at merge.
 
+### L-014 · 2026-10-01 · Continuity rule: merge to `main` before every stop
+
+> Original (tr): "anladım. yeni oturumda main'den başlıyor ya oturum bağlamı dolduğunda yeni oturuma geçersek kaldığın yerden devam edemeybilirsin diye branchlara konularında davranıyorum."
+>
+> Interpretation (en): Batu's concern behind the branch question: a new session starts from `main`. If the context fills up and work moves to a new session, the builder might not be able to continue from where it stopped.
+
+**Rule (added to K11 as limit 5, plan Section 9):** before every stop under K10, the builder merges its work into `main`, so a new session can continue from the ledger on `main` alone (Appendix D, D7). The ledger's "Current state" table and the latest L-entry are the hand-off. Session-only state, such as the local clone of the library and subagent transcripts, is never relied on across sessions.
+
 ---
 
 ## 4. Findings
