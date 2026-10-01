@@ -60,6 +60,13 @@ t 2 '{"tool_name":"mcp__claude-code-remote__subscribe_pr_activity","tool_input":
 t 2 '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"owner":"batuhanozgun","repo":"soul","threadId":"x"}}'
 t 2 '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"source_url":"https://github.com/batuhanozgun/devos\n"}}'
 t 2 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$(git rev-parse --abbrev-ref HEAD)\",\"permission_mode\":\"bypassPermissions\"}}"
+t 2 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
+t 2 '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
+t 2 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"worktree"}}'
+t 2 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"some_future_value"}}'
+t 2 '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}"}}'
+t 2 '{"tool_name":"ReadNotifications"}'
+t 2 '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"owner":"batuhanozgun","threadId":"x"}}'
 t 2 '[]'
 t 2 '"x"'
 t 2 '{}'
@@ -69,15 +76,21 @@ t 2 'garbage'
 t 0 '{"tool_name":"mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__execute_sql"}'
 t 0 '{"tool_name":"mcp__claude-code-remote__get_session"}'
 t 0 '{"tool_name":"mcp__claude-code-remote__send_later","tool_input":{"delay_minutes":5,"message":"x"}}'
+t 0 '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
 br=$(git rev-parse --abbrev-ref HEAD)
-t 0 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\"}}"
+# Branch controls need this branch on the remote; the hook fetches it (not hermetic, R-C00-BOM-5 m2).
+if git ls-remote --exit-code --heads origin "$br" >/dev/null 2>&1; then bok=0; else bok=2; echo "info branch $br is not on the remote: branch controls expect a block"; fi
+t $bok "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\"}}"
+# isolating controls: these pass every rule except the one named (m3)
+[ $bok = 0 ] && t 2 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos-x\",\"source_revision\":\"$br\"}}"
+[ $bok = 0 ] && t 2 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\",\"outcome_branch\":\"main\"}}"
 if git cat-file -e origin/main:.claude/settings.json 2>/dev/null; then
   t 0 '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"source_url":"https://github.com/batuhanozgun/devos","prompt":"x"}}'
 else
   t 2 '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"source_url":"https://github.com/batuhanozgun/devos","prompt":"x"}}'
   echo "info main has no .claude/settings.json yet: a session on main is correctly blocked"
 fi
-t 0 "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\",\"environment_id\":\"env_01AMBDuHjjTsXMeXFyYgk1zR\"}}"
+t $bok "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$br\",\"environment_id\":\"env_01AMBDuHjjTsXMeXFyYgk1zR\",\"outcome_branch\":\"claude/x\"}}"
 t 0 '{"tool_name":"mcp__claude-code-remote__add_repo","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search","access":"read"}}'
 t 0 '{"tool_name":"mcp__claude-code-remote__send_message","tool_input":{"session_id":"session_016Hi3ZYgAf2amYNGc43a3tr","message":"x"}}'
 t 0 '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative"}}'
@@ -104,7 +117,6 @@ r=$(printf '{}' | CLAUDE_PROJECT_DIR="$PWD" env PATH=/nonexistent /bin/sh -c "$c
 [ "$r" = "2" ] && echo "ok   wrapper blocks when python3 is missing" || { echo "BAD  python3 missing not blocked ($r)"; fail=1; }
 rm -rf "$tmp"
 # --- PostToolUse recorder: appends own IDs, never blocks
-cp .claude/hooks/owned_ids.txt "$tmp.owned" 2>/dev/null
 rd=$(mktemp -d); cp .claude/hooks/record_owned_id.py "$rd/"; printf 'x\n' > "$rd/owned_ids.txt"
 printf '{"tool_name":"mcp__claude-code-remote__create_session","tool_response":{"ccr":{"id":"session_TESTREC123","parent_session_id":"session_PARENT"}}}' | python3 "$rd/record_owned_id.py"; r1=$?
 printf '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_response":"{\\"trigger\\":{\\"id\\":\\"trig_TESTREC456\\"}}"}' | python3 "$rd/record_owned_id.py"
@@ -112,6 +124,21 @@ printf '{"tool_name":"mcp__claude-code-remote__send_message","tool_response":{"i
 # observed real format: a list of text items holding a JSON string
 python3 -c 'import json;print(json.dumps({"tool_name":"mcp__claude-code-remote__create_session","tool_response":[{"type":"text","text":json.dumps({"ccr":{"id":"session_REALFORMAT789","parent_session_id":"session_PARENT"}})}]}))' | python3 "$rd/record_owned_id.py"
 grep -qx session_REALFORMAT789 "$rd/owned_ids.txt" && echo "ok   recorder reads the observed list-of-text format" || { echo "BAD  recorder misses the observed format"; fail=1; }
+# further shapes (R-C00-BOM-5 N-M1): pretty-printed text, cse_ form, foreign ID first, nested parent, ambiguity
+rec() { python3 -c 'import json,sys;print(json.dumps({"tool_name":"mcp__claude-code-remote__"+sys.argv[1],"tool_response":json.loads(sys.argv[2])}))' "$1" "$2" | python3 "$rd/record_owned_id.py"; }
+rec create_session '[{"type":"text","text":"{\n  \"ccr\": {\n    \"id\": \"session_PRETTY1\"\n  }\n}"}]'
+rec create_session '[{"type":"text","text":"{\"ccr\":{\"id\":\"cse_CSEFORM2\"}}"}]'
+rec create_session '"{\"note\":{\"id\":\"session_FOREIGN\"},\"ccr\":{\"id\":\"session_NEWAFTER3\"}}"'
+rec create_session '{"parent":{"id":"session_PARENTX"},"id":"session_NEW4"}'
+rec create_session '[{"type":"text","text":"{\"ccr\":{\"id\":\"session_AMBIG5\"}}"},{"type":"text","text":"{\"ccr\":{\"id\":\"session_AMBIG6\"}}"}]'
+rec create_session '[{"type":"text","text":"Session created."},{"type":"text","text":"{\"ccr\":{\"id\":\"session_WITHPROSE7\"}}"}]'
+rec create_trigger '[{"type":"text","text":"{\"trigger\":{\"id\":\"trig_LIST8\",\"persistent_session_id\":\"session_OTHER\"}}"}]'
+for want in session_PRETTY1 session_CSEFORM2 session_NEWAFTER3 session_NEW4 session_WITHPROSE7 trig_LIST8; do
+  grep -qx "$want" "$rd/owned_ids.txt" && echo "ok   recorder records $want" || { echo "BAD  recorder missed $want"; fail=1; }
+done
+for bad in session_FOREIGN session_PARENTX session_AMBIG5 session_AMBIG6 session_OTHER cse_CSEFORM2; do
+  grep -qx "$bad" "$rd/owned_ids.txt" && { echo "BAD  recorder recorded $bad"; fail=1; } || echo "ok   recorder ignores $bad"
+done
 if [ "$r1" = "0" ] && grep -qx session_TESTREC123 "$rd/owned_ids.txt" && grep -qx trig_TESTREC456 "$rd/owned_ids.txt" && ! grep -q SHOULDNOT "$rd/owned_ids.txt" && ! grep -q session_PARENT "$rd/owned_ids.txt"; then echo "ok   recorder appends created IDs only"; else echo "BAD  recorder"; fail=1; fi
 rm -rf "$rd"
 [ $fail -eq 0 ] && echo "ALLOWLIST_TEST PASS" || echo "ALLOWLIST_TEST FAIL"

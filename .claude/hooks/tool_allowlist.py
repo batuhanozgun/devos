@@ -12,8 +12,10 @@
    session or routine (including reading its events) only for IDs in
    owned_ids.txt; routines never with connectors and only into owned
    sessions; every unlisted session tool is blocked.
-4. Non-MCP surfaces that publish or reach account data (artifacts, design
-   sync, MCP resource readers) are blocked.
+4. Non-MCP tools are an allow list; anything not named is blocked. Subagents
+   run in-process only: Agent/Task with any isolation other than none is
+   blocked (a remote subagent is a new cloud session outside rule 3), and
+   Workflow is blocked until its agent options are known (R-C00-BOM-5 N-B1).
 
 Threat model: this hook guards against accidents and injected instructions.
 It cannot stop a session that deliberately edits it; that residual risk is
@@ -45,13 +47,14 @@ ALLOWED_PREFIXES = (
 # and worktree switching (which would change the enforced hook).
 ALLOWED_NON_MCP = {
     "Bash", "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit",
-    "Agent", "Task", "ToolSearch", "Skill", "Workflow", "StructuredOutput",
+    "Agent", "Task", "ToolSearch", "Skill", "StructuredOutput",
     "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput",
     "TodoWrite", "Monitor", "WebFetch", "WebSearch",
     "AskUserQuestion", "EnterPlanMode", "ExitPlanMode", "SendUserFile",
     "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
     "ReportFindings", "SubagentHandback",
 }
+SUBAGENT_TOOLS = {"Agent", "Task"}   # in-process only: no isolation field at all (N-B1)
 
 WRITE_REPOS = {("batuhanozgun", "devos")}
 READ_ONLY_GITHUB = {"get_me", "pull_request_read", "issue_read", "actions_get", "actions_list"}
@@ -116,6 +119,8 @@ def check_session_tool(tool, args):
             return block("create_session only in the builder environment")
         if args.get("permission_mode") == "bypassPermissions" or args.get("extra_allowed_tools"):
             return block("create_session may not widen permissions")
+        if str(args.get("outcome_branch", "")).strip().lower() in ("main", "refs/heads/main"):
+            return block("create_session may not push to main; main changes only through a pull request (PC-02)")
         if not revision_has_barrier(args.get("source_revision")):
             return block("create_session only on main or this session's branch, and only if that revision carries .claude/settings.json")
         return 0
@@ -167,6 +172,10 @@ def check(data):
     if not isinstance(args, dict):
         return block("tool input is not an object; blocking")
     if not name.startswith("mcp__"):
+        if name in SUBAGENT_TOOLS:
+            if args.get("isolation") is not None:
+                return block(f"{name} with isolation '{args.get('isolation')}': subagents run in-process only")
+            return 0
         if name in ALLOWED_NON_MCP:
             return 0
         return block(f"tool '{name}' is not on the allow list")

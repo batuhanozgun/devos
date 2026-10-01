@@ -3,6 +3,10 @@
 # The names are NOT stored in this repository's current tree: they are derived at run time
 # from the display-name deny list in .claude/settings.json at commit 3cd686a (removed later),
 # so that this check does not re-publish them (R-C00-BOM-4 B2).
+# Limits (R-C00-BOM-5 m6): generic words are excluded, so a generic word used as a
+# product name is not caught; the list is a snapshot from 3cd686a, so a connector added
+# to the account later is not covered. At each stage closure, compare the derived terms
+# with a probe session's live server list, without writing the names to the tree.
 # Usage: tools/check_service_names.sh   -> exit 0 and "SERVICE_NAMES CLEAN" if none found.
 set -u
 names=$(git show 3cd686a:.claude/settings.json 2>/dev/null | python3 -c '

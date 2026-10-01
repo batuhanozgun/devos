@@ -393,3 +393,31 @@ This closes condition C4 of R-C00-BOM-3.
 - The reviewer's ID was added **by hand**, as a one-off exception. It is the builder's own create response, verifiable in this session's record. Hand edits are otherwise high-impact.
 - The live re-test of T-H7 happens at the next `create_session`.
 - Context note: this session is at about 77% context, beyond the 50% hand-over threshold of §2.1. It was not handed over, because PR #4, which installs the operating model, is not merged yet and needs this session's review loop. It hands over immediately after the merge (W-C00-05 remainder).
+
+### L-023 · 2026-10-01 · Review R-C00-BOM-5 answered: operating model v1.6
+
+**Review.** `session_01Y99Zfo6NNQUsTwGzyKckus`; verdict `evidence/C00/reviews/R-C00-BOM-5.md`, copied from `claude/review-R-C00-BOM-5`. **FAIL**: one blocking finding (N-B1), one major (N-M1), nine minor, one residual route to state (R-1). It found R-C00-BOM-4 resolved at the tool-name level, and reproduced 84 of 84 checks and four mutation detections on the pushed head.
+
+**Loop budget (L-021).** L-021 said that if this round failed, the builder would stop patching and record the rest as residual risk. The builder departs from that for N-B1, for the reviewer's reason: it is a route taken by mistake, the fix is one rule, and §9's design goal makes such routes blocking. Everything else in this round is a stated residual risk or a minor fix. The next check is narrow (R-C00-BOM-6: this diff and the recorder), not a sixth full round.
+
+| Finding | Disposition |
+|---|---|
+| N-B1: `Agent`/`Task` with `isolation: "remote"` starts a cloud session outside the `create_session` rules; `Workflow` unchecked | **Accepted.** `Agent` and `Task` are allowed only with no `isolation` field; any value, including `worktree` and future values, is blocked (stricter than the reviewer's proposal, fails closed). `Workflow` is removed from the allow list until its agent options are known. Negative controls and mutation checks added; §9 row updated. |
+| N-M1: the recorder searched text and would miss or misread real shapes | **Accepted.** It now parses the response (a dict, a JSON string, or a list of text items), takes the ID only from `ccr.id` / `trigger.id` (or a top-level `id` when that object is absent), normalises `cse_`, and records nothing when it finds none or more than one. Tests cover 8 shapes, including pretty-printed text, the `cse_` form, a foreign ID earlier in the response, a nested parent ID, two IDs, and prose before the JSON. §9 says "designed; live test T-H7 pending". |
+| R-1: shell routes holding session credentials (messaging socket, ingress token file, `claude` program) | **Accepted as a stated residual risk.** Added to §9 "Not protected" and to the D-003 brief. Plan Section 9 item 6 (Turkish) now says the hook looks at tool names and inputs only, and points to the list. Not exercised. |
+| R-4: whether hooks run for subagent tool calls | **Accepted** as an open premise in §9. |
+| m1: T-H5 over-credited for the `.*` matcher | **Accepted**: the row cites the reviewer's live `ReadNotifications` block instead. |
+| m2: test not hermetic | **Accepted**: the branch controls expect a block and print an `info` line when the branch is not on the remote; §13 says so. |
+| m3: three rules without an isolating control | **Accepted** for two: a `devos-x` URL and an owner-only thread call. The `FETCH_HEAD` gap is noted in §13 as covered by reading only. |
+| m4: stray `cp` line; recorder shapes | **Accepted**: removed; shapes added (N-M1). |
+| m5: hook docstring item 4 stale | **Accepted.** |
+| m6: limits of the name check | **Accepted**: stated in the script header. Comparison with a live server list is added to each stage closure. |
+| m7: Appendix M "Allowlist hook" failure column | **Accepted**: uninspected tool inputs and the shell routes added. |
+| m8: `outcome_branch: "main"` allowed | **Accepted**: blocked, with an isolating control. |
+| m9: known over-blocking unnamed | **Accepted**: `ReadNotifications`, `ScheduleWakeup`, `CronCreate`, `Workflow` and worktree-isolated subagents listed in §9. |
+
+**Mutation checks** (run in a scratch worktree at the same commit, removed afterwards; a first attempt in the scratchpad was invalid because the hook's git root was wrong there, and its control run failed, so it was discarded). Each mutation made the test fail: subagent isolation rule removed; `fullmatch` → `match`; repository-less thread condition removed; `outcome_branch` rule disabled; `Workflow` re-added.
+
+**Final check runs (after this entry was written):**
+- `tools/test_tool_allowlist.sh`: 107 ok, `ALLOWLIST_TEST PASS` (one `info` line: `main` has no `.claude/settings.json` yet).
+- `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.
