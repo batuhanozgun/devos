@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 23:01 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
+**Son güncelleme:** 1 Ekim 2026, 23:01 (Türkiye saati) · **Son nabız:** 1 Ekim 2026, 23:09 (Türkiye saati). Dağıtıcı kontrol etti: kurucu oturum zaten çalışıyor, yeni oturum başlatılmadı.
 
 **Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
 
