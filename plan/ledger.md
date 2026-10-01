@@ -18,8 +18,8 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T20:01Z |
-| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T23:16Z unless renewed. | 2026-10-01T20:17Z |
-| Next action | Finish W-C00-05: T-A2 failed (L-029); v1.7 fix reviewed (R-C00-BOM-7, conditions met, L-030) and merged; now T-A2r (new dispatcher, lease released, a run is started without Batu). T-B1r passed and issue #6 is open (L-028). Heavy C00 items (W-C00-06 to 11) wait for the weekly usage reset at 2026-10-03T17:00Z (D-001); light work only until then. | 2026-10-01T20:46Z |
+| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Released 2026-10-01T20:48Z (L-031): the next run started by the dispatcher takes it. | 2026-10-01T20:48Z |
+| Next action | For the next run: (1) boot; run `tools/check_dispatcher_pr.sh` and merge the dispatcher PR only on `DISPATCHER_PR OK`; (2) record T-A2r against its pre-registration in EV-C00-005 (dispatcher `session_01VsRPE6azkUFEXhtkjJcJ5f`, one-shot `trig_01W2ujJKa95rUkY5MVF1FS7X`); (3) check W-C00-05 acceptance (a)-(h) and record what remains; (4) usage hold (S5): release the lease and schedule a one-shot wake-up into the dispatcher at 2026-10-03T17:15Z. Heavy C00 items (W-C00-06 to 11) wait for the weekly usage reset at 2026-10-03T17:00Z (D-001); light work only until then. | 2026-10-01T20:48Z |
 | Usage | `seven_day` `allowed_warning`; resets 2026-10-03T17:00Z. Light work only, under D-001; a scheduled wake-up is set for 2026-10-03T17:15Z. | 2026-10-01T18:40Z |
 | Waiting for Batu | Nothing blocking. D-002 (usage policy) and D-003 (residual barrier risk) are in [issue #6](https://github.com/batuhanozgun/devos/issues/6), opened 2026-10-01T19:59Z; defaults apply until he answers. Reminder through the second channel after 24 hours (Appendix E §8). | 2026-10-01T20:01Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
