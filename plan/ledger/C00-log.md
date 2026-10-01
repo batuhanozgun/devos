@@ -289,3 +289,14 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | ID | Open item | Where it is resolved |
 |---|---|---|
 | OI-009 | Confirm that no connector tool was called in the sessions that ran without the barrier: `session_01UgKhdvKnZacS7EVcGpe79C`, `session_018kpRnAaG9R3vaRTg5wMyye`, `session_01DaBd2sS8rT6TyBhHxFi8QV`, `session_01FMMpUHBn5EbpYgtSjY9hyZ`, The reviewer `session_0139FAmiXGW3U6rGKKbmgNYy` ran on revision `3cd686a`, whose first allowlist hook already blocked opaque-ID servers. Hooks are shown to run in such sessions (T-H3), so it was probably protected; this is not verified. | Builder: read their tool-use events (`list_events`) before closing W-C00-05 |
+
+### L-017 · 2026-10-01 · OI-009 closed: no connector tool was called in the sessions without the barrier
+
+A fresh-context subagent (read-only; it used only `list_events` and a local parse of its own saved output) read the assistant events of six sessions: the counter-design, T-A1a, T-A1b, T-A1c, the reviewer R-C00-BOM-1 and the T-H3 probe.
+
+- **Conclusion:** no tool of any server other than the GitHub tools or the session tools was called in any of them.
+- **MCP calls found:** the reviewer called `mcp__claude-code-remote__get_session`, and T-H3 called `mcp__github__get_me`, which the hook blocked.
+- **Caveat:** the subagent's per-session labels for T-A1b and the reviewer appear swapped (its "22 tool uses" match the reviewer's work, and "DONE (none)" matches T-A1b). The conclusion covers all six sessions either way.
+- Independence: same session, subagent.
+
+**OI-009: closed.**
