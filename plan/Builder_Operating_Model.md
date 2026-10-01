@@ -1,8 +1,9 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** [Proposal] until the independent review passes (W-C00-05, test T-E2). It becomes binding through plan change PC-04.
+**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** Binding through plan change PC-04 since 2026-10-01T21:05Z (W-C00-05 done, L-033): R-C00-BOM-6 PASS on v1.6, and R-C00-BOM-7 PASS-WITH-CONDITIONS on v1.7 with its conditions met (L-030, judged by the builder; the W-C00-11 closure review re-checks).
 
 **History:**
+- v1.7, status update only (L-033): T-A2r PASS (observed once) and T-E2 PASS recorded; the status changed from [Proposal] to binding. No rule changed.
 - v1.0 was committed as `a58413a` (SHA-256 `e37de022…afb4`) 17 seconds *after* the counter-design was pushed (`73baa5a`). That the builder had not read the counter-design before then rests on the builder's own account; git order does not prove it.
 - v1.1 adds the counter-design's improvements and the probe results (§14).
 - v1.7 answers test T-A2 (FAIL, L-029) and review R-C00-BOM-7 (PASS-WITH-CONDITIONS, L-030). Routine messages arrive as notifications, so the hook now allows `ReadNotifications`. The dispatcher does not merge; a run merges its standing record PR at boot. The lease is live until it expires, whatever the holder's status.
@@ -79,7 +80,7 @@ This document designs the builder's operating model as a whole. Every mechanism 
   - the dispatcher keeps one standing branch, `claude/dispatcher`, and one open record PR from it, which it updates on every heartbeat;
   - every run merges that PR at boot (§3.2) as an ordinary record PR, **only if** `tools/check_dispatcher_pr.sh` prints `DISPATCHER_PR OK`. That means it changes nothing but the `DURUM.md` "Son nabız" line and appended lines in the stage log. Otherwise the run leaves it open and logs a finding. This is a scope check, not an independent review. It exists because the dispatcher reads untrusted notifications (R-C00-BOM-7 B2).
   - Consequence: while no run is active, the heartbeat line on `main` lags. In those states, `DURUM.md`'s first lines already say why no run is active (waiting for Batu, or a usage hold).
-- **Untested premises:** that the classifier lets the dispatcher start a run with `create_session`, and lets a dispatcher-started run merge its lease PR and the dispatcher PR. T-A2r tests both once. A single pass is recorded as "observed once", not as a property, because the classifier's decisions vary with context. If either is denied, that is an S3 blocker and is not routed around (§11).
+- **Premises observed once (T-A2r, L-033):** that the classifier lets the dispatcher start a run with `create_session`, and lets a dispatcher-started run merge its lease PR and the dispatcher PR. Both passed in T-A2r. A single pass is recorded as "observed once", not as a property, because the classifier's decisions vary with context. If either is denied, that is an S3 blocker and is not routed around (§11).
 - **Usage-limit waits:** one-shot wake-ups (`send_later`) into the dispatcher at the reset time plus 15 minutes.
 
 **Assumptions.**
@@ -305,7 +306,7 @@ The trigger check of the nine questions is recorded as one line per work item wh
 
 ## 12. What changes for Batu
 
-- He types no commands. This is designed and partly observed (T-A1a, T-A1b); unattended continuation through the dispatcher is still pending test T-A2.
+- He types no commands. This is designed and partly observed (T-A1a, T-A1b); unattended continuation through the dispatcher was observed once (T-A2r: the dispatcher started a run with nobody typing, and the run merged its records). A run starting its own successor (S4) is not yet observed.
 - He reads `DURUM.md` for status.
 - He answers only in the "Batu'dan beklenenler" issue, which arrives as one batch, step by step.
 - He gives no technical approvals.
@@ -328,9 +329,9 @@ The trigger check of the nine questions is recorded as one line per work item wh
 | T-H1 | Repository deny rules remove connector tools | The tools become unavailable in the running session | **Retired**: the mechanism was removed in v1.3. It passed only in the builder's first session. |
 | T-H2 | The allowlist hook blocks non-listed MCP tools before execution and allows listed ones | A temporary hook blocked `mcp__github__get_me`; with only the allowlist hook installed, the same call succeeded. Unit inputs: three blocked, five allowed, unreadable input blocked. | **PASS** |
 | T-E1 | A review session's result reaches the builder through the repository | The counter-design file was fetched from `claude/counter-design-builder-model` with no involvement from Batu | **PASS** |
-| T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | pending |
+| T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | **PASS**: seven reviews (R-C00-BOM-1 to 7) returned through their branches with no involvement from Batu, each with a disposition per finding (L-016 to L-030). The last full review, R-C00-BOM-6, passed; R-C00-BOM-7 (v1.7) passed with conditions, met in L-030 (EV-C00-005) |
 | T-B1 | A new session continues correctly from `main` alone | A fresh session started with only "continue" boots via `CLAUDE.md`, and names the next action pre-registered in `evidence/C00/EV-C00-005` before the test, without doing other work | **FAIL** (L-027): lease respected, no writes, Next action row named; the usage clause was missing. Retest **T-B1r: PASS** (L-028) |
-| T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | **FAIL** (L-029): the routine fired and the dispatcher decided correctly, but it could not read the message (hook blocked `ReadNotifications`), and the permission classifier denied the merge of its record PR. Design changed (v1.7); retest T-A2r pending |
+| T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | **FAIL** (L-029): the routine fired and the dispatcher decided correctly, but it could not read the message (hook blocked `ReadNotifications`), and the permission classifier blocked its steps toward merging its record PR after the merge call failed at GitHub (corrected in L-030). Design changed (v1.7). Retest **T-A2r: PASS**, observed once (L-033; EV-C00-005) |
 | T-D1 | Batu's channel works | The issue exists and is assigned to Batu; the machine account's mention produces a notification. Only Batu can confirm receipt, so this is checked with his first answer. | Issue [#6](https://github.com/batuhanozgun/devos/issues/6) exists and is assigned to `batuhanozgun` (L-028); receipt pending his first answer |
 
 ---
@@ -395,7 +396,7 @@ Dispatch check. Read devos main: plan/ledger.md (run lock, work list, waiting-fo
 | Hand-over at 50% context (2.1 S4) | Detail lost in compaction | Lossy compaction of long sessions | Compaction loses detail (documented); 50% leaves room for the stop work | Extra boots | Threshold too low wastes boots; too high risks compaction | Long runs compact and drift |
 | Explicit model for runs (2.1) | Runs on a smaller model | Routine and seed sessions default to another model | BP-05 | none | A newer model ID not updated | Heavy work silently on a weaker model |
 | Lease (2.2) | Two builders writing at once | No built-in mutual exclusion across sessions | BP-02; git serialises merges | One row, renewed per checkpoint | Stale lease blocks work until expiry (at most 3h15m) | Conflicting writes; breach of the single-writer rule |
-| Dispatcher and heartbeat (2.3) | A dead chain is never restarted | Routine sessions cannot do builder work | BP-05; persistent-session triggers deliver as queued notifications (observed, T-A2); the classifier allows the dispatcher to start a run, and that run to merge (untested, T-A2r); the dispatcher PR scope check (B2) | About 4 short turns per day | Dispatcher dies; visible as heartbeat age in `DURUM.md`, which lags while no run is active; recreated at boot. A classifier denial of `create_session` would stop unattended restarts | Silent stop after any crash |
+| Dispatcher and heartbeat (2.3) | A dead chain is never restarted | Routine sessions cannot do builder work | BP-05; persistent-session triggers deliver as queued notifications (observed, T-A2); the classifier allows the dispatcher to start a run, and that run to merge (observed once, T-A2r); the dispatcher PR scope check (B2) | About 4 short turns per day | Dispatcher dies; visible as heartbeat age in `DURUM.md`, which lags while no run is active; recreated at boot. A classifier denial of `create_session` would stop unattended restarts | Silent stop after any crash |
 | Wake-up at the usage reset (2.3, 8) | Work does not resume after a limit | Sessions cannot run while limited | BP-08 | One one-shot trigger | Container not reclaimed in time (untested, T-A2) | Waits for the next heartbeat instead |
 | Boot order via `CLAUDE.md` (3.1) | A new session starts from the wrong state | No memory across sessions | BP-02; `CLAUDE.md` loads in every session (documented) | About 30–60k tokens per boot | Stale state file; caught by the `DURUM.md` cross-check | A new session guesses the state (D8 failure) |
 | Checkpoints, record and change PRs (3.2) | Work stays on a branch (failure 2) | Branches are invisible to the next session | BP-02 | One PR per checkpoint | Unmerged branch after a crash; caught by the boot branch listing | Failure 2 recurs |
