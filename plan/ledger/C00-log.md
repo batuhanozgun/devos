@@ -459,3 +459,15 @@ These are tightening changes and wording, applied after the PASS as the reviewer
 - **Branch.** `claude/epic-hamilton-9tisc4` was reset to `origin/main` for the record PR that follows.
 - **T-B1 started** at 19:56Z: `session_01Cm2bFNA5Yxtgk5jPYekAQu`, on `main` (`bfa7ae1`), configured model, first message "continue", no outcome branch. The recorder added its ID to `owned_ids.txt` without a hand edit. This is the second live pass of T-H7, and the first one on `main`'s hook.
 - **Reading of condition 3, written before the result was read.** The pre-registration (EV-C00-005) says "names the next action **as recorded in the state file**", and then gives the text of the row as it stood then. Between the pre-registration and the test, the row changed through merged work (L-023, L-025). The binding part is "as recorded in the state file". The test therefore passes condition 3 only if the session names the Next action row on `bfa7ae1`: merge PR #4, hand over to a fresh run, then T-B1, T-A2 and the Batu issue. It must also say that heavy C00 items wait for the weekly reset. This is not a loosening. The probe must match the file it actually reads, exactly as the condition intends. A stale answer that names only the old text fails.
+
+### L-027 · 2026-10-01 · T-B1 fails on condition 3; cause fixed; retest pre-registered
+
+- **Result** (EV-C00-005). Conditions 1 and 2 are met: the probe booted through `CLAUDE.md`, found the live lease, did not take over and wrote nothing. Condition 3 is met only in part. It named the Next action row correctly, and noticed that the row was stale (PR #4 already merged). It did not say that heavy C00 items wait for the weekly reset. Under the reading fixed in L-026 before the result, that is a **FAIL**. The condition is not loosened.
+- **Cause, two parts.**
+  - The usage constraint was in the Stage row, not in the Next action row. A session that answers "what next" reports the Next action row.
+  - The builder merged PR #4 without updating the Next action row in the same merge, so `main` carried a stale next action. This contradicts §3.2: `main` is the truth at every merge.
+- **Fix.**
+  - The Next action row is now self-contained: it carries the usage constraint and the reset time.
+  - Rule, added to the practice of §3.2: a PR that completes the Next action also rewrites that row.
+- **Positive observation.** The probe detected the stale row by checking `main`'s history against the state file. This is the drift check that §3.2 relies on.
+- **T-B1r** is pre-registered in EV-C00-005 with the same three conditions, and runs after this entry is merged. Lease renewed to 23:05Z.

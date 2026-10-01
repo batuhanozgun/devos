@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 22:55 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
+**Son güncelleme:** 1 Ekim 2026, 23:05 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
 
 **Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
 
@@ -10,8 +10,8 @@
 3. Planda teknik onayın senden alınıp bağımsız denetime verildiği değişiklik (PC-05) yazıldı.
 
 **Sırada**
-- PR'ın `main`'e alınması ve işin yeni bir oturuma devri.
-- Son iki deneme: yeni oturumun kaldığı yerden devam etmesi ve nabız oturumu.
+- Çalışma düzeni `main`'e alındı. Sırada: yeni oturumun kaldığı yerden devam etmesi denemesinin tekrarı (ilk deneme bir koşulda eksik kaldı), sana tek seferlik bilgilendirme ve kararlar (GitHub issue'su), işin yeni bir oturuma devri.
+- Nabız oturumu denemesi (sen yazmadan işin sürmesi).
 - Ardından C00'ın ağır işleri: çeviri, bağımsız plan incelemesi, karşı tasarım. Bunlar haftalık kullanım sınırı yenilendikten sonra (3 Ekim 20:00).
 
 **Senden beklenen:** Şu an yok. Bekleyen bir karar ya da iş olduğunda "Batu'dan beklenenler" başlıklı GitHub issue'sunda, tek seferde ve adım adım gelecek.
