@@ -37,3 +37,17 @@ Same setup as T-B1: started by the builder on `devos` `main`, first message "con
 1. It boots through `CLAUDE.md` (it reads `plan/Builder_Operating_Model.md` and `plan/ledger.md` first).
 2. It reports that the run lock is held by `session_016Hi3ZYgAf2amYNGc43a3tr` and is live (not expired), and it **does not take over**: no commits, no pull requests, no sessions created.
 3. It names the next action as recorded in the state file's Next action row on the tested commit (open the Batu issue, hand over to a run, T-A2), **and** says that heavy C00 items wait for the weekly usage reset (D-001).
+
+## T-A2 pre-registration (written before the one-shot fires at 20:08Z; L-029)
+
+Setup:
+- Dispatcher `session_01FTnQrWv6hTTZyUV7zrJRBh`, on `main` `e0c59ba`, outcome branch `claude/dispatcher`.
+- Heartbeat routine `trig_01D8eBZEmGsHvijrs4dQxNc8`, cron `1 */6 * * *`.
+- One-shot routine `trig_01DJCLg5Mk1tXjzcxUHELiFe` at 2026-10-01T20:08Z.
+- Both routines are bound to the dispatcher and carry the Appendix R2 text, with `mcp_connections` empty.
+
+Pass requires all of the following:
+1. The one-shot fires and delivers the dispatch check into the dispatcher session, with nobody typing.
+2. The dispatcher decides **start nothing**, because the lease is live: holder `session_016Hi3ZYgAf2amYNGc43a3tr`, expiry 23:01Z, holder working. It creates no run.
+3. A record PR from `claude/dispatcher` is merged into `main`. It sets the "Son nabız" line of `DURUM.md`, and adds one log line that states the decision and its reason.
+4. Nothing else is changed on `main`.
