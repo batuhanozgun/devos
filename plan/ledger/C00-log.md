@@ -350,3 +350,14 @@ A fresh-context subagent (read-only; it used only `list_events` and a local pars
 | m8 T-H5 not traceable | **Accepted**: session and approximate time recorded; the tool error is the record. |
 | m9 defence in depth | **Accepted**: noted in the register. |
 | C4 live check in a builder-created session | **Accepted**: test T-H6 (pending at this entry). |
+
+### L-020 · 2026-10-01 · T-H6 passed: the allowlist hook blocks live in a builder-created session
+
+Probe `session_01RAbbNoiRDeWLcXwxUKeJ4F`, a full checkout of `05ba7c9`. Report: `evidence/C00/probes/T-H6.md`, fetched from `claude/probe-T-H6`. 5 of 5 calls behaved as expected:
+- GitHub `get_me` was allowed.
+- A GitHub write to a non-`devos` repository was blocked.
+- `send_message` to a foreign ID was blocked.
+- `create_session` without `source_url` was blocked.
+- `list_sessions` was blocked.
+
+This closes condition C4 of R-C00-BOM-3.
