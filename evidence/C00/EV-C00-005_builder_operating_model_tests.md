@@ -18,7 +18,7 @@ A safe summary in the common evidence envelope (plan 8.9). Independence level fo
 | T-E2 | The independent review of the operating model returns through the repository and is acted on | Verdict file on `claude/review-R-C00-BOM-1`; a disposition for every finding | R-C00-BOM-1 (`session_0139FAmiXGW3U6rGKKbmgNYy`, `fbb027b`): **FAIL**, with 3 blocking and 9 minor findings. Fetched from its branch with no involvement from Batu; dispositions in C00-log L-016; the fixes go to a fresh reviewer, R-C00-BOM-2. | Route PASS; the verdict is FAIL, being fixed |
 | T-B1 | A new session continues correctly from `main` alone | Pre-registered before the test (below) | `session_01Cm2bFNA5Yxtgk5jPYekAQu` on `bfa7ae1`, first message "continue", 19:56–19:57Z. (1) Booted through `CLAUDE.md`: read the operating model §1–3, R1, R2 and the state file first. (2) Reported the lock held by `session_016Hi3ZYgAf2amYNGc43a3tr`, live until 22:16Z and "working" per `get_session`. It did not take over, because it is a child but not a run. No commits, PRs or sessions; its tool calls were reads and two `get_session` calls. (3) Named the Next action row (merge PR #4, hand over, T-B1, T-A2, Batu issue) and noticed that the row was stale, since PR #4 was already merged. It did **not** say that heavy C00 items wait for the weekly reset. Session record read with `list_events`. | **FAIL** (conditions 1 and 2 met; condition 3 partly: the usage clause is missing). L-027; retest T-B1r below |
 | T-B1r | Retest of T-B1 after the fix in L-027 | Pre-registered below, before the retest session is started | `session_01Bwo8rhCyxLS2Ae4So2uVex` on `f58ae0d`, first message "continue", 19:58–19:59Z. (1) Booted through `CLAUDE.md` (operating model, state file, then log, `DURUM.md`, issue search). (2) Lock held by `session_016Hi3ZYgAf2amYNGc43a3tr`, live to 23:05Z, holder working; it did not take over ("not a run"), and wrote nothing. No new remote branch appeared. (3) Quoted the Next action row and said that heavy items W-C00-06 to 11 wait for the reset at 2026-10-03T17:00Z (D-001). It also found the future-dated stamps (L-028). | **PASS** |
-| T-A2 | The dispatch check runs without Batu typing | A one-shot routine wakes the dispatcher session; it runs the dispatch check (Appendix R2) and records its decision in the repository | — | pending |
+| T-A2 | The dispatch check runs without Batu typing | A one-shot routine wakes the dispatcher session; it runs the dispatch check (Appendix R2) and records its decision in the repository (pre-registration below) | The one-shot fired at 20:08:36Z (`last_run` SUCCEEDED, delivered to `cse_01FTnQrWv6hTTZyUV7zrJRBh`). (1) It arrived as a queued notification; the hook blocked `ReadNotifications` (and `list_triggers`), so the dispatcher could not read it. It inferred the check from the pre-registration on `main`. (2) Decision **start nothing**. Under the v1.6 rule then in force, the holder was idle, so the lease was arguably not live; only the usage clause made "start nothing" correct. The dispatcher applied the later v1.7 reading on its own initiative (R-C00-BOM-7 m5). (3) Record PR [#9](https://github.com/batuhanozgun/devos/pull/9) opened. The merge call went through the classifier but failed at GitHub (a short SHA). The classifier then blocked the dispatcher's next steps toward the merge as "merge without review": `git rev-parse HEAD` at 20:10:15Z, and a read of `main` at 20:10:49Z. Corrected after R-C00-BOM-7 B1. Not merged; the builder closed it. (4) Nothing else changed on `main`. The dispatcher also found a rule gap: an idle holder between turns. | **FAIL** (conditions 1 and 3). L-029; retest T-A2r below |
 
 ## T-B1 pre-registration (written before the test session is started)
 
@@ -51,3 +51,21 @@ Pass requires all of the following:
 2. The dispatcher decides **start nothing**, because the lease is live: holder `session_016Hi3ZYgAf2amYNGc43a3tr`, expiry 23:01Z, holder working. It creates no run.
 3. A record PR from `claude/dispatcher` is merged into `main`. It sets the "Son nabız" line of `DURUM.md`, and adds one log line that states the decision and its reason.
 4. Nothing else is changed on `main`.
+
+## T-A2r pre-registration (written before the retest; L-029)
+
+Setup, after the v1.7 changes are reviewed and merged:
+- A new dispatcher session on `main`. Its first message carries the v1.7 rules: read messages with `ReadNotifications`; record on the standing branch `claude/dispatcher` and its one open PR; never merge.
+- The heartbeat routine is re-bound to it, its stored prompt is replaced with the v1.7 Appendix R2 text (added after R-C00-BOM-7 m1, before any retest), and it is re-enabled. The one-shot carries the same v1.7 text.
+- The builder releases the run lock: the expiry is set in the past, in a merged record PR, and the builder stops working.
+- A one-shot routine then wakes the dispatcher.
+
+Pass requires all of the following:
+1. The dispatcher reads the routine's message with `ReadNotifications`, with nobody typing.
+2. It decides **start a run**, because the lease has expired, work is pending (W-C00-05 remainder), nothing blocking waits for Batu, and usage allows one session. It starts the run with `create_session` on `main`, using the configured model and the Appendix R1 goal as its first message.
+3. It records the heartbeat and its decision on `claude/dispatcher` in one open record PR, and does not merge it.
+4. The run boots, takes the lease in a merged record PR, runs `tools/check_dispatcher_pr.sh` (added after R-C00-BOM-7 B2, before any retest), and merges the dispatcher's record PR only on `DISPATCHER_PR OK`.
+
+A pass is recorded as "observed once" for the classifier premises (R-C00-BOM-7 m4c). A classifier denial of the run's merges is also an S3 blocker, never routed around.
+
+If the classifier denies the dispatcher's `create_session`, the test fails on condition 2, and the denial is recorded as a blocker (S3). It is not routed around.

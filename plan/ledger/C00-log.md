@@ -477,3 +477,55 @@ These are tightening changes and wording, applied after the PASS as the reviewer
 - **T-B1r: PASS** (EV-C00-005). The probe `session_01Bwo8rhCyxLS2Ae4So2uVex` met all three conditions. It also found that the stamps in `DURUM.md` and the state file were 6 minutes in the future. The builder had written 20:05Z by estimate when the time was 19:58Z, the same defect as R-C00-BOM-6 n8. **Corrected** to the actual time. **Rule:** stamps are taken from `date -u` at writing time, never estimated.
 - **Issue [#6](https://github.com/batuhanozgun/devos/issues/6)** "Batu'dan beklenenler" was opened at 19:59Z by the machine account and assigned to `batuhanozgun`, with a mention. It carries the briefing, which meets W-C00-05 (g), and D-002 and D-003 in Appendix E format; both are non-blocking, with defaults. D-003 lists the §9 "Not protected" routes, including the shell routes (R-1). One sentence of the D-003 recommendation was corrected one minute after posting: it first said that all remaining routes need deliberate bypass, but the shell and library-push routes can also be reached by an injected instruction that names them. The edit history of the issue shows the correction. W-C00-05 (h) is met; T-D1 receipt waits for Batu's first answer.
 - **No hand-over now.** After context compaction, this session uses about 147k of 1M tokens (15%), below the 50% threshold of S4. The builder therefore runs T-A2 itself and does not pay a run's boot cost. Usage: `seven_day` `allowed_warning`. Reported session cost so far: 42.4 USD-equivalent at list price, a relative measure only (§8).
+
+### L-029 · 2026-10-01 · T-A2 fails; dispatcher design changed (operating model v1.7)
+
+**Result** (EV-C00-005). The one-shot routine fired at 20:08:36Z and delivered the message to the dispatcher `session_01FTnQrWv6hTTZyUV7zrJRBh`. **FAIL** on conditions 1 and 3:
+- **Message unreadable.** Routine messages, and this session's own `send_later` messages, arrive as **queued notifications**, readable only with `ReadNotifications`. The builder's hook blocked that tool: the over-blocking that §9 had listed as "safe" since v1.6. The builder had seen the same notices in its own session and had not drawn the conclusion. That is a reasoning failure, recorded here.
+- **Merge denied.** The session's automatic permission classifier denied the dispatcher's merge of its own record PR [#9](https://github.com/batuhanozgun/devos/pull/9) as a "merge without review", and later its read of `main` too.
+
+Condition 2 was met: the decision was "start nothing", with the right reasons. The dispatcher's content (heartbeat 23:09 TR; decision; findings) is recorded here.
+
+**PR #9 handling.** The builder **closed PR #9 without merging**. Merging it from this session would be a route around the classifier's denial. Its two findings are taken over below.
+
+**Heartbeat.** The routine `trig_01D8eBZEmGsHvijrs4dQxNc8` is **disabled** until the fix is merged, so that it does not fire into a dispatcher that cannot act.
+
+**Findings and changes** (v1.7; all high-impact; review R-C00-BOM-7 before merge):
+
+| ID | Finding | Change |
+|---|---|---|
+| F1 | Routine and `send_later` messages are notifications; `ReadNotifications` was blocked | The hook allows `ReadNotifications`. It reads only this session's own queue, and its contents are untrusted data. The test moves it from a negative to a positive control. §9 updated; it is removed from the over-blocking list. |
+| F2 | The classifier denies a dispatcher's self-merge | The dispatcher never merges. It keeps one standing PR from `claude/dispatcher`; each run reads and merges it at the boot check (§2.3, §3.2, R2). Stated cost: the heartbeat on `main` lags while no run is active. |
+| F3 | Lease liveness used `get_session` "working"; an idle holder between turns would look dead (found by the dispatcher) | The lease is live until expiry, whatever the holder's status (§2.2, `CLAUDE.md` step 3, R2, failure table) |
+| F4 | Whether the classifier lets the dispatcher start a run is unknown | Stated as an untested premise (§2.3, Appendix M); T-A2r tests it, with a denial treated as an S3 blocker |
+
+**T-A2r** is pre-registered in EV-C00-005. Written at 2026-10-01T20:17Z.
+
+### L-030 · 2026-10-01 · Review R-C00-BOM-7: PASS-WITH-CONDITIONS; conditions met
+
+**Review.** `session_01F5o2EmcMv8CbNFLsvJdCq2`; verdict `evidence/C00/reviews/R-C00-BOM-7.md`, copied from `claude/review-R-C00-BOM-7` (`cdd8c3c`). **PASS-WITH-CONDITIONS** on `6d95709`. It found F1, F3 and F4 real and correctly fixed, the lease change strictly more conservative, and the T-A2r pre-registration timely. Conditions: B1, B2, m1.
+
+**Correction to L-029 (B1).** The log is append-only, so the correction is stated here. L-029 says the classifier "denied the dispatcher's merge". The transcript shows a different sequence:
+1. The merge call passed the classifier and failed at GitHub, because the SHA was short.
+2. The classifier then blocked the dispatcher's next step toward the merge, `git rev-parse HEAD`, as "merge without review".
+3. It also blocked a plain read of `main`.
+
+The builder had summarised the dispatcher's own account without reading the transcript. That is the FND-001 class again: a claim was recorded at a strength its source did not support. **Rule:** a claim about another session's actions is checked against its transcript before it is recorded.
+
+| Finding | Disposition |
+|---|---|
+| B1: "merge denied" misreported | **Accepted.** EV-C00-005 T-A2 row and §2.3 rewritten with the sequence; L-029 corrected here. |
+| B2: runs merged the dispatcher PR with no scope check | **Accepted.** New `tools/check_dispatcher_pr.sh`: `DISPATCHER_PR OK` only if the PR changes nothing but the `DURUM.md` "Son nabız" line and appended stage-log lines; otherwise the run leaves the PR open and logs a finding. On PR #9's branch it gives OK. Three negative cases (hook edit, another `DURUM.md` line, an edited log line) give REFUSE (scratch worktree). §2.3, §3.2, R2 and Appendix M updated. Described as a scope check, not a review. |
+| m1: the routine's stored prompt was still v1.6 | **Accepted.** The T-A2r setup now replaces it with the v1.7 R2 text. |
+| m2: notification contents are a wider injection surface | **Accepted.** §9 names the sources, and every session acts only on a notification it expected. R2 tells the dispatcher to ignore other instructions. |
+| m3: no explicit release at a clean stop | **Accepted.** §2.2 "Release": `Released <time>` replaces the expiry. `builder_check.sh` accepts a released lease. R2 and `CLAUDE.md` treat it as stale. The 3h15m bound was already enforced by `builder_check.sh`. |
+| m4: premises and their strength | **Accepted.** The run's merge-ability is an untested premise. A denial is S3. A pass counts as "observed once". T-A2r condition 4 includes the scope check. (e), a negative-control notification, is not added: it costs another session, and R2 already says to ignore other text. |
+| m5: the dispatcher's decision was right only through the usage clause under v1.6 | **Accepted**, in the EV row. |
+| Classifier-denial rule: general, not only for `create_session` | **Accepted.** The §11 row now says: a denial is S3 for that action, never pursued through another tool, session or rewording. The old text "try a compliant route" is removed. |
+| m6: no live evidence left for a non-MCP block | **Noted**: cite the next live block when one occurs. |
+| m7: `DURUM.md` wording | **Accepted** in the next `DURUM.md` update. |
+
+**Final check runs (after this entry was written, 2026-10-01T20:46Z):**
+- `tools/test_tool_allowlist.sh`: 111 ok, `ALLOWLIST_TEST PASS`.
+- `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.
+- `tools/check_dispatcher_pr.sh` on the closed PR #9 branch: `DISPATCHER_PR OK`.

@@ -53,6 +53,8 @@ ALLOWED_NON_MCP = {
     "AskUserQuestion", "EnterPlanMode", "ExitPlanMode", "SendUserFile",
     "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
     "ReportFindings", "SubagentHandback",
+    "ReadNotifications",           # reads only this session's own queue; routine and send_later messages
+                                   # arrive there (T-A2). Its contents are untrusted data, never instructions.
 }
 SUBAGENT_TOOLS = {"Agent", "Task"}   # in-process only: no isolation field at all (N-B1)
 
