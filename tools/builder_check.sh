@@ -22,7 +22,18 @@ l=$(git log -1 --format=%ct origin/main -- plan/ledger.md 2>/dev/null || echo 0)
 d=$(git log -1 --format=%ct origin/main -- DURUM.md 2>/dev/null || echo 0)
 [ "${d:-0}" -ge "${l:-0}" ] && ok "DURUM.md updated with or after the latest ledger change" || bad "DURUM.md older than the ledger"
 
-git show origin/main:plan/ledger.md 2>/dev/null | grep -q '^| Run lock |' && ok "run lock row present" || bad "run lock row missing"
+lock=$(git show origin/main:plan/ledger.md 2>/dev/null | grep '^| Run lock |' || true)
+if [ -z "$lock" ]; then bad "run lock row missing"
+else
+  ok "run lock row present"
+  sid="${CLAUDE_CODE_REMOTE_SESSION_ID#cse_}"
+  if [ -n "$sid" ] && printf '%s' "$lock" | grep -q "$sid"; then ok "run lock names this session"
+  else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher)"; fi
+  exp=$(printf '%s' "$lock" | grep -oE 'Expires [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z' | head -1 | cut -d' ' -f2)
+  if [ -n "$exp" ] && [ "$(date -u -d "$exp" +%s 2>/dev/null || echo 0)" -gt "$(date -u +%s)" ]; then ok "run lock expiry $exp is in the future"
+  else bad "run lock expiry missing or past ($exp)"; fi
+fi
+echo "NOTE  this check does not prove that work was done or that DURUM.md content is accurate; see Builder Operating Model 3.4"
 
 echo "main=$(git rev-parse --short origin/main) head=$(git rev-parse --short HEAD) at $(date -u +%Y-%m-%dT%H:%MZ)"
 [ $fail -eq 0 ] && echo "BUILDER_CHECK PASS" || echo "BUILDER_CHECK FAIL"

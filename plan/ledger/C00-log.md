@@ -252,3 +252,40 @@ Evidence: EV-C00-002. Of 17 items, 11 are observed or partly observed, 1 is docu
 | Review | High-impact: independent review R-C00-BOM-1 before merge (T-E2). |
 
 **Not done in this entry.** Tests T-E2, T-B1, T-A2 and T-D1; the dispatcher and heartbeat; the "Batu'dan beklenenler" issue; decision D-002.
+
+### L-016 · 2026-10-01 · Independent review R-C00-BOM-1: FAIL; dispositions and fixes
+
+**Review.** Review session `session_0139FAmiXGW3U6rGKKbmgNYy`, created by the builder with the fixed prompt filled in; full checkout of the PR head `3cd686a`. The verdict file was fetched from its branch `claude/review-R-C00-BOM-1` (`fbb027b`) and is copied to `evidence/C00/reviews/R-C00-BOM-1.md`. Batu carried nothing. **Verdict: FAIL** (3 blocking, 9 minor).
+
+**Dispositions:**
+
+| Finding | Disposition |
+|---|---|
+| B1: builder-created sessions inherit connectors; the deny list does not match opaque IDs; status claims overstated | **Accepted.** BP-04 withdrawn and T-A1c marked FAIL. Probe T-H3 confirmed opaque connector IDs and that hooks from the checkout run in builder-created sessions. §9 rewritten. Full checkouts required. `DURUM.md` and plan Section 9 item 6 corrected. Recorded as FND-002. |
+| B2: PC-05 incomplete | **Accepted.** §5.5 (İhtiyaç and option (a)), §5.6 Seçim, 6.9, C01 row 11 and Appendix A DR12 edited; the PC-05 scope lists corrected. A re-search of the package finds no remaining technical-approval path to Batu. Historical record §11.2 is kept unchanged as a record of the options at decision time. |
+| B3: plan 6.12 claimed but not met | **Accepted.** Mechanism register added (Appendix M), with the removal test. The preamble now points to it. |
+| M1: hook fails open on exceptions | **Accepted.** Every error path returns 2. Empty or non-string tool names are blocked. Dependence on `python3` stated. |
+| M2: allowlist coarser and name-dependent | **Accepted and extended.** The Supabase opaque ID is allowed. GitHub writes are limited to `batuhanozgun/devos`; repository creation and forking are blocked. This makes library writes through the GitHub tools technically impossible; `git push` remains OI-001. "Read-only Supabase" is attributed to the database role. |
+| M3: K-series ambiguity | **Accepted.** The numbering note distinguishes capability sections `K-n` and Appendix C IDs `Knn` from decisions. |
+| M4: v1.0 ordering not shown by git | **Accepted.** Restated as the builder's account (17 s after `73baa5a`). |
+| M5: the check script proves less | **Accepted.** Lease-holder and expiry checks added; the limits are printed and stated in §3.4. |
+| M6: timestamps later than the commit | **Accepted.** Stamps corrected. Rule: stamp at writing time. |
+| M7: briefing and issue missing from the acceptance condition | **Accepted.** (g) and (h) were added to W-C00-05 before their results exist. This adds conditions; it loosens none. |
+| M8: W-C00-05 not closable | Noted; it stays "doing". |
+| M9: continuation untested | **Accepted.** §12 states it as designed and partly observed; T-A2 is pending. |
+
+### FND-002 · Reviewer sessions ran without the technical connector barrier
+
+- **Symptom.** The counter-design session (sparse checkout, before `.claude/` existed) and the probe sessions ran with the account's connectors live, protected only by an instruction. The builder believed builder-created sessions had none (BP-04, from the T-A1c self-report).
+- **Failure class.** The same as FND-001: a premise reported from a weak observation (a model's self-report taken while servers were still connecting) was treated as verified, and design depended on it.
+- **Multi-agent class:** verification.
+- **Caught by:** the independent review, not by the builder.
+- **Repair at class level.**
+  1. A self-report is labelled "self-report" and is not enough for a security premise.
+  2. Every builder-created session uses a full checkout with `.claude/` (§9 item 3).
+  3. The hook is the barrier and is unit-tested with negative controls and a break test (T-H4).
+- **Impact.** No connector tool call is known to have happened. The sessions' transcripts were not audited for this. The question is open and noted in OI-009.
+
+| ID | Open item | Where it is resolved |
+|---|---|---|
+| OI-009 | Confirm that no connector tool was called in the sessions that ran without the barrier: `session_01UgKhdvKnZacS7EVcGpe79C`, `session_018kpRnAaG9R3vaRTg5wMyye`, `session_01DaBd2sS8rT6TyBhHxFi8QV`, `session_01FMMpUHBn5EbpYgtSjY9hyZ`, The reviewer `session_0139FAmiXGW3U6rGKKbmgNYy` ran on revision `3cd686a`, whose first allowlist hook already blocked opaque-ID servers. Hooks are shown to run in such sessions (T-H3), so it was probably protected; this is not verified. | Builder: read their tool-use events (`list_events`) before closing W-C00-05 |

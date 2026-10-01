@@ -9,7 +9,7 @@ Bu sürüm 2.0'ın yerine geçer. 2.1'de değişenler:
 - **Karşılaştırmalı araştırmanın** düzeltmeleri işlendi: tek yazar kuralı, parçalı iş ve yapılandırılmış devir, alt ajan görev tanımı, döngü sınırları, mekanizma varsayım envanteri, başarısızlık sınıflaması ve sessiz başarısızlık denetimi.
 - **Çerçeve körlüğüne karşı mekanizma** eklendi (Bölüm 6.12).
 - Batu'nun K6 ve K7 kararları işlendi.
-- **2.1 sonrası kayıtlı plan değişiklikleri (1 Ekim 2026; kurucunun değişiklikleri `PC-` önekiyle numaralanır, `K` önekli numaralar yalnız Batu'nun kararlarıdır):** PC-01 kurulum ritmi (`/goal`); PC-02 dal yönetimi; PC-03 süreklilik; PC-04 kurucunun çalışma düzeni (`plan/Builder_Operating_Model.md`); PC-05 yüksek etkili değişikliklerin teknik onayı bağımsız denetimdedir, Batu'da değil. Kayıtlar `plan/ledger.md`'de.
+- **2.1 sonrası kayıtlı plan değişiklikleri (1 Ekim 2026; kurucunun değişiklikleri `PC-` önekiyle numaralanır, `K` önekli numaralar yalnız Batu'nun kararlarıdır):** PC-01 kurulum ritmi (`/goal`); PC-02 dal yönetimi; PC-03 süreklilik; PC-04 kurucunun çalışma düzeni (`plan/Builder_Operating_Model.md`); PC-05 yüksek etkili değişikliklerin teknik onayı bağımsız denetimdedir, Batu'da değil (değişen yerler: 4 K-11 madde 7, 5.5, 5.6, 6.1, 6.7, 6.8, 6.9, 7.4, C01 satır 11; Ek A DR12 ve Bölüm 6; Ek C K11; Ek E Bölüm 8). Kayıtlar `plan/ledger.md`'de.
 
 Değerlendirme ve araştırma belgeleri: `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md` (C00'da `devos/plan/` altına alınır).
 ---
@@ -492,13 +492,13 @@ Her bileşen için önce ihtiyaç, sonra seçimden önce değerlendirilen altern
 
 ### 5.5 Karar kanalı ve sistem kimliği
 
-**İhtiyaç:** Batu'nun kararlarının gerçekten Batu'dan geldiğinin bilinmesi; yüksek etkili değişikliklerin Batu'nun onayı olmadan ana ürüne girmemesi; telefondan kolay kullanım.
+**İhtiyaç:** Batu'nun kararlarının gerçekten Batu'dan geldiğinin bilinmesi; Batu'ya ait kararların (amaç, kapsam, maliyet, hesapları) onun cevabı olmadan uygulanmaması; yüksek etkili değişikliklerin bağımsız denetimin onayı olmadan ana ürüne girmemesi (PC-05); telefondan kolay kullanım.
 
 **Sorun:** Claude Code'un GitHub'da yaptığı commit'ler ve açtığı PR'lar Batu'nun kişisel GitHub kimliğiyle görünüyor **[Doğrulandı: ikincil kaynak, builder.io, routines rehberi]**. Bunun üç sonucu var: GitHub, sistemin yaptığıyla Batu'nun yaptığını ayırt edemez; GitHub kişinin kendi PR'ını onaylamasına izin vermediği için Batu sistemin PR'larını GitHub'ın kendi onay düzeniyle onaylayamaz; issue'lara yazılan bir "cevabın" Batu'dan mı sistemden mi geldiği bilinemez. Bu, çözülmesi gereken bir tasarım sorunudur; "sonra sınanır" diye bırakılamaz.
 
 | Seçenek | Güçlü yanı | Zayıf yanı |
 |---|---|---|
-| **(a) Sistem için ayrı GitHub makine hesabı** | GitHub'ın kendi onay düzeni (zorunlu inceleme, kod sahibi onayı) tam çalışır; Batu telefondaki GitHub uygulamasından onaylar; özel arayüz yazılmaz. GitHub kişi başına bir ücretsiz makine hesabına izin veriyor **[Doğrulandı: GitHub Hizmet Şartları]** | Claude'un GitHub bağlantısı makine hesabına geçer; bu Batu'nun diğer Claude Code projelerini de etkiler: o depolara makine hesabının ortak çalışan olarak eklenmesi gerekir ve oradaki commit'ler de makine hesabıyla görünür |
+| **(a) Sistem için ayrı GitHub makine hesabı** | GitHub'ın kendi onay düzeni (zorunlu inceleme, kod sahibi onayı) tam çalışır; Batu kendisine ait kararları telefondaki GitHub uygulamasından verir (teknik onay PC-05 ile bağımsız denetime geçti); özel arayüz yazılmaz. GitHub kişi başına bir ücretsiz makine hesabına izin veriyor **[Doğrulandı: GitHub Hizmet Şartları]** | Claude'un GitHub bağlantısı makine hesabına geçer; bu Batu'nun diğer Claude Code projelerini de etkiler: o depolara makine hesabının ortak çalışan olarak eklenmesi gerekir ve oradaki commit'ler de makine hesabıyla görünür |
 | (b) Karar paneli (Supabase kimlik doğrulaması + sistemin yazamadığı ayrı bir depoda küçük bir sayfa) | Diğer projeleri etkilemez | GitHub'ın onay düzeni yine kullanılamaz; bütün onaylar özel bir sayfadan geçer; bu sayfanın kendisinin korunması ve güncellenmesi ayrı bir sorun |
 | (c) Belirsizliği kabul etmek | Hiçbir ek iş yok | Kriter 8 ve 21'i bozar; reddedildi |
 
@@ -510,7 +510,7 @@ Her bileşen için önce ihtiyaç, sonra seçimden önce değerlendirilen altern
 
 **İhtiyaç:** Hiçbir değişikliğin kontrollerden geçmeden ana ürüne girmemesi; yüksek etkili değişikliklerde bağımsız denetimin onayı (PC-05); "PR açıldı" ile "gerçekten girdi"nin ayrılması.
 
-**Seçim:** GitHub PR akışı: routine'ler varsayılan olarak yalnız `claude/` ile başlayan dallara gönderim yapabiliyor **[Doğrulandı: ikincil kaynak]**; `main` dalı korunur ve kurallar yöneticileri de kapsar; zorunlu kontroller (testler, şema, bağlantılar, katalog kaydı, sızıntı kontrolleri, gereken işlerde bağımsız inceleme hükmü); yüksek etkili dosyalarda Batu'nun onayı (B3'e göre GitHub onayı ya da karar paneli); rutin değişikliklerde kontroller geçince otomatik birleşme; niyet ve gözlem kayıtları. **[Öneri]** Alternatif yok denecek kadar dar: GitHub platformun zorunlu parçası.
+**Seçim:** GitHub PR akışı: routine'ler varsayılan olarak yalnız `claude/` ile başlayan dallara gönderim yapabiliyor **[Doğrulandı: ikincil kaynak]**; `main` dalı korunur ve kurallar yöneticileri de kapsar; zorunlu kontroller (testler, şema, bağlantılar, katalog kaydı, sızıntı kontrolleri, gereken işlerde bağımsız inceleme hükmü); yüksek etkili dosyalarda bağımsız denetimin onayı (PC-05; `CODEOWNERS` ile zorunlu inceleme C08'de); rutin değişikliklerde kontroller geçince otomatik birleşme; niyet ve gözlem kayıtları. **[Öneri]** Alternatif yok denecek kadar dar: GitHub platformun zorunlu parçası.
 
 ### 5.7 Yedek ve felaket kurtarma
 
@@ -681,7 +681,7 @@ Kütüphaneden gelen her kayıt "özel" gizlilik sınıfı taşır. Kütüphane 
 
 - Her karar önce veritabanında bir `Decision` kaydıdır; Ek E biçimiyle yazılır.
 - Her karar, Batu'ya atanmış bir GitHub issue'su olarak da açılır; bildirim GitHub uygulamasıyla telefona gelir.
-- **B3 = (a) makine hesabı ise:** Batu cevabı issue'ya kendi hesabıyla yazar ya da PR'ı kendi hesabıyla onaylar. Sistem, cevabın Batu'nun hesabından geldiğini denetler.
+- **B3 = (a) makine hesabı ise:** Batu kendisine ait kararların cevabını issue'ya kendi hesabıyla yazar (teknik PR onayı ondan istenmez; PC-05). Sistem, cevabın Batu'nun hesabından geldiğini denetler.
 - **B3 = (b) karar paneli ise:** Batu cevabı, Supabase kimlik doğrulamasıyla giriş yaptığı küçük bir sayfadan verir; sayfa sistemin yazamadığı ayrı bir depoda durur.
 - Belirli sürede açılmayan karar ikinci kanaldan yinelenir (Bölüm 5.5).
 - Cevaplanmayan kararlar için Ek E'deki "cevap verilmezse ne olur" kuralı uygulanır.
@@ -786,7 +786,7 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 3. **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmayı görür. Bu yüzden her duruşta kurucu, `tools/builder_check.sh` adlı denetim betiğinin çıktısını konuşmaya olduğu gibi koyar. Aşama kabulü, işi yapmamış bir oturumun kapanış incelemesiyle verilir.
 4. **Batu'ya yalnız ona ait kararlar gelir** (amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler, kabul). Bunlar ve Batu'nun yapması gereken işler toplanır; tek bir GitHub issue'sunda, adım adım iletilir. Durum Türkçe `DURUM.md` sayfasında her zaman günceldir.
 5. **Bağımsız inceleme** ayrı oturumlarca yapılır. Sonuçlar Batu üzerinden değil, depo üzerinden (inceleme dalındaki dosya) gelir.
-6. **Connector engeli:** `.claude/settings.json` içindeki yasak kuralları ve izin listesi kancası, hesaptaki connector'ları teknik olarak engeller **[Gözlendi: 1 Ekim 2026]**.
+6. **Connector engeli:** Engel, `.claude/` klasörünü içeren tam bir `devos` kopyasıyla çalışan oturumlarda geçerlidir. Bu oturumlarda `.claude/hooks/tool_allowlist.py` adlı izin listesi kancası, GitHub, oturum araçları ve salt okunur Supabase dışındaki bütün MCP araçlarını engeller; GitHub araçlarıyla yazmayı da yalnız `devos` deposuyla sınırlar **[Gözlendi: T-H2, T-H3, T-H4, 1 Ekim 2026]**. Kurucunun açtığı oturumlara hesaptaki connector'lar geçer (R-C00-BOM-1). Bu yüzden kurucunun açtığı her oturum tam kopyayla açılır. Engelin kapsamadığı yollar operating model §9'da yazılıdır.
 
 **PC-01 (1 Ekim 2026; önceki adı "K10"):** Kurulum aşamaları `/goal` hedefiyle yürür; duruş koşulları: aşama bitti, Batu'nun bir kararı ya da işlemi gerekiyor, kurucunun aşamayacağı bir engel var. **[Batu, 1 Ekim 2026]**: `/goal` kullanımı ve bu üç duruş koşulu. Kurucunun eki: hedefin sağlanması aşama kabulü değildir. "Hedefi Batu başlatır" maddesi, kurucunun hedefi kendisi başlatabildiği gözlenince PC-04 ile kaldırıldı.
 
@@ -845,7 +845,7 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 | 8 | Yayın zinciri | Dala gönderim + PR + zorunlu kontroller + yayın işinin yetkiyi yeniden okuyup birleştirmesi + yöneticileri kapsayan koruma | Eksik halkaya göre yeniden tasarım |
 | 9 | Tek depolu oturum | Tek depolu oturumda izin kuralları ve kancalar uygulanıyor; açık depoya yazım öncesi kontrol çalışıyor | Kontrol yalnız PR katmanında kalır; kalan risk Batu'ya |
 | 10 | Kullanım gözlemi | Bir oturumun kullanım hakkına etkisi ve Batu'nun kendi kullanımıyla paylaşım gözlenebiliyor | Kapasite tahminle yapılır; belirsizlik kaydedilir |
-| 11 | Kimlik | B3 (a) ise: sistemin commit, PR ve yorumları makine hesabıyla görünüyor; Batu'nun onayı GitHub'da alınabiliyor. B3 (b) ise: karar paneli girişi yalnız Batu'nun hesabıyla çalışıyor | Diğer seçeneğe geçilir |
+| 11 | Kimlik | B3 (a) ise: sistemin commit, PR ve yorumları makine hesabıyla görünüyor; Batu'nun kararları (issue cevapları) GitHub'da onun hesabından geldiği doğrulanarak alınabiliyor. B3 (b) ise: karar paneli girişi yalnız Batu'nun hesabıyla çalışıyor | Diğer seçeneğe geçilir |
 | 12 | Depo erişim sınırı | Çalışma ve denetim oturumları `devos-evals`'i hiçbir yoldan okuyamıyor | Sınavlar Supabase'te yalnız sınav ortamının okuyabildiği şemaya taşınır |
 | 13 | Eklenti ve beceri envanteri | Oturuma yüklenen bütün eklenti, beceri, alt ajan ve kancalar listeleniyor | Karara; gerekirse hesap düzeyinde kapatma |
 | 14 | Dynamic workflows ve Projects | Bulut oturumunda dynamic workflows çalışıyor mu; Projects hesapta açık mı, açıksa koordinatör kullanıcı mesajı olmadan sıradaki işi başlatıyor mu | İsteğe bağlı katmanlar kullanılmaz |

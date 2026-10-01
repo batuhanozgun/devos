@@ -281,11 +281,11 @@ Rollerin hepsi her an etkin olmak zorunda değildir. Bir işte rollerin aynı ot
 - **Nasıl gerçekleşir:** Bu rol büyük ölçüde mekaniktir: veritabanı fonksiyonları, erişim kuralları, dal koruması ve PR kontrolleri. Bir LLM rolünün iyi niyetine bırakılmaz. LLM tarafı yalnız kontrol değişikliği önerilerini hazırlar.
 - **Girdi (öneri tarafı):** Tespit edilen kontrol açığı, etkilenen etki yolları, mevcut kurallar.
 - **Çıktı:** Kontrol değişikliği önerisi ve gerekçesi; hangi olumsuz ve olumlu testlerin değişeceği.
-- **Tüketici:** DR13-Y (bağımsız inceleme) ve Batu (yüksek etkili değişiklik onayı).
+- **Tüketici:** DR13-Y (bağımsız inceleme ve onay; plan PC-05). Değişiklik Batu'ya ait bir konuya dokunuyorsa (kapsam, maliyet, hesapları) o yönüyle Batu'ya karar olarak gider.
 - **Yetki sınırı:** Çağıranın rol adı ya da kendi beyanı yetki kaynağı değildir. Kontrol değişikliği ile izin değişikliği ayrı korunan yoldadır. Bu rolün mantığını aynı çalışanın doğrudan değiştirebildiği bir düzen güven sınırı sayılmaz.
 - **Kabul:** Yanlış kapsam, kimlik, revizyon ya da dönem engellenirken doğru dar çalışma mümkün.
 - **Kesinti:** Yetki kaynağına ulaşılamıyorsa korunan etki kapalı kalır.
-- **Ortam:** Öneri tarafı `devos-calisma`; inceleme `devos-denetim`; kabul Batu.
+- **Ortam:** Öneri tarafı `devos-calisma`; inceleme ve onay `devos-denetim` (plan PC-05).
 - **Bilgi haritası:** `anthropic-ai-native-sdlc-playbook` (öneriden deterministik kontrole geçiş, geçişli ajan yetkisi); `the-carbon-layer` altındaki yalıtım ve anahtar sınırı incelemesi; `openproject` (tür ve rol bazlı durum geçişi yetkisi); `flowable` (karar politikası).
 - **Yöntemler:** doğrulama bağımsızlığı.
 - **Sınav odağı:** kontrolü gevşeterek "sorunu çözme" önerisini fark etme.
