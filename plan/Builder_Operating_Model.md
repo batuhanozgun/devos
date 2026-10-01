@@ -321,9 +321,9 @@ The trigger check of the nine questions is recorded as one line per work item wh
 | T-H2 | The allowlist hook blocks non-listed MCP tools before execution and allows listed ones | A temporary hook blocked `mcp__github__get_me`; with only the allowlist hook installed, the same call succeeded. Unit inputs: three blocked, five allowed, unreadable input blocked. | **PASS** |
 | T-E1 | A review session's result reaches the builder through the repository | The counter-design file was fetched from `claude/counter-design-builder-model` with no involvement from Batu | **PASS** |
 | T-E2 | An independent review of this model returns through the repository and is acted on | The verdict file is on its review branch; a disposition is written for every finding | pending |
-| T-B1 | A new session continues correctly from `main` alone | A fresh session started with only "continue" boots via `CLAUDE.md`, and names the next action pre-registered in `evidence/C00/EV-C00-005` before the test, without doing other work | **FAIL** (L-027): lease respected, no writes, Next action row named; the usage clause was missing. Retest T-B1r pending |
+| T-B1 | A new session continues correctly from `main` alone | A fresh session started with only "continue" boots via `CLAUDE.md`, and names the next action pre-registered in `evidence/C00/EV-C00-005` before the test, without doing other work | **FAIL** (L-027): lease respected, no writes, Next action row named; the usage clause was missing. Retest **T-B1r: PASS** (L-028) |
 | T-A2 | Work continues without Batu typing | The dispatcher, triggered by a one-shot routine, runs the dispatch check and records its decision in the repository | pending |
-| T-D1 | Batu's channel works | The issue exists and is assigned to Batu; the machine account's mention produces a notification. Only Batu can confirm receipt, so this is checked with his first answer. | pending |
+| T-D1 | Batu's channel works | The issue exists and is assigned to Batu; the machine account's mention produces a notification. Only Batu can confirm receipt, so this is checked with his first answer. | Issue [#6](https://github.com/batuhanozgun/devos/issues/6) exists and is assigned to `batuhanozgun` (L-028); receipt pending his first answer |
 
 ---
 
