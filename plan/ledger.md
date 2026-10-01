@@ -19,7 +19,8 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | C00 in progress. Step 2 (reading) is complete (L-001). Step 1 (preparation verification) is partly done: the library access check is in EV-C00-001. Step 0 (translation) has not started. | 2026-10-01T16:10Z |
-| Binding plan text | Turkish plan package at `devos` commit `6186e5d` | 2026-10-01 |
+| Binding plan text | Turkish plan package at `devos` commit `6186e5d`, plus the recorded change K10 (L-004) | 2026-10-01 |
+| Working rhythm | Each stage runs under a `/goal` target (K10, L-004). The C00 goal condition is in L-004; it has not been started yet. | 2026-10-01 |
 | Builder's access to `agentic-os-search` | **Not known to be read-only.** On GitHub, the machine account has write (push) permission (observed). At session level, whether `access: "read"` blocks writes is not verified (OI-001). The repository is therefore treated as writable by this session. The only thing keeping it read-only is a plan rule (plan Section 0.5) that only the builder's compliance enforces. Details: L-003, EV-C00-001. | 2026-10-01T16:10Z |
 
 ---
@@ -86,6 +87,43 @@ The builder read the following completely, from beginning to end, all at `devos`
 - **Safeguard 3:** removing the machine account's access in C04, after the library has been imported into Supabase and verified. This is still in the future.
 
 **No write by the builder.** The builder made no commit, push, branch, pull request, issue or comment in `agentic-os-search`. Apart from `add_repo`, every operation in L-002 and L-003 only read data or ran locally. `add_repo` changed the session's GitHub scope; it did not write to the repository. The basis for this paragraph is the builder's own record (same session); it has not been verified independently.
+
+### L-004 · 2026-10-01 · Plan change K10: each installation stage runs under a `/goal` target
+
+**Batu's instruction:**
+
+> Original (tr): "Planda kurulum dönemi için bir çalışma ritmi tanımlı değil. Her aşama bir /goal hedefiyle yürütülsün. Duruş koşulları şunlar: aşama bitti, Batu'nun bir kararı ya da işlemi gerekiyor, ya da senin aşamayacağın bir engel var. Bu kuralı kayıtlı bir plan değişikliği olarak planın kurulum bölümüne ve Ek F'ye ekle ve deftere yaz."
+>
+> Interpretation (en): The plan defines no working rhythm for the installation period. Each stage is to run under a `/goal` target, with three stop conditions: the stage is complete; a decision or action by Batu is needed; or the builder has hit a blocker it cannot pass. Add this rule as a recorded plan change to the installation section of the plan and to Appendix F, and record it in the ledger.
+
+**Plan change record (plan Section 14):**
+
+| Field | Content |
+|---|---|
+| Decision | K10, Batu's decision, 2026-10-01 |
+| Old state | Plan 2.1 defined no working rhythm for the installation period. Section 9 defined stage order, acceptance and closure, but not when the builder works on and when it stops and returns to Batu. |
+| New state | Plan Section 9, introduction: the "Kurulum çalışma ritmi" paragraph, with the three stop conditions, how `/goal` works, and its limits. Appendix F (version 1.3): a note for Batu (Turkish) and a "Working rhythm" paragraph in the builder's opening message (English). The plan header and Section 11.1 list K10. |
+| Rationale | Batu's decision. The builder added two rules from reading the `/goal` documentation: (a) a met goal is not stage acceptance, because the evaluator is a small model that reads only the conversation; (b) under stop condition 2, the builder stops and returns instead of continuing with other work, and silence is not approval. |
+| Platform facts | Observed in the official documentation (code.claude.com/docs/en/goal, read 2026-10-01 by a documentation subagent; secondary reading, not yet tried in this account). The goal is a natural-language completion condition of up to 4,000 characters. A small fast model (Haiku by default) judges it after each turn: not yet met, met or impossible. `/goal clear` cancels it. It does not change the permission mode, so unattended turns need auto mode. Evaluation is deferred while a subagent or background shell is running. An active goal is restored on resume. Errors that need a fix clear the goal. |
+| Assumption | The builder cannot start `/goal` itself, so Batu starts it at each stage. Status: **[Varsayım]**; to be observed in C01. |
+| Affected stages | C00 to C12 (installation period only). It does not change the B-phase working structure (routines, Section 6.4). |
+| Translation | The change is written into the Turkish binding text, and the C00 translation will carry it. |
+
+**C00 goal condition** (to be started by Batu with `/goal`):
+
+```text
+Stop when one of these holds, and state which one with ledger and evidence IDs: (1) Stage C00 is complete: every C00 acceptance condition in devos/plan/ledger.md section 2 is shown with evidence recorded in the ledger and in devos/evidence/C00/, all changes are committed and pushed to branch claude/epic-hamilton-9tisc4, and the stage closure is ready for audit review; (2) a decision or an action by Batu is needed, it has been sent to Batu in Turkish in Appendix E format, and it is recorded in the ledger; (3) the builder has hit a blocker it cannot pass, including a loop limit or no progress across consecutive turns, and the blocker is recorded in the ledger with its reason and reported to Batu in Turkish. Batu's silence is never approval.
+```
+
+### L-005 · 2026-10-01 · Library access question asked again; state unchanged
+
+**Batu's question:**
+
+> Original (tr): "Ayrıca agentic-os-search için yazdığın "yalnız okuma" ifadesini netleştir: bu sınır teknik olarak mı uygulanıyor, yoksa senin kuralın mı? Planın 0.5. bölümüne göre makine hesabının o depoda GitHub'da yazma izni var. Doğru durumu deftere yaz."
+>
+> Interpretation (en): Clarify the "read-only" statement about `agentic-os-search`: is the limit technically enforced or the builder's rule? Per plan Section 0.5, the machine account has write permission on that repository on GitHub. Record the correct state in the ledger.
+
+**Answer:** Unchanged from L-003. On GitHub, the machine account has push permission (observed). Session-level enforcement of the `read` attachment is not verified (OI-001). "Read-only" is a plan rule that only the builder's compliance enforces; it is not a technical boundary. No new observation has been made since L-003, and the builder has made no write to the library.
 
 ---
 

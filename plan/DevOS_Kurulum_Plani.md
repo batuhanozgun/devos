@@ -9,6 +9,7 @@ Bu sürüm 2.0'ın yerine geçer. 2.1'de değişenler:
 - **Karşılaştırmalı araştırmanın** düzeltmeleri işlendi: tek yazar kuralı, parçalı iş ve yapılandırılmış devir, alt ajan görev tanımı, döngü sınırları, mekanizma varsayım envanteri, başarısızlık sınıflaması ve sessiz başarısızlık denetimi.
 - **Çerçeve körlüğüne karşı mekanizma** eklendi (Bölüm 6.12).
 - Batu'nun K6 ve K7 kararları işlendi.
+- **2.1 sonrası kayıtlı değişiklik (1 Ekim 2026):** K10 — kurulum çalışma ritmi: her aşama bir `/goal` hedefiyle yürütülür (Bölüm 9 girişi; Ek F; `plan/ledger.md` L-004).
 
 Değerlendirme ve araştırma belgeleri: `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md` (C00'da `devos/plan/` altına alınır).
 ---
@@ -778,6 +779,22 @@ Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem i
 
 **Her aşamanın kapanışı:** Kabul koşulları sonuç görülmeden yazılır; kanıt ortak kanıt zarfıyla kaydedilir (Bölüm 8); aşama kapanışı denetim ortamında gözden geçirilir.
 
+**Kurulum çalışma ritmi [Batu kararı K10, 1 Ekim 2026; kayıtlı plan değişikliği, `plan/ledger.md` L-004]:** Her aşama bir `/goal` hedefiyle yürütülür. Hedef, şu üç duruş koşulundan biri gerçekleşince sağlanmış olur:
+
+1. **Aşama bitti:** Aşamanın bütün kabul koşulları kanıtıyla defterde, değişiklikler gönderilmiş, aşama kapanışı denetime hazır.
+2. **Batu'nun bir kararı ya da işlemi gerekiyor:** Ek E biçiminde Batu'ya iletildi ve deftere yazıldı.
+3. **Kurucunun aşamayacağı bir engel var:** Gerekçesiyle deftere yazıldı ve Batu'ya bildirildi. Döngü sınırına ya da "ilerleme yok" durumuna ulaşmak (K-7, madde 7) bu koşula girer.
+
+Kurucu her aşamanın başında hedef koşulunun metnini (İngilizce) yazar, deftere kaydeder ve Batu'ya verir. Her duruşta hangi koşulun neden gerçekleştiğini kanıt kimliğiyle yazar.
+
+*Nasıl çalışır* **[Doğrulandı: code.claude.com/docs/en/goal, 1 Ekim 2026]:** `/goal` doğal dille yazılmış bir tamamlanma koşulu koyar (en fazla 4.000 karakter). Her turdan sonra küçük ve hızlı bir model (varsayılan Haiku), konuşmada görünenlere bakarak koşulun sağlanıp sağlanmadığına karar verir; sağlanmadıysa Claude yeni bir tura başlar. Değerlendiricinin kararı üç türlüdür: henüz sağlanmadı, sağlandı, sağlanması imkânsız. Hedef `/goal clear` ile kaldırılır. İzin kipini değiştirmez; turların gözetimsiz ilerlemesi için oturum otomatik kipte olmalıdır. Alt ajan ya da arka plan işi sürerken değerlendirme ertelenir. Devam ettirilen oturumda etkin hedef geri yüklenir; tur sayacı, süre ve kullanım ölçümü sıfırlanır. Düzeltilmesi gereken bir hata (kimlik doğrulama, bağlam taşması, model erişimi) hedefi kaldırır.
+
+*Sınırlar ve kurallar:*
+
+- **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmada görüneni okur. Aşama kabulü yine önceden yazılmış kabul koşulları, ortak kanıt zarfı ve denetim incelemesiyle verilir (Bölüm 8 ve yukarıdaki kapanış kuralı). `/goal` yalnız çalışmanın ne zaman durup Batu'ya döneceğini düzenler.
+- **`/goal` bir kullanıcı komutudur.** Kurucu onu kendisi başlatamaz **[Varsayım: C01'de gözlenecek]**. Bu yüzden kurulum döneminde her aşama başında hedefi Batu, kurucunun verdiği metinle başlatır. Bu, yalnız kurulum dönemine ait küçük bir işlemdir; B aşamasındaki oturumlar routine'lerle başlar (Bölüm 6.4).
+- Duruş koşulu 2'de kurucu, Batu'nun cevabını beklerken Batu'nun kararına bağlı olmayan işleri sürdürmez. Önce durur ve döner; bağımsız iş varsa bunu duruş mesajında belirtir. Sessizlik onay sayılmaz.
+
 **Aşamaların özeti:**
 
 | Aşama | Tamamladığı | Açık bıraktığı ve nerede kapanacağı |
@@ -1002,7 +1019,7 @@ Bunlar "kurulumda sınanacak" diye çözülmüş sayılmaz. Her biri için ne ol
 
 ### 11.1 Verilmiş kararlar
 
-**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6).
+**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6). **1 Ekim 2026 eklenen: K10** — Kurulum döneminde her aşama bir `/goal` hedefiyle yürütülür; duruş koşulları: aşama bitti, Batu'nun bir kararı ya da işlemi gerekiyor, ya da kurucunun aşamayacağı bir engel var (Bölüm 9 girişi).
 
 SOUL tanımı; SOUL'un açık kaynak olması; DevOS'un Claude Code cloud'da çalışması; Max 200 $ planı, ekstra kullanımın kapalı olması, ortamda Anthropic API anahtarı olmaması; Supabase'in kişisel hesapta kullanılması; depoların herkese açık olabilmesi; yeni depolar (`devos`, `soul-system`, `devos-evals`, `devos-backup`) ve eski depolara dokunulmaması; eski deneme depolarının kütüphaneye alınması; eski raporların ChatGPT tarafından arşivlenmesi ve deponun kurucu başlamadan hemen önce düzeltilmesi; tek yazar ilkesi; güvencelerin her işte tam, emek derinliğinin varsayılan olarak yüksek olması; testlerde yalnız sahte veri; telefondan kullanım; Academy notunun karar değil keşif notu olması; bu planın uyduğu ilkeler (Bölüm 0.3).
 
