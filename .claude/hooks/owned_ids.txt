@@ -1,0 +1,15 @@
+# Session and routine IDs the builder created and may act on with session tools
+# that target an existing session or routine (send_message, fire_trigger,
+# update_trigger, delete_trigger, archive_session, unarchive_session,
+# interrupt_session, set_session_title, set_session_tags).
+# High-impact file: changes need a review (Builder Operating Model §5, §9).
+session_016Hi3ZYgAf2amYNGc43a3tr
+trig_01PPvVV1VzS8o5fBWWRtvFZj
+trig_01ThFCkbe9fBofuB7DKBrdnn
+session_018kpRnAaG9R3vaRTg5wMyye
+session_01DaBd2sS8rT6TyBhHxFi8QV
+session_01FMMpUHBn5EbpYgtSjY9hyZ
+session_01UgKhdvKnZacS7EVcGpe79C
+session_0139FAmiXGW3U6rGKKbmgNYy
+session_01Mzm3osD53QgSNyVYoX9mS3
+session_01PyDeZF839c2p8XXQnpm5mh

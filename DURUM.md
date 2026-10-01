@@ -1,17 +1,17 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 1 Ekim 2026, 21:55 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
+**Son güncelleme:** 1 Ekim 2026, 21:52 (Türkiye saati) · **Son nabız:** henüz yok (nabız düzeni kuruluyor)
 
 **Aşama:** C00 (başlangıç kontrolleri). Şu an kurucunun kendi çalışma düzeni kuruluyor ve sınanıyor (W-C00-05).
 
 **En son yapılanlar**
 1. Kurucunun çalışma düzeni tasarlandı. Bağımsız bir karşı tasarımla karşılaştırıldı ve düzeltildi.
-2. Hesaptaki connector'lara (e-posta, takvim, dosya) karşı teknik engel kuruldu ve denendi. Bağımsız inceleme ilk sürümde bir açık buldu: benim açtığım oturumlara connector'lar geçiyordu ve engelin bir katmanı orada işlemiyordu. Bu düzeltildi ve yeniden sınandı. Engel, `devos`'un tam kopyasıyla açılan oturumlarda geçerli.
+2. Hesaptaki connector'lara (e-posta, takvim, dosya) karşı teknik bir engel kuruldu. İki bağımsız inceleme açıklar buldu, ikisi de düzeltildi. Engel artık benim yeni oturum açmamı, başka oturumlara mesaj göndermemi ve GitHub'da `devos` dışına yazmamı da denetliyor. Kuralların çoğu birim testiyle sınandı, biri canlı olarak sınandı. Engelin kapsamadığı yollar yazılı (örneğin kütüphane deposuna doğrudan `git push`).
 3. Planda teknik onayın senden alınıp bağımsız denetime verildiği değişiklik (PC-05) yazıldı.
 
 **Sırada**
 - Çalışma düzeninin bağımsız incelemesi ve son iki deneme (yeni oturumun kaldığı yerden devam etmesi; nabız oturumu).
-- İnceleme bulgularının düzeltmeleri için ikinci, yeni bir bağımsız inceleme.
+- Düzeltmelerin üçüncü bir bağımsız incelemesi.
 - Ardından C00'ın ağır işleri: çeviri, bağımsız plan incelemesi, karşı tasarım. Bunlar haftalık kullanım sınırı yenilendikten sonra (3 Ekim 20:00).
 
 **Senden beklenen:** Şu an yok. Bekleyen bir karar ya da iş olduğunda "Batu'dan beklenenler" başlıklı GitHub issue'sunda, tek seferde ve adım adım gelecek.

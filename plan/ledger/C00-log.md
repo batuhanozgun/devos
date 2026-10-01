@@ -300,3 +300,26 @@ A fresh-context subagent (read-only; it used only `list_events` and a local pars
 - Independence: same session, subagent.
 
 **OI-009: closed.**
+
+### L-018 · 2026-10-01 · Independent review R-C00-BOM-2: FAIL; dispositions and fixes (operating model v1.3)
+
+**Review.** Review session `session_01PyDeZF839c2p8XXQnpm5mh`, full checkout of `33b5043`; verdict file `evidence/C00/reviews/R-C00-BOM-2.md`, fetched from `claude/review-R-C00-BOM-2`. Batu carried nothing. **Verdict: FAIL** (2 blocking, 10 minor). It found most of R-C00-BOM-1 fixed. It also found that L-016 had recorded two fixes as done that were not (M6, M9). That is the same failure class as FND-001, now repeated in a disposition record.
+
+**Dispositions:**
+
+| Finding | Disposition |
+|---|---|
+| B1: session tools are a route around the barrier; "full checkouts" was an instruction | **Accepted.** The hook now enforces: `create_session` only with a full `devos` checkout in the builder environment; `add_repo` only for `devos`, or the library read-only; acting on existing sessions and routines only for IDs in `owned_ids.txt`; no connectors on routines. Live block observed (T-H5). §9 rewritten with the enforcement layer per rule. |
+| B2: Turkish text and `DURUM.md` overstate observation | **Accepted.** Plan Section 9 items 1 and 6 relabelled (design, partly observed; unit-tested versus live). Appendix F softened. `DURUM.md` rewritten and stamped at writing time. |
+| M1: register incomplete; "none" assumptions; from-scratch column missing | **Accepted.** Register rewritten (32 rows); real assumptions given; from-scratch column added to §1; the deny rules removed by the register's own rule. |
+| M2: syntax or import errors and a missing `python3` fail open | **Accepted.** The settings command wraps the script and maps any non-zero exit other than 2 to 2; four wrapper cases are in the test. |
+| M3: lease check informational; unset variable aborts | **Accepted.** It is a gate for runs (`BUILDER_RUN=1`, set in R1), with an upper bound of 3h15m on the expiry; `${VAR:-}` used. |
+| M4: numbering exception missing in Turkish | **Accepted.** Plan line 12 and ledger rule 5. |
+| M5: W-C00-05 (c) cannot be met as written | **Accepted.** Recorded as an acceptance change before closure (state file §2): T-A1c withdrawn as a falsified premise; replaced by T-H3, T-H4 and T-H5. High-impact, so reviewed in R-C00-BOM-3. |
+| M6: CODEOWNERS could route approval back to Batu at C08 | **Accepted** as gap G-016 for C08. |
+| M7: GitHub scope edge cases; no `.claude/**` edit hook | **Accepted:** case-insensitive comparison; `actions_get` and `actions_list` read-only; repository-less thread tools allowed. The reason for not adding the plan 6.1 edit hook is stated in §9. |
+| M8: Supabase opaque ID by inference | **Accepted.** Labelled as inferred, with the grounds. |
+| M9: the connector inventory is personal account metadata | **Accepted.** Service names redacted in `evidence/C00/probes/T-H3.md`, `R-C00-BOM-1.md` and `R-C00-BOM-2.md`, with redaction notes. They remain in git history (commits `33b5043` and the probe and review branches); history is not rewritten on a public repository. |
+| M10: non-MCP account surfaces outside the hook | **Accepted.** Artifact tools and design sync are blocked by the hook; other new surfaces are a stated residual risk, re-listed at each register check. |
+
+**Correction to L-016.** Its dispositions for M6 ("Stamps corrected") and M9 (fixed in the English text only) overstated what was done; they are corrected here.

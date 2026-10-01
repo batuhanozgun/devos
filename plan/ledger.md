@@ -8,7 +8,7 @@
 2. Until the translation fidelity review passes, the Turkish plan package is binding (plan 0.6).
 3. Acceptance conditions are written and merged **before** work on an item starts and are never loosened afterwards. If loosening is needed, the earlier result is void and the test is repeated (plan Section 9; 8.6; 14).
 4. Every access or permission statement names its enforcement layer and its verification status (FND-001).
-5. **Numbering.** `K<n>`/`B<n>`: Batu's formal decisions only (K1–K9, B1–B3). `PC-<n>`: the builder's plan changes; the parts that are Batu's own decisions are marked "[Batu, date]". `D-<n>`: decision records. `L-<n>`: log entries. `W-<stage>-<nn>`: work items. `EV-…`: evidence. `G-…`: gaps. `OI-…`: open items. `FND-…`: findings. `T-…`: tests.
+5. **Numbering.** `K<n>`/`B<n>`: Batu's formal decisions only (K1–K9, B1–B3). Not decisions: the plan's capability sections `K-1`…`K-11` and Appendix C's test IDs `K01`…`K13`. `PC-<n>`: the builder's plan changes; the parts that are Batu's own decisions are marked "[Batu, date]". `D-<n>`: decision records. `L-<n>`: log entries. `W-<stage>-<nn>`: work items. `EV-…`: evidence. `G-…`: gaps. `OI-…`: open items. `FND-…`: findings. `T-…`: tests.
 6. Nothing exists until it is written here or in the log or evidence **and merged into `main`** (Builder Operating Model §3.2, §3.4).
 
 ---
@@ -18,7 +18,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00** in progress. W-C00-05 (builder operating model) is in progress; heavy C00 items wait for the weekly usage reset (D-001). | 2026-10-01T18:40Z |
-| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-02T06:00Z unless renewed. | 2026-10-01T18:40Z |
+| Run lock | `session_016Hi3ZYgAf2amYNGc43a3tr` (the first builder session; started by Batu). Expires 2026-10-01T21:52Z unless renewed. | 2026-10-01T18:52Z |
 | Next action | Finish W-C00-05: independent review of the operating model, tests T-B1 and T-A2, then merge and start runs under the operating model. | 2026-10-01T18:40Z |
 | Usage | `seven_day` `allowed_warning`; resets 2026-10-03T17:00Z. Light work only, under D-001; a scheduled wake-up is set for 2026-10-03T17:15Z. | 2026-10-01T18:40Z |
 | Waiting for Batu | Nothing blocking. One decision will be raised with the operating-model briefing: D-002, a standing usage policy. | 2026-10-01T18:40Z |
@@ -36,7 +36,7 @@ Acceptance conditions are written before work starts. Status: todo / doing / don
 | W-C00-02 | Preparation verification (plan C00 step 1) | Every preparation item verified at a stated level | done | EV-C00-002, L-010 |
 | W-C00-03 | Gap and contradiction list | First version recorded; final version with a disposition per gap at W-C00-10 | doing (v1 done) | EV-C00-003 |
 | W-C00-04 | Premise inventory (plan C00 step 6) | Every premise has an origin, a validity check and the from-scratch test | done (v1) | EV-C00-004 |
-| W-C00-05 | Builder operating model (PC-04) | (a) Design and premises written; (b) independent counter-design compared, with a disposition per difference; (c) tests T-A1a, T-A1b, T-A1c, T-H1, T-H2, T-E1 pass; T-B1, T-A2 and T-E2 pass, or their limits are written; (d) independent review PASS (or PASS-WITH-CONDITIONS, with the conditions met); (e) merged into `main`, with `DURUM.md` live; (f) plan and Appendix F updated by recorded plan change; **added before results, from R-C00-BOM-1 M7:** (g) one short Turkish briefing to Batu saying what changes for him and which decisions are his; (h) the "Batu'dan beklenenler" issue opened and assigned to Batu (T-D1) | doing | L-015 onward; EV-C00-005 |
+| W-C00-05 | Builder operating model (PC-04) | (a) Design and premises written; (b) independent counter-design compared, with a disposition per difference; (c) tests T-A1a, T-A1b, ~~T-A1c~~, T-H1, T-H2, T-E1 pass; T-B1, T-A2 and T-E2 pass, or their limits are written. **Acceptance change, before closure (R-C00-BOM-2 M5; high-impact, reviewed in R-C00-BOM-3):** T-A1c tested a premise (BP-04) that was falsified and withdrawn, so it is not a test to re-pass. It is replaced by T-H3, T-H4 and T-H5, which test the barrier that replaced the premise. T-H1 counts only for the session it was observed in. (d) independent review PASS (or PASS-WITH-CONDITIONS, with the conditions met); (e) merged into `main`, with `DURUM.md` live; (f) plan and Appendix F updated by recorded plan change; **added before results, from R-C00-BOM-1 M7:** (g) one short Turkish briefing to Batu saying what changes for him and which decisions are his; (h) the "Batu'dan beklenenler" issue opened and assigned to Batu (T-D1) | doing | L-015 onward; EV-C00-005 |
 | W-C00-06 | Translate the plan package (plan C00 step 0) | Every file translated; a separate fidelity-review session compares each section with the Turkish original; every finding gets a disposition; review passes; improvements recorded separately as proposals | todo (heavy) | — |
 | W-C00-07 | ECC function comparison (plan C00 step 3) | Every ECC component compared with DevOS needs: adopt / disable / undecided, with reasons | todo (heavy) | — |
 | W-C00-08 | Independent plan review (plan C00 step 4) | A session that sees only the plan, criteria and sources reviews it; findings returned through the repository; each gets a disposition | todo (heavy) | — |

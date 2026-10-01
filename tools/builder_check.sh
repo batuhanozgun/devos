@@ -26,12 +26,15 @@ lock=$(git show origin/main:plan/ledger.md 2>/dev/null | grep '^| Run lock |' ||
 if [ -z "$lock" ]; then bad "run lock row missing"
 else
   ok "run lock row present"
-  sid="${CLAUDE_CODE_REMOTE_SESSION_ID#cse_}"
+  sid="${CLAUDE_CODE_REMOTE_SESSION_ID:-}"; sid="${sid#cse_}"
   if [ -n "$sid" ] && printf '%s' "$lock" | grep -q "$sid"; then ok "run lock names this session"
-  else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher)"; fi
+  elif [ "${BUILDER_RUN:-0}" = "1" ]; then bad "run lock does not name this session (BUILDER_RUN=1)"
+  else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher; runs set BUILDER_RUN=1)"; fi
   exp=$(printf '%s' "$lock" | grep -oE 'Expires [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z' | head -1 | cut -d' ' -f2)
-  if [ -n "$exp" ] && [ "$(date -u -d "$exp" +%s 2>/dev/null || echo 0)" -gt "$(date -u +%s)" ]; then ok "run lock expiry $exp is in the future"
-  else bad "run lock expiry missing or past ($exp)"; fi
+  e=$(date -u -d "${exp:-1970-01-01T00:00Z}" +%s 2>/dev/null || echo 0); now=$(date -u +%s)
+  if [ "$e" -le "$now" ]; then bad "run lock expiry missing or past (${exp:-none})"
+  elif [ $((e - now)) -gt 11700 ]; then bad "run lock expiry $exp is more than 3h15m ahead (Builder Operating Model 2.2)"
+  else ok "run lock expiry $exp is within the next 3h15m"; fi
 fi
 echo "NOTE  this check does not prove that work was done or that DURUM.md content is accurate; see Builder Operating Model 3.4"
 

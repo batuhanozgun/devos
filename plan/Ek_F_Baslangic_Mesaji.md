@@ -4,7 +4,7 @@
 
 **Batu için:** Hazırlık planının son adımında Claude Code'da yeni bir oturum açacaksın: ortam olarak `devos-kurulum`'u, depo olarak `devos` ve `agentic-os-search`'ü seçeceksin. Aşağıdaki çizginin altındaki metnin tamamını kopyalayıp ilk mesaj olarak yapıştıracaksın. Metin İngilizce, çünkü DevOS'un kendi içindeki dili İngilizce (K9); kurucu seninle Türkçe konuşacak. Başka bir şey yazman gerekmiyor.
 
-**Çalışma düzeni (PC-04, 1 Ekim 2026):** Bu mesaj yalnız ilk kurucu oturumu içindi. Sonraki oturumları kurucu kendisi başlatır; `/goal` yazman gerekmez. Durumu `devos` deposundaki `DURUM.md` sayfasından görürsün. Senden beklenenler tek bir GitHub issue'sunda, adım adım gelir; cevabını orada verirsin.
+**Çalışma düzeni (PC-04, 1 Ekim 2026):** Bu mesaj yalnız ilk kurucu oturumu içindi. Tasarıma göre sonraki oturumları kurucu kendisi başlatır ve `/goal` yazman gerekmez. Bunun bir kısmı gözlendi; gözetimsiz devam henüz sınanıyor (T-A2). Durumu `devos` deposundaki `DURUM.md` sayfasından görürsün. Senden beklenenler tek bir GitHub issue'sunda, adım adım gelir; cevabını orada verirsin.
 
 ---
 
