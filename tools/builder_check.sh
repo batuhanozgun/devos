@@ -34,7 +34,8 @@ else
   else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher; runs set BUILDER_RUN=1)"; fi
   exp=$(printf '%s' "$lock" | grep -oE 'Expires [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z' | head -1 | cut -d' ' -f2)
   e=$(date -u -d "${exp:-1970-01-01T00:00Z}" +%s 2>/dev/null || echo 0); now=$(date -u +%s)
-  if [ "$e" -le "$now" ]; then bad "run lock expiry missing or past (${exp:-none})"
+  if printf '%s' "$lock" | grep -qE 'Released [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z'; then ok "run lock released at a clean stop (Builder Operating Model 2.2)"
+  elif [ "$e" -le "$now" ]; then bad "run lock expiry missing or past (${exp:-none})"
   elif [ $((e - now)) -gt 11700 ]; then bad "run lock expiry $exp is more than 3h15m ahead (Builder Operating Model 2.2)"
   else ok "run lock expiry $exp is within the next 3h15m"; fi
 fi

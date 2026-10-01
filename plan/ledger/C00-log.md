@@ -500,3 +500,32 @@ Condition 2 was met: the decision was "start nothing", with the right reasons. T
 | F4 | Whether the classifier lets the dispatcher start a run is unknown | Stated as an untested premise (§2.3, Appendix M); T-A2r tests it, with a denial treated as an S3 blocker |
 
 **T-A2r** is pre-registered in EV-C00-005. Written at 2026-10-01T20:17Z.
+
+### L-030 · 2026-10-01 · Review R-C00-BOM-7: PASS-WITH-CONDITIONS; conditions met
+
+**Review.** `session_01F5o2EmcMv8CbNFLsvJdCq2`; verdict `evidence/C00/reviews/R-C00-BOM-7.md`, copied from `claude/review-R-C00-BOM-7` (`cdd8c3c`). **PASS-WITH-CONDITIONS** on `6d95709`. It found F1, F3 and F4 real and correctly fixed, the lease change strictly more conservative, and the T-A2r pre-registration timely. Conditions: B1, B2, m1.
+
+**Correction to L-029 (B1).** The log is append-only, so the correction is stated here. L-029 says the classifier "denied the dispatcher's merge". The transcript shows a different sequence:
+1. The merge call passed the classifier and failed at GitHub, because the SHA was short.
+2. The classifier then blocked the dispatcher's next step toward the merge, `git rev-parse HEAD`, as "merge without review".
+3. It also blocked a plain read of `main`.
+
+The builder had summarised the dispatcher's own account without reading the transcript. That is the FND-001 class again: a claim was recorded at a strength its source did not support. **Rule:** a claim about another session's actions is checked against its transcript before it is recorded.
+
+| Finding | Disposition |
+|---|---|
+| B1: "merge denied" misreported | **Accepted.** EV-C00-005 T-A2 row and §2.3 rewritten with the sequence; L-029 corrected here. |
+| B2: runs merged the dispatcher PR with no scope check | **Accepted.** New `tools/check_dispatcher_pr.sh`: `DISPATCHER_PR OK` only if the PR changes nothing but the `DURUM.md` "Son nabız" line and appended stage-log lines; otherwise the run leaves the PR open and logs a finding. On PR #9's branch it gives OK. Three negative cases (hook edit, another `DURUM.md` line, an edited log line) give REFUSE (scratch worktree). §2.3, §3.2, R2 and Appendix M updated. Described as a scope check, not a review. |
+| m1: the routine's stored prompt was still v1.6 | **Accepted.** The T-A2r setup now replaces it with the v1.7 R2 text. |
+| m2: notification contents are a wider injection surface | **Accepted.** §9 names the sources, and every session acts only on a notification it expected. R2 tells the dispatcher to ignore other instructions. |
+| m3: no explicit release at a clean stop | **Accepted.** §2.2 "Release": `Released <time>` replaces the expiry. `builder_check.sh` accepts a released lease. R2 and `CLAUDE.md` treat it as stale. The 3h15m bound was already enforced by `builder_check.sh`. |
+| m4: premises and their strength | **Accepted.** The run's merge-ability is an untested premise. A denial is S3. A pass counts as "observed once". T-A2r condition 4 includes the scope check. (e), a negative-control notification, is not added: it costs another session, and R2 already says to ignore other text. |
+| m5: the dispatcher's decision was right only through the usage clause under v1.6 | **Accepted**, in the EV row. |
+| Classifier-denial rule: general, not only for `create_session` | **Accepted.** The §11 row now says: a denial is S3 for that action, never pursued through another tool, session or rewording. The old text "try a compliant route" is removed. |
+| m6: no live evidence left for a non-MCP block | **Noted**: cite the next live block when one occurs. |
+| m7: `DURUM.md` wording | **Accepted** in the next `DURUM.md` update. |
+
+**Final check runs (after this entry was written, 2026-10-01T20:46Z):**
+- `tools/test_tool_allowlist.sh`: 111 ok, `ALLOWLIST_TEST PASS`.
+- `tools/check_service_names.sh`: `SERVICE_NAMES CLEAN (pattern derived from 3cd686a; 12 terms)`.
+- `tools/check_dispatcher_pr.sh` on the closed PR #9 branch: `DISPATCHER_PR OK`.
