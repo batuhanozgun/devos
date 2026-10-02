@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 2 Ekim 2026, 15:03 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
+**Son güncelleme:** 3 Ekim 2026, 00:17 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
 
 **Şu an:** Kurulum bilerek bekletiliyor. Çalışma düzenimin bütüncül olarak yeniden tasarlanması gerekiyor; o bitmeden ağır işler başlamayacak. Otomatik başlatma kapatıldı. Senin bir şey yapmana gerek yok.
 
@@ -8,7 +8,7 @@
 
 **En son yapılanlar**
 1. Sen hiçbir şey yazmadan iş devam etti: zamanlanmış görev dağıtıcı oturumu uyandırdı, dağıtıcı yeni bir çalışma oturumu açtı, o oturum da kayıtları `main`'e aldı (T-A2r, geçti; bir kez gözlendi).
-2. Çalışma düzeninin bütün kabul koşulları kanıtlarıyla eşleştirildi; belge artık bağlayıcı. Son kontrolü, aşama sonunda işi yapmamış ayrı bir oturum yapacak.
+2. Çalışma düzeni belgesi (`plan/Builder_Operating_Model.md`) bir oturumun kendi kararıyla "bağlayıcı" işaretlendi; bağımsız olarak kabul edilmedi. Yerini bütüncül yeniden tasarım alacak. Belgenin ilk satırında hâlâ "bağlayıcı" yazıyor; bu çelişki bilerek yeniden tasarıma bırakıldı (`plan/ledger.md`, OI-011 madde 22).
 3. Küçük bir eksik bulundu: dağıtıcının açtığı oturumların kimlikleri `main`'e yazılamıyor. Etkisi şimdilik düşük; düzeltme bir sonraki çalışmada bağımsız incelemeyle gelecek.
 
 **Sırada:** Önce kurulumun bütünü için neyin hazır olması gerektiği baştan sona çıkarılacak; çalışma düzeni buna göre tek parça halinde yeniden tasarlanıp bağımsız olarak denetlenecek. Ondan sonra C00'ın ağır işleri (çeviri, bağımsız plan incelemesi, karşı tasarım, ECC karşılaştırması) başlayacak.
