@@ -22,6 +22,10 @@ Batu's own words, from his conversation with the builder session `session_016Hi3
 
 (Added 2026-10-02, later the same day.)
 
+> Bütün bu konuşma boyunca hep kendi içine bakman yeterli olmayabilir demek istedim. Buna özellikle dikkat ediyorum çünkü işi bitirmek için çalışıyorsun hep yani execution bias oluyor genelde. Hedef hep kullanıcıyı (yani beni) mutlu etmeye yönelik oluyor ama benim mutlu olacağım şey anlık bir mesajda söylediğim bir şey değil SOUL'u yaratmak. Ama senin kurulumun, devos, soul bunların hepsi adım adım tarif edilecek şeyler değil, senin araştırma gücün ve değerlendirme kapasiten gerekiyor. Uzmanlığını ortaya koyman gerekiyor […] Daha iyi soul yap demek yeterli değil, neyin daha iyi olacağını bulmak için o iyinin tanımını yapmak lazım ama ben o iyinin tanımını yapamıyorum ama senin yapabilmen için sana yollar göstermeye çalışıyorum.
+
+(Added 2026-10-02, evening; spelling slips corrected.)
+
 ## English interpretation
 
 1. **No temporary fixes.** Analyse an issue from outside, by its place in the whole, not from inside it. Prefer the robust solution to the merely sufficient one. Think holistically and for the purpose.
@@ -32,3 +36,4 @@ Batu's own words, from his conversation with the builder session `session_016Hi3
 6. **The builder owns the working system.** Batu cannot specify an LLM's agentic working system. Making it suitable, sufficient, robust, reliable and "clockwork" is the builder's responsibility. Reporting a failure without having prevented it by design is not enough.
 7. **Descriptive names** in all three scopes: installation, DevOS and SOUL.
 8. **Raise the quality of your own inputs before producing output.** Everything is an input: Batu's messages, working-system files, messages and tasks to other sessions, repository files. Each one must carry enough for the intended output. The builder must do this for itself at every point: session start, each new turn, each message or answer, each task given to another session, each file written, each reasoning step. Go deeper, broader and more causal each time. Builder's note: Batu wrote "çok uzun ve kapsamlı olması anlamına gelir"; the builder reads it as "does not mean" (an assumption). Comprehensive means complete and well-structured, not long; diluted input can hide the signal. Examples are in the research studies (`research/studies/context-memory-harness-engineering` first) and in the agent instructions of the earlier experiment repositories.
+9. **Defining "good" is the builder's job.** Watch two biases: *execution bias* (finishing the step, patching and moving on) and *user-pleasing* (aiming at Batu's satisfaction with a single message). Batu's goal is SOUL, not agreement. The builder must derive what "better" means from three sources: the purpose (plan 1.1, the SOUL definition), outside evidence (library studies, prior art, current sources), and criteria written before the work. Then it tests against them. Batu points out directions; he cannot specify "good". Looking only inward is not enough.
