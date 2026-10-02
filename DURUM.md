@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 2 Ekim 2026, 00:05 (Türkiye saati) · **Son nabız:** 1 Ekim 2026, 23:58 (Türkiye saati): dağıtıcı yeni bir çalışma oturumu başlattı
+**Son güncelleme:** 2 Ekim 2026, 00:05 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 03:49 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
 
 **Şu an:** Çalışan oturum yok. Haftalık kullanım sınırı yenilenene kadar bekleniyor (3 Ekim 20:15'te dağıtıcı otomatik olarak uyandırılacak). Senin bir şey yapmana gerek yok.
 
