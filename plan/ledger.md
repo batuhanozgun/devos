@@ -98,6 +98,9 @@ Criteria served by C00 (plan): 18, 21, 25–27, 29, 34.
 - Cross-tool shared-memory products (Unabyss, MemoryPlugin, Great Arrow, LeapMemory, Hjarni, Open Context) attack the continuity problem the builder solves with the repository. They are design references to compare with the library's memory studies, not dependencies: a third memory store would be a second source of truth and could send private content to a third party.
 - Shared context for agents that work and learn together (Meko, verified) is a reference for DevOS's coordination model.
 - Skill-governance products (Agensi, skilder, Expertise AI) bear on G-017: how others version, share and govern skills.
-- A Postgres documentation and database-skills connector (pg-aiguide, verified, read-only) is a direct-use candidate for C02, since Supabase is Postgres. | W-C00-12 |
+- A Postgres documentation and database-skills connector (pg-aiguide, verified, read-only) is a direct-use candidate for C02, since Supabase is Postgres.
+- An agent-activity monitoring connector (Origin, verified: "see what AI agents are doing") points at a missing kind of control. The builder's barrier only prevents; nothing independently records what sessions actually did. Safeguard 2 of plan 0.5, independent monitoring of the machine account's writes to the library, is still not in place (G-001).
+- Agent build-and-run platforms (Omni by xpander, Lorikeet) are comparators for SOUL.
+- The scan has reached diminishing returns. W-C00-12 completes it by method: a few representatives per category, with findings recorded. | W-C00-12 |
 
 Gaps: see EV-C00-003 (G-001 to G-015). Findings: FND-001 in `plan/ledger/C00-log.md`.
