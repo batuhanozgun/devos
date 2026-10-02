@@ -18,6 +18,10 @@ Batu's own words, from his conversation with the builder session `session_016Hi3
 
 > Bu ne olduğunu anlatan isimler kullanma konusunda hem kendin için yani kurulum hem devos hem de soul için geçerli.
 
+> Önce kendi akıl yürütme kapasiteni artır ki çıktılarının kalitesi de artsın. […] Girdinin (girdi benden de gelebilir çalışma düzenindeki dosya, başka bir oturuma attığın mesaj, repodaki dosya herşey girdi) LLM'in çalışma mekanizmasında çıktıyı sağlayacak kapsamda olması gerekiyor […] Bunu kendi içinde çalışırken kendi kendine de yapabilmen önemli, sen bir oturuma başlarken, bir oturumda yeni tura başlarken, bir mesaj/cevap verirken, başka oturuma mesaj ya da görev verirken, dosya yazarken, akıl yürütürken, düşünürken hep derine, hep daha kapsamlı olmaya, hep daha neden sonuç ilişkisi kurmaya yönelmen lazım. […] Bak bununla ilgili de repoda hem araştırmalarda hem de repolarda çalışan ajanlarda çok fazla örnek var. Gez repoları örnekler bulacaksın.
+
+(Added 2026-10-02, later the same day.)
+
 ## English interpretation
 
 1. **No temporary fixes.** Analyse an issue from outside, by its place in the whole, not from inside it. Prefer the robust solution to the merely sufficient one. Think holistically and for the purpose.
@@ -27,3 +31,4 @@ Batu's own words, from his conversation with the builder session `session_016Hi3
 5. **Everything must be findable again.** Use a retrieval and filing method, like a library's, decided before things are filed. Use the research library (`agentic-os-search`) for both the builder's setup and DevOS, and the web to deepen or confirm.
 6. **The builder owns the working system.** Batu cannot specify an LLM's agentic working system. Making it suitable, sufficient, robust, reliable and "clockwork" is the builder's responsibility. Reporting a failure without having prevented it by design is not enough.
 7. **Descriptive names** in all three scopes: installation, DevOS and SOUL.
+8. **Raise the quality of your own inputs before producing output.** Everything is an input: Batu's messages, working-system files, messages and tasks to other sessions, repository files. Each one must carry enough for the intended output. The builder must do this for itself at every point: session start, each new turn, each message or answer, each task given to another session, each file written, each reasoning step. Go deeper, broader and more causal each time. Builder's note: Batu wrote "çok uzun ve kapsamlı olması anlamına gelir"; the builder reads it as "does not mean" (an assumption). Comprehensive means complete and well-structured, not long; diluted input can hide the signal. Examples are in the research studies (`research/studies/context-memory-harness-engineering` first) and in the agent instructions of the earlier experiment repositories.
