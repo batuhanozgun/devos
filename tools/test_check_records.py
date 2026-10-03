@@ -217,8 +217,11 @@ def t_m1():
 
 def t_m2(mutant=False):
     s = Scratch()
-    if mutant:
+    if mutant:  # committed, so that the fixture's own checkout below keeps it
         s.sub("tools/check_records.py", "def check_views(out):\n", "def check_views(out):\n    return\n")
+        s.commit("mutant: views disabled")
+        s.records("render")
+        s.commit("mutant: rendered")
     rc, out = s.cr("views")
     ok0 = outcome("T-M2", "unmodified tree passes", rc == 0, out)
     s.sub("plan/ledger.md", "**Ready (startable now):**", "**Ready (startable now, edited):**")
