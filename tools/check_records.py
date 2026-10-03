@@ -60,6 +60,9 @@ ISSUE_URL = "https://api.github.com/repos/batuhanozgun/devos/issues/6/comments?p
 BATU = "batuhanozgun"
 PART_ITEMS = {"1a": "W-C00-12.1", "1b-i": "W-C00-12.2", "1b-ii": "W-C00-12.3", "1c": "W-C00-12.4", "1d": "W-C00-12.5"}
 
+# never break-glass: the stop check and the checker that enforces the verdict after the fact (13 section 5 #4;
+# critic of 1b-ii #5)
+BG_NEVER = {"tools/builder_check.sh", "tools/check_records.py"}
 LOG_RE = re.compile(r"^plan/ledger/[^/]+-log\.md$")
 VERDICT_PATH = "evidence/*/reviews/*.md"
 VERDICT_RE = re.compile(r"Verdict:?\**\s*\**\s*(PASS-WITH-CONDITIONS|PASS|FAIL)")
@@ -257,6 +260,10 @@ def edge_targets(rev):
     return out
 
 
+def finished_targets(rev):
+    return {d[0] for m in work_metas(rev).values() for d in deps_norm(m) if d[1] == "finished"}
+
+
 def ledger_rows(text):
     try:
         return R.state_rows(text) if text else {}
@@ -282,19 +289,21 @@ def break_glass_target(base, head):
     for m in merges:
         mp = f"{m}^1"
         part = {p for _, p in changed(mp, m) if exec_part(p)}
-        if not part or "tools/builder_check.sh" in part or paths != part:
+        if not part or part & BG_NEVER or paths != part:
             continue
-        if all(content(head, p, raw=True) == content(mp, p, raw=True) for p in part):
+        # exact inverse: the base still holds M's result, and the head restores M^1 (no rollback past later merges)
+        if all(content(base, p, raw=True) == content(m, p, raw=True) and
+               content(head, p, raw=True) == content(mp, p, raw=True) for p in part):
             return m
     return None
 
 
-def impact(base, head):
+def impact(base, head, allow_bg=True):
     """(class, reasons, break-glass target merge or None)."""
-    key = ("impact", base, head)
+    key = ("impact", base, head, allow_bg)
     if key in _cache:
         return _cache[key]
-    bg = break_glass_target(base, head)
+    bg = break_glass_target(base, head) if allow_bg else None
     if bg:
         _cache[key] = ("normal", [f"exact inverse of the executable-carrier part of merge {bg[:7]} (break-glass)"], bg)
         return _cache[key]
@@ -351,14 +360,21 @@ def impact(base, head):
         ba, ha = R.ACC_RE.search(bb or ""), R.ACC_RE.search(hb or "")
         if ba and (not ha or ha.group(1) != ba.group(1)):
             reasons.append(f"{p}: an existing acceptance block changed")
-        if (bm.get("acceptance"), bm.get("accepted_by")) != (hm.get("acceptance"), hm.get("accepted_by")):
-            if hmetas is None:
-                hmetas = edge_targets(head)
+        if hmetas is None:
+            hmetas = edge_targets(head)
+        if bm.get("execution") != hm.get("execution") and iid in finished_targets(head):
+            reasons.append(f"{p}: execution of the target of an on: finished edge changed")
+        if (bm.get("acceptance"), bm.get("accepted_by"), bm.get("composition_by")) != \
+                (hm.get("acceptance"), hm.get("accepted_by"), hm.get("composition_by")):
             if iid in hmetas:
                 ab = str(hm.get("accepted_by") or "")
-                if not (fnmatch.fnmatch(ab, VERDICT_PATH) and verdict_ok_text(content(head, ab))):
-                    reasons.append(f"{p}: acceptance of an edge or hold target changed without a session verdict "
-                                   "(W-R7, N-049)")
+                users = [m.get("id") for m in work_metas(head).values()
+                         if str(m.get("accepted_by") or "") == ab or str(m.get("composition_by") or "") == ab]
+                if not (fnmatch.fnmatch(ab, VERDICT_PATH) and verdict_ok_text(content(head, ab))
+                        and hm.get("execution") == "finished" and users == [iid]
+                        and re.search(r"(?<![\w.-])" + re.escape(str(iid)) + r"(?![\w-]|\.\d)", content(head, ab) or "")):
+                    reasons.append(f"{p}: acceptance of an edge or hold target changed without its own session "
+                                   "verdict (W-R7, N-049)")
     _cache[key] = ("high" if reasons else "normal", reasons, None)
     return _cache[key]
 
@@ -367,10 +383,24 @@ def verdict_files(rev):
     return [p for p in tracked_files(rev, "evidence") if fnmatch.fnmatch(p, VERDICT_PATH)]
 
 
-def covered(m2, tree_rev):
-    """A verdict on tree_rev that covers the PR head m2 (15 section 2): PASS or PASS-WITH-CONDITIONS, naming a
-    commit X that is m2 or an ancestor of it, with X..m2 class normal."""
-    key = ("covered", m2, tree_rev)
+def verdict_bound(vf, tree_rev):
+    """The commit that added vf passed claims (b) for it (critic of 1b-ii #2): only such verdicts can cover."""
+    key = ("bound", vf, tree_rev)
+    if key not in _cache:
+        add = (git("log", "--diff-filter=A", "--format=%H", "-1", tree_rev, "--", vf, ok=True) or "").strip()
+        o = Out()
+        if add:
+            ps = (git("rev-list", "--parents", "-n1", add) or "").split()
+            check_claims_diff(ps[1] if len(ps) > 1 else add, add, o, only=vf)
+        _cache[key] = bool(add) and not o.fails
+    return _cache[key]
+
+
+def covered(m2, tree_rev, strict=None):
+    """A verdict on tree_rev that covers the PR head m2 (15 section 2): PASS or PASS-WITH-CONDITIONS, bound by
+    claims (b), naming a commit X that is m2 or an ancestor of it, with X..m2 class normal without the break-glass
+    exception. strict: a set of commits; then X must be one of them (a break-glass revert's own head or merge)."""
+    key = ("covered", m2, tree_rev, tuple(sorted(strict)) if strict else None)
     if key in _cache:
         return _cache[key]
     found = None
@@ -383,7 +413,9 @@ def covered(m2, tree_rev):
             x = resolve(s)
             if not x or not (x == m2 or is_ancestor(x, m2)):
                 continue
-            if x == m2 or impact(x, m2)[0] == "normal":
+            if strict is not None and x not in strict:
+                continue
+            if (x == m2 or impact(x, m2, allow_bg=False)[0] == "normal") and verdict_bound(vf, tree_rev):
                 found = (vf, x)
                 break
         if found:
@@ -421,12 +453,14 @@ def parse_segment(seg):
     return fields[0], kind, fields[2:]
 
 
-def names(target, path):
+def names(target, path, allow_glob=True):
     t = target.replace("`", "")
     if path in t:
         return True
     for tok in re.split(r"[\s,()]+", t):
-        if tok and ("*" in tok or "?" in tok) and fnmatch.fnmatch(path, tok):
+        # a glob names records only for additions, and only under a named directory (critic of 1b-ii #10)
+        if allow_glob and tok and ("*" in tok or "?" in tok) and "/" in tok.split("*")[0] and \
+                fnmatch.fnmatch(path, tok):
             return True
     stem = Path(path).stem
     return bool(re.search(r"(?<![\w./-])" + re.escape(stem) + r"(?![\w-]|\.\d)", t)) and len(stem) >= 4
@@ -466,7 +500,7 @@ def check_kinds(base, head, out):
         if not rem and not add:
             continue
         need = MOD_KINDS if rem else ADD_KINDS
-        if not any(kind in need and names(target, p) for target, kind, _ in segs):
+        if not any(kind in need and names(target, p, allow_glob=not rem) for target, kind, _ in segs):
             what = "modified or deleted lines" if rem else "appended lines"
             out.fail("kinds", f"{p}: {what} without a Record changes line of kind {'|'.join(sorted(need))} naming it")
 
@@ -687,10 +721,12 @@ def check_claims_tree(out):
                     out.fail("claims", f"{f}:{n}: names {p}, which does not exist (M-R16 a)")
 
 
-def check_claims_diff(base, head, out):
+def check_claims_diff(base, head, out, only=None):
     prod = sessions_in(base, head or "HEAD")
+    owned = set((content(head, ".claude/hooks/owned_ids.txt") or "").split())
+    hc = resolve(head or "HEAD")
     for st, p in changed(base, head):
-        if st not in "AM" or not fnmatch.fnmatch(p, VERDICT_PATH):
+        if st not in "AM" or not fnmatch.fnmatch(p, VERDICT_PATH) or (only and p != only):
             continue
         rid = Path(p).stem
         ref = next((r for r in (f"refs/remotes/origin/claude/review-{rid}", f"refs/heads/claude/review-{rid}")
@@ -704,14 +740,17 @@ def check_claims_diff(base, head, out):
             continue
         if cb != bb and not redacted_match(bb, cb):
             out.fail("claims", f"{p}: differs from its review-branch blob beyond pattern substitutions (M-R16 b)")
-        if not any(resolve(s) for s in set(SHA_RE.findall(cb.decode("utf-8", "replace")))):
-            out.fail("claims", f"{p}: names no commit that resolves (M-R16 b)")
+        shas = [resolve(s) for s in set(SHA_RE.findall(cb.decode("utf-8", "replace")))]
+        if not any(x and (x == hc or is_ancestor(x, hc)) for x in shas):
+            out.fail("claims", f"{p}: names no reviewed commit that is an ancestor of the head (M-R16 b)")
         msg = git("log", "-1", "--format=%B", ref, "--", p, ok=True) or ""
         ss = re.findall(r"Claude-Session:\s*\S*?(session_[A-Za-z0-9]+)", msg)
         if not ss:
             out.fail("claims", f"{p}: its review-branch commit carries no Claude-Session trailer (M-R16 b)")
         elif ss[-1] in prod:
             out.fail("claims", f"{p}: committed on its review branch by {ss[-1]}, a session of this change (D-07)")
+        elif ss[-1] not in owned:
+            out.fail("claims", f"{p}: its review-branch session {ss[-1]} is not an owned session (recorder; M-R16 b)")
 
 
 # ---------------------------------------------------------------- docstatus (M-R2)
@@ -764,7 +803,7 @@ def check_docstatus(out):
         m = re.search(r"\*\*Status:\*\*\s*(.*?)(?=\s\*\*[A-Z][\w -]*:\*\*|$)", h)
         if m:
             val = m.group(1).replace("`", "").strip().rstrip(".")
-            if not val.startswith(POINTER):
+            if val != POINTER:
                 out.fail("docstatus", f"{d}: header Status '{val[:60]}' is not the pointer '{POINTER}' (M-R2)")
         elif re.search(r"\b(binding|candidate|proposal|accepted|draft)\b", h, re.I):
             out.fail("docstatus", f"{d}: header carries a status word of its own (M-R2)")
@@ -853,6 +892,10 @@ def pending_parts():
 
 
 def pending_for(path, row_text=""):
+    """A later part builds it, and it did not exist at the baseline (critic of 1b-ii #6: an existing carrier that
+    disappears is never pending)."""
+    if resolve(BASELINE) and git("cat-file", "-e", f"{BASELINE}:{path.rstrip('/')}", ok=True) is not None:
+        return None
     for part, (toks, ids) in pending_parts().items():
         if path in toks or Path(path).name in toks or (RULE_ID_RE.findall(row_text) and
                                                        set(RULE_ID_RE.findall(row_text)) & ids):
@@ -954,7 +997,7 @@ def check_map(out):
             continue
         cell = cells[hdr.index("Carrier")]
         row_text = " | ".join(cells)
-        inactive = re.search(r"\b(retired|deferred)\b", row_text) is not None
+        inactive = re.search(r"\b(retired|deferred)\b", " ".join(cells[:2] + [cell])) is not None
         for p in backtick_paths(cell):
             named.add(p)
             if any(ch in p for ch in "<…*"):
@@ -1060,23 +1103,27 @@ def deterministic_problems(item_path, text):
     c = resolve(sha.group(1))
     if not c:
         return [f"deterministic commit {sha.group(1)} does not resolve"]
-    script = next((tok for tok in cmd.group(1).split() if tok.startswith(("tools/", "plan/builder/w-c00-12/"))), None)
-    if not script:
-        return ["deterministic command names no script under tools/ or plan/builder/w-c00-12/"]
-    last = (git("log", "-1", "--format=%H", c, "--", script, ok=True) or "").strip()
-    if not last:
-        return [f"{script} does not exist at {c[:7]}"]
+    if re.search(r"[;&|<>`$(){}\\\n*?!]", cmd.group(1)):
+        return ["deterministic command contains shell metacharacters; only '<interpreter> <script> [args]' runs"]
+    argv = cmd.group(1).split()
+    scripts = [tok for tok in argv if tok.startswith(("tools/", "plan/builder/"))]
+    if not scripts or argv[0] not in ("python3", "bash") or argv[1] != scripts[0]:
+        return ["deterministic command is not '<python3|bash> <script under tools/ or plan/builder/> [args]'"]
     run = first_running_commit(item_path)
-    if not (run and is_ancestor(last, run) and last != run):
-        m, m2 = merge_of(last)
-        if not m or not covered(m2, "HEAD"):
-            out.append(f"{script}'s last change {last[:7]} is neither pre-registered nor in a merge a verdict covers "
-                       "(W-R1)")
+    for script in scripts:
+        last = (git("log", "-1", "--format=%H", c, "--", script, ok=True) or "").strip()
+        if not last:
+            return [f"{script} does not exist at {c[:7]}"]
+        if not (run and is_ancestor(last, run) and last != run):
+            m, m2 = merge_of(last)
+            if not m or not covered(m2, "HEAD"):
+                out.append(f"{script}'s last change {last[:7]} is neither pre-registered nor in a merge a verdict "
+                           "covers (W-R1)")
     tmp = tempfile.mkdtemp(prefix="cr-det-")
     try:
         subprocess.run(["git", "clone", "-q", "--shared", ".", tmp], check=True, capture_output=True)
         subprocess.run(["git", "-C", tmp, "checkout", "-q", "--detach", c], check=True, capture_output=True)
-        r = subprocess.run(cmd.group(1), shell=True, cwd=tmp, capture_output=True, text=True, timeout=600)
+        r = subprocess.run(argv, cwd=tmp, capture_output=True, text=True, timeout=600)
         lines = [x for x in r.stdout.splitlines() if x.strip()]
         if not lines or lines[-1].strip() != res.group(1).strip():
             out.append(f"re-run of '{cmd.group(1)[:60]}' at {c[:7]} ended '{(lines[-1] if lines else '')[:60]}', "
@@ -1085,6 +1132,36 @@ def deterministic_problems(item_path, text):
         out.append(f"re-run failed: {e}")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+    return out
+
+
+def binding_problems(meta, item_path, vf, text, after=()):
+    """The verdict is this item's (critic of 1b-ii #1): it names the item's ID and a reviewed commit X with the
+    item's first running commit an ancestor of X (and every path in `after` last changed before X), X an ancestor
+    of HEAD; the item is finished; no other item uses the same file."""
+    out = []
+    iid = str(meta.get("id"))
+    if meta.get("execution") != "finished":
+        out.append(f"accepted while execution is '{meta.get('execution')}', not finished (W-R1)")
+    if not re.search(r"(?<![\w.-])" + re.escape(iid) + r"(?![\w-]|\.\d)", text):
+        out.append(f"{vf} does not name {iid} (W-R1: a verdict binds to its item)")
+    run = first_running_commit(item_path)
+    head = resolve("HEAD")
+    lasts = [(git("log", "-1", "--format=%H", "HEAD", "--", a, ok=True) or "").strip() for a in after]
+    ok = False
+    for s in set(SHA_RE.findall(text)):
+        x = resolve(s)
+        if x and run and (x == run or is_ancestor(run, x)) and (x == head or is_ancestor(x, head)) and \
+                all(not l or l == x or is_ancestor(l, x) for l in lasts):
+            ok = True
+            break
+    if not ok:
+        out.append(f"{vf} names no reviewed commit at or after the commit where {iid} started"
+                   + (" and after its children's last changes" if after else "") + " (W-R1)")
+    users = [m.get("id") for m in work_metas(None).values()
+             if vf in (str(m.get("accepted_by") or ""), str(m.get("composition_by") or ""))]
+    if users != [iid] and not (after and set(users) <= {iid}):
+        out.append(f"{vf} is used by {', '.join(sorted(map(str, users)))}; one verdict accepts one item (W-R1)")
     return out
 
 
@@ -1102,14 +1179,16 @@ def acceptance_problems(meta, item_path, states):
     if fnmatch.fnmatch(ab, VERDICT_PATH):
         if not verdict_ok_text(text):
             out.append(f"{ab} has no PASS verdict naming a commit (W-R1)")
+        out += binding_problems(meta, item_path, ab, text)
         if lab is not None and lab not in SESSION_LABELS:
             out.append(f"{ab} is a session verdict but the label is '{lab}'")
     elif "Deterministic-Command:" in text:
         if lab != "deterministic":
             out.append(f"{ab} is deterministic evidence but the label is '{lab}'")
         out += deterministic_problems(item_path, text)
-    elif lab == "subagent" and re.search(r"(?m)^Verdict:\s*PASS", text):
-        pass
+    elif lab == "subagent":
+        out.append("a subagent verdict has no binding in tranche 1 (the producer could write it), so it cannot accept "
+                   "(W-R1; critic of 1b-ii #9)")
     else:
         out.append(f"{ab} is neither a verdict file nor deterministic evidence naming a command (W-R1)")
     tl = re.search(r"(?m)^Tests:\s*(.+)$", text)
@@ -1149,6 +1228,12 @@ def check_work(out):
             cb = str(m.get("composition_by") or "")
             if not cb or not fnmatch.fnmatch(cb, VERDICT_PATH) or not verdict_ok_text(content(None, cb)):
                 out.fail("work", f"{iid}: a parent accepted without a composition verdict (composition_by) (W-R4)")
+            else:
+                ct = content(None, cb) or ""
+                if "composition" not in ct.lower():
+                    out.fail("work", f"{iid}: {cb} is not a composition verdict (W-R4)")
+                for prob in binding_problems(m, p, cb, ct, after=[k["_path"] for k in kids]):
+                    out.fail("work", f"{iid}: composition: {prob}")
             for k in kids:
                 if not R.is_closed(k):
                     out.fail("work", f"{iid}: accepted while child {k['id']} is not accepted, cancelled or declined "
@@ -1215,7 +1300,7 @@ def check_answers(out, url):
             continue
         seen += 1
         cid = str(c.get("id"))
-        if cid not in dec and cid not in nd:
+        if not re.search(r"(?<!\d)" + cid + r"(?!\d)", dec) and cid not in nd:
             out.fail("answers", f"comment {cid} by {BATU} is neither quoted in a decision record nor logged "
                                 "'not a decision' (M-R13)")
     out.info(f"[answers] {len(comments)} comment(s), {seen} by {BATU}; cursor: {cursor[:60]}")
@@ -1250,10 +1335,16 @@ def check_merged(since, main_ref, out):
         out.fail("merged", f"cannot resolve the baseline {since} or {main_ref}")
         return
     log_added = added_log_lines(sb, mr)
-    exc = [(m.group(1), m.group(2)) for line in log_added
-           for m in [re.search(r"record-check exception:\s*([0-9a-f]{7,40})\s+(\w+):", line)] if m]
+    commits = (git("rev-list", "--first-parent", "--reverse", f"{sb}..{mr}") or "").split()
+    exc = []  # (failing commit prefix, subcommand, index of the commit that added the line)
+    for i, c in enumerate(commits):
+        ps = (git("rev-list", "--parents", "-n1", c) or "").split()[1:]
+        for line in added_log_lines(ps[0], c):
+            m = re.search(r"record-check exception:\s*([0-9a-f]{7,40})\s+(\w+):", line)
+            if m:
+                exc.append((m.group(1), m.group(2), i))
     reverts = {}
-    for c in (git("rev-list", "--first-parent", "--reverse", f"{sb}..{mr}") or "").split():
+    for ci, c in enumerate(commits):
         ps = (git("rev-list", "--parents", "-n1", c) or "").split()[1:]
         base, m2 = ps[0], (ps[1] if len(ps) > 1 else c)
         sub = Out()
@@ -1263,7 +1354,7 @@ def check_merged(since, main_ref, out):
         cls, reasons, bg = impact(base, c)
         if bg:
             reverts[bg] = c
-            cov = covered(m2, mr)
+            cov = covered(m2, mr, strict={m2, c})
             if cov:
                 out.info(f"[break-glass] {c[:7]} reverts {bg[:7]}; verdict {cov[0]}")
             else:
@@ -1277,7 +1368,8 @@ def check_merged(since, main_ref, out):
                 out.fail("impact", f"merged {c[:7]} is class high ({reasons[0][:70]}) and no session verdict covers "
                                    f"its head {m2[:7]} (W-R7)")
         for s, msg in sub.fails:
-            if any(c.startswith(x) and s == y for x, y in exc):
+            reviews = s == "claims" and "evidence/" in msg and "/reviews/" in msg
+            if not reviews and any(c.startswith(x) and s == y and i > ci for x, y, i in exc):
                 sess = ",".join(sorted(sessions_in(base, c)))
                 out.info(f"[exception] merged {c[:7]} {s}: {msg[:100]} (sessions {sess})")
                 print(f"EXCEPTION {c[:7]} {s} sessions={sess}")

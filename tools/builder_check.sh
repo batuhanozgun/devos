@@ -23,6 +23,9 @@ ok()  { echo "PASS  $1"; }
 bad() { echo "FAIL  [$1] $2"; fail=1; classes="$classes $1"; }
 
 git fetch -q origin main 2>/dev/null || bad fetch "cannot fetch origin/main"
+if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then  # blame, the leak derivation and merged need history
+  git fetch -q --unshallow origin 2>/dev/null && echo "INFO  shallow clone: fetched the full history" || bad fetch "shallow clone and git fetch --unshallow failed"
+fi
 
 [ -z "$(git status --porcelain)" ] && ok "working tree clean" || bad tree "uncommitted changes present"
 
@@ -126,7 +129,9 @@ due=0
 gd=$(git rev-parse --git-dir 2>/dev/null); store="$gd/builder_check_fails/${sid:-nosession}"
 up=$(git rev-parse -q --verify '@{u}' 2>/dev/null || true)
 if [ -z "$(git status --porcelain)" ] && [ -n "$up" ] && [ "$up" = "$(git rev-parse HEAD)" ]; then
-  if [ -n "${classes// /}" ]; then mkdir -p "$gd/builder_check_fails"; printf '%s\n' "$(printf '%s\n' $classes | sort -u | tr '\n' ' ')" >> "$store"; fi
+  # quality classes only: tree, ahead and fetch describe where the run is, not an error it made (critic of 1b-ii #8)
+  q=$(printf '%s\n' $classes | grep -vxE 'tree|ahead|fetch|usage' | sort -u | tr '\n' ' ')
+  if [ -n "${q// /}" ]; then mkdir -p "$gd/builder_check_fails"; printf '%s\n' "$q" >> "$store"; fi
 fi
 if [ -f "$store" ] && [ -n "$(tr ' ' '\n' < "$store" | grep -v '^$' | sort | uniq -d)" ]; then due=1; fi
 exc=$(printf '%s\n' "$merged_out" | grep '^EXCEPTION' | grep "session_${sid:-none}" || true)

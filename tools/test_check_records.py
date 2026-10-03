@@ -497,7 +497,9 @@ def t_m15():
 
     def case(label, branch_text, copy_text, branch_session=REVIEWER, expect_fail=True):
         s = Scratch()
-        main = s.rev()
+        if branch_session != "session_01UNOWNEDxxxxxxxxxxxxxxx":
+            s.append(".claude/hooks/owned_ids.txt", branch_session)
+        main = s.commit("fixture: the reviewer is an owned session")
         vt = branch_text(main)
         s.git("checkout", "-q", "-b", "claude/review-R-FX1")
         s.write("evidence/C00/reviews/R-FX1.md", vt)
@@ -514,6 +516,8 @@ def t_m15():
     withterm = lambda sha: verdict_text(sha, "PASS", f"The server {term} was listed.\nLine two.")  # noqa: E731
     case("(a) one byte changed from the branch blob", plain, lambda t: t.replace("Line one.", "Line one!"))
     case("(b) committed on the review branch by the producer's session", plain, lambda t: t, branch_session=PRODUCER)
+    case("(b2) committed on the review branch by a session that is not owned (critic of 1b-ii #2)", plain,
+         lambda t: t, branch_session="session_01UNOWNEDxxxxxxxxxxxxxxx")
     case("(c) a redacted copy whose differing line is a pattern substitution", withterm,
          lambda t: t.replace(term, "[service]"), expect_fail=False)
     case("(d) a redacted copy that also changes a non-pattern word", withterm,
@@ -542,8 +546,8 @@ def t_w1_r11():
              execution="running")
     s.write("evidence/C00/tests/triage_fx.md", "Triage: normal (fixture).\n")
     running = s.commit("item running")
-    s.write("evidence/C00/reviews/R-FX9.md", verdict_text(running, "PASS"))
-    s.write("evidence/C00/reviews/R-FX8.md", verdict_text(running, "PASS", "Tests: T-M5"))
+    s.write("evidence/C00/reviews/R-FX9.md", verdict_text(running, "PASS", "Reviews W-C00-12.9."))
+    s.write("evidence/C00/reviews/R-FX8.md", verdict_text(running, "PASS", "Reviews W-C00-12.9.\nTests: T-M5"))
     s.write("evidence/C00/tests/handwritten.md", "Deterministic result: PASS (written by hand).\n")
     s.write("evidence/C00/tests/rerun_differs.md", f"Deterministic-Command: python3 tools/x_echo.py\n"
                                                   f"Deterministic-Commit: {running}\nDeterministic-Result: B\n")
@@ -580,6 +584,8 @@ def t_w1_r11():
     s.commit("verdict on the unrelated PR")
     check("(h) the same, after a later PR with a bound verdict that did not touch the script",
           lambda m: accept(m, "evidence/C00/tests/g.md", "deterministic"), True)
+    check("an existing verdict of another item reused (critic of 1b-ii #1)",
+          lambda m: accept(m, "evidence/C00/reviews/R-W12-3.md"), True)
     check("a bound verdict", lambda m: accept(m, "evidence/C00/reviews/R-FX9.md"), False)
     front_edit(s, p, lambda m: (accept(m, "evidence/C00/reviews/R-FX9.md"), m.pop("acceptance_label")))
     rc, out = s.cr("work")
@@ -612,16 +618,23 @@ def t_w3r():
 
 def t_w4():
     s = Scratch()
-    s.write("evidence/C00/reviews/R-FX9.md", verdict_text(s.rev(), "PASS"))
-    new_item(s, "W-C00-12.8", "W-C00-12")
-    new_item(s, "W-C00-12.8.1", "W-C00-12.8")
-    front_edit(s, "plan/work/W-C00-12.8.1.md", lambda m: accept(m, "evidence/C00/reviews/R-FX9.md"))
-    front_edit(s, "plan/work/W-C00-12.8.md", lambda m: accept(m, "evidence/C00/reviews/R-FX9.md"))
+    new_item(s, "W-C00-12.8", "W-C00-12", execution="running")
+    new_item(s, "W-C00-12.8.1", "W-C00-12.8", execution="running")
+    run = s.commit("parent and child running")
+    s.write("evidence/C00/reviews/R-FXC.md", verdict_text(run, "PASS", "Reviews W-C00-12.8.1."))
+    front_edit(s, "plan/work/W-C00-12.8.1.md", lambda m: accept(m, "evidence/C00/reviews/R-FXC.md"))
+    child = s.commit("child accepted")
+    s.write("evidence/C00/reviews/R-FXP.md", verdict_text(child, "PASS", "Composition review of W-C00-12.8."))
+    s.commit("composition verdict")
+    front_edit(s, "plan/work/W-C00-12.8.md", lambda m: accept(m, "evidence/C00/reviews/R-FXP.md"))
     rc, out = s.cr("work")
     outcome("T-W4", "a parent accepted without a composition record fails", bool(fails(out, "work", "W-C00-12.8: a parent")), out)
-    front_edit(s, "plan/work/W-C00-12.8.md", lambda m: m.update(composition_by="evidence/C00/reviews/R-FX9.md"))
+    front_edit(s, "plan/work/W-C00-12.8.md", lambda m: m.update(composition_by="evidence/C00/reviews/R-FXP.md"))
     rc, out = s.cr("work")
     outcome("T-W4", "with a composition record it passes", not fails(out, "work", "W-C00-12.8"), out)
+    front_edit(s, "plan/work/W-C00-12.8.md", lambda m: m.update(composition_by="evidence/C00/reviews/R-FXC.md"))
+    rc, out = s.cr("work")
+    outcome("T-W4", "a child's verdict reused as the composition record fails", bool(fails(out, "work", "W-C00-12.8: composition")), out)
 
 
 def t_w9():
@@ -652,7 +665,8 @@ def t_w9():
     s.records("render")
     s.commit("d")
     s.merge("d")
-    rc, out = s.cr("merged", "--since", base, "--main", "main")
+    s.push()
+    rc, out = s.bc("--since", base)
     outcome(T, "(d) (a) merged without a session verdict: the stop check fails", bool(fails(out, "impact")), out)
     new = lambda s: new_item(s, "W-C00-12.7", "W-C00-12")  # noqa: E731
     klass("(e) a new item with its first acceptance block", new, "normal")
@@ -693,11 +707,40 @@ def t_w9():
     s.append(s.log(), f"- break-glass: {m1}")
     s.commit("break-glass line")
     s.merge("bgline")
-    rc, out = s.cr("merged", "--since", base, "--main", "main")
+    s.push()
+    rc, out = s.bc("--since", base)
     outcome(T, "(h2) after the break-glass revert and its line, with no verdict, the stop check fails",
             bool(fails(out, "break-glass")), out)
+    s.git("checkout", "-q", "-b", "p2")
+    s.write("plan/notes/p2.md", "unrelated\n")
+    p2 = s.commit("unrelated PR")
+    s.merge("p2")
+    s.git("checkout", "-q", "-b", "claude/review-R-P2")
+    s.write("evidence/C00/reviews/R-P2.md", verdict_text(m1, "PASS", f"Unrelated PR at {p2}."))
+    s.commit("R-P2", session=REVIEWER)
+    s.git("checkout", "-q", "main")
+    s.git("checkout", "-q", "-b", "copy")
+    s.git("checkout", "-q", "claude/review-R-P2", "--", "evidence/C00/reviews/R-P2.md")
+    s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+    s.commit("copy R-P2")
+    s.merge("copy")
+    rc, out = s.cr("merged", "--since", base, "--main", "main")
+    outcome(T, "(h3) an unrelated verdict naming the reverted merge does not cover the break-glass revert",
+            bool(fails(out, "break-glass")), out)
+    s = Scratch()
+    s.git("checkout", "-q", "-b", "m1")
+    s.append("tools/records.py", "# fixture one")
+    s.commit("m1")
+    m1 = s.merge("m1")
+    s.git("checkout", "-q", "-b", "m2")
+    s.append("tools/records.py", "# fixture two")
+    s.commit("m2")
+    m2 = s.merge("m2")
+    klass("(h4) restoring the content before M1 after a later merge M2 is not break-glass",
+          lambda s2: s2.git("checkout", "-q", f"{m1}^1", "--", "tools/records.py"), "high", s=s, base=m2)
     revert_case("(i) the exact revert of a merge that changed an acceptance block",
                 lambda s: s.sub("plan/work/W-C00-12.5.md", "<!-- acceptance -->\n", "<!-- acceptance -->\nFixture "), "high")
+    revert_case("(i) the exact revert of a merge that changed a Governing-documents row", gov, "high")
     klass("(j) deleting an existing depends_on entry",
           lambda s: front_edit(s, "plan/work/W-C00-12.5.md", lambda m: m.update(depends_on=[])), "high")
     klass("(k) adding on: finished to an edge",
@@ -733,6 +776,16 @@ def t_w9():
     s.commit("waits_for removed")
     klass("(r) candidate -> admitted on a candidate whose history once carried waits_for",
           lambda s2: front_edit(s2, "plan/work/W-C00-12.7.md", lambda m: m.update(admission="admitted")), "high", s=s)
+    def lift(s2):
+        for iid in ("W-C00-12.1", "W-C00-12.3", "W-C00-12.4", "W-C00-12.5", "W-C00-12"):
+            front_edit(s2, f"plan/work/{iid}.md", lambda m: m.update(
+                acceptance="accepted", accepted_by="evidence/C00/reviews/R-W12-3.md", acceptance_label="session",
+                composition_by="evidence/C00/reviews/R-W12-3.md"))
+    ok, s, head = klass("(t) reusing an existing verdict to accept W-C00-12 and its children (critic of 1b-ii #1)",
+                        lift, "high")
+    s.git("checkout", "-q", head)
+    rc, out = s.cr("work")
+    outcome(T, "(t) the work check rejects the reused verdict", bool(fails(out, "work", "W-C00-12: ")), out)
     ok, s, head = klass("(s) a new admitted item under a stage with hold_until",
                         lambda s: new_item(s, "W-C00-13", "C00"), "normal")
     s.git("checkout", "-q", head)
@@ -779,28 +832,24 @@ def t_r20():
     s.push()
     since = s.rev()
     s.git("checkout", "-q", "-b", "work")
-    s.push("work")
-    s.git("branch", "-q", "-u", "origin/work", "work")
     state_row(s, "summary_tr", "Fixture summary.", iso(NOW + timedelta(hours=1)))
     s.append(s.log(), "- **Record changes:** plan/ledger.md summary_tr · supersession · fixture")
     s.records("render")
-    s.commit("future stamp", session=RUN)
-    s.push("work")
-    _, o1 = s.bc("--since", since)
-    _, o2 = s.bc("--since", since)
-    outcome("T-R20", "(a) the second failure of one class on a pushed head prints HAND-OVER DUE",
-            bool(fails(o1, "stamps")) and "HAND-OVER DUE" not in o1 and "HAND-OVER DUE (R-R9)" in o2, o2)
-    _, o3 = s.bc("S1", "--since", since)
-    outcome("T-R20", "(a) S1 then fails", bool(fails(o3, "R-R9")), o3)
-    state_row(s, "summary_tr", "Fixture summary, fixed.", iso(datetime.now(timezone.utc)))
-    s.append(s.log(), "- **Record changes:** plan/ledger.md summary_tr · correction · the stamp was in the future")
-    s.records("render")
-    s.commit("fix the stamp", session=RUN)
+    bad = s.commit("future stamp", session=RUN)
     s.merge("work")
     s.push()
-    s.git("branch", "-q", "-u", "origin/main", "main")
+    _, o1 = s.bc("--since", since)
+    _, o2 = s.bc("--since", since)
+    outcome("T-R20", "(a) the second failure of one class on a pushed head prints HAND-OVER DUE naming stamps",
+            bool(fails(o1, "stamps")) and not fails(o1, "ahead") and "HAND-OVER DUE" not in o1 and
+            re.search(r"HAND-OVER DUE \(R-R9\): a failure class repeated at a checkpoint: stamps", o2) is not None, o2)
+    _, o3 = s.bc("S1", "--since", since)
+    outcome("T-R20", "(a) S1 then fails", bool(fails(o3, "R-R9")), o3)
+    s.append(s.log(), f"- record-check exception: {bad[:12]} stamps: the fixture's future stamp, acknowledged")
+    s.commit("acknowledge the merged stamp error", session=RUN)
+    s.push()
     _, o4 = s.bc("S4", "--since", since)
-    outcome("T-R20", "(a) S4 is accepted once the failures are fixed",
+    outcome("T-R20", "(a) S4 is accepted once the failures are fixed (acknowledged by a later exception line)",
             "BUILDER_CHECK PASS" in o4 and "HAND-OVER DUE" in o4, o4)
     s = Scratch(remote=True)
     s.release_and_baseline()
@@ -833,6 +882,12 @@ def t_map():
     os.remove(s.p("tools/test_tool_allowlist.sh"))
     rc, out = s.cr("map")
     outcome("T-MAP2", "a removed mapped script fails naming its row", bool(fails(out, "map", "row A-06")), out)
+    for path, row in ((".claude/hooks/tool_allowlist.py", "row A-01"), ("tools/builder_check.sh", "row B9"),
+                      ("CLAUDE.md", "row B2")):
+        s = Scratch()
+        os.remove(s.p(path))
+        rc, out = s.cr("map")
+        outcome("T-MAP2", f"removing {path} fails naming {row} (critic of 1b-ii #6)", bool(fails(out, "map", row)), out)
     s = Scratch()
     t = s.read("plan/builder/mechanisms.md")
     row = next(l for l in t.splitlines() if l.startswith("| B3 |"))
