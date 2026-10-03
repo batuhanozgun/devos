@@ -1,13 +1,13 @@
 # Gate 1b-ii: test output (W-C00-12 tranche 1b-ii)
 
-**Written:** 2026-10-03T20:49Z by run `session_01CmCKBkyHynQ27CwqkiviC6`. **What:** the unedited output of `python3 tools/test_check_records.py`, run from the repository root of a clone with full history, on the commit named in its first line. That commit is this file's parent, and it already carries this header, because the log names this file and claims (a) would otherwise fail on its own evidence path. The procedures are `plan/builder/w-c00-12/11_test_register.md` section 2, made concrete in `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` section 3. **These results count only under the session Verifier's verdict** (W-R1; R-W12-2 C1 c), since the scripts are new in this PR. Lines starting `MUTANT` come from the two mutation checks, where the checker is disabled in a scratch copy; the PASS of `M1` and `M2` means the tests then reported FAIL.
+**Written:** 2026-10-03T20:49Z by run `session_01CmCKBkyHynQ27CwqkiviC6`. **What:** the unedited output of `python3 tools/test_check_records.py`, run from the repository root of a clone with full history, on the commit named in its first line. That commit is this file's parent, and it already carries this header, because the log names this file and claims (a) would otherwise fail on its own evidence path. The procedures are `plan/builder/w-c00-12/11_test_register.md` section 2, made concrete in `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` section 3. The first recorded run (on `047730a`, before the Critic's findings) is superseded by the run below, on the head after the Critic's fixes; it stays readable in git. **These results count only under the session Verifier's verdict** (W-R1; R-W12-2 C1 c), since the scripts are new in this PR. Lines starting `MUTANT` come from the two mutation checks, where the checker is disabled in a scratch copy; the PASS of `M1` and `M2` means the tests then reported FAIL.
 
 ```text
-HEAD 047730ab49f5264ff66c3aca2317802ddeb23e77 (clean)
-run at 2026-10-03T20:49:12Z
-PASS  T-R20 (a) the second failure of one class on a pushed head prints HAND-OVER DUE
+HEAD a11a3a859a4c6a1e2bc56088eb4cccbcfca8f378 (clean)
+run at 2026-10-03T21:08:07Z
+PASS  T-R20 (a) the second failure of one class on a pushed head prints HAND-OVER DUE naming stamps
 PASS  T-R20 (a) S1 then fails
-PASS  T-R20 (a) S4 is accepted once the failures are fixed
+PASS  T-R20 (a) S4 is accepted once the failures are fixed (acknowledged by a later exception line)
 PASS  T-R20 (b) two failures of one class on an uncommitted tree print no signal
 PASS  T-M1 (a) b74ab11 fails naming the operating model
 PASS  T-M1 (b) the migrated tree passes
@@ -59,6 +59,7 @@ PASS  T-M14 (a) together they name R-C00-BOM-3.md and -4.md
 PASS  T-M14 (b) a library path containing evidence/ is not reported
 PASS  T-M15 (a) one byte changed from the branch blob: fails
 PASS  T-M15 (b) committed on the review branch by the producer's session: fails
+PASS  T-M15 (b2) committed on the review branch by a session that is not owned (critic of 1b-ii #2): fails
 PASS  T-M15 (c) a redacted copy whose differing line is a pattern substitution: passes
 PASS  T-M15 (d) a redacted copy that also changes a non-pattern word: fails
 PASS  T-M15 (e) R-W12-1's committed copy passes
@@ -69,6 +70,7 @@ PASS  T-W1 a hand-written 'deterministic' file naming no command: fails
 PASS  T-W1 a command whose re-run differs: fails
 PASS  T-W1 (g) the command's script changed in a normal-class PR after the item became running: fails
 PASS  T-W1 (h) the same, after a later PR with a bound verdict that did not touch the script: fails
+PASS  T-W1 an existing verdict of another item reused (critic of 1b-ii #1): fails
 PASS  T-W1 a bound verdict: passes
 PASS  T-R11 an accepted item without an independence label fails
 PASS  T-W3r precondition: the fixture item is ready
@@ -78,6 +80,7 @@ PASS  T-W3r (c) accepting the stale item fails
 PASS  T-W3r (d) a recheck note clears it
 PASS  T-W4 a parent accepted without a composition record fails
 PASS  T-W4 with a composition record it passes
+PASS  T-W4 a child's verdict reused as the composition record fails
 PASS  T-W9 (a) 'Status: binding' written into a Governing-documents row: class high
 PASS  T-W9 (b) one word changed inside an existing acceptance block: class high
 PASS  T-W9 (c) a lease renewal: class normal
@@ -87,7 +90,10 @@ PASS  T-W9 (f) one line of plan/Ek_A_Rol_Sozlesmeleri.md: class high
 PASS  T-W9 (g) one line of tools/records.py: class high
 PASS  T-W9 (h) the exact revert of a merge that changed only tools/check_records.py: class normal
 PASS  T-W9 (h2) after the break-glass revert and its line, with no verdict, the stop check fails
+PASS  T-W9 (h3) an unrelated verdict naming the reverted merge does not cover the break-glass revert
+PASS  T-W9 (h4) restoring the content before M1 after a later merge M2 is not break-glass: class high
 PASS  T-W9 (i) the exact revert of a merge that changed an acceptance block: class high
+PASS  T-W9 (i) the exact revert of a merge that changed a Governing-documents row: class high
 PASS  T-W9 (j) deleting an existing depends_on entry: class high
 PASS  T-W9 (k) adding on: finished to an edge: class high
 PASS  T-W9 (l) admission admitted -> candidate: class high
@@ -101,6 +107,8 @@ PASS  T-W9 (p) the exact revert of the executable part of a merge that also adde
 PASS  T-W9 (q) the exact revert of a merge that changed .github/workflows/watchdog.yml: class high
 PASS  T-W9 (q) the exact revert of a merge that changed tools/builder_check.sh: class high
 PASS  T-W9 (r) candidate -> admitted on a candidate whose history once carried waits_for: class high
+PASS  T-W9 (t) reusing an existing verdict to accept W-C00-12 and its children (critic of 1b-ii #1): class high
+PASS  T-W9 (t) the work check rejects the reused verdict
 PASS  T-W9 (s) a new admitted item under a stage with hold_until: class normal
 PASS  T-W9 (s) the render shows it blocked by the hold
 PASS  T-R4 an item marked small touching .claude/hooks/: computed class high, acceptance below a session verdict rejected
@@ -111,6 +119,9 @@ PASS  T-R9 a complete record passes
 PASS  T-MAP1 the migrated tree with every carrier mapped passes
 PASS  T-MAP1 a script, a hook entry and an agent definition without rows fail, each named
 PASS  T-MAP2 a removed mapped script fails naming its row
+PASS  T-MAP2 removing .claude/hooks/tool_allowlist.py fails naming row A-01 (critic of 1b-ii #6)
+PASS  T-MAP2 removing tools/builder_check.sh fails naming row B9 (critic of 1b-ii #6)
+PASS  T-MAP2 removing CLAUDE.md fails naming row B2 (critic of 1b-ii #6)
 PASS  T-MAP3 a blank coverage cell fails naming the row and column
 PASS  T-MAP5 a PR touching .claude/settings.json described as status-only needs a session verdict
 PASS  T-MAP7 a planted derived term in a staged log line fails the stop check through the leak check
@@ -134,16 +145,16 @@ T-M7b PASS (5/5 outcomes)
 T-M7c PASS (4/4 outcomes)
 T-M11 PASS (2/2 outcomes)
 T-M14 PASS (4/4 outcomes)
-T-M15 PASS (5/5 outcomes)
-T-W1 PASS (8/8 outcomes)
+T-M15 PASS (6/6 outcomes)
+T-W1 PASS (9/9 outcomes)
 T-W3r PASS (5/5 outcomes)
-T-W4 PASS (2/2 outcomes)
-T-W9 PASS (25/25 outcomes)
+T-W4 PASS (3/3 outcomes)
+T-W9 PASS (30/30 outcomes)
 T-R4 PASS (2/2 outcomes)
 T-R9 PASS (3/3 outcomes)
 T-R11 PASS (1/1 outcomes)
 T-MAP1 PASS (2/2 outcomes)
-T-MAP2 PASS (1/1 outcomes)
+T-MAP2 PASS (4/4 outcomes)
 T-MAP3 PASS (1/1 outcomes)
 T-MAP5 PASS (1/1 outcomes)
 T-MAP7 PASS (1/1 outcomes)
