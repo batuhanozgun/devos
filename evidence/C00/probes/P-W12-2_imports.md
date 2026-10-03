@@ -31,4 +31,17 @@ Observed once at most; a FAIL changes the design (piece 3 §4 falls back to an i
 
 ## Result
 
-(Filled after the probe, from the transcript.)
+Probe session `session_01TMLedyxirGnCLa5Em15nND`, created 2026-10-03T17:41:13.54Z on `claude/probe-w12-imports` (`937f26f`), Claude Code 2.1.288, model `claude-opus-5-5`; archived after reading. Read by the builder from the session's events with `list_events` (result written at 17:42Z), parsed with a script that prints every text, tool call, tool result and hook event, including the subagents' own events (`parent_tool_use_id` set).
+
+| ID | Verdict | Transcript evidence |
+|---|---|---|
+| P-W12-2a | **PASS** | The session's first text (17:41:27.81Z), before any tool call, quotes `PROBE-IMPORT-MARKER-3J: this line is visible only if the CLAUDE.md import resolved.` and names the imported file. |
+| P-W12-2b | **PASS** | The `devos-probe-agent2` task's only tool call was its `SubagentHandback`; its hand-back quotes the marker and confirms the heading "DevOS: session entry point (installation period)". |
+| P-W12-2c | **PASS** | The `general-purpose` task, likewise with only its hand-back call, quotes the marker and confirms the heading. (The two hand-backs arrived 0.1 s apart; which agent ID belongs to which type was taken from the task events, and both answers are positive, so the verdicts do not depend on the mapping.) |
+| P-W12-2d | **UNTESTABLE by this method** | `/compact` sent with `send_message` arrived as a queued cross-session notification, wrapped as data; the session read it with `ReadNotifications`, said `/compact` only works when typed into the session, and took no action. No compaction occurred, so the `compact` hook could not fire. Not a FAIL, as pre-registered. |
+
+**Consequence for W-C00-12.** The common floor can be carried by reference mechanically: one `@path` import in `CLAUDE.md` reaches the session, custom subagents and built-in subagents (observed once). Re-grounding after compaction (piece 3 §6.2) stays an instructed arrow until a compaction can be observed; its test is T-R6, and a natural compaction in a long run is the next chance to observe the `compact` hook.
+
+**Additional observation:** a `send_message` from the builder to its own child arrives as a queued notification, like routine and `send_later` messages (T-A2). The child treated it as data, not an instruction, as the harness frame tells it to.
+
+**Second additional observation (FP 7 evidence):** after archiving, the platform's own `post_turn_summary` for this probe read "awaiting user's three questions for P-W12-2 probe" with `needs_action` "provide the three numbered questions to answer", while the transcript shows all three answered at 17:41:41Z. A session summary produced by the platform can be stale or wrong; claims about another session are taken from its transcript (L-030 rule), never from its summary.
