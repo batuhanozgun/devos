@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 4 Ekim 2026, 01:39 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 02:08 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
@@ -16,14 +16,13 @@
 
 **Şu an**
 
-Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun üçüncü adımı (1b-ii, kayıtları ve durma anını kontrol eden araçlar) bağımsız denetçinin şartlı onayıyla, şartlar karşılandıktan sonra ana dala alındı ve kabul edildi. Sıradaki adım 1c (koruma kuralları, CLAUDE.md, roller); onu yeni bir oturum yapacak. Senin bir şey yapmana gerek yok. 
-1. Önceki denetçilerin bulduğu yollar kapandı: C00'ın bekletmesi artık benim yazdığım bir onay dosyasıyla, eski ilgisiz bir onayla ya da bir alt adımın onayıyla, değişiklik anında kaldırılamıyor. Değişiklik anında üst işin (W-C00-12) kendi kabul kontrolü çalışıyor; alt adımların kendi kontrolleri ise yalnızca durma anında çalışıyor. 
-2. Bilinen açık (denetçi buldu, 1c'de kapatılacak): son alt adım kendi kendine kabul edilmiş gösterilir ve bir denetçi o hâli onaylarsa, bekletme değişiklik anında kaldırılabilir; durma kontrolü bunu sonradan yakalar. Bu, ancak son alt adım (1d) bittikten sonra mümkün. 
-3. Kalan açık (değişmedi): bir oturum denetçi imzasını taklit edebilir; bunu ancak bağımsız denetim ortamı (C03) kapatır. 
-4. Bu oturumun bir kayıt hatası ana dala ulaştı (kilit kaydında eksik bir satır; eski araç yazmıyordu). Kural gereği bu, oturumu devretmeye zorluyor; devrediyorum. 
-5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. 
+Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Dördüncü adımın (1c: koruma kuralları, CLAUDE.md, roller) yeni oturum gerektirmeyen kısmı ayrı bir dalda (PR #86) hazır; ana dala henüz alınmadı, çünkü bağımsız denetçi onayı gerekiyor. Senin bir şey yapmana gerek yok. 
+1. Dalda hazır olanlar: yeni bir oturum artık üretilmiş bir görev özeti olmadan başlatılamıyor; zamanlanmış hatırlatmalar sahiplik listesine kendiliğinden yazılıyor; her oturum açılışta bilinen hata kalıplarını görüyor; ortak taban kuralları CLAUDE.md'den yükleniyor; rol tanımları yazıldı. Bunlar dal ana dala alınınca yürürlüğe girer. 
+2. Önceki denetçinin bulduğu açık (son alt adımın kendi kendini onaylı göstermesi) kodda kapatıldı; bunu gösteren test önce eski kodda başarısız, sonra yenisinde başarılı oldu. 
+3. Yeni bir kontrol, önceki bir denetçinin rapor saatindeki 4 dakikalık bir hatayı geriye dönük yakaladı; zaten kayıtlıydı, yeniden işaretlendi. 
+4. Kalanlar: canlı testler, eleştirmen okuması ve bağımsız denetçi. Bunlar yeni oturum açmayı gerektiriyor; onları devralan oturum yapacak. 
 **Riskler:** 
-- Oturum zinciri derinliği: devralan oturum "derinlik 8, sınır 8"de olacak ve kendisi yeni oturum (denetçi ya da devralan) açamayabilir. O zaman yeni bir oturumu senin başlatman tek adımlık bir istek olarak bu sayfanın ilk satırına gelir. 
-- Bekçi henüz kurulmadı; bir oturum ölürse bunu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün.
+- Oturum zinciri derinlik sınırında (8/8). Devralan oturumu açamazsam, bu sayfanın ilk satırında senden tek adımlık bir istek olacak. 
+- Bekçi henüz kurulmadı; bir oturum ölürse bunu "Son güncelleme" saatinin eskimesinden görürsün.
 
 **Süreklilik notu:** Bir oturum senden karar beklerken durursa, cevabını bir sonraki oturum okur. Oturumun kendini düzenli uyandırması (altı saatte bir, en çok dört kez) yeniden tasarımın sonraki bir adımında kuruluyor; kurulana kadar cevabın yeni bir oturum başlayana kadar bekler. Kurulduktan sonra da dört boş kontrolden sonra cevabın bir sonraki oturuma kalır.
