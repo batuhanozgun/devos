@@ -417,7 +417,7 @@ def verdict_bound_at(vf, base, head):
             return False
         o = Out()
         check_claims_diff(base, head, o, only=vf)
-        return not o.fails
+        return not [f for f in o.fails if f[0] == "claims"]  # a late Written: stamp (stamps) does not unbind
     if not verdict_bound(vf, head or "HEAD"):
         return False
     rid = Path(vf).stem
@@ -442,7 +442,7 @@ def verdict_bound(vf, tree_rev):
         if add:
             ps = (git("rev-list", "--parents", "-n1", add) or "").split()
             check_claims_diff(ps[1] if len(ps) > 1 else add, add, o, only=vf, owned_rev=tree_rev)
-        _cache[key] = bool(add) and not o.fails
+        _cache[key] = bool(add) and not [f for f in o.fails if f[0] == "claims"]  # stamps do not unbind (1c Critic 1)
     return _cache[key]
 
 
