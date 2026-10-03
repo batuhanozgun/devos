@@ -1,25 +1,26 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 3 Ekim 2026, 22:36 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı ve zamanlayıcı bilerek kapalı; yeniden tasarım kabul edilene kadar nabız yok
-
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Şu an:** Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu çalışma oturumu (`session_01WcVuDQhDW3EKr4Sb87MHxN`) işi yeni bir oturuma devrediyor. Senin bir şey yapmana gerek yok.
+**Son güncelleme:** 3 Ekim 2026, 22:50 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
-**Aşama:** C00 (başlangıç kontrolleri), beklemede. C00'ın ağır işleri ancak W-C00-12 kabul edildikten sonra başlıyor.
+**Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
-**En son yapılanlar**
-1. Yeniden denetimin (şartlı geçti) her bulgusu için karar yazıldı ve altı şartın metin düzeltmeleri yapıldı (`plan/builder/w-c00-12/13_r-w12-2_dispositions.md`). Her şartı, ilgili kurulum adımının denetçisi ayrıca kontrol edecek.
-2. Bağımsız bir eleştirmen düzeltmeleri inceledi ve 14 sorun buldu; hepsi düzeltildi. En önemlisi benim kendi hatamdı: bekçi kurulamazsa ortaya çıkan riski senin yerine ben kabul etmiş gibi yazmıştım. Artık böyle bir durumda karar sana sorulur ve sessizliğin onay sayılmaz.
-3. Kendi koruma kurallarımı değiştiren bir deneme dalını göndermeye çalıştım; sistemin güvenlik denetimi bunu reddetti. Başka yoldan denemedim. Bu adımı ve ona bağlı bir deneyi sonraya erteledim; şu an işi engellemiyor.
-4. Kurulumun ilk adımındaki denemeler bitti: bekçinin iş dosyası buradan GitHub'a gönderilebiliyor, yani bekçi için senden bir şey istemem gerekmeyecek. Eski inceleme dallarındaki gizlenmesi gereken adlar zaten ana geçmişte de var; dalları silmek bir şey değiştirmiyor, o yüzden silme talebi yok.
-5. "İlk parti küçük olmalı" çerçevesini düzelttim: ilk sürüm büyük de olabilir, sonra aynı kaliteyle küçülebilir de. Sürümler arasında bir sıkılaştırma incelemesi de planlandı.
+**Çalışan oturum:** `session_01S1vPB2jo4bzk1w8XqWekj6`; kilit 4 Ekim 2026, 01:38 (Türkiye saati) tarihine kadar geçerli.
 
-**Sırada:** Kayıtların yeni yapıya taşınması ve kayıt araçları (kurulumun ikinci adımı). Bunu taze bir oturum yapacak.
+**Sıradaki işler:** `W-C00-12`, `W-C00-12.2` sürüyor. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
-**Kullanım:** "İzinli" düzeyde; beş saatlik pencere 3 Ekim 23:10'da (Türkiye saati) yenileniyor.
+**Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 3 Ekim 2026, 23:10 (Türkiye saati) tarihinde yenileniyor.
 
-**Bilmen gereken riskler**
-- Bekçi henüz kurulmadı. Bir oturum şimdi ölürse onu "Son güncelleme" saatinin eskimesinden görürsün.
-- Yeniden tasarımın sonraki bir adımı, koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu da reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir.
-- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar.
+**Kurulu uyandırmalar:** yok
+
+**Şu an**
+
+Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor; şu an kurulumun ikinci adımı (1b-i) yapılıyor. 
+1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu bir test kontrol ediyor. 
+2. "Sıradaki iş" satırı artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. 
+3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden başlayamıyor; bu artık bir cümle değil, aracın uyguladığı bir kural. 
+4. Değişiklik ana dala alınmadan önce bağımsız bir denetçi oturumu inceleyecek. 
+**Risk:** bu adım kayıtların yapısını değiştiriyor. Bir sorun çıkarsa değişiklik tek bir geri alma isteğiyle (revert) geri alınabilir; gerekirse geri alma dalının adı burada yazacak.
+
+**Süreklilik notu:** Bir oturum senden karar beklerken durursa, cevabını bir sonraki oturum okur. Oturumun kendini düzenli uyandırması (altı saatte bir, en çok dört kez) yeniden tasarımın sonraki bir adımında kuruluyor; kurulana kadar cevabın yeni bir oturum başlayana kadar bekler. Kurulduktan sonra da dört boş kontrolden sonra cevabın bir sonraki oturuma kalır.
