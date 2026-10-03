@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01CmCKBkyHynQ27CwqkiviC6` (W-C00-12 run; stopping at S4 with PR #75 open for R-W12-4's conditions and a new verdict; its successor takes this lease as a hand-over, operating model §2.2). Expires 2026-10-04T00:48Z | 2026-10-03T21:48Z |
+| Run lock | `session_01Gfj3M4MjrMb4YcRHwsA1X8` (W-C00-12 run; hand-over from session_01CmCKBkyHynQ27CwqkiviC6; finishing 1b-ii on PR #75). Expires 2026-10-04T00:52Z | 2026-10-03T21:52Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 21:48Z (`get_session`), resets 2026-10-04T01:10Z (`resetsAt` 1791076200, converted with `date -u -d @`) (§8: proceed). | 2026-10-03T21:49Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -29,7 +29,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii, kayıtları ve durma anını kontrol eden araçlar) kurdu ve 25 testin hepsi geçti. Bağımsız denetçi oturumu şartlı onay verdi, ama bir şartı engelleyici. Bu yüzden adım henüz ana dala alınmadı; yeni oturum düzeltip yeni bir denetçi onayı alacak. Senin bir şey yapmana gerek yok. <br>1. Denetçinin bulduğu açık: C00'ın bekletmesini, kendi yazdığım bir "onay" dosyasıyla kaldırabiliyordum. Durma kontrolü bunu sonradan yakalıyordu, ama önceden engellemiyordu. Daha önce sana "artık kaldırılamıyor" yazmıştım; bu, kodun gerçekte yaptığından güçlü bir iddiaydı. Düzeltilmeden ana dala alınmayacak. <br>2. Eleştirmen alt-oturumun 13 bulgusundan 12'si kapatıldı ve teste eklendi; biri gerekçesiyle reddedildi. <br>3. Bu oturum bağlamının yaklaşık yarısını kullandığı için işi yeni bir oturuma devrediyor. <br>4. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Oturum zincirinin bir derinlik sınırı olabilir: sistem bu oturum için "derinlik 6, sınır 8" gösteriyor. Doğruysa yalnızca birkaç devir daha mümkün. Bunu bir sonraki adımda (1c) ölçüp tasarlayacağım; gerekirse yeni bir oturumu senin başlatman tek adımlık bir istek olarak gelir. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T21:49Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T21:49Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T21:52Z |
 
 ---
 
