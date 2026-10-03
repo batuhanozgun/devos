@@ -10,10 +10,11 @@ from pathlib import Path
 
 D = Path("plan/builder/w-c00-12")
 PIECES = ["02_memory.md", "03_work_model.md", "04_roles.md", "05_continuity.md"]
-CITERS = PIECES + ["06_counter_design_comparison.md", "07_mechanism_map.md",
+MECH = "mechanisms.md"  # plan/builder/mechanisms.md: the register (section 1) and carrier tables, since 1b-i
+CITERS = PIECES + [MECH, "06_counter_design_comparison.md", "07_mechanism_map.md",
                    "08_oi011_dispositions.md", "11_test_register.md", "12_tranche_plan.md",
                    "13_r-w12-2_dispositions.md"]
-TEST_CITERS = PIECES + ["07_mechanism_map.md", "08_oi011_dispositions.md", "12_tranche_plan.md",
+TEST_CITERS = PIECES + [MECH, "07_mechanism_map.md", "08_oi011_dispositions.md", "12_tranche_plan.md",
                         "13_r-w12-2_dispositions.md"]
 RULE = re.compile(r"\b(?:[MWRC]-R\d+a?|H-(?:AL|OWN|REV|BRF|BOOT|CMP|READ|PRB))\b")
 TEST = re.compile(r"\bT-(?:M|W|R|C|MAP)\d+[a-z]?\b|\bT-(?:0[1-9]|1\d|2\d)\b|\bT-H\d\b")
@@ -22,6 +23,10 @@ OM_TESTS = {"T-H1", "T-H2", "T-H3", "T-H4", "T-H5", "T-H6", "T-H7", "T-A1a", "T-
             "T-A2", "T-A2r", "T-B1", "T-B1r", "T-E1", "T-E2", "T-D1"}
 
 errors = []
+
+
+def path(name):
+    return Path("plan/builder") / name if name == MECH else D / name
 
 
 def cells(line):
@@ -37,8 +42,11 @@ def norm_tranche(s):
     return frozenset(re.findall(r"\bW-C00-06\b|\b1[a-d]?\b|\b[23]\b|existing", s))
 
 
-reg = Path(D / "11_test_register.md").read_text()
-sec1, sec2 = reg.split("## 2. Tests", 1)
+# Since tranche 1b-i the register (formerly 11 section 1) lives in plan/builder/mechanisms.md section 1;
+# the tests stay in 11 section 2.
+mech = path(MECH).read_text()
+sec1 = mech.split("## 1. Register", 1)[1].split("## 2. Carrier tables", 1)[0]
+sec2 = Path(D / "11_test_register.md").read_text().split("## 2. Tests", 1)[1]
 
 # Register section 1: mechanisms.
 register = {}
@@ -110,12 +118,12 @@ for rid in register:
 
 # Citations resolve (S-2).
 for name in CITERS:
-    for n, line in enumerate((D / name).read_text().splitlines(), 1):
+    for n, line in enumerate(path(name).read_text().splitlines(), 1):
         for rid in RULE.findall(line):
             if rid not in register:
                 errors.append(f"{name}:{n}: {rid} does not resolve to a register row")
 for name in TEST_CITERS:
-    for n, line in enumerate((D / name).read_text().splitlines(), 1):
+    for n, line in enumerate(path(name).read_text().splitlines(), 1):
         for t in TEST.findall(line):
             if t not in tests and t not in OM_TESTS:
                 errors.append(f"{name}:{n}: test {t} does not resolve to a register test row")
@@ -182,18 +190,18 @@ def scan_unit(name, n, u, skip=frozenset(), tests_too=True):
                 errors.append(f"{name}:{n}: test {t} is not active but is cited without saying so")
 
 
-SCAN = PIECES + ["06_counter_design_comparison.md", "07_mechanism_map.md", "08_oi011_dispositions.md",
+SCAN = PIECES + [MECH, "06_counter_design_comparison.md", "07_mechanism_map.md", "08_oi011_dispositions.md",
                  "11_test_register.md", "12_tranche_plan.md", "13_r-w12-2_dispositions.md"]
 for name in SCAN:
-    text = (D / name).read_text().splitlines()
-    in_reg_sec1 = name == "11_test_register.md"
+    text = path(name).read_text().splitlines()
+    in_reg_sec1 = name in ("11_test_register.md", MECH)
     in_06_current = False
     in_12_sec3 = False
     for n, line in enumerate(text, 1):
         if line.startswith("## ") or line.startswith("### "):
             in_06_current = bool(re.match(r"#+ (3b|8)\b", line)) or line.startswith("### 3b")
             in_12_sec3 = name == "12_tranche_plan.md" and line.startswith("## 3.")
-        if in_reg_sec1 and line.startswith("## 2. Tests"):
+        if in_reg_sec1 and (line.startswith("## 2. Tests") or line.startswith("## 2. Carrier tables")):
             in_reg_sec1 = False
         if name == "06_counter_design_comparison.md" and not in_06_current:
             continue

@@ -1,119 +1,12 @@
 # W-C00-12 · 11 · Test register (acceptance (e), object O6)
 
-**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only. **Written:** 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq` (revision 3), answering R-W12-1 B5 and m3 and keeping the promise of merge 5 in `00_consolidation.md`. **What it is:** the one home for every mechanism of the redesign and every test of it. Pieces 02–05 define the rules; this file lists them once, with status, tranche, scope, basis (incidents with sources), expected cost and tests. `check_ids.py` (in this directory) checks that the rows here and the rule tables of 02–05 agree.
+**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only. **Written:** 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq` (revision 3), answering R-W12-1 B5 and m3 and keeping the promise of merge 5 in `00_consolidation.md`. **What it is:** the one home for every mechanism of the redesign and every test of it. Pieces 02–05 define the rules; the register, which lists them once with status, tranche, scope, basis (incidents with sources), expected cost and tests, moved from this file's §1 to `plan/builder/mechanisms.md` §1 in tranche 1b-i. This file keeps the tests (§2). `check_ids.py` (in this directory) checks that the register, the tests and the rule tables of 02–05 agree.
 
 **Pre-registration.** Every test row is written before its mechanism exists. A test **counts** only when it is run on a tree that includes the tranche that builds the mechanism (R-W12-2 B-2: several tests are gated in a later part than the one that builds their mechanism), by a role other than the producer or as a deterministic script whose output is pasted into an evidence file. A test that tests a superseded mechanism is **retired** here, not deleted.
 
 ## 1. Mechanisms
 
-Columns:
-- **Basis:** the incidents (count and sources) or the acceptance clause that admits the mechanism.
-- **Cost:** the expected cost when it runs: build effort (S, M or L) plus the running cost.
-- **Status:** active, deferred or retired.
-- **T:** tranche.
-
-### 1.1 Memory (piece 1, `02_memory.md`)
-
-| ID | Mechanism | Status | T | Scope | Basis | Cost | Tests |
-|---|---|---|---|---|---|---|---|
-| M-R1 | One home per fact | active | 1 | installation | 3: OI-011 item 22, L-027, F-036-1 | S; discipline on every write | T-M4, T-M1 |
-| M-R2 | Governing-document status only in the state file; `docstatus`; fact markers | active | 1 | installation | 1 (OI-011 item 22), plus L-033 (a status promotion skipped review) | S | T-M1, T-W9 |
-| M-R3 | Open notes attach to their branch; no inbox | active | 1 | installation | OI-011 as a container; acceptance (a2) | S; part of the migration | T-M11 |
-| M-R4 | Chain check, at stop and printed at boot | active | 1 | installation | acceptance (l) (root chain) | S | T-M4 |
-| M-R5 | Change kinds and kind check | active | 1 | installation; DevOS at C02 | L-029/L-030 (an unmarked correction); acceptance (l) | M; one line per record PR | T-M3 |
-| M-R6 | Generated views and view check | active | 1 | installation | L-027 | M | T-M2 |
-| M-R7 | Sync line in a hand-written `DURUM.md` | retired | — | — | superseded by M-R15 | — | T-M5 (retired) |
-| M-R8 | Channel stamp | retired | — | — | superseded by M-R13 | — | T-M6 (retired) |
-| M-R9 | Stamp check (no future; As-of within 30 minutes) | retired | — | — | superseded by M-R14 | — | T-M7 (retired; replaced by T-M7a–c) |
-| M-R10 | Union merge for `owned_ids.txt` | active | 1 | installation | 4: F-037-1 (L-037, L-039 twice), L-041 | S; one attribute line | T-M8 |
-| M-R11 | Recorder covers `send_later` | active | 1 | installation | 1: OI-011 item 24; needed by C-R2, C-R3, C-R5 | S; high impact (hook) | T-M12 |
-| M-R12 | Scope label on every record's front matter (rules carry scope in their tables, checked by `check_ids.py`) | deferred | 2 | installation | OI-011 item 13; acceptance (c) is met by the rule tables | S | T-M13 |
-| M-R13 | Issue read at stop; a failed read fails every stop except S3 with the reason `ISSUE_READ_FAILED` and a logged MCP read | active | 1 | installation | 1: F-036-1 (35 hours) | S; one `curl` per stop | T-M6r |
-| M-R14 | Typed times: scheduled fields (S5 wakes bounded like resets) and `sched:` in prose; written-at stamps, including the `Written:` header of added files; quoted times | active | 1 | installation | 7: L-016 M6, R-C00-BOM-6 n8, L-028, four in F-037-2, L-041, F-042-1 (this run); walk-through over the whole log in L-042 | M | T-M7a, T-M7b, T-M7c |
-| M-R15 | Generated `DURUM.md` with `summary_tr` | active | 1 | installation | 2: L-027, F-036-1 (stale restatements) | M | T-M5r |
-| M-R16 | Claims resolve: (a) evidence paths exist (root-anchored), (b) verdict binding for verdicts the PR adds, redaction-aware; (c) session-event claims deferred, instructed meanwhile | active (a, b), deferred (c) | 1; 2 | installation | (a) 2: F-041-1 (L-019, L-021); (b) L-029/L-030; (c) 3: L-030, L-033, L-039 | M; (c) needs a receipts hook (L) | T-M14, T-M15, T-R19 |
-| M-R17 | Log header written by a script | deferred | 2 | installation | covered by M-R14 for times | S | T-M16 |
-| M-R18 | Boot map via `SessionStart` | active | 1 | installation | acceptance (j), (l); FP 4 | M; high impact (settings) | T-M17 |
-| M-R19 | Map check against the map's carrier tables | active | 1 | installation | acceptance (m) (map mechanically checked); L-034 (roles without demand) | M | T-MAP1, T-MAP2, T-MAP3, T-MAP4 |
-
-### 1.2 Work model (piece 2, `03_work_model.md`)
-
-| ID | Mechanism | Status | T | Scope | Basis | Cost | Tests |
-|---|---|---|---|---|---|---|---|
-| W-R1 | No producer acceptance; no retired test cited; independence label required; deterministic evidence re-run | active | 1 | installation | 2: W-C00-05 (L-033), T-H1 counted after retirement (L-033); L-029/L-030 (a claim stated more strongly than its source) | S | T-W1, T-R11 |
-| W-R2 | Generated frontier as the Next action row | active | 1 | installation | 1: L-027 | M | T-W2 |
-| W-R3 | Candidates stay out of the frontier | active | 1 | installation | acceptance (a2) | S | T-W5 |
-| W-R4 | Composition check | active | 1 | installation | W-C00-05 ("each condition met, the whole weak"); acceptance (a2) | S | T-W4 |
-| W-R5 | Generated task brief | active | 1 | installation | FP 5 (started sessions without heritage); acceptance (a2), (k) | M | T-W6, T-R3, T-R22 |
-| W-R6 | Brief gate on `create_session` (hook carrier H-BRF) | active | 1 | installation | FP 5; acceptance (k) | M; high impact (hook) | T-W6 |
-| W-R7 | Impact class by path and record field; new acceptance blocks normal, changed ones high; readiness-gate fields and the Stage row high; every script high; exact reverts of executable carriers only normal, with a break-glass line and a verdict after the fact | active | 1 | installation | 2: L-033 (status promotion as "status-only"), L-018 to L-030 producer acceptance changes (K3); R-W12-2 B-1 | M | T-W9, T-W10, T-W15, T-MAP5 |
-| W-R8 | Prerequisite brake | deferred | 2 | installation | no incident | S | T-W8 |
-| W-R9 | Staleness from status changes, including corrections | active | 1 | installation | BP-04 withdrawn under dependants (L-016); critic C-7 | S | T-W3r |
-| W-R10 | Basis hashes at section anchors | deferred | W-C00-06 | installation | R-W12-1 M3 | M | T-W11 |
-| W-R11 | Probe before build | active | 1 | installation | 3: L-016 (BP-04), L-022 (assumed format), L-029 (unchecked delivery path) | S | T-W12 |
-| W-R12 | Usage filter | deferred | 2 | installation | D-002; no breach | S | T-W13 |
-| W-R13 | Decomposition depth | deferred | 2 | installation | no incident | S | — |
-| W-R14 | `relies_on:` and CD T-05, T-06 | deferred | 3 | installation | acceptance (l) is met by T-M9 meanwhile | M | T-05, T-06 |
-| W-R15 | Zoom view | active | 1 | installation | acceptance (a2) | S; part of the render | T-W7 |
-| W-R16 | Migration keeps acceptance text byte-identical | active | 1 (one-off) | installation | R-W12-1 B2; ledger rule 3 | S | T-W10 |
-
-### 1.3 Roles (piece 3, `04_roles.md`)
-
-| ID | Mechanism | Status | T | Scope | Basis | Cost | Tests |
-|---|---|---|---|---|---|---|---|
-| R-R1 | No producer acceptance (role statement) | retired | — | — | merged into W-R1 | — | — |
-| R-R2 | Independence labelled | retired | — | — | merged into W-R1 | — | T-R11 (under W-R1) |
-| R-R3 | Verifier level: computed floor, Triager may raise | active | 1 | installation | L-033 | S | T-R4, T-W9 |
-| R-R3a | Verifier tasks name failure classes and the exact target | active | 1 | installation | 7 review rounds patched finding by finding (L-016 to L-030); multi-agent R4, R7 | S; role-file text | T-R1, T-R22 |
-| R-R4 | No role before its demand | active | 1 | installation | 1: L-034 (dispatcher and heartbeat) | S | T-R7 |
-| R-R5 | Triage record before work on items of class normal | active | 1 | installation | acceptance (i) | S; one subagent call per item | T-R4 |
-| R-R6 | Floor import (whole files until W-C00-06) | active | 1 | DevOS text, installation delivery | acceptance (k); R-W12-1 B4a | S; measured context cost | T-R5 |
-| R-R7 | Failure patterns at boot, candidates labelled; qualification by a non-producer | active | 1 | installation | acceptance (j); R-W12-1 B4b | S | T-R12 |
-| R-R8 | Trigger scope including conversation | active | 1 | DevOS (already) | 1: F-039-1 | S | T-R8 |
-| R-R9 | Stamina measures, with a mechanical hand-over signal counted at checkpoints; re-ground after compaction instructed until observed | active | 1 | installation | 3: F-037-2, L-041 stamp, F-042-1 (this run, first hour) | S | T-R20, T-R6, T-R16 |
-| R-R10 | Decision-record format and `class: batu` owner reason | active | 1 | installation | L-034 (no goal-down); day-one failure 4 (Batu asked a technical approval); OI-011 items 9, 14 | S | T-R9 |
-| R-R11 | Lenses with dispositions | deferred | 3 | installation | F-039-1; kept only if T-07 passes | L | T-07 |
-| R-R12 | Reading gate | retired | — | — | R-W12-1 B4a | — | — |
-| R-R13 | Role profiles in the hook | deferred | 2 | installation | 1 breach by a now-retired role (L-033), see `04_roles.md` §7 | M; high impact | T-R13 |
-| R-R14 | Squeeze block | deferred | 2 | installation | L-016 to L-030 (frame review fired by instruction at round 3, L-019) | S | T-18 |
-| R-R15 | Sampling of routine record PRs | deferred | 2 | installation | routine records wrong: L-027, L-028, F-036-1, now covered by checks | M | T-R14 |
-| R-R16 | Critic admitted | active | 1 | installation | 1: F-040-1 | S; one subagent call per design artefact | T-R7, T-R21 |
-| R-R17 | Batu's conversation session writes only under the lease | active | 1 | installation | 2: F-036-1 cause; L-034 (records without boot) | S; instructed | T-R10 |
-| R-R18 | Boot gate (with break-glass) | deferred | 2 | installation | 1: F-036-1, now covered by M-R13 at stop | M; high impact | T-01 |
-| R-R19 | Compaction gate | deferred | 2 | installation | compaction signal unobserved | M | T-02 |
-| R-R20 | Transcript-size warning | deferred | 2 (1 if P-W12-3 observes the carrier) | installation | 1: L-022 | S | T-R15 |
-| R-R21 | A refusal is S3 for that action, never routed around (any tool, not only the classifier) | active | 1 | installation | 1: L-031 (403 worked around by a force-move); operating model §11 | S; instructed | T-R18 |
-
-### 1.4 Continuity (piece 5, `05_continuity.md`)
-
-| ID | Mechanism | Status | T | Scope | Basis | Cost | Tests |
-|---|---|---|---|---|---|---|---|
-| C-R1 | Stop check with stop reasons, record checks, issue read, leak check, break-glass verdict, `patch:` count; reading the main-definition check's results is deferred with C-R9 | active | 1 | installation | CD §2 incident 1; F-036-1; F-041-2; critic finding 6 | M | T-C5, T-R17 |
-| C-R2 | S5 self-wake | active | 1 | installation | 1: L-033 | S | T-C2 |
-| C-R3 | S2 check-ins and one reminder | active | 1 | installation | OI-011 item 5 | S | T-C3 |
-| C-R4 | Check-in residual stated in `DURUM.md` | retired | — | — | merged into M-R15 | — | T-M5r (under M-R15) |
-| C-R5 | Self-watchdog at every checkpoint, outcome-unknown recovery | active | 1 | installation | 1: L-039 | S; one `send_later` per checkpoint | T-C2, T-C4, T-21 |
-| C-R6 | Expected-text rule, five forms, plus relayed answers recorded as data | active | 1 | installation | operating model §9; R-W12-1 m4; R-R17 | S | T-C4 |
-| C-R7 | Dispatcher and heartbeat retired | active | 1d | installation | L-034; OI-010; L-029, L-030 | S | T-R7 |
-| C-R8 | Independent detector (scheduled workflow); if P-W12-4 fails, D-005 (Batu) decides, and under its option (b) it is deferred to its trigger | active | 1d | installation | 1: L-039 (K1 fired) | S; free on a public repository | T-C6, T-C7, T-21, T-23 |
-| C-R9 | Main-definition record check (`pull_request_target`) | deferred | 2 | installation | R-W12-1 M8; library (control state not writable by the constrained component); deferred after R-W12-2 M-2 to D-08's trigger | S | T-C8 |
-| C-R10 | S4 successor with the run brief under the brief gate; a denial is S3 | active | 1 | installation | observed twice under v1.7 (T-C1); the brief-gate part untested | S | T-C1, T-W6 |
-| C-R11 | Armed-wakes row | active | 1 | installation | needed by C-R1 and C-R8 | S | T-C5 |
-| C-R12 | Keeper session | deferred | 2 | installation | trigger: a stall the self-watchdog did not resume | M | T-21 |
-
-### 1.5 Carriers and hook rules cited by the map (`07_mechanism_map.md`)
-
-| ID | Mechanism | Status | T | Scope | Basis | Cost | Tests |
-|---|---|---|---|---|---|---|---|
-| H-AL | Allow-list hook (existing, operating model §9) | active | existing | installation | R-C00-BOM-1 to 7 | existing | T-H4 |
-| H-OWN | Owned-ID recorder and owned-ID rule (existing; extended by M-R11) | active | existing; 1 | installation | T-H5, T-H7 | existing | T-H7, T-M12 |
-| H-REV | Revision check on `create_session` (existing) | active | existing | installation | R-C00-BOM-4 | existing | T-H4 |
-| H-BRF | Hook carrier of W-R6 | active | 1 | installation | see W-R6 | see W-R6 | T-W6 |
-| H-BOOT | Hook carrier of R-R18 | deferred | 2 | installation | see R-R18 | — | T-01 |
-| H-CMP | Hook carrier of R-R19 | deferred | 2 | installation | see R-R19 | — | T-02 |
-| H-READ | Hook carrier of R-R12 | retired | — | — | see R-R12 | — | — |
-| H-PRB | Probe-branch rule: `create_session` allowed on `claude/probe-*` branches whose fetched revision carries `.claude/settings.json`; deferred after the classifier refused its test fixtures (L-044) | deferred | 2 | installation | 2: L-037, L-039 (tree switched to probe branches); P-W12-3 needs `.claude/` changes | S; high impact (hook) | T-W14, T-H4 |
-| A-07 | Leak check on staged and committed content, run by C-R1 | active | 1 | installation | 3: L-019 B2, L-021 B2, F-041-2 | S | T-MAP7 |
+Moved unchanged in content to `plan/builder/mechanisms.md` section 1 in W-C00-12 tranche 1b-i, so the register has one home (R-W12-2 B-2). The column definitions moved with it.
 
 ## 2. Tests
 
