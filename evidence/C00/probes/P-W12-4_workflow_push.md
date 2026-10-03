@@ -14,3 +14,14 @@
 | P-W12-4b | Does GitHub register the workflow? | The repository's workflow list (REST `GET /repos/batuhanozgun/devos/actions/workflows`, read through the proxy) names `probe-noop.yml` on that branch, or states that workflows on non-default branches are listed only after a run. Either way, the answer is recorded as observed | The answer is recorded as observed; it does not block C-R8, which runs from `main` |
 
 **Not tested here:** that a scheduled workflow fires on time. That is T-C6 and T-C7 in 1d, by `workflow_dispatch` against a scratch state.
+
+## Result (2026-10-03, run `session_01WcVuDQhDW3EKr4Sb87MHxN`)
+
+**Set-up as pre-registered,** in a scratch clone, not in the run's working tree: branch `claude/probe-w12-workflow` cut from `main` `469f102`, one commit `a7a3d784b1de1dbebf7b5627a8b8179997601ee7` adding only `.github/workflows/probe-noop.yml` (`on: workflow_dispatch` only; one step `echo probe`; no schedule, no secrets).
+
+| ID | Observed | Result |
+|---|---|---|
+| P-W12-4a | `git push origin claude/probe-w12-workflow` exited 0 (`* [new branch]`), and `git ls-remote origin claude/probe-w12-workflow` printed `a7a3d784b1de1dbebf7b5627a8b8179997601ee7` | **PASS:** this environment's git credential can push a workflow file |
+| P-W12-4b | The repository's workflow list, read with the GitHub MCP tool `actions_list` (`list_workflows`), returned `{"total_count":0}`. **Deviation from the method:** the pre-registration named the REST endpoint read through the proxy; the MCP read is the same listing through another read-only route. | **Observed:** a workflow that exists only on a non-default branch is not listed. It does not block C-R8, which runs from `main` |
+
+**Consequences.** C-R8 (the detector) can be committed by the builder in tranche 1d through a class-high, session-verified PR; candidate D-005 is not needed (`plan/builder/w-c00-12/05_continuity.md` §2.2). Since a session can push workflow files, the detector's arrow is M\* (as the design already types it). No workflow ran: the file has only a manual trigger, and a manual run needs the workflow on the default branch. **The branch is abandoned** and never merged; this file is its record.
