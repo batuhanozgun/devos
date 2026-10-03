@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01S1vPB2jo4bzk1w8XqWekj6` (W-C00-12 run; stopping at S4 after 1b-i, L-047; its successor takes this lease as a hand-over, operating model §2.2). Expires 2026-10-03T23:15Z | 2026-10-03T20:15Z |
+| Run lock | `session_01CmCKBkyHynQ27CwqkiviC6` (W-C00-12 run, tranche 1b-ii; hand-over from parent session_01S1vPB2jo4bzk1w8XqWekj6, operating model §2.2). Expires 2026-10-03T23:18Z | 2026-10-03T20:18Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 20:14Z (`get_session`), resets 2026-10-04T01:10Z (`resetsAt` 1791076200, converted with `date -u -d @`) (§8: proceed). | 2026-10-03T20:15Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -29,7 +29,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun ikinci adımı (1b-i) bitti, bağımsız denetçi oturumu şartlı onay verdi, iki şartı da karşılandı ve ana dala alındı. Bu oturum işi yeni bir oturuma devrediyor; sıradaki adım 1b-ii (kayıtları kontrol eden araçlar). Senin bir şey yapmana gerek yok. <br>1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu hem bir test hem denetçi ayrıca kontrol etti. <br>2. "Sıradaki iş" listesi artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. <br>3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden "başlatılabilir" görünmüyor. Araç bunu gösteriyor; kuralın atlanmasını engelleyen kontroller bir sonraki adımda (1b-ii) geliyor. <br>4. Dağıtıcı ve zamanlayıcı yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Bu adımın geri alma dalı `claude/revert-w12-1b-i`, ana dala almadan önce GitHub'a gönderildi. Geri alma kabul metinlerini de sildiği için, bir sonraki adımdan sonra o da denetçi onayı ister. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T20:15Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:15Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:18Z |
 
 ---
 
