@@ -47,10 +47,10 @@ This is stricter than a revert, because a later change to the same file makes it
 
 **N-049 and R-W12-3 F-3, decided together.**
 - (i) `records.py` `is_accepted` also requires `accepted_by` to lie under `evidence/`, so a README or a log file cannot lift a gate even in the render.
-- (ii) W-R7 gains one line, a stated addition reviewed by this part's Verifier. In an existing item that is the target of a `hold_until` or of any `depends_on` edge, a change of `acceptance`, `accepted_by` or `composition_by` is class high, unless every verdict the item names is one the work check accepts at the PR head (`03_work_model.md` W-R7 gives the conditions; `check_records.py` `exemption_problems`).
+- (ii) W-R7 gains one line, a stated addition reviewed by this part's Verifier. In an existing item that is the target of a `hold_until` or of any `depends_on` edge, a change of `acceptance`, `accepted_by` or `composition_by` is class high, unless the work check of that item passes on the PR head's tree and every verdict it names is bound by M-R16 (b) (`03_work_model.md` W-R7 gives the conditions; `check_records.py` `exemption_problems`, `item_work_problems`).
 - (iii) W-R1 at every stop.
 
-Together, lifting the C00 hold at class normal needs a session verdict, copied from its review branch and committed there by an owned session that made no commit of the PR (M-R16 b), that names W-C00-12 and a commit at or after the commit where W-C00-12 started `running`, and that accepts no other item. Anything else is class high and needs a session verdict on the PR. The residual is a trailer forged to name a real owned reviewer session. This paragraph was rewritten twice, each time after a reviewer showed it claimed more than the code (the Critic's finding 1; R-W12-4 B-1). This third version was written after the planted cases T-W9 (t), (u) and (v) passed on `991d51a`, and after (u) and (v) were shown to fail on the pre-fix checker (§9).
+Together, accepting W-C00-12 at class normal, and so lifting the C00 hold, needs the state the stop check would accept: W-C00-12 `finished` and accepted by a session verdict, a composition verdict, every child closed, each verdict naming W-C00-12 and a commit after the work it judges, accepting no other item, and copied unchanged from a review branch whose last commit carries the trailer of a session that was owned before the PR and made no commit of it. A change of any child's `parent` is class high. Anything else is class high and needs a session verdict on the PR. **Residual, stated:** a producer can forge a trailer naming any owned session, and can make an invented session owned through an earlier record PR (class normal); the audit environment's credential closes this (C03, D-003). This paragraph was rewritten three times, each time after a reviewer showed it claimed more than the code (the Critic's finding 1; R-W12-4 B-1; R-W12-5 B-1). This fourth version was written after the planted cases T-W9 (t), (u), (v), (x), (y) and T-M15 (b3) passed, and after (u), (v), (x) and (y) were each shown to fail on the checker before their fix (§9, §10).
 
 **The work check** (`work`):
 - **W-R1.** It fails on an `accepted` item when any of these holds:
@@ -250,6 +250,11 @@ Departures stated after R-W12-4 (its condition C-4), by run `session_01Gfj3M4Mjr
 12. **The S5 wake bound** (R-W12-4 m-5). `13_r-w12-2_dispositions.md` §2 M-4 words the S5 wake as bounded by `resets` ("at most 7 days plus 15 minutes"); the code and the pre-registered row T-M7a (f) require the `S5` entry to **equal** `resets` plus 15 minutes. The strict reading stays, because it is the pre-registered one (ledger rule 3); a wake armed later than `resets` plus 15 minutes fails `stamps`. M-4's wording is aligned in 1c's v1.8 delta (N-053).
 13. **Lease record line** (R-W12-4 m-6; replaces the placement of departure 5). `records.py lease` now writes its Record changes line under a new log entry of its own (`### L-<next> · <date> · Lease taken or renewed by <session>`, or `released`), so it is never attributed to the previous entry. The entry number is the highest `L-` number in the log files plus one.
 
+Departures stated after R-W12-5:
+
+14. **Tightenings beyond the register rows.** `chain` fails on a log entry ID that appears twice (R-W12-5 m-3: a lease entry cut from `main` while a run branch holds unmerged entries could collide), tested as T-M4 (d), an outcome added to a pre-registered test. `impact` makes a change of an existing item's `parent` or `kind` class high (T-W9 (y)). Both are tightenings, added in the same PR as their code and judged by the R-W12-6 Verifier.
+15. **Owned before the change.** `claims` (b) reads `owned_ids.txt` at the range's base, not at its head, so a recorder line appended in the same change cannot vouch for its own verdict (T-M15 (b3)). The recorder line for a Verifier therefore reaches `main` in its own record PR, and the producer's branch takes in `main` before the commit that copies the verdict (R-W12-4 m-8, R-W12-5 C-2). `verdict_bound_at()` also compares the review session with the PR's sessions for a verdict the range does not add (R-W12-5 m-2).
+
 ## 8. Critic findings and responses
 
 A non-binding Critic subagent (fresh context, read-only; R-R16) read this file, the diff `f72b973..560afe7`, the rules, the 25 test rows, the conditions and N-049 and N-050. It reproduced its findings in scratch clones and reported 13: 1 blocking, 8 material, 4 minor. It confirmed that the gate reproduces, that `all` passes on the branch, that a lease renewal is normal and passes `kinds`, that the override is refused in a run, that F-4, F-5, F-7, F-8, F-9 and F-10 behave as disposed, and that no `.claude/**` file changed.
@@ -286,4 +291,18 @@ R-W12-4 (`evidence/C00/reviews/R-W12-4.md`) gave PASS-WITH-CONDITIONS on `242d19
 | m-7 | Note N-053 on W-C00-12.4: the 1c Verifier confirms that T-R22 (a2) runs |
 | m-8 | Met before this run: the recorder line for R-W12-4 is on `main` (PR #76) |
 | m-9 | The R-W12-5 Verifier's first message is the review prompt followed by the generated brief, read from the generator's output file and passed byte for byte (F-049-3). T-W6 in 1c gets a brief whose text differs from its hash (N-053) |
+
+## 10. R-W12-5 conditions and responses (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`)
+
+R-W12-5 (`evidence/C00/reviews/R-W12-5.md`) gave FAIL on `dff691e`, with one blocking finding, and confirmed C-3, C-4, m-4, m-6, m-7, m-9, the gate and the C-1 mutation section.
+
+| Item | Response |
+|---|---|
+| C-1 (B-1, blocking) | The work check's per-item body is now one function, `item_work_problems()` (W-R1, W-R4, W-R9, R-R3, R-R5), that takes the revision to judge; `check_work()` runs it on the working tree and `exemption_problems()` runs it on the PR head's tree (records read from an export of the head's `plan/` and `evidence/`). The exemption also needs the M-R16 (b) binding of every verdict the item names. Planted case T-W9 (x), the Verifier's scenario, asserts class high with the W-R4 reason at the PR head. Self-checks before asking again: (y) re-parenting the children away (closed by making `parent` and `kind` changes class high, departure 14) and T-M15 (b3) an owned line appended in the same change (closed by departure 15). On `dff691e`'s checker (x) and (y) fail and on the fixed one they pass (`evidence/C00/tests/1b-ii_gate.md`, mutation section). The texts (W-R7, N-049 (ii), §2, `summary_tr`) were rewritten after that |
+| C-2 (merge sequencing) | `main` (`bc6dac3`, with the R-W12-5 recorder line) was merged into the branch (`ed346b5`) before the verdict copy. The copy was then removed and re-added (`782b8f1`) after its own `Written:` time, which is about 4 minutes later than its commit on the review branch (L-052) |
+| m-1 | (b) answered by C-2 and departure 15. (a) and (c), binding against any review-branch commit whose blob equals the copy and judging the owned list on the checked tree, go to 1c (N-053 (e)) |
+| m-2 | Fixed in `verdict_bound_at()` (departure 15) |
+| m-3 | Fixed by the duplicate-ID check in `chain` (departure 14, T-M4 (d)) |
+| m-4 | The gate evidence header states that the review refs must be current (fetched after the reviewers' last pushes), not only present |
+| m-5 | L-051's D6 line is corrected in L-052 (the log is append-only) |
 
