@@ -151,44 +151,16 @@ for rid, c in register.items():
     if not tg:
         errors.append(f"gates: active rule {rid} has no test in a tranche gate")
 
-# Deferred and retired rules cited as if active (R-W12-2 B-2, condition C2). A table cell, or a
-# prose line, that names a deferred or retired rule must say so in the same cell or line. Exempt:
-# the rule's own ID in its own row (register section 1, the pieces' rule tables, 12 section 3),
-# the register's Basis cells, and deferred or retired test rows, which say so in their State cell. Files that hold history rows (06, 10) are not scanned.
-MARK = re.compile(r"deferr|defer|retire|merged|supersed|withdrawn|re-admi", re.I)
+# Deferred and retired rules or tests cited as if active (R-W12-2 B-2, condition C2; tightened
+# after the critic of 13, finding 10). A citation of a deferred or retired rule, or of a deferred
+# or retired test, must say so in the same clause: the same table cell, cut further at ";" and at
+# sentence ends. Exempt: a rule's own ID in its own row (register section 1, the pieces' rule
+# tables, 12 section 3), and deferred or retired test rows of the register, which say so in
+# their State cell. 06 is scanned only in its current-rule sections (3b and 8); its other rows
+# are revision history. 10 is history and not scanned.
+MARK = re.compile(r"deferr|defer\b|retire|merged into|superseded|withdrawn|re-admi|when re-admitted", re.I)
+CLAUSE = re.compile(r";|\.\s+(?=[A-Z(`*])")
 inactive = {rid for rid, c in register.items() if norm_status(c[2]) in ("deferred", "retired")}
-SCAN = PIECES + ["07_mechanism_map.md", "08_oi011_dispositions.md", "11_test_register.md",
-                 "12_tranche_plan.md", "13_r-w12-2_dispositions.md"]
-for name in SCAN:
-    in_reg_sec1 = name == "11_test_register.md"
-    for n, line in enumerate((D / name).read_text().splitlines(), 1):
-        if in_reg_sec1 and line.startswith("## 2. Tests"):
-            in_reg_sec1 = False
-        if line.startswith("| "):
-            c = cells(line)
-            if RULE.fullmatch(c[0]) and (name in PIECES or in_reg_sec1 or name == "12_tranche_plan.md"):
-                # The rule's own row (12 section 3 lists deferred rules, one row each): its own ID
-                # is exempt, other IDs in the row are not; the register's Basis cell is history.
-                own = c[0]
-                if name == "12_tranche_plan.md" or (in_reg_sec1 and len(c) == 8 and MARK.search(c[2])):
-                    continue  # the row itself is a deferred or retired rule, stated in its row
-                units = c[1:5] + c[6:] if in_reg_sec1 and len(c) == 8 else c[1:]
-                for u in units:
-                    for rid in (set(RULE.findall(u)) & inactive) - {own}:
-                        if not MARK.search(u):
-                            errors.append(f"{name}:{n}: {rid} is {norm_status(register[rid][2])} but cited without saying so")
-                continue
-            if name == "11_test_register.md" and not in_reg_sec1 and len(c) == 6 and MARK.search(c[5]):
-                continue  # a deferred or retired test row says so in its State cell
-            units = c
-        else:
-            units = [line]
-        for u in units:
-            for rid in set(RULE.findall(u)) & inactive:
-                if not MARK.search(u):
-                    errors.append(f"{name}:{n}: {rid} is {norm_status(register[rid][2])} but cited without saying so")
-
-# A test cited in 08 must not be deferred or retired (08 cites tests as evidence of answers).
 test_state = {}
 for line in sec2.splitlines():
     if line.startswith("| T-"):
@@ -196,13 +168,58 @@ for line in sec2.splitlines():
         if len(c) == 6:
             for t in c[0].split(","):
                 test_state[t.strip()] = c[5].lower()
-for n, line in enumerate((D / "08_oi011_dispositions.md").read_text().splitlines(), 1):
-    if not line.startswith("| "):
-        continue  # evidence is cited in the table rows; prose reopen triggers may name future tests
-    for t in TEST.findall(line):
-        st = test_state.get(t, "")
-        if "deferred" in st or "retired" in st:
-            errors.append(f"08_oi011_dispositions.md:{n}: test {t} is not active but is cited as evidence")
+inactive_tests = {t for t, st in test_state.items() if "deferred" in st or "retired" in st}
+
+
+def scan_unit(name, n, u, skip=frozenset(), tests_too=True):
+    for clause in CLAUSE.split(u):
+        if MARK.search(clause):
+            continue
+        for rid in (set(RULE.findall(clause)) & inactive) - skip:
+            errors.append(f"{name}:{n}: {rid} is {norm_status(register[rid][2])} but cited without saying so")
+        if tests_too:
+            for t in set(TEST.findall(clause)) & inactive_tests:
+                errors.append(f"{name}:{n}: test {t} is not active but is cited without saying so")
+
+
+SCAN = PIECES + ["06_counter_design_comparison.md", "07_mechanism_map.md", "08_oi011_dispositions.md",
+                 "11_test_register.md", "12_tranche_plan.md", "13_r-w12-2_dispositions.md"]
+for name in SCAN:
+    text = (D / name).read_text().splitlines()
+    in_reg_sec1 = name == "11_test_register.md"
+    in_06_current = False
+    in_12_sec3 = False
+    for n, line in enumerate(text, 1):
+        if line.startswith("## ") or line.startswith("### "):
+            in_06_current = bool(re.match(r"#+ (3b|8)\b", line)) or line.startswith("### 3b")
+            in_12_sec3 = name == "12_tranche_plan.md" and line.startswith("## 3.")
+        if in_reg_sec1 and line.startswith("## 2. Tests"):
+            in_reg_sec1 = False
+        if name == "06_counter_design_comparison.md" and not in_06_current:
+            continue
+        # The register's test sections and 12's gate table cite tests by design.
+        in_gate_table = name == "12_tranche_plan.md" and re.match(r"\| (1[a-d]|1b-i+|composition) \|", line)
+        tests_too = not (name == "11_test_register.md" and not in_reg_sec1) and not in_gate_table
+        if line.startswith("| "):
+            c = cells(line)
+            own = c[0] if RULE.fullmatch(c[0]) and (name in PIECES or in_reg_sec1 or in_12_sec3) else None
+            if name == "11_test_register.md" and not in_reg_sec1 and len(c) == 6 and MARK.search(c[5]):
+                continue  # a deferred or retired test row says so in its State cell
+            if own and in_reg_sec1 and len(c) == 8 and MARK.search(c[2]):
+                units = c[1:2] + c[3:5] + c[6:]   # Basis cell is history; its own status says deferred
+                units = [u + " (row deferred or retired)" for u in units]
+            elif own and in_reg_sec1 and len(c) == 8:
+                units = c[1:5] + c[6:]
+            elif own and name in PIECES and len(c) == 6 and MARK.search(c[2]):
+                continue  # a deferred or retired rule's own row says so in its Status cell
+            elif own:
+                units = c[1:]
+            else:
+                units = c
+            for u in units:
+                scan_unit(name, n, u, {own} if own else frozenset(), tests_too)
+        else:
+            scan_unit(name, n, line, frozenset(), tests_too)
 
 for e in errors:
     print(e)

@@ -29,19 +29,19 @@ One home per rule (M-R1): a v2.0 restatement would be a second copy.
 2. every active rule has at least one passing gate test (`check_ids.py` checks the assignment);
 3. a **composition review** by a session Verifier passes. It judges acceptance (d) "purpose and robustness" on the built system, together with the observations of §2.3.
 
-Only then do W-C00-06 to 11 enter the frontier. This is encoded, not only written: the 1b-i migration gives each of them `depends_on: W-C00-12`, and lifting that edge any other way is class high (W-R7; T-W15, T-W9).
+Only then do W-C00-06 to 11 enter the frontier. This is encoded, not only written: the 1b-i migration gives each of them `depends_on: W-C00-12`, and lifting that edge any other way is class high (W-R7; T-W15, T-W9). Revision 3's first draft and the R-W12-1 dispositions said "after tranche 1 is merged". That would have let C00 resume with W-C00-12's acceptance open, so it is withdrawn.
 
-**Dependency on P-W12-4, stated** (R-W12-2 M-2). The detector (C-R8) is the only tranche-1 mechanism that needs a workflow file. If P-W12-4 fails, the file goes to Batu as one account action in his batch, C-R8 becomes deferred with the trigger "the file is on `main`", and its tests T-C6, T-C7 and its part of T-21 become deferred with it. W-C00-12's acceptance does not wait on that action; the stall residual is stated in `DURUM.md`. The main-definition check (C-R9) is deferred (§3), so nothing else depends on the probe. Revision 3's first draft and the R-W12-1 dispositions said "after tranche 1 is merged". That would have let C00 resume with W-C00-12's acceptance open, so it is withdrawn.
+**Dependency on P-W12-4, stated** (R-W12-2 M-2; revised after the critic of `13`, finding 1). The detector (C-R8) is the only tranche-1 mechanism that needs a workflow file. If P-W12-4 fails, Batu gets one item in his batch, candidate D-005 with no default by silence (`05_continuity.md` §2.2): he adds the file, or he accepts the residual of no independent stall detection until C06. W-C00-12's acceptance and the dispatcher's retirement (C-R7) wait for one of the two; that is one decision, not an open-ended account action. Under his option (b), C-R8 is deferred with the trigger "the file is on `main`", and T-C6, T-C7, T-23 and the detector clause of T-21 are deferred with it. The main-definition check (C-R9) is deferred (§3), so nothing else depends on the probe.
 
 ### 2.1 Parts
 
 | Part | Contents (mechanism IDs) | Impact | Review |
 |---|---|---|---|
-| **1a probes** | First, the **probe-branch rule** (H-PRB): the allow-list hook allows `create_session` on a branch named `claude/probe-*` whose fetched revision carries `.claude/settings.json`, so that a probe whose set-up changes `.claude/` (P-W12-3 adds hooks) needs no switch of the run's working tree (K3 P10; map X-29). It is a hook change: class high, its own session review, gate T-W14 and the T-H4 re-run. Then **P-W12-4**: can this environment push `.github/workflows/`? A harmless file is pushed to a probe branch, which is then recorded as abandoned. **P-W12-3**: hook events (`PreCompact`, `Stop`, the `compact` source, `PostToolUse` context), already pre-registered. One live `send_later` response sample for M-R11. **OI-012 measurement**: whether `main`'s history, and not only the review branches, holds the unredacted service names (§8, finding 3). | high for H-PRB; the probes are evidence only | session Verifier for H-PRB; the run reads probe transcripts, not summaries |
+| **1a probes** | **P-W12-4**: can this environment push `.github/workflows/`? A harmless file is pushed to a probe branch, which is then recorded as abandoned. One live `send_later` response sample for M-R11. **OI-012 measurement**: whether `main`'s history, and not only the review branches, holds the unredacted service names (§8, finding 3). **Deferred out of 1a (L-044):** the probe-branch rule H-PRB and the probe P-W12-3 that needed it. The classifier refused the push of the test fixtures of H-PRB (deferred) as self-modification; a refusal is S3 for that action and is not routed around (R-R21). P-W12-3 observes hook events (`PreCompact`, `Stop`, the `compact` source); since R-W12-2 the compaction arrow is typed I until observed, so no active rule's gate depends on it (its findings feed R-R19 and R-R20, both deferred). | evidence only | the run reads probe transcripts, not summaries; the 1b-i session Verifier checks the deferral |
 | **1b-i records and render** | migration of the work list, decisions and OI-011 notes into `plan/work/` and `plan/decisions/` (M-R3, W-R16), with `depends_on: W-C00-12` on W-C00-06 to 11; `tools/records.py` (render, brief including the run brief and the verifier brief's required fields, durum, lease); generated frontier, zoom and views (W-R2, W-R3, W-R5, W-R11, W-R15); the register and the map's carrier tables moved to `plan/builder/mechanisms.md`, 07 keeping a pointer | high (`tools/records.py`) | session Verifier |
 | **1b-ii checks and stop** | `tools/check_records.py` (`chain`, `kinds`, `views`, `work`, `impact`, `docstatus`, `stamps`, `claims`, `decisions`, `map`): M-R1, M-R2, M-R4, M-R5, M-R6, M-R14, M-R15, M-R16, M-R19, W-R1, W-R4, W-R7, W-R9, R-R3, R-R5, R-R10. The extended `tools/builder_check.sh`: C-R1 (without the 1d part), C-R11, M-R13, A-07. | high | session Verifier |
 | **1c hooks, `CLAUDE.md`, roles** | `.gitattributes` union (M-R10); the recorder covering `send_later` (M-R11); the brief gate (W-R6); the `SessionStart` boot map (M-R18); `CLAUDE.md` with the floor import and map pointer (R-R6); `.claude/agents/{verifier,triager,researcher,critic}.md`; `plan/builder/roles/{counter-designer,probe}.md`; `REVIEW_PROMPT.md` extended (R-R3a); `FAILURE_PATTERNS.md`, with the review asked to qualify each pattern (R-R7); the operating model v1.8 delta with R-R4, R-R8, R-R9, R-R16, R-R17, R-R21, C-R2, C-R3, C-R5, C-R6, C-R10 written into it | high | session Verifier, with T-R1 planted problems |
-| **1d workflows, retirement, plan text** | the detector `watchdog.yml` (C-R8), if P-W12-4 passed; otherwise it goes to Batu as one account action in his batch and C-R8 is deferred until the file is on `main` (§2). C-R9 is deferred (§3). The dispatcher's retirement (C-R7), **after** T-C2 passes. The plan-change candidates for plan §9 item 1 and Ek F (R-W12-1 M7): they now describe a retired dispatcher, so they are decided here by a verifier (technical owner, plan §14), not at W-C00-06. | high | session Verifier |
+| **1d workflows, retirement, plan text** | the detector `watchdog.yml` (C-R8), if P-W12-4 passed; otherwise D-005 goes to Batu in his batch (§2). C-R9 is deferred (§3). The dispatcher's retirement (C-R7), **after** T-C2 passes and only once C-R8 is on `main` or D-005 is answered. The plan-change candidates for plan §9 item 1 and Ek F (R-W12-1 M7): they now describe a retired dispatcher, so they are decided here by a verifier (technical owner, plan §14), not at W-C00-06. | high | session Verifier |
 
 ### 2.2 Gates
 
@@ -49,7 +49,7 @@ Every active test of `11_test_register.md` §2 appears in exactly one gate. A pa
 
 | Gate | Tests |
 |---|---|
-| 1a | T-W14 |
+| 1a | — (evidence only; its former gate test is deferred with H-PRB, §3) |
 | 1b-i | T-W10, T-W15, T-W2, T-W5, T-W7, T-W12 |
 | 1b-ii | T-R20, T-M1, T-M2, T-M3, T-M4, T-M5r, T-M6r, T-M7a, T-M7b, T-M7c, T-M11, T-M14, T-M15, T-W1, T-W3r, T-W4, T-W9, T-R4, T-R9, T-R11, T-MAP1, T-MAP2, T-MAP3, T-MAP5, T-MAP7 |
 | 1c | T-H4, T-M8, T-M12, T-M17, T-W6, T-R1, T-R2, T-R3, T-R5, T-R8, T-R12, T-R18, T-R19, T-R21, T-R22, T-C2, T-C4 |
@@ -64,7 +64,7 @@ Three tests cannot be forced:
 - T-23: seven days of operation across C01–C03;
 - T-R16 and T-M17 (c): they need a compaction, which a message cannot trigger (P-W12-2).
 
-Every mechanism they cover also has a gate test that passes: C-R8 has T-C6 and T-C7; R-R9 has T-R20 (the mechanical hand-over signal); M-R18 has the boot-map test's parts (a) and (b). So acceptance (e) is met by the gate tests, and these three are additional observations with reopen triggers. R-W12-2 (M-6) judged this reading acceptable on two conditions, both adopted: the compaction arrow stays typed I until observed, and the composition review lists T-R16 and T-M17 (c) as **unobserved**, not as passed. A rule bundle does not carry an untested part through a test of another part: R-R16 and R-R3a now have their own tests (T-R21, T-R22).
+Every mechanism they cover also has a gate test that passes: C-R8 has T-C6 and T-C7 (unless D-005 (b) defers C-R8 with them); R-R9 has T-R20 (the mechanical hand-over signal); M-R18 has the boot-map test's parts (a) and (b). So acceptance (e) is met by the gate tests, and these three are additional observations with reopen triggers. R-W12-2 (M-6) judged this reading acceptable on two conditions, both adopted: the compaction arrow stays typed I until observed, and the composition review lists T-R16 and T-M17 (c) as **unobserved**, not as passed. A rule bundle does not carry an untested part through a test of another part: R-R16 and R-R3a now have their own tests (T-R21, T-R22).
 
 ### 2.4 Budget
 
@@ -81,24 +81,25 @@ Tranche 1 has a budget of four runs after the re-review passes: 1a with 1b-i, 1b
 | W-R10 | basis hashes at section anchors | W-C00-06 | W-C00-06 starts | the W-C00-06 run at its start |
 | W-R12 | usage filter in the frontier | 2 | the first `allowed_warning` reading | stop check (Usage row) |
 | W-R13 | decomposition depth check | 2 | the closure review finds an item split far ahead of its work | closure review |
-| W-R14 | `relies_on:`, CD T-05 and T-06 | 3 | with R-R11 | with R-R11 |
-| R-R11 | lenses with dispositions | 3 | after C00 closes; built last, kept only if T-07 passes | closure review |
+| W-R14 | `relies_on:`, CD T-05 and T-06 (both deferred with it) | 3 | with R-R11 (deferred) | with R-R11 (deferred) |
+| R-R11 | lenses with dispositions | 3 | after C00 closes; built last, kept only if T-07 (deferred with it) passes | closure review |
 | R-R13 | role profiles in the hook | 2 | a remaining spawned role acts beyond its role once (`04_roles.md` §7) | each tranche Verifier; closure review |
 | R-R14 | squeeze block | 2 | the third patch of one mechanism without a frame review | stop check: the `patch:` count per mechanism (M-R5; R-W12-2 M-7) |
 | R-R15 | sampling of routine record PRs (adaptive k, session verifier) | 2 | the closure review finds a routine record wrong that the checks passed | closure review |
 | R-R18 | boot gate, with break-glass | 2 | an unbooted session writes a wrong record again (after M-R13) | stop check (M-R13 finds an unrecorded answer) |
 | R-R19 | compaction gate | 2 | a compaction is observed and a post-compaction session errs | T-M17 (c) observer; each tranche Verifier |
 | R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) | P-W12-3's result (1a) |
-| C-R12 | keeper session | 2 | the detector reports a real stall that the self-watchdog did not resume; probe P-08 first | the detector's alerts (C-R8), read by the next run |
+| C-R12 | keeper session | 2 | the detector reports a real stall that the self-watchdog did not resume; probe P-08 first | the detector's alerts (C-R8), read by the next run; if C-R8 is deferred under D-005 (b), the closure review |
+| H-PRB | probe-branch rule (deferred after the classifier refusal, L-044) | 2 | a probe needs `.claude/` changes on its own branch, and Batu has decided how the builder may change its own guardrails (the refused action is not retried before that) | the run that schedules such a probe; closure review |
 | C-R9 | main-definition record check (deferred after R-W12-2 M-2) | 2 | a merged PR is found to have weakened a check it was judged by, or C03 begins (comparison D-08) | each tranche Verifier; the C03 start |
 
 Every trigger names its observer (R-W12-2 M-7). Triggers that no script counts are on the checklist of each tranche part's session Verifier and of the closure review.
 
 **Size, measured** (critic finding 16), from `11_test_register.md` by script (rule rows of §1 counted by their Status cell; test IDs of §2 counted when their State cell says neither retired nor deferred; the command is in L-044):
 - 46 active rules, 16 deferred, 7 retired;
-- 63 active tests, each gated (§2.2).
+- 62 active tests, each gated (§2.2).
 
-The previous figures ("47 active rules"; "59 active tests", where the reviewer counted 60 on `08459af` and the post-target H-PRB test T-W14 made 61) are superseded: C-R9 is deferred and T-C8 with it; T-W15, T-R21 and T-R22 are added (R-W12-2 B-1, M-6).
+The previous figures ("47 active rules"; "59 active tests", where the reviewer counted 60 on `08459af` and the post-target test T-W14 made 61) are superseded: C-R9 is deferred and T-C8 with it; T-W15, T-R21 and T-R22 are added (R-W12-2 B-1, M-6); H-PRB and its test T-W14 are deferred after the classifier refusal (L-044).
 
 The reviewer judged "about twenty" proportionate if each answered a recurring failure, and that is not what this is. The active rules fall into three groups:
 1. **Required by a W-C00-12 acceptance clause** (most of them): (a2) W-R2–W-R5, W-R9, W-R15; (g) W-R1, R-R4, C-R7; (i) R-R3, R-R5; (j) M-R18, R-R7; (k) R-R3a, R-R6, R-R8, R-R9, W-R6; (l) M-R1, M-R2, M-R4–M-R6, M-R15; (m) M-R19; (b) through OI-011: C-R3 (item 5), M-R11 (item 24), M-R10 (items 2 and 23).
@@ -129,7 +130,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | B3 one timestamp rule rejects lease expiries and quotes | `02_memory.md` M-R14 (typed fields, `sched:` in prose, written-at stamps), checked against the whole log by a prototype (L-042); T-M7a–c |
 | B4a reading gate regresses floor delivery | `04_roles.md` §4 (R-R6 import; R-R12 retired); T-R5 per subagent role |
 | B4b no failure patterns at boot after migration | `04_roles.md` §4 (R-R7); `02_memory.md` §4 and M-R18; T-R12, T-M17 |
-| B5 mechanisms without tests; tests of superseded mechanisms | `11_test_register.md` (every active rule has a test, and every active test a gate, §2.2); T-M5, T-M6, T-M7, T-W3 and T-MAP6 retired; T-W3 replaced by T-W3r, not dropped, because M3 keeps status-based staleness |
+| B5 mechanisms without tests; tests of superseded mechanisms | `11_test_register.md` (every active rule has a test, and every active test a gate, §2.2); T-M5, T-M6, T-M7, T-W3 and T-MAP6 retired; T-W3 (retired) replaced by T-W3r, not dropped, because M3 keeps status-based staleness |
 | B6 change list; contradictions between files | pieces 02–05 rewritten in place; 07 and 08 corrected (§5); `check_ids.py`; the critic's check of the seven examples (§8) |
 | B7 one big-bang migration | §1–§3 of this file |
 | M1 boot gate without break-glass | the boot gate is deferred (R-R18) and ships with break-glass; for tranche 1, exact reverts are class normal and revert branches are prepared (§1) |
@@ -156,7 +157,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | P1 no run stalled | contradicted (L-039) | `05` §1, §2 |
 | P7 no spawned session beyond its role | weakened (L-033: the dispatcher's hand edit and false report) | `04` §7, R-R13's deferral restated for the re-review; map X-28 |
 | P8 no producer-written criterion drifted | weakened (L-018, L-021→L-023, L-030, L-033) | W-R7 makes every change to an existing acceptance block high; W-R1 refuses retired tests; `03` §1 |
-| P10 no accidental protected-path edit | weakened (L-033; tree switches to probe branches in L-037 and L-039) | map X-28, X-29; the probe-branch hook rule H-PRB is built first in tranche 1a, because P-W12-3 adds hooks on its probe branch (revision 3's first text said P-W12-3 needed no `.claude/` change, which its own pre-registration contradicts: F-042-3) |
+| P10 no accidental protected-path edit | weakened (L-033; tree switches to probe branches in L-037 and L-039) | map X-28, X-29; the probe-branch hook rule H-PRB (now deferred) was moved into tranche 1a because P-W12-3 adds hooks on its probe branch (F-042-3); after the classifier refused its test fixtures (L-044), H-PRB and P-W12-3 are deferred (§3), and the working-tree rule stays instructed, as R-W12-2 had accepted |
 | P12 no spawned session wrote a shared artefact | contradicted (dispatcher log PRs; the recorder) | D-35 corrected in `06`; the subject retired (C-R7); the recorder file merges by union (M-R10) |
 | P13 failures not in 07 §5 | 25 items | `07` §5 rows X-26 to X-40, grouped where they share a missing arrow |
 | P14 human orchestration | listed | `05` §5 residual; R-R17 |
@@ -219,7 +220,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 
 - **What:** whether the builder may use an automated restart of a stalled chain, meaning a GitHub Actions workflow that starts a Claude session itself. It would need a credential, likely an API key, which concerns his accounts and possibly money.
 - **When it is sent:** with tranche 1d's result, in his batch, in Appendix E format (operating model §6).
-- **Default until he answers:** none is built; the detector alerts him (C-R8). The default is free and reversible.
+- **Default until he answers:** none is built; the detector alerts him (C-R8, or, if P-W12-4 fails, as he decides in D-005). The default is free and reversible.
 
 ## 8. Critic pass on revision 3 (non-binding; fresh-context subagent; 16 findings)
 
@@ -230,7 +231,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | 3 | M-R16 (b) fails on today's redacted verdicts; the public review branches hold unredacted names | blocking | **Accepted.** (b) applies to verdicts the PR adds, and is redaction-aware; T-M15 (c), (d). The branch exposure is recorded as OI-012 and measured in 1a (§2.1) |
 | 4 | "About 30 times per entry" was an unmeasured figure | material | **Accepted.** Measured: 9 and 8. Finding F-042-2 (failure patterns 1 and 6 in a justification). The deviation is re-decided on the measured basis (`02` §7) |
 | 5 | The map check cannot run against the register; missing rows; no rule ID | material | **Accepted.** M-R19: the map's carrier tables are the checked source; T-MAP1–4 |
-| 6 | Working-tree carriers labelled M; C-R9's report (C-R9 now deferred) read by nobody | material | **Accepted.** `07` relabelled M\*; C-R1 reads C-R9's results from 1d; T-C5 (e). Superseded by R-W12-2 M-2: C-R9 and T-C5 (e) are deferred |
+| 6 | Working-tree carriers labelled M; C-R9's report (C-R9 now deferred) read by nobody | material | **Accepted.** `07` relabelled M\*; C-R1 reads the results of C-R9 (now deferred) from 1d; T-C5 (e). Superseded by R-W12-2 M-2: C-R9 and T-C5 (e) are deferred |
 | 7 | W-R7 path list incomplete; "governing documents" undefined | material | **Accepted.** `03` W-R7 lists the paths; T-W9 (f), (g) |
 | 8 | Producer acceptance through a self-written "deterministic" file | material | **Accepted.** W-R1 re-runs the named command; T-W1 |
 | 9 | The brief gate can deadlock on a `records.py` bug | material | **Accepted.** Exact reverts are class normal; revert branches prepared for 1b and 1c (§1); T-W9 (h) |
@@ -240,4 +241,4 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | 13 | Batu's conversation session defined three ways | material | **Accepted.** One rule, R-R17; the relayed form in C-R6; `08` item 8 aligned. The dispositions file's M6 line ("run boot without the lease step") is superseded by R-R17 (recorded in L-042) |
 | 14 | Stale or garbled text in 04–08 | minor | **Accepted**, each fixed (L-042 lists them) |
 | 15 | Evidence claims: T-C1 counted against its own rule; the write-ahead's "git order is the proof" | minor | **Accepted.** T-C1 not counted until re-run after 1c; the write-ahead states what git order shows |
-| 16 | Tranche 1 still about 48 active rules; 1b and 1c are big units; every new item would be high | material | **Accepted in part.** Measured at 47; a delta instead of the v2.0 rewrite; R-R2 and C-R4 merged; M-R12 deferred; 1b split; new acceptance blocks are normal. The size is otherwise driven by the acceptance clauses (§3 groups), and the re-review is asked to name further deferrals |
+| 16 | Tranche 1 still about 48 active rules; 1b and 1c are big units; every new item would be high | material | **Accepted in part.** Measured at 47; a delta instead of the v2.0 rewrite; R-R2 and C-R4 retired and merged into other rules; M-R12 deferred; 1b split; new acceptance blocks are normal. The size is otherwise driven by the acceptance clauses (§3 groups), and the re-review is asked to name further deferrals |
