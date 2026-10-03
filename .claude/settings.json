@@ -21,6 +21,16 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "t=$(date -u +%Y-%m-%dT%H:%M:%SZ); echo \"$t\" > /tmp/devos_probe_sessionstart; echo \"PROBE-SS-MARKER-W12 SessionStart hook ran at $t\""
+          }
+        ]
+      }
     ]
   }
 }
