@@ -305,10 +305,12 @@ def t_m4():
     rc, out = s.cr("chain")
     outcome("T-M4", "a decision file not in its index fails", bool(fails(out, "chain", "D-999")), out)
     s = Scratch()
-    t = s.read("plan/builder/w-c00-12/02_memory.md")
+    mp = "plan/builder/MEMORY_MAP.md" if s.p("plan/builder/MEMORY_MAP.md").exists() else \
+        "plan/builder/w-c00-12/02_memory.md"  # the home table's one home since tranche 1c
+    t = s.read(mp)
     t2 = "\n".join(l for l in t.splitlines() if not l.startswith("| Decision |")) + "\n"
     assert t2 != t
-    s.write("plan/builder/w-c00-12/02_memory.md", t2)
+    s.write(mp, t2)
     rc, out = s.cr("chain")
     outcome("T-M4", "a home removed from the map fails", bool(fails(out, "chain", "plan/decisions/")), out)
     s = Scratch()
@@ -709,8 +711,8 @@ def t_w9():
         s.git("checkout", "-q", "main")
         return outcome(T, f"{label}: class {want}", got == want, out), s, head
 
-    gov = lambda s: s.sub("plan/ledger.md", "| Governing documents: `plan/Builder_Operating_Model.md` | version: 1.7; status: governs",  # noqa
-                          "| Governing documents: `plan/Builder_Operating_Model.md` | version: 1.7; status: Status: binding; governs")
+    gov = lambda s: s.sub("plan/ledger.md", "| Governing documents: `plan/Builder_Operating_Model.md` | version: ",  # noqa
+                          "| Governing documents: `plan/Builder_Operating_Model.md` | Status: binding; version: ")
     klass("(a) 'Status: binding' written into a Governing-documents row", gov, "high")
     klass("(b) one word changed inside an existing acceptance block",
           lambda s: s.sub("plan/work/W-C00-12.5.md", "<!-- acceptance -->\n", "<!-- acceptance -->\nFixture "), "high")

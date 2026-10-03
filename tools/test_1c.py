@@ -108,11 +108,29 @@ def t_m17b():
             rc == 0 and not missing and labels and not work, f"missing={missing} work={work}")
 
 
+def t_r22():
+    """T-R22 (R-R3a, W-R5; N-053 a confirms that case (a2) runs): records.py brief <ID> --role verifier refuses without
+    a target SHA, with a blank or unresolvable one, and with an empty failure-class list; with both, the header names
+    the claims, the failure classes and the SHA. Read-only on this tree."""
+    b = ["python3", "tools/records.py", "brief", "W-C00-12.4", "--role", "verifier"]
+    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
+    for label, extra in (("(a) without target_sha", ["--failure-classes", "x"]),
+                         ("(a2) with a blank target_sha", ["--target-sha", " ", "--failure-classes", "x"]),
+                         ("(a2) with a target_sha that resolves to no commit", ["--target-sha", "0" * 40, "--failure-classes", "x"]),
+                         ("(b) with an empty failure_classes", ["--target-sha", sha, "--failure-classes"])):
+        rc, out = sh(b + extra, REPO)
+        outcome("T-R22", f"{label} refuses with an error", rc != 0 and "Task-Brief" not in out, out)
+    rc, out = sh(b + ["--target-sha", sha, "--failure-classes", "class one", "class two"], REPO)
+    ok = rc == 0 and f"Target SHA: {sha}" in out and "- class one" in out and "- class two" in out and \
+        "Claims to test" in out and out.rstrip().splitlines()[-1].startswith("Task-Brief: W-C00-12.4 verifier ")
+    outcome("T-R22", "(c) with both, the header names the claims, the failure classes and the SHA", ok, out)
+
+
 def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-R22", t_r22)]
     for name, fn in tests:
         try:
             fn()
