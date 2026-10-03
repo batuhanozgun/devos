@@ -18,10 +18,10 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01P9JQpDypvqEcRmSbubcjsb` (run started by the dispatcher `session_01VsRPE6azkUFEXhtkjJcJ5f`, T-A2r). Released 2026-10-01T21:05Z (L-033): clean stop S5, usage hold; no successor run. | 2026-10-01T21:05Z |
+| Run lock | `session_0143r88Vc9e5RbsQmqjYWgwa` (W-C00-12 run, created by `session_016Hi3ZYgAf2amYNGc43a3tr`; took the released lease at boot). Expires 2026-10-03T20:19Z | 2026-10-03T17:19Z |
 | Next action | **W-C00-12 run.** A run created by `session_016Hi3ZYgAf2amYNGc43a3tr` works W-C00-12 only, following `briefs/w-c00-12/RUN_BRIEF.md`; it takes the released lease at boot (L-035). W-C00-06 to 11 stay on hold. The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled until W-C00-12 is independently reviewed. | 2026-10-03T17:18Z |
 | Usage | `seven_day` reset passed at 2026-10-03T17:00Z; `rate_limit_info` at 2026-10-03T17:18Z: `five_hour` `allowed` (§8: proceed). | 2026-10-03T17:18Z |
-| Waiting for Batu | Nothing blocking. D-002 (usage policy) and D-003 (residual barrier risk) are in [issue #6](https://github.com/batuhanozgun/devos/issues/6), opened 2026-10-01T19:59Z; no answer as of 2026-10-01T21:05Z; defaults apply. Reminder through the second channel after 24 hours, from 2026-10-02T19:59Z (Appendix E §8). | 2026-10-01T21:05Z |
+| Waiting for Batu | Nothing. Batu answered [issue #6](https://github.com/batuhanozgun/devos/issues/6) on 2026-10-02T06:27Z: "D-002: a, D-003: a" (both recommended options; recorded in section 4). The answer was not recorded in this file until 2026-10-03T17:19Z (finding, logged by the W-C00-12 run). | 2026-10-03T17:19Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 
 ---
@@ -76,7 +76,8 @@ Criteria served by C00 (plan): 18, 21, 25–27, 29, 34.
 | PC-02 | Branch management. **[Batu, 2026-10-01]:** the builder creates, merges and deletes branches; Batu gives no merge approvals. Builder: PR-only into `main`; never touch library repositories; log every merge. | Batu + builder | C00-log L-011, L-013 (filed as "K11") |
 | PC-03 | Continuity: merge into `main` before every stop | builder (after Batu's concern) | C00-log L-014 |
 | PC-04 | Builder operating model for the installation period (`plan/Builder_Operating_Model.md`) | builder; **[Batu, 2026-10-01]**: the requirement and expectations 1–5 | C00-log L-015 onward |
-| D-003 | Residual risk: the connector barrier is a hook the builder can edit; it stops accidents and injection, not deliberate bypass. Accept for installation, or make an account-level change. The brief to Batu must list the routes he would accept: the operating model §9 "Not protected" list. | Batu (to be asked in the issue batch) | C00-log L-019 |
+| D-002 | Standing usage policy (Builder Operating Model §8). **[Batu, 2026-10-02T06:27Z, issue #6]:** "D-002: a": option (a), the stated default: proceed while `allowed` (at most 2 parallel reviews), light work only at `allowed_warning`, stop and resume 15 minutes after the reset when limited, heavy work preferably 23:00–08:00 Turkey time. | Batu (answered) | issue #6 |
+| D-003 | Residual risk: the connector barrier is a hook the builder can edit; it stops accidents and injection, not deliberate bypass. **[Batu, 2026-10-02T06:27Z, issue #6]:** "D-003: a": option (a), accept the residual risk (the four routes listed in the issue) until the audit environment exists (C02–C03); re-assessed at C03. | Batu (answered) | C00-log L-019; issue #6 |
 | PC-05 | Technical approval of high-impact changes moves from Batu to independent review. Places: plan 4 K-11 item 7, 5.5, 5.6 (İhtiyaç and Seçim), 6.1, 6.7 (two), 6.8 item 5, 6.9, 7.4, C01 row 11; Appendix A DR12 and §6 step 7; Appendix C K11; Appendix E §8. **[Batu, 2026-10-01]**, expectation 2. | Batu | C00-log L-015, L-016 |
 
 ---
