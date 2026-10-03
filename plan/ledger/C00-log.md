@@ -807,3 +807,12 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Finding F-049-3 (failure pattern 1, in a task message):** the verifier brief in the Verifier's first message was pasted by hand, not passed byte for byte. One line of its "Answered notes" list was garbled: the N-024 label carries N-025's text, and N-025's line is missing. Its hash therefore does not reproduce from the message. The Verifier was told by `send_message` at 21:11Z, as data, with the command that reproduces the generated brief. Cause: a brief was retyped instead of piped from the generator. The brief gate W-R6 (1c) makes this mechanical; until then, briefs are passed from the generator's output file.
 - **Working-tree note:** the record branches for PR #74 and PR #76 were cut in this run's working tree from `origin/main` (`git checkout -B`), not in a scratch clone. The rule says other revisions are inspected only by `git show` or in a scratch clone. `.claude/` at `origin/main` was identical to this branch's except the appended `owned_ids.txt` line (1b-ii changes no `.claude/` file), so the enforced hook did not change; later record branches are cut in a scratch clone.
 - **Record changes:** plan/ledger/C00-log.md · addition · the Verifier start, F-049-3 and the working-tree note
+- **R-W12-4: PASS-WITH-CONDITIONS** (pushed at 21:46:57Z to `claude/review-R-W12-4`, `7c1e420`, whose commit changes only `evidence/C00/reviews/R-W12-4.md`; copied unchanged with `git show`, `cmp` identical).
+  - **One blocking condition, C-1:** the W-R7 (ii) exemption in `impact()` accepts a producer-written verdict file, or an existing unrelated one (R-W12-2), so `acceptance: accepted` on W-C00-12 still computes class normal. The stop check catches it only after the merge.
+  - **The texts claim more than the code:** W-R7, N-049, intent §2 and `summary_tr` item 4 (failure pattern 1 again, after the Critic's finding 1 named the same class).
+  - **C-1's fix needs a new session verdict,** because it touches `tools/**`.
+  - **C-2:** remove a committed `.pyc` and add `.gitignore`. It is done in this commit.
+  - **C-3:** the gate's precondition, the `claude/review-*` refs.
+  - **C-4:** state departures m-3, m-5 and m-6.
+  - Minor findings m-4, m-7 and m-8 also stand.
+- **Record changes:** evidence/C00/reviews/R-W12-4.md · addition · copied unchanged; tools/__pycache__/test_check_records.cpython-311.pyc · retirement · a committed build artefact (R-W12-4 C-2); .gitignore · addition
