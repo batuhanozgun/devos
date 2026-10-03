@@ -816,3 +816,17 @@ The builder had summarised the dispatcher's own account without reading the tran
   - **C-4:** state departures m-3, m-5 and m-6.
   - Minor findings m-4, m-7 and m-8 also stand.
 - **Record changes:** evidence/C00/reviews/R-W12-4.md · addition · copied unchanged; tools/__pycache__/test_check_records.cpython-311.pyc · retirement · a committed build artefact (R-W12-4 C-2); .gitignore · addition
+
+### L-050 · 2026-10-03 · W-C00-12: tranche 1b-ii built, R-W12-4 PASS-WITH-CONDITIONS with one blocking condition; PR #75 open; hand-over (S4)
+
+- **Where the work is.** Tranche 1b-ii (W-C00-12.3) is on PR #75, branch `claude/run-w12-1b-ii`, head `d6dea29`, not merged. Its build, gate, Critic pass, Verifier start and verdict are recorded in **L-049 on that branch**, which reaches `main` when the PR merges. When the branch takes in `main`, the end of the log will conflict; resolve it by putting L-049 before this entry.
+- **R-W12-4** (`session_01NJGtsZZFjvEezqHTeVVJU3`, branch `claude/review-R-W12-4` at `7c1e420`): PASS-WITH-CONDITIONS on `242d195`. The gate reproduced byte-identically, 25/25. C1 (a) and C5 are met, and every N-050 item has an implemented disposition. Its conditions:
+  - **C-1, blocking:** the W-R7 (ii) exemption in `tools/check_records.py` `impact()` must accept only a verdict that the work check accepts: bound by M-R16 (b), and naming a reviewed commit at or after the item's first running commit that is an ancestor of the head. Add its two planted cases to T-W9, and correct W-R7, N-049 (ii), intent §2 and `summary_tr` item 4. Because the fix touches `tools/**`, the fixed head needs a new session verdict.
+  - **C-2:** done on the branch.
+  - **C-3:** the gate's precondition, the `claude/review-*` refs.
+  - **C-4:** departures m-3, m-5 and m-6 stated or fixed.
+  - **Also standing:** m-4, m-7 and m-8. m-8 is met already: the recorder line for R-W12-4 is on `main` (PR #76).
+- **Finding F-050-1 (failure pattern 1, again):** for the second time in this part, a claim about the C00 hold ran ahead of the code: first the Critic's finding 1, then R-W12-4 B-1 on the fix. Both times the texts were written as the property intended, not as the property tested. The successor writes the hold claim only after a planted case for each route the Verifier named passes.
+- **Stop: S4 (hand-over).** `get_session` at 21:48Z gives `used_tokens` 490,731 of 1,000,000 (49%) and a transcript of 3,608,970 bytes. The next step is a fix plus a second Verifier round of about 35 minutes; it is better done in a fresh context. Usage at 21:48Z: `five_hour` `allowed`, resets sched:2026-10-04T01:10Z. The session's cost figure is 18.66 (relative measure only). Lineage at 21:48Z: depth 6 of limit 8 (N-052).
+- **Successor.** It is created after the stop check, as this run's last act: `create_session` on `main`, model `claude-opus-5-5`, first message the R1 goal plus the W-C00-12 scope sentence naming L-049 (on the branch), L-050, R-W12-4 and PR #75. The PR merges only on a session verdict that covers its fixed head. The revert branch `claude/revert-w12-1b-ii` is pushed before that merge.
+- **Record changes:** plan/ledger.md Run lock · supersession · lease renewal with the S4 note; plan/ledger.md Usage, summary_tr · supersession · readings at 21:48Z, and the summary for Batu corrected to say that the hold claim was stronger than the code (R-W12-4 B-1)

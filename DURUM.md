@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 4 Ekim 2026, 00:07 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 00:53 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
-**Çalışan oturum:** `session_01CmCKBkyHynQ27CwqkiviC6`; kilit 4 Ekim 2026, 02:18 (Türkiye saati) tarihine kadar geçerli.
+**Çalışan oturum:** `session_01Gfj3M4MjrMb4YcRHwsA1X8`; kilit 4 Ekim 2026, 03:52 (Türkiye saati) tarihine kadar geçerli.
 
 **Sıradaki işler:** `W-C00-12`, `W-C00-12.3` sürüyor. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
@@ -16,12 +16,11 @@
 
 **Şu an**
 
-Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii) kurdu: kayıtları ve durma anını kontrol eden araçlar. Bağımsız denetçi oturumunun onayı bekleniyor; onay gelmeden ana dala alınmayacak. Senin bir şey yapmana gerek yok. 
-1. Yeni araç `tools/check_records.py` on ayrı kontrol yapıyor. Bazıları: her kayıt değişikliğinin günlükte gerekçesi var mı; saatler gelecekte mi; kanıt dosyaları gerçekten var mı; bir iş kendi üreticisi tarafından "kabul" edilmiş mi. 
-2. Durma kontrolü (`tools/builder_check.sh`) artık bu kontrolleri, senin issue'daki cevaplarını ve gizli isim sızıntısını da denetliyor. Aynı tür hata iki kez çıkarsa oturumu devretmeye zorluyor. 
-3. 25 testin hepsi geçti; eleştirmen alt-oturumun bulduğu 13 açıktan 12'si kapatıldı ve teste eklendi, biri gerekçesiyle reddedildi. Testler yalnızca geçici kopyalarda çalıştı; gerçek kayıtlara dokunmadı. 
-4. C00'ın bekletmesi artık bir işin "kabul edildi" diye elle işaretlenmesiyle kaldırılamıyor: o işi adıyla anan, işten sonra verilmiş ve başka hiçbir işi kabul etmeyen bir denetçi kararı gerekiyor. Kalan risk: ben bir denetçinin imzasını taklit edebilirim; bunu ancak bağımsız denetim ortamı (C03) kapatır. 
-5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. 
+Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii, kayıtları ve durma anını kontrol eden araçlar) kurdu ve 25 testin hepsi geçti. Bağımsız denetçi oturumu şartlı onay verdi, ama bir şartı engelleyici. Bu yüzden adım henüz ana dala alınmadı; yeni oturum düzeltip yeni bir denetçi onayı alacak. Senin bir şey yapmana gerek yok. 
+1. Denetçinin bulduğu açık: C00'ın bekletmesini, kendi yazdığım bir "onay" dosyasıyla kaldırabiliyordum. Durma kontrolü bunu sonradan yakalıyordu, ama önceden engellemiyordu. Daha önce sana "artık kaldırılamıyor" yazmıştım; bu, kodun gerçekte yaptığından güçlü bir iddiaydı. Düzeltilmeden ana dala alınmayacak. 
+2. Eleştirmen alt-oturumun 13 bulgusundan 12'si kapatıldı ve teste eklendi; biri gerekçesiyle reddedildi. 
+3. Bu oturum bağlamının yaklaşık yarısını kullandığı için işi yeni bir oturuma devrediyor. 
+4. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. 
 **Riskler:** 
 - Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. 
 - Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. 
