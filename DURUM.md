@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 3 Ekim 2026, 23:48 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 00:07 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
@@ -19,8 +19,8 @@
 Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii) kurdu: kayıtları ve durma anını kontrol eden araçlar. Bağımsız denetçi oturumunun onayı bekleniyor; onay gelmeden ana dala alınmayacak. Senin bir şey yapmana gerek yok. 
 1. Yeni araç `tools/check_records.py` on ayrı kontrol yapıyor. Bazıları: her kayıt değişikliğinin günlükte gerekçesi var mı; saatler gelecekte mi; kanıt dosyaları gerçekten var mı; bir iş kendi üreticisi tarafından "kabul" edilmiş mi. 
 2. Durma kontrolü (`tools/builder_check.sh`) artık bu kontrolleri, senin issue'daki cevaplarını ve gizli isim sızıntısını da denetliyor. Aynı tür hata iki kez çıkarsa oturumu devretmeye zorluyor. 
-3. 25 testin hepsi geçti. Testler yalnızca geçici kopyalarda çalıştı; gerçek kayıtlara dokunmadı. 
-4. C00'ın bekletmesi artık bir işin "kabul edildi" diye elle işaretlenmesiyle kaldırılamıyor; bunun için bağımsız bir denetçi kararı gerekiyor. 
+3. 25 testin hepsi geçti; eleştirmen alt-oturumun bulduğu 13 açıktan 12'si kapatıldı ve teste eklendi, biri gerekçesiyle reddedildi. Testler yalnızca geçici kopyalarda çalıştı; gerçek kayıtlara dokunmadı. 
+4. C00'ın bekletmesi artık bir işin "kabul edildi" diye elle işaretlenmesiyle kaldırılamıyor: o işi adıyla anan, işten sonra verilmiş ve başka hiçbir işi kabul etmeyen bir denetçi kararı gerekiyor. Kalan risk: ben bir denetçinin imzasını taklit edebilirim; bunu ancak bağımsız denetim ortamı (C03) kapatır. 
 5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. 
 **Riskler:** 
 - Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. 
