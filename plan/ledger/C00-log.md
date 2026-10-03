@@ -575,3 +575,13 @@ The builder had summarised the dispatcher's own account without reading the tran
   - Added W-C00-12 with acceptance conditions written before the work, and OI-011 with its inputs.
   - Nothing else changed; no rule or mechanism was edited.
 - **The dispatcher session** `session_01VsRPE6azkUFEXhtkjJcJ5f` stays alive and idle; no message reaches it while both routines are disabled.
+
+### L-035 · 2026-10-03 · W-C00-12 run brief written; run started from Batu's conversation session
+
+- **Who.** Builder session `session_016Hi3ZYgAf2amYNGc43a3tr` (Batu's conversation), on its one-shot reminder `trig_015TYQ5f5QowWGLJTRJqQ4HJ`, which fired at 2026-10-03T17:15:32Z.
+- **Usage.** `rate_limit_info` at 2026-10-03T17:18Z: `five_hour` `allowed`; the `seven_day` warning has passed with the 17:00Z reset. §8 allows proceeding. Heavy work is preferably done between 23:00 and 08:00 Turkey time; the run is told so.
+- **Inputs gathered since L-034.** Batu gave twelve texts. Each is recorded verbatim with the builder's assessment in `briefs/w-c00-12/BATU_*_TR.md`. Principles 13 to 18 were added, the W-C00-12 acceptance conditions grew from (h) to (m) with dated extensions written before the work, and OI-011 grew to 24 items (record PRs up to #46).
+- **Run brief.** `briefs/w-c00-12/RUN_BRIEF.md` routes the run to the inputs. It sets the order of work: consolidation first, an early counter-design in a separate session, then the goal-down look. It also lists the known failure patterns and constraints. The brief is in the repository so that the task does not live only in a first message (OI-011 item 1).
+- **Lease.** Left `Released`; the run takes it at boot in a record PR that touches only the state file (L-032 lesson). This entry is merged before the run is created, so the two record PRs do not collide.
+- **Unchanged.** No rule, hook or mechanism was edited. The starters stay disabled.
+

@@ -1,8 +1,8 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 3 Ekim 2026, 12:33 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
+**Son güncelleme:** 3 Ekim 2026, 20:18 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
 
-**Şu an:** Kurulum bilerek bekletiliyor. Çalışma düzenimin bütüncül olarak yeniden tasarlanması gerekiyor; o bitmeden ağır işler başlamayacak. Otomatik başlatma kapatıldı. Senin bir şey yapmana gerek yok.
+**Şu an:** Çalışma düzenimin bütüncül yeniden tasarımı (W-C00-12) başlıyor. Ayrı bir çalışma oturumu yapıyor; yol gösterici dosyası `briefs/w-c00-12/RUN_BRIEF.md`. C00'ın diğer işleri ve otomatik başlatma, tasarım bağımsız olarak denetlenene kadar kapalı. Senin bir şey yapmana gerek yok.
 
 **Aşama:** C00 (başlangıç kontrolleri), beklemede.
 
@@ -15,7 +15,7 @@
 
 **Senden beklenen:** Acil bir şey yok. İki karar [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda duruyor: kullanım politikası (D-002) ve bağlantı engelinin kalan riski (D-003). İkisi de işi durdurmuyor; cevap gelene kadar önerdiğim varsayılanlar uygulanıyor.
 
-**Kullanım:** Haftalık sınır "uyarı" düzeyinde; 3 Ekim 20:00'de yenileniyor. Yapılabilecek hafif iş kalmadığı için o zamana kadar yeni çalışma oturumu açılmıyor.
+**Kullanım:** Haftalık sınır 3 Ekim 20:00'de yenilendi; şu an "izinli" düzeyde.
 
 **Bilmen gereken riskler**
 - Bağımsız denetim ortamı henüz yok; önemli değişiklikleri aynı modelden ama ayrı oturumlar inceliyor.
