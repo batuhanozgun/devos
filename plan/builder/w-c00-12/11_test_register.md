@@ -112,6 +112,7 @@ Columns:
 | H-BOOT | Hook carrier of R-R18 | deferred | 2 | installation | see R-R18 | — | T-01 |
 | H-CMP | Hook carrier of R-R19 | deferred | 2 | installation | see R-R19 | — | T-02 |
 | H-READ | Hook carrier of R-R12 | retired | — | — | see R-R12 | — | — |
+| H-PRB | Probe-branch rule: `create_session` allowed on `claude/probe-*` branches whose fetched revision carries `.claude/settings.json` | active | 1a | installation | 2: L-037, L-039 (tree switched to probe branches); P-W12-3 needs `.claude/` changes | S; high impact (hook) | T-W14, T-H4 |
 | A-07 | Leak check on staged and committed content, run by C-R1 | active | 1 | installation | 3: L-019 B2, L-021 B2, F-041-2 | S | T-MAP7 |
 
 ## 2. Tests
@@ -163,6 +164,7 @@ Columns: **PASS only if** and **FAIL if** are written before the mechanism exist
 | T-W11 | W-R10 | written when re-admitted at W-C00-06 | — | — | deferred |
 | T-W12 | W-R11 | Scratch: an item with `platform: [x: untested]` and all else met | absent from the frontier, which names the probe | it appears | pre-registered |
 | T-W13 | W-R12 | written when re-admitted | — | — | deferred |
+| T-W14 | H-PRB | Hook unit tests: `create_session` on (a) `claude/probe-x` whose fetched revision carries `.claude/settings.json`; (b) `claude/probe-y` without it; (c) `claude/other-z` with it; (d) a fetch failure; then one live probe creation in 1a without switching the run's tree | (a) allowed; (b), (c) and (d) blocked; the live call succeeds and `git rev-parse HEAD` in the run's tree is unchanged before and after | any wrong decision, or a tree switch | pre-registered |
 | T-05, T-06 | W-R14 | the counter-design's tests, adopted by ID when re-admitted | — | — | deferred |
 
 ### 2.3 Roles
