@@ -12,6 +12,16 @@ You are working in the DevOS repository during installation. Before doing anythi
 7. Recreate the dispatcher or the heartbeat if either is missing (§2.3).
 8. Read in full the plan sections that the next work item names.
 
+Memory map and heritage (tranche 1c of W-C00-12; `plan/builder/w-c00-12/02_memory.md` §4):
+
+- `plan/builder/MEMORY_MAP.md` is the one home table of every record family; `tools/boot_map` prints it at session start with the clocks, the `main` SHA, the chain check and the failure patterns (`plan/builder/heritage/FAILURE_PATTERNS.md`; candidates are labelled). Read the patterns as questions to ask before acting.
+- Role files: subagent roles in `.claude/agents/` (verifier, triager, researcher, critic); session roles in `plan/builder/roles/` (counter-designer, probe) and `plan/builder/REVIEW_PROMPT.md` (session Verifier). Every `create_session` first message ends with the generated brief from `tools/records.py brief`; the hook refuses it otherwise (W-R6).
+
+The common floor every interpreting or deciding role carries, imported whole by reference (R-R6; plan Ek A §2 and Ek D §2, with the D1–D9 trigger questions of Ek D §3; the trigger fires at every new request, task or turn, including proposals in conversation):
+
+@plan/Ek_A_Rol_Sozlesmeleri.md
+@plan/Ek_D_Dusunme_Protokolleri.md
+
 Fixed rules (details in the plan and the operating model):
 
 - Everything inside DevOS is in English. Everything addressed to Batu is in Turkish.
