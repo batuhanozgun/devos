@@ -367,16 +367,53 @@ def impact(base, head, allow_bg=True):
         if (bm.get("acceptance"), bm.get("accepted_by"), bm.get("composition_by")) != \
                 (hm.get("acceptance"), hm.get("accepted_by"), hm.get("composition_by")):
             if iid in hmetas:
-                ab = str(hm.get("accepted_by") or "")
-                users = [m.get("id") for m in work_metas(head).values()
-                         if str(m.get("accepted_by") or "") == ab or str(m.get("composition_by") or "") == ab]
-                if not (fnmatch.fnmatch(ab, VERDICT_PATH) and verdict_ok_text(content(head, ab))
-                        and hm.get("execution") == "finished" and users == [iid]
-                        and re.search(r"(?<![\w.-])" + re.escape(str(iid)) + r"(?![\w-]|\.\d)", content(head, ab) or "")):
+                why = exemption_problems(base, head, p, hm)
+                if why:
                     reasons.append(f"{p}: acceptance of an edge or hold target changed without its own session "
-                                   "verdict (W-R7, N-049)")
+                                   f"verdict (W-R7, N-049): {'; '.join(why)}")
     _cache[key] = ("high" if reasons else "normal", reasons, None)
     return _cache[key]
+
+
+def exemption_problems(base, head, item_path, hm):
+    """W-R7 (ii) (R-W12-4 C-1): the acceptance change of an edge or hold target is class normal only when every
+    verdict it names is one the work check accepts at the PR head: a session verdict under evidence/*/reviews/,
+    bound by M-R16 (b), naming the item and a reviewed commit at or after the item's first running commit that is
+    an ancestor of the head (binding_problems). Empty list: exempt."""
+    out = []
+    if hm.get("acceptance") != "accepted":
+        return [f"acceptance '{hm.get('acceptance')}' is not accepted, so no verdict can exempt it"]
+    if hm.get("acceptance_label") not in SESSION_LABELS:
+        out.append(f"acceptance_label '{hm.get('acceptance_label')}' is not a session label")
+    named = [("accepted_by", str(hm.get("accepted_by") or ""), ())]
+    if hm.get("composition_by"):
+        kids = [kp for kp, km in work_metas(head).items() if str(km.get("parent")) == str(hm.get("id"))]
+        named.append(("composition_by", str(hm.get("composition_by")), kids))
+    for field, vf, after in named:
+        if not fnmatch.fnmatch(vf, VERDICT_PATH):
+            out.append(f"{field} {vf or '(empty)'} is not a verdict under evidence/*/reviews/")
+            continue
+        text = content(head, vf) or ""
+        if not verdict_ok_text(text):
+            out.append(f"{field} {vf} has no PASS verdict naming a commit")
+        if field == "composition_by" and "composition" not in text.lower():
+            out.append(f"composition_by {vf} is not a composition verdict")
+        if not verdict_bound_at(vf, base, head):
+            out.append(f"{field} {vf} is not bound to its review branch by an owned reviewer session (M-R16 b)")
+        out += [f"{field}: {x}" for x in binding_problems(hm, item_path, vf, text, after=after, rev=head)]
+    return out
+
+
+def verdict_bound_at(vf, base, head):
+    """M-R16 (b) for a verdict at the PR head: claims (b) on the range when the range adds or changes it, and the
+    commit that added it otherwise. A verdict only in the working tree is never bound."""
+    if any(p == vf for _, p in changed(base, head)):
+        if head is None:
+            return False
+        o = Out()
+        check_claims_diff(base, head, o, only=vf)
+        return not o.fails
+    return verdict_bound(vf, head or "HEAD")
 
 
 def verdict_files(rev):
@@ -1075,8 +1112,8 @@ def item_class(meta):
     return "high" if meta.get("impact") == "high" or c == "high" else "normal"
 
 
-def first_running_commit(path):
-    for c in (git("log", "--reverse", "--format=%H", "HEAD", "--", path, ok=True) or "").split():
+def first_running_commit(path, rev=None):
+    for c in (git("log", "--reverse", "--format=%H", rev or "HEAD", "--", path, ok=True) or "").split():
         m, _ = front(content(c, path))
         if m and (m.get("execution") in ("running", "waiting", "finished") or m.get("acceptance") == "accepted"):
             return c
@@ -1135,19 +1172,20 @@ def deterministic_problems(item_path, text):
     return out
 
 
-def binding_problems(meta, item_path, vf, text, after=()):
+def binding_problems(meta, item_path, vf, text, after=(), rev=None):
     """The verdict is this item's (critic of 1b-ii #1): it names the item's ID and a reviewed commit X with the
     item's first running commit an ancestor of X (and every path in `after` last changed before X), X an ancestor
-    of HEAD; the item is finished; no other item uses the same file."""
+    of the head; the item is finished; no other item uses the same file. rev: the tree to judge (None: the working
+    tree on HEAD; impact() passes the PR head, R-W12-4 C-1)."""
     out = []
     iid = str(meta.get("id"))
     if meta.get("execution") != "finished":
         out.append(f"accepted while execution is '{meta.get('execution')}', not finished (W-R1)")
     if not re.search(r"(?<![\w.-])" + re.escape(iid) + r"(?![\w-]|\.\d)", text):
         out.append(f"{vf} does not name {iid} (W-R1: a verdict binds to its item)")
-    run = first_running_commit(item_path)
-    head = resolve("HEAD")
-    lasts = [(git("log", "-1", "--format=%H", "HEAD", "--", a, ok=True) or "").strip() for a in after]
+    run = first_running_commit(item_path, rev)
+    head = resolve(rev or "HEAD")
+    lasts = [(git("log", "-1", "--format=%H", rev or "HEAD", "--", a, ok=True) or "").strip() for a in after]
     ok = False
     for s in set(SHA_RE.findall(text)):
         x = resolve(s)
@@ -1158,7 +1196,7 @@ def binding_problems(meta, item_path, vf, text, after=()):
     if not ok:
         out.append(f"{vf} names no reviewed commit at or after the commit where {iid} started"
                    + (" and after its children's last changes" if after else "") + " (W-R1)")
-    users = [m.get("id") for m in work_metas(None).values()
+    users = [m.get("id") for m in work_metas(rev).values()
              if vf in (str(m.get("accepted_by") or ""), str(m.get("composition_by") or ""))]
     if users != [iid] and not (after and set(users) <= {iid}):
         out.append(f"{vf} is used by {', '.join(sorted(map(str, users)))}; one verdict accepts one item (W-R1)")

@@ -786,6 +786,43 @@ def t_w9():
     s.git("checkout", "-q", head)
     rc, out = s.cr("work")
     outcome(T, "(t) the work check rejects the reused verdict", bool(fails(out, "work", "W-C00-12: ")), out)
+    # R-W12-4 B-1 / C-1: the Verifier's two planted cases, each with the reason that must make it high
+    def lift_own_file(s2):
+        s2.write("evidence/C00/reviews/R-FXH.md", verdict_text(s2.rev(), "PASS", "Reviews W-C00-12."))
+        front_edit(s2, "plan/work/W-C00-12.md", lambda m: accept(m, "evidence/C00/reviews/R-FXH.md"))
+        s2.records("render")
+    ok, s, head = klass("(u) a producer-written verdict file naming W-C00-12 and a commit after its start "
+                        "(R-W12-4 B-1 scenario 1)", lift_own_file, "high")
+    rc, out = s.cr("impact", "--base", f"{head}^", "--head", head)
+    outcome(T, "(u) the reason is the missing M-R16 (b) binding", "M-R16 b" in out and "R-FXH" in out, out)
+
+    def lift_old_verdict(s2):
+        front_edit(s2, "plan/work/W-C00-12.md", lambda m: (accept(m, "evidence/C00/reviews/R-W12-2.md"),
+                                                           m.update(composition_by="evidence/C00/reviews/R-W12-2.md")))
+        s2.records("render")
+    ok, s, head = klass("(v) the existing unrelated verdict R-W12-2 as accepted_by and composition_by of W-C00-12 "
+                        "(R-W12-4 B-1 scenario 2)", lift_old_verdict, "high")
+    rc, out = s.cr("impact", "--base", f"{head}^", "--head", head)
+    outcome(T, "(v) the reason is that it names no commit at or after the item's start",
+            "names no reviewed commit at or after" in out, out)
+    # (w) control: a verdict the work check accepts still exempts the acceptance of an edge target
+    s = Scratch()
+    s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+    new_item(s, "W-C00-12.7", "W-C00-12", execution="running", targets=["plan/notes/x.md"],
+             triage="evidence/C00/tests/triage_fx.md")
+    new_item(s, "W-C00-12.6", "W-C00-12", depends_on=["W-C00-12.7"])
+    s.write("evidence/C00/tests/triage_fx.md", "Triage: normal (fixture).\n")
+    run = s.commit("an edge target running")
+    s.git("checkout", "-q", "-b", "claude/review-R-FXW")
+    s.write("evidence/C00/reviews/R-FXW.md", verdict_text(run, "PASS", "Reviews W-C00-12.7."))
+    s.commit("R-FXW", session=REVIEWER)
+    s.git("checkout", "-q", "main")
+
+    def accept_bound(s2):
+        s2.git("checkout", "-q", "claude/review-R-FXW", "--", "evidence/C00/reviews/R-FXW.md")
+        front_edit(s2, "plan/work/W-C00-12.7.md", lambda m: accept(m, "evidence/C00/reviews/R-FXW.md"))
+    ok, s, head = klass("(w) control: accepting an edge target with a bound verdict that names it after its start",
+                        accept_bound, "normal", s=s, base=run)
     ok, s, head = klass("(s) a new admitted item under a stage with hold_until",
                         lambda s: new_item(s, "W-C00-13", "C00"), "normal")
     s.git("checkout", "-q", head)
