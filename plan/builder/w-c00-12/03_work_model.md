@@ -2,6 +2,17 @@
 
 **Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only; it is the file-form subset of plan K-1, K-5 and Ek B §3.2–3.4, which are DevOS scope. **Written:** 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Builds on:** `02_memory.md` (work items are records in `plan/work/`). **Serves:** acceptance (a2) in full; needs N1, N7; principles 10 and 17; Batu's work-discovery chain.
 
+## Revision 2 (2026-10-03, after the counter-design comparison)
+
+Applied from `06_counter_design_comparison.md` revision 2 by run `session_01Wj4JDduaDRVnBvQJ86b5bm`. Each line supersedes the rule it names; superseded text below is marked.
+- **§4 staleness superseded** by D-18: each item records `basis:` as a list of record paths with their git blob hashes at admission. The render compares them with `main`; a changed hash marks the item `stale: recheck`, and a recheck note clears it. This one detector covers supersessions, corrections and content edits of plan sections alike. `assumes` stays as the human-readable list of premises.
+- **Probe before build** (D-27): an item may name `platform:` dependencies; one whose status is `untested` keeps the item out of the frontier and names the probe to run.
+- **Usage filter** (D-16): items carry `class: heavy | light`; at `allowed_warning` the frontier offers only light items.
+- **Decomposition depth** (D-41): the record check fails if an item has children while neither it nor its parent is running or ready.
+- **Use** (D-40): the start record names the card elements it relies on (`relies_on:`); tests T-05 and T-06 of the counter-design are adopted as work-model tests (D-32).
+- **Card length** stays short by construction (about 120 lines); a design constraint, not a check (D-36).
+
+
 ## 1. Problem
 
 The builder's work list was a table of items with a free-text status and an acceptance cell. Observed consequences: "done by the producer's own judgement" sat in the same field as "done" (W-C00-05); the Next action row was a sentence a person rewrote, and went stale (L-027); a discovery about later stages had nowhere to go but OI-011; a run could not tell which items were startable without reading every row; and nothing marked an item as resting on a premise that later changed. Batu's texts name the distinctions the list lacked: intent ≠ need ≠ discovered ≠ admitted ≠ ready ≠ selected ≠ executing ≠ finished ≠ accepted; the whole visible while the active branch deepens; composition is its own step; plan changes are candidates decided by the plan's owner.
@@ -35,7 +46,7 @@ Needs and open notes (`N-nnn`, Ek B §3.2: `condition`, `origin` = goal / method
 
 **W-R2 The Next action row is the generated frontier.** The state file's Next action row is replaced by a generated block listing the ready items, the items running with their claimant, and for the rest the first unmet condition. Nobody writes "what is next" by hand again (L-027). A run takes the highest-priority ready item by the existing priority rule (operating model §4.2); the ordering rule stays a judgement, recorded in the log when it overrides plain dependency order.
 
-## 4. Dependencies, assumptions, staleness
+## 4. Dependencies, assumptions, staleness (staleness rule superseded, revision 2)
 
 - `depends_on`: hard prerequisites (Ek B §3.4), each answering K-1's brake: "which decision or action would be wrong without this?" An edge without that answer fails the check (the K-1 format gate, applied to the builder's own work).
 - `assumes`: the premises (`BP-nn`), decisions (`D-nnn`, `PC-nn`), probe results (`P-…`, `T-…`) and governing documents the item rests on.

@@ -163,7 +163,7 @@ A fresh-context general subagent (in-process; thinking independence only) read r
 
 ## 7. Changes this comparison makes to the design pieces
 
-The adopted and merged dispositions change pieces 1, 2, 3 and 5. They are applied as a revision of each piece in the implementation step (frontier item 4), where every change is tested; until then this table is the authoritative list of pending piece changes, so that no piece is silently out of date.
+The adopted and merged dispositions change pieces 1, 2, 3 and 5. **Applied** on 2026-10-03 as a "Revision 2" section at the top of each of `02_memory.md`, `03_work_model.md`, `04_roles.md` and `05_continuity.md`, and as U-9 and two open notes in `01_goal_down.md`; those sections are now the homes of these changes, and this table is the index. The review R-W12-1 was started on the commit before this application (`b1284c0`), where this table was the authoritative list.
 
 | Piece | Changes (by disposition ID, revision 2) |
 |---|---|

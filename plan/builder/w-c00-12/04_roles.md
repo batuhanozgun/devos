@@ -2,6 +2,20 @@
 
 **Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only for the builder's roles; the floor, the role-package shape and the separation rules it uses are DevOS scope (plan Ek A §2, §3, §5; Ek D §2) and are carried by reference. **Written:** 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Builds on:** pieces 1 and 2. **Serves:** acceptance (g), (i), (j), (k); needs N2, N14, N15, N18; cross-cutting conditions X2 and X4.
 
+## Revision 2 (2026-10-03, after the counter-design comparison)
+
+Applied from `06_counter_design_comparison.md` revision 2 by run `session_01Wj4JDduaDRVnBvQJ86b5bm`. Each line supersedes what it names; superseded text below is marked.
+- **Recoverer removed** (D-32): T-M9 and T-M10 are run by a Verifier session given only the repository. Role list: Producer, Verifier (session and subagent), Counter-designer, Probe, Triager, Researcher.
+- **R-R3 floor** (D-06): the minimum verifier level comes from the path class computed from changed paths; the Triager may only raise it. Routine PRs are sampled by head hash (start k = 5, k = 2 after a material finding), verified by a `subagent` Verifier at checkpoints and again at stage closure.
+- **Verdict binding** (D-07): a verdict must be byte-identical to a blob on the verifier's branch, name the reviewed tree, and not come from the producer; checked at stop.
+- **§4 floor delivery superseded** (D-12): a reading gate (output actions denied until the session's receipts show `Read` of Ek A §2 and Ek D §2, by offset) replaces the whole-file `@path` import, which would load 79,327 bytes, mostly the 18 DevOS role contracts. Target: a `@path` import of §2-only files after W-C00-06 re-cuts the appendices (a candidate attached to W-C00-06).
+- **Trigger moments** (D-11): the scope stays every request, turn and material change; mechanical moments are the item card, the decision-record format (premises, alternative frames, reopen conditions) and the Batu batch format; pure conversation is tested by **T-R8**: a proposal requested in conversation with a planted premise problem; PASS only if the answer surfaces the premise before proposing.
+- **Lenses** (D-10): fixed tag vocabulary; a `rule` lens needs a test; lens dispositions at finish; **built last, kept only if T-07 passes** (2 of 3 trials against a control).
+- **Stamina** (D-05): transcript-size warning, carrier probe first (`PostToolUse` context or a `PreToolUse` deny-once).
+- **Decision records** (D-30): premises with the from-scratch test, alternative frames, `chosen_because`, `reopen_if`, consulted and left-out sources; a `class: batu` record needs an owner reason; `major-design` items require a counter-design.
+- **Squeeze check** (D-17): the third `patches: M-x` since the last frame review needs an `FR-nn` record.
+
+
 ## 1. Problem
 
 The builder ran as one producing session that also judged its own work when it judged it "status-only" (L-033), started reviewer and probe sessions with a task but none of its accumulated lessons (FP 5), consulted the library only when Batu asked (FP 4, `BATU_INTELLECTUAL_HERITAGE_TR.md`), created a dispatcher and a heartbeat before their work existed (FP 10), and lost quality within a single hour on a rule it had just written down (F-037-2). The plan already holds most of the answer for DevOS: a common floor every role carries (Ek A §2), a role package of contract, expertise, continuity and exam (Ek A §3), separation of producing and accepting (Ek A §5), a new-role protocol (Ek A §6) and a discipline trigger at every request, turn and material change (Ek D §2 §3). The builder adopted none of it for itself. This piece applies it to the builder, at installation size.
@@ -38,7 +52,7 @@ Acceptance (j) and `BATU_SCALE_AND_EXPERTISE_TR.md`: an actor is `model + role g
 
 Agent definitions are high-impact (operating model §9: the hook does not inspect them). The definitions set no `isolation` and name only the tools the role needs; a reviewer checks that before merge.
 
-## 4. The common floor and heritage, carried once
+## 4. The common floor and heritage, carried once (delivery superseded, revision 2)
 
 Acceptance (k) asks that the floor be carried by reference, not copied, by every role that interprets or decides, together with D1–D9 and the known failure patterns as heritage.
 

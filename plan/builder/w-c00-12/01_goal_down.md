@@ -51,6 +51,9 @@ Each is rated by what it would change if it went the other way. "Status" says wh
 | U-6 | Independence of builder-started reviewers (same model, same account) | Known limit (BP-07) | Until C03, every acceptance states its independence level; nothing claims more |
 | U-7 | Whether the repository-file memory transfers cleanly to the database at C02 | Depends on the record design chosen now | If records are prose, the transfer becomes manual interpretation; so records must be typed now (N9) |
 | U-8 | Whether a single allow-list barrier for all sessions is right, or per-role tool lists (agent definitions carry `tools:`) | Open (OI-011 item 20); P-W12-1 shows agent definitions load | A per-role barrier could replace parts of the session-wide hook, but the hook does not inspect agent definitions (§9) |
+| U-9 | How C02 migrations are applied without a write key in the builder (its Supabase connection is read-only) | Open; added 2026-10-03 from the counter-design comparison (D-33) | If no keyless path exists (for example a deploy job holding a secret Batu enters), C02's design changes and a Batu account action may be needed; a separate design item before C02 |
+
+**Open notes for later stages** (added 2026-10-03, D-33): C07 needs a hands-off mode in which builder items only observe and record (plan Appendix C, C5 hint ban); before C11 starts, every builder wake is disabled so that the builder is not what keeps DevOS alive.
 
 **Not critical now** (they do not change the current piece): connector-catalogue scans (OI-011 item 18) and external memory products (OI-011 item 20 list). They feed later DevOS stages as candidates, not the builder's design.
 

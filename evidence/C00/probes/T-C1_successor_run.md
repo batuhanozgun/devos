@@ -12,4 +12,6 @@
 | Recorder | The predecessor's recorder appended this session's ID to `.claude/hooks/owned_ids.txt`; PR #54 carried that one line and was merged by this run at boot | PR #54, merge `0b2a46c` |
 | Lease taken in a record PR | PR #55 changed only the state file's Run lock row to name this session (hand-over from its parent, operating model §2.2), merged as `c1e43cb` | PR #55 |
 
+**Context in the same chain (added 2026-10-03 after review R-W12-1, m6 and B1):** the `create_session` call itself was made by the predecessor with nobody typing, but the predecessor had been restarted by a human between 17:46:47Z and the call (17:51Z): its turn aborted at 17:46:47Z (`error_during_execution`, an account subscription problem) and resumed only after Batu wrote "Sorun çözüldü devam et" (L-039). "Nobody typing" therefore holds for the successor call, not for the chain. Record change: annotate.
+
 **Result: PASS, observed once.** A single pass is not a property: the permission classifier's decisions vary with context (operating model §2.3), and one denial occurred in this same boot on a different action (L-040, F-7 of `plan/builder/w-c00-12/06_counter_design_comparison.md`).
