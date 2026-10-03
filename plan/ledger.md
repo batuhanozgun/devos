@@ -30,8 +30,8 @@
 | Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
-| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun ikinci adımı (1b-i) bitti, bağımsız denetçi oturumu şartlı onay verdi, iki şartı da karşılandı ve ana dala alındı. Bu oturum işi yeni bir oturuma devrediyor; sıradaki adım 1b-ii (kayıtları kontrol eden araçlar). Senin bir şey yapmana gerek yok. <br>1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu hem bir test hem denetçi ayrıca kontrol etti. <br>2. "Sıradaki iş" listesi artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. <br>3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden "başlatılabilir" görünmüyor. Araç bunu gösteriyor; kuralın atlanmasını engelleyen kontroller bir sonraki adımda (1b-ii) geliyor. <br>4. Dağıtıcı ve zamanlayıcı yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Bu adımın geri alma dalı `claude/revert-w12-1b-i`, ana dala almadan önce GitHub'a gönderildi. Geri alma kabul metinlerini de sildiği için, bir sonraki adımdan sonra o da denetçi onayı ister. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T20:15Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:43Z |
+| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii) kurdu: kayıtları ve durma anını kontrol eden araçlar. Bağımsız denetçi oturumunun onayı bekleniyor; onay gelmeden ana dala alınmayacak. Senin bir şey yapmana gerek yok. <br>1. Yeni araç `tools/check_records.py` on ayrı kontrol yapıyor. Bazıları: her kayıt değişikliğinin günlükte gerekçesi var mı; saatler gelecekte mi; kanıt dosyaları gerçekten var mı; bir iş kendi üreticisi tarafından "kabul" edilmiş mi. <br>2. Durma kontrolü (`tools/builder_check.sh`) artık bu kontrolleri, senin issue'daki cevaplarını ve gizli isim sızıntısını da denetliyor. Aynı tür hata iki kez çıkarsa oturumu devretmeye zorluyor. <br>3. 25 testin hepsi geçti. Testler yalnızca geçici kopyalarda çalıştı; gerçek kayıtlara dokunmadı. <br>4. C00'ın bekletmesi artık bir işin "kabul edildi" diye elle işaretlenmesiyle kaldırılamıyor; bunun için bağımsız bir denetçi kararı gerekiyor. <br>5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Oturum zincirinin bir derinlik sınırı olabilir: sistem bu oturum için "derinlik 6, sınır 8" gösteriyor. Doğruysa yalnızca birkaç devir daha mümkün. Bunu bir sonraki adımda (1c) ölçüp tasarlayacağım; gerekirse yeni bir oturumu senin başlatman tek adımlık bir istek olarak gelir. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T20:48Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:48Z |
 
 ---
 
@@ -71,7 +71,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 11 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 12 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -103,7 +103,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: running (session_01CmCKBkyHynQ27CwqkiviC6) · open notes: N-049, N-050
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted) · open notes: N-047, N-048
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted) · open notes: N-047, N-048, N-052
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -192,10 +192,11 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-005` | `W-C00-07` | OI-011#16 | open | (16) observed by a probe: marketplace (ECC) and partner (Base44) skills and account plugins do not reach cloud sessions, so anything adop... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11, disposed in tranche 1b-ii, `plan/builder/w-c00-12/15_tranch... |
-| `N-049` | `W-C00-12.3` | critic-1b-i#2 | open | **The `acceptance:` field is not in W-R7's high list** (critic of 1b-i, finding 2). Writing `acceptance: accepted` into W-C00-12 would li... |
-| `N-050` | `W-C00-12.3` | R-W12-3 | open | **Minor findings of R-W12-3 for 1b-ii** (`evidence/C00/reviews/R-W12-3.md`), each to get a disposition in 1b-ii: F-3 (lifting the hold by... |
+| `N-049` | `W-C00-12.3` | critic-1b-i#2 | open | **Disposition (1b-ii, with R-W12-3 F-3; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` section 2).** |
+| `N-050` | `W-C00-12.3` | R-W12-3 | open | **Dispositions (1b-ii; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` sections 2 and 5).** |
 | `N-047` | `W-C00-12.4` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
 | `N-048` | `W-C00-12.4` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
+| `N-052` | `W-C00-12.4` | L-049 | open | **Session lineage limit** (observed by run `session_01CmCKBkyHynQ27CwqkiviC6` at boot and at 20:46Z, `get_session` on itself: `"lineage":... |
 
 Notes `answered` (the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds it merges; checked at W-C00-12's composition review, not closed): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
 Notes `closed` (closed with their disposition): 3 (N-001, N-021, N-026).

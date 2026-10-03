@@ -149,7 +149,7 @@ MUTANT = [False]
 
 def outcome(test, label, ok, detail=""):
     if MUTANT[0]:  # under a mutation a FAIL is the expected result: the disabled check is caught
-        print(f"MUTANT  {test} {label}: {'still passes (mutation NOT caught)' if ok else 'reports FAIL (mutation caught)'}")
+        print(f"MUTANT  {test} {label}: {'outcome as expected' if ok else 'outcome NOT as expected (the disabled check shows)'}")
     else:
         print(f"{'PASS' if ok else 'FAIL'}  {test} {label}" + (f": {detail[:200]}" if detail and not ok else ""))
     RESULTS.setdefault(test, []).append(ok)

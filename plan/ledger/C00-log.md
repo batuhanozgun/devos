@@ -762,3 +762,42 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **K-1 (R-W12-3), before the merge:** `git ls-remote origin refs/heads/claude/revert-w12-1b-i` printed `76d02d208c382194817961b20580070082c290bb	refs/heads/claude/revert-w12-1b-i` at 20:16:04Z. That commit's parent is PR #70's final head `db1fa53`, and `git diff --quiet 7ed3fa3 76d02d2` held (its tree equals the base). A PR from it into `main` undoes tranche 1b-i; after 1b-ii it is class high (it removes acceptance blocks) and needs a session verdict.
 - **Merged:** PR #70 at head `db1fa53`, merge `83efa86` (`expectedHeadSha` given). Tranche 1b-i (W-C00-12.2) is on `main`, accepted by R-W12-3.
 - **Record changes:** none beyond this entry (addition).
+
+### L-049 · 2026-10-03 · W-C00-12: tranche 1b-ii built (check_records.py, stop check, 25 gate tests); N-049 and N-050 disposed; session Verifier requested
+
+- **Boot (D8).** Run `session_01CmCKBkyHynQ27CwqkiviC6`, created at 20:16:57Z by `session_01S1vPB2jo4bzk1w8XqWekj6` (`parent_session_id` on `get_session`), first message the R1 goal plus the W-C00-12 scope sentence naming L-046 to L-048, N-049, N-050 and tranche 1b-ii, model `claude-opus-5-5`.
+  - **`main` and the parent's PR.** Found on `main` `3ebc01a`. The parent had merged its record PR #73 itself; its diff is the one recorder line naming this session in `.claude/hooks/owned_ids.txt` and nothing else (checked with `git diff`). No other open PR.
+  - **Lease.** It named the parent with an expiry sched:2026-10-03T23:15Z, so this was a hand-over (operating model §2.2).
+  - **Unmerged branches.** All `claude/` branches were already recorded through L-048.
+  - **Batu's answers.** Issue #6 still holds the one comment by `batuhanozgun` (`5946719804`), already recorded.
+  - **Status page and starters.** `DURUM.md` agreed with the state file. The starters are disabled on purpose (L-034), so boot step 7 recreated nothing.
+  - **Read before boot step 8**, in full: `RUN_BRIEF.md`, L-046 to L-048, `14_tranche_1b-i_intent.md`, R-W12-3, `12_tranche_plan.md`, `13_r-w12-2_dispositions.md`, N-049 and N-050. Then, for the rules: `02_memory.md`, `03_work_model.md`, the rule rows of `04_roles.md` and `05_continuity.md` (§6 and §2.1 in full), `plan/builder/mechanisms.md` §2, the 25 test rows of `11_test_register.md`, and `tools/records.py`.
+  - **Usage** at 20:17Z (`get_session`): `five_hour` `allowed`, `resetsAt` 1791076200 = sched:2026-10-04T01:10Z.
+- **Lease** taken at 20:18Z in record PR #74 (`tools/records.py lease`: the state file plus its generated `DURUM.md`), merge `f72b973`. That commit is the baseline of the new `merged` check.
+- **Item: W-C00-12, part 1b-ii (W-C00-12.3); discipline trigger (D1–D9, one line):**
+  - D1: the premises that drive the checks were tested before relying on them. The whole-tree claims scan was clean on `f72b973`, the issue API answered through the proxy, and the repository was unshallowed for blame and the leak derivation.
+  - D2: no critic finding has arrived yet; the Critic runs next.
+  - D4: the intent was committed before any code (`89acd48`, 20:26:52Z).
+  - D5: the labels are in the intent; the lineage meaning in N-052 is labelled assumed.
+  - D6: each first-run failure was fixed by its cause (intent §7).
+  - D8: the boot is stated above.
+  - D3 and D7 go to the session Verifier.
+  - D9: no new library question arose. 1b-ii implements rules whose sources are recorded in 02 §11, 03 §13 and 04 §8.
+- **Built** (intent: `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md`):
+  - `tools/check_records.py`: the ten subcommands of A-04, plus the helper modes `all`, `merged`, `answers` and `leak`;
+  - `tools/builder_check.sh`, extended with the stop reason, record checks, issue read, staged and untracked leak check, the reason's conditions and the R-R9 counter;
+  - `tools/test_check_records.py`: 25 gate tests in scratch repositories, with two mutation checks;
+  - `tools/records.py` fixes: F-3 (i), F-4, F-8, F-9; the zoom line for items with open notes outside the branch; `lease` writes its Record changes line;
+  - the Governing-documents split (F-7), and the operating model's header pointer (intent §5);
+  - carrier rows A-10 to A-12, and the A-04 helper modes;
+  - the 03 text for F-3 (ii), F-5 and F-10, and the field names;
+  - F-11 with note N-051, T-R22's case (a2), the m-7 re-run, and note N-052.
+- **Gate 1b-ii** (`evidence/C00/tests/1b-ii_gate.md`): the first run on `aee4fec` had 22 of 25 tests passing. The three failures were two fixture defects and one checker defect, each fixed by cause (intent §7), and the next run passed all 25. These count only under the session Verifier's verdict, since the scripts are new in this PR (W-R1; C1 c).
+- **Finding F-049-1 (failure pattern 1, in evidence):** the M-R14 prototype's evidence (L-042) listed 18 rows and L-027 at 20:17. The re-run pinned at `d69d7c6` with full history gives 19 rows and L-027 at 19:58. The likely cause is `git blame` in a shallow clone, which is inferred, not verified. A claim made from a measurement in a partial clone was stated as the measurement; the same holds for R-W12-2's 20:48. Answered by T-M7c's refusal to run in a shallow clone, and by the correction in the evidence file.
+- **Finding F-049-2 (platform):** `get_session` reports `lineage` depth 6 of limit 8 for this run (N-052 on W-C00-12.4). If it means what it appears to, about two more levels of S4 successors or Verifiers remain. Recorded for 1c, and as a risk line for Batu.
+- **Declined or departed:** the departures of intent §7, items 1 to 10, go to the session Verifier.
+- **Next:**
+  - a non-binding Critic;
+  - then the session Verifier R-W12-4 on the PR head, with the fixed prompt and a generated verifier brief. It also judges C1 (a), C5 and the dispositions of N-049 and N-050.
+  - The PR merges only on PASS, or on PASS-WITH-CONDITIONS with the conditions met. A revert branch `claude/revert-w12-1b-ii` is pushed before the merge.
+- **Record changes:** plan/work/W-C00-12.3.md · supersession · execution running, claimed by this run, targets written, and notes N-049 and N-050 annotated with their dispositions; plan/work/W-C00-12.md · supersession · claimed_by this run, and the composition field removed, its home being acceptance (d) in the block (R-W12-3 F-5); plan/work/W-C00-11.md · supersession · the W-C00-05 edge on: finished with its reason (R-W12-3 F-11), and note N-051 added; plan/work/W-C00-12.4.md · annotate · note N-052 (lineage limit); plan/ledger.md · supersession · Governing-documents row split into one row per document (R-W12-3 F-7), summary_tr, the generated blocks; evidence/C00/probes/W12-R3_times_walkthrough.md · addition · the re-run pinned at d69d7c6 (R-W12-2 m-7); evidence/C00/probes/W12-R3_times_walkthrough.md output block · correction · the first run gave L-027 at 20:17 and 18 rows, while the pinned run with full history gives 19:58 and 19 rows, likely a shallow-clone blame artefact (F-049-1); evidence/C00/tests/1b-ii_gate.md · addition; plan/Builder_Operating_Model.md header · supersession · the status sentence replaced by the M-R2 pointer and kept verbatim in its History (intent §5); plan/builder/mechanisms.md · addition · carrier rows A-10 to A-12, and A-04 names the helper modes; plan/builder/w-c00-12/03_work_model.md · addition · the W-R7 line for N-049, the stage-edge sentence (F-10), and the field names in W-R1 and W-R4; plan/builder/w-c00-12/11_test_register.md T-R22 · addition · case (a2) (R-W12-3 F-4); plan/builder/w-c00-12/15_tranche_1b-ii_intent.md · addition; tools/check_records.py, tools/test_check_records.py · addition; tools/builder_check.sh, tools/records.py · supersession · extended as above

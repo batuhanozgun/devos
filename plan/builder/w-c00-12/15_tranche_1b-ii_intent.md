@@ -225,6 +225,25 @@ The Verifier is started with `create_session` on the PR head. It gets the fixed 
 
 The PR merges only on PASS, or on PASS-WITH-CONDITIONS with the conditions met. A revert branch `claude/revert-w12-1b-ii` is pushed and checked with `git ls-remote` before the merge.
 
-## 7. Critic findings and responses
+## 7. Departures found during the build (stated before the Critic and the Verifier read the result)
+
+The first gate run (`aee4fec`) showed three failures. Two were fixture defects and one was a checker defect; each was fixed by cause:
+- T-M2's state change (`planned` → `waiting`) did not change the render, so the fixture now uses `finished`;
+- T-W9 (q)'s fixture "reverted" an added file by checking it out from a parent that lacked it, which made an empty diff, so the fixture now removes it;
+- the leak pattern's alternation matched a shorter term inside a longer phrase, which broke the redaction comparison of M-R16 (b). Terms are now tried longest first. Detection is unchanged; only the span is.
+
+Departures from §2 and §5, each a decision for the Verifier to judge:
+1. **Zoom view** (`records.py`). T-M11 asks that a note on a planned later-stage item appear "under that item in the zoom view". The 1b-i zoom expanded only the active branch, so such a note showed only as a count. The vertical view now ends with one line for each item outside the expanded branch that carries an open note. Current output gains nothing, because no such item exists today.
+2. **Header status words** (`docstatus`). When a header has a `**Status:**` field equal to the pointer, other words in the header are not read. `plan/builder/mechanisms.md` says "a candidate for DevOS's `MechanismAssumption` records" in its header, which is not a status. Without a Status field, a status word fails.
+3. **Index exemption** (`chain`). The root record `plan/work/INSTALL.md` (`kind: root`) is in no generated index by design, since it is the purpose chain that briefs print, so it is exempt from the index rule.
+4. **Acceptance-block changes** (`impact`). Any difference in an existing acceptance block is high, including an appended line, which W-R7's "modified or deleted line" would not cover. This is stricter; ledger rule 3 treats every later change of an acceptance condition as high.
+5. **Lease record line** (`records.py lease`). The command now appends its Record changes line to the newest log file, so a lease PR passes `kinds` with no hand-written line (02 §7, K2 walk-through: "writes the row and the line together").
+6. **The prototype's expected set** for T-M7c (a) is the pinned re-run's 19 rows, not the first run's 18 (`evidence/C00/probes/W12-R3_times_walkthrough.md`, correction). The first run, in what was likely a shallow clone, credited L-027's line to a later commit and missed L-028's quoted future stamp.
+7. **S-2's base** is `7ed3fa3`, the commit 1b-i's migration branched from. §4 named `f72b973`, against which `test_records.py` cannot find the pre-migration ledger. Corrected here, not in §4, so that the write-ahead stays readable.
+8. **The baseline override.** `merged --since` and `builder_check.sh --since` exist so that the scratch tests can set a baseline after their own fixture commits. The override is printed, and `builder_check.sh` refuses it when `BUILDER_RUN=1`.
+9. **Errors on merged commits** (`merged`). A `kinds`, `stamps` or `claims` failure on a merged commit can be acknowledged only by a log line `record-check exception: <SHA> <subcommand>: <reason>`. Such a line counts for R-R9 as a failure that reached `main` when that commit carries the session's own trailer.
+10. **Scheduled times in `DURUM.md`.** The `Kurulu uyandırmalar` line is not stamp-checked, because it repeats the `Armed wakes` row, which is.
+
+## 8. Critic findings and responses
 
 (Filled after the Critic pass, before the Verifier is asked.)
