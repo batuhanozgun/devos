@@ -88,7 +88,7 @@ Tranche 1 has a budget of four runs after the re-review passes: 1a with 1b-i, 1b
 | R-R15 | sampling of routine record PRs (adaptive k, session verifier) | 2 | the closure review finds a routine record wrong that the checks passed | closure review |
 | R-R18 | boot gate, with break-glass | 2 | an unbooted session writes a wrong record again (after M-R13) | stop check (M-R13 finds an unrecorded answer) |
 | R-R19 | compaction gate | 2 | a compaction is observed and a post-compaction session errs | T-M17 (c) observer; each tranche Verifier |
-| R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) | P-W12-3's result, when P-W12-3 is re-admitted with H-PRB (both deferred out of 1a after the classifier refusal, L-044) |
+| R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) | P-W12-3's result (1a) |
 | C-R12 | keeper session | 2 | the detector reports a real stall that the self-watchdog did not resume; probe P-08 first | the detector's alerts (C-R8), read by the next run; if C-R8 is deferred under D-005 (b), the closure review |
 | H-PRB | probe-branch rule (deferred after the classifier refusal, L-044) | 2 | a probe needs `.claude/` changes on its own branch, and Batu has decided how the builder may change its own guardrails (the refused action is not retried before that) | the run that schedules such a probe; closure review |
 | C-R9 | main-definition record check (deferred after R-W12-2 M-2) | 2 | a merged PR is found to have weakened a check it was judged by, or C03 begins (comparison D-08) | each tranche Verifier; the C03 start |
@@ -150,7 +150,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | m5 check-ins stop after 24 hours | M-R15's template; `02` §6 |
 | m6 T-C1 observer and L-039 | T-C1 evidence annotated (L-041, L-042); `11` T-C1 not counted until re-run after 1c |
 | m7 no scope per adopted rule | every rule table in 02–05 and the register has a Scope column, checked by `check_ids.py` |
-| m8 H5 number missing | `07` §3 keeps a retired H5 row (since 1b-i the row is in `plan/builder/mechanisms.md` §2.2) |
+| m8 H5 number missing | `07` §3 keeps a retired H5 row |
 
 **K3 re-read findings (fresh-context subagent, this run), answered:**
 
@@ -176,7 +176,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
   - §3b maps every disposition to its current rules and supersedes the revision-2 text of the rows it changes;
   - §7 points to the rewritten pieces.
 - **07:**
-  - cells cite rule IDs from 02–05 and carrier IDs from `11` §1.5 (since 1b-i: `plan/builder/mechanisms.md` §1.5);
+  - cells cite rule IDs from 02–05 and carrier IDs from `11` §1.5;
   - carriers in the working tree are M\* (critic finding 6);
   - H12 no longer requires the successor ID;
   - X-20 cites markers without a phrase warning;
