@@ -1001,7 +1001,39 @@ def home_prefix(tok):
     return tok[:cut].rsplit("/", 1)[0] + "/"
 
 
+FP_FILE = "plan/builder/heritage/FAILURE_PATTERNS.md"
+
+
+def failure_pattern_rows(text):
+    """Rows of the failure-pattern table: (id, status, produced_by, qualified_by) (R-R7)."""
+    rows = []
+    for line in (text or "").splitlines():
+        if re.match(r"\| FP-\d+ \|", line):
+            c = [x.strip().strip("`") for x in re.split(r"(?<!\\)\|", line.strip())[1:-1]]
+            if len(c) == 8:
+                rows.append((c[0], c[5], c[6], c[7]))
+            else:
+                rows.append((c[0], "?", "", ""))
+    return rows
+
+
+def check_failure_patterns(out):
+    """R-R7: a pattern is qualified only by someone other than its producer; candidates stay labelled."""
+    t = content(None, FP_FILE)
+    if t is None:
+        return
+    for fid, status, prod, qual in failure_pattern_rows(t):
+        q = "" if qual in ("", "—", "-") else qual
+        if status not in ("candidate", "qualified"):
+            out.fail("chain", f"{FP_FILE}: {fid} has status '{status}', not candidate or qualified (R-R7)")
+        elif status == "qualified" and not q:
+            out.fail("chain", f"{FP_FILE}: {fid} is qualified without a qualifier (R-R7)")
+        elif q and q == prod:
+            out.fail("chain", f"{FP_FILE}: {fid} is qualified by its own producer {prod} (R-R7)")
+
+
 def check_chain(out):
+    check_failure_patterns(out)
     seen = {}  # R-W12-5 m-3: a log entry ID is unique across the log files (a lease entry cut from main can collide)
     for f in sorted(Path("plan/ledger").glob("*-log.md")):
         for n in re.findall(r"(?m)^### (L-\d+) ", f.read_text()):

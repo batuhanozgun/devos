@@ -53,11 +53,42 @@ def t_m8():
             rc == 0 and both and "<<<<<<<" not in text, out)
 
 
+def clone(name):
+    d = Path(TMP) / name
+    sh(["git", "clone", "-q", "--shared", str(REPO), str(d)], TMP)
+    for k, v in (("user.name", "Fixture"), ("user.email", "fixture@example.invalid"), ("commit.gpgsign", "false")):
+        sh(["git", "config", k, v], d)
+    return d
+
+
+def t_r12b():
+    """T-R12 (b) (R-R7): a pattern with qualified_by equal to its producer fails; a candidate row and a row qualified
+    by another session pass."""
+    d = clone("r12")
+    f = d / "plan/builder/heritage/FAILURE_PATTERNS.md"
+    t = f.read_text()
+    rc, out = sh(["python3", "tools/check_records.py", "chain"], d)
+    outcome("T-R12", "(b) control: the file as committed passes chain", rc == 0, out)
+    row = next(l for l in t.splitlines() if l.startswith("| FP-01 |"))
+    prod = row.split("|")[7].strip()
+    f.write_text(t.replace(row, row.rsplit("| candidate |", 1)[0] + f"| qualified | {prod} | {prod} |"))
+    rc, out = sh(["python3", "tools/check_records.py", "chain"], d)
+    outcome("T-R12", "(b) FP-01 qualified by its own producer fails chain",
+            rc != 0 and "FP-01 is qualified by its own producer" in out, out)
+    f.write_text(t.replace(row, row.rsplit("| candidate |", 1)[0] + f"| qualified | {prod} | — |"))
+    rc, out = sh(["python3", "tools/check_records.py", "chain"], d)
+    outcome("T-R12", "(b) FP-01 qualified without a qualifier fails chain",
+            rc != 0 and "FP-01 is qualified without a qualifier" in out, out)
+    f.write_text(t.replace(row, row.rsplit("| candidate |", 1)[0] + f"| qualified | {prod} | R-W12-99 |"))
+    rc, out = sh(["python3", "tools/check_records.py", "chain"], d)
+    outcome("T-R12", "(b) control: FP-01 qualified by another reviewer passes chain", rc == 0, out)
+
+
 def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b)]
     for name, fn in tests:
         try:
             fn()
