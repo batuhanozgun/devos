@@ -890,3 +890,16 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-056 · 2026-10-03 · Lease taken or renewed by `session_011NtZnNGjojkTcmuzMRLtvL`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_011NtZnNGjojkTcmuzMRLtvL
+
+### L-057 · 2026-10-03 · W-C00-12: run `session_011NtZnNGjojkTcmuzMRLtvL` boots; tranche 1c (W-C00-12.4) started with its intent
+
+- **Boot (D8).** Run `session_011NtZnNGjojkTcmuzMRLtvL`, created at 22:38:38Z by `session_01Gfj3M4MjrMb4YcRHwsA1X8` (`parent_session_id` on `get_session`), first message the R1 goal plus the W-C00-12 scope sentence naming L-051 to L-055, N-052, N-053 and tranche 1c, model `claude-opus-5-5`. `lineage` depth 8 of limit 8 (annotated on N-052).
+  - **`main` and the parent's PR.** Found on `main` `88bb9c9`; the parent's branch `claude/run-w12-1b-ii-rec7` held one commit, the recorder line naming this session (`git diff`: one appended line in `.claude/hooks/owned_ids.txt`, nothing else). The parent opened and merged it itself as PR #84 (merge `f168b3e`, read in its transcript and on `main`). Open PRs after that: none.
+  - **Lease.** It named the parent with an expiry at sched:2026-10-04T01:37Z: a hand-over (operating model §2.2). Taken at 22:39Z with `tools/records.py lease` in record PR #85 (merge `ec95dd6`; L-056).
+  - **Unmerged branches.** The `claude/` branches with commits not on `main` are the ones recorded through L-055 (review, probe, revert, counter-design, dispatcher and old run branches); none is new.
+  - **Batu's answers.** Issue #6 still holds the one comment by `batuhanozgun` (`5946719804`), already recorded.
+  - **Status page and starters.** `DURUM.md` agreed with the state file. The starters stay disabled on purpose (L-034); boot step 7 recreated nothing.
+  - **Read before boot step 8**, in full: `RUN_BRIEF.md`, L-050 to L-056, `plan/work/W-C00-12.4.md` (N-047, N-048, N-052, N-053), intent 15 §7, §9 and §10, `R-W12-6.md`; then for step 8: `12_tranche_plan.md`, `11_test_register.md`, `04_roles.md`, the 1c rule rows of 02, 03 and 05, 05 §2, 02 §4, 03 §9, the hooks and settings, and `check_records.py`'s exemption and work-check code.
+  - **Usage** at 22:38Z (`get_session`): `five_hour` `allowed`, `resetsAt` 1791076200 = sched:2026-10-04T01:10Z.
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger (D1–D9, one line):** D1 the premise that this run can create sessions at depth 8 of 8 is not assumed: its first `create_session` is the pre-registered probe P-W12-6, and the order of work puts every piece that needs no new session first (intent §5); D4 the intent is committed before any 1c file; D2 the alternative of probing first was weighed and rejected: a refusal ends the run at S3 either way, and building first leaves the session-free work done for the next run; D3 and D7 go to the Critic and the session Verifier; D9 no new library question yet.
+- **Record changes:** plan/builder/w-c00-12/16_tranche_1c_intent.md · addition · write-ahead for tranche 1c; plan/work/W-C00-12.4.md · supersession · running, claimed by this run, with its targets; plan/work/W-C00-12.md · supersession · claimed_by this run
