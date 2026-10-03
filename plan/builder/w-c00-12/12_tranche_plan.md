@@ -88,7 +88,7 @@ Tranche 1 has a budget of four runs after the re-review passes: 1a with 1b-i, 1b
 | R-R15 | sampling of routine record PRs (adaptive k, session verifier) | 2 | the closure review finds a routine record wrong that the checks passed | closure review |
 | R-R18 | boot gate, with break-glass | 2 | an unbooted session writes a wrong record again (after M-R13) | stop check (M-R13 finds an unrecorded answer) |
 | R-R19 | compaction gate | 2 | a compaction is observed and a post-compaction session errs | T-M17 (c) observer; each tranche Verifier |
-| R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) | P-W12-3's result (1a) |
+| R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) | P-W12-3's result, when P-W12-3 is re-admitted with H-PRB (both deferred out of 1a after the classifier refusal, L-044) |
 | C-R12 | keeper session | 2 | the detector reports a real stall that the self-watchdog did not resume; probe P-08 first | the detector's alerts (C-R8), read by the next run; if C-R8 is deferred under D-005 (b), the closure review |
 | H-PRB | probe-branch rule (deferred after the classifier refusal, L-044) | 2 | a probe needs `.claude/` changes on its own branch, and Batu has decided how the builder may change its own guardrails (the refused action is not retried before that) | the run that schedules such a probe; closure review |
 | C-R9 | main-definition record check (deferred after R-W12-2 M-2) | 2 | a merged PR is found to have weakened a check it was judged by, or C03 begins (comparison D-08) | each tranche Verifier; the C03 start |
