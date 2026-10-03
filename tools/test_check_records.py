@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """test_check_records.py: the gate tests of W-C00-12 tranche 1b-ii (12_tranche_plan.md section 2.2; carrier A-11).
 
-Run from the repository root of a clone with full history (`git fetch --unshallow` first). Every fixture is a
+Run from the repository root of a clone with full history (`git fetch --unshallow` first) that also holds the
+remote review refs `refs/remotes/origin/claude/review-<ID>` for every verdict under `evidence/*/reviews/`
+(`git fetch origin 'refs/heads/claude/review-*:refs/remotes/origin/claude/review-*'`); the script checks both
+preconditions first and fails the gate without running a test when either is missing (R-W12-4 C-3). Every fixture is a
 scratch repository in a temporary directory: a `--shared` clone of this repository, never this working tree.
 Procedures: plan/builder/w-c00-12/11_test_register.md section 2, made concrete in
 plan/builder/w-c00-12/15_tranche_1b-ii_intent.md section 3. Prints one line per outcome, `T-xx PASS|FAIL` per test,
@@ -965,11 +968,31 @@ def t_map():
 
 # ---------------------------------------------------------------- main
 
+def preconditions():
+    """R-W12-4 C-3: the real preconditions of the gate, checked before any test."""
+    bad = []
+    if subprocess.run(["git", "rev-parse", "--is-shallow-repository"], cwd=REPO, capture_output=True,
+                      text=True).stdout.strip() != "false":
+        bad.append("shallow clone: run git fetch --unshallow")
+    for vf in sorted(REPO.glob("evidence/*/reviews/*.md")):
+        ref = f"refs/remotes/origin/claude/review-{vf.stem}"
+        if subprocess.run(["git", "rev-parse", "-q", "--verify", ref], cwd=REPO, capture_output=True).returncode:
+            bad.append(f"no {ref}: run git fetch origin 'refs/heads/claude/review-*:refs/remotes/origin/claude/review-*'")
+    return bad
+
+
 def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
     print(f"run at {datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ}")
+    pre = preconditions()
+    for line in pre:
+        print(f"PRECONDITION FAIL  {line}")
+    if pre:
+        print("GATE 1b-ii FAIL")
+        return 1
+    print("PRECONDITIONS OK (full history; a review ref for every verdict)")
     tests = [("T-R20", t_r20), ("T-M1", t_m1), ("T-M2", t_m2), ("T-M3", t_m3), ("T-M4", t_m4), ("T-M5r", t_m5r),
              ("T-M6r", t_m6r), ("T-M7a", t_m7a), ("T-M7b", t_m7b), ("T-M7c", t_m7c), ("T-M11", t_m11),
              ("T-M14", t_m14), ("T-M15", t_m15), ("T-W1", t_w1_r11), ("T-W3r", t_w3r), ("T-W4", t_w4),

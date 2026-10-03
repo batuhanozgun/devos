@@ -8,7 +8,8 @@ Run from the repository root.
   records.py brief run --role producer print the run brief
   records.py durum                     print the generated DURUM.md to stdout
   records.py lease --session <ID> [--note TEXT] [--release]
-                                       rewrite the Run lock row and print its Record changes line
+                                       rewrite the Run lock row and write its Record changes line
+                                       under a new log entry of its own
 
 Homes (02_memory.md section 3): work items and stages in plan/work/<ID>.md; decisions in
 plan/decisions/<ID>.md; the current state in plan/ledger.md section 1. Everything this script
@@ -756,10 +757,16 @@ def main(argv=None):
             LEDGER.write_text(new)
             DURUM.write_text(durum(new, items, decisions, changes))
             logs = sorted(LOGDIR.glob("*-log.md"))
-            if logs:  # the row and its Record changes line are written together (02 section 7, K2 walk-through)
+            if logs:  # the row and its Record changes line are written together (02 section 7, K2 walk-through),
+                # under an entry of their own, so that the line is not attributed to the previous entry (R-W12-4 m-6)
+                nums = [int(n) for f in logs for n in re.findall(r"(?m)^### L-(\d+) ", f.read_text())]
+                eid = f"L-{(max(nums) if nums else 0) + 1:03d}"
+                what = "released" if a.release else "taken or renewed"
                 lt = logs[-1].read_text()
-                logs[-1].write_text(lt + ("" if lt.endswith("\n") else "\n") + f"- **Record changes:** {line}\n")
-                print(f"{line} (appended to {logs[-1]})")
+                logs[-1].write_text(lt + ("" if lt.endswith("\n") else "\n") +
+                                    f"\n### {eid} · {datetime.now(timezone.utc):%Y-%m-%d} · Lease {what} by "
+                                    f"`{a.session}`\n\n- **Record changes:** {line}\n")
+                print(f"{line} (written as {eid} in {logs[-1]})")
             else:
                 print(line)
     except (RecordError, OSError, ValueError, yaml.YAMLError) as e:

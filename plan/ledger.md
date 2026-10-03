@@ -30,8 +30,8 @@
 | Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
-| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Bu oturum kurulumun üçüncü adımını (1b-ii, kayıtları ve durma anını kontrol eden araçlar) kurdu ve 25 testin hepsi geçti. Bağımsız denetçi oturumu şartlı onay verdi, ama bir şartı engelleyici. Bu yüzden adım henüz ana dala alınmadı; yeni oturum düzeltip yeni bir denetçi onayı alacak. Senin bir şey yapmana gerek yok. <br>1. Denetçinin bulduğu açık: C00'ın bekletmesini, kendi yazdığım bir "onay" dosyasıyla kaldırabiliyordum. Durma kontrolü bunu sonradan yakalıyordu, ama önceden engellemiyordu. Daha önce sana "artık kaldırılamıyor" yazmıştım; bu, kodun gerçekte yaptığından güçlü bir iddiaydı. Düzeltilmeden ana dala alınmayacak. <br>2. Eleştirmen alt-oturumun 13 bulgusundan 12'si kapatıldı ve teste eklendi; biri gerekçesiyle reddedildi. <br>3. Bu oturum bağlamının yaklaşık yarısını kullandığı için işi yeni bir oturuma devrediyor. <br>4. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Oturum zincirinin bir derinlik sınırı olabilir: sistem bu oturum için "derinlik 6, sınır 8" gösteriyor. Doğruysa yalnızca birkaç devir daha mümkün. Bunu bir sonraki adımda (1c) ölçüp tasarlayacağım; gerekirse yeni bir oturumu senin başlatman tek adımlık bir istek olarak gelir. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T21:49Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T21:53Z |
+| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun üçüncü adımı (1b-ii, kayıtları ve durma anını kontrol eden araçlar) için bağımsız denetçinin engelleyici şartını düzelttim; yeni bir denetçi onayı bekleniyor. Onay gelmeden ana dala alınmayacak. Senin bir şey yapmana gerek yok. <br>1. Düzeltilen açık: C00'ın bekletmesi, benim yazdığım bir "onay" dosyasıyla ya da eski, ilgisiz bir onayla kaldırılabiliyordu. Artık kontrol, onayın denetçinin kendi dalından birebir kopyalanmış olmasını, o dalda bu değişikliğe katılmamış bir denetçi oturumunun imzasını taşımasını ve işin başlamasından sonraki bir sürümü onaylamasını istiyor. Denetçinin iki saldırı senaryosu teste eklendi; ikisi de eski kodda geçiyor, yeni kodda yakalanıyor. Bu cümleyi testler geçtikten sonra yazdım. <br>2. Kalan açık (değişmedi): bir oturum, gerçek bir denetçi oturumunun imzasını taklit ederse bu kontrol bunu ayırt edemez. Bunu ancak bağımsız denetim ortamı (C03) kapatır. <br>3. Denetçinin diğer şartları ve küçük bulguları karşılandı ya da gerekçesiyle sonraki adıma (1c) not edildi. <br>4. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Oturum zinciri derinliği: bu oturum "derinlik 7, sınır 8" gösteriyor. Açacağım denetçi 8. düzeyde olacak. Sınır gerçekse, bir sonraki devirde yeni oturum açılamayabilir; o zaman yeni bir oturumu senin başlatman tek adımlık bir istek olarak buraya gelir. <br>- Bekçi henüz kurulmadı; bir oturum ölürse bunu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. | 2026-10-03T22:00Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T22:00Z |
 
 ---
 
@@ -42,8 +42,8 @@
 - none
 
 **Running:**
-- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_01CmCKBkyHynQ27CwqkiviC6`
-- `W-C00-12.3` Tranche 1b-ii: checks and stop: claimed by `session_01CmCKBkyHynQ27CwqkiviC6`
+- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_01Gfj3M4MjrMb4YcRHwsA1X8`
+- `W-C00-12.3` Tranche 1b-ii: checks and stop: claimed by `session_01Gfj3M4MjrMb4YcRHwsA1X8`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-01`: finished, waiting for acceptance
@@ -71,7 +71,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 13 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -99,11 +99,11 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051
-  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01CmCKBkyHynQ27CwqkiviC6)
+  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01Gfj3M4MjrMb4YcRHwsA1X8)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
-    - `W-C00-12.3` Tranche 1b-ii: checks and stop: running (session_01CmCKBkyHynQ27CwqkiviC6) · open notes: N-049, N-050
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted) · open notes: N-047, N-048, N-052
+    - `W-C00-12.3` Tranche 1b-ii: checks and stop: running (session_01Gfj3M4MjrMb4YcRHwsA1X8) · open notes: N-049, N-050
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted) · open notes: N-047, N-048, N-052, N-053
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -125,10 +125,10 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | blocked: stage C00 on hold until W-C00-12 is accepted | todo (heavy) | — | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-10.md` |
 | `W-C00-11` | Stage closure review | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-11.md` |
-| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_01CmCKBkyHynQ27CwqkiviC6) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
+| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_01Gfj3M4MjrMb4YcRHwsA1X8) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | finished, not accepted | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
-| `W-C00-12.3` | Tranche 1b-ii: checks and stop | running (session_01CmCKBkyHynQ27CwqkiviC6) | — | — | `plan/work/W-C00-12.3.md` |
+| `W-C00-12.3` | Tranche 1b-ii: checks and stop | running (session_01Gfj3M4MjrMb4YcRHwsA1X8) | — | — | `plan/work/W-C00-12.3.md` |
 | `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | blocked: depends on W-C00-12.3 (not accepted) | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | blocked: depends on W-C00-12.4 (not accepted) | — | — | `plan/work/W-C00-12.5.md` |
 <!-- /generated -->
@@ -196,7 +196,8 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-050` | `W-C00-12.3` | R-W12-3 | open | **Dispositions (1b-ii; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` sections 2 and 5).** |
 | `N-047` | `W-C00-12.4` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
 | `N-048` | `W-C00-12.4` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
-| `N-052` | `W-C00-12.4` | L-049 | open | **Session lineage limit** (observed by run `session_01CmCKBkyHynQ27CwqkiviC6` at boot and at 20:46Z, `get_session` on itself: `"lineage":... |
+| `N-052` | `W-C00-12.4` | L-049 | open | **Annotation (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`, 2026-10-03, `get_session` on itself at boot):** `"lineage":{"depth":7,"limit":8}`, ... |
+| `N-053` | `W-C00-12.4` | R-W12-4 | open | **Items of R-W12-4 for 1c** (`evidence/C00/reviews/R-W12-4.md`; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` §7 departures 11 and 1... |
 
 Notes `answered` (the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds it merges; checked at W-C00-12's composition review, not closed): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
 Notes `closed` (closed with their disposition): 3 (N-001, N-021, N-026).

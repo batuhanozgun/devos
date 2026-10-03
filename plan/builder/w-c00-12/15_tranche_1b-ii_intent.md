@@ -47,10 +47,10 @@ This is stricter than a revert, because a later change to the same file makes it
 
 **N-049 and R-W12-3 F-3, decided together.**
 - (i) `records.py` `is_accepted` also requires `accepted_by` to lie under `evidence/`, so a README or a log file cannot lift a gate even in the render.
-- (ii) W-R7 gains one line, a stated addition reviewed by this part's Verifier. In an existing item that is the target of a `hold_until` or of any `depends_on` edge, a change of `acceptance` or `accepted_by` is class high, unless `accepted_by` names a session verdict under `evidence/*/reviews/` that the work check accepts.
+- (ii) W-R7 gains one line, a stated addition reviewed by this part's Verifier. In an existing item that is the target of a `hold_until` or of any `depends_on` edge, a change of `acceptance`, `accepted_by` or `composition_by` is class high, unless every verdict the item names is one the work check accepts at the PR head (`03_work_model.md` W-R7 gives the conditions; `check_records.py` `exemption_problems`).
 - (iii) W-R1 at every stop.
 
-Together, lifting the C00 hold needs a session verdict that names W-C00-12, reviewed at or after its work, and does not accept any other item. Anything else needs a session verdict on the PR. (Corrected after the Critic, finding 1: the first text claimed this before the code enforced the binding.)
+Together, lifting the C00 hold at class normal needs a session verdict, copied from its review branch and committed there by an owned session that made no commit of the PR (M-R16 b), that names W-C00-12 and a commit at or after the commit where W-C00-12 started `running`, and that accepts no other item. Anything else is class high and needs a session verdict on the PR. The residual is a trailer forged to name a real owned reviewer session. This paragraph was rewritten twice, each time after a reviewer showed it claimed more than the code (the Critic's finding 1; R-W12-4 B-1). This third version was written after the planted cases T-W9 (t), (u) and (v) passed on `991d51a`, and after (u) and (v) were shown to fail on the pre-fix checker (§9).
 
 **The work check** (`work`):
 - **W-R1.** It fails on an `accepted` item when any of these holds:
@@ -244,6 +244,12 @@ Departures from §2 and §5, each a decision for the Verifier to judge:
 9. **Errors on merged commits** (`merged`). A `kinds`, `stamps` or `claims` failure on a merged commit can be acknowledged only by a log line `record-check exception: <SHA> <subcommand>: <reason>`. Such a line counts for R-R9 as a failure that reached `main` when that commit carries the session's own trailer.
 10. **Scheduled times in `DURUM.md`.** The `Kurulu uyandırmalar` line is not stamp-checked, because it repeats the `Armed wakes` row, which is.
 
+Departures stated after R-W12-4 (its condition C-4), by run `session_01Gfj3M4MjrMb4YcRHwsA1X8`:
+
+11. **R-R9 counter scope and store** (R-W12-4 m-3). `04_roles.md` §6 item 3 says the stop check appends "the class of every FAIL" to "a gitignored per-session file". The code appends only the quality classes (`tree`, `ahead`, `fetch` and `usage` are excluded: they say where the run is, not what it did wrong; Critic finding 8) and stores the file under `$(git rev-parse --git-dir)/builder_check_fails/`, which no `git add` can reach, instead of a gitignored path. The rule's clause is corrected in 1c's v1.8 delta (note N-053 on W-C00-12.4). The counter does not survive a fresh clone; no claim of persistence is made.
+12. **The S5 wake bound** (R-W12-4 m-5). `13_r-w12-2_dispositions.md` §2 M-4 words the S5 wake as bounded by `resets` ("at most 7 days plus 15 minutes"); the code and the pre-registered row T-M7a (f) require the `S5` entry to **equal** `resets` plus 15 minutes. The strict reading stays, because it is the pre-registered one (ledger rule 3); a wake armed later than `resets` plus 15 minutes fails `stamps`. M-4's wording is aligned in 1c's v1.8 delta (N-053).
+13. **Lease record line** (R-W12-4 m-6; replaces the placement of departure 5). `records.py lease` now writes its Record changes line under a new log entry of its own (`### L-<next> · <date> · Lease taken or renewed by <session>`, or `released`), so it is never attributed to the previous entry. The entry number is the highest `L-` number in the log files plus one.
+
 ## 8. Critic findings and responses
 
 A non-binding Critic subagent (fresh context, read-only; R-R16) read this file, the diff `f72b973..560afe7`, the rules, the 25 test rows, the conditions and N-049 and N-050. It reproduced its findings in scratch clones and reported 13: 1 blocking, 8 material, 4 minor. It confirmed that the gate reproduces, that `all` passes on the branch, that a lease renewal is normal and passes `kinds`, that the override is refused in a run, that F-4, F-5, F-7, F-8, F-9 and F-10 behave as disposed, and that no `.claude/**` file changed.
@@ -265,3 +271,19 @@ A non-binding Critic subagent (fresh context, read-only; R-R16) read this file, 
 | 13 | `answers` substring match; claims (b) accepted any resolvable SHA; `docstatus` pointer by prefix | minor | **Accepted.** The comment ID must match as a whole number; the named commit must be an ancestor of the head; the pointer must match exactly |
 
 The gate was re-run after these changes: 25/25, with the planted cases above among the outcomes, and both mutation checks caught.
+
+## 9. R-W12-4 conditions and responses (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`)
+
+R-W12-4 (`evidence/C00/reviews/R-W12-4.md`) gave PASS-WITH-CONDITIONS on `242d195`, with one blocking condition. Each condition and minor finding, with the response on this branch:
+
+| Item | Response |
+|---|---|
+| C-1 (B-1, blocking) | `impact()` now calls `exemption_problems()`: the item must be `accepted` with a session label, and every verdict it names (`accepted_by`, and `composition_by` when set) must pass `verdict_bound_at()` (M-R16 (b): claims (b) on the range when the range adds or changes the file, otherwise the commit that added it) and `binding_problems()` evaluated at the PR head (names the item; a reviewed commit at or after the item's first `running` commit, an ancestor of the head; item `finished`; one verdict, one item). `binding_problems()` and `first_running_commit()` take the revision to judge, so the PR-time and the stop-time checks are the same code. Planted cases in T-W9: (u) the Verifier's scenario 1 (a producer-written file), (v) its scenario 2 (`R-W12-2.md` as `accepted_by` and `composition_by`), each asserting the reason, and (w) a control in which a bound verdict naming an edge target after its start stays class normal. On the pre-fix checker, in a scratch clone of `991d51a` with `d6dea29`'s `check_records.py` committed, (u) and (v) FAIL and (t) and (w) PASS; on the fixed checker all pass. The texts (W-R7, N-049 (ii), §2, `summary_tr` item 4) were rewritten after that |
+| C-2 (m-1) | Met in `d6dea29` by the previous run |
+| C-3 (m-2) | `tools/test_check_records.py` checks its preconditions before any test: no shallow clone, and a `refs/remotes/origin/claude/review-<ID>` ref for every verdict under `evidence/*/reviews/`. Either missing prints `PRECONDITION FAIL` with the fetch command and fails the gate. The docstring and the gate evidence header state both |
+| C-4 (m-3, m-5, m-6) | Departures 11 and 12 above; m-6 fixed in code (departure 13) |
+| m-4 | The gate evidence names the stop reasons this gate does not exercise (S2, plain S3, S5) and the gate that does (T-C5, gate 1d) |
+| m-7 | Note N-053 on W-C00-12.4: the 1c Verifier confirms that T-R22 (a2) runs |
+| m-8 | Met before this run: the recorder line for R-W12-4 is on `main` (PR #76) |
+| m-9 | The R-W12-5 Verifier's first message is the review prompt followed by the generated brief, read from the generator's output file and passed byte for byte (F-049-3). T-W6 in 1c gets a brief whose text differs from its hash (N-053) |
+
