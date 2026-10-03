@@ -835,8 +835,8 @@ def t_r20():
     state_row(s, "summary_tr", "Fixture summary.", iso(NOW + timedelta(hours=1)))
     s.append(s.log(), "- **Record changes:** plan/ledger.md summary_tr · supersession · fixture")
     s.records("render")
-    bad = s.commit("future stamp", session=RUN)
-    s.merge("work")
+    s.commit("future stamp", session=RUN)
+    bad = s.merge("work")  # merged reports a failure against the first-parent merge
     s.push()
     _, o1 = s.bc("--since", since)
     _, o2 = s.bc("--since", since)
