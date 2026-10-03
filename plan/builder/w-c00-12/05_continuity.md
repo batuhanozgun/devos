@@ -2,6 +2,16 @@
 
 **Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only; replaced by DevOS's working order at C06. **Written:** 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Serves:** need N1 and N3, acceptance (g)'s demand trace for the Dispatcher and the heartbeat, OI-011 items 1–5, OI-010; U-4 and U-5 of `01_goal_down.md`.
 
+## Revision 2 (2026-10-03, after the counter-design comparison)
+
+Applied from `06_counter_design_comparison.md` revision 2 by run `session_01Wj4JDduaDRVnBvQJ86b5bm`. Each line supersedes what it names.
+- **Stop reasons** (D-03): the stop check takes S1–S5 as an argument. S2 and S5 require an armed `send_later` recorded as owned; S3 requires the lease released; S1 nothing more; **S4 requires nothing about the successor** (it is created after the stop check; its recorder line reaches `main` afterwards, as PR #54 did).
+- **Batu waits** (D-28): check-in wakes every 6 hours, at most 4 empty in a row, next to the Appendix E §8 reminder by `PushNotification`.
+- **Failure path, corrected** (D-28): the self-watchdog covers an alive but idle session, and only if T-C2 passes; it cannot restart a dead or archived session, which nothing detects until an independent layer exists. K1: if T-C2 fails, or a stall is observed once, a keeper or an Actions alert watchdog is admitted. The residual risk shows as `DURUM.md`'s update time.
+- **Tests added** (D-44): T-21 (a run ended abruptly; a successor resumes from records with no repeated external effect) and T-23 (an observation over C01–C03 without a dispatcher).
+- **T-C1: PASS, observed once** (`evidence/C00/probes/T-C1_successor_run.md`).
+
+
 ## 1. What continuity must cover
 
 | Situation | Observed? | Today's mechanism | Problem with it |
