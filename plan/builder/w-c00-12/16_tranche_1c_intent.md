@@ -59,4 +59,12 @@ Started with `create_session` on the PR head, with `plan/builder/REVIEW_PROMPT.m
 
 ## 7. Departures found during the build
 
-(None yet. Each departure is added here before the Critic and the Verifier read the result.)
+Stated by run `session_011NtZnNGjojkTcmuzMRLtvL` before any Critic or Verifier read the result:
+
+1. **Stamp comparison class (N-053 f).** A verdict whose `Written:` time is later than its review-branch commit fails `stamps`, not `claims`. A `claims` failure on a verdict file cannot be acknowledged, and would make every later stop fail for a timing error that leaves the binding intact; a `stamps` failure on a merged commit can be acknowledged by a log line. The new check found F-052-1 on `58f16bb` (L-058, F-058-1), acknowledged there.
+2. **T-W4's fixture** now writes the composition marker into its composition verdict, because N-053 (g) changes the composition verdict's format; T-W4's PASS and FAIL conditions are unchanged, and one case was added (the word without the marker fails).
+3. **The home table moved** byte-identical from `02_memory.md` §3 to `plan/builder/MEMORY_MAP.md`, which 02 §4 names as its one home; 02 §3 now points there (M-R1).
+4. **Governing-documents rows** were added for `MEMORY_MAP.md`, `heritage/*`, `roles/*` and `REVIEW_PROMPT.md`, so that their status pointer resolves; each is a candidate until 1c merges with its verdict.
+5. **Brief gate details.** For a verifier brief the hook reads `Target SHA:` and the failure-class list from the brief text in the message and regenerates with them; the whole generated brief must appear verbatim in the message (N-053 b). The hook exports the fetched revision with `git archive` and runs that revision's `tools/records.py` with `GIT_DIR` set to this repository, so a brief is judged by the generator of the revision the new session checks out.
+6. **T-M17's script part** (`tools/test_1c.py`) reads the working tree and writes nothing; T-M17 (a) itself is a live test.
+7. **Not done in this run:** the move of pieces 02–05 and 07 under `plan/builder/design/`, the live tests, the probes, the Critic pass and the Verifier (L-058). The `design/` move changes no rule; it waits so that every path citing those pieces changes in one reviewed step.

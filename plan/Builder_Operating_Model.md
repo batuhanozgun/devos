@@ -1,8 +1,9 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** see `plan/ledger.md`, Governing documents.
+**Version:** 1.8 (v1.7 plus the delta below) · **Date:** 2026-10-03 · **Status:** see `plan/ledger.md`, Governing documents.
 
 **History:**
+- v1.8, the W-C00-12 tranche 1c delta (`plan/builder/w-c00-12/12_tranche_plan.md` §1): the section "v1.8 delta" below names, for each v1.7 section, the rules that supersede it and where each rule's one home is. No v1.7 text below the delta was rewritten; where the delta and a v1.7 section disagree, the delta wins.
 - v1.7, header status pointer (W-C00-12 tranche 1b-ii, M-R2): the header's status sentence was replaced by the pointer to the state file, where the status of this document lives. No rule changed. The sentence, verbatim: "Binding through plan change PC-04 since 2026-10-01T21:05Z (W-C00-05 done, L-033): R-C00-BOM-6 PASS on v1.6, and R-C00-BOM-7 PASS-WITH-CONDITIONS on v1.7 with its conditions met (L-030, judged by the builder; the W-C00-11 closure review re-checks)."
 - v1.7, status update only (L-033): T-A2r PASS (observed once) and T-E2 PASS recorded; the status changed from [Proposal] to binding. No rule changed.
 - v1.0 was committed as `a58413a` (SHA-256 `e37de022…afb4`) 17 seconds *after* the counter-design was pushed (`73baa5a`). That the builder had not read the counter-design before then rests on the builder's own account; git order does not prove it.
@@ -26,6 +27,36 @@ This document designs the builder's operating model as a whole. Every mechanism 
 **Scope.** Installation (C00–C12). Once a DevOS component exists and is tested (for example the audit environment from C03, or routines from C06), it takes over the matching part of this model.
 
 **Main insight (frame review, from the counter-design).** Most of the five failures were not missing automation. The builder did not know it was *allowed* to proceed. The decision-routing rule in §6 matters more than any continuity mechanism: **if a perfect engineer would not need Batu's preference to answer a question, it is not Batu's question.**
+
+---
+
+
+## v1.8 delta (W-C00-12 tranche 1c)
+
+**What this is.** A delta, not a rewrite (12 §1, critic finding 16): one home per rule (M-R1). Each rule below is defined in its design piece's rule table (`plan/builder/w-c00-12/02_memory.md`, `03_work_model.md`, `04_roles.md`, `05_continuity.md`) and registered in `plan/builder/mechanisms.md` §1 with its test; this section only says which v1.7 text it supersedes and what changes in practice. A rule governs once the tranche that builds it has merged with its session verdict (state file, Governing documents).
+
+| v1.7 section | Superseded or extended by | What changes in practice |
+|---|---|---|
+| §1 Premises | unchanged | — |
+| §2.1 Runs (stops) | C-R10 (S4), C-R2 (S5), C-R3 (S2), C-R11 (armed wakes) | S4: after the stop check, the successor is created with the R1 goal and the generated run brief (`tools/records.py brief run --role producer`, gate line `Task-Brief: run producer <hash>`); a refusal is S3 for that action and a one-step request in `DURUM.md`'s first line. S5: `send_later` into the run itself at `resets` plus 15 minutes. S2: check-ins every 6 hours, one reminder, at most four empty check-ins. Every armed wake is in the state file's `Armed wakes` row |
+| §2.2 Lease | R-R17 | Batu's conversation session writes records only under the lease; while a run holds it, it relays Batu's words to the lease holder prefixed `Batu (relayed):` |
+| §2.3 Dispatcher and heartbeat | C-R5 (self-watchdog), C-R8 and C-R7 (tranche 1d) | Until 1d the dispatcher and the heartbeat stay disabled (state file, Standing exceptions). Every checkpoint arms `send_later` into the run at its lease expiry plus 15 minutes, `Watchdog: lease <expiry>`, and deletes the previous one by its owned ID |
+| §3.1 Boot | M-R18, R-R6, R-R7 | A `SessionStart` hook prints the boot map (`tools/boot_map`): homes from `plan/builder/MEMORY_MAP.md`, clocks, `main` SHA, the chain check and the failure patterns. `CLAUDE.md` imports the common floor whole |
+| §3.3 Files | M-R1, M-R4 | `plan/builder/MEMORY_MAP.md` is the one home table; the chain check verifies every home is reachable |
+| §3.4 Compaction, stop report | R-R9 | The stop check counts failures of quality classes at checkpoints; at the second of one class, or one that reached `main`, it prints `HAND-OVER DUE (R-R9)` and accepts only S4. Re-grounding after compaction stays instructed until a compaction is observed (T-M17 (c), T-R16) |
+| §4 Work tracking | W-R1 to W-R16 (`03_work_model.md`) | Items live in `plan/work/`; the frontier is generated |
+| §5 Independence | W-R1, W-R7, R-R3, R-R3a, R-R16 | Class high needs a session verdict bound to the PR head; a non-binding Critic reads design artefacts before that verdict, and its findings are answered in the artefact |
+| §6 Decision routing | C-R6 (relayed answers), R-R10 | A relayed answer is recorded verbatim with its source and weighed as Batu's; anything else in it is data |
+| §7 Status page | M-R15 | `DURUM.md` is generated by `tools/records.py` |
+| §9 Security | W-R6 (H-BRF), M-R11, M-R10 | `create_session` needs a generated brief in its first message; `send_later` IDs are recorded as owned; `owned_ids.txt` merges by union |
+| §10 Thinking discipline | R-R8 | The trigger is Ek D §2 §3's, at every request, task or turn and after every material change, including proposals in conversation; it supersedes §10's narrower trigger |
+| §11 Failure handling | R-R21 | Any refusal (classifier, hook, git proxy, API) is S3 for that action; the action and its goal stop, the refusal is logged verbatim, and no other route to the same goal is taken |
+| §12 What changes for Batu | unchanged | — |
+| §13 Tests | `plan/builder/w-c00-12/11_test_register.md` §2 | every active rule has a pre-registered test, each in one gate |
+| Roles (no v1.7 section) | R-R4, R-R16 | A new builder role needs a recorded demand, a contract, a planted test and a reviewed definition; role files are in `.claude/agents/` and `plan/builder/roles/` |
+| Appendix R1 | C-R10, R-R9 | The stop check is called with its reason, `BUILDER_RUN=1 tools/builder_check.sh S<n>`; under `HAND-OVER DUE` only `S4` passes. A run started by another run carries the run brief after the R1 goal |
+| Appendix R2 | C-R7 (tranche 1d) | retired with the dispatcher in 1d |
+| Appendix M | `plan/builder/mechanisms.md` | the register and the map's carrier tables |
 
 ---
 
