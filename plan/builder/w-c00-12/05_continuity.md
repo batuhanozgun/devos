@@ -27,7 +27,7 @@
 
 ### 2.1 Stops
 
-- **S4 hand-over** (C-R10): after its stop check, the run creates its successor with `create_session` on `main`, the configured model, the R1 goal and a generated brief (W-R6). A classifier denial of that call is S3 for the action (operating model §11): the run releases the lease, and `DURUM.md`'s first line asks Batu to start a session.
+- **S4 hand-over** (C-R10): after its stop check, the run creates its successor with `create_session` on `main`, the configured model, the R1 goal and the generated run brief, `Task-Brief: run producer <hash>` (W-R5, W-R6; `03_work_model.md` §9). A classifier denial of that call is S3 for the action (operating model §11): the run releases the lease, and `DURUM.md`'s first line asks Batu to start a session.
 - **S5 usage hold** (C-R2): the run schedules `send_later` into **itself** at the reset time plus 15 minutes, with the text `Wake: usage reset <time>`. On waking it re-boots from `main` and continues, or hands over.
 - **S2 waiting for Batu** (C-R3): the run arms check-in wakes into itself every 6 hours, `Check-in: Batu <decision IDs>`. On each one it reads the issue. If Batu has answered, it records the answer and continues. If not, it arms the next check-in. At the Appendix E §8 reminder time (24 hours, or 4 if blocking) it sends **one** reminder through `PushNotification` (`Reminder: Batu <decision IDs>`). After four empty check-ins it stops arming. The generated `DURUM.md` then states that an answer waits for the next session (M-R15).
 - **Self-watchdog** (C-R5): at every checkpoint the run arms `send_later` into itself at its new lease expiry plus 15 minutes, `Watchdog: lease <expiry>`, and deletes its previous watchdog by its recorded ID (M-R11). When a watchdog fires:
@@ -48,14 +48,17 @@ This is a scheduled GitHub Actions workflow, `.github/workflows/watchdog.yml`, a
 - **Deduplication:** one comment per incident, keyed by the lease holder and the expiry, recorded as a hidden marker in the comment.
 - **Permissions:** the default workflow token with `issues: write` only; no secrets; free on a public repository.
 - **Precondition, probe P-W12-4** (tranche 1a): can this environment push a file under `.github/workflows/`? The session's git credential scope is unknown (OI-005). If it cannot, committing the workflow becomes a Batu account action: one file added from the GitHub web interface, sent in his batch in Appendix E format, because criterion 7 of plan §1.4 is at stake.
+- **Fallback if P-W12-4 fails** (R-W12-2 M-2). C-R8 then becomes **deferred**, with the trigger "the workflow file is on `main`", and the stall residual is stated in `DURUM.md`: a stall is then visible only through the self-watchdog and `DURUM.md`'s update time. W-C00-12's acceptance does not wait on Batu's action. Nothing is accepted on his behalf: without his action the system stays as it was before W-C00-12 on this point, and his action re-admits C-R8 whenever he takes it. Holding the acceptance on an account action would make him a blocker of technical work (BP-01); taking his silence as acceptance of the residual is forbidden.
+- **Type of the workflow arrow** (R-W12-2 M-1 b). If P-W12-4 passes, a session can change the workflow through a merged PR, so the detector is M\*, not M; every such PR is class high (W-R7, `.github/workflows/**`) and needs a session verdict. The residual, a session weakening the detector through a reviewed PR, falls under D-003 (a), accepted by Batu until C03. If P-W12-4 fails, only Batu can change the file, and the arrow is M.
 
-### 2.3 The main-definition record check (C-R9)
+### 2.3 The main-definition record check (C-R9, deferred)
 
-This answers R-W12-1 M8: every mechanical arrow so far runs from the producer's own working tree, which the producer can edit.
+This answers R-W12-1 M8: every mechanical arrow so far runs from the producer's own working tree, which the producer can edit. **Deferred** after R-W12-2 M-2, to comparison D-08's original trigger: a merged PR is found to have weakened a check it was judged by, or C03 begins. Reason: it shares P-W12-4 with the detector, so a failed probe would hold W-C00-12's acceptance on a Batu action for a report-only check; and its result has no reader that the producer cannot edit (R-W12-2 M-1 a), so its consequence would be M\* anyway. Until it is re-admitted, every working-tree check stays labelled M\* (07 §1). The design below is kept for re-admission.
 - **What it is:** a workflow `.github/workflows/records-check.yml` on `pull_request_target`. That event takes the workflow file from the base branch, so a PR cannot change the checker that judges it.
 - **What it runs:** it checks out `main`'s `tools/` and runs `check_records.py` from that copy against the PR head's files, read as data only. No PR code executes.
+- **Permissions** (R-W12-2 m-6): `permissions: contents: read, pull-requests: read`. The `impact` subcommand's `git revert` runs in a scratch clone with hooks disabled (`core.hooksPath=/dev/null`), on PR content read as data.
 - **Status:** report-only. It is not a required check, because ruleset 24194116 has no status-check rule, and adding one is a repository-settings change for a later decision. It shares P-W12-4 with the detector.
-- **Before it lands:** every mechanical arrow in `07_mechanism_map.md` is labelled "M, given an unmodified checker" (07 §1).
+- **Type when re-admitted:** "M (report), M\* (consequence)": it runs from `main`, but what acts on its result (C-R1) runs from the producer's tree (R-W12-2 M-1 a). The detector does not alert Batu on its result, because a failed record check is a technical failure, not his decision (BP-01).
 
 ### 2.4 What an L-039-class abort meets under this design
 
@@ -105,16 +108,16 @@ Status and tranche as in piece 1 §7. Every active rule has a test in `11_test_r
 
 | ID | Rule | Status | Tranche | Scope | Test |
 |---|---|---|---|---|---|
-| C-R1 | **Stop check with stop reasons** (D-03). `builder_check.sh S<n>` runs, in addition to today's checks: the record checks (`check_records.py` all subcommands), the issue read (M-R13), the leak check on staged and committed content (A-07, F-041-2), and the reason's own conditions: S2 and S5 need an armed wake recorded as owned and in the `Armed wakes` row; S3 needs the lease released; S1 needs no open item; S4 needs nothing about the successor (it is created after the check). From tranche 1d, it also reads, through the GitHub API (the same path as M-R13), the result of the main-definition check (C-R9) on the head of every PR merged since the run's boot, and fails if one reported FAIL or did not run (critic finding 6: a report nobody reads is not a control). The Usage row's observation is quoted with its source and time (`get_session`), tested by T-R17. | active | 1 | installation | T-C5, T-R17 |
+| C-R1 | **Stop check with stop reasons** (D-03). `builder_check.sh S<n>` runs, in addition to today's checks: the record checks (`check_records.py` all subcommands), the issue read (M-R13), the leak check on staged and committed content (A-07, F-041-2), and the reason's own conditions: S2 and S5 need an armed wake recorded as owned and in the `Armed wakes` row; S3 needs the lease released; S1 needs no open item; S4 needs nothing about the successor (it is created after the check); S3 with the reason `ISSUE_READ_FAILED` passes when the MCP read is logged (M-R13). It fails at every stop after a break-glass revert until a session verdict on that revert exists (W-R7). It prints, without failing, the `patch:` count per mechanism (M-R5). *Deferred with C-R9:* reading the main-definition check's result on the head of every PR merged since the run's boot. The Usage row's observation is quoted with its source and time (`get_session`), tested by T-R17. | active | 1 | installation | T-C5, T-R17 |
 | C-R2 | **S5 self-wake** (§2.1). | active | 1 | installation | T-C2 |
 | C-R3 | **S2 check-ins and one reminder** (§2.1). | active | 1 | installation | T-C3 |
 | C-R4 | *The check-in residual stated in `DURUM.md`.* | retired | — | — | merged into M-R15 (one template) |
 | C-R5 | **Self-watchdog at every checkpoint, with outcome-unknown recovery** (§2.1). | active | 1 | installation | T-C2, T-C4, T-21 |
 | C-R6 | **Expected-text rule, five forms, plus relayed answers recorded as data** (R-W12-1 m4; R-R17). | active | 1 | installation | T-C4 |
 | C-R7 | **Dispatcher and heartbeat retired** (§3). | active | 1d | installation | T-R7 |
-| C-R8 | **Independent detector** (§2.2). | active | 1d (after P-W12-4) | installation; replaced by DevOS's own monitoring at C06 | T-C6, T-C7, T-21, T-23 |
-| C-R9 | **Main-definition record check** (§2.3). | active | 1d (after P-W12-4) | installation; replaced by the audit environment's checks (C03) | T-C8 |
-| C-R10 | **S4 successor, with the brief gate; a denial is S3 and a `DURUM.md` request.** T-C1's two observations ran under v1.7, without the brief gate, and the second is by its subject; T-C1 counts for C-R10 only when re-run after tranche 1c and read by someone other than the successor. | active | 1 | installation | T-C1, T-W6 |
+| C-R8 | **Independent detector** (§2.2); deferred to its trigger if P-W12-4 fails. | active | 1d (after P-W12-4) | installation; replaced by DevOS's own monitoring at C06 | T-C6, T-C7, T-21, T-23 |
+| C-R9 | *Main-definition record check* (§2.3; deferred after R-W12-2 M-2 to D-08's trigger: a merged PR found to have weakened a check it was judged by, or C03 begins). | deferred | 2 | installation; replaced by the audit environment's checks (C03) | T-C8 (deferred) |
+| C-R10 | **S4 successor, with the run brief under the brief gate; a denial is S3 and a `DURUM.md` request.** T-C1's two observations ran under v1.7, without the brief gate, and the second is by its subject; T-C1 counts for C-R10 only when re-run after tranche 1c and read by someone other than the successor. | active | 1 | installation | T-C1, T-W6 |
 | C-R11 | **Armed-wakes row** in the state file (§2.1). | active | 1 | installation | T-C5 |
 | C-R12 | *Keeper session (CD K1).* | deferred | 2 | installation | T-21 (when admitted); probe P-08 first |
 

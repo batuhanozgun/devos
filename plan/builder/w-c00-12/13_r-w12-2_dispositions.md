@@ -11,7 +11,7 @@
 | C1 | The three W-R7 holes of B-1, with tests | 1b-i (b, c); 1b-ii (a) | accepted, see B-1 | `03` W-R1, W-R7, §3, §6; `08` §2 (migration); `11` T-W1, T-W9, T-W15; `12` §1, §2.2 |
 | C2 | The B-2 contradictions; `check_ids.py` flags retired or deferred rules cited as active, and deferred tests cited as evidence | 1b-i | accepted, see B-2 | the files in B-2's table; `check_ids.py` |
 | C3 | A defined run brief; how R-R17 and C-R10 pass the brief gate | 1c | accepted, see M-3 | `03` W-R5, W-R6, §9; `04` R-R17; `05` C-R10; `11` T-W6 |
-| C4 | M-1, M-2, M-5: relabel; a fallback if P-W12-4 fails | 1b-i | accepted, with one deviation each in M-1 and M-2 | `05` §2.2, §2.3, C-R1, C-R8, C-R9; `07` §1, B9, A-04, A-09, H15, H16, X-37, X-39; `12` §2, §2.1, §3; `02` M-R14 |
+| C4 | M-1, M-2, M-5: relabel; a fallback if P-W12-4 fails | 1b-i | accepted, with one deviation each in M-1 and M-2 | `05` §2.2, §2.3, C-R1, C-R8, C-R9 (deferred); `07` §1, B9, A-04, A-09, H15, H16, X-37, X-39; `12` §2, §2.1, §3; `02` M-R14 |
 | C5 | The M-4 ordinary-record edge cases | 1b-ii | accepted | `02` M-R13, M-R14; `04` §6; `11` T-M7a, T-M7c, T-M6r, T-R20 |
 | C6 | Tests that exercise R-R16, R-R3a and C-R6; the compaction arrow labelled I | 1c | accepted | `11` T-R21, T-R22, T-C4; `12` §2.2; `02` §4; `04` §6, R-R9; `07` B1, §6 |
 
@@ -36,7 +36,7 @@
 | Contradiction | Fix |
 |---|---|
 | `08` §2: operating model "v2.0 rewritten in place" | the row says the v1.8 delta of `12` §1 |
-| `08` items 12 and 13: M-R12 cited as answering | both rows say: acceptance (c) is met by the Scope column of every rule table and register row, checked by `check_ids.py`; the per-record `scope:` field is deferred (M-R12, deferred) with its trigger; T-M13 is not cited as evidence |
+| `08` items 12 and 13: M-R12 (deferred) cited as answering | both rows say: acceptance (c) is met by the Scope column of every rule table and register row, checked by `check_ids.py`; the per-record `scope:` field is deferred (M-R12, deferred) with its trigger; T-M13 is not cited as evidence |
 | `12` §1: pieces become governing "without content change", while their headers carry a candidate status and 07's tables move in 1b-i | `12` §1 and §2.1 say: in 1c each promoted file's status line is replaced by the M-R2 pointer (a supersession line, no rule text changed); the register and 07's carrier tables move to `plan/builder/mechanisms.md` in 1b-i and are replaced in 07 by a pointer, so they have one home |
 | D-02 typed I, the same arrow typed M\* in `02` §4, `04` §6 item 2, `07` §6 | typed **I until observed** everywhere (also C6) |
 | `07` B8 cites retired R-R2 | cites W-R1 (independence label) and R-R3 |
@@ -58,6 +58,7 @@
 **M-2 · If P-W12-4 fails, acceptance waits on Batu indefinitely.** **Accepted, with a deviation on the fallback.**
 - **C-R9 is deferred** to D-08's original trigger: a merged PR is found to have weakened a check it was judged by, or C03 begins. Its tests T-C8 and T-C5 (e) become deferred; C-R1's 1d part (reading C-R9's results) is deferred with it; the M\* labels stay.
 - **The dependency is stated** in `12` §2 and in `DURUM.md`'s risk line.
+- **Consequence found while applying this:** `06` D-15's rejection rested partly on C-R9 catching a merged `.claude/**` self-edit. With C-R9 deferred, the remaining layer is the session verdict that every `.claude/**` change needs before merge (W-R7, class high). `06` D-15, row b and §3b D-08 are corrected; the D-15 rejection still holds on that layer plus D-003 (a).
 - **Fallback for C-R8 if P-W12-4 fails:** the workflow file goes to Batu as one account action in his batch (Appendix E). C-R8 then becomes **deferred**, with the trigger "the file is on `main`", and the stall residual (a stall is visible only through `DURUM.md`'s update time and the self-watchdog) is stated in `DURUM.md`. W-C00-12's acceptance does not wait on that action.
 - **Deviation from the reviewer's "date after which W-C00-12 is accepted with the residual":** that would turn Batu's silence into acceptance of a residual, which the rules forbid. The fallback here accepts nothing on his behalf: without his action the system stays where it was before W-C00-12 on this point (no detector), the residual is stated, and his action re-admits C-R8 whenever he takes it. Holding W-C00-12's acceptance on an account action would make Batu a blocker of technical work (BP-01).
 
@@ -82,8 +83,8 @@
 - The composition review lists T-R16 and T-M17 (c) as **unobserved**, not passed (`12` §2.3).
 
 **M-7 · Deferral triggers without an observer; R-R14's trigger circular.** **Accepted.**
-- A token `patch:<mechanism ID>` is added now to the Record changes line of any change that patches an existing mechanism after a finding. `builder_check.sh` prints, non-blocking, the count of `patch:` tokens per mechanism since the last `FR-nn` record. R-R14's trigger is then countable. The token is part of M-R5's line format; T-M3 (e) checks that a line with the token is accepted and counted.
-- `12` §3 gains an Observer column: the stop check for counted triggers; the session Verifier of each tranche part and the closure review (W-C00-11) for the others (R-R13, W-R8, M-R12, R-R15, W-R13).
+- A token `patch:<mechanism ID>` is added now to the Record changes line of any change that patches an existing mechanism after a finding. `builder_check.sh` prints, non-blocking, the count of `patch:` tokens per mechanism since the last `FR-nn` record. The trigger of R-R14 (deferred) is then countable. The token is part of M-R5's line format; T-M3 (e) checks that a line with the token is accepted and counted.
+- `12` §3 gains an Observer column: the stop check for counted triggers; the session Verifier of each tranche part and the closure review (W-C00-11) for the others, all deferred rules (R-R13, W-R8, M-R12, R-R15, W-R13).
 - R-R13's deferral stands, as the reviewer judged, now with an observer.
 
 ### Minor
