@@ -54,14 +54,15 @@ class RecordError(Exception):
 # ---------------------------------------------------------------- loading
 
 def split_front(text, path):
-    if not text.startswith("---\n"):
+    if not text.startswith("---\n") or "\n---\n" not in text[3:]:
         raise RecordError(f"{path}: no front matter")
-    end = text.index("\n---\n", 4)
+    end = text.index("\n---\n", 3)
     meta = yaml.safe_load(text[4:end]) or {}
     return meta, text[end + 5:]
 
 
 def load_records(root=ROOT):
+    ROOT_FOR_ACCEPT[0] = Path(root)
     items, decisions = {}, {}
     for p in sorted((root / "plan/work").glob("*.md")):
         meta, body = split_front(p.read_text(), p)
@@ -70,6 +71,8 @@ def load_records(root=ROOT):
         m = ACC_RE.search(body)
         meta["_acceptance"] = m.group(1) if m else None
         notes = []
+        if len(re.findall(r"<!-- note ", body)) != len(NOTE_RE.findall(body)):
+            raise RecordError(f"{p}: a note marker does not match the note format")
         for nm in NOTE_RE.finditer(body):
             attrs = dict(a.split("=", 1) for a in nm.group(2).split())
             notes.append({"id": nm.group(1), "status": attrs.get("status", "open"),
@@ -120,7 +123,8 @@ def deps(item):
         if isinstance(d, str):
             out.append({"id": d, "on": "accepted", "reason": ""})
         else:
-            out.append({"id": d.get("id"), "on": d.get("on", "accepted"), "reason": d.get("reason", "")})
+            on = d.get("on", d.get(True, "accepted"))  # YAML 1.1 reads an unquoted `on:` key as True
+            out.append({"id": d.get("id"), "on": on, "reason": d.get("reason", "")})
     return out
 
 
@@ -143,7 +147,10 @@ def record_changes(root=ROOT):
 
 def qualification(item, decisions, changes):
     """('current'|'stale'|'unknown', reason)."""
-    since = int(str(item.get("assumes_checked", "L-0")).split("-")[1])
+    m = re.fullmatch(r"L-(\d+)", str(item.get("rechecked", "L-0")))
+    if not m:
+        return "unknown", f"malformed rechecked value '{item.get('rechecked')}'"
+    since = int(m.group(1))
     for a in item.get("assumes") or []:
         d = decisions.get(a)
         if d is None and re.match(r"(D|PC|FR)-\d", a):
@@ -159,8 +166,20 @@ def qualification(item, decisions, changes):
 
 # ---------------------------------------------------------------- readiness (03 section 3)
 
+ROOT_FOR_ACCEPT = [ROOT]
+
+
 def is_accepted(item):
-    return item.get("acceptance") == "accepted"
+    """Accepted only when `accepted_by` names an existing file (critic of 1b-i, finding 2). Whether that file is
+    a bound verdict or deterministic evidence is the work check's job (W-R1, tranche 1b-ii)."""
+    if item.get("acceptance") != "accepted":
+        return False
+    ab = item.get("accepted_by")
+    return bool(ab) and (ROOT_FOR_ACCEPT[0] / str(ab)).is_file()
+
+
+def acceptance_unresolved(item):
+    return item.get("acceptance") == "accepted" and not is_accepted(item)
 
 
 def is_closed(item):
@@ -168,58 +187,82 @@ def is_closed(item):
 
 
 def readiness(items, decisions, changes, iid):
-    """(True|False|None, reason). None means unknown, which is not ready."""
+    """(True|False|None, reason). Every condition is evaluated; a false one dominates an unknown one
+    (Ek B section 1 item 6); None means unknown, which is not ready. The reason shown is the first
+    false condition, else the first unknown one."""
     it = items[iid]
     if it.get("kind") != "item":
         return False, f"{it.get('kind')} record"
+    false, unknown = [], []
     adm = it.get("admission")
     if adm == "candidate":
-        return False, "candidate (not admitted)"
-    if adm != "admitted":
-        return (False, f"admission {adm}") if adm == "declined" else (None, f"admission '{adm}' unknown")
+        false.append("candidate (not admitted)")
+    elif adm == "declined":
+        false.append("admission declined")
+    elif adm != "admitted":
+        unknown.append(f"admission '{adm}' unknown")
     ex = it.get("execution")
-    if ex not in ("planned", "waiting"):
-        if ex in ("running", "finished", "cancelled"):
-            return False, f"execution {ex}"
-        return None, f"execution '{ex}' unknown"
+    if ex in ("running", "finished", "cancelled"):
+        false.append(f"execution {ex}")
+    elif ex not in ("planned", "waiting"):
+        unknown.append(f"execution '{ex}' unknown")
     q, why = qualification(it, decisions, changes)
-    if q != "current":
-        return (False if q == "stale" else None), f"{q}: {why}"
+    if q == "stale":
+        false.append(f"stale: {why}")
+    elif q != "current":
+        unknown.append(f"{q}: {why}")
     stage = stage_of(items, iid)
     if stage is None:
-        return None, "no stage ancestor"
-    hold = stage.get("hold_until")
-    if hold:
-        h = items.get(hold)
-        if h is None:
-            return None, f"stage hold target {hold} not found"
-        if not is_accepted(h) and iid != hold and hold not in [a["id"] for a in ancestors(items, iid)]:
-            return False, f"stage {stage['id']} on hold until {hold} is accepted"
+        unknown.append("no stage ancestor")
+    else:
+        hold = stage.get("hold_until")
+        if hold:
+            h = items.get(hold)
+            if h is None:
+                unknown.append(f"stage hold target {hold} not found")
+            elif iid != hold and hold not in [a["id"] for a in ancestors(items, iid)] and not is_accepted(h):
+                (unknown if acceptance_unresolved(h) else false).append(
+                    f"stage {stage['id']} on hold until {hold} is accepted"
+                    + (" (its acceptance names no existing accepted_by file)" if acceptance_unresolved(h) else ""))
+        for d in deps(stage):  # a stage's own order applies to every item in it (critic of 1b-i, finding 8)
+            t = items.get(d["id"])
+            if t is None:
+                unknown.append(f"stage {stage['id']} depends on {d['id']}, which is not found")
+            elif not is_accepted(t):
+                false.append(f"stage {stage['id']} depends on {d['id']} (not accepted)")
     for d in deps(it):
         t = items.get(d["id"])
         if t is None:
-            return None, f"depends on {d['id']}, which is not found"
-        if d["on"] == "finished":
+            unknown.append(f"depends on {d['id']}, which is not found")
+        elif d["on"] == "finished":
             if not d["reason"]:
-                return None, f"edge to {d['id']} marked on: finished without a reason"
-            if t.get("execution") != "finished" and not is_accepted(t):
-                return False, f"depends on {d['id']} (on: finished; not finished)"
+                unknown.append(f"edge to {d['id']} marked on: finished without a reason")
+            elif t.get("execution") != "finished" and not is_accepted(t):
+                false.append(f"depends on {d['id']} (on: finished; not finished)")
+        elif d["on"] != "accepted":
+            unknown.append(f"edge to {d['id']} has an unknown 'on' value")
+        elif acceptance_unresolved(t):
+            unknown.append(f"depends on {d['id']} (accepted, but accepted_by names no existing file)")
         elif not is_accepted(t):
-            return False, f"depends on {d['id']} (not accepted)"
+            false.append(f"depends on {d['id']} (not accepted)")
     for pf in it.get("platform") or []:
         st = pf.get("status")
         if st != "observed":
             probe = pf.get("probe") or "a probe (to be named)"
-            return False, f"platform fact '{pf.get('fact')}' {st or 'unknown'}: run {probe} first"
+            false.append(f"platform fact '{pf.get('fact')}' {st or 'unknown'}: run {probe} first")
     for n in it["_notes"]:
         if n["status"] == "open" and n["blocks"]:
-            return False, f"open blocking note {n['id']}"
+            false.append(f"open blocking note {n['id']}")
     for w in it.get("waits_for") or []:
         d = decisions.get(w)
         if d is None:
-            return None, f"waits for {w}, which is not found"
-        if d.get("status") == "open":
-            return False, f"waits for Batu's decision {w}"
+            unknown.append(f"waits for {w}, which is not found")
+        elif d.get("status") == "open":
+            false.append(f"waits for Batu's decision {w}")
+    if false:
+        return False, false[0]
+    if unknown:
+        return None, unknown[0]
     return True, "ready"
 
 
@@ -236,6 +279,8 @@ def state_label(items, decisions, changes, iid):
         return "cancelled"
     if is_accepted(it):
         return "accepted"
+    if acceptance_unresolved(it):
+        return "unknown: accepted without an existing accepted_by file"
     if ex == "finished":
         return "finished, not accepted"
     if ex == "running":
@@ -381,7 +426,8 @@ def view_notes(items):
             lines.append(f"| `{n['id']}` | `{iid}` | {esc(n['origin'])} | open{' (blocks)' if n['blocks'] else ''} "
                          f"| {esc(first)} |")
     lines.append("")
-    why = {"answered": "the design answers them; checked at W-C00-12's composition review",
+    why = {"answered": "the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds "
+                       "it merges; checked at W-C00-12's composition review, not closed",
            "closed": "closed with their disposition"}
     for st, ids in sorted(other.items()):
         lines.append(f"Notes `{st}` ({why.get(st, 'kept on their items')}): {len(ids)} ({', '.join(ids)}).")
@@ -406,6 +452,18 @@ def replace_block(text, name, content):
     if not pat.search(text):
         raise RecordError(f"plan/ledger.md: generated block '{name}' missing")
     return pat.sub(lambda m: m.group(1) + content + m.group(3), text, count=1)
+
+
+def stamp_rendered(text, now=None):
+    """Write the Rendered row's As-of from the clock (critic of 1b-i, finding 5): DURUM.md's update line
+    comes from here, never from a typed cell."""
+    now = (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%MZ")
+    lines = text.splitlines(keepends=True)
+    hits = [n for n, l in enumerate(lines) if l.startswith("| Rendered |")]
+    if len(hits) != 1:
+        raise RecordError(f"plan/ledger.md: expected one Rendered row, found {len(hits)}")
+    lines[hits[0]] = f"| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | {now} |\n"
+    return "".join(lines)
 
 
 def render_ledger(text, items, decisions, changes):
@@ -475,7 +533,7 @@ def durum(text, items, decisions, changes):
     nxt = (", ".join(f"`{i}`" for i in running) + " sürüyor" if running else "") + \
           ("; başlatılabilir: " + ", ".join(f"`{i}`" for i in ready) if ready else "")
     body = summary.replace("<br>", "\n")
-    asof = summary_asof.strip()
+    asof = rows.get("Rendered", ("", ""))[1].strip()
     upd = tr_time(asof) if re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\dZ", asof) else "bilinmiyor"
     out = f"""# DevOS kurulum durumu
 
@@ -523,8 +581,8 @@ def brief_item(items, decisions, changes, iid, role, target_sha=None, failure_cl
     if role == "verifier":
         if not target_sha:
             raise RecordError("a verifier brief needs --target-sha (R-R3a)")
-        if not failure_classes:
-            raise RecordError("a verifier brief needs a non-empty --failure-classes list (R-R3a)")
+        if not failure_classes or any(not f.strip() for f in failure_classes):
+            raise RecordError("a verifier brief needs a non-empty --failure-classes list with no blank entry (R-R3a)")
     it = items[iid]
     parent = it.get("parent")
     sib = [s for s in children(items, parent) if s["id"] != iid] if parent else []
@@ -570,6 +628,9 @@ def brief_run(items, decisions, changes):
              s.get("_acceptance") or "(none)", ""]
     if s.get("hold_until"):
         lines += [f"Stage hold: {s['id']} items wait until {s['hold_until']} is accepted.", ""]
+    se = state_rows(LEDGER.read_text()).get("Standing exceptions", ("", ""))[0] if LEDGER.exists() else ""
+    if se:
+        lines += ["Standing exceptions (plan/ledger.md section 1):", "", se, ""]
     lines += ["Frontier (generated):", "", view_frontier(items, decisions, changes), "",
               "Boot order: " + ROLE_FILES["producer"] + ". Take or confirm the lease before any record write."]
     return finish(lines, "run", "producer")
@@ -623,7 +684,7 @@ def main(argv=None):
         changes = record_changes()
         text = LEDGER.read_text()
         if a.cmd == "render":
-            new = render_ledger(text, items, decisions, changes)
+            new = render_ledger(text if a.check else stamp_rendered(text), items, decisions, changes)
             d_new = durum(new, items, decisions, changes)
             if a.check:
                 bad = []
@@ -639,6 +700,13 @@ def main(argv=None):
             LEDGER.write_text(new)
             DURUM.write_text(d_new)
             print("rendered plan/ledger.md and DURUM.md")
+            sa = state_rows(new).get("summary_tr", ("", ""))[1].strip()
+            try:
+                age = datetime.now(timezone.utc) - datetime.strptime(sa, "%Y-%m-%dT%H:%MZ").replace(tzinfo=timezone.utc)
+                if age > timedelta(minutes=15):
+                    print(f"note: summary_tr was last written at {sa}; update it if the state changed")
+            except ValueError:
+                print("note: summary_tr has no readable As-of time")
         elif a.cmd == "brief":
             if a.id == "run":
                 if a.role != "producer":
@@ -650,10 +718,19 @@ def main(argv=None):
         elif a.cmd == "durum":
             sys.stdout.write(durum(text, items, decisions, changes))
         elif a.cmd == "lease":
+            lock = state_rows(text).get("Run lock", ("", ""))[0]
+            held = re.search(r"`(session_[A-Za-z0-9]+)`", lock)
+            exp = re.search(r"Expires (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
+            if held and held.group(1) != a.session and exp and datetime.strptime(exp.group(1), "%Y-%m-%dT%H:%MZ").replace(
+                    tzinfo=timezone.utc) > datetime.now(timezone.utc):
+                print(f"WARNING: overwriting the unexpired lease of {held.group(1)} (expires {exp.group(1)}); "
+                      "this is allowed only for a hand-over from your parent run (operating model section 2.2)")
             new, line = lease(text, a.session, a.note, a.release)
+            new = render_ledger(stamp_rendered(new), items, decisions, changes)
             LEDGER.write_text(new)
+            DURUM.write_text(durum(new, items, decisions, changes))
             print(line)
-    except (RecordError, OSError, yaml.YAMLError) as e:
+    except (RecordError, OSError, ValueError, yaml.YAMLError) as e:
         print(f"records.py: {e}", file=sys.stderr)
         return 2
     return 0

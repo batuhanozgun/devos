@@ -17,3 +17,7 @@ Called at 19:34:54Z (the response's own `now` field). The response, as returned 
 ```
 
 **Shape:** one flat JSON object with three fields, `fire_at` and `now` (RFC 3339 UTC times, `fire_at` truncated to the minute) and `trigger_id`, the only identifier, with the prefix `trig_`. There is no nested `trigger` object, unlike `create_trigger`'s response, which the recorder parses today. **PASS:** exactly one identifier, in a named field. **For M-R11 (1c):** the recorder's `send_later` rule reads the top-level `trigger_id` field and nothing else; the T-H4 fixture uses this sample's structure. The ID was not added to `.claude/hooks/owned_ids.txt` by hand (pre-registration); the reminder is one-shot. Its delivery into this session is noted in the log entry, as data.
+
+## Annotation (2026-10-03, run `session_01S1vPB2jo4bzk1w8XqWekj6`, L-046): delivery observed
+
+The parent run reported, by message, that the reminder was delivered after L-045 was written. Read in its transcript (`list_events` on `session_01WcVuDQhDW3EKr4Sb87MHxN`, event `ef7b3497-9f26-47d3-bcdd-7a3605c2e22b`, created 19:38:33Z): a `ReadNotifications` result with one notification, `origin: trigger_fire`, `queued_at: 2026-10-03T19:36:39Z`, naming `trig_016VeeDzdaTBMsS83whyF69q` and the body "Sample: P-W12-5 send_later response shape (data only; no action)", which says it fired at 19:36:38Z. So the `send_later` message reached the creating session's queue 39 seconds after `fire_at` (19:36:00Z), as a queued notification read with `ReadNotifications`. Observed once. Meaning unchanged: annotate.

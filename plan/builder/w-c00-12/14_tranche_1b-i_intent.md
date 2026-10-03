@@ -22,10 +22,10 @@
 
 - **Front matter:** YAML between `---` lines (Python `yaml.safe_load`; `PyYAML` 6.0.1 is present in the environment, observed). Fields as `03_work_model.md` §2, plus `id`, `kind` (`root`, `stage`, `item`), `parent`, `title`, `scope`, `legacy_status` (the v1.7 status cell, verbatim, so the migration loses nothing), `evidence` (the v1.7 evidence cell, verbatim).
 - **Migrated acceptance values:** no v1.7 item was accepted under W-R1's definition (W-C00-05 says so itself, and the others were marked done by their producer). So every migrated item gets `acceptance: proposed`, with its old status kept in `legacy_status`. This is a truthful mapping, not a downgrade by judgement; a later Verifier may accept a finished item by a bound verdict.
-- **Notes:** `<!-- note N-nnn status=open|closed origin=<source> -->` … `<!-- /note -->` blocks in the body; an optional `blocks=true` makes an open note a readiness blocker (03 §3).
+- **Notes:** `<!-- note N-nnn status=open|closed origin=<source> -->` … `<!-- /note -->` blocks in the body; an optional `blocks=true` makes an open note a readiness blocker (03 §3). **Added during the build, stated here (critic finding 9):** a third status `answered` for OI-011 items and OI-010 whose disposition in `08` §1 is "answered" by the W-C00-12 design. It is not closed: the answer takes effect only when the tranche that builds it merges, and the open-notes view lists these notes as checked at W-C00-12's composition review.
 - **Decisions:** front matter `id`, `class` (`batu` or `technical`), `owner_reason` (for `batu`), `status` (`open`, `answered`, `superseded`, `retired`), `answer_original_tr`, `answer_interpretation_en`, `answered_by`, `answer_channel_ref`, `conditions`, `reopen_if`, `supersedes`, `record` (log pointers).
 - **Readiness** exactly as 03 §3, three-valued: an unresolved ID or field makes the item `unknown`, which is not ready. The stage `hold_until` applies to every item of the stage except the hold target and its descendants, while the target is not accepted.
-- **Staleness (W-R9)** is computed from decision status and from Record changes lines of the log naming an `assumes` ID with kind correction, supersession or retirement after the item's last `rechecked:` entry. Its test (T-W3r) is gated in 1b-ii; 1b-i only renders it.
+- **Staleness (W-R9)** is computed from decision status and from Record changes lines of the log naming an `assumes` ID with kind correction, supersession or retirement after the item's `rechecked: L-nnn` field (a malformed value is unknown). Its test (T-W3r) is gated in 1b-ii; 1b-i only renders it.
 - **Hash** of a brief: the first 16 hex digits of SHA-256 over the brief text above its `Task-Brief:` line.
 
 ## 3. Gate tests, made concrete (procedures of `11_test_register.md` §2.2; PASS and FAIL conditions unchanged)
@@ -60,4 +60,27 @@ Started with `create_session` on the PR head, with the fixed prompt (`plan/build
 
 ## 6. Critic findings and responses
 
-(filled before the Verifier is asked)
+A non-binding Critic subagent (fresh context, read-only; R-R16) read this file, the diff `7ed3fa3..3ad3ffa`, the rules, the tests and conditions C1 (b, c), C2, C4, and reported 20 findings (1 blocking, 9 material, 10 minor). It confirmed independently: T-W10 for 13 blocks, every OI cell verbatim, OI-011's 25 bodies in order, the register move row for row, `check_ids.py` on the new home, decision quotes against the log, and no out-of-scope file. Every finding is accepted; the responses below are in commit order after `3ad3ffa`.
+
+| # | Finding (short) | Severity | Response |
+|---|---|---|---|
+| 1 | The state file lost "heartbeat and reset wake-up stay disabled" and "follow RUN_BRIEF.md"; a successor could recreate the heartbeat | blocking | **Accepted.** A hand-written `Standing exceptions` row in `plan/ledger.md` §1 carries both, the run brief prints it, and `summary_tr` repeats it for Batu |
+| 2 | The hold can be lifted by writing `acceptance: accepted` (normal class); T-W2's `accepted_by` did not exist, so it could not fail | material | **Accepted.** `accepted` without an existing `accepted_by` file is unknown (not ready) in the render; T-W2 now checks that state; the missing W-R7 line for the `acceptance` field is an open note on W-C00-12.3 (N-049), for 1b-ii to weigh, since W-R7 is 1b-ii's |
+| 3 | DURUM told Batu the tool enforces the hold | material | **Accepted.** Reworded: the tool shows it; the checks against bypassing it come in 1b-ii |
+| 4 | DURUM dropped the stall residual (C4, M-2) | material | **Accepted.** The residual line is back in `summary_tr`, with the other two risks |
+| 5 | "Son güncelleme" came from a typed cell | material | **Accepted.** `render` writes a `Rendered` row from the clock; DURUM's update line reads it; `render` prints a note when `summary_tr` is older than 15 minutes |
+| 6 | T-W7's collapse check could not fail | material | **Accepted.** It now asserts the counts cell of C02 exactly (`ready 2`) |
+| 7 | W-C00-10 and 11 lacked their ordering edges | material | **Accepted.** W-C00-10 depends on 07, 08, 09 and, `on: finished` with its reason, 03 (whose final version is made at 10); W-C00-11 depends on 01–10 and 12. New files, so class normal |
+| 8 | Stage edges had no effect on items | material | **Accepted.** A stage's `depends_on` applies to every item in it: items under C01 are not ready until C00 is accepted |
+| 9 | `answered` note status beyond the intent | material | **Accepted.** Stated in §2 above; the view says these notes are not closed |
+| 10 | `class: plan-change` breaks the `batu` filter | minor | **Accepted.** `kind: plan-change` plus `class: batu` (PC-01, 02, 05, with owner reasons) or `technical` (PC-03, 04); interpretations added where the log has them |
+| 11 | Placement gaps (C08, OI-004 on C00, OI-007 on C05) | minor | **Accepted.** Pointer notes N-044 to N-046 |
+| 12 | A blank failure class passed the verifier-brief guard | minor | **Accepted.** Blank entries are refused |
+| 13 | First-failure precedence; malformed notes dropped silently; uncaught `ValueError`; `assumes_checked` name | minor | **Accepted.** Every condition is evaluated and false dominates unknown; a malformed note marker is an error; `ValueError` is caught; the field is `rechecked` |
+| 14 | Stale pointers after the move (09, 12) | minor | **Accepted.** Updated, with "since 1b-i" where the row is history |
+| 15 | "T-W10 does not reuse its parsing" overclaimed | minor | **Accepted.** Narrowed in the evidence file |
+| 16 | Children's acceptance written in the same PR as the work; 12.2's wording against §5 | minor | **Accepted as stated:** their substance is the pre-merged 12 §2; said in L-046. 12.2's block is aligned to "PASS, or PASS-WITH-CONDITIONS with its conditions met" (the block is not on `main` yet, so this is not a change to an existing block) |
+| 17 | L-046 missing; evidence not on the final head | minor | **Accepted.** L-046 with Record changes is in this PR; the gate evidence is re-run on the final head |
+| 18 | Placeholder acceptance blocks for C01–C12 would make each stage start class high | minor | **Accepted.** The pointer is outside the markers; no block until the stage starts |
+| 19 | `lease` overwrote silently and left DURUM stale | minor | **Accepted.** It warns when overwriting another unexpired holder and re-renders the ledger and DURUM |
+| 20 | DURUM understated the revert | minor | **Accepted.** The risk line says the revert also needs a verdict once 1b-ii exists, and names the branch |

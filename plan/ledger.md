@@ -24,10 +24,12 @@
 | Usage | `five_hour` `allowed` at 19:36Z (`get_session`), resets 2026-10-03T20:10Z (`resetsAt` 1791058200, converted with `date -u -d @`) (§8: proceed). | 2026-10-03T19:36Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
+| Standing exceptions | The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled on purpose until W-C00-12 is accepted (L-034); boot step 7 and operating model §2.3 do not recreate them meanwhile. Runs of W-C00-12 also read `briefs/w-c00-12/RUN_BRIEF.md` (its §5 lists the known failure patterns). (Kept from the v1.7 Next action row; restored after the critic of 1b-i, finding 1.) | 2026-10-03T20:05Z |
 | Governing documents | `plan/Builder_Operating_Model.md` v1.7 governs whatever W-C00-12 has not yet replaced; it was not independently accepted (W-C00-05), and its own header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22). `plan/builder/w-c00-12/*` and `plan/builder/mechanisms.md`: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1). | 2026-10-03T19:50Z |
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
-| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor; şu an kurulumun ikinci adımı (1b-i) yapılıyor. <br>1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu bir test kontrol ediyor. <br>2. "Sıradaki iş" satırı artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. <br>3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden başlayamıyor; bu artık bir cümle değil, aracın uyguladığı bir kural. <br>4. Değişiklik ana dala alınmadan önce bağımsız bir denetçi oturumu inceleyecek. <br>**Risk:** bu adım kayıtların yapısını değiştiriyor. Bir sorun çıkarsa değişiklik tek bir geri alma isteğiyle (revert) geri alınabilir; gerekirse geri alma dalının adı burada yazacak. | 2026-10-03T19:50Z |
+| summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor; kurulumun ikinci adımı (1b-i) yapıldı ve bağımsız denetçiye gidiyor. <br>1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu bir test kontrol ediyor. <br>2. "Sıradaki iş" listesi artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. <br>3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden "başlatılabilir" görünmüyor. Araç bunu gösteriyor; kuralın atlanmasını engelleyen kontroller bir sonraki adımda (1b-ii) geliyor. <br>4. Dağıtıcı ve zamanlayıcı yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bu adım kayıtların yapısını değiştiriyor. Bir sorun çıkarsa geri alma dalı `claude/revert-w12-1b-i` hazır; ama geri alma kabul metinlerini de sildiği için bir sonraki adımdan sonra o da denetçi onayı ister. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T20:05Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:05Z |
 
 ---
 
@@ -68,15 +70,15 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | blocked 10, finished 5, running 2 | 5 |
+| `C00` | Start, function comparison and independent review of the plan | running | blocked 10, finished 5, running 2 | 9 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
 | `C04` | Knowledge, search and context | planned | no items | 4 |
-| `C05` | Common rules, roles and methods | planned | no items | 0 |
+| `C05` | Common rules, roles and methods | planned | no items | 1 |
 | `C06` | Working order, audit and decision channel | planned | no items | 1 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 1 |
-| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 1 |
+| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 2 |
 | `C09` | Outage, backup, restore and reconnection | planned | no items | 1 |
 | `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 0 |
 | `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 1 |
@@ -84,7 +86,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027
+- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045
   - `W-C00-01` Read the plan package: finished, not accepted
   - `W-C00-02` Preparation verification (plan C00 step 1): finished, not accepted
   - `W-C00-03` Gap and contradiction list: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-002
@@ -99,8 +101,8 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01S1vPB2jo4bzk1w8XqWekj6)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: running (session_01S1vPB2jo4bzk1w8XqWekj6)
-    - `W-C00-12.3` Tranche 1b-ii: checks and stop: blocked: depends on W-C00-12.2 (not accepted)
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted)
+    - `W-C00-12.3` Tranche 1b-ii: checks and stop: blocked: depends on W-C00-12.2 (not accepted) · open notes: N-049
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: blocked: depends on W-C00-12.3 (not accepted) · open notes: N-047, N-048
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -148,11 +150,11 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-001` | C00 heavy work waits for the weekly usage reset; light work now | batu | answered | `plan/decisions/D-001.md` |
 | `D-002` | Standing usage policy (Builder Operating Model section 8) | batu | answered | `plan/decisions/D-002.md` |
 | `D-003` | Residual risk: the connector barrier is a hook the builder can edit | batu | answered | `plan/decisions/D-003.md` |
-| `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | plan-change | answered | `plan/decisions/PC-01.md` |
-| `PC-02` | Branch management | plan-change | answered | `plan/decisions/PC-02.md` |
-| `PC-03` | Continuity: merge into `main` before every stop | plan-change | answered | `plan/decisions/PC-03.md` |
-| `PC-04` | Builder operating model for the installation period (`plan/Builder_Operating_Model.md`) | plan-change | answered | `plan/decisions/PC-04.md` |
-| `PC-05` | Technical approval of high-impact changes moves from Batu to independent review | plan-change | answered | `plan/decisions/PC-05.md` |
+| `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | answered | `plan/decisions/PC-01.md` |
+| `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
+| `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |
+| `PC-04` | Builder operating model for the installation period (`plan/Builder_Operating_Model.md`) | technical | answered | `plan/decisions/PC-04.md` |
+| `PC-05` | Technical approval of high-impact changes moves from Batu to independent review | batu | answered | `plan/decisions/PC-05.md` |
 <!-- /generated -->
 
 ---
@@ -165,6 +167,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | Note | On | Origin | Status | First line |
 |---|---|---|---|---|
 | `N-027` | `C00` | OI-003 | open | **Item:** Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are us... |
+| `N-045` | `C00` | OI-004 | open | **Pointer** to N-029 on `C01` (verbatim there): the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11. |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
@@ -176,17 +179,22 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-035` | `C04` | OI-011#19 | open | (19) the hook's blanket block of catalogue tools. The search tools (`SearchMcpRegistry`, `SearchPlugins`, `SearchSkills`) are read-only, ... |
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
 | `N-037` | `C04` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted): lenses and heritag... |
+| `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
 | `N-041` | `C07` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): conversational agent builders as SOUL comp... |
 | `N-042` | `C08` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): deployment hosts. |
+| `N-044` | `C08` | 06#3a-g | open | **Pointer** to N-038 on `C09` (verbatim there): the recovery drill also restores the builder's state (06 section 3a row g names C08–C09). |
 | `N-038` | `C09` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted): the recovery drill... |
 | `N-043` | `C11` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): model hubs. |
 | `N-002` | `W-C00-03` | OI-002 | open | **Item:** Safeguard 2 of plan Section 0.5 (independent monitoring of machine-account commits in the library) is probably not in place. |
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-005` | `W-C00-07` | OI-011#16 | open | (16) observed by a probe: marketplace (ECC) and partner (Base44) skills and account plugins do not reach cloud sessions, so anything adop... |
+| `N-049` | `W-C00-12.3` | critic-1b-i#2 | open | **The `acceptance:` field is not in W-R7's high list** (critic of 1b-i, finding 2). Writing `acceptance: accepted` into W-C00-12 would li... |
+| `N-047` | `W-C00-12.4` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
+| `N-048` | `W-C00-12.4` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
 
-Notes `answered` (the design answers them; checked at W-C00-12's composition review): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
+Notes `answered` (the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds it merges; checked at W-C00-12's composition review, not closed): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
 Notes `closed` (closed with their disposition): 3 (N-001, N-021, N-026).
 <!-- /generated -->
 

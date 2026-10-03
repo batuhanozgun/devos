@@ -140,6 +140,13 @@ for st_, t in POINTERS20.items():
     numbered.setdefault(st_, []).append((f"N-{note_n[0]:03d}",
         f"**Design reference for this stage** from OI-011 item 20 ({n20} on `W-C00-12`, verbatim there): {t}.",
         "open", "OI-011#20"))
+EXTRA = [("C08", "N-038", "C09", "the recovery drill also restores the builder's state (06 section 3a row g names C08–C09)", "06#3a-g"),
+         ("C00", "OI-004", "C01", "the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11", "OI-004"),
+         ("C05", "OI-007", "C02", "the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05", "OI-007")]
+for tgt, ref, home, t, origin in EXTRA:
+    nid = ref if ref.startswith("N-") else next(n for n, _, _, o in numbered.get(home, []) if o == ref)
+    note_n[0] += 1
+    numbered.setdefault(tgt, []).append((f"N-{note_n[0]:03d}", f"**Pointer** to {nid} on `{home}` (verbatim there): {t}.", "open", origin))
 assert set(notes) <= set(order), set(notes) - set(order)
 
 
@@ -156,8 +163,14 @@ for iid, c in items.items():
             "admission": "admitted", "execution": EXEC[iid], "acceptance": "proposed"}
     if iid in CLAIM:
         meta["claimed_by"] = CLAIM[iid]
-    if iid in ("W-C00-06", "W-C00-07", "W-C00-08", "W-C00-09", "W-C00-10", "W-C00-11"):
+    if iid in ("W-C00-06", "W-C00-07", "W-C00-08", "W-C00-09"):
         meta["depends_on"] = ["W-C00-12"]
+    if iid == "W-C00-10":  # its acceptance names the findings of 03, 07, 08 and 09 (critic of 1b-i, finding 7)
+        meta["depends_on"] = ["W-C00-12", "W-C00-07", "W-C00-08", "W-C00-09",
+                              {"id": "W-C00-03", "on": "finished",
+                               "reason": "W-C00-03's final version is made at W-C00-10 itself; its first version is enough to start"}]
+    if iid == "W-C00-11":  # the stage closure review checks every C00 item
+        meta["depends_on"] = ["W-C00-12"] + [f"W-C00-{n:02d}" for n in range(1, 11)]
     meta["legacy_status"] = c[3]
     meta["evidence"] = c[4]
     meta["migrated_in"] = "W-C00-12 tranche 1b-i"
@@ -236,11 +249,13 @@ for sid, en, tr in STAGES:
                 "commit (W-R16, T-W10). `hold_until: W-C00-12` encodes the Stage row's hold (R-W12-2 B-1 b): the render "
                 "applies it to every item of this stage except W-C00-12 and its children, including items created later.")
     else:
-        acc = (f"The \"Kabul\" conditions of {sid} in `plan/DevOS_Kurulum_Plani.md` section 9 (Turkish, binding until "
-               f"the translation fidelity review passes, plan 0.6). They are copied here verbatim, translated, when "
-               f"the stage starts.")
-        lead = "A planned stage. Its items are created when its discovery item starts (`plan/builder/w-c00-12/03_work_model.md` section 10)."
-    body = f"# {sid} · {en}\n\n{lead}\n\n## Acceptance\n\n<!-- acceptance -->\n{acc}\n<!-- /acceptance -->\n"
+        acc = None
+        lead = (f"A planned stage. Its items are created when its discovery item starts (`plan/builder/w-c00-12/03_work_model.md` "
+                f"section 10). Its acceptance conditions are the \"Kabul\" conditions of {sid} in `plan/DevOS_Kurulum_Plani.md` "
+                f"section 9 (Turkish, binding until the translation fidelity review passes, plan 0.6). They enter this file as "
+                f"its acceptance block when the stage starts; there is no block before that, so adding it then is a new block "
+                f"(class normal), not a change to an existing one.")
+    body = f"# {sid} · {en}\n\n{lead}\n" + (f"\n## Acceptance\n\n<!-- acceptance -->\n{acc}\n<!-- /acceptance -->\n" if acc else "")
     (W / f"{sid}.md").write_text(fm(meta) + "\n" + body + notes_md(sid))
     prev = sid
 root = {"id": "INSTALL", "kind": "root", "title": "DevOS installation, stages C00 to C12", "scope": "installation",

@@ -120,7 +120,17 @@ def t_w15(root, label="T-W15"):
         zl = [l for l in zoom.splitlines() if f"`{iid}`" in l]
         if not zl or "blocked" not in zl[0] or "W-C00-12" not in zl[0]:
             bad.append(f"{iid} not shown blocked by W-C00-12 in the zoom")
-    report(label, not bad, "; ".join(bad) or "W-C00-06 to 11 carry the edge, are not ready, and show blocked by W-C00-12")
+    # The edge layer alone, without the stage hold (critic of 1b-i): each item stays not ready through its edge.
+    if not bad:
+        c00 = dict(items["C00"])
+        c00.pop("hold_until", None)
+        no_hold = dict(items, C00=c00)
+        for n in range(6, 12):
+            r, why = R.readiness(no_hold, decisions, ch, f"W-C00-{n:02d}")
+            if r is not False or "W-C00-12" not in why:
+                bad.append(f"W-C00-{n:02d} without the stage hold: {r}, {why}")
+    report(label, not bad, "; ".join(bad) or "W-C00-06 to 11 carry the edge, are not ready, and show blocked by "
+           "W-C00-12; with the stage hold removed, each is still not ready through its edge")
 
 
 def t_w2(tmp):
@@ -135,12 +145,20 @@ def t_w2(tmp):
     a = (root / "plan/work/A.md").read_text().replace("acceptance: proposed",
                                                      "acceptance: accepted\naccepted_by: evidence/C00/reviews/R-X.md")
     (root / "plan/work/A.md").write_text(a)
-    before = ledger.read_text()
-    items, decisions = R.load_records(root)
-    ledger.write_text(R.render_ledger(before, items, decisions, R.record_changes(root)))
-    second = "B" in ready_ids(ledger.read_text().split("<!-- generated:frontier -->", 1)[1])
-    report("T-W2", (not first) and second, f"B in frontier before acceptance of A: {first}; after: {second} "
-           "(the second state came from a re-render, with no hand edit of the generated block)")
+
+    def rerender():
+        items, decisions = R.load_records(root)
+        ledger.write_text(R.render_ledger(ledger.read_text(), items, decisions, R.record_changes(root)))
+        return "B" in ready_ids(ledger.read_text().split("<!-- generated:frontier -->", 1)[1])
+
+    unresolved = rerender()  # accepted_by names a file that does not exist: unknown, not ready
+    (root / "evidence/C00/reviews").mkdir(parents=True)
+    (root / "evidence/C00/reviews/R-X.md").write_text("verdict: PASS\n")
+    second = rerender()
+    report("T-W2", (not first) and (not unresolved) and second,
+           f"B in frontier before acceptance of A: {first}; with A accepted but accepted_by naming no file: "
+           f"{unresolved}; with the verdict file present: {second} (each state from a re-render, with no hand edit "
+           "of the generated block; whether the file is a bound verdict is checked by W-R1 in 1b-ii)")
 
 
 def t_w5(tmp):
@@ -174,7 +192,8 @@ def t_w7(tmp):
     stages_ok = all(len(re.findall(rf"^\| `C{n:02d}` \|", horiz, re.M)) == 1 for n in range(13))
     path_ok = all(re.search(rf"`{i}`", vert) for i in ("C01", "W-X", "W-X.1", "W-X.1.1"))
     sib_collapsed = bool(re.search(r"`W-X.2`.*1 children", vert)) and "`W-X.2.1`" not in vert
-    other_collapsed = "`W-Z`" not in vert and re.search(r"^\| `C02` \|.*blocked 2|^\| `C02` \|.*planned", horiz, re.M) is not None
+    c02 = [l for l in horiz.splitlines() if l.startswith("| `C02` |")]
+    other_collapsed = "`W-Z`" not in vert and bool(c02) and [x.strip() for x in c02[0].split("|")][4] == "ready 2"
     report("T-W7", stages_ok and path_ok and sib_collapsed and other_collapsed,
            f"13 stages one line each: {stages_ok}; path C01 → W-X → W-X.1 → W-X.1.1 expanded: {path_ok}; "
            f"sibling W-X.2 one line with its child collapsed: {sib_collapsed}; stage C02's items collapsed to counts: "

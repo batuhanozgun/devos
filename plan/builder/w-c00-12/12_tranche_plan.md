@@ -150,7 +150,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | m5 check-ins stop after 24 hours | M-R15's template; `02` §6 |
 | m6 T-C1 observer and L-039 | T-C1 evidence annotated (L-041, L-042); `11` T-C1 not counted until re-run after 1c |
 | m7 no scope per adopted rule | every rule table in 02–05 and the register has a Scope column, checked by `check_ids.py` |
-| m8 H5 number missing | `07` §3 keeps a retired H5 row |
+| m8 H5 number missing | `07` §3 keeps a retired H5 row (since 1b-i the row is in `plan/builder/mechanisms.md` §2.2) |
 
 **K3 re-read findings (fresh-context subagent, this run), answered:**
 
@@ -176,7 +176,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
   - §3b maps every disposition to its current rules and supersedes the revision-2 text of the rows it changes;
   - §7 points to the rewritten pieces.
 - **07:**
-  - cells cite rule IDs from 02–05 and carrier IDs from `11` §1.5;
+  - cells cite rule IDs from 02–05 and carrier IDs from `11` §1.5 (since 1b-i: `plan/builder/mechanisms.md` §1.5);
   - carriers in the working tree are M\* (critic finding 6);
   - H12 no longer requires the successor ID;
   - X-20 cites markers without a phrase warning;
