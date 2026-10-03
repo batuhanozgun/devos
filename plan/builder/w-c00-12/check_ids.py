@@ -13,7 +13,7 @@ PIECES = ["02_memory.md", "03_work_model.md", "04_roles.md", "05_continuity.md"]
 CITERS = PIECES + ["06_counter_design_comparison.md", "07_mechanism_map.md",
                    "08_oi011_dispositions.md", "11_test_register.md", "12_tranche_plan.md"]
 TEST_CITERS = PIECES + ["07_mechanism_map.md", "08_oi011_dispositions.md", "12_tranche_plan.md"]
-RULE = re.compile(r"\b(?:[MWRC]-R\d+a?|H-(?:AL|OWN|REV|BRF|BOOT|CMP|READ))\b")
+RULE = re.compile(r"\b(?:[MWRC]-R\d+a?|H-(?:AL|OWN|REV|BRF|BOOT|CMP|READ|PRB))\b")
 TEST = re.compile(r"\bT-(?:M|W|R|C|MAP)\d+[a-z]?\b|\bT-(?:0[1-9]|1\d|2\d)\b|\bT-H\d\b")
 # Tests kept from the operating model (section 13), not part of the register.
 OM_TESTS = {"T-H1", "T-H2", "T-H3", "T-H4", "T-H5", "T-H6", "T-H7", "T-A1a", "T-A1b", "T-A1c",
