@@ -167,8 +167,8 @@ def brief_gate(prompt, sha):
     gen = r.stdout
     if not gen.endswith(f"\nTask-Brief: {iid} {role} {h}\n"):
         return f"the Task-Brief hash does not match the brief generated from the source revision {sha[:7]}"
-    if gen.strip() not in prompt:
-        return "the brief text in the first message differs from the generated brief (N-053 b)"
+    if not prompt.rstrip().endswith(gen.strip()):  # the brief ends the message; nothing follows it (1c Critic 2)
+        return "the first message does not end with the generated brief, or its text differs from it (N-053 b)"
     return None
 
 
@@ -183,6 +183,8 @@ def check_session_tool(tool, args):
             return block("create_session only in the builder environment")
         if args.get("permission_mode") == "bypassPermissions" or args.get("extra_allowed_tools"):
             return block("create_session may not widen permissions")
+        if str(args.get("append_system_prompt") or "").strip():  # it would carry a task beside the brief (1c Critic 3)
+            return block("create_session may not carry an append_system_prompt; the task is the brief in the first message")
         if str(args.get("outcome_branch", "")).strip().lower() in ("main", "refs/heads/main"):
             return block("create_session may not push to main; main changes only through a pull request (PC-02)")
         sha = revision_has_barrier(args.get("source_revision"))
