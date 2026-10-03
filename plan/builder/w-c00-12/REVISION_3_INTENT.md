@@ -1,6 +1,6 @@
 # W-C00-12 · Revision 3: intent and self-check, written before the work (write-ahead)
 
-**Status:** write-ahead record (operating model §3.4). **Scope:** installation only. **Written:** 2026-10-03T18:31Z by run `session_01XUsVQowRbLJdC1E8gFvxZq`, before any piece is rewritten. Git order on the run branch is the proof that these checks came before the revision.
+**Status:** write-ahead record (operating model §3.4). **Scope:** installation only. **Written:** 2026-10-03, committed 18:25:01Z (`git log`; the first text said 18:31Z, a typed estimate, corrected: F-042-1) by run `session_01XUsVQowRbLJdC1E8gFvxZq`, before any piece is rewritten. Git order on the run branch is the proof that these checks came before the revision.
 
 ## What revision 3 does
 

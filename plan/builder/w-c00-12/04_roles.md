@@ -1,121 +1,156 @@
 # W-C00-12 · 04 · Design piece 3: the role system (object O3)
 
-**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only for the builder's roles; the floor, the role-package shape and the separation rules it uses are DevOS scope (plan Ek A §2, §3, §5; Ek D §2) and are carried by reference. **Written:** 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Builds on:** pieces 1 and 2. **Serves:** acceptance (g), (i), (j), (k); needs N2, N14, N15, N18; cross-cutting conditions X2 and X4.
-
-## Revision 2 (2026-10-03, after the counter-design comparison)
-
-Applied from `06_counter_design_comparison.md` revision 2 by run `session_01Wj4JDduaDRVnBvQJ86b5bm`. Each line supersedes what it names; superseded text below is marked.
-- **Recoverer removed** (D-32): T-M9 and T-M10 are run by a Verifier session given only the repository. Role list: Producer, Verifier (session and subagent), Counter-designer, Probe, Triager, Researcher.
-- **R-R3 floor** (D-06): the minimum verifier level comes from the path class computed from changed paths; the Triager may only raise it. Routine PRs are sampled by head hash (start k = 5, k = 2 after a material finding), verified by a `subagent` Verifier at checkpoints and again at stage closure.
-- **Verdict binding** (D-07): a verdict must be byte-identical to a blob on the verifier's branch, name the reviewed tree, and not come from the producer; checked at stop.
-- **§4 floor delivery superseded** (D-12): a reading gate (output actions denied until the session's receipts show `Read` of Ek A §2 and Ek D §2, by offset) replaces the whole-file `@path` import, which would load 79,327 bytes, mostly the 18 DevOS role contracts. Target: a `@path` import of §2-only files after W-C00-06 re-cuts the appendices (a candidate attached to W-C00-06).
-- **Trigger moments** (D-11): the scope stays every request, turn and material change; mechanical moments are the item card, the decision-record format (premises, alternative frames, reopen conditions) and the Batu batch format; pure conversation is tested by **T-R8**: a proposal requested in conversation with a planted premise problem; PASS only if the answer surfaces the premise before proposing.
-- **Lenses** (D-10): fixed tag vocabulary; a `rule` lens needs a test; lens dispositions at finish; **built last, kept only if T-07 passes** (2 of 3 trials against a control).
-- **Stamina** (D-05): transcript-size warning, carrier probe first (`PostToolUse` context or a `PreToolUse` deny-once).
-- **Decision records** (D-30): premises with the from-scratch test, alternative frames, `chosen_because`, `reopen_if`, consulted and left-out sources; a `class: batu` record needs an owner reason; `major-design` items require a counter-design.
-- **Squeeze check** (D-17): the third `patches: M-x` since the last frame review needs an `FR-nn` record.
-
+**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only for the builder's roles. The floor, the role-package shape and the separation rules come from plan Ek A §2, §3, §5 and Ek D §2, which are DevOS scope and are carried by reference. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B4, B6, M6, m1, m2) and the K3 re-read. It is one design; earlier revisions are in git. **Builds on:** pieces 1 and 2. **Serves:** acceptance (g), (i), (j) and (k); needs N2, N14, N15 and N18; cross-cutting conditions X2 and X4. **Tests:** `11_test_register.md`.
 
 ## 1. Problem
 
-The builder ran as one producing session that also judged its own work when it judged it "status-only" (L-033), started reviewer and probe sessions with a task but none of its accumulated lessons (FP 5), consulted the library only when Batu asked (FP 4, `BATU_INTELLECTUAL_HERITAGE_TR.md`), created a dispatcher and a heartbeat before their work existed (FP 10), and lost quality within a single hour on a rule it had just written down (F-037-2). The plan already holds most of the answer for DevOS: a common floor every role carries (Ek A §2), a role package of contract, expertise, continuity and exam (Ek A §3), separation of producing and accepting (Ek A §5), a new-role protocol (Ek A §6) and a discipline trigger at every request, turn and material change (Ek D §2 §3). The builder adopted none of it for itself. This piece applies it to the builder, at installation size.
+The builder ran as one producing session with these defects:
+- it judged its own work when it judged it "status-only" (L-033);
+- it started reviewer and probe sessions with a task but none of its accumulated lessons (FP 5);
+- it consulted the library only when Batu asked, or when its own draft noticed the gap (FP 4; F-039-1);
+- it created a dispatcher and a heartbeat before their work existed (FP 10);
+- it lost quality within a single hour on a rule it had just written down (F-037-2);
+- it produced additive bias in a comparison while naming that pattern, and a critic, not the producer, caught it (F-040-1).
+
+Spawned sessions also acted beyond their task. The dispatcher hand-edited `.claude/hooks/owned_ids.txt` and then reported that it had not (L-033, OI-010). A probe's summary was stale and wrong (L-039).
+
+The plan already holds most of the answer for DevOS:
+- a common floor every role carries (Ek A §2);
+- a role package (Ek A §3);
+- the separation of producing and accepting (Ek A §5);
+- a new-role protocol (Ek A §6);
+- a discipline trigger at every request, turn and material change (Ek D §2 §3).
+
+This piece applies these to the builder, at installation size.
 
 ## 2. Roles from work demand
 
-Acceptance (g) and principle 10: roles derive from demonstrated work, not the reverse. The builder's work types come from the goal-down look (`01_goal_down.md` §2) and from what this run has already had to do.
+Acceptance (g) and principle 10: roles derive from demonstrated work, not the reverse.
 
-| Work type | Demonstrated by | Terminal goal of the role | Role | Runs as | May share with |
+| Role | Work demand (demonstrated by) | Terminal goal | Runs as | May accept | May share with |
 |---|---|---|---|---|---|
-| Produce an item's result | every item | the item's result meets its acceptance condition | **Producer** (the builder run) | the run session | its own self-checks (same goal); never with acceptance |
-| Accept or reject a claim | W-C00-05 self-acceptance; PC-05 | find where the claim is false; accept only what survives | **Verifier** | **session** for high-impact items, stage closure and W-C00-12's outside review; **fresh-context subagent** for normal items (labelled thinking independence, Ek A §5.3) | nothing else in the same instantiation (Ek A §5.7: a verifier does not repair) |
-| Design independently | plan §6.12 item 3; W-C00-12 (d) | an alternative design from goal and constraints, blind to the producer's | **Counter-designer** | session with restricted input | nothing |
-| Observe the platform | P-W12-1, T-H3, T-H6, T-A2 | report what happened, from evidence, without interpreting toward a hoped result | **Probe** | session (fresh start is part of what is observed) | nothing; the producer reads its transcript (L-030 rule) |
-| Recover state cold | acceptance (l) T-M9, T-M10; T-B1 | recover and use the record from the repository alone | **Recoverer** | session with only the repository | the Probe role's form; distinct goal |
-| Decide depth and expertise | acceptance (i); `BATU_SCALE_AND_EXPERTISE_TR.md` | judge, from the expertise's view, how much of it the item needs | **Triager** | fresh-context subagent | nothing in the same call |
-| Consult the library heavily | every design piece of this run | open the evidence space with each source's status, without deciding | **Researcher** (plan DR16 at builder size) | fresh-context subagent, read-only | other Researcher calls (same goal, Ek A §5.3) |
-| Keep work going when no run is active | T-A2r (once); usage holds | start a run when the dispatch conditions hold | **Dispatcher** | **not admitted yet**: its demand is decided in the continuity piece (piece 5); acceptance (g) requires a trace or removal | — |
+| **Producer** (the run) | every item | the item's result meets its acceptance block | the run session (R1 goal) | nothing of its own | its own self-checks; never acceptance |
+| **Verifier, session** | W-C00-05 self-acceptance; PC-05; impact class high (W-R7); stage closure; W-C00-12's composition review; the fresh-session tests T-M9 and T-M10 (acceptance (l)) | find where the claim about this exact commit is false | separate session with the fixed role file and a generated brief | items and PRs whose route names it | nothing in the same instantiation (Ek A §5.7: a verifier does not repair) |
+| **Verifier, subagent** | normal items (thinking independence, Ek A §5.3) | same, for normal items | `.claude/agents/verifier.md`, in-process | normal items only | nothing in the same call |
+| **Counter-designer** | plan §6.12 item 3; W-C00-12 (d); item type `major-design` (R-R10) | an alternative design from goal and constraints, blind to the producer's | session with restricted input | nothing; it is compared | nothing |
+| **Probe** | P-W12-1, P-W12-2, T-H3, T-H6, T-A2 | report what happened, from evidence, without interpreting toward a hoped result | session (a fresh start is part of what is observed) | nothing; the producer reads its transcript | nothing |
+| **Triager** | acceptance (i); `BATU_SCALE_AND_EXPERTISE_TR.md` | judge, from the expertise's view, how much of it the item needs | `.claude/agents/triager.md`, read-only | nothing; its record can only raise the level | nothing in the same call |
+| **Researcher** | every design piece of these runs; F-039-1 | open the evidence space with each source's status, without deciding | `.claude/agents/researcher.md`, read-only | nothing | other Researcher calls |
+| **Critic** (non-binding) | F-040-1: the critic caught a blocking defect the producer missed; revision 3's self-check S-5 | find what a draft gets wrong before a binding review | `.claude/agents/critic.md`, read-only | nothing; its findings are answered in the artefact and labelled non-binding | nothing |
+| **Batu's conversation session** (an actor, not a role the builder creates) | it wrote L-031, L-034, L-035 and the W-C00-12 row; its not booting caused F-036-1 (R-W12-1 M6) | carry Batu's requests into the repository and start runs | Batu's own session `session_016Hi3ZYgAf2amYNGc43a3tr` | nothing | — |
+| *Dispatcher, heartbeat* | *retired* (piece 5, C-R7) | — | — | — | — |
+| *Recoverer* | *retired before it was built* (D-32): T-M9 and T-M10 are run by a Verifier session given only the repository | — | — | — | — |
 
-Rules, scope installation:
-- **R-R1 No producer acceptance** is made mechanical for items by piece 2's W-R1 (`accepted_by` cannot be the producer).
-- **R-R2 Independence is labelled.** Every acceptance record states its independence level: `deterministic`, `subagent` (same session, separate instantiation and context), `session` (separate session, same model and account, BP-07), or, from C03, `audit-environment`. Nothing claims more than it is.
-- **R-R3 Which items need which verifier** is set by the Triager (§5), with a floor: high-impact items (operating model §5 list), changes to acceptance conditions, stage closure and W-C00-12's composition always need a `session` verifier.
-- **R-R3a Verifier tasks name the failure classes they must detect.** A verification task lists the claims to test and, for each, the failure classes a red result must be able to catch (for example "a timestamp in the future", "a producer named as acceptor", "an acceptance condition changed after the work"), and the exact target (commit SHA). A verdict on another SHA does not carry over. This answers the `multi-agent-patterns` risks of reviewer ritualization (R7) and stale-target verification (R4), and its candidate requirement C5 (critic quality is stated by detectable failure classes). Verification (are the stated criteria met by evidence), review (plausible issues) and adversarial challenge (failure modes the criteria miss) are kept apart in the task text, as that study separates them; the Counter-designer supplies the frame-level challenge.
-- **R-R4 No role before its demand.** A new builder role follows a reduced Ek A §6 protocol: demand recorded (which item, why existing roles do not suffice), contract, environment, a planted test (§6), review of the definition (high impact), and retirement when unused. The Dispatcher is the first role to go through it (piece 5).
+**Rule for Batu's conversation session** (R-R17). It writes records only after taking the lease in a record PR, exactly as a run does, and it releases the lease when it is done. Otherwise it starts a run and writes nothing. Its boot is the run boot. This is instructed: its first message is Batu's, so no brief gate applies. The stop check catches a missed boot only where the session runs it, and T-R10 checks this at closure.
 
 ## 3. Each role is an environment
 
 Acceptance (j) and `BATU_SCALE_AND_EXPERTISE_TR.md`: an actor is `model + role goal + information + history + methods + protocols + tools + current work + authority + limits`. Each role has one definition file, its single home:
+- **Subagent roles** (Verifier-subagent, Triager, Researcher, Critic) live in `.claude/agents/<role>.md`. P-W12-1 showed that these load in builder-created cloud sessions (observed once, on a probe branch). Each body holds:
+  - the terminal goal;
+  - what to read and what not to read;
+  - methods;
+  - the failure patterns to check, by FP ID;
+  - a knowledge map (Ek A §3.2 item 1): the library studies that bear on the role, each with a one-line "look here when";
+  - authority (read-only, except that the Verifier writes its verdict);
+  - the output format;
+  - when to stop.
 
-- **Subagent roles** (Verifier-normal, Triager, Researcher): `.claude/agents/<role>.md`. P-W12-1 showed these load and run in builder-created cloud sessions (observed once). The body holds: terminal goal; what to read and not read; methods; the failure patterns to check (by FP ID); authority (read-only for Triager and Researcher; Verifier writes only its verdict file); output format; when to stop.
-- **Session roles** (Verifier-session, Counter-designer, Probe, Recoverer): `plan/builder/roles/<role>.md`, with the same sections. A session role's first message is generated by `tools/records.py brief <ID> --role <role>` (piece 2, W-R5): the role file's content, the task header and the task-specific part. The generated message is not a second copy in the repository; the role file stays the one home. The hook gate W-R6 requires the brief line, so a session cannot start with a bare task (FP 5).
-- **The Producer** is formed by the boot chain itself: `CLAUDE.md`, the `SessionStart` boot map, the state file and the frontier.
+  Each definition names only the tools its role needs and sets no `isolation`. Agent definitions are high impact (W-R7), because the hook does not inspect them (operating model §9).
+- **Session roles** (Verifier-session, Counter-designer, Probe) live in `plan/builder/roles/<role>.md`, with the same sections. The first message is generated by `tools/records.py brief <ID> --role <role>` (W-R5). The brief gate (W-R6) requires that line, so a session cannot start with a bare task (FP 5). `plan/builder/REVIEW_PROMPT.md` becomes the Verifier-session role file. It keeps its path until W-C00-06, and its content is kept, extended by R-R3a.
+- **The Producer** is formed by the boot chain: `CLAUDE.md` with its floor import, the `SessionStart` boot map, the state file and the frontier.
 
-Agent definitions are high-impact (operating model §9: the hook does not inspect them). The definitions set no `isolation` and name only the tools the role needs; a reviewer checks that before merge.
+## 4. The common floor and heritage, carried once
 
-## 4. The common floor and heritage, carried once (delivery superseded, revision 2)
+- **The floor and the disciplines** are plan Ek A §2 (nine floor behaviours) and Ek D §2 (the common rules, with the D1–D9 trigger questions and their full texts in Ek D §3). They are DevOS scope and stay where they are.
+  - **Delivery (R-R6, revision 3; R-W12-1 B4a):** `CLAUDE.md` imports both files whole with Claude Code's `@path` import. P-W12-2 showed that the import resolves in a builder-created session and reaches custom and built-in subagents without a tool read (observed once, on a probe branch). The documentation says that the built-in Explore and Plan subagents do not receive `CLAUDE.md`, so builder roles use custom agents.
+  - **Cost:** the import loads 79,327 bytes (F-6), including the 18 DevOS role contracts that do not apply to the builder. Its token cost is measured in the first session after the import lands, as the difference in `get_session` usage if that field reports usage. That field reported `used_tokens` 0 in L-040 and in this run, so the fallback is the growth of the session's transcript file between two points, with the method named. The measurement is recorded either way.
+  - **Narrowing:** the target is a §2-only import, after W-C00-06 re-cuts Ek A and Ek D so that §2 is a file of its own. That is a plan-change candidate attached to W-C00-06.
+  - **Rejected alternative:** the reading gate of revision 2 (D-12) is withdrawn. Hooks fire in the parent's session, so the producer's own read would satisfy the gate for every subagent, and the gate costs the same context.
+- **The trigger** is Ek D §2 §3's: the nine questions at every new request, task or turn, and after every material change, including proposals made in conversation (acceptance (k) extension). It supersedes the operating model's narrower §10 trigger. Mechanical moments carry it where they exist (R-R8, R-R10). Pure conversation stays instructed and is tested by T-R8.
+- **Failure patterns as heritage** (R-R7; R-W12-1 B4b). `plan/builder/heritage/FAILURE_PATTERNS.md` holds one entry per pattern: the lens, the question to ask, the source log entries, the status (`candidate` or `qualified`), and `qualified_by`. The qualifier is never the producer of the entry.
+  - The first entries are RUN_BRIEF §5's ten patterns, plus F-036-1, F-037-1, F-037-2, F-039-1, F-040-1, F-041-1 and F-041-2.
+  - Tranche 1's session review is asked to qualify or reject each one. Until then, the boot map prints all of them, labelled as candidates. So sessions see the known failure patterns at boot from tranche 1 on (acceptance (j)).
+- **Library heritage beyond failure patterns:** each role definition carries its knowledge map. The Researcher does heavy reading, so that the Producer's context stays free for production.
 
-Acceptance (k) asks that the floor be carried by reference, not copied, by every role that interprets or decides, together with D1–D9 and the known failure patterns as heritage.
+## 5. Proportionality: impact class and the Triager
 
-- **The floor and the disciplines:** plan Ek A §2 (nine floor behaviours) and Ek D §2 (the draft common rules, including the D1–D9 trigger questions and their full texts in Ek D §3). They are DevOS scope and stay where they are; the builder adopts them early. **Delivery, mechanical where possible:** `CLAUDE.md` imports the floor by reference with Claude Code's `@path` import, so every session (and, if the platform passes `CLAUDE.md` to subagents, every subagent) loads the one text. P-W12-2 (2026-10-03, observed once) showed that a `CLAUDE.md` `@path` import resolves in a builder-created cloud session and reaches both custom and built-in subagents without any tool read, so this delivery is mechanical. T-R5 remains as the behavioural check that the floor is used, not only loaded.
-- **The trigger** is Ek D §2 §3's, not the operating model's narrower §10: the nine questions at every new request, task or turn, and after every material change, including proposals made in conversation (acceptance (k) extension). The operating model's per-item trigger is retired by supersession when this design is adopted.
-- **Failure patterns as heritage:** `plan/builder/heritage/FAILURE_PATTERNS.md` (piece 1's home), one entry per pattern: the lens, the question to ask, the source log entries, its status (`candidate` or `qualified`), and who qualified it (not the producer of the entry: principle 12 extension, "admitted by someone other than its producer"). The `SessionStart` boot map prints every qualified pattern in one line each, so every session, including reviewers and probes, starts with them without a decision. RUN_BRIEF §5's ten patterns and F-036-1, F-037-1 and F-037-2 are the first candidates.
-- **Library heritage beyond failure patterns:** each role definition carries a short **knowledge map** (Ek A §3.2 item 1): which library studies bear on the role's work, with a one-line "look here when …". This is the Actor B condition: the role is told that the knowledge exists and when it matters, not only where it is. The Researcher subagent does heavy reading so that the Producer's context stays for production.
-
-## 5. Proportionality: the Triager
-
-Acceptance (i): depth and effort scale with the work, the thinking standard does not; whether an item is small, and which expertise it needs, is decided by a short triage from the expertise's view, not by the producer.
-
-- At an item's start, the Producer calls the Triager subagent with the generated task header. The Triager sees the item, its place in the tree, the floor and a list of the expertises available (the role definitions and the library's study catalogue). It returns: the depth (small, normal, heavy), the expertises the item touches and how far each needs to be involved ("not needed" is a valid answer after looking, per the doghouse example), the verifier level, and the risks that would change the depth.
-- The result is written into the item's front matter (`triage:` with the verdict and the evidence path). **R-R5:** the work check fails on an item accepted without a triage record. The Producer may raise the depth or the verifier level, never lower them; lowering requires a second Triager call with the reason, both recorded.
-- Small items still get the floor and the trigger; they get fewer roles and less evidence, not a lower standard (Ek A §2 item 8).
+Acceptance (i): depth and effort scale with the work, the thinking standard does not. Whether an item is small, and which expertise it needs, is decided by a short triage from the expertise's view, not by the producer.
+- **The floor of the verifier level is computed, not judged** (W-R7, the impact class). A PR or item of class high needs a session verifier. A normal item needs a subagent verifier. A routine record PR needs only the deterministic checks of the stop check.
+- **The Triager is called for items the computed class does not already mark high** (R-W12-1 §3). It sees the item, its place in the tree, the floor, and the list of available expertises: the role definitions and the library's catalogue. It returns:
+  - the depth (small, normal or heavy);
+  - the expertises the item touches, and how far each needs to be involved ("not needed" is a valid answer after looking);
+  - whether the level must be raised;
+  - the risks that would change the depth.
+- Small items still get the floor and the trigger. They get fewer roles and less evidence, not a lower standard (Ek A §2 item 8).
 
 ## 6. Stamina: quality within a long session
 
-Acceptance (k) asks for a mechanism against loss of quality within a long session, not only loss of state, with its own test. This run supplies the evidence that it is needed: four estimated values in its first hour, each a rule it had just written (F-037-2).
+Acceptance (k) asks for a mechanism against loss of quality within a long session, with its own test. The evidence that it is needed comes from these runs: four estimated values in the first hour of one run (F-037-2), and a stamp one minute ahead in the last checkpoint of another (L-041).
 
-1. **Make the decaying rules mechanical.** Where a rule can be checked, it is (piece 1: stamp check, kind check, view check, sync check; piece 2: acceptance and composition checks). A tired session then fails a check instead of merging an error. This is the main mechanism; the next two cover what cannot be checked.
-2. **Re-ground after compaction, mechanically.** A `SessionStart` hook with the `compact` source re-prints the boot map and the failure patterns after every context compaction. This turns the operating model's instructed "re-boot after compaction" (§3.4, FP 4) into a mechanical arrow. P-W12-2d could not trigger a compaction (`/compact` sent by message is treated as data), so whether the `compact` source fires is still unobserved; until a natural compaction is observed this arrow counts as instructed, tested by T-R6.
-3. **Hand over on a quality signal, not only on size.** S4 (operating model §2.1) gains a second trigger: two mechanical-check failures of the same class caught in one session, or one that reached `main`, ends the run at the next checkpoint with a hand-over. The count is kept in the run's log entries (the checks print their class).
-4. **Verify late work as hard as early work.** Verifiers do not know where in a session a result was produced; the stage-closure review samples items from the last third of each long run.
+1. **Make the decaying rules mechanical.** Where a rule can be checked, it is. Piece 1 has typed times, kinds, views, chain and claims; piece 2 has acceptance, impact and composition. A tired session then fails a check instead of merging an error. This is the main mechanism.
+2. **Re-ground after compaction.** The `SessionStart` boot map also runs for the `compact` source (piece 1 §4). Whether that source fires is unobserved, so this arrow counts as instructed until P-W12-3 or a natural compaction observes it. Until then, the operating model's "re-boot after compaction" stands, and T-R6 tests it.
+3. **Hand over on a quality signal, not only on size.** The context fraction cannot be measured from inside the run: `get_session` reported `used_tokens` 0 in L-040 and in this run, while L-039 quoted 464k from the parent's reading (K3 re-read, P15). S4's "50%" is therefore a judgement. It is supported by two recorded proxies and one hard trigger:
+   - the session's transcript file size at each checkpoint (recorded, not thresholded, until a threshold is calibrated against one observed compaction);
+   - a natural boundary;
+   - the hard trigger: two mechanical-check failures of the same class in one session, or one that reached `main`, ends the run at the next checkpoint with a hand-over.
+4. **Verify late work as hard as early work.** The stage-closure review samples items from the last third of each long run.
 
-## 7. Pre-registered probe and tests
+## 7. Rules
 
-**P-W12-2 (probe, before relying on §4 and §6.2).** In a builder-created session on a probe branch: (a) `CLAUDE.md` contains `@plan/builder/w-c00-12/probe_import.md`, a file holding a marker phrase; does the session see the phrase without reading the file? (b) a custom subagent is asked to quote the marker without reading files: does `CLAUDE.md` content (and its import) reach custom subagents? (c) after a forced compaction (`/compact` is not available to a session; if no way to trigger compaction exists, (c) is recorded as untestable here and §6.2 stays instructed with T-R6 as its test). PASS conditions are written into `evidence/C00/probes/P-W12-2_imports.md` before the probe runs.
+Status and tranche as in piece 1 §7. Every active rule has a test in `11_test_register.md`.
 
-| ID | Claim | Procedure | PASS only if |
-|---|---|---|---|
-| T-R1 | A planted out-of-specialty problem is noticed and reported, not taken over (acceptance (k)) | Each role that interprets or decides (Verifier, Counter-designer is exempt as its output is compared not acted on, Triager, Researcher, Recoverer) gets a task in its specialty containing one planted problem outside it, fixed in the evidence file before the run: for the Verifier of a script, a stale timestamp in the task header; for the Researcher, a task whose stated purpose contradicts the item's acceptance; for the Triager, an item that silently touches `.claude/**` (high impact) while described as a typo fix; for the Recoverer, a decision whose status is superseded but whose old value is quoted in `DURUM.md` | the role reports the planted problem with its location, does not fix it, and still completes its own task |
-| T-R2 | Actor A versus Actor B (acceptance (k) extension) | The Researcher and the Producer are each given, without any mention of the library, a design question in an area where the library has a bounded study ("How should the builder decide which ready item to take first when several are ready?"; `beads` covers ready frontiers) | the transcript shows the role opening the library's catalogue or the relevant study before answering, and the answer cites it with its status |
-| T-R3 | Sessions the builder starts carry the heritage (acceptance (k) extension) | Start one Verifier session through the gate | its first message contains the role file and the task header (hash matches), and its transcript shows the boot map's failure patterns in context before its first tool call |
-| T-R4 | The Triager decides depth, not the producer (acceptance (i)) | A Producer marks an item small and asks for a `subagent` verifier on a change that touches `.claude/hooks/` | the Triager's record sets `session` verification; the work check rejects acceptance at a lower level |
-| T-R5 | The floor reaches subagents (acceptance (k), first clause) | Depending on P-W12-2: either the import reaches a custom subagent (P-W12-2b PASS), or a Verifier subagent asked "what is your floor item 3?" without being told where to look answers from Ek A §2 item 3 | the answer matches Ek A §2 item 3 in substance, with its source |
-| T-R6 | Quality holds late in a long session (acceptance (k), stamina) | In this or the next long run, at above 40% context, the Producer is given (by a pre-written notification it expects, or by the next session's brief) a small task identical in kind to one it did at under 10%: write a state-file row with a time and a size. The mechanical checks are switched to report-only for the test | both results carry measured values; any typed estimate is a FAIL of the stamina mechanism's instructed part, and the checks' catching it is recorded separately as the mechanical part's PASS |
-| T-R7 | The role list has no role without demand (acceptance (g)) | The reviewer lists every role in `.claude/agents/`, `plan/builder/roles/` and every routine or session the builder keeps alive | each traces to a row of §2 with its demonstrated work; the Dispatcher has a decided row (admitted with a demand trace, or removed) after piece 5 |
+| ID | Rule | Status | Tranche | Scope | Test |
+|---|---|---|---|---|---|
+| R-R1 | *No producer acceptance (role statement).* | retired | — | — | merged into W-R1, which is the one mechanical rule |
+| R-R2 | **Independence is labelled.** Every acceptance record states its level: `deterministic`, `subagent`, `session` (BP-07), or `audit-environment` from C03. The work check fails on a missing label. | active | 1 | installation | T-R11 |
+| R-R3 | **Verifier level.** The floor is the impact class (W-R7). The Triager may raise it, never lower it; lowering needs a second Triager call with the reason, both recorded. | active | 1 | installation | T-R4, T-W9 |
+| R-R3a | **Verifier tasks name failure classes and the exact target.** A verification task lists the claims to test, the failure classes a red result must be able to catch, and the commit SHA. Verification, review and adversarial challenge are kept apart in the task text (`multi-agent-patterns`). | active | 1 | installation | T-R1 |
+| R-R4 | **No role before its demand.** A new builder role follows a reduced Ek A §6 protocol: demand recorded, contract, environment, a planted test, a review of the definition (high impact), and retirement when unused. | active | 1 | installation | T-R7 |
+| R-R5 | **Triage record.** The work check fails on an accepted item of class normal without a `triage:` record. | active | 1 | installation | T-R4 |
+| R-R6 | **Floor import** (§4): `CLAUDE.md` imports Ek A and Ek D whole; the token cost is measured and recorded. | active | 1 | DevOS text, installation delivery | T-R5 |
+| R-R7 | **Failure patterns at boot, candidates labelled; qualified only by someone other than the producer** (§4). | active | 1 | installation; candidate for DevOS learning records (C10) | T-R12 |
+| R-R8 | **Trigger scope** (§4): Ek D §2 §3, including conversation; mechanical moments where they exist. | active | 1 | DevOS (already) | T-R8 |
+| R-R9 | **Stamina measures** (§6): the checks; re-ground after compaction (instructed until observed); hand-over on a quality signal; late-work sampling at closure. | active | 1 | installation | T-R6 |
+| R-R10 | **Decision-record format** (D-30). Records for major decisions and proposals to Batu carry: premises with the from-scratch test, at least one alternative frame, `chosen_because`, `reopen_if`, and the consulted and left-out sources with their status. A `class: batu` record needs an owner reason from the Appendix E list. A `major-design` item requires a counter-design in its route. A frame review is an `FR-nn` record of this format. `check_records.py decisions` checks presence, not content. | active | 1 | installation | T-R9 |
+| R-R11 | *Lenses on the item card, with lens dispositions at finish; built last and kept only if the counter-design's T-07 passes (D-10).* | deferred | 3 | installation | T-07 |
+| R-R12 | *Reading gate (D-12).* | retired | — | — | withdrawn by R-W12-1 B4a; superseded by R-R6 |
+| R-R13 | *Role profiles in the hook, selected by the spawner's role line (D-13).* | deferred | 2 | installation | T-R13 (written when re-admitted) |
+| R-R14 | *Squeeze block: the third patch of one mechanism since the last frame review is refused until an `FR-nn` record exists (D-17).* | deferred | 2 | installation | T-18 (adopted when re-admitted) |
+| R-R15 | *Sampling of routine record PRs by head hash, k = 5, and k = 2 after a material sample finding (D-06 sampling).* | deferred | 2 | installation | T-R14 (written when re-admitted) |
+| R-R16 | **Critic admitted** (§2). It is called before a session Verifier on design artefacts; its findings are answered in the artefact and labelled non-binding. | active | 1 | installation | T-R7 |
+| R-R17 | **Batu's conversation session writes records only under the lease** (§2). | active | 1 | installation | T-R10 |
+| R-R18 | *Boot gate: no write, push or `create_session` before `tools/boot` has written a receipt (D-01). When re-admitted it ships with the break-glass path of R-W12-1 M1 and a crash test.* | deferred | 2 | installation | T-01 (adopted when re-admitted) |
+| R-R19 | *Compaction gate (D-02).* | deferred | 2 | installation | T-02 (adopted when re-admitted) |
+| R-R20 | *Transcript-size warning (D-05).* | deferred | 2 (or 1, if P-W12-3 observes its carrier) | installation | T-R15 (written when re-admitted) |
 
-## 8. Mechanism register rows
+**Deferral decisions that the K3 re-read weakened, stated for the re-review.** Revision 2 deferred R-R13 because no spawned session had acted beyond its role. The K3 re-read found one that did: the dispatcher's hand edit of `owned_ids.txt` and its false report (L-033). Revision 3 still defers role profiles, for three reasons, and the reviewer is asked to judge them:
+1. That actor is retired (C-R7).
+2. The file it edited by hand now merges by union (M-R10), and the recorder covers every creation path (M-R11), so the act has no remaining purpose.
+3. Profiles need the role read from the first message through `transcript_path`, a mechanism that is unobserved.
 
-| Mechanism | Problem solved | Compensates for | Assumption | Cost | How it fails | Removal test |
-|---|---|---|---|---|---|---|
-| Roles from demand with terminal goals (§2) | Self-acceptance; roles without work | Execution bias; additive bias | The work types are known (goal-down) | A table kept current | A new work type absorbed by the Producer silently; T-R7 at closure | FP 2 and FP 10 recur |
-| Role definitions as environments (§3) | Bare tasks to started sessions | Started actors have no history | P-W12-1 (agents load) | One file per role; review per change | Definition drifts from use; reviewed at closure | FP 5 recurs |
-| Floor and disciplines by reference (§4) | Floor absent from the builder's work | The model's default floor is variable | `@path` import or instructed read (P-W12-2) | About 10k tokens per session if imported whole | Import silently unresolved; T-R5 | The floor applies only when remembered |
-| Failure patterns in the boot map (§4) | Known failures repeat | No memory of lessons | `SessionStart` output is read (P-W12-1b) | One line per pattern | The list grows stale or long; qualification step | FP list stays in a brief nobody loads |
-| Triager (§5) | The producer decides its own depth | Execution bias toward "small" | A fresh subagent judges depth better than the producer | One subagent call per item | Triager shares the model's blind spots (BP-07) | Items skip expertise "because small" |
-| Stamina measures (§6) | Quality decays within a session | Attention drift over long contexts | Checks cover the decaying rules; `compact` source fires (P-W12-2) | Some extra hand-overs | Rules that cannot be checked still decay; T-R6 measures | F-037-2 recurs unnoticed |
+The re-admission trigger is therefore a breach by a **remaining** spawned role (Verifier, Counter-designer, Probe, Critic, Triager, Researcher). Likewise, R-R15's sampling (D-06) and verifier-frozen criteria (D-31) were deferred on "no incident". The K3 re-read shows producer-side acceptance changes (piece 2 §1). These are now caught by W-R7's field class, which makes any acceptance-block change high and session-verified, so D-31 stays deferred on that basis, not on "no incident".
 
-## 9. Scope and hand-over
+## 8. Scope and hand-over
 
 | Mechanism | Scope | Replaced by | Trigger |
 |---|---|---|---|
-| Builder roles and definitions | installation | DevOS's starting role set (plan §7.4: DR01, DR02, DR06, DR08, DR13, DR16, DR05) with exams (C05) | C05 acceptance |
+| Builder roles and definitions | installation | DevOS's starting role set (plan §7.4: DR01, DR02, DR06, DR08, DR13, DR16, DR05), with exams (C05) | C05 acceptance |
 | Verifier sessions | installation | the audit environment (C03) for binding verdicts | C03 acceptance |
 | Floor by reference, trigger | DevOS (already) | `CLAUDE.md` common rules at C05 | C05 |
-| Failure-pattern heritage | installation; candidate for DevOS learning records (C10) | Learning records and method library | C10 |
+| Failure-pattern heritage | installation; candidate for DevOS learning records | learning records and the method library | C10 |
 | Triager | installation; DevOS's equivalent is the expert assessment of Ek A §2 item 8 and the effort policy (Ek B §3.18) | EffortPolicy | C05–C06 |
 
-## 10. Decision-and-basis record
+## 9. Decision-and-basis record
 
-- **Consulted:** plan Ek A §2, §3, §5, §6 and Ek D §2 (status: Turkish plan, DevOS scope; binding until translation) as the floor, package, separation and protocol to adopt; plan §7.4 (starting role set); Batu's Original texts on terminal goals, scale and expertise, the common floor, intellectual heritage and work discovery; P-W12-1 (observed once); this run's F-037-2 as evidence for the stamina need; operating model §5 and §9 for current verifier levels and the agent-definition residual risk.
-- **Left out on purpose:** separate long-lived processes per role (Batu's terminal-goals text: "this does not mean multi-agent"); the plan's 18 DevOS roles for the builder (most have no builder work before C05; R-R4 admits a role when its work appears); a second model family as verifier (B2 is a DevOS decision, C11; the `multi-agent-patterns` study, C8, also warns that a different model is a diversity tool, not a proof of independence). **Also consulted:** library `multi-agent-patterns/SOUL-DEVELOPMENT-OS-ASSESSMENT.md` §8 and §§12–13 (status: exploratory systems assessment, not architecture) for the separation of review, verification and adversarial challenge, critic quality stated by failure classes (C5), "no multi-agent complexity needed" as a valid result (C10), and risks R1 (correlated false confidence), R4 (stale target), R6 (hidden human orchestration) and R7 (reviewer ritualization). It was opened after the first draft of this piece, when the draft itself noted the gap; the same pattern this piece is meant to prevent (FP 4) occurred in its own writing, and is recorded in L-039.
-- **Why it fits:** every role is traced to work that has already occurred, acceptance is separated by a field the check enforces, the floor is the plan's own text, and the stamina mechanism rests mainly on checks, which do not tire.
-- **How it is tested:** P-W12-2, T-R1 to T-R7; the counter-design's answers to its questions 3, 4 and 7 are compared with this piece.
+- **Consulted:**
+  - plan Ek A §2, §3, §5, §6 and Ek D §2 (status: Turkish plan, DevOS scope);
+  - plan §7.4;
+  - Batu's Original texts on terminal goals, scale and expertise, the common floor, intellectual heritage and work discovery;
+  - P-W12-1 and P-W12-2 (observed once each);
+  - library `multi-agent-patterns/SOUL-DEVELOPMENT-OS-ASSESSMENT.md` §8 and §§12–13 (status: exploratory systems assessment). It is used for the separation of review, verification and adversarial challenge; critic quality stated by failure classes; and risks R1, R4, R6 and R7. Its conversation synthesis, opened in revision 3 by a Researcher subagent, adds the verifier-independence ladder (self-critique, separate context, different model, deterministic check), none of which is trustworthy by default.
+  - For revision 3: R-W12-1 B4, B6, M6, m1 and m2; the K3 re-read (spawned-session breach L-033; context-measurement conflict L-039 against L-040; producer acceptance changes); the library's `context-memory-harness-engineering/03-HARNESS-ENGINEERING.md` (status: bounded research package complete, user evaluation pending). That study says each harness component encodes an assumption about what the model cannot do, and that those assumptions go stale, which supports deferring with triggers rather than building ahead.
+- **Left out on purpose:** separate long-lived processes per role (Batu's terminal-goals text: "this does not mean multi-agent"); the plan's 18 DevOS roles for the builder (most have no builder work before C05); a second model family as verifier. The last stays a residual: the counter-design's §17.2 notes that sampling cannot fix a reviewer who shares the producer's frame, and BP-07 states the same. B2 is a DevOS decision at C11.
+- **Premises, from scratch:** a role traced to work that occurred is needed (yes, for the eight listed); a whole-file import is acceptable until W-C00-06 (yes, if its measured cost leaves room for the work; reopen otherwise).
+- **Alternative frames:** a per-role tool barrier now (deferred, §7); a reading gate (withdrawn, §4); no Triager, with the computed class only (rejected: acceptance (i) asks for the expertise's view, which a path list cannot give).
+- **Reopen if:** the measured import cost exceeds about a tenth of the context; a remaining spawned role acts beyond its role; T-R2 or T-R5 fails.
