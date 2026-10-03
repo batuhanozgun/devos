@@ -1,0 +1,4 @@
+# Gate 1b-ii: test output (W-C00-12 tranche 1b-ii)
+
+**Written:** 2026-10-03T20:49Z by run `session_01CmCKBkyHynQ27CwqkiviC6`. **What:** the unedited output of `python3 tools/test_check_records.py`, run from the repository root of a clone with full history, on the commit named in its first line. That commit is this file's parent, and it already carries this header, because the log names this file and claims (a) would otherwise fail on its own evidence path. The procedures are `plan/builder/w-c00-12/11_test_register.md` section 2, made concrete in `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` section 3. **These results count only under the session Verifier's verdict** (W-R1; R-W12-2 C1 c), since the scripts are new in this PR. Lines starting `MUTANT` come from the two mutation checks, where the checker is disabled in a scratch copy; the PASS of `M1` and `M2` means the tests then reported FAIL.
+
