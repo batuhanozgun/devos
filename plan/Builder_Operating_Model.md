@@ -1,9 +1,8 @@
 # Builder Operating Model (installation period)
 
-**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** see `plan/ledger.md`, Governing documents.
+**Version:** 1.7 · **Date:** 2026-10-01 · **Status:** Binding through plan change PC-04 since 2026-10-01T21:05Z (W-C00-05 done, L-033): R-C00-BOM-6 PASS on v1.6, and R-C00-BOM-7 PASS-WITH-CONDITIONS on v1.7 with its conditions met (L-030, judged by the builder; the W-C00-11 closure review re-checks).
 
 **History:**
-- v1.7, header status pointer (W-C00-12 tranche 1b-ii, M-R2): the header's status sentence was replaced by the pointer to the state file, where the status of this document lives. No rule changed. The sentence, verbatim: "Binding through plan change PC-04 since 2026-10-01T21:05Z (W-C00-05 done, L-033): R-C00-BOM-6 PASS on v1.6, and R-C00-BOM-7 PASS-WITH-CONDITIONS on v1.7 with its conditions met (L-030, judged by the builder; the W-C00-11 closure review re-checks)."
 - v1.7, status update only (L-033): T-A2r PASS (observed once) and T-E2 PASS recorded; the status changed from [Proposal] to binding. No rule changed.
 - v1.0 was committed as `a58413a` (SHA-256 `e37de022…afb4`) 17 seconds *after* the counter-design was pushed (`73baa5a`). That the builder had not read the counter-design before then rests on the builder's own account; git order does not prove it.
 - v1.1 adds the counter-design's improvements and the probe results (§14).
