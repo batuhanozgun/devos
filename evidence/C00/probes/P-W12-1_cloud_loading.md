@@ -35,4 +35,18 @@ A result counts as observed once, in this environment and Claude Code version, n
 
 ## Result
 
-(Filled after the probe, from the transcript.)
+Probe session `session_01VspZNar2hVyLPEos9XSHeD`, created 2026-10-03T17:26:22.68Z on `claude/probe-w12-loading` (`2adb623`), Claude Code 2.1.288, model `claude-opus-5-5`. Read by the builder from the session's events with `list_events` (fetched before 17:28Z; result written at 17:28Z) (all 37 events of its one turn), not from its summary.
+
+| ID | Verdict | Transcript evidence |
+|---|---|---|
+| P-W12-1a | **PASS** | System event `hook_started` `SessionStart:startup` at 17:26:28.76Z, then `hook_response` exit 0 with stdout `PROBE-SS-MARKER-W12 SessionStart hook ran at 2026-10-03T17:26:28Z`. The Bash tool result of `cat /tmp/devos_probe_sessionstart` is `2026-10-03T17:26:28Z`, six seconds after `created_at`. |
+| P-W12-1b | **PASS** | The session's first text (17:26:40.21Z) quotes the line `SessionStart:startup hook success: PROBE-SS-MARKER-W12 SessionStart hook ran at 2026-10-03T17:26:28Z` before its first tool call (17:26:40.77Z). The harness prefixes the hook output with `SessionStart:startup hook success: `, so no line *starts* with the marker; the session said so itself. |
+| P-W12-1c | **PASS** | The session listed `devos-probe-skill` as available. The Skill call's tool result is `Launching skill: devos-probe-skill`, and the harness then injected the skill body as a synthetic message beginning `Base directory for this skill: /home/user/devos/.claude/skills/devos-probe-skill` and containing `PROBE-SKILL-BODY-4K`. That is how the Skill tool returns a body; the phrase reached the session through the call. |
+| P-W12-1d | **PASS** | The session's init event lists the agent types `claude, claude-code-guide, devos-probe-agent, Explore, general-purpose, Plan, statusline-setup`. The Agent call with `subagent_type` `devos-probe-agent` started a `local_agent` task, which handed back `PROBE-AGENT-BODY-9Z`. |
+| Control | **PASS** | `devos-absent-skill` was reported as not listed. |
+
+**Additional observation (not pre-registered, so recorded as an observation only):** the allow-list `PreToolUse` hook fired for the `SubagentHandback` call made **inside** the in-process subagent (`hook_name` `PreToolUse:SubagentHandback`, `parent_tool_use_id` set). Operating model §9 listed "whether hooks run for tool calls made inside in-process subagents" as documented but not observed (R-C00-BOM-5 R-4); it is now observed once.
+
+**What this does not show.** One session, one version. It does not show that a role defined in `.claude/agents/` behaves as its definition intends, that `SessionStart` output is weighed by the model, or that skills are invoked unprompted when relevant (P-W12-1 named them explicitly). Those are behavioural questions for the redesign's own tests.
+
+**Consequence for W-C00-12.** The three platform mechanisms the redesign may rest on exist in builder-created cloud sessions: a mechanical boot root (`SessionStart`), on-demand methods (`.claude/skills/`) and role environments (`.claude/agents/`). G-017's untested premise and plan C01 row 4's first condition are observed once. Agent definitions remain a high-impact change (operating model §9: definitions are not inspected by the hook).
