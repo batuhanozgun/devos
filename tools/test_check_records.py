@@ -553,6 +553,12 @@ def t_m15():
         rc, out = s.cr("claims", "--base", main, "--head", head)
         got = bool(fails(out, "stamps", "Written: stamp later than its review-branch commit"))
         outcome("T-M15", label, got == want and not fails(out, "claims"), out)
+        if want:  # 1c Critic finding 1: a late stamp is a stamps failure and must not unbind the verdict
+            probe = ("import sys; sys.path.insert(0, 'tools'); import check_records as C; "
+                     f"print('BOUND' if C.verdict_bound('evidence/C00/reviews/R-FX1.md', '{head}') else 'UNBOUND')")
+            rc, out = sh(["python3", "-c", probe], s.d)
+            outcome("T-M15", "(f3) the late-stamped copy of (f1) stays bound (verdict_bound)",
+                    "BOUND" in out and "UNBOUND" not in out, out)
     # N-053 (e): (e1) a later push to the review branch does not unbind an earlier copy; (e2) the owned list is
     # judged on the tree being checked, so a copy made before the recorder line reached the branch binds once it has
     s = Scratch()
