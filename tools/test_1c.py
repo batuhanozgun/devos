@@ -84,11 +84,35 @@ def t_r12b():
     outcome("T-R12", "(b) control: FP-01 qualified by another reviewer passes chain", rc == 0, out)
 
 
+def t_m17b():
+    """T-M17 (b) (M-R18): the SessionStart command from .claude/settings.json, run with the script made to raise,
+    prints an error line and exits 0 (the session continues); run normally it prints both clocks, the main SHA, the
+    chain result and every failure pattern with its label, and no work state (the part of T-M17 (a) a script can
+    show; (a) itself is read from a builder-created session's first context)."""
+    import json
+    cmd = json.load(open(REPO / ".claude/settings.json"))["hooks"]["SessionStart"][0]["hooks"][0]["command"]
+    env = {"CLAUDE_PROJECT_DIR": str(REPO), "BOOT_MAP_FAIL_TEST": "1"}
+    rc, out = sh(["sh", "-c", cmd], REPO, env=env)
+    outcome("T-M17", "(b) the script made to raise prints an error line and the hook exits 0",
+            rc == 0 and "BOOT_MAP ERROR" in out, out)
+    rc, out = sh(["sh", "-c", cmd], REPO, env={"CLAUDE_PROJECT_DIR": str(REPO)})
+    fps = [l.split("|")[1].strip() for l in (REPO / "plan/builder/heritage/FAILURE_PATTERNS.md").read_text().splitlines()
+           if l.startswith("| FP-")]
+    need = ["UTC;", "Turkey time", "main: ", "Chain check (M-R4): "] + [f"- {f} " for f in fps]
+    missing = [n for n in need if n not in out]
+    labels = all(("[candidate" in l) for l in out.splitlines() if l.startswith("- FP-") and "candidate" in
+                 next((r for r in (REPO / "plan/builder/heritage/FAILURE_PATTERNS.md").read_text().splitlines()
+                       if r.startswith(f"| {l[2:7]} |")), ""))
+    work = [w for w in ("Run lock", "frontier", "Ready (startable", "claimed_by", "W-C00-") if w in out]
+    outcome("T-M17", "(a, script part) clocks, main SHA, chain result and every pattern with its label; no work state",
+            rc == 0 and not missing and labels and not work, f"missing={missing} work={work}")
+
+
 def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8), ("T-R12", t_r12b)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b)]
     for name, fn in tests:
         try:
             fn()

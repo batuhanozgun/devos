@@ -7,7 +7,9 @@
    repository creation and forking are blocked.
 3. Session tools are an allow list: new sessions only with a full checkout
    of devos in the builder environment, on main or this session's branch,
-   and only if that revision carries .claude/settings.json; repositories
+   and only if that revision carries .claude/settings.json; the first
+   message must carry a generated task brief (brief gate H-BRF, W-R6);
+   repositories
    only devos, or the library read-only; tools that act on an existing
    session or routine (including reading its events) only for IDs in
    owned_ids.txt; routines never with connectors and only into owned
@@ -28,12 +30,16 @@ The settings command wraps the script so that any other non-zero exit
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILDER_ENV = "env_01AMBDuHjjTsXMeXFyYgk1zR"     # devos-kurulum
 DEVOS_URL = re.compile(r"https://github\.com/batuhanozgun/devos(\.git)?/?", re.I)
+BATU_CONVERSATION = "session_016Hi3ZYgAf2amYNGc43a3tr"  # may start a run (R-R17)
+BRIEF_LINE = re.compile(r"^Task-Brief: (\S+) (\S+) ([0-9a-f]{16})$", re.M)
 
 ALLOWED_PREFIXES = (
     "mcp__github__",
@@ -98,16 +104,72 @@ def git(*args):
 
 def revision_has_barrier(rev):
     """The remote revision a new session will check out must carry .claude/settings.json.
-    It is fetched first (R-C00-BOM-4 m2); a failed fetch blocks."""
+    It is fetched first (R-C00-BOM-4 m2); a failed fetch blocks. Returns the fetched commit, or None."""
     if rev in (None, "", "main"):
         ref = "main"
     elif rev == git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip():
         ref = rev
     else:
-        return False
+        return None
     if git("fetch", "-q", "origin", ref).returncode != 0:
-        return False
-    return git("cat-file", "-e", "FETCH_HEAD:.claude/settings.json").returncode == 0
+        return None
+    sha = git("rev-parse", "FETCH_HEAD").stdout.strip()
+    if not sha or git("cat-file", "-e", f"{sha}:.claude/settings.json").returncode != 0:
+        return None
+    return sha
+
+
+def brief_gate(prompt, sha):
+    """W-R6 (H-BRF): the first message carries a line `Task-Brief: <ID> <role> <hash>`; the brief is regenerated
+    with tools/records.py from the fetched source revision; its hash must match and its whole text must appear in
+    the message (N-053 b). A `run` brief is allowed only from the Run lock holder on the fetched main, or from
+    Batu's conversation session (R-R17). Returns None when allowed, otherwise the reason."""
+    found = BRIEF_LINE.findall(prompt)
+    if not found:
+        return "the first message carries no 'Task-Brief: <ID> <role> <hash>' line"
+    iid, role, h = found[-1]
+    if iid == "run":
+        if role != "producer":
+            return f"a run brief has role producer, not '{role}'"
+        me = norm(os.environ.get("CLAUDE_CODE_REMOTE_SESSION_ID", ""))
+        if git("fetch", "-q", "origin", "main").returncode != 0:
+            return "main could not be fetched to read the Run lock row"
+        ledger = git("show", "FETCH_HEAD:plan/ledger.md").stdout
+        m = re.search(r"^\| Run lock \| `?(session_[A-Za-z0-9]+)`?", ledger, re.M)
+        holder = m.group(1) if m else None
+        if me not in (holder, BATU_CONVERSATION):
+            return f"a run brief only from the Run lock holder ({holder}) or Batu's conversation session, not '{me}'"
+        args = ["brief", "run", "--role", "producer"]
+    else:
+        args = ["brief", iid, "--role", role]
+        if role == "verifier":
+            ts = re.search(r"^Target SHA: (\S+)$", prompt, re.M)
+            fc = re.search(r"^Failure classes to look for:\n((?:- .*\n)+)", prompt, re.M)
+            if not ts or not fc:
+                return "a verifier brief without its Target SHA or failure classes"
+            args += ["--target-sha", ts.group(1), "--failure-classes",
+                     *[l[2:] for l in fc.group(1).splitlines()]]
+    root = os.path.dirname(os.path.dirname(HERE))
+    tmp = tempfile.mkdtemp(prefix="brf-")
+    try:
+        a = subprocess.run(["git", "-C", root, "archive", sha], capture_output=True, timeout=30)
+        x = subprocess.run(["tar", "-x", "-C", tmp], input=a.stdout, capture_output=True, timeout=30)
+        if a.returncode != 0 or x.returncode != 0:
+            return "the source revision could not be exported to regenerate the brief"
+        env = dict(os.environ, GIT_DIR=os.path.join(root, ".git"))
+        r = subprocess.run([sys.executable, "tools/records.py", *args], cwd=tmp, env=env, capture_output=True,
+                           text=True, timeout=60)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    if r.returncode != 0:
+        why = (r.stderr.strip().splitlines() or ["no output"])[-1]
+        return f"records.py {' '.join(args[:4])} failed on the source revision: {why[:160]}"
+    gen = r.stdout
+    if not gen.endswith(f"\nTask-Brief: {iid} {role} {h}\n"):
+        return f"the Task-Brief hash does not match the brief generated from the source revision {sha[:7]}"
+    if gen.strip() not in prompt:
+        return "the brief text in the first message differs from the generated brief (N-053 b)"
+    return None
 
 
 def check_session_tool(tool, args):
@@ -123,8 +185,12 @@ def check_session_tool(tool, args):
             return block("create_session may not widen permissions")
         if str(args.get("outcome_branch", "")).strip().lower() in ("main", "refs/heads/main"):
             return block("create_session may not push to main; main changes only through a pull request (PC-02)")
-        if not revision_has_barrier(args.get("source_revision")):
+        sha = revision_has_barrier(args.get("source_revision"))
+        if not sha:
             return block("create_session only on main or this session's branch, and only if that revision carries .claude/settings.json")
+        why = brief_gate(str(args.get("prompt") or ""), sha)
+        if why:
+            return block(f"brief gate (W-R6): {why}")
         return 0
     if tool == "add_repo":
         owner, repo = str(args.get("owner", "")).lower(), str(args.get("repo", "")).lower()

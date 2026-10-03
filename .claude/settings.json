@@ -13,11 +13,21 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__claude-code-remote__create_session|mcp__claude-code-remote__create_trigger",
+        "matcher": "mcp__claude-code-remote__create_session|mcp__claude-code-remote__create_trigger|mcp__claude-code-remote__send_later",
         "hooks": [
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/record_owned_id.py\" || true"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/tools/boot_map\" || true"
           }
         ]
       }

@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""boot_map: the boot map printed at every session start (M-R18; carrier A-08; `02_memory.md` section 4).
+
+Run by the SessionStart hook in .claude/settings.json for every source. Prints, generated now from the files:
+the home table of plan/builder/MEMORY_MAP.md, the UTC and Turkey times, the main SHA, the result of
+`tools/check_records.py chain`, and the failure patterns of plan/builder/heritage/FAILURE_PATTERNS.md, qualified
+ones first and candidates labelled. It prints no work state: reviewers and counter-designers must not see it, so
+role routing stays in the first message. It never blocks a session: any error prints one `BOOT_MAP ERROR` line and
+the script exits 0, so the session can still boot by CLAUDE.md.
+"""
+import os
+import re
+import subprocess
+import sys
+from datetime import datetime, timedelta, timezone
+
+sys.dont_write_bytecode = True
+ROOT = os.environ.get("CLAUDE_PROJECT_DIR") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def git(*a):
+    r = subprocess.run(["git", "-C", ROOT, *a], capture_output=True, text=True, timeout=20)
+    return r.stdout.strip() if r.returncode == 0 else ""
+
+
+def cells(line):
+    return [c.strip() for c in re.split(r"(?<!\\)\|", line.strip())[1:-1]]
+
+
+def main():
+    if os.environ.get("BOOT_MAP_FAIL_TEST"):  # T-M17 (b): the script made to raise
+        raise RuntimeError("planted failure (T-M17 b)")
+    now = datetime.now(timezone.utc)
+    tr = now.astimezone(timezone(timedelta(hours=3)))  # Europe/Istanbul, fixed UTC+3 since 2016
+    main_sha = git("rev-parse", "--verify", "-q", "origin/main") or "unknown (no origin/main ref)"
+    print("BOOT MAP (tools/boot_map, M-R18): generated now from the files; it carries no work state.")
+    print(f"Clock: {now:%Y-%m-%dT%H:%M:%SZ} UTC; {tr:%Y-%m-%d %H:%M} Turkey time. main: {main_sha}")
+    print("Boot order: CLAUDE.md, then plan/Builder_Operating_Model.md section 3.1. Homes (plan/builder/MEMORY_MAP.md):")
+    with open(os.path.join(ROOT, "plan/builder/MEMORY_MAP.md")) as f:
+        lines = [l for l in f if l.startswith("| ")]
+    hdr = cells(lines[0])
+    fi, hi = hdr.index("Family"), hdr.index("Authoritative home")
+    for l in lines[1:]:  # the separator row does not start with "| "
+        c = cells(l)
+        print(f"- {c[fi]}: {c[hi]}")
+    r = subprocess.run([sys.executable, "tools/check_records.py", "chain"], cwd=ROOT, capture_output=True, text=True,
+                       timeout=60)
+    fails = [l for l in r.stdout.splitlines() if l.startswith("FAIL")]
+    print(f"Chain check (M-R4): {'PASS' if r.returncode == 0 else 'FAIL'}" +
+          "".join(f"\n  {l}" for l in fails[:10]))
+    with open(os.path.join(ROOT, "plan/builder/heritage/FAILURE_PATTERNS.md")) as f:
+        rows = [cells(l) for l in f if re.match(r"\| FP-\d+ \|", l)]
+    print("Failure patterns (plan/builder/heritage/FAILURE_PATTERNS.md; R-R7). Ask each question before you act:")
+    for want in ("qualified", "candidate"):
+        for c in rows:
+            if c[5] == want:
+                label = "" if want == "qualified" else "[candidate, not yet qualified] "
+                print(f"- {c[0]} {label}{c[1]}: {c[3]}")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as e:  # never block the session (M-R18)
+        print(f"BOOT_MAP ERROR {type(e).__name__}: {e}. The session continues; boot by CLAUDE.md.")
+        sys.exit(0)

@@ -32,18 +32,7 @@ Plan Ek B already designs DevOS's record store. The builder's file records are a
 
 Each fact kind has exactly one authoritative home. Everything else points to it or is generated from it (§6).
 
-| Family | ID pattern | Authoritative home | Form | Ek B family at C02 |
-|---|---|---|---|---|
-| Work item | `W-<stage>-nn` (children `W-<stage>-nn.m`) | `plan/work/<ID>.md` | front matter + body: the acceptance block (verbatim, with dated changes), open notes, history | Work, WorkStanding, Relation |
-| Open note | `N-nnn` | the file of the work item it concerns (§3, M-R3) | a block inside the item | Need, Inquiry |
-| Decision | `D-nnn`, `PC-nn`, `K<n>`, `B<n>`, frame reviews `FR-nn` | `plan/decisions/<ID>.md` | front matter + Batu's words verbatim + interpretation + conditions and reopen triggers | Decision |
-| Evidence and test result | `EV-…`, `T-…`, `P-…`, `R-…` | `evidence/<stage>/…` (unchanged) | one file per claim; pre-registration before the result | Review, Verdict, Observation |
-| Log entry | `L-nnn` | `plan/ledger/<stage>-log.md` (unchanged, append-only) | an entry + a **Record changes** block (§5) | Event |
-| Failure pattern (heritage) | `FP-nn` | `plan/builder/heritage/FAILURE_PATTERNS.md` | lens, question to ask, source entries, status `candidate` or `qualified`, `qualified_by` | Learning |
-| Premise | `BP-nn` | the premise table of the governing builder document | origin, status, from-scratch test | Premise |
-| Governing document status | — | `plan/ledger.md`, section "Governing documents", only | one row per document: path, version, status, accepted by | Release |
-| Owned session and routine IDs | session, trigger and reminder IDs | `.claude/hooks/owned_ids.txt`, written only by the recorder hook | append-only lines | SessionRecord, LaunchRecord |
-| Current state | — | `plan/ledger.md` §1: stage, run lock, usage, waiting for Batu, the issue cursor (`answers seen through`), `summary_tr` | short table | live state in the database from C02 |
+The table moved byte-identical to `plan/builder/MEMORY_MAP.md` in tranche 1c, its one home (M-R1, M-R18).
 
 **Where builder files live (revision 3).** Records stay where they are under `plan/` and `evidence/`; the plan places the installation ledger there (plan §9). The builder's mechanism files (operating model, register, roles, heritage) also stay under `plan/` (`plan/Builder_Operating_Model.md`, `plan/builder/…`) until W-C00-06. At W-C00-06 every plan file is rewritten anyway, and plan §9 and Ek F, which name `plan/Builder_Operating_Model.md` as authoritative (R-W12-1 M7), change in the same step. The move to a separate `builder/` directory (OI-011 items 12 and 13; comparison D-21) is a plan-change candidate attached to W-C00-06, not a tranche 1 step. **Reason:** moving the files in tranche 1 would leave the binding Turkish plan pointing to a missing file (M7), and the Scope column of every rule table already marks the boundary for rules; the per-record label (M-R12, deferred) would mark it in every record once re-admitted.
 
