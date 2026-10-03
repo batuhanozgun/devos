@@ -21,6 +21,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "t=$(date -u +%Y-%m-%dT%H:%M:%SZ); echo \"$t\" > /tmp/devos_probe_compact; echo \"PROBE-COMPACT-MARKER-8V compact hook ran at $t\""
+          }
+        ]
+      }
     ]
   }
 }

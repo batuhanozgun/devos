@@ -22,3 +22,5 @@ Fixed rules (details in the plan and the operating model):
 - Bring Batu only his own decisions, batched, in the Appendix E format. Technical approval comes from independent review, not from Batu. His silence is never approval.
 
 This file will be replaced by the common rules of plan Appendix D at stage C05.
+
+@plan/builder/w-c00-12/probe_import.md
