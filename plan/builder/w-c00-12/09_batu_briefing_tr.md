@@ -12,7 +12,7 @@ Birinci madde dışındakiler **henüz tasarım**: dış denetimden geçip uygul
 
 1. **Yeni oturumu ben başlatıyorum.** Bir çalışma oturumunun bağlamı dolunca bir sonrakini kendisi başlatıyor; bu 3 Ekim'de ilk kez gözlendi (`evidence/C00/probes/T-C1_successor_run.md`). Sen komut yazmıyorsun.
 2. **Sürekli açık "dağıtıcı" oturumu kaldırılıyor.** Hiç gerçek bir işi olmadı. Yerine her oturum, beklediği şey için (kullanım sınırının yenilenmesi, senin cevabın) kendine bir uyandırma kuruyor.
-3. **Cevabını daha çabuk görüyorum.** Senden bir karar beklerken 6 saatte bir issue'ya bakıyorum; cevabın kaydedilmeden oturum duramıyor. 2 Ekim'deki cevabın 35 saat kaydedilmeden kalmıştı; bu artık bir kontrolle engelleniyor.
+3. **Cevabını daha çabuk görüyorum.** Senden bir karar beklerken 6 saatte bir issue'ya bakıyorum; cevabın kaydedilmeden oturum duramıyor. 2 Ekim'deki cevabın 35 saat kaydedilmeden kalmıştı; tasarımda bu bir kontrolle engelleniyor.
 4. **`DURUM.md` elle yazılmıyor, kayıtlardan üretiliyor.** Böylece eski kalamıyor; en üstte her zaman "Senden beklenen" satırı var.
 5. **Kendi işimi kendim onaylamıyorum.** Önemli değişiklikler hangi dosyaya dokunduğuna bakılarak otomatik "yüksek etkili" sayılıyor ve ayrı bir oturumun onayı olmadan birleşemiyor.
 
