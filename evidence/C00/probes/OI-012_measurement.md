@@ -16,3 +16,22 @@
 | Count 1 > 0 | `main`'s own history holds the names; deleting the review branches removes nothing that is not already public on `main` | The exposure stays under the D-003 (a) residual; OI-012 is closed with that reason |
 | Count 1 = 0 and count 2 > 0 | Only the review branches hold them | Deleting the two branches is put to Batu as an account action in his batch: the git proxy refused a remote delete once (403, L-031), and R-R21 forbids another route |
 | Both 0 | The redaction premise was wrong; the names are not there | OI-012 is closed as a false alarm, and the critic's finding 3 is annotated |
+
+## Result (2026-10-03, run `session_01WcVuDQhDW3EKr4Sb87MHxN`)
+
+**Method as pre-registered,** in a scratch clone of `devos`, with the pattern derived exactly as `tools/check_service_names.sh` derives it. The script prints counts and SHAs only. A first run in a **shallow** clone gave 0 of 136 commits on `main` and was discarded as invalid, because the procedure asks for full history; the clone was then unshallowed (`git fetch --unshallow`, `git rev-parse --is-shallow-repository` printed `false`), and `3cd686a` was confirmed to be an ancestor of `origin/main`.
+
+**Output** (unedited):
+
+```text
+terms 12
+count1_main_commits_matching 9 of 184
+first_on_main a58413a last_on_main d6ac5a6
+count2 claude/review-R-C00-BOM-1 1 of 1
+count2 claude/review-R-C00-BOM-2 1 of 1
+count1_main_excluding_settings 9; last d6ac5a6
+```
+
+**Interpretation, by the pre-registered table:** count 1 > 0. `main`'s own history holds the names in 9 commits, including when `.claude/settings.json` is excluded; the review branches add one commit each. Deleting the two review branches would remove nothing that is not already public through `main`. **OI-012 is closed** with that reason; the branches are left as they are, and no deletion goes to Batu.
+
+**What stays open, stated.** Removing the names from public history would need a rewrite of `main`, which ruleset 24194116 forbids (non-fast-forward) and which would be an account action. That is not proposed. The pre-registration places the exposure under the D-003 (a) residual. Whether D-003 (a)'s wording covers this exposure, rather than only the connector barrier, is noted for the next batch to Batu as a question to confirm, not as a separate decision now.

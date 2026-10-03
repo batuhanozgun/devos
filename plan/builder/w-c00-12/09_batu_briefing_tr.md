@@ -21,7 +21,7 @@ Birinci madde bugün çalışıyor. Diğerleri **tasarım**: denetimden geçip p
 3. **Cevabını daha çabuk görüyorum.** Senden karar beklerken 6 saatte bir issue'ya bakıyorum. Cevabın kaydedilmeden oturum duramıyor; issue okunamazsa da duramıyor.
 4. **`DURUM.md` elle yazılmıyor, kayıtlardan üretiliyor.** En üstte her zaman "Senden beklenen" satırı var.
 5. **Kendi işimi kendim onaylamıyorum.** Önemli dosyalara, bir belgenin geçerlilik durumuna ya da bir işin kabul şartına dokunan her değişiklik otomatik olarak "yüksek etkili" sayılıyor. Böyle bir değişiklik, ayrı bir oturumun onayı olmadan birleşemiyor.
-6. **Hepsi birden kurulmuyor.** Önce küçük bir ilk parti kuruluyor (dört adımda, her adım ayrı denetimle). C00'ın ağır işleri bundan sonra başlıyor. Diğer yirmi kadar mekanizma, ancak gerçekten ihtiyaç doğarsa ekleniyor.
+6. **Hepsi birden kurulmuyor.** Önce ilk sürüm kuruluyor (dört adımda, her adım ayrı denetimle). "İlk sürüm" küçük demek değil: sonraki sürümler büyüyebilir de, aynı kaliteyle küçülebilir de. C00'ın ağır işleri bundan sonra başlıyor. Diğer yirmi kadar mekanizma, ancak gerçekten ihtiyaç doğarsa ekleniyor.
 
 ## Bilmen gereken sınırlar
 

@@ -101,6 +101,8 @@ Every trigger names its observer (R-W12-2 M-7). Triggers that no script counts a
 
 The previous figures ("47 active rules"; "59 active tests", where the reviewer counted 60 on `08459af` and the post-target test T-W14 made 61) are superseded: C-R9 is deferred and T-C8 with it; T-W15, T-R21 and T-R22 are added (R-W12-2 B-1, M-6); H-PRB and its test T-W14 are deferred after the classifier refusal (L-044).
 
+**Size is not the measure; fit is** (`briefs/w-c00-12/BATU_VERSIONS_NOT_SIZE_TR.md`, Batu, 2026-10-03). Tranche 1 is the **first version**, not a small one: each mechanism is judged by demand, test, need now, and removability (plan §6.12 item 4), and between versions a **compaction review** asks which mechanisms can be merged or replaced at the same quality, as well as which must be added. The composition review of W-C00-12 records the first such list.
+
 The reviewer judged "about twenty" proportionate if each answered a recurring failure, and that is not what this is. The active rules fall into three groups:
 1. **Required by a W-C00-12 acceptance clause** (most of them): (a2) W-R2–W-R5, W-R9, W-R15; (g) W-R1, R-R4, C-R7; (i) R-R3, R-R5; (j) M-R18, R-R7; (k) R-R3a, R-R6, R-R8, R-R9, W-R6; (l) M-R1, M-R2, M-R4–M-R6, M-R15; (m) M-R19; (b) through OI-011: C-R3 (item 5), M-R11 (item 24), M-R10 (items 2 and 23).
 2. **Admitted by recurring failures:** M-R14, M-R16, W-R7, W-R11, C-R1.
