@@ -60,9 +60,9 @@ ISSUE_URL = "https://api.github.com/repos/batuhanozgun/devos/issues/6/comments?p
 BATU = "batuhanozgun"
 PART_ITEMS = {"1a": "W-C00-12.1", "1b-i": "W-C00-12.2", "1b-ii": "W-C00-12.3", "1c": "W-C00-12.4", "1d": "W-C00-12.5"}
 
-# never break-glass: the stop check and the checker that enforces the verdict after the fact (13 section 5 #4;
-# critic of 1b-ii #5)
-BG_NEVER = {"tools/builder_check.sh", "tools/check_records.py"}
+# never break-glass: the stop check (13 section 5 #4). tools/check_records.py stays eligible, as T-W9 (h) was
+# pre-registered: with the base == M condition a revert restores exactly the reviewed M^1 version (critic #5)
+BG_NEVER = {"tools/builder_check.sh"}
 LOG_RE = re.compile(r"^plan/ledger/[^/]+-log\.md$")
 VERDICT_PATH = "evidence/*/reviews/*.md"
 VERDICT_RE = re.compile(r"Verdict:?\**\s*\**\s*(PASS-WITH-CONDITIONS|PASS|FAIL)")
