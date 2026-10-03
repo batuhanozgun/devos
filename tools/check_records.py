@@ -646,7 +646,8 @@ def leak_terms():
                                                        "analytics", "drive", "calendar", "docs", "flow"}:
                 terms.add(part)
         terms.add(n.replace("_", " "))
-    pat = re.compile(r"\b(" + "|".join(re.escape(t) for t in sorted(terms)) + r")\b", re.I)
+    # longest first, so that a phrase is matched whole rather than by a shorter term inside it
+    pat = re.compile(r"\b(" + "|".join(re.escape(t) for t in sorted(terms, key=lambda x: (-len(x), x))) + r")\b", re.I)
     _cache["leak"] = (pat, len(terms))
     return _cache["leak"]
 

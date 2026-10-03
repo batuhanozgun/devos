@@ -144,8 +144,14 @@ class Scratch:
         return self.git("push", "-q", "origin", branch)
 
 
+MUTANT = [False]
+
+
 def outcome(test, label, ok, detail=""):
-    print(f"{'PASS' if ok else 'FAIL'}  {test} {label}" + (f": {detail[:200]}" if detail and not ok else ""))
+    if MUTANT[0]:  # under a mutation a FAIL is the expected result: the disabled check is caught
+        print(f"MUTANT  {test} {label}: {'still passes (mutation NOT caught)' if ok else 'reports FAIL (mutation caught)'}")
+    else:
+        print(f"{'PASS' if ok else 'FAIL'}  {test} {label}" + (f": {detail[:200]}" if detail and not ok else ""))
     RESULTS.setdefault(test, []).append(ok)
     return ok
 
@@ -219,7 +225,7 @@ def t_m2(mutant=False):
     rc, out = s.cr("views")
     ok1 = outcome("T-M2", "a hand-edited generated line fails", bool(fails(out, "views", "frontier")), out)
     s.git("checkout", "-q", "--", ".")
-    front_edit(s, "plan/work/W-C00-12.5.md", lambda m: m.update(execution="waiting"))
+    front_edit(s, "plan/work/W-C00-12.5.md", lambda m: m.update(execution="finished"))
     rc, out = s.cr("views")
     ok2 = outcome("T-M2", "a state change without a re-render fails", bool(fails(out, "views")), out)
     return ok0 and ok1 and ok2
@@ -656,9 +662,15 @@ def t_w9():
         change(s)
         s.commit("m1")
         m1 = s.merge("m1")
-        return klass(label, lambda s2: [s2.git("checkout", "-q", f"{m1}^1", "--", p) for p in
-                                         (s2.git("diff", "--name-only", f"{m1}^1", m1)[1].split())
-                                         if (extra is None or extra(p))], want, s=s, base=m1)
+        def revert(s2):
+            for p in s2.git("diff", "--name-only", f"{m1}^1", m1)[1].split():
+                if extra is not None and not extra(p):
+                    continue
+                if s2.git("cat-file", "-e", f"{m1}^1:{p}")[0] == 0:
+                    s2.git("checkout", "-q", f"{m1}^1", "--", p)
+                else:
+                    s2.git("rm", "-q", "--", p)  # the merge added it, so its revert removes it
+        return klass(label, revert, want, s=s, base=m1)
 
     exec_only = lambda p: p.startswith(("tools/", ".claude/"))  # noqa: E731
     revert_case("(h) the exact revert of a merge that changed only tools/check_records.py",
@@ -875,8 +887,10 @@ def main():
     print("--- mutation checks (the check disabled in a scratch copy; the test must then report FAIL)")
     saved = dict(RESULTS)
     RESULTS.clear()
+    MUTANT[0] = True
     m1 = not t_m2(mutant=True)
     m2 = not t_m3(mutant=True)
+    MUTANT[0] = False
     RESULTS.clear()
     RESULTS.update(saved)
     print(f"{'PASS' if m1 else 'FAIL'}  M1 (views disabled): T-M2 reported FAIL: {m1}")
