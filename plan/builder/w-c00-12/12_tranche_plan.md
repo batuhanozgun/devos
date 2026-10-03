@@ -35,7 +35,7 @@ Only then do W-C00-06 to 11 enter the frontier. Revision 3's first draft and the
 
 | Part | Contents (mechanism IDs) | Impact | Review |
 |---|---|---|---|
-| **1a probes** | **P-W12-4**: can this environment push `.github/workflows/`? A harmless file is pushed to a probe branch, which is then recorded as abandoned. **P-W12-3**: hook events (`PreCompact`, `Stop`, the `compact` source, `PostToolUse` context), already pre-registered. One live `send_later` response sample for M-R11. **OI-012 measurement**: whether `main`'s history, and not only the review branches, holds the unredacted service names (§8, finding 3). | normal; evidence only | the run reads transcripts, not summaries |
+| **1a probes** | First, the **probe-branch rule** (H-PRB): the allow-list hook allows `create_session` on a branch named `claude/probe-*` whose fetched revision carries `.claude/settings.json`, so that a probe whose set-up changes `.claude/` (P-W12-3 adds hooks) needs no switch of the run's working tree (K3 P10; map X-29). It is a hook change: class high, its own session review, gate T-W14 and the T-H4 re-run. Then **P-W12-4**: can this environment push `.github/workflows/`? A harmless file is pushed to a probe branch, which is then recorded as abandoned. **P-W12-3**: hook events (`PreCompact`, `Stop`, the `compact` source, `PostToolUse` context), already pre-registered. One live `send_later` response sample for M-R11. **OI-012 measurement**: whether `main`'s history, and not only the review branches, holds the unredacted service names (§8, finding 3). | high for H-PRB; the probes are evidence only | session Verifier for H-PRB; the run reads probe transcripts, not summaries |
 | **1b-i records and render** | migration of the work list, decisions and OI-011 notes into `plan/work/` and `plan/decisions/` (M-R3, W-R16); `tools/records.py` (render, brief, durum, lease); generated frontier, zoom and views (W-R2, W-R3, W-R5, W-R11, W-R15); the register and the map's tables moved to `plan/builder/mechanisms.md` | high (`tools/records.py`) | session Verifier |
 | **1b-ii checks and stop** | `tools/check_records.py` (`chain`, `kinds`, `views`, `work`, `impact`, `docstatus`, `stamps`, `claims`, `decisions`, `map`): M-R1, M-R2, M-R4, M-R5, M-R6, M-R14, M-R15, M-R16, M-R19, W-R1, W-R4, W-R7, W-R9, R-R3, R-R5, R-R10. The extended `tools/builder_check.sh`: C-R1 (without the 1d part), C-R11, M-R13, A-07. | high | session Verifier |
 | **1c hooks, `CLAUDE.md`, roles** | `.gitattributes` union (M-R10); the recorder covering `send_later` (M-R11); the brief gate (W-R6); the `SessionStart` boot map (M-R18); `CLAUDE.md` with the floor import and map pointer (R-R6); `.claude/agents/{verifier,triager,researcher,critic}.md`; `plan/builder/roles/{counter-designer,probe}.md`; `REVIEW_PROMPT.md` extended (R-R3a); `FAILURE_PATTERNS.md`, with the review asked to qualify each pattern (R-R7); the operating model v1.8 delta with R-R4, R-R8, R-R9, R-R16, R-R17, R-R21, C-R2, C-R3, C-R5, C-R6, C-R10 written into it | high | session Verifier, with T-R1 planted problems |
@@ -47,6 +47,7 @@ Every active test of `11_test_register.md` §2 appears in exactly one gate. A pa
 
 | Gate | Tests |
 |---|---|
+| 1a | T-W14 |
 | 1b-i | T-W10, T-W2, T-W5, T-W7, T-W12 |
 | 1b-ii | T-R20, T-M1, T-M2, T-M3, T-M4, T-M5r, T-M6r, T-M7a, T-M7b, T-M7c, T-M11, T-M14, T-M15, T-W1, T-W3r, T-W4, T-W9, T-R4, T-R9, T-R11, T-MAP1, T-MAP2, T-MAP3, T-MAP5, T-MAP7 |
 | 1c | T-H4, T-M8, T-M12, T-M17, T-W6, T-R1, T-R2, T-R3, T-R5, T-R8, T-R12, T-R18, T-R19, T-C2, T-C4 |
@@ -87,7 +88,6 @@ Tranche 1 has a budget of four runs after the re-review passes: 1a with 1b-i, 1b
 | R-R19 | compaction gate | 2 | a compaction is observed and a post-compaction session errs |
 | R-R20 | transcript-size warning | 2, or 1c | P-W12-3 observes its carrier (then it joins 1c) |
 | C-R12 | keeper session | 2 | the detector reports a real stall that the self-watchdog did not resume; probe P-08 first |
-| hook rule | `create_session` on a `claude/probe-*` branch whose fetched revision carries `.claude/settings.json` (K3 P10; map X-29) | 2 | the next probe that needs `.claude/` changes |
 
 **Size, measured** (critic finding 16), from `11_test_register.md` by script:
 - 47 active rules, 15 deferred, 7 retired;
@@ -149,7 +149,7 @@ Every R-W12-1 finding, with where revision 3 answers it.
 | P1 no run stalled | contradicted (L-039) | `05` §1, §2 |
 | P7 no spawned session beyond its role | weakened (L-033: the dispatcher's hand edit and false report) | `04` §7, R-R13's deferral restated for the re-review; map X-28 |
 | P8 no producer-written criterion drifted | weakened (L-018, L-021→L-023, L-030, L-033) | W-R7 makes every change to an existing acceptance block high; W-R1 refuses retired tests; `03` §1 |
-| P10 no accidental protected-path edit | weakened (L-033; tree switches to probe branches in L-037 and L-039) | map X-28, X-29; the probe-branch hook rule is a tranche-2 candidate (§3); P-W12-3 is designed to need no `.claude/` change |
+| P10 no accidental protected-path edit | weakened (L-033; tree switches to probe branches in L-037 and L-039) | map X-28, X-29; the probe-branch hook rule H-PRB is built first in tranche 1a, because P-W12-3 adds hooks on its probe branch (revision 3's first text said P-W12-3 needed no `.claude/` change, which its own pre-registration contradicts: F-042-3) |
 | P12 no spawned session wrote a shared artefact | contradicted (dispatcher log PRs; the recorder) | D-35 corrected in `06`; the subject retired (C-R7); the recorder file merges by union (M-R10) |
 | P13 failures not in 07 §5 | 25 items | `07` §5 rows X-26 to X-40, grouped where they share a missing arrow |
 | P14 human orchestration | listed | `05` §5 residual; R-R17 |
