@@ -502,9 +502,9 @@ def t_m15():
         os.chdir(cwd)
     term = sorted(pat.pattern[3:-3].split("|"), key=len)[-1].replace("\\", "")  # never printed
 
-    def case(label, branch_text, copy_text, branch_session=REVIEWER, expect_fail=True):
+    def case(label, branch_text, copy_text, branch_session=REVIEWER, expect_fail=True, owned_in_pr=False):
         s = Scratch()
-        if branch_session != "session_01UNOWNEDxxxxxxxxxxxxxxx":
+        if branch_session != "session_01UNOWNEDxxxxxxxxxxxxxxx" and not owned_in_pr:
             s.append(".claude/hooks/owned_ids.txt", branch_session)
         main = s.commit("fixture: the reviewer is an owned session")
         vt = branch_text(main)
@@ -514,6 +514,8 @@ def t_m15():
         s.git("checkout", "-q", "main")
         s.git("checkout", "-q", "-b", "pr")
         s.write("evidence/C00/reviews/R-FX1.md", copy_text(vt))
+        if owned_in_pr:
+            s.append(".claude/hooks/owned_ids.txt", branch_session)
         head = s.commit("copy R-FX1", session=PRODUCER)
         rc, out = s.cr("claims", "--base", main, "--head", head)
         got = bool(fails(out, "claims", "R-FX1"))
@@ -525,6 +527,8 @@ def t_m15():
     case("(b) committed on the review branch by the producer's session", plain, lambda t: t, branch_session=PRODUCER)
     case("(b2) committed on the review branch by a session that is not owned (critic of 1b-ii #2)", plain,
          lambda t: t, branch_session="session_01UNOWNEDxxxxxxxxxxxxxxx")
+    case("(b3) the reviewer session made owned only by a line the same change appends", plain, lambda t: t,
+         owned_in_pr=True)
     case("(c) a redacted copy whose differing line is a pattern substitution", withterm,
          lambda t: t.replace(term, "[service]"), expect_fail=False)
     case("(d) a redacted copy that also changes a non-pattern word", withterm,

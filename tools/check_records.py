@@ -768,7 +768,9 @@ def check_claims_tree(out):
 
 def check_claims_diff(base, head, out, only=None):
     prod = sessions_in(base, head or "HEAD")
-    owned = set((content(head, ".claude/hooks/owned_ids.txt") or "").split())
+    # owned before the range: a recorder line the same change appends cannot vouch for its own verdict (self-check
+    # after R-W12-5; the recorder line reaches main in its own record PR first, R-W12-4 m-8)
+    owned = set((content(base, ".claude/hooks/owned_ids.txt") or "").split())
     hc = resolve(head or "HEAD")
     for st, p in changed(base, head):
         if st not in "AM" or not fnmatch.fnmatch(p, VERDICT_PATH) or (only and p != only):
@@ -795,7 +797,8 @@ def check_claims_diff(base, head, out, only=None):
         elif ss[-1] in prod:
             out.fail("claims", f"{p}: committed on its review branch by {ss[-1]}, a session of this change (D-07)")
         elif ss[-1] not in owned:
-            out.fail("claims", f"{p}: its review-branch session {ss[-1]} is not an owned session (recorder; M-R16 b)")
+            out.fail("claims", f"{p}: its review-branch session {ss[-1]} is not an owned session before this change "
+                               "(recorder; M-R16 b)")
 
 
 # ---------------------------------------------------------------- docstatus (M-R2)
