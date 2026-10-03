@@ -8,7 +8,8 @@ Run from the repository root.
   records.py brief run --role producer print the run brief
   records.py durum                     print the generated DURUM.md to stdout
   records.py lease --session <ID> [--note TEXT] [--release]
-                                       rewrite the Run lock row and print its Record changes line
+                                       rewrite the Run lock row and write its Record changes line
+                                       under a new log entry of its own
 
 Homes (02_memory.md section 3): work items and stages in plan/work/<ID>.md; decisions in
 plan/decisions/<ID>.md; the current state in plan/ledger.md section 1. Everything this script
@@ -18,12 +19,14 @@ writes is generated from those homes; nothing here is a home. Readiness follows
 import argparse
 import hashlib
 import re
+import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import yaml
 
+sys.dont_write_bytecode = True
 ROOT = Path(".")
 WORK = ROOT / "plan/work"
 DECISIONS = ROOT / "plan/decisions"
@@ -175,7 +178,8 @@ def is_accepted(item):
     if item.get("acceptance") != "accepted":
         return False
     ab = item.get("accepted_by")
-    return bool(ab) and (ROOT_FOR_ACCEPT[0] / str(ab)).is_file()
+    # only evidence counts: a README or a log file cannot lift a gate (N-049, R-W12-3 F-3; tranche 1b-ii)
+    return bool(ab) and str(ab).startswith("evidence/") and (ROOT_FOR_ACCEPT[0] / str(ab)).is_file()
 
 
 def acceptance_unresolved(item):
@@ -246,6 +250,9 @@ def readiness(items, decisions, changes, iid):
         elif not is_accepted(t):
             false.append(f"depends on {d['id']} (not accepted)")
     for pf in it.get("platform") or []:
+        if not isinstance(pf, dict):  # R-W12-3 F-9: unknown, not a crash
+            unknown.append(f"platform entry '{pf}' is not a mapping")
+            continue
         st = pf.get("status")
         if st != "observed":
             probe = pf.get("probe") or "a probe (to be named)"
@@ -367,8 +374,11 @@ def view_zoom(items, decisions, changes):
         op = [n["id"] for n in it["_notes"] if n["status"] == "open"]
         return f" · open notes: {', '.join(op)}" if op else ""
 
+    printed = set()
+
     def walk(iid, depth):
         it = items[iid]
+        printed.add(iid)
         lab = state_label(items, decisions, changes, iid)
         cand = " [candidate]" if it.get("admission") == "candidate" else ""
         kids = children(items, iid)
@@ -383,6 +393,13 @@ def view_zoom(items, decisions, changes):
     for s in stages:
         if s["id"] in path:
             walk(s["id"], 0)
+    # an open note stays visible on its item wherever the item sits (M-R3; T-M11; tranche 1b-ii)
+    rest = [i for i in sorted(items, key=sortkey) if i not in printed and items[i].get("kind") == "item"
+            and any(n["status"] == "open" for n in items[i]["_notes"])]
+    if rest:
+        lines += ["", "**Items with open notes outside the expanded branch:**", ""]
+        lines += [f"- `{i}` {items[i].get('title', '')}: {state_label(items, decisions, changes, i)}{note_tag(items[i])}"
+                  for i in rest]
     return "\n".join(lines)
 
 
@@ -579,8 +596,13 @@ def brief_item(items, decisions, changes, iid, role, target_sha=None, failure_cl
     if role not in ROLE_FILES:
         raise RecordError(f"unknown role '{role}'")
     if role == "verifier":
-        if not target_sha:
+        if not target_sha or not target_sha.strip():
             raise RecordError("a verifier brief needs --target-sha (R-R3a)")
+        r = subprocess.run(["git", "rev-parse", "--verify", "-q", f"{target_sha.strip()}^{{commit}}"],
+                           capture_output=True, text=True)
+        if r.returncode != 0:  # R-W12-3 F-4: the SHA must resolve to a commit
+            raise RecordError(f"--target-sha {target_sha.strip()} does not resolve to a commit (R-R3a)")
+        target_sha = r.stdout.strip()
         if not failure_classes or any(not f.strip() for f in failure_classes):
             raise RecordError("a verifier brief needs a non-empty --failure-classes list with no blank entry (R-R3a)")
     it = items[iid]
@@ -609,6 +631,11 @@ def brief_item(items, decisions, changes, iid, role, target_sha=None, failure_cl
               "Open notes on this item and its ancestors:"]
     on = [(a["id"], n) for a in [it] + ancestors(items, iid) for n in a["_notes"] if n["status"] == "open"]
     lines += [f"- {n['id']} on {a}: {note_summary(n)[:160]}" for a, n in on] or ["- none"]
+    # R-W12-3 F-8: answered notes are answers that take effect only when their tranche builds them
+    ans = [(a["id"], n) for a in [it] + ancestors(items, iid) for n in a["_notes"] if n["status"] == "answered"]
+    lines += ["Answered notes on this item and its ancestors (the design answers them; the answer takes effect "
+              "only when the tranche that builds it merges):"]
+    lines += [f"- {n['id']} on {a}: {note_summary(n)[:160]}" for a, n in ans] or ["- none"]
     rf = ROLE_FILES[role]
     built = Path(rf.split(" ")[0]).exists()
     lines += ["", f"Role file: {rf}" + ("" if built else " (not yet built; tranche 1c)"),
@@ -729,7 +756,19 @@ def main(argv=None):
             new = render_ledger(stamp_rendered(new), items, decisions, changes)
             LEDGER.write_text(new)
             DURUM.write_text(durum(new, items, decisions, changes))
-            print(line)
+            logs = sorted(LOGDIR.glob("*-log.md"))
+            if logs:  # the row and its Record changes line are written together (02 section 7, K2 walk-through),
+                # under an entry of their own, so that the line is not attributed to the previous entry (R-W12-4 m-6)
+                nums = [int(n) for f in logs for n in re.findall(r"(?m)^### L-(\d+) ", f.read_text())]
+                eid = f"L-{(max(nums) if nums else 0) + 1:03d}"
+                what = "released" if a.release else "taken or renewed"
+                lt = logs[-1].read_text()
+                logs[-1].write_text(lt + ("" if lt.endswith("\n") else "\n") +
+                                    f"\n### {eid} · {datetime.now(timezone.utc):%Y-%m-%d} · Lease {what} by "
+                                    f"`{a.session}`\n\n- **Record changes:** {line}\n")
+                print(f"{line} (written as {eid} in {logs[-1]})")
+            else:
+                print(line)
     except (RecordError, OSError, ValueError, yaml.YAMLError) as e:
         print(f"records.py: {e}", file=sys.stderr)
         return 2
