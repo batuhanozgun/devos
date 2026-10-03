@@ -53,7 +53,7 @@ Disposition values: **adopt** (the counter-design's version replaces the draft's
 
 **Admission rule applied in revision 2** (after the critic's blocking finding on size, §6 C-15): a mechanism enters the merged design only if it answers a failure that occurred (log entry or finding named) or an acceptance clause of W-C00-12 that requires it. Everything else is deferred with its re-admission trigger, whichever design proposed it. This is the counter-design's own admission rule (CD §0, §13) and the draft's R-R4, applied to both.
 
-Revision 1 of this table is commit `74a42a7`; the critic's findings refer to it. Rows changed in revision 2 are marked †.
+Revision 1 of this table is commit `74a42a7`; the critic's findings refer to it. Rows changed in revision 2 are marked †. **Revision 3:** the rows keep their revision-2 text as history; where a disposition changed (D-04, D-12, D-18, D-25, D-28, D-39 and others), §3b states the current rule and supersedes the row's text. Only misdescriptions of the counter-design are corrected in the rows themselves (D-05, D-13, D-15, D-35).
 
 | ID | Topic | Counter-design | Draft | Disposition and basis |
 |---|---|---|---|---|
@@ -154,7 +154,7 @@ Revision 3 (`02`–`05` rewritten in place, `11_test_register.md`, `12_tranche_p
 | D-22 | M-R15 (active) |
 | D-23 | deferred (unchanged) |
 | D-24 | M-R2 (active) |
-| D-25 | replaced by M-R14 typed times (R-W12-1 B3) |
+| D-25 | replaced by M-R14 typed times: typed fields, `sched:` in prose, written-at stamps (R-W12-1 B3; prototype over the whole log, L-042) |
 | D-26 | the register in `11`, the map in `07`, the map check (T-MAP1–3) |
 | D-27 | W-R11 (active) |
 | D-28 | C-R2, C-R3, C-R5 (active, 1); detector C-R8 (active, 1d); keeper C-R12 (deferred) |
@@ -240,5 +240,5 @@ Revision 2 applied its dispositions as "Revision 2" sections at the top of piece
 - **Consulted:** the six draft files and the counter-design in full; `briefs/w-c00-12-counter-design/BRIEF.md` (what the counter-designer was given); the W-C00-12 row and OI-011 (state file); L-034 to L-039; P-W12-1, P-W12-2; the GitHub REST API for F-1 and F-2 (observed today); primary Claude Code documentation through a Researcher subagent (§5).
 - **Left out on purpose:** the library studies the counter-design cites. Its citations were not re-read: where a difference turned on a study, the disposition rests on an observation in this repository or on an acceptance clause instead, so the study's content did not decide it. The independent review may check any citation. Also left out: the counter-design session's transcript (its file is its output; its §0.1 states its reading compliance).
 - **Premises, from scratch:** (1) a disposition that keeps the draft needs a requirement or an observation: yes, otherwise the comparison only confirms the incumbent; (2) the counter-design is a source of ideas, not an authority: yes, it is also same-model work (BP-07).
-- **Alternative frame considered:** adopt the counter-design whole and fold the draft's extra requirements into it. Rejected because an acceptance clause rules out part of it (producer triage against (i)), and because the counter-design's trigger moments (item card, decision-record format gates, Batu batch format; CD §13, §16.2) leave conversation untested, which (k)'s extension covers with T-R8. **Correction (revision 3, R-W12-1 m1 and B6):** revision 2 also cited an "item-start-only trigger" and "no separate recovery role against (l)"; the first misdescribed CD §13, and the second contradicted this file's own D-32, which concluded that (l) needs no separate role. Both reasons are withdrawn. and two of its central assumptions are false today (F-1: no required checks) or unobserved (P-02, P-03). The merged design keeps the counter-design's main claim (move critical-path steps into mechanics), which the draft already shared.
-- **Reopen if:** the independent review finds a disposition without a basis; a probe in §7 fails; F-2's API path becomes unreliable.
+- **Alternative frame considered:** adopt the counter-design whole and fold the draft's extra requirements into it. Rejected because an acceptance clause rules out part of it (producer triage against (i)), and because the counter-design's trigger moments (item card, decision-record format gates, Batu batch format; CD §13, §16.2) leave conversation untested, which (k)'s extension covers with T-R8. **Correction (revision 3, R-W12-1 m1 and B6):** revision 2 also cited an "item-start-only trigger" and "no separate recovery role against (l)"; the first misdescribed CD §13, and the second contradicted this file's own D-32, which concluded that (l) needs no separate role. Both reasons are withdrawn. A further reason holds: two of the counter-design's central assumptions are false today (F-1: no required checks) or unobserved (P-02, P-03). The merged design keeps the counter-design's main claim (move critical-path steps into mechanics), which the draft already shared.
+- **Reopen if:** the independent review finds a disposition without a basis; a probe named in `12_tranche_plan.md` §2.1 fails; F-2's API path becomes unreliable.

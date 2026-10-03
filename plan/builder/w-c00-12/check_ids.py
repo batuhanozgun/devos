@@ -14,7 +14,7 @@ CITERS = PIECES + ["06_counter_design_comparison.md", "07_mechanism_map.md",
                    "08_oi011_dispositions.md", "11_test_register.md", "12_tranche_plan.md"]
 TEST_CITERS = PIECES + ["07_mechanism_map.md", "08_oi011_dispositions.md", "12_tranche_plan.md"]
 RULE = re.compile(r"\b(?:[MWRC]-R\d+a?|H-(?:AL|OWN|REV|BRF|BOOT|CMP|READ))\b")
-TEST = re.compile(r"\bT-(?:M|W|R|C|MAP)\d+[a-z]?\b|\bT-(?:0[1-9]|1\d|2\d)\b")
+TEST = re.compile(r"\bT-(?:M|W|R|C|MAP)\d+[a-z]?\b|\bT-(?:0[1-9]|1\d|2\d)\b|\bT-H\d\b")
 # Tests kept from the operating model (section 13), not part of the register.
 OM_TESTS = {"T-H1", "T-H2", "T-H3", "T-H4", "T-H5", "T-H6", "T-H7", "T-A1a", "T-A1b", "T-A1c",
             "T-A2", "T-A2r", "T-B1", "T-B1r", "T-E1", "T-E2", "T-D1"}
@@ -75,7 +75,7 @@ for line in sec2.splitlines():
 # Every test named in a register mechanism row exists.
 for rid, c in register.items():
     for t in TEST.findall(c[7]):
-        if t not in tests:
+        if t not in tests and t not in OM_TESTS:
             errors.append(f"register: {rid} names test {t}, which has no test row")
 
 # Pieces: rule tables agree with the register; no change-list sections.
@@ -117,6 +117,37 @@ for name in TEST_CITERS:
         for t in TEST.findall(line):
             if t not in tests and t not in OM_TESTS:
                 errors.append(f"{name}:{n}: test {t} does not resolve to a register test row")
+
+# Gates (12 section 2.2): every active test in exactly one gate; every active rule has a test
+# in a tranche gate other than "composition" (critic finding 1).
+plan = (D / "12_tranche_plan.md").read_text()
+gates = {}
+gsec = plan.split("### 2.2 Gates", 1)[1].split("### 2.3", 1)[0]
+for line in gsec.splitlines():
+    c = cells(line) if line.startswith("| ") else []
+    if len(c) == 2 and c[0] not in ("Gate", "---"):
+        for t in TEST.findall(c[1]):
+            gates.setdefault(t, []).append(c[0])
+active_tests = set()
+for line in sec2.splitlines():
+    if line.startswith("| T-"):
+        c = cells(line)
+        if len(c) == 6 and not any(w in c[5].lower() for w in ("retired", "deferred")):
+            active_tests.update(t.strip() for t in c[0].split(","))
+for t in sorted(active_tests):
+    if len(gates.get(t, [])) != 1:
+        errors.append(f"gates: active test {t} is in {len(gates.get(t, []))} gates, expected 1")
+for t in gates:
+    if t not in active_tests and t not in OM_TESTS:
+        errors.append(f"gates: {t} is gated but not an active register test")
+for rid, c in register.items():
+    if c[2].split()[0].strip("*_").lower() != "active":
+        continue
+    tg = [g for t in TEST.findall(c[7]) for g in gates.get(t, []) if g != "composition"]
+    if c[3] == "existing" and any(t in OM_TESTS for t in TEST.findall(c[7])) and "T-H4" in gates:
+        tg = tg or ["existing"]
+    if not tg:
+        errors.append(f"gates: active rule {rid} has no test in a tranche gate")
 
 for e in errors:
     print(e)

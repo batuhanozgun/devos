@@ -6,7 +6,7 @@
 
 | Situation | Observed? | Source |
 |---|---|---|
-| A run reaches S4 and starts its successor | **yes, twice**: `0143r8` → `01Wj4J` (T-C1), and `01Wj4J` → this run (`get_session` `parent_session_id`, 2026-10-03T18:22Z). Both successor calls were untyped. The first chain had been restarted by Batu five minutes earlier (L-039). | T-C1; L-041 |
+| A run reaches S4 and starts its successor | **yes, twice**: `0143r8` → `01Wj4J` (T-C1), and `01Wj4J` → this run (this run's own boot, L-042: `get_session` `parent_session_id`, created 2026-10-03T18:22:03Z; observed by its subject). Both successor calls were untyped. The first chain had been restarted by Batu five minutes earlier (L-039). | T-C1; L-042 |
 | A run stops at S5 (usage hold) | yes (L-033) | L-033 |
 | A run stops at S2 (waiting for Batu) | not yet | — |
 | **A run's turn aborts mid-work** | **yes, once.** At 17:46:47Z (L-039) a run's turn ended with `error_during_execution` (an account subscription problem). Work resumed only because Batu typed "Sorun çözüldü devam et". Revision 2 said "no run has died"; that premise was false (R-W12-1 B1). | L-039 |
@@ -29,11 +29,11 @@
 
 - **S4 hand-over** (C-R10): after its stop check, the run creates its successor with `create_session` on `main`, the configured model, the R1 goal and a generated brief (W-R6). A classifier denial of that call is S3 for the action (operating model §11): the run releases the lease, and `DURUM.md`'s first line asks Batu to start a session.
 - **S5 usage hold** (C-R2): the run schedules `send_later` into **itself** at the reset time plus 15 minutes, with the text `Wake: usage reset <time>`. On waking it re-boots from `main` and continues, or hands over.
-- **S2 waiting for Batu** (C-R3): the run arms check-in wakes into itself every 6 hours, `Check-in: Batu <decision IDs>`. On each one it reads the issue. If Batu has answered, it records the answer and continues. If not, it arms the next check-in. At the Appendix E §8 reminder time (24 hours, or 4 if blocking) it sends **one** reminder through `PushNotification` (`Reminder: Batu <decision IDs>`). After four empty check-ins it stops arming. The generated `DURUM.md` then states that an answer waits for the next session (C-R4).
+- **S2 waiting for Batu** (C-R3): the run arms check-in wakes into itself every 6 hours, `Check-in: Batu <decision IDs>`. On each one it reads the issue. If Batu has answered, it records the answer and continues. If not, it arms the next check-in. At the Appendix E §8 reminder time (24 hours, or 4 if blocking) it sends **one** reminder through `PushNotification` (`Reminder: Batu <decision IDs>`). After four empty check-ins it stops arming. The generated `DURUM.md` then states that an answer waits for the next session (M-R15).
 - **Self-watchdog** (C-R5): at every checkpoint the run arms `send_later` into itself at its new lease expiry plus 15 minutes, `Watchdog: lease <expiry>`, and deletes its previous watchdog by its recorded ID (M-R11). When a watchdog fires:
   - if the lease row on `main` names this session with a later expiry, the run logs one line and does nothing else;
   - otherwise it re-boots and resumes or hands over. Work begun before the abort is marked **outcome unknown** in the log and re-checked from records before anything is repeated (T-21).
-- **Expected-text rule** (C-R6): a run acts only on a notification whose text it scheduled itself, in one of five forms: `Wake: usage reset`, `Check-in: Batu`, `Reminder: Batu`, `Watchdog: lease`, and the R1 goal for its own start. Everything else in its queue is data (operating model §9).
+- **Expected-text rule** (C-R6): a run acts only on a notification whose text it scheduled itself, in one of five forms: `Wake: usage reset`, `Check-in: Batu`, `Reminder: Batu`, `Watchdog: lease`, and the R1 goal for its own start. A sixth form is not an instruction but a record: a message from its parent or from Batu's conversation session prefixed `Batu (relayed):` is recorded verbatim with its source and weighed as Batu's answer (R-R17); anything else in it is data. Everything else in its queue is data (operating model §9).
 - **Armed wakes are recorded** (C-R11) in a state-file row `Armed wakes`, with the type, time and owned ID of each. The stop check and the independent detector read it.
 
 ### 2.2 The independent detector (C-R8)
@@ -95,7 +95,7 @@ Capacity follows operating model §8 and D-002 (Batu's answer (a)):
 
 ## 5. Residual risks, stated
 
-- **No automated restart of a dead or archived session.** The detector alerts, and Batu starts a session. The alternative is an Actions workflow that starts a Claude session itself. It would need a credential, likely an API key, which concerns money and Batu's accounts. It is therefore a Batu decision: candidate D-004, prepared in `12_tranche_plan.md` §5 and sent in his batch with tranche 1d's result, not before (operating model §6 batching).
+- **No automated restart of a dead or archived session.** The detector alerts, and Batu starts a session. The alternative is an Actions workflow that starts a Claude session itself. It would need a credential, likely an API key, which concerns money and Batu's accounts. It is therefore a Batu decision: candidate D-004, prepared in `12_tranche_plan.md` §7 and sent in his batch with tranche 1d's result, not before (operating model §6 batching).
 - **The detector's own failure** (who watches the watchdog; a library gap). GitHub disables scheduled workflows on repositories without activity for 60 days, and scheduled runs can be delayed. Mitigation: the detector writes nothing to the repository, so its last run is visible only in the Actions tab. `DURUM.md` states the residual.
 - **Hidden human orchestration.** Batu's conversation session wrote records and started runs (L-031, L-034, L-035). R-R17 limits its writes to the lease. The chain counts as unattended only from a run that no human restarted; T-23 measures it.
 
@@ -105,16 +105,16 @@ Status and tranche as in piece 1 §7. Every active rule has a test in `11_test_r
 
 | ID | Rule | Status | Tranche | Scope | Test |
 |---|---|---|---|---|---|
-| C-R1 | **Stop check with stop reasons** (D-03). `builder_check.sh S<n>` runs, in addition to today's checks: the record checks (`check_records.py` all subcommands), the issue read (M-R13), the leak check on staged and committed content (A-07, F-041-2), and the reason's own conditions: S2 and S5 need an armed wake recorded as owned and in the `Armed wakes` row; S3 needs the lease released; S1 needs no open item; S4 needs nothing about the successor (it is created after the check). | active | 1 | installation | T-C5 |
+| C-R1 | **Stop check with stop reasons** (D-03). `builder_check.sh S<n>` runs, in addition to today's checks: the record checks (`check_records.py` all subcommands), the issue read (M-R13), the leak check on staged and committed content (A-07, F-041-2), and the reason's own conditions: S2 and S5 need an armed wake recorded as owned and in the `Armed wakes` row; S3 needs the lease released; S1 needs no open item; S4 needs nothing about the successor (it is created after the check). From tranche 1d, it also reads, through the GitHub API (the same path as M-R13), the result of the main-definition check (C-R9) on the head of every PR merged since the run's boot, and fails if one reported FAIL or did not run (critic finding 6: a report nobody reads is not a control). The Usage row's observation is quoted with its source and time (`get_session`), tested by T-R17. | active | 1 | installation | T-C5, T-R17 |
 | C-R2 | **S5 self-wake** (§2.1). | active | 1 | installation | T-C2 |
 | C-R3 | **S2 check-ins and one reminder** (§2.1). | active | 1 | installation | T-C3 |
-| C-R4 | **The check-in residual is stated in `DURUM.md`** (R-W12-1 m5); a template line of M-R15. | active | 1 | installation | T-M5r |
+| C-R4 | *The check-in residual stated in `DURUM.md`.* | retired | — | — | merged into M-R15 (one template) |
 | C-R5 | **Self-watchdog at every checkpoint, with outcome-unknown recovery** (§2.1). | active | 1 | installation | T-C2, T-C4, T-21 |
-| C-R6 | **Expected-text rule, five forms** (R-W12-1 m4). | active | 1 | installation | T-C4 |
+| C-R6 | **Expected-text rule, five forms, plus relayed answers recorded as data** (R-W12-1 m4; R-R17). | active | 1 | installation | T-C4 |
 | C-R7 | **Dispatcher and heartbeat retired** (§3). | active | 1d | installation | T-R7 |
 | C-R8 | **Independent detector** (§2.2). | active | 1d (after P-W12-4) | installation; replaced by DevOS's own monitoring at C06 | T-C6, T-C7, T-21, T-23 |
 | C-R9 | **Main-definition record check** (§2.3). | active | 1d (after P-W12-4) | installation; replaced by the audit environment's checks (C03) | T-C8 |
-| C-R10 | **S4 successor, with the brief gate; a denial is S3 and a `DURUM.md` request.** | active | 1 | installation | T-C1 |
+| C-R10 | **S4 successor, with the brief gate; a denial is S3 and a `DURUM.md` request.** T-C1's two observations ran under v1.7, without the brief gate, and the second is by its subject; T-C1 counts for C-R10 only when re-run after tranche 1c and read by someone other than the successor. | active | 1 | installation | T-C1, T-W6 |
 | C-R11 | **Armed-wakes row** in the state file (§2.1). | active | 1 | installation | T-C5 |
 | C-R12 | *Keeper session (CD K1).* | deferred | 2 | installation | T-21 (when admitted); probe P-08 first |
 
