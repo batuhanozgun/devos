@@ -25,11 +25,13 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 | Standing exceptions | The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled on purpose until W-C00-12 is accepted (L-034); boot step 7 and operating model §2.3 do not recreate them meanwhile. Runs of W-C00-12 also read `briefs/w-c00-12/RUN_BRIEF.md` (its §5 lists the known failure patterns). (Kept from the v1.7 Next action row; restored after the critic of 1b-i, finding 1.) | 2026-10-03T20:05Z |
-| Governing documents | `plan/Builder_Operating_Model.md` v1.7 governs whatever W-C00-12 has not yet replaced; it was not independently accepted (W-C00-05), and its own header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22). `plan/builder/w-c00-12/*` and `plan/builder/mechanisms.md`: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1). | 2026-10-03T19:50Z |
+| Governing documents: `plan/Builder_Operating_Model.md` | version: 1.7; status: governs whatever W-C00-12 has not yet replaced; accepted by: none, not independently accepted (W-C00-05). Its former header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22); since 1b-ii its header points here (M-R2). | 2026-10-03T20:36Z |
+| Governing documents: `plan/builder/mechanisms.md` | version: as moved in 1b-i; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
+| Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun ikinci adımı (1b-i) bitti, bağımsız denetçi oturumu şartlı onay verdi, iki şartı da karşılandı ve ana dala alındı. Bu oturum işi yeni bir oturuma devrediyor; sıradaki adım 1b-ii (kayıtları kontrol eden araçlar). Senin bir şey yapmana gerek yok. <br>1. İş listesi, kararlar ve açık maddeler tek tek dosyalara taşındı: her iş `plan/work/` altında kendi dosyasında, her karar `plan/decisions/` altında. Kabul metinleri harfi harfine aynı kaldı; bunu hem bir test hem denetçi ayrıca kontrol etti. <br>2. "Sıradaki iş" listesi artık elle yazılmıyor; `tools/records.py` adlı bir araç onu kayıtlardan üretiyor. Bu sayfa (`DURUM.md`) da aynı araçla üretiliyor. <br>3. C00'ın ağır işleri (çeviri, incelemeler) W-C00-12 kabul edilmeden "başlatılabilir" görünmüyor. Araç bunu gösteriyor; kuralın atlanmasını engelleyen kontroller bir sonraki adımda (1b-ii) geliyor. <br>4. Dağıtıcı ve zamanlayıcı yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Bekçi (takılan oturumu fark eden bağımsız kontrol) henüz kurulmadı. Bir oturum şimdi ölürse onu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. <br>- Bağımsız denetim ortamı henüz yok; denetçiler aynı model, ayrı oturumlar. <br>- Bu adımın geri alma dalı `claude/revert-w12-1b-i`, ana dala almadan önce GitHub'a gönderildi. Geri alma kabul metinlerini de sildiği için, bir sonraki adımdan sonra o da denetçi onayı ister. <br>- Yeniden tasarımın 1c adımı koruma kurallarımın (hook) değiştirilmesini gerektiriyor. Güvenlik denetimi bunu reddederse, kuralları nasıl değiştirebileceğim konusu o zaman sana karar olarak gelir. | 2026-10-03T20:15Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:26Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T20:43Z |
 
 ---
 
@@ -69,7 +71,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 10 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 1, blocked 9, finished 5, running 2 | 11 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -96,7 +98,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
   - `W-C00-08` Independent plan review (plan C00 step 4): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: stage C00 on hold until W-C00-12 is accepted
-  - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted
+  - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01CmCKBkyHynQ27CwqkiviC6)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
@@ -189,6 +191,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-005` | `W-C00-07` | OI-011#16 | open | (16) observed by a probe: marketplace (ECC) and partner (Base44) skills and account plugins do not reach cloud sessions, so anything adop... |
+| `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11, disposed in tranche 1b-ii, `plan/builder/w-c00-12/15_tranch... |
 | `N-049` | `W-C00-12.3` | critic-1b-i#2 | open | **The `acceptance:` field is not in W-R7's high list** (critic of 1b-i, finding 2). Writing `acceptance: accepted` into W-C00-12 would li... |
 | `N-050` | `W-C00-12.3` | R-W12-3 | open | **Minor findings of R-W12-3 for 1b-ii** (`evidence/C00/reviews/R-W12-3.md`), each to get a disposition in 1b-ii: F-3 (lifting the hold by... |
 | `N-047` | `W-C00-12.4` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
