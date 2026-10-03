@@ -25,6 +25,7 @@ Helpers:
 Output: PASS/FAIL/INFO lines, then RECORDS PASS (exit 0), RECORDS FAIL (exit 1) or RECORDS ERROR (exit 2).
 """
 import argparse
+import atexit
 import difflib
 import fnmatch
 import json
@@ -376,31 +377,28 @@ def impact(base, head, allow_bg=True):
 
 
 def exemption_problems(base, head, item_path, hm):
-    """W-R7 (ii) (R-W12-4 C-1): the acceptance change of an edge or hold target is class normal only when every
-    verdict it names is one the work check accepts at the PR head: a session verdict under evidence/*/reviews/,
-    bound by M-R16 (b), naming the item and a reviewed commit at or after the item's first running commit that is
-    an ancestor of the head (binding_problems). Empty list: exempt."""
+    """W-R7 (ii) (R-W12-4 C-1, R-W12-5 C-1): the acceptance change of an edge or hold target is class normal only
+    when, at the PR head, the item is accepted by a session verdict, the work check of that item passes there
+    (item_work_problems: W-R1 binding, W-R4 composition and closed children, R-R3, W-R9), and every verdict the
+    item names is bound by M-R16 (b) to a review session that made no commit of the PR. Empty list: exempt."""
     out = []
     if hm.get("acceptance") != "accepted":
         return [f"acceptance '{hm.get('acceptance')}' is not accepted, so no verdict can exempt it"]
     if hm.get("acceptance_label") not in SESSION_LABELS:
         out.append(f"acceptance_label '{hm.get('acceptance_label')}' is not a session label")
-    named = [("accepted_by", str(hm.get("accepted_by") or ""), ())]
+    named = [("accepted_by", str(hm.get("accepted_by") or ""))]
     if hm.get("composition_by"):
-        kids = [kp for kp, km in work_metas(head).items() if str(km.get("parent")) == str(hm.get("id"))]
-        named.append(("composition_by", str(hm.get("composition_by")), kids))
-    for field, vf, after in named:
+        named.append(("composition_by", str(hm.get("composition_by"))))
+    for field, vf in named:
         if not fnmatch.fnmatch(vf, VERDICT_PATH):
             out.append(f"{field} {vf or '(empty)'} is not a verdict under evidence/*/reviews/")
-            continue
-        text = content(head, vf) or ""
-        if not verdict_ok_text(text):
-            out.append(f"{field} {vf} has no PASS verdict naming a commit")
-        if field == "composition_by" and "composition" not in text.lower():
-            out.append(f"composition_by {vf} is not a composition verdict")
-        if not verdict_bound_at(vf, base, head):
-            out.append(f"{field} {vf} is not bound to its review branch by an owned reviewer session (M-R16 b)")
-        out += [f"{field}: {x}" for x in binding_problems(hm, item_path, vf, text, after=after, rev=head)]
+        elif not verdict_bound_at(vf, base, head):
+            out.append(f"{field} {vf} is not bound to its review branch by an owned reviewer session outside "
+                       "this PR (M-R16 b)")
+    try:
+        out += [f"work check at the PR head: {x}" for x in work_problems_at(str(hm.get("id")), head)]
+    except (R.RecordError, yaml.YAMLError, subprocess.CalledProcessError, OSError) as e:
+        out.append(f"work check at the PR head could not run: {e}")
     return out
 
 
@@ -413,7 +411,14 @@ def verdict_bound_at(vf, base, head):
         o = Out()
         check_claims_diff(base, head, o, only=vf)
         return not o.fails
-    return verdict_bound(vf, head or "HEAD")
+    if not verdict_bound(vf, head or "HEAD"):
+        return False
+    rid = Path(vf).stem
+    ref = next((r for r in (f"refs/remotes/origin/claude/review-{rid}", f"refs/heads/claude/review-{rid}")
+                if resolve(r)), None)
+    msg = (git("log", "-1", "--format=%B", ref, "--", vf, ok=True) or "") if ref else ""
+    ss = re.findall(r"Claude-Session:\s*\S*?(session_[A-Za-z0-9]+)", msg)
+    return bool(ss) and ss[-1] not in sessions_in(base, head or "HEAD")  # R-W12-5 m-2
 
 
 def verdict_files(rev):
@@ -963,6 +968,12 @@ def home_prefix(tok):
 
 
 def check_chain(out):
+    seen = {}  # R-W12-5 m-3: a log entry ID is unique across the log files (a lease entry cut from main can collide)
+    for f in sorted(Path("plan/ledger").glob("*-log.md")):
+        for n in re.findall(r"(?m)^### (L-\d+) ", f.read_text()):
+            if n in seen:
+                out.fail("chain", f"log entry {n} appears twice ({seen[n]} and {f}) (M-R5)")
+            seen.setdefault(n, str(f))
     src, rows = home_table()
     if not rows:
         out.fail("chain", f"{src}: no home table found")
@@ -1130,7 +1141,7 @@ def merge_of(c, ref="HEAD"):
     return None, None
 
 
-def deterministic_problems(item_path, text):
+def deterministic_problems(item_path, text, rev=None):
     out = []
     cmd = re.search(r"(?m)^Deterministic-Command:\s*(.+)$", text)
     sha = re.search(r"(?m)^Deterministic-Commit:\s*([0-9a-f]{7,40})", text)
@@ -1146,14 +1157,14 @@ def deterministic_problems(item_path, text):
     scripts = [tok for tok in argv if tok.startswith(("tools/", "plan/builder/"))]
     if not scripts or argv[0] not in ("python3", "bash") or argv[1] != scripts[0]:
         return ["deterministic command is not '<python3|bash> <script under tools/ or plan/builder/> [args]'"]
-    run = first_running_commit(item_path)
+    run = first_running_commit(item_path, rev)
     for script in scripts:
         last = (git("log", "-1", "--format=%H", c, "--", script, ok=True) or "").strip()
         if not last:
             return [f"{script} does not exist at {c[:7]}"]
         if not (run and is_ancestor(last, run) and last != run):
-            m, m2 = merge_of(last)
-            if not m or not covered(m2, "HEAD"):
+            m, m2 = merge_of(last, rev or "HEAD")
+            if not m or not covered(m2, rev or "HEAD"):
                 out.append(f"{script}'s last change {last[:7]} is neither pre-registered nor in a merge a verdict "
                            "covers (W-R1)")
     tmp = tempfile.mkdtemp(prefix="cr-det-")
@@ -1203,27 +1214,27 @@ def binding_problems(meta, item_path, vf, text, after=(), rev=None):
     return out
 
 
-def acceptance_problems(meta, item_path, states):
+def acceptance_problems(meta, item_path, states, rev=None):
     out = []
     ab = str(meta.get("accepted_by") or "")
     lab = meta.get("acceptance_label")
     if not ab or "session_" in ab:
         return [f"accepted_by '{ab}' is empty or a session (W-R1: no producer acceptance)"]
-    if not ab.startswith("evidence/") or not Path(ab).is_file():
+    if not ab.startswith("evidence/") or content(rev, ab) is None:
         return [f"accepted_by {ab} is not an existing file under evidence/ (W-R1)"]
-    text = content(None, ab) or ""
+    text = content(rev, ab) or ""
     if lab not in LABELS:
         out.append(f"acceptance_label '{lab}' missing or not one of {', '.join(sorted(LABELS))} (W-R1)")
     if fnmatch.fnmatch(ab, VERDICT_PATH):
         if not verdict_ok_text(text):
             out.append(f"{ab} has no PASS verdict naming a commit (W-R1)")
-        out += binding_problems(meta, item_path, ab, text)
+        out += binding_problems(meta, item_path, ab, text, rev=rev)
         if lab is not None and lab not in SESSION_LABELS:
             out.append(f"{ab} is a session verdict but the label is '{lab}'")
     elif "Deterministic-Command:" in text:
         if lab != "deterministic":
             out.append(f"{ab} is deterministic evidence but the label is '{lab}'")
-        out += deterministic_problems(item_path, text)
+        out += deterministic_problems(item_path, text, rev)
     elif lab == "subagent":
         out.append("a subagent verdict has no binding in tranche 1 (the producer could write it), so it cannot accept "
                    "(W-R1; critic of 1b-ii #9)")
@@ -1238,44 +1249,91 @@ def acceptance_problems(meta, item_path, states):
     return out
 
 
+def item_work_problems(iid, items, decisions, changes, states, rev=None):
+    """The work check of one item (W-R1, W-R4, W-R9, R-R3, R-R5) on the tree at rev (None: the working tree).
+    check_work runs it on every item at a stop; impact()'s W-R7 (ii) exemption runs it on the PR head, so the
+    PR-time and the stop-time checks are this one function (R-W12-5 C-1)."""
+    out = []
+    m = items[iid]
+    p = m["_path"]
+    if m.get("kind") not in ("item", "stage"):
+        return out
+    if m.get("impact") == "normal" and target_class(m.get("targets")) == "high":
+        out.append("impact normal is below the class its targets compute (R-R3)")
+    if m.get("kind") == "item" and item_class(m) == "normal" and \
+            (m.get("execution") in ("running", "waiting", "finished") or m.get("acceptance") == "accepted"):
+        tr = m.get("triage")
+        if not tr or content(rev, str(tr)) is None:
+            out.append(f"class normal at {m.get('execution')} without a triage record (R-R5)")
+    if m.get("acceptance") != "accepted":
+        return out
+    out += acceptance_problems(m, p, states, rev)
+    q, why = R.qualification(m, decisions, changes)
+    if q == "stale":
+        out.append(f"accepted while stale ({why}) (W-R9)")
+    kids = R.children(items, iid)
+    if kids and m.get("kind") == "item":
+        cb = str(m.get("composition_by") or "")
+        if not cb or not fnmatch.fnmatch(cb, VERDICT_PATH) or not verdict_ok_text(content(rev, cb)):
+            out.append("a parent accepted without a composition verdict (composition_by) (W-R4)")
+        else:
+            ct = content(rev, cb) or ""
+            if "composition" not in ct.lower():
+                out.append(f"{cb} is not a composition verdict (W-R4)")
+            for prob in binding_problems(m, p, cb, ct, after=[k["_path"] for k in kids], rev=rev):
+                out.append(f"composition: {prob}")
+        for k in kids:
+            if not R.is_closed(k):
+                out.append(f"accepted while child {k['id']} is not accepted, cancelled or declined (W-R4)")
+    return out
+
+
+_TREES = []
+atexit.register(lambda: [shutil.rmtree(d, ignore_errors=True) for d in _TREES])
+
+
+def records_at(rev):
+    """(items, decisions, changes, root) of the records at rev; rev None: the working tree. A commit's records are
+    read from an export of its plan/ and evidence/ in a temporary directory."""
+    key = ("records", rev)
+    if key in _cache:
+        return _cache[key]
+    if rev is None:
+        root = Path(".")
+    else:
+        root = Path(tempfile.mkdtemp(prefix="cr-tree-"))
+        _TREES.append(root)
+        a = subprocess.run(["git", "archive", rev, "plan", "evidence"], capture_output=True, check=True)
+        subprocess.run(["tar", "-x", "-C", str(root)], input=a.stdout, capture_output=True, check=True)
+    saved = R.ROOT_FOR_ACCEPT[0]
+    try:
+        items, decisions = R.load_records(root)
+        changes = R.record_changes(root)
+    finally:
+        R.ROOT_FOR_ACCEPT[0] = saved
+    _cache[key] = (items, decisions, changes, root)
+    return _cache[key]
+
+
+def work_problems_at(iid, rev):
+    items, decisions, changes, root = records_at(rev)
+    if iid not in items:
+        return [f"{iid} not found at {rev or 'the working tree'}"]
+    saved = R.ROOT_FOR_ACCEPT[0]
+    R.ROOT_FOR_ACCEPT[0] = root  # is_accepted() of the children reads accepted_by files under this root
+    try:
+        return item_work_problems(iid, items, decisions, changes, register_states(), rev)
+    finally:
+        R.ROOT_FOR_ACCEPT[0] = saved
+
+
 def check_work(out):
     items, decisions = R.load_records(Path("."))
     changes = R.record_changes(Path("."))
     states = register_states()
     for iid in sorted(items, key=R.sortkey):
-        m = items[iid]
-        p = m["_path"]
-        if m.get("kind") not in ("item", "stage"):
-            continue
-        if m.get("impact") == "normal" and target_class(m.get("targets")) == "high":
-            out.fail("work", f"{iid}: impact normal is below the class its targets compute (R-R3)")
-        if m.get("kind") == "item" and item_class(m) == "normal" and \
-                (m.get("execution") in ("running", "waiting", "finished") or m.get("acceptance") == "accepted"):
-            tr = m.get("triage")
-            if not tr or not Path(str(tr)).is_file():
-                out.fail("work", f"{iid}: class normal at {m.get('execution')} without a triage record (R-R5)")
-        if m.get("acceptance") != "accepted":
-            continue
-        for prob in acceptance_problems(m, p, states):
+        for prob in item_work_problems(iid, items, decisions, changes, states):
             out.fail("work", f"{iid}: {prob}")
-        q, why = R.qualification(m, decisions, changes)
-        if q == "stale":
-            out.fail("work", f"{iid}: accepted while stale ({why}) (W-R9)")
-        kids = R.children(items, iid)
-        if kids and m.get("kind") == "item":
-            cb = str(m.get("composition_by") or "")
-            if not cb or not fnmatch.fnmatch(cb, VERDICT_PATH) or not verdict_ok_text(content(None, cb)):
-                out.fail("work", f"{iid}: a parent accepted without a composition verdict (composition_by) (W-R4)")
-            else:
-                ct = content(None, cb) or ""
-                if "composition" not in ct.lower():
-                    out.fail("work", f"{iid}: {cb} is not a composition verdict (W-R4)")
-                for prob in binding_problems(m, p, cb, ct, after=[k["_path"] for k in kids]):
-                    out.fail("work", f"{iid}: composition: {prob}")
-            for k in kids:
-                if not R.is_closed(k):
-                    out.fail("work", f"{iid}: accepted while child {k['id']} is not accepted, cancelled or declined "
-                                     "(W-R4)")
 
 
 # ---------------------------------------------------------------- views (M-R6, M-R15)
