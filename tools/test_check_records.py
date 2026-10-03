@@ -873,6 +873,37 @@ def t_w9():
                         reparent_and_lift, "high", s=s, base=yb)
     rc, out = s.cr("impact", "--base", yb, "--head", head)
     outcome(T, "(y) the reason names the parent change", "parent W-C00-12 -> C00" in out, out)
+    # (z) R-W12-6 B-1 (N-053 g): a self-accepted last child plus a child verdict that mentions "composition",
+    # copied into W-C00-12 as accepted_by and composition_by. (z2) the same verdict carrying the structural
+    # marker, so that only the children's work check at the PR head can make it high.
+    for case, marker in (("z", ""), ("z2", "\n**Composition of:** W-C00-12\n")):
+        s = Scratch()
+        s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+        for k in ("W-C00-12.1", "W-C00-12.4"):
+            front_edit(s, f"plan/work/{k}.md", lambda m: accept(m, "evidence/C00/reviews/R-W12-6.md"))
+        front_edit(s, "plan/work/W-C00-12.md", lambda m: m.update(execution="finished"))
+        s.records("render")
+        zb = s.commit("base: reviewer owned, W-C00-12.1 to .4 closed, W-C00-12 finished")
+        s.git("checkout", "-q", "-b", f"pr-{case}")
+        front_edit(s, "plan/work/W-C00-12.5.md", lambda m: accept(m, "evidence/C00/tests/1b-ii_gate.md", "deterministic"))
+        s.records("render")
+        x = s.commit("X: the last child self-accepted")
+        s.git("checkout", "-q", "-b", f"claude/review-R-FXP{case}")
+        s.write(f"evidence/C00/reviews/R-FXP{case}.md", verdict_text(x, "PASS",
+                "Session Verifier of W-C00-12 tranche 1d (W-C00-12.5).\n\nParent composition: W-C00-12 is done "
+                "only after its own composition check." + marker))
+        s.commit(f"R-FXP{case}", session=REVIEWER)
+        s.git("checkout", "-q", f"pr-{case}")
+        s.git("checkout", "-q", f"claude/review-R-FXP{case}", "--", f"evidence/C00/reviews/R-FXP{case}.md")
+        front_edit(s, "plan/work/W-C00-12.md", lambda m: (accept(m, f"evidence/C00/reviews/R-FXP{case}.md"),
+                                                       m.update(composition_by=f"evidence/C00/reviews/R-FXP{case}.md")))
+        s.records("render")
+        head = s.commit("the child verdict copied into W-C00-12")
+        rc, out = s.cr("impact", "--base", zb, "--head", head)
+        outcome(T, f"({case}) R-W12-6 B-1{' with the composition marker' if marker else ''}: the self-accepted last "
+                "child and its verdict copied into W-C00-12: class high", "class high" in out, out)
+        outcome(T, f"({case}) the reason names the work check of child W-C00-12.5 at the PR head",
+                "work check of child W-C00-12.5 at the PR head" in out and "W-R1" in out, out)
     ok, s, head = klass("(s) a new admitted item under a stage with hold_until",
                         lambda s: new_item(s, "W-C00-13", "C00"), "normal")
     s.git("checkout", "-q", head)

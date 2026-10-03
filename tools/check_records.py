@@ -399,7 +399,11 @@ def exemption_problems(base, head, item_path, hm):
             out.append(f"{field} {vf} is not bound to its review branch by an owned reviewer session outside "
                        "this PR (M-R16 b)")
     try:
-        out += [f"work check at the PR head: {x}" for x in work_problems_at(str(hm.get("id")), head)]
+        iid = str(hm.get("id"))
+        out += [f"work check at the PR head: {x}" for x in work_problems_at(iid, head)]
+        items = records_at(head)[0]
+        for k in sorted(R.children(items, iid), key=lambda k: R.sortkey(k["id"])):  # R-W12-6 B-1, N-053 g
+            out += [f"work check of child {k['id']} at the PR head: {x}" for x in work_problems_at(k["id"], head)]
     except (R.RecordError, yaml.YAMLError, subprocess.CalledProcessError, OSError) as e:
         out.append(f"work check at the PR head could not run: {e}")
     return out
@@ -1113,8 +1117,9 @@ def check_decisions(out):
 
 # ---------------------------------------------------------------- work (W-R1, W-R4, W-R9, R-R3, R-R5)
 
-def register_states():
-    t = content(None, "plan/builder/w-c00-12/11_test_register.md") or ""
+def register_states(rev=None):
+    """The test register's State cells at rev (None: the working tree; R-W12-6 m-2, N-053 h)."""
+    t = content(rev, "plan/builder/w-c00-12/11_test_register.md") or ""
     out = {}
     for line in t.splitlines():
         m = re.match(r"\| (T-[\w-]+) \|", line)
@@ -1255,6 +1260,11 @@ def acceptance_problems(meta, item_path, states, rev=None):
     return out
 
 
+def composition_marked(text, iid):
+    """A composition verdict identifies itself by a line `**Composition of:** <ID>` naming the parent (N-053 g)."""
+    return bool(re.search(r"^\*\*Composition of:\*\* `?" + re.escape(iid) + r"`?\s*$", text or "", re.M))
+
+
 def item_work_problems(iid, items, decisions, changes, states, rev=None):
     """The work check of one item (W-R1, W-R4, W-R9, R-R3, R-R5) on the tree at rev (None: the working tree).
     check_work runs it on every item at a stop; impact()'s W-R7 (ii) exemption runs it on the PR head, so the
@@ -1284,8 +1294,8 @@ def item_work_problems(iid, items, decisions, changes, states, rev=None):
             out.append("a parent accepted without a composition verdict (composition_by) (W-R4)")
         else:
             ct = content(rev, cb) or ""
-            if "composition" not in ct.lower():
-                out.append(f"{cb} is not a composition verdict (W-R4)")
+            if not composition_marked(ct, iid):  # structural, not the word anywhere (R-W12-6 B-1, N-053 g)
+                out.append(f"{cb} is not a composition verdict of {iid}: no line '**Composition of:** {iid}' (W-R4)")
             for prob in binding_problems(m, p, cb, ct, after=[k["_path"] for k in kids], rev=rev):
                 out.append(f"composition: {prob}")
         for k in kids:
@@ -1328,7 +1338,7 @@ def work_problems_at(iid, rev):
     saved = R.ROOT_FOR_ACCEPT[0]
     R.ROOT_FOR_ACCEPT[0] = root  # is_accepted() of the children reads accepted_by files under this root
     try:
-        return item_work_problems(iid, items, decisions, changes, register_states(), rev)
+        return item_work_problems(iid, items, decisions, changes, register_states(rev), rev)
     finally:
         R.ROOT_FOR_ACCEPT[0] = saved
 
