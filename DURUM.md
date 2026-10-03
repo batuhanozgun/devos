@@ -1,6 +1,6 @@
 # DevOS kurulum durumu
 
-**Son güncelleme:** 3 Ekim 2026, 00:35 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
+**Son güncelleme:** 3 Ekim 2026, 12:13 (Türkiye saati) · **Son nabız:** 2 Ekim 2026, 09:48 (Türkiye saati): dağıtıcı kontrol etti; kullanım sınırı yenilenene kadar yeni oturum açılmıyor
 
 **Şu an:** Kurulum bilerek bekletiliyor. Çalışma düzenimin bütüncül olarak yeniden tasarlanması gerekiyor; o bitmeden ağır işler başlamayacak. Otomatik başlatma kapatıldı. Senin bir şey yapmana gerek yok.
 
