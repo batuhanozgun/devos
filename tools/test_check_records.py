@@ -849,6 +849,26 @@ def t_w9():
                         "record and open children (R-W12-5 B-1)", lift_child_verdict, "high", s=s, base=xb)
     rc, out = s.cr("impact", "--base", xb, "--head", head)
     outcome(T, "(x) the reason is the work check at the PR head (W-R4)", "W-R4" in out and "PR head" in out, out)
+    # (y) self-check after R-W12-5: re-parenting the children away so that W-R4 has nothing to check
+    s = Scratch()
+    s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+    yb = s.commit("reviewer owned")
+    s.git("checkout", "-q", "-b", "claude/review-R-FXY")
+    s.write("evidence/C00/reviews/R-FXY.md", verdict_text(yb, "PASS", "Session Verifier of W-C00-12 tranche 1c (W-C00-12.4)."))
+    s.commit("R-FXY", session=REVIEWER)
+    s.git("checkout", "-q", "main")
+
+    def reparent_and_lift(s2):
+        s2.git("checkout", "-q", "claude/review-R-FXY", "--", "evidence/C00/reviews/R-FXY.md")
+        for k in ("W-C00-12.1", "W-C00-12.2", "W-C00-12.3", "W-C00-12.4", "W-C00-12.5"):
+            front_edit(s2, f"plan/work/{k}.md", lambda m: m.update(parent="C00"))
+        front_edit(s2, "plan/work/W-C00-12.md", lambda m: (accept(m, "evidence/C00/reviews/R-FXY.md"),
+                                                           m.pop("composition_by", None)))
+        s2.records("render")
+    ok, s, head = klass("(y) the children re-parented away and a child's bound verdict written into W-C00-12",
+                        reparent_and_lift, "high", s=s, base=yb)
+    rc, out = s.cr("impact", "--base", yb, "--head", head)
+    outcome(T, "(y) the reason names the parent change", "parent W-C00-12 -> C00" in out, out)
     ok, s, head = klass("(s) a new admitted item under a stage with hold_until",
                         lambda s: new_item(s, "W-C00-13", "C00"), "normal")
     s.git("checkout", "-q", head)

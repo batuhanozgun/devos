@@ -350,6 +350,9 @@ def impact(base, head, allow_bg=True):
             reasons.append(f"{p}: a waits_for entry modified or deleted")
         if bm.get("hold_until") != hm.get("hold_until"):
             reasons.append(f"{p}: hold_until changed")
+        for f in ("parent", "kind"):  # the tree decides W-R4's children and the stage hold (self-check after R-W12-5)
+            if bm.get(f) != hm.get(f):
+                reasons.append(f"{p}: {f} {bm.get(f)} -> {hm.get(f)}")
         if bm.get("admission") != hm.get("admission"):
             carried = bool(git("log", "--format=%H", "-G", "waits_for", base, "--", p, ok=True) or "") or bool(bw)
             if not (bm.get("admission") == "candidate" and hm.get("admission") in ("admitted", "declined")
