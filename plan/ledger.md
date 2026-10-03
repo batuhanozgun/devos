@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01Gfj3M4MjrMb4YcRHwsA1X8` (W-C00-12 run; stopping at S4 after tranche 1b-ii's merge; its successor takes this lease as a hand-over, operating model section 2.2). Expires 2026-10-04T01:37Z | 2026-10-03T22:37Z |
+| Run lock | `session_011NtZnNGjojkTcmuzMRLtvL` (W-C00-12 run, tranche 1c; hand-over from session_01Gfj3M4MjrMb4YcRHwsA1X8 (its parent_session_id), operating model section 2.2). Expires 2026-10-04T01:39Z | 2026-10-03T22:39Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 22:37Z (`get_session`), resets 2026-10-04T01:10Z (`resetsAt` 1791076200, converted with `date -u -d @`) (§8: proceed). | 2026-10-03T22:37Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun üçüncü adımı (1b-ii, kayıtları ve durma anını kontrol eden araçlar) bağımsız denetçinin şartlı onayıyla, şartlar karşılandıktan sonra ana dala alındı ve kabul edildi. Sıradaki adım 1c (koruma kuralları, CLAUDE.md, roller); onu yeni bir oturum yapacak. Senin bir şey yapmana gerek yok. <br>1. Önceki denetçilerin bulduğu yollar kapandı: C00'ın bekletmesi artık benim yazdığım bir onay dosyasıyla, eski ilgisiz bir onayla ya da bir alt adımın onayıyla, değişiklik anında kaldırılamıyor. Değişiklik anında üst işin (W-C00-12) kendi kabul kontrolü çalışıyor; alt adımların kendi kontrolleri ise yalnızca durma anında çalışıyor. <br>2. Bilinen açık (denetçi buldu, 1c'de kapatılacak): son alt adım kendi kendine kabul edilmiş gösterilir ve bir denetçi o hâli onaylarsa, bekletme değişiklik anında kaldırılabilir; durma kontrolü bunu sonradan yakalar. Bu, ancak son alt adım (1d) bittikten sonra mümkün. <br>3. Kalan açık (değişmedi): bir oturum denetçi imzasını taklit edebilir; bunu ancak bağımsız denetim ortamı (C03) kapatır. <br>4. Bu oturumun bir kayıt hatası ana dala ulaştı (kilit kaydında eksik bir satır; eski araç yazmıyordu). Kural gereği bu, oturumu devretmeye zorluyor; devrediyorum. <br>5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. <br>**Riskler:** <br>- Oturum zinciri derinliği: devralan oturum "derinlik 8, sınır 8"de olacak ve kendisi yeni oturum (denetçi ya da devralan) açamayabilir. O zaman yeni bir oturumu senin başlatman tek adımlık bir istek olarak bu sayfanın ilk satırına gelir. <br>- Bekçi henüz kurulmadı; bir oturum ölürse bunu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün. | 2026-10-03T22:37Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T22:37Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-03T22:39Z |
 
 ---
 
