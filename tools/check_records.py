@@ -423,7 +423,8 @@ def verdict_bound_at(vf, base, head):
     rid = Path(vf).stem
     ref = next((r for r in (f"refs/remotes/origin/claude/review-{rid}", f"refs/heads/claude/review-{rid}")
                 if resolve(r)), None)
-    msg = (git("log", "-1", "--format=%B", ref, "--", vf, ok=True) or "") if ref else ""
+    rc = review_commit_for(ref, vf, content(head or "HEAD", vf, raw=True)) if ref else None
+    msg = (git("log", "-1", "--format=%B", rc, ok=True) or "") if rc else ""
     ss = re.findall(r"Claude-Session:\s*\S*?(session_[A-Za-z0-9]+)", msg)
     return bool(ss) and ss[-1] not in sessions_in(base, head or "HEAD")  # R-W12-5 m-2
 
@@ -440,7 +441,7 @@ def verdict_bound(vf, tree_rev):
         o = Out()
         if add:
             ps = (git("rev-list", "--parents", "-n1", add) or "").split()
-            check_claims_diff(ps[1] if len(ps) > 1 else add, add, o, only=vf)
+            check_claims_diff(ps[1] if len(ps) > 1 else add, add, o, only=vf, owned_rev=tree_rev)
         _cache[key] = bool(add) and not o.fails
     return _cache[key]
 
@@ -770,11 +771,29 @@ def check_claims_tree(out):
                     out.fail("claims", f"{f}:{n}: names {p}, which does not exist (M-R16 a)")
 
 
-def check_claims_diff(base, head, out, only=None):
+def review_commit_for(ref, p, cb):
+    """The newest commit of the review branch whose blob of p equals the copy cb, or matches it up to pattern
+    substitutions (N-053 e: a later push to the review branch does not unbind an earlier copy)."""
+    for c in (git("log", "--format=%H", ref, "--", p, ok=True) or "").split():
+        bb = content(c, p, raw=True)
+        if bb is not None and (bb == cb or redacted_match(bb, cb)):
+            return c
+    return None
+
+
+def stamp_after_commit(text, c):
+    """N-053 f: the verdict's own Written: stamp must not be later than its review-branch commit (M-R14)."""
+    line = next((l for l in text.splitlines() if "Written:" in l), None)
+    ct = datetime.fromtimestamp(int((git("log", "-1", "--format=%at", c, ok=True) or "0").strip() or 0), timezone.utc)
+    return quoted_problems(line, ct) if line else []
+
+
+def check_claims_diff(base, head, out, only=None, owned_rev=None):
     prod = sessions_in(base, head or "HEAD")
     # owned before the range: a recorder line the same change appends cannot vouch for its own verdict (self-check
-    # after R-W12-5; the recorder line reaches main in its own record PR first, R-W12-4 m-8)
-    owned = set((content(base, ".claude/hooks/owned_ids.txt") or "").split())
+    # after R-W12-5; the recorder line reaches main in its own record PR first, R-W12-4 m-8). owned_rev: the tree
+    # being checked, for a verdict judged after the change that added it (verdict_bound; N-053 e)
+    owned = set((content(owned_rev or base, ".claude/hooks/owned_ids.txt") or "").split())
     hc = resolve(head or "HEAD")
     for st, p in changed(base, head):
         if st not in "AM" or not fnmatch.fnmatch(p, VERDICT_PATH) or (only and p != only):
@@ -785,16 +804,21 @@ def check_claims_diff(base, head, out, only=None):
         if ref is None:
             out.fail("claims", f"{p}: no review branch claude/review-{rid} to bind the verdict (M-R16 b)")
             continue
-        bb, cb = content(ref, p, raw=True), content(head, p, raw=True)
-        if bb is None:
+        cb = content(head, p, raw=True)
+        if not (git("log", "-1", "--format=%H", ref, "--", p, ok=True) or "").strip():
             out.fail("claims", f"{p}: not on its review branch {ref.split('refs/')[-1]}")
             continue
-        if cb != bb and not redacted_match(bb, cb):
-            out.fail("claims", f"{p}: differs from its review-branch blob beyond pattern substitutions (M-R16 b)")
+        rc = review_commit_for(ref, p, cb)
+        if rc is None:
+            out.fail("claims", f"{p}: differs from every review-branch version beyond pattern substitutions (M-R16 b)")
+            continue
+        for prob in stamp_after_commit(cb.decode("utf-8", "replace"), rc):
+            out.fail("stamps", f"{p}: Written: stamp later than its review-branch commit {rc[:7]}: {prob} (M-R14, "
+                               "N-053 f)")
         shas = [resolve(s) for s in set(SHA_RE.findall(cb.decode("utf-8", "replace")))]
         if not any(x and (x == hc or is_ancestor(x, hc)) for x in shas):
             out.fail("claims", f"{p}: names no reviewed commit that is an ancestor of the head (M-R16 b)")
-        msg = git("log", "-1", "--format=%B", ref, "--", p, ok=True) or ""
+        msg = git("log", "-1", "--format=%B", rc, ok=True) or ""
         ss = re.findall(r"Claude-Session:\s*\S*?(session_[A-Za-z0-9]+)", msg)
         if not ss:
             out.fail("claims", f"{p}: its review-branch commit carries no Claude-Session trailer (M-R16 b)")
