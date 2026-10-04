@@ -423,7 +423,10 @@ REDIRECT_OTHER = {"<", "<<", "<<<", "<&", "<<-"}
 PURE_READERS = {"cat", "head", "tail", "less", "more", "grep", "egrep", "fgrep", "rg", "wc", "ls", "stat",
                 "file", "cmp", "diff", "od", "xxd", "hexdump", "strings", "nl", "tac", "realpath", "readlink",
                 "basename", "dirname", "cut", "tr", "column", "fold", "md5sum", "sha1sum", "sha256sum",
-                "cksum", "du", "wc", "awk", "gawk", "mawk", "nawk", "cat"}
+                "cksum", "du", "awk", "gawk", "mawk", "nawk", "test", "[", "[[", "jq", "yq"}
+# copy-like programs: moving a .claude or .git directory tree into place is a guard/internals swap (R-D008-6 B-1,
+# the honest-mistake case). The general data-derived write (an archive, a patch) is a stated residual (section 9).
+COPY_LIKE = {"cp", "rsync", "tar", "cpio", "unzip", "pax", "install", "ln", "scp", "7z", "7za", "unar"}
 # bash reserved words and compound-command punctuation. They stand in command position without being the
 # program, so each also ends the current simple command and starts a new one; the real command after them is
 # then identified and checked (R-D008-3 R3-1). The set is the full bash list, so a command cannot hide behind
@@ -618,6 +621,22 @@ def guarded_zone(p, remove=False):
     return None
 
 
+GATE_FILES = (os.path.join(ROOT, "tools", "check_records.py"), os.path.join(ROOT, "tools", "records.py"))
+
+
+def write_guarded(p, remove=False):
+    """A guarded location for the purpose of a WRITE: the strict zones, plus the merge gate's own code, which may
+    be run (read) but not written in the live tree (R-D008-6 B-2). Reading or running the gate code is allowed, so
+    the non-reader-names-a-path check uses guarded_zone, not this."""
+    z = guarded_zone(p, remove=remove)
+    if z:
+        return z
+    for g in GATE_FILES:
+        if os.path.realpath(p) == os.path.realpath(g):
+            return "the merge gate's code (R-D008-6 B-2; run it, do not write it)"
+    return None
+
+
 def critical(p):
     if p.endswith("/*"):           # a glob directly under a directory counts as that directory
         p = p[:-2]
@@ -718,7 +737,7 @@ def shell_checks(command, cwd, depth=0):
                 i += 1
         for o in outs:
             p = target_path(d, o)
-            z = p and guarded_zone(p)
+            z = p and write_guarded(p)
             if z:
                 raise Bad("B5", f"a redirection writes into {z} ({o})")
         args, bare_env = strip_wrappers(args)
@@ -779,7 +798,7 @@ def find_checks(args, d):
                 command_checks(prog, sub, d)
                 if prog in WRITE_COMMANDS | DEST_COMMANDS | IN_PLACE_COMMANDS:
                     for p in targets:
-                        z = guarded_zone(p, remove=True)
+                        z = write_guarded(p, remove=True)
                         if z:
                             raise Bad("B5", f"find {p} -exec {prog} writes into {z}")
             j = k + 1
@@ -787,7 +806,7 @@ def find_checks(args, d):
             j += 1
     if "-delete" in rest:
         for p in targets:
-            z = guarded_zone(p, remove=True)
+            z = write_guarded(p, remove=True)
             if z:
                 raise Bad("B5", f"find {p} -delete removes files in {z}")
 
@@ -870,11 +889,19 @@ def command_checks(prog, args, d):
         written = [a.split("=", 1)[1] for a in args[1:] if a.startswith("of=")]
     for a in written:
         p = target_path(d, a)
-        z = p and guarded_zone(p, remove=remove)
+        z = p and write_guarded(p, remove=remove)
         if z:
             raise Bad("B5", f"{prog} writes into {z} ({a})")
     if prog == "git":
         git_checks(args, d)
+    if prog in COPY_LIKE:
+        for a in args[1:]:
+            if a.startswith("-"):
+                continue
+            parts = [x for x in a.replace("\\", "/").split("/") if x]
+            if ".claude" in parts or ".git" in parts or (len(parts) >= 2 and parts[-2:] == [".config", "git"]):
+                raise Bad("B5", f"{prog} moves a .claude, .git or git-config path ({a}); copying guard or git "
+                                "internals into place is a guard swap (R-D008-6 B-1)")
     already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
     reader = prog in PURE_READERS \
         or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
@@ -1056,7 +1083,7 @@ def file_checks(name, args):
         raise Bad("F4", f"{name} on a credential store ({p})")
     if name in FILE_READ_TOOLS:
         return ("T1", f"{name} is a read")
-    z = guarded_zone(p)   # the same guarded places the shell write-ban uses, so the two cannot drift (R-D008-2 N-4)
+    z = write_guarded(p)   # the same guarded places the shell write-ban uses, so the two cannot drift (R-D008-2 N-4)
     if z:
         rule = ("F1" if "guard files" in z else "F2" if ".git/" in z else "F4" if "decision log" in z else "F3")
         raise Bad(rule, f"{name} {p}: {z}")
