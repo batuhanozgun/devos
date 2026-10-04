@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-006` (Tek adım: sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz; benim oturum zincirim derinlik sınırında (8/8) ve yeni oturum açamıyorum), `D-007` (Tek izin: bu koşu oturumuna (session_01SsLSgp5RLPtNMhc1RxuDoZ) "W-C00-12 1c için kural metinlerini değiştirmene izin veriyorum, devam et" yaz; sistemin otomatik denetimi kendi çalışma kurallarımı değiştirmemi engelledi). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 4 Ekim 2026, 10:58 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 11:29 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
-**Çalışan oturum:** Çalışan oturum yok; son oturum 4 Ekim 2026, 10:58 (Türkiye saati) itibarıyla işi bıraktı.
+**Çalışan oturum:** `session_017bQAUeV7o6pTvG1Pz3hRHx`; kilit 4 Ekim 2026, 14:29 (Türkiye saati) tarihine kadar geçerli.
 
 **Sıradaki işler:** `W-C00-12` sürüyor; başlatılabilir: `W-C00-12.4`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
