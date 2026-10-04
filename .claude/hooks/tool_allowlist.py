@@ -369,7 +369,8 @@ def newlines_to_separators(t):
 
 
 def tokens(text):
-    text = newlines_to_separators(strip_heredocs(text).replace("\\\n", " "))
+    text = newlines_to_separators(strip_heredocs(text).replace("\\\n", ""))   # bash joins a line
+    # continuation with nothing (red-team CRITICAL #1); a split program name must not become two tokens
     lex = shlex.shlex(text, posix=True, punctuation_chars=";&|()<>")
     lex.whitespace_split = True
     lex.commenters = ""
@@ -496,11 +497,17 @@ def strip_wrappers(a):
                 a = a[2:] if a[0] in ("-u", "--unset", "-C", "--chdir", "-S", "--split-string") else a[1:]
             if not a:
                 return [], True
-        elif b in ("sudo", "command", "exec", "nohup", "time", "builtin", "stdbuf", "ionice", "unbuffer"):
+        elif b in ("sudo", "command", "exec", "nohup", "time", "builtin", "stdbuf", "ionice", "unbuffer", "doas",
+                   "setarch", "chrt", "setsid", "catchsegv"):
+            vopts = {"sudo": {"-p", "-u", "-g", "-C", "-h", "-r", "-t", "-U", "-R", "-D", "-A", "-c"},
+                     "doas": {"-u", "-C"}, "exec": {"-a"}, "stdbuf": {"-i", "-o", "-e"},
+                     "ionice": {"-c", "-n"}, "setarch": {"-R"}, "chrt": set()}.get(b, set())
             a = a[1:]
             while a and a[0].startswith("-"):
-                a = a[2:] if a[0] in ("-u", "-g", "-o", "-i", "-e", "-c", "-n") and b in ("sudo", "stdbuf",
-                                                                                      "ionice") else a[1:]
+                if a[0] == "--":
+                    a = a[1:]
+                    break
+                a = a[2:] if a[0] in vopts and len(a) > 1 and "=" not in a[0] else a[1:]
         elif b == "timeout":
             a = a[1:]
             while a and a[0].startswith("-"):
@@ -570,8 +577,9 @@ def shell_checks(command, cwd, depth=0):
             raise Bad("B8", "env without a command prints the whole environment, including credentials")
         if not args:
             continue
-        if any(c in args[0] for c in "$`"):
-            raise Bad("G0", f"the command name {args[0]} is computed at run time, so the guard cannot read it")
+        if any(c in args[0] for c in "$`*?["):
+            raise Bad("G0", f"the command name {args[0]} is not a plain word (it uses a variable or a glob), so the "
+                            "guard cannot tell which program bash would run")
         prog = os.path.basename(args[0])
         if prog in ("cd", "pushd"):
             d = resolve_dir(d, args[1] if len(args) > 1 else "~")
@@ -868,16 +876,10 @@ def file_checks(name, args):
         raise Bad("F4", f"{name} on a credential store ({p})")
     if name in FILE_READ_TOOLS:
         return ("T1", f"{name} is a read")
-    if within(p, os.path.join(ROOT, ".claude")) and not within(p, os.path.join(ROOT, ".claude", "worktrees")):
-        raise Bad("F1", f"{name} {p}")
-    if ".git" in os.path.realpath(p).split(os.sep):
-        raise Bad("F2", f"{name} {p}")
-    if within(p, os.path.join(HOME, ".claude")):
-        raise Bad("F3", f"{name} {p}")
-    if within(p, LOG_DIR):
-        raise Bad("F3", f"{name} {p} (the guard's decision log, which only the guard writes)")
-    if os.path.basename(p) in PROTECTED_NAMES:
-        raise Bad("F3", f"{name} {p} (protected configuration file)")
+    z = guarded_zone(p)   # the same guarded places the shell write-ban uses, so the two cannot drift (R-D008-2 N-4)
+    if z:
+        rule = ("F1" if "guard files" in z else "F2" if ".git/" in z else "F4" if "decision log" in z else "F3")
+        raise Bad(rule, f"{name} {p}: {z}")
     return ("T1", f"{name} outside the guarded paths")
 
 
@@ -1015,6 +1017,8 @@ def decide(data):
     args = data.get("tool_input") or {}
     if not isinstance(args, dict):
         return "deny", "G0", "the tool input is not an object"
+    if any(isinstance(v, str) and "\x00" in v for v in args.values()):
+        return "deny", "G0", "the tool input contains a NUL byte, which no real path or command needs"
     cwd = data.get("cwd") if isinstance(data.get("cwd"), str) and os.path.isabs(data.get("cwd") or "") else ROOT
     try:
         if name.startswith("mcp__"):

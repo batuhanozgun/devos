@@ -264,6 +264,39 @@ b deny  "v=GH_; eval \"echo \\\$\${v}TOKEN\""
 b allow "find . -name '*.md' -exec grep -l x {} +"
 b allow "export FOO=1 BAR=2"
 b allow "declare -A map"
+# --- red-team (pre-review of R-D008-2 fixes): program-identification bypasses, must deny
+# CRITICAL 1: a backslash-newline splits the program name; bash joins with nothing (ANSI-C quoting gives a real \ + newline)
+b deny  $'gi\
+t push origin main'
+b deny  $'pri\
+ntenv GH_TOKEN'
+b allow $'echo a\
+b'
+b deny  $'/bin/r\
+m -rf /'
+
+# CRITICAL 2: a glob in the command name expands to a program
+b deny  "/usr/bin/[g]it push origin main"
+b deny  "/usr/bin/g?t push origin main"
+b deny  "/bin/[r]m -rf /"
+b deny  "/usr/bin/[p]rintenv GH_TOKEN"
+b deny  "/bin/[c]p /tmp/evil .claude/hooks/tool_allowlist.py"
+# CRITICAL 3: a wrapper's value option is eaten, so its value becomes the program
+b deny  "exec -a foo git push origin main"
+b deny  "exec -a foo rm -rf /"
+b deny  "sudo -p prompt git push origin main"
+b deny  "doas -u root git push origin main"
+b deny  "exec -a x git checkout origin/main -- .claude/hooks/tool_allowlist.py"
+b allow "exec git status"
+b allow "sudo apt-get install -y x"
+b allow "nice -n 10 git -C /tmp/scratch status"
+b allow "timeout 60 git -C /tmp/scratch fetch origin main"
+# MEDIUM 4: the file tools guard /etc/gitconfig and ~/.config/git, as the shell does
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"/etc/gitconfig\",\"content\":\"x\"}}"
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$HOME/.config/git/config\",\"content\":\"x\"}}"
+# LOW 5: a NUL byte denies cleanly as G0 (the "no guard error" check below also covers this)
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"/tmp/a\u0000b\",\"content\":\"x\"}}"
+t deny "{\"tool_name\":\"Read\",\"tool_input\":{\"file_path\":\"a\u0000\"}}"
 # --- R-D008-2 N-4: shell writes into any .git/ directory (B5)
 b deny  "printf x >> /tmp/scratch/.git/config"
 b deny  "echo x > /tmp/scratch/.git/hooks/pre-push"
