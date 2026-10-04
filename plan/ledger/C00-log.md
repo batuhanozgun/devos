@@ -904,3 +904,7 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Record changes:** plan/ledger.md Run lock · supersession · release by session_011NtZnNGjojkTcmuzMRLtvL
 - **Stop changed from S4 to S3 (blocker for one action).** After the S4 stop check passed at 23:09Z (main `305f71b`), the successor's `create_session` (P-W12-6, pre-registered in intent §4 on PR #86) was refused: "create_session: this session is at lineage depth 8 (limit 8), so it cannot start sessions, or create, fire or re-arm routines and reminders. …" (verbatim in `evidence/C00/probes/P-W12-6_lineage.md`). That is S3 for that action (R-R21, L-044); no other route was tried, and no reminder or routine was attempted, since the refusal names them too. The lease is released in this entry's line above, and the one step for Batu is the open decision record D-006, which the generated first line of `DURUM.md` shows. Nothing is lost: tranche 1c stays on draft PR #86 (head `543169a`); the next run, started outside this chain, continues it from L-058, L-059 and N-054.
 - **Record changes:** plan/decisions/D-006.md · addition · one step for Batu: start a new run outside the exhausted chain; evidence/C00/probes/P-W12-6_lineage.md · addition · the refusal at the lineage limit, verbatim; plan/ledger.md summary_tr · supersession · the summary for Batu after the refusal
+
+### L-061 · 2026-10-04 · Lease taken or renewed by `session_01SsLSgp5RLPtNMhc1RxuDoZ`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01SsLSgp5RLPtNMhc1RxuDoZ
