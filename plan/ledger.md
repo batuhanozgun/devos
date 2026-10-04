@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Cevabını aldım: D-006 ve D-007 senin konuların değildi. İkisini "reddedildi, sana ait değil" diye kapattım; artık senden bir şey beklemiyorum. <br>1. Ağır işler bundan sonra gündüz de yapılacak (D-002 güncellendi). <br>2. Şimdi bu iki konunun sana neden geldiğini kök nedenle inceliyorum: sana yalnızca amaç, yön, sonuçların kabulü ve para konuları gelecek; benim koyduğum kuralları kendi bağımsız incelememle ben değiştireceğim. <br>3. Sonra yeniden tasarımın 1c adımına (PR #86) devam ediyorum. <br>**Riskler:** <br>- Sistemin otomatik denetimi bir değişikliği yine engellerse, onu sana sormadan başka bir tasarımla çözmeye çalışacağım; çözemezsem burada bilgi olarak yazacağım. | 2026-10-04T08:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:50Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:57Z |
 
 ---
 
@@ -69,7 +69,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, ready 1, running 1 | 11 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, ready 1, running 1 | 12 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -96,7 +96,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-08` Independent plan review (plan C00 step 4): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: stage C00 on hold until W-C00-12 is accepted
-  - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051
+  - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051, N-056
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01Gfj3M4MjrMb4YcRHwsA1X8)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
@@ -193,6 +193,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-005` | `W-C00-07` | OI-011#16 | open | (16) observed by a probe: marketplace (ECC) and partner (Base44) skills and account plugins do not reach cloud sessions, so anything adop... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11, disposed in tranche 1b-ii, `plan/builder/w-c00-12/15_tranch... |
+| `N-056` | `W-C00-11` | R-FR02-2 | open | **Open blockers at stage closure** (R-FR02-2 m4, carried by run `session_017bQAUeV7o6pTvG1Pz3hRHx`). Since FR-02, a blocker the builder c... |
 | `N-047` | `W-C00-12.4` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
 | `N-048` | `W-C00-12.4` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
 | `N-052` | `W-C00-12.4` | L-049 | open | **Annotation (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`, 2026-10-03, `get_session` on itself at boot):** `"lineage":{"depth":7,"limit":8}`, ... |

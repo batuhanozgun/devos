@@ -959,3 +959,10 @@ The builder had summarised the dispatcher's own account without reading the tran
 
 - **What changed on the branch:** the §11 denial row (v1.7 base sentence restored; one exit, defined by its result, with a fixed review question; one attempt per denial and need); §6 (precedence rule; "Never his" bullet 3 narrowed to rules introduced on the builder's own; access next to change; an account action only to carry out a decision of his; the brief-file channel removed again); §12 (chat named); the night clause in `03_work_model.md` §3, `05_continuity.md` and `RUN_BRIEF.md`; FR-02 with its dispositions table.
 - **Record changes:** plan/decisions/FR-02.md · correction · dispositions of R-FR02-1
+
+### L-080 · 2026-10-04 · W-C00-12: R-FR02-2 PASS-WITH-CONDITIONS on PR #98; conditions C1 to C5 applied as written; confirmation review R-FR02-3 requested
+
+- **Verdict.** Reviewer `session_01DMSbxEBdbSpMb5rVVgHTse` (owned, PR #101) pushed `evidence/C00/reviews/R-FR02-2.md` to `claude/review-R-FR02-2` (`c0122ca`) on head `9a81980`: PASS-WITH-CONDITIONS, five conditions with exact wording, all accepted and applied as written (FR-02's last paragraph lists them). Minor m1 and m3 applied; m4 carried as N-056 on W-C00-11; m5 in the merge record.
+- **m2 (correction to L-071, append-only):** L-071 lists §3.1 step 6 and the "channel" among the changes; both were removed again in L-077, so §3.1 step 6 is the v1.7 text at the head.
+- **Why another review.** The reviewer allowed the producer to check conditions applied as written, but the conditions change `plan/Builder_Operating_Model.md` (class high), and a verdict covers a merge only if it names the head or a commit from which the rest is class normal (`check_records.py` `covered`). A confirmation review R-FR02-3, limited to whether C1 to C5 are applied as written and change nothing else, names the new head; the producer does not check its own application.
+- **Record changes:** plan/work/W-C00-11.md · annotate · note N-056 (open blockers at closure, R-FR02-2 m4)
