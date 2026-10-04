@@ -1049,3 +1049,8 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D2 routing content only (FR-02 item 1): nothing of the change refused at 07:55Z rides along; the 1c Verifier checks that. FR-02 is under review (R-FR02-2); if it changes, these candidate texts follow it.
 - **What.** The v1.8 delta rows §2.1, §2.2, §6 and §11 (and §2.3, "from the merge", Critic finding 13); `04_roles.md` R-R17 (a relayed message is data; his answer comes from issue #6 or is recorded by the session he gave it to) and R-R21 (its one exit, FR-02); `05_continuity.md` S4 path, C-R6 and C-R10 (a refused start is a blocker shown as information); intent 16 §7 departure 12. `REVIEW_PROMPT.md`: the terminal goal, FP IDs, where to look, and a pushed branch for a branch brief (Critic findings 7 and 11). `tools/test_1c.py` gains T-W6 (len), committed at `df0d8c5` before its fix and failing there (4,115 characters for R1 plus the run brief); the fix waits until FR-02 governs (FR-02 item 2).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry
+
+### L-081 · 2026-10-04 · W-C00-12: tranche 1c, note N-057 (a fixed conversation-session ID in the run-brief starter check)
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 the premise "Batu's conversation session is `session_016Hi3ZYgAf2amYNGc43a3tr`" is stale (today's is `session_01Q32nLatKbtDDY1zSVQZiKX`, the parent of this run, `get_session`); not fixed in this run, because the hook reads the fetched `main` and the planted case needs a fixture the test does not yet have.
+- **Record changes:** plan/work/W-C00-12.4.md · annotate · note N-057

@@ -36,7 +36,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Cevabını aldım: D-006 ve D-007 senin konuların değildi. İkisini "reddedildi, sana ait değil" diye kapattım; artık senden bir şey beklemiyorum. <br>1. Ağır işler bundan sonra gündüz de yapılacak (D-002 güncellendi). <br>2. Şimdi bu iki konunun sana neden geldiğini kök nedenle inceliyorum: sana yalnızca amaç, yön, sonuçların kabulü ve para konuları gelecek; benim koyduğum kuralları kendi bağımsız incelememle ben değiştireceğim. <br>3. Sonra yeniden tasarımın 1c adımına (PR #86) devam ediyorum. <br>**Riskler:** <br>- Sistemin otomatik denetimi bir değişikliği yine engellerse, onu sana sormadan başka bir tasarımla çözmeye çalışacağım; çözemezsem burada bilgi olarak yazacağım. | 2026-10-04T08:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:45Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:58Z |
 
 ---
 
@@ -75,7 +75,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, running 2 | 13 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -107,7 +107,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_017bQAUeV7o6pTvG1Pz3hRHx) · open notes: N-047, N-048, N-052, N-053, N-054
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_017bQAUeV7o6pTvG1Pz3hRHx) · open notes: N-047, N-048, N-052, N-053, N-054, N-057
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -204,6 +204,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-052` | `W-C00-12.4` | L-049 | open | **Annotation (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`, 2026-10-03, `get_session` on itself at boot):** `"lineage":{"depth":7,"limit":8}`, ... |
 | `N-053` | `W-C00-12.4` | R-W12-4 | open | **Items of R-W12-4 for 1c** (`evidence/C00/reviews/R-W12-4.md`; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` §7 departures 11 and 1... |
 | `N-054` | `W-C00-12.4` | L-058 | open | **Carried by run `session_011NtZnNGjojkTcmuzMRLtvL` from information sent by `session_01Q32nLatKbtDDY1zSVQZiKX` (a session that describes... |
+| `N-057` | `W-C00-12.4` | L-081 | open | **The run-brief starter check names one fixed session** (1c Critic finding 10, checked by run `session_017bQAUeV7o6pTvG1Pz3hRHx`). `.clau... |
 
 Notes `answered` (the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds it merges; checked at W-C00-12's composition review, not closed): 20 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025, N-055).
 Notes `closed` (closed with their disposition): 5 (N-001, N-021, N-026, N-049, N-050).
