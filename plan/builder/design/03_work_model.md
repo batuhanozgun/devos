@@ -1,6 +1,6 @@
 # W-C00-12 · 03 · Design piece 2: the work model (object O2)
 
-**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only. It is the file-form subset of plan K-1, K-5 and Ek B §3.2–3.4, which are DevOS scope. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B2, M3 and m2). It is one design; earlier revisions are in git. **Builds on:** `02_memory.md` (work items are records in `plan/work/`). **Serves:** acceptance (a2) in full; needs N1 and N7; principles 10 and 17; Batu's work-discovery chain. **Tests:** `11_test_register.md`.
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only. It is the file-form subset of plan K-1, K-5 and Ek B §3.2–3.4, which are DevOS scope. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B2, M3 and m2). It is one design; earlier revisions are in git. **Builds on:** `02_memory.md` (work items are records in `plan/work/`). **Serves:** acceptance (a2) in full; needs N1 and N7; principles 10 and 17; Batu's work-discovery chain. **Tests:** `11_test_register.md`.
 
 ## 1. Problem
 

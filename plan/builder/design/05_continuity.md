@@ -1,6 +1,6 @@
 # W-C00-12 · 05 · Design piece 5: continuity, waits and failure detection
 
-**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only; replaced by DevOS's working order at C06. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B1, m4, m5, m6) and the K3 re-read. It is one design; earlier revisions are in git. **Serves:** needs N1 and N3; acceptance (g)'s demand trace for the dispatcher and the heartbeat; OI-011 items 1–5; OI-010; U-4 and U-5 of `01_goal_down.md`. **Tests:** `11_test_register.md`.
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only; replaced by DevOS's working order at C06. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B1, m4, m5, m6) and the K3 re-read. It is one design; earlier revisions are in git. **Serves:** needs N1 and N3; acceptance (g)'s demand trace for the dispatcher and the heartbeat; OI-011 items 1–5; OI-010; U-4 and U-5 of `01_goal_down.md`. **Tests:** `11_test_register.md`.
 
 ## 1. What continuity must cover, from what happened
 

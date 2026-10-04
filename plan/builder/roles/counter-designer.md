@@ -1,6 +1,6 @@
 # Counter-designer (session role)
 
-**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation. **Runs as:** a separate session created with `create_session`, whose first message is this file's task text followed by the brief `tools/records.py brief <ID> --role counter-designer` generates (W-R5, W-R6). **Demand:** plan §6.12 item 3; W-C00-12 (d); items of type `major-design` (R-R10) (`plan/builder/w-c00-12/04_roles.md` §2).
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation. **Runs as:** a separate session created with `create_session`, whose first message is this file's task text followed by the brief `tools/records.py brief <ID> --role counter-designer` generates (W-R5, W-R6). **Demand:** plan §6.12 item 3; W-C00-12 (d); items of type `major-design` (R-R10) (`plan/builder/design/04_roles.md` §2).
 
 **Terminal goal.** Produce an alternative design from the goal and the constraints, blind to the producer's design. You are compared; you accept nothing.
 

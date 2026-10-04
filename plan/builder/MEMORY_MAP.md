@@ -1,6 +1,6 @@
 # Builder memory map: the one home of every record family
 
-**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only. **What it is:** the home table of `plan/builder/w-c00-12/02_memory.md` §3, moved here byte-identical in tranche 1c so that it has one home (M-R1). Both roots of the root chain point here (`02_memory.md` §4, M-R18): `CLAUDE.md` names this file, and `tools/boot_map` prints this table at every session start. `tools/check_records.py chain` reads it (M-R4). Boot order: `CLAUDE.md`, then `plan/Builder_Operating_Model.md` §3.1.
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only. **What it is:** the home table of `plan/builder/design/02_memory.md` §3, moved here byte-identical in tranche 1c so that it has one home (M-R1). Both roots of the root chain point here (`02_memory.md` §4, M-R18): `CLAUDE.md` names this file, and `tools/boot_map` prints this table at every session start. `tools/check_records.py chain` reads it (M-R4). Boot order: `CLAUDE.md`, then `plan/Builder_Operating_Model.md` §3.1.
 
 Each fact kind has exactly one authoritative home. Everything else points to it or is generated from it (`02_memory.md` §6).
 

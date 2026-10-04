@@ -33,7 +33,7 @@ This document designs the builder's operating model as a whole. Every mechanism 
 
 ## v1.8 delta (W-C00-12 tranche 1c)
 
-**What this is.** A delta, not a rewrite (12 §1, critic finding 16): one home per rule (M-R1). Each rule below is defined in its design piece's rule table (`plan/builder/w-c00-12/02_memory.md`, `03_work_model.md`, `04_roles.md`, `05_continuity.md`) and registered in `plan/builder/mechanisms.md` §1 with its test; this section only says which v1.7 text it supersedes and what changes in practice. A rule governs once the tranche that builds it has merged with its session verdict (state file, Governing documents).
+**What this is.** A delta, not a rewrite (12 §1, critic finding 16): one home per rule (M-R1). Each rule below is defined in its design piece's rule table (`plan/builder/design/02_memory.md`, `03_work_model.md`, `04_roles.md`, `05_continuity.md`) and registered in `plan/builder/mechanisms.md` §1 with its test; this section only says which v1.7 text it supersedes and what changes in practice. A rule governs once the tranche that builds it has merged with its session verdict (state file, Governing documents).
 
 | v1.7 section | Superseded or extended by | What changes in practice |
 |---|---|---|

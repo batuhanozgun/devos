@@ -28,6 +28,7 @@
 | Governing documents: `plan/Builder_Operating_Model.md` | version: 1.8 on the tranche 1c branch (v1.7 plus a delta), 1.7 on `main` until it merges; status: governs whatever W-C00-12 has not yet replaced; accepted by: none, not independently accepted (W-C00-05). Its former header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22); since 1b-ii its header points here (M-R2). | 2026-10-03T22:56Z |
 | Governing documents: `plan/builder/mechanisms.md` | version: as moved in 1b-i; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
+| Governing documents: `plan/builder/design/*` | version: tranche 1c branch (pieces 02, 03, 04, 05 and 07, moved from `plan/builder/w-c00-12/` unchanged except for their status header, 12 §1); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-04T07:47Z |
 | Governing documents: `plan/builder/MEMORY_MAP.md` | version: tranche 1c branch (the home table, moved from 02 §3 in tranche 1c); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T22:56Z |
 | Governing documents: `plan/builder/heritage/*` | version: tranche 1c branch (the failure patterns (R-R7), written in tranche 1c); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T22:56Z |
 | Governing documents: `plan/builder/roles/*` | version: tranche 1c branch (the session role files (counter-designer, probe), written in tranche 1c); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T22:56Z |
@@ -35,7 +36,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor, ama bu oturum devredemedi: oturum zinciri platformun derinlik sınırına ulaştı (8/8) ve yeni oturum açamıyorum. Senden tek adım istiyorum (sayfanın ilk satırı, D-006): sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz ya da devos üzerinde kendin bir oturum başlat. Bir şey kaybolmadı. <br>1. Dördüncü adımın (1c: koruma kuralları, CLAUDE.md, roller) yeni oturum gerektirmeyen kısmı ayrı bir dalda (PR #86) hazır; ana dala henüz alınmadı, çünkü bağımsız denetçi onayı gerekiyor. Yeni oturumlar artık üretilmiş bir görev özeti olmadan başlatılamayacak; her oturum açılışta bilinen hata kalıplarını görecek; rol tanımları yazıldı. Bunlar dal ana dala alınınca yürürlüğe girer. <br>2. Önceki denetçinin bulduğu açık (son alt adımın kendini onaylı göstermesi) kodda kapatıldı; test önce eski kodda başarısız, yenisinde başarılı. Bir eleştirmen okuması 13 bulgu verdi; üçü düzeltildi, gerisi sıradaki oturuma yazıldı. <br>3. Aynı kontrol yolu beş kez sıkılaştırıldı; tasarım kuralı bu durumda bir çerçeve incelemesi istiyor. Sıradaki oturum bunu denetçiden önce yapacak. <br>4. Sorduğun model ve efor konusu: model her oturum için açıkça sabit; efor için henüz bir yapı yok. Sıradaki oturum önce ölçecek, karar noktası yeniden tasarımın son incelemesine yazıldı. <br>**Riskler:** <br>- Zincir yeniden başlasa da her devir ve her denetçi bir seviye ekliyor; bu sınır yine dolacak. Bunun kalıcı çözümü yeniden tasarımın bir parçası olarak ele alınacak. <br>- Bekçi henüz kurulmadı; bir oturum ölürse bunu "Son güncelleme" saatinin eskimesinden görürsün. | 2026-10-03T23:10Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:46Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:47Z |
 
 ---
 
@@ -64,7 +65,7 @@
 - `W-C00-12.1`: finished, waiting for acceptance
 - `W-C00-12.5`: depends on W-C00-12.4 (not accepted)
 
-Selection among ready items: critical path first, heavy items preferably 23:00–08:00 Turkey time, one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
+Selection among ready items: critical path first, heavy items preferably 23:00–08:00 Turkey time, one logged sentence of reason (`plan/builder/design/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
 
 ### Zoom

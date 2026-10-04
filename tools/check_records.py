@@ -983,7 +983,7 @@ def home_table():
     if Path("plan/builder/MEMORY_MAP.md").exists():
         src, t = "plan/builder/MEMORY_MAP.md", content(None, "plan/builder/MEMORY_MAP.md")
     else:
-        src = "plan/builder/w-c00-12/02_memory.md"
+        src = "plan/builder/design/02_memory.md"
         t = (content(None, src) or "")
         t = t.split("## 3.", 1)[1].split("\n## 4.", 1)[0] if "## 3." in t else ""
     rows = []

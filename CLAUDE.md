@@ -12,10 +12,10 @@ You are working in the DevOS repository during installation. Before doing anythi
 7. Recreate the dispatcher or the heartbeat if either is missing (§2.3).
 8. Read in full the plan sections that the next work item names.
 
-Memory map and heritage (tranche 1c of W-C00-12; `plan/builder/w-c00-12/02_memory.md` §4):
+Memory map and heritage (tranche 1c of W-C00-12; `plan/builder/design/02_memory.md` §4):
 
 - `plan/builder/MEMORY_MAP.md` is the one home table of every record family; `tools/boot_map` prints it at session start with the clocks, the `main` SHA, the chain check and the failure patterns (`plan/builder/heritage/FAILURE_PATTERNS.md`; candidates are labelled). Read the patterns as questions to ask before acting.
-- Role files: `plan/builder/w-c00-12/04_roles.md` §3 says where each role's definition lives. Starting a session: W-R6 in `plan/builder/w-c00-12/03_work_model.md`.
+- Role files: `plan/builder/design/04_roles.md` §3 says where each role's definition lives. Starting a session: W-R6 in `plan/builder/design/03_work_model.md`.
 
 The common floor every interpreting or deciding role carries, imported whole by reference (R-R6; plan Ek A §2 and Ek D §2, with the D1–D9 trigger questions of Ek D §3; the trigger fires at every new request, task or turn, including proposals in conversation):
 

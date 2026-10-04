@@ -330,7 +330,7 @@ def view_frontier(items, decisions, changes):
            "**Running:**", *(running or ["- none"]), "",
            "**Not ready, with the first unmet condition:**", *(rest or ["- none"]), "",
            "Selection among ready items: critical path first, heavy items preferably 23:00–08:00 Turkey time, "
-           "one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). "
+           "one logged sentence of reason (`plan/builder/design/03_work_model.md` section 3). "
            "Candidates never appear here; they are in the zoom view."]
     return "\n".join(out)
 

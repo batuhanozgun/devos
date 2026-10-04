@@ -1,6 +1,6 @@
 # W-C00-12 · 04 · Design piece 3: the role system (object O3)
 
-**Status:** candidate (W-C00-12 work product, not binding). **Scope:** installation only for the builder's roles. The floor, the role-package shape and the separation rules come from plan Ek A §2, §3, §5 and Ek D §2, which are DevOS scope and are carried by reference. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B4, B6, M6, m1, m2) and the K3 re-read. It is one design; earlier revisions are in git. **Builds on:** pieces 1 and 2. **Serves:** acceptance (g), (i), (j) and (k); needs N2, N14, N15 and N18; cross-cutting conditions X2 and X4. **Tests:** `11_test_register.md`.
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only for the builder's roles. The floor, the role-package shape and the separation rules come from plan Ek A §2, §3, §5 and Ek D §2, which are DevOS scope and are carried by reference. **Written:** first version 2026-10-03 by run `session_0143r88Vc9e5RbsQmqjYWgwa`. **Revision 3** (this text) was rewritten in place on 2026-10-03 by run `session_01XUsVQowRbLJdC1E8gFvxZq`, after review R-W12-1 (B4, B6, M6, m1, m2) and the K3 re-read. It is one design; earlier revisions are in git. **Builds on:** pieces 1 and 2. **Serves:** acceptance (g), (i), (j) and (k); needs N2, N14, N15 and N18; cross-cutting conditions X2 and X4. **Tests:** `11_test_register.md`.
 
 ## 1. Problem
 

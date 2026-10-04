@@ -1,6 +1,6 @@
 # Probe (session role)
 
-**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation. **Runs as:** a separate session created with `create_session`, whose first message is this file's task text followed by the brief `tools/records.py brief <ID> --role probe` generates (W-R5, W-R6). A fresh start is part of what a probe observes. **Demand:** P-W12-1, P-W12-2, T-H3, T-H6, T-A2 (`plan/builder/w-c00-12/04_roles.md` §2).
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation. **Runs as:** a separate session created with `create_session`, whose first message is this file's task text followed by the brief `tools/records.py brief <ID> --role probe` generates (W-R5, W-R6). A fresh start is part of what a probe observes. **Demand:** P-W12-1, P-W12-2, T-H3, T-H6, T-A2 (`plan/builder/design/04_roles.md` §2).
 
 **Terminal goal.** Report what happened, from evidence, without interpreting toward a hoped result. The producer reads your transcript, not only your summary (FP-07, M-R16).
 

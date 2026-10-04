@@ -1,6 +1,6 @@
 # Builder mechanisms: the register and the map's carrier tables
 
-**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only; the register form is a candidate for DevOS's `MechanismAssumption` records (C10). **What it is:** the one home of the mechanism register and of the mechanism map's carrier and coverage tables. Both were moved here unchanged in content in W-C00-12 tranche 1b-i (`plan/builder/w-c00-12/12_tranche_plan.md` section 2.1; R-W12-2 B-2), from `plan/builder/w-c00-12/11_test_register.md` section 1 and `plan/builder/w-c00-12/07_mechanism_map.md` sections 2–4. Those files keep a pointer in their place. The rules themselves are defined in the design pieces `02_memory.md` to `05_continuity.md`, the tests in `11_test_register.md` section 2, the map's notation, failures and critical-path arrows in `07_mechanism_map.md` sections 1 and 5–10. `plan/builder/w-c00-12/check_ids.py` checks that the register here, the pieces' rule tables and the tests agree; the map check (M-R19, tranche 1b-ii) will read the carrier tables here.
+**Status:** see `plan/ledger.md`, Governing documents. **Scope:** installation only; the register form is a candidate for DevOS's `MechanismAssumption` records (C10). **What it is:** the one home of the mechanism register and of the mechanism map's carrier and coverage tables. Both were moved here unchanged in content in W-C00-12 tranche 1b-i (`plan/builder/w-c00-12/12_tranche_plan.md` section 2.1; R-W12-2 B-2), from `plan/builder/w-c00-12/11_test_register.md` section 1 and `plan/builder/design/07_mechanism_map.md` sections 2–4. Those files keep a pointer in their place. The rules themselves are defined in the design pieces `02_memory.md` to `05_continuity.md`, the tests in `11_test_register.md` section 2, the map's notation, failures and critical-path arrows in `07_mechanism_map.md` sections 1 and 5–10. `plan/builder/w-c00-12/check_ids.py` checks that the register here, the pieces' rule tables and the tests agree; the map check (M-R19, tranche 1b-ii) will read the carrier tables here.
 
 ## 1. Register (formerly `11_test_register.md` section 1)
 
@@ -115,7 +115,7 @@ Columns:
 
 ## 2. Carrier tables of the mechanism map
 
-Notation (arrow types M, M\*, I, J; coverage columns Own, Her, Mem, Ver, Rec, Sec): `plan/builder/w-c00-12/07_mechanism_map.md` section 1.
+Notation (arrow types M, M\*, I, J; coverage columns Own, Her, Mem, Ver, Rec, Sec): `plan/builder/design/07_mechanism_map.md` section 1.
 
 ### 2.1 Base steps of a run (formerly `07_mechanism_map.md` section 2)
 

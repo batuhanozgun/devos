@@ -306,7 +306,7 @@ def t_m4():
     outcome("T-M4", "a decision file not in its index fails", bool(fails(out, "chain", "D-999")), out)
     s = Scratch()
     mp = "plan/builder/MEMORY_MAP.md" if s.p("plan/builder/MEMORY_MAP.md").exists() else \
-        "plan/builder/w-c00-12/02_memory.md"  # the home table's one home since tranche 1c
+        "plan/builder/design/02_memory.md"  # the home table's one home since tranche 1c
     t = s.read(mp)
     t2 = "\n".join(l for l in t.splitlines() if not l.startswith("| Decision |")) + "\n"
     assert t2 != t

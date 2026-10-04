@@ -1,6 +1,6 @@
 # Review session prompt (fixed template)
 
-**Status:** see `plan/ledger.md`, Governing documents. **What it is:** a high-impact file: changes need a review PASS (Builder Operating Model §5). This is the role file of the session Verifier (`plan/builder/w-c00-12/04_roles.md` §3; R-R3a since tranche 1c). The builder fills the fields in `{braces}` and nothing else, and appends the brief that `tools/records.py brief <ID> --role verifier --target-sha <SHA> --failure-classes …` generates; the hook refuses a first message without it (W-R6).
+**Status:** see `plan/ledger.md`, Governing documents. **What it is:** a high-impact file: changes need a review PASS (Builder Operating Model §5). This is the role file of the session Verifier (`plan/builder/design/04_roles.md` §3; R-R3a since tranche 1c). The builder fills the fields in `{braces}` and nothing else, and appends the brief that `tools/records.py brief <ID> --role verifier --target-sha <SHA> --failure-classes …` generates; the hook refuses a first message without it (W-R6).
 
 ```text
 You are an independent reviewer for DevOS. You did not produce the work you review, and you do not see the producer's conversation.

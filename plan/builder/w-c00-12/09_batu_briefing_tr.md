@@ -33,5 +33,5 @@ Birinci madde bugün çalışıyor. Diğerleri **tasarım**: denetimden geçip p
 
 - İlk partinin içeriği ve sırası: `plan/builder/w-c00-12/12_tranche_plan.md`
 - Her mekanizma: `plan/builder/mechanisms.md`; testleri: `plan/builder/w-c00-12/11_test_register.md`
-- Sistemin "program haritası" ve geçmiş 40 hatanın yeri: `plan/builder/w-c00-12/07_mechanism_map.md`
+- Sistemin "program haritası" ve geçmiş 40 hatanın yeri: `plan/builder/design/07_mechanism_map.md`
 - 24 maddelik girdi listenin her maddesine verilen karar: `plan/builder/w-c00-12/08_oi011_dispositions.md`
