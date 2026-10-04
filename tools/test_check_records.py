@@ -623,6 +623,35 @@ def t_m15():
     rc, out = sh(["python3", "-c", probe], s.d)
     outcome("T-M15", "(e1, e2) a copy stays bound after a later push to its review branch, with the owned list "
             "read on the checked tree", "BOUND" in out and "UNBOUND" not in out, out)
+    # 1c Critic finding 4 (FR-01 invariant): a copy of a verdict that its review branch later revised to another
+    # verdict line is not bound. (e3) the copy made before the revision, judged after it (verdict_bound); (e4) the
+    # copy of the superseded version made after the revision (claims on the range). Control: (e1) above, where the
+    # later push keeps the verdict line, stays bound.
+    s = Scratch()
+    s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+    main = s.commit("fixture: the reviewer is an owned session")
+    s.git("checkout", "-q", "-b", "claude/review-R-FX1")
+    s.write("evidence/C00/reviews/R-FX1.md", plain(main))
+    first = s.commit("R-FX1 verdict PASS", session=REVIEWER)
+    s.git("checkout", "-q", "main")
+    s.git("checkout", "-q", "-b", "pr")
+    s.git("checkout", "-q", first, "--", "evidence/C00/reviews/R-FX1.md")
+    copied = s.commit("copy R-FX1 (PASS)", session=PRODUCER)
+    s.git("checkout", "-q", "claude/review-R-FX1")
+    s.sub("evidence/C00/reviews/R-FX1.md", "## Verdict: PASS", "## Verdict: FAIL")
+    s.commit("R-FX1 revised to FAIL", session=REVIEWER)
+    s.git("checkout", "-q", "pr")
+    probe = ("import sys; sys.path.insert(0, 'tools'); import check_records as C; "
+             f"print('BOUND' if C.verdict_bound('evidence/C00/reviews/R-FX1.md', '{copied}') else 'UNBOUND')")
+    rc, out = sh(["python3", "-c", probe], s.d)
+    outcome("T-M15", "(e3) a copy of a PASS that its review branch later revised to FAIL is not bound (verdict_bound)",
+            "UNBOUND" in out, out)
+    s.git("checkout", "-q", "-b", "pr2", "main")
+    s.git("checkout", "-q", first, "--", "evidence/C00/reviews/R-FX1.md")
+    head = s.commit("copy R-FX1 (the superseded PASS) after the revision", session=PRODUCER)
+    rc, out = s.cr("claims", "--base", main, "--head", head)
+    outcome("T-M15", "(e4) a copy of the superseded PASS made after the revision fails claims",
+            bool(fails(out, "claims", "R-FX1")), out)
     s = Scratch()
     s.git("fetch", "-q", str(REPO), "refs/remotes/origin/claude/review-R-W12-1:refs/remotes/origin/claude/review-R-W12-1")
     s.git("rm", "-q", "evidence/C00/reviews/R-W12-1.md")
@@ -1001,6 +1030,47 @@ def t_w9():
                 "child and its verdict copied into W-C00-12: class high", "class high" in out, out)
         outcome(T, f"({case}) the reason names the work check of child W-C00-12.5 at the PR head",
                 "work check of child W-C00-12.5 at the PR head" in out and "W-R1" in out, out)
+    # 1c Critic finding 5 (FR-01 invariant): (z3) a self-accepted grandchild under a child accepted by its own bound
+    # composition verdict; W-C00-12 accepted by a marked composition verdict. Only a work check of every descendant
+    # at the PR head sees the grandchild.
+    s = Scratch()
+    s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+    for k in ("W-C00-12.1", "W-C00-12.4"):
+        front_edit(s, f"plan/work/{k}.md", lambda m: accept(m, "evidence/C00/reviews/R-W12-6.md"))
+    front_edit(s, "plan/work/W-C00-12.md", lambda m: m.update(execution="finished"))
+    new_item(s, "W-C00-12.5.1", "W-C00-12.5", impact="high")
+    s.records("render")
+    gb = s.commit("base: reviewer owned, W-C00-12.1 to .4 closed, W-C00-12 finished, grandchild W-C00-12.5.1 planned")
+    s.git("checkout", "-q", "-b", "pr-z3")
+    front_edit(s, "plan/work/W-C00-12.5.1.md", lambda m: accept(m, "evidence/C00/tests/1b-ii_gate.md", "deterministic"))
+    front_edit(s, "plan/work/W-C00-12.5.md", lambda m: m.update(execution="finished"))
+    s.records("render")
+    x1 = s.commit("X1: the grandchild self-accepted, W-C00-12.5 finished")
+    s.git("checkout", "-q", "-b", "claude/review-R-FXQ")
+    s.write("evidence/C00/reviews/R-FXQ.md", verdict_text(x1, "PASS", "Session Verifier of W-C00-12 tranche 1d "
+            "(W-C00-12.5).\n\n**Composition of:** W-C00-12.5\n"))
+    s.commit("R-FXQ", session=REVIEWER)
+    s.git("checkout", "-q", "pr-z3")
+    s.git("checkout", "-q", "claude/review-R-FXQ", "--", "evidence/C00/reviews/R-FXQ.md")
+    front_edit(s, "plan/work/W-C00-12.5.md", lambda m: (accept(m, "evidence/C00/reviews/R-FXQ.md"),
+                                                         m.update(composition_by="evidence/C00/reviews/R-FXQ.md")))
+    s.records("render")
+    x2 = s.commit("X2: W-C00-12.5 accepted by its own composition verdict")
+    s.git("checkout", "-q", "-b", "claude/review-R-FXR")
+    s.write("evidence/C00/reviews/R-FXR.md", verdict_text(x2, "PASS", "Composition review of W-C00-12.\n\n"
+            "**Composition of:** W-C00-12\n"))
+    s.commit("R-FXR", session=REVIEWER)
+    s.git("checkout", "-q", "pr-z3")
+    s.git("checkout", "-q", "claude/review-R-FXR", "--", "evidence/C00/reviews/R-FXR.md")
+    front_edit(s, "plan/work/W-C00-12.md", lambda m: (accept(m, "evidence/C00/reviews/R-FXR.md"),
+                                                   m.update(composition_by="evidence/C00/reviews/R-FXR.md")))
+    s.records("render")
+    head = s.commit("W-C00-12 accepted by its marked composition verdict")
+    rc, out = s.cr("impact", "--base", gb, "--head", head)
+    outcome(T, "(z3) a self-accepted grandchild under a child with its own bound composition verdict: class high",
+            "class high" in out, out)
+    outcome(T, "(z3) the reason names the work check of descendant W-C00-12.5.1 at the PR head",
+            "W-C00-12.5.1 at the PR head" in out, out)
     ok, s, head = klass("(s) a new admitted item under a stage with hold_until",
                         lambda s: new_item(s, "W-C00-13", "C00"), "normal")
     s.git("checkout", "-q", head)
