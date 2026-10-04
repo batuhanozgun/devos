@@ -689,6 +689,18 @@ def guarded_write(d, arg, remove=False):
     return literal_guarded(arg, remove=remove)
 
 
+def inplace_flag(args):
+    """True if a sed/perl call edits in place: -i, --in-place[=...], or a short-option cluster that contains an
+    `i` such as -pi, -ri, -Ei, -0pi, -pi.bak (R-D008-13 B13-2). Over-matching (e.g. perl -Idir, whose value holds
+    an i) only over-denies when a guarded path is also named, which is never a daily command here."""
+    for a in args[1:]:
+        if a == "--in-place" or a.startswith("--in-place="):
+            return True
+        if a.startswith("-") and not a.startswith("--") and "i" in a:
+            return True
+    return False
+
+
 def critical(p):
     if p.endswith("/*"):           # a glob directly under a directory counts as that directory
         p = p[:-2]
@@ -776,6 +788,10 @@ def shell_checks(command, cwd, depth=0):
         args, outs, i = [], [], 0
         while i < len(argv):
             t = argv[i]
+            if (t in REDIRECT_OUT or t in REDIRECT_WRITE_DUP or t in REDIRECT_OTHER) \
+                    and args and args[-1].isdigit():
+                args.pop()          # a leading IO number (2>…, 1>…, 2>&1) belongs to the redirection, not the
+                                    # command, so it must not stand in as the destination (R-D008-13 B13-1)
             if t in REDIRECT_OUT:
                 if i + 1 < len(argv):
                     outs.append(argv[i + 1])
@@ -952,7 +968,7 @@ def command_checks(prog, args, d):
         written = tdir or plain[-1:]
     elif prog in WRITE_COMMANDS:
         written = plain
-    elif prog in IN_PLACE_COMMANDS and any(a.startswith(("-i", "--in-place")) for a in args[1:]):
+    elif prog in IN_PLACE_COMMANDS and inplace_flag(args):
         written = plain
     elif prog == "dd":
         written = [a.split("=", 1)[1] for a in args[1:] if a.startswith("of=")]
@@ -974,7 +990,7 @@ def command_checks(prog, args, d):
                                 "internals into place is a guard swap (R-D008-6 B-1)")
     already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
     reader = prog in PURE_READERS \
-        or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
+        or (prog == "sed" and not inplace_flag(args)) \
         or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:])) \
         or (prog == "xxd" and not any(a in ("-r", "--revert") for a in args[1:])) \
         or (prog == "yq" and not any(a in ("-i", "--inplace") for a in args[1:])) \

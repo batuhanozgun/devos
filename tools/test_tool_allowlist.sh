@@ -449,6 +449,26 @@ b allow 'cd $(mktemp -d) && touch x'
 b allow 'xxd /tmp/a'
 b allow 'yq .a .claude/settings.json'
 b allow 'gawk {print} .claude/settings.json'
+# --- R-D008-13: fd-numbered redirection hides a dest (B13-1); bundled sed/perl -i (B13-2)
+b deny  "cp /tmp/a tools/check_records.py 2>/dev/null"
+b deny  "cp /tmp/a tools/x > /dev/null 2>&1"
+b deny  "cp /tmp/a tools/x 2>&1"
+b deny  "install /tmp/a tools/x 2>/dev/null"
+b deny  "ln -sf /tmp/a tools/x 2>&1"
+b deny  'cp /tmp/a $HOME/.config/git/config 2>&1'
+b deny  "cp /tmp/a tools/x 1>/dev/null"
+b deny  "perl -pi -e s/a/b/ tools/check_records.py"
+b deny  "perl -pi -e s/a/b/ .claude/settings.json"
+b deny  "perl -0pi -e s/a/b/ tools/x"
+b deny  "sed -ri s/a/b/ tools/check_records.py"
+b deny  "sed -Ei s/a/b/ .claude/settings.json"
+b deny  "sed -ni s/a/b/p tools/records.py"
+# fd redirections to a non-guarded dest, a tools/ SOURCE, and read-only sed/perl stay allowed
+b allow "cp /tmp/a /tmp/b 2>/dev/null"
+b allow "cp tools/x /tmp/y 2>/dev/null"
+b allow "sed -E s/a/b/ tools/x"
+b allow "perl -ne print tools/x"
+b allow "echo hi >&2"
 # --- R-D008-6/7: data-derived guard swap (honest-mistake copy), and the merge gate / tools directory
 b deny  "cp -r /scratch/x/.claude /home/user/devos/"
 b deny  "cp -r /tmp/y/.git ."

@@ -246,7 +246,7 @@ Boot step 5 checks it, and `builder_check.sh` checks that it is not older than t
 ## 9. Security (H)
 
 **Threat model (frame review after R-C00-BOM-1 to R-C00-BOM-3).** Three review rounds found new routes around the session-tool rules each time. That is a squeeze signal (plan 6.12), so the builder questioned the frame instead of adding a fourth patch. A hook that lives in a repository the builder can edit **cannot be a barrier against a builder that intends to bypass it**. What it can do is stop **accidents and injected instructions** (for example text in a fetched page or a library file that tells the session to send mail). The design goal is therefore:
-- every route an honest builder might take by mistake is blocked technically, by allow lists rather than deny lists;
+- the plain routes an honest builder might take by mistake are blocked technically, by allow lists rather than deny lists (the guard is best-effort for unusual shell spellings; see the working-tree paragraph and the stated residual);
 - deliberate bypass is visible in git and stated as a residual risk;
 - a stronger barrier would need a credential the builder does not hold. That arrives with the audit environment (C02–C03), or would need an account-level change. The account-level change is Batu's decision (D-003).
 
