@@ -125,6 +125,11 @@ GIT_SAFE_KEYS = re.compile(r"(core\.quotepath|color\..*|user\.(name|email)|commi
                            r"diff\.(renames|algorithm|context|noprefix|mnemonicprefix)|safe\.directory|"
                            r"protocol\.version|fetch\.(prune|parallel)|status\.[a-z]+|rebase\.autostash)$", re.I)
 GIT_SUB_OPT_DENY = {"--upload-pack", "--receive-pack", "--exec", "--template", "--config", "--separate-git-dir"}
+# subcommands that create files or a tree at a location (not an in-place change B4 already covers). They are
+# checked coarsely: the directory they run in and every path they name must stay out of the guarded zones
+# (R-D008-10 B10-2). Entries not in GIT_SUBCOMMANDS are already denied by the allow list; they are kept here so
+# the coarse check still applies if one is ever listed.
+GIT_TREE_WRITE = {"clone", "init", "worktree", "submodule", "archive", "format-patch", "bundle", "checkout-index"}
 # environment that changes where git, or any program, reads its settings (R-D008-1 B-1; R-D008-2 N-2)
 GIT_ENV_OVERRIDE = re.compile(r"(?<![\w$])(HOME|XDG_[A-Z_]+|GIT_(?!(AUTHOR|COMMITTER)_(NAME|EMAIL|DATE)\b|"
                               r"TERMINAL_PROMPT\b|PAGER\b)[A-Z_]+)=")
@@ -431,6 +436,13 @@ COPY_LIKE = {"cp", "rsync", "tar", "cpio", "unzip", "pax", "install", "ln", "scp
 # inside their own language is the stated interpreter residual (section 9), not caught here.
 INTERPRETERS = {"python", "python3", "python2", "bash", "sh", "zsh", "dash", "ksh", "perl", "ruby", "node",
                 "nodejs", "php", "lua", "Rscript", "deno", "bun", "tclsh", "expect"}
+# interpreter options that take NO value and run no code or module. Only these may precede the script and keep
+# the "running a tools/ script" exemption; anything else (-m, -c, -e, -W/-X and their attached forms -mFOO,
+# -cCODE, a value-taker, a bare -) ends the exemption, so the script and every other argument are then checked
+# as ordinary paths (R-D008-10 B10-3). Being too generous here only over-denies (the script is then checked and,
+# living under tools/, denied); it can never open a hole.
+SAFE_INTERP_OPTS = {"-B", "-b", "-bb", "-d", "-E", "-I", "-O", "-OO", "-P", "-q", "-s", "-S", "-t", "-tt",
+                    "-u", "-v", "-x"}
 # bash reserved words and compound-command punctuation. They stand in command position without being the
 # program, so each also ends the current simple command and starts a new one; the real command after them is
 # then identified and checked (R-D008-3 R3-1). The set is the full bash list, so a command cannot hide behind
@@ -913,12 +925,13 @@ def command_checks(prog, args, d):
         exempt = None
         if prog in INTERPRETERS:
             j = 1
-            while j < len(args) and args[j].startswith("-"):
-                if args[j] in ("-m", "-c", "-e", "--eval", "--command", "--"):
-                    j = None
-                    break
-                j += 1
-            if j is not None and j < len(args):
+            while j < len(args) and args[j].startswith("-") and args[j] != "-":
+                if args[j] in SAFE_INTERP_OPTS:   # a no-value flag: keep scanning for the script argument
+                    j += 1
+                    continue
+                j = None                          # -m, -c, -e, -W, an attached -mFOO/-cCODE, a value-taker: the
+                break                             # thing being run is not a tools/ script, so grant no exemption
+            if j is not None and j < len(args) and not args[j].startswith("-"):
                 sp = target_path(d, args[j])
                 tools = os.path.realpath(os.path.join(ROOT, "tools"))
                 if sp and (os.path.realpath(sp) == tools or os.path.realpath(sp).startswith(tools + os.sep)):
@@ -961,57 +974,52 @@ def git_checks(args, d):
     if i >= len(args):
         return
     sub, rest = args[i], args[i + 1:]
-    # B8-2 (R-D008-8): git's own output-file options write a named file that B4 does not see. --output[=] on
-    # show/log/diff, and -o/--output-directory on archive/format-patch/bundle, are write destinations.
-    j2 = 0
-    while j2 < len(rest):
-        a2 = rest[j2]
-        outp = None
-        if a2.startswith("--output="):
-            outp = a2.split("=", 1)[1]
-        elif a2 in ("--output", "--output-directory") and j2 + 1 < len(rest):
-            outp = rest[j2 + 1]
-            j2 += 1
-        elif a2.startswith("--output-directory="):
-            outp = a2.split("=", 1)[1]
-        elif a2 == "--output-directory" and j2 + 1 < len(rest):
-            outp = rest[j2 + 1]
-            j2 += 1
-        elif sub in ("archive", "format-patch", "bundle") and re.fullmatch(r"-[A-Za-z]*o", a2) and j2 + 1 < len(rest):
-            outp = rest[j2 + 1]          # a short cluster ending in o takes the next word (e.g. -ko <dir>)
-            j2 += 1
-        elif sub in ("archive", "format-patch", "bundle") and re.match(r"-[A-Za-z]*o.", a2):
-            outp = re.sub(r"^-[A-Za-z]*o", "", a2)   # -o<path> or -ko<path>
-        if outp:
-            pz = target_path(e if e is not None else d, outp)
-            z2 = pz and write_guarded(pz)
-            if z2:
-                raise Bad("B5", f"git {sub} writes its output into {z2} ({outp})")
-        j2 += 1
     if sub not in GIT_SUBCOMMANDS:
         raise Bad("B11", f"git {sub}: not a listed git subcommand; the guard does not resolve aliases, so an alias "
                          "is denied too")
-    # B9-2 (R-D008-9): subcommands that write a NAMED destination tree. B4 covers in-place changes; these create
-    # a tree at a path, which can land in a guarded zone (a clone into tools/ shadows an import; into .claude/ adds
-    # configuration). Check every positional destination with write_guarded.
     base = e if e is not None else d
-    pos = [x for x in rest if not x.startswith("-")]
-    dests = []
-    if sub == "clone":
-        dests = pos[1:]                       # clone <url> [<dest>]
-    elif sub == "init":
-        dests = pos                           # init [<dir>]
-        for x in rest:
-            if x.startswith("--separate-git-dir="):
-                dests.append(x.split("=", 1)[1])
-    elif sub in ("worktree", "submodule") and pos[:1] == ["add"]:
-        rest2 = pos[1:]
-        dests = rest2[:1] if sub == "worktree" else rest2[1:2]   # worktree add <path>; submodule add <url> <path>
-    for dpath in dests:
-        pz = target_path(base, dpath)
-        z2 = pz and write_guarded(pz)
-        if z2:
-            raise Bad("B5", f"git {sub} writes a tree into {z2} ({dpath})")
+
+    def out_guarded(cand):
+        pz = target_path(base, cand)
+        return pz and write_guarded(pz)
+
+    # Named output files/directories (R-D008-8 B8-2). --output[=] and --output-directory[=] write a file that B4's
+    # in-place checks do not see, on any subcommand (show/log/diff/format-patch); the tree writers also take a
+    # short -o. The short-attached value is pulled off non-greedily (R-D008-10 B10-1: a greedy match turned
+    # -otools/x into ls/x and let the write through).
+    for j2, a2 in enumerate(rest):
+        outp = None
+        if a2.startswith(("--output=", "--output-directory=")):
+            outp = a2.split("=", 1)[1]
+        elif a2 in ("--output", "--output-directory") and j2 + 1 < len(rest):
+            outp = rest[j2 + 1]
+        elif sub in ("archive", "format-patch", "bundle") and re.fullmatch(r"-[A-Za-z]*o", a2) and j2 + 1 < len(rest):
+            outp = rest[j2 + 1]                        # -o / -ko ... : value is the next word (only these take an
+        elif sub in ("archive", "format-patch", "bundle") and a2.startswith("-") and not a2.startswith("--"):
+            m = re.match(r"-[A-Za-z]*?o(.+)$", a2)     # output path; clone -o is a remote name, worktree -b a branch)
+            outp = m.group(1) if m else None           # -o<path> / -ko<path> : value attached, matched non-greedily
+        if outp:
+            z2 = out_guarded(outp)
+            if z2:
+                raise Bad("B5", f"git {sub} writes its output into {z2} ({outp})")
+    # Tree/working-file writers create files at a location. Rather than parse each one's destination slots (which
+    # regressed in R-D008-9 and again in R-D008-10 B10-2), deny coarsely: the directory the command runs in, and
+    # every path argument or --opt=value it names, must stay out of the guarded zones. There is never a reason to
+    # create a tree inside .claude/, tools/ or .git/, so over-denial here is a visible, explained denial, not a
+    # hole; a -C directory the guard cannot resolve is denied for the same reason.
+    if sub in GIT_TREE_WRITE:
+        if e is None:
+            raise Bad("B5", f"git {sub} with a -C directory the guard cannot resolve (written with a variable); it "
+                            "cannot confirm the tree is not created inside a guarded zone")
+        bz = write_guarded(base)
+        if bz:
+            raise Bad("B5", f"git {sub} runs inside {bz}; it would create files there")
+        for a2 in rest:
+            cand = a2.split("=", 1)[1] if a2.startswith("--") and "=" in a2 else (None if a2.startswith("-") else a2)
+            if cand:
+                z2 = out_guarded(cand)
+                if z2:
+                    raise Bad("B5", f"git {sub} writes a tree or file into {z2} ({cand})")
     for x in rest:
         if x.split("=", 1)[0] in GIT_SUB_OPT_DENY or (sub == "clone" and x in ("-u", "-c")):
             raise Bad("B11", f"git {sub} {x} sets configuration or runs another program")
