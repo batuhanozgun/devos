@@ -110,7 +110,7 @@ Acceptance (a2) and (k) require that every task given to a builder role carries 
 
 The builder writes only the task-specific part below the header.
 
-**Run brief** (R-W12-2 M-3). A run is not item-scoped: it selects its item after boot. `tools/records.py brief run --role producer` prints the purpose chain down to the active stage, that stage's acceptance block, the generated frontier block and the producer's boot order (the producer has no separate role file, `04_roles.md` §3); its gate line is `Task-Brief: run producer <hash>`. Every run start uses it: the S4 successor (C-R10) and a run that Batu's conversation session starts (R-R17).
+**Run brief** (R-W12-2 M-3). A run is not item-scoped: it selects its item after boot. `tools/records.py brief run --role producer` prints the purpose chain down to the active stage, that stage's acceptance block, the generated frontier's ready and running lists with the not-ready items counted, not copied (their first unmet conditions stay in the state file's section 2, which the run reads at boot step 2; FR-02 item 2, so that the R1 goal plus this brief fits `/goal`'s 4,000 characters), and the producer's boot order (the producer has no separate role file, `04_roles.md` §3); its gate line is `Task-Brief: run producer <hash>`. Every run start uses it: the S4 successor (C-R10) and a run that Batu's conversation session starts (R-R17).
 
 **Verifier brief** (R-R3a; R-W12-2 M-6). `brief <ID> --role verifier` refuses to generate without a `target_sha` and a non-empty `failure_classes` list, and prints the claims to test, the failure classes and the SHA in the header.
 

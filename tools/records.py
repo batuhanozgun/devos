@@ -309,7 +309,7 @@ def esc(s):
     return str(s).replace("|", "\\|").replace("\n", " ")
 
 
-def view_frontier(items, decisions, changes):
+def view_frontier(items, decisions, changes, compact=False):
     ready, running, rest = [], [], []
     for iid in sorted(items, key=sortkey):
         it = items[iid]
@@ -328,7 +328,9 @@ def view_frontier(items, decisions, changes):
             rest.append(f"- `{iid}`: {why}" + ("" if r is False else " (unknown is not ready)"))
     out = ["**Ready (startable now):**", *(ready or ["- none"]), "",
            "**Running:**", *(running or ["- none"]), "",
-           "**Not ready, with the first unmet condition:**", *(rest or ["- none"]), "",
+           *(["**Not ready:** " + (f"{len(rest)} item(s); each with its first unmet condition in plan/ledger.md "
+                                    "section 2 (generated), read at boot step 2." if rest else "none."), ""] if compact
+             else ["**Not ready, with the first unmet condition:**", *(rest or ["- none"]), ""]),
            "Selection among ready items: critical path first, one logged sentence of reason (`plan/builder/design/03_work_model.md` section 3). "
            "Candidates never appear here; they are in the zoom view."]
     return "\n".join(out)
@@ -655,7 +657,8 @@ def brief_run(items, decisions, changes):
     se = state_rows(LEDGER.read_text()).get("Standing exceptions", ("", ""))[0] if LEDGER.exists() else ""
     if se:
         lines += ["Standing exceptions (plan/ledger.md section 1):", "", se, ""]
-    lines += ["Frontier (generated):", "", view_frontier(items, decisions, changes), "",
+    # the not-ready list is counted, not copied: R1 plus this brief must fit /goal's 4,000 characters (L-062; FR-02)
+    lines += ["Frontier (generated):", "", view_frontier(items, decisions, changes, compact=True), "",
               "Boot order: " + ROLE_FILES["producer"] + ". Take or confirm the lease before any record write."]
     return finish(lines, "run", "producer")
 
