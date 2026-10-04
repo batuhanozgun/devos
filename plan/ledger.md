@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01SsLSgp5RLPtNMhc1RxuDoZ`. Released 2026-10-04T07:58Z | 2026-10-04T07:58Z |
+| Run lock | `session_017bQAUeV7o6pTvG1Pz3hRHx`. Expires 2026-10-04T11:29Z | 2026-10-04T08:29Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 07:57Z (`get_session`), resets sched:2026-10-04T12:20Z (`resetsAt` 1791116400, converted with `date -u -d @`) (§8: proceed). | 2026-10-04T07:57Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Yeniden tasarımın dördüncü adımı (1c) sürüyordu, ama bir izin engeline takıldım; senden tek adım istiyorum (sayfanın ilk satırı, D-007). <br>1. Sohbet oturumun bu koşuyu başlattı (D-006'nın istediği buydu); D-006 kaydını ben kapatamadım, çünkü otomatik denetim bunu başka bir oturumun sözüne dayanarak yazmama izin vermedi. Issue'ya "D-006: tamam" yazman yeterli. <br>2. Bulduğum asıl sorun: yeni oturumların başlatılma kuralı, bir oturumun kendinden sonrakini başlatmasını imkânsız kılıyordu (ilk mesaj 4.000 karakter sınırını aşıyor). Düzeltmeyi yazdım ve testlerde çalıştı; ama kural metinlerini değiştirmem "kendi kurallarını değiştirme" diye engellendi. Senin iznin olmadan bunu başka bir yoldan yapmayacağım. <br>3. İzin verirsen: bu koşu oturumuna (session_01SsLSgp5RLPtNMhc1RxuDoZ) "W-C00-12 1c için kural metinlerini değiştirmene izin veriyorum, devam et" yaz. Değişikliğin doğruluğunu yine bağımsız bir denetçi oturumu inceleyecek; senden teknik onay istemiyorum. <br>4. Bu arada yapılanlar (ayrı dalda, PR #86): tasarım dosyaları yeni yerine taşındı; beş kez yamanan kontrol yolu için çerçeve incelemesi yazıldı (yamamayı bırak, tehdit sınırını açıkça yaz). <br>**Riskler:** <br>- Cevap gelmezse 1c bekler; hiçbir şey kaybolmaz. <br>- İzin vermezsen her yeni koşuyu sohbet oturumunun başlatması gerekir, çünkü koşular birbirini başlatamaz. | 2026-10-04T07:57Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:58Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:29Z |
 
 ---
 
