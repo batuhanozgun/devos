@@ -414,7 +414,16 @@ def tokens(text):
 
 SEPARATORS = {";", "&&", "||", "|", "&", "|&", ";;", ";&", ";;&"}
 REDIRECT_OUT = {">", ">>", ">|", "&>", "&>>"}
-REDIRECT_OTHER = {"<", "<<", "<<<", "<>", ">&", "<&", "<<-"}
+REDIRECT_WRITE_DUP = {">&", "<>"}      # write to a file unless the target is a descriptor (R-D008-5 B-1)
+REDIRECT_OTHER = {"<", "<<", "<<<", "<&", "<<-"}
+# programs that only read; they may name a guarded path. Everything else that names one is denied (B5),
+# because enumerating writers failed five review rounds (R-D008-5 B-1): the ban keys on the guarded target,
+# a small fixed set, not on the open set of writing programs. sed/sort are readers only without their
+# write option; a write option moves them out.
+PURE_READERS = {"cat", "head", "tail", "less", "more", "grep", "egrep", "fgrep", "rg", "wc", "ls", "stat",
+                "file", "cmp", "diff", "od", "xxd", "hexdump", "strings", "nl", "tac", "realpath", "readlink",
+                "basename", "dirname", "cut", "tr", "column", "fold", "md5sum", "sha1sum", "sha256sum",
+                "cksum", "du", "wc", "awk", "gawk", "mawk", "nawk", "cat"}
 # bash reserved words and compound-command punctuation. They stand in command position without being the
 # program, so each also ends the current simple command and starts a new one; the real command after them is
 # then identified and checked (R-D008-3 R3-1). The set is the full bash list, so a command cannot hide behind
@@ -697,6 +706,11 @@ def shell_checks(command, cwd, depth=0):
                 if i + 1 < len(argv):
                     outs.append(argv[i + 1])
                 i += 2
+            elif t in REDIRECT_WRITE_DUP:
+                tgt = argv[i + 1] if i + 1 < len(argv) else ""
+                if not re.fullmatch(r"\d+-?|-", tgt):     # a number or - is a descriptor, not a file
+                    outs.append(tgt)
+                i += 2
             elif t in REDIRECT_OTHER:
                 i += 2
             else:
@@ -861,6 +875,21 @@ def command_checks(prog, args, d):
             raise Bad("B5", f"{prog} writes into {z} ({a})")
     if prog == "git":
         git_checks(args, d)
+    already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
+    reader = prog in PURE_READERS \
+        or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
+        or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:]))
+    if not already and not reader:
+        for a in args[1:]:
+            for cand in ([a] if not a.startswith("-") else ([a.split("=", 1)[1]] if "=" in a else
+                                                             ([a[2:]] if len(a) > 2 and a[1] != "-" else []))):
+                if not cand:
+                    continue
+                pth = target_path(d, cand)
+                z = pth and guarded_zone(pth)
+                if z:
+                    raise Bad("B5", f"{prog} names {z} ({a}); only a reader (cat, grep, sed -n, ...) may name a "
+                                    "guarded path, and a write uses a listed writer or a redirection the guard checks")
 
 
 def git_checks(args, d):
