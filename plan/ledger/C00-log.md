@@ -1024,3 +1024,9 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Branch.** `claude/run-w12-1c` is worked in a scratch worktree of this session, not in its own working tree, so this session's tool calls stay guarded by `main`'s hook (CLAUDE.md boot rule). `main` (`9936abf`) merged in; the log resolved by number (L-057 and L-058 before L-059; L-062 to L-065 before L-066) and the branch's L-068 renumbered L-072 (its line says so).
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 FR-02 (on PR #98, under review) decides how 1c continues: departure 8 is not presented again in its refused form; a different design is tried once; departure 9's rule text was part of the same refused edit (L-066), so N-054 (b) stays open as a stated residual unless a different design is found; D4 every change with its planted case run on the previous code first.
 - **Record changes:** plan/work/W-C00-12.4.md, plan/work/W-C00-12.md · supersession · claimed by this run
+
+### L-074 · 2026-10-04 · W-C00-12: tranche 1c, N-055 fixed (lease state read from the cell's tail only)
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 the planted case was written first and failed on `89bd3a5` (both outcomes: `DURUM.md` said no session was running; the stop check reported a released lease), then passed after the fix, run from the committed fix; principle 18: one function replaces two unanchored patterns, and the lease note is not restricted.
+- **What.** `tools/records.py` gains `lease_state()`, which reads the holder and only the `Expires` or `Released` tail that `lease()` writes; `durum()` and `tools/builder_check.sh` both use it (one home). T-M5r gains case (d) in `tools/test_check_records.py` and in its register row (an addition, no condition loosened). N-055 is `answered` on the branch; it takes effect when 1c merges with its verdict.
+- **Record changes:** plan/work/W-C00-12.4.md · annotate · N-055 answered on the branch
