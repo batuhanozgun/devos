@@ -782,9 +782,11 @@ def review_commit_for(ref, p, cb):
 
 
 def stamp_after_commit(text, c):
-    """N-053 f: the verdict's own Written: stamp must not be later than its review-branch commit (M-R14)."""
-    line = next((l for l in text.splitlines() if "Written:" in l), None)
-    ct = datetime.fromtimestamp(int((git("log", "-1", "--format=%at", c, ok=True) or "0").strip() or 0), timezone.utc)
+    """N-053 f: the verdict's own Written: stamp must not be later than its review-branch commit (M-R14).
+    Only a line that starts with **Written:** counts, and the bound is the committer time (1c Critic finding 6).
+    A verdict without that line is not stamp-checked (a stated residual: the review prompt asks for the line)."""
+    line = next((l for l in text.splitlines() if l.lstrip().startswith("**Written:**")), None)
+    ct = datetime.fromtimestamp(int((git("log", "-1", "--format=%ct", c, ok=True) or "0").strip() or 0), timezone.utc)
     return quoted_problems(line, ct) if line else []
 
 
