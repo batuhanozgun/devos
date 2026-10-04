@@ -130,6 +130,36 @@ $MB" | python3 -c 'import json,sys; d=json.load(sys.stdin); d["tool_input"]["app
   [ "$r" = 0 ] && echo "ok   exp=0 (T-W6 d) a correct run brief from the lease holder $holder" || { echo "BAD  exp=0 got=$r (T-W6 d) run brief from the lease holder"; fail=1; }
   r=$(cs "" "$RB" | CLAUDE_CODE_REMOTE_SESSION_ID=session_01NOTTHEHOLDERxxxxxxxxx CLAUDE_PROJECT_DIR="$PWD" sh -c "$cmd" 2>/dev/null; echo $?)
   [ "$r" = 2 ] && echo "ok   exp=2 (T-W6 f) a correct run brief from a session the Run lock row does not name" || { echo "BAD  exp=2 got=$r (T-W6 f)"; fail=1; }
+  # N-057 (1c Critic finding 10): the run-brief starter check on fixture ledgers. git is stubbed in the loaded hook,
+  # so only the Run lock row decides; "lease" means the call was refused by the lease rule. No fixed session ID.
+  python3 - "$hook" <<'PYEOF' || fail=1
+import importlib.util, sys, types
+from datetime import datetime, timedelta, timezone
+spec = importlib.util.spec_from_file_location("hook", sys.argv[1]); H = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(H)
+now = datetime.now(timezone.utc)
+fut = (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%MZ"); past = (now - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%MZ")
+A, B, OLD = "session_01HOLDERAxxxxxxxxxxxxxxx", "session_01OTHERBxxxxxxxxxxxxxxxx", "session_016Hi3ZYgAf2amYNGc43a3tr"
+def verdict(cell, me):
+    led = f"| Item | State | As of |\n|---|---|---|\n| Run lock | {cell} | {past} |\n"
+    H.git = lambda *a: types.SimpleNamespace(returncode=0, stdout=led if a[:1] == ("show",) else "")
+    H.os.environ["CLAUDE_CODE_REMOTE_SESSION_ID"] = me
+    why = H.brief_gate("Task-Brief: run producer 0000000000000000\n", "0" * 40) or ""
+    return "lease" if why.startswith("a run brief only from") else "passes the lease rule"
+cases = [("(n1) live lease, the holder", f"`{A}`. Expires {fut}", A, "passes the lease rule"),
+         ("(n2) live lease, another session", f"`{A}`. Expires {fut}", B, "lease"),
+         ("(n3) released lease, another session (a run from Batu's conversation session)", f"`{A}`. Released {past}", B, "passes the lease rule"),
+         ("(n4) expired lease, another session", f"`{A}`. Expires {past}", B, "passes the lease rule"),
+         ("(n5) live lease of another, the formerly fixed conversation-session ID", f"`{A}`. Expires {fut}", OLD, "lease"),
+         ("(n6) live lease whose note names an earlier release, another session", f"`{A}` (previous lease Released {past}). Expires {fut}", B, "lease"),
+         ("(n7) a Run lock row without a holder", "none", B, "lease")]
+bad = 0
+for label, cell, me, want in cases:
+    got = verdict(cell, me)
+    print(f"{'ok  ' if got == want else 'BAD '} exp={want} got={got} (N-057 {label})")
+    bad |= got != want
+sys.exit(1 if bad else 0)
+PYEOF
   VB=$(brief main W-C00-12.4 --role verifier --target-sha "$(git rev-parse FETCH_HEAD)" --failure-classes "a check that cannot fail" "a claim stronger than the evidence")
   t 0 "$(cs "" "Review prompt.
 
