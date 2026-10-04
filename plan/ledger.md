@@ -36,7 +36,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor, ama bu oturum devredemedi: oturum zinciri platformun derinlik sınırına ulaştı (8/8) ve yeni oturum açamıyorum. Senden tek adım istiyorum (sayfanın ilk satırı, D-006): sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz ya da devos üzerinde kendin bir oturum başlat. Bir şey kaybolmadı. <br>1. Dördüncü adımın (1c: koruma kuralları, CLAUDE.md, roller) yeni oturum gerektirmeyen kısmı ayrı bir dalda (PR #86) hazır; ana dala henüz alınmadı, çünkü bağımsız denetçi onayı gerekiyor. Yeni oturumlar artık üretilmiş bir görev özeti olmadan başlatılamayacak; her oturum açılışta bilinen hata kalıplarını görecek; rol tanımları yazıldı. Bunlar dal ana dala alınınca yürürlüğe girer. <br>2. Önceki denetçinin bulduğu açık (son alt adımın kendini onaylı göstermesi) kodda kapatıldı; test önce eski kodda başarısız, yenisinde başarılı. Bir eleştirmen okuması 13 bulgu verdi; üçü düzeltildi, gerisi sıradaki oturuma yazıldı. <br>3. Aynı kontrol yolu beş kez sıkılaştırıldı; tasarım kuralı bu durumda bir çerçeve incelemesi istiyor. Sıradaki oturum bunu denetçiden önce yapacak. <br>4. Sorduğun model ve efor konusu: model her oturum için açıkça sabit; efor için henüz bir yapı yok. Sıradaki oturum önce ölçecek, karar noktası yeniden tasarımın son incelemesine yazıldı. <br>**Riskler:** <br>- Zincir yeniden başlasa da her devir ve her denetçi bir seviye ekliyor; bu sınır yine dolacak. Bunun kalıcı çözümü yeniden tasarımın bir parçası olarak ele alınacak. <br>- Bekçi henüz kurulmadı; bir oturum ölürse bunu "Son güncelleme" saatinin eskimesinden görürsün. | 2026-10-03T23:10Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:47Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:57Z |
 
 ---
 
@@ -156,6 +156,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-002` | Standing usage policy (Builder Operating Model section 8) | batu | answered | `plan/decisions/D-002.md` |
 | `D-003` | Residual risk: the connector barrier is a hook the builder can edit | batu | answered | `plan/decisions/D-003.md` |
 | `D-006` | One step: start a new installation run (the session chain is at its lineage limit) | batu | open | `plan/decisions/D-006.md` |
+| `FR-01` | Frame review of the W-R7 (ii) exemption (an acceptance that lifts a readiness gate) | technical | proposed | `plan/decisions/FR-01.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | answered | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |

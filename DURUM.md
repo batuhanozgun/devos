@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-006` (Tek adım: sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz; benim oturum zincirim derinlik sınırında (8/8) ve yeni oturum açamıyorum). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 4 Ekim 2026, 10:47 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 10:57 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 

@@ -969,3 +969,10 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 the departures and the order are committed before the code they describe; D1 the run-brief path is changed only after the measurement in L-062.
 - **Library attached read-only** for the frame review's consultation: `batuhanozgun/agentic-os-search` added with `add_repo` (access `read`) and cloned at `941f027`; `register_repo_root` was not called, so none of its files load as instructions. Observation for N-048 (not a test of it): after the second repository was attached mid-session, the allow-list hook still refused `get_session` on a non-owned ID at 07:5xZ; a session *created* with two sources is untested.
 - **Record changes:** plan/builder/w-c00-12/16_tranche_1c_intent.md · addition · departures 8 to 11 and section 9, the order of the remaining work
+
+### L-065 · 2026-10-04 · W-C00-12: frame review FR-01 of the W-R7 (ii) path (N-054 a)
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 the implicit premise "each finding is a hole to close" fails the from-scratch test (FR-01, P4); D9 the library was consulted through a researcher subagent before the frame was chosen (sources and statuses in FR-01's `consulted`; nothing copied); D2 alternative B (readiness derived from bound verdicts) is the stronger frame and is proposed for later, not rejected.
+- **Decision (proposed; the 1c session Verifier judges it):** keep the exemption, frozen under an explicit threat-model boundary (honest error, not forgery) with one stated invariant; carried Critic findings 4 and 5 are instances of that invariant. No rule text changes in this entry.
+- **Correction to L-064:** its "07:5xZ" is an estimated time (failure pattern 6); the `get_session` refusal it describes happened after 07:50Z and before L-064's commit at 07:52:19Z (`git log`); the exact second of the refusal was not taken.
+- **Record changes:** plan/decisions/FR-01.md · addition · frame review of the W-R7 (ii) exemption
