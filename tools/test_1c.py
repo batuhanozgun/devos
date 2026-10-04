@@ -121,6 +121,18 @@ def t_m17_c12():
     outcome("T-M17", "(c12) the main SHA is labelled as the last-fetched origin/main", "last fetched origin/main" in out, out)
 
 
+def t_w6_len():
+    """T-W6 (length; FR-02 item 2, departure 8's different design): the R1 goal of the operating model's Appendix R1
+    plus the generated run brief fits the 4,000-character limit of /goal (L-062), with the gate rule unchanged."""
+    import re
+    om = (REPO / "plan/Builder_Operating_Model.md").read_text()
+    r1 = re.search(r"## Appendix R1.*?```text\n(/goal .*?)\n```", om, re.S).group(1)
+    rc, brief = sh([sys.executable, "tools/records.py", "brief", "run", "--role", "producer"], REPO)
+    msg = r1 + "\n\n" + brief
+    outcome("T-W6", f"(len) R1 goal plus run brief is under 4,000 characters ({len(msg)})", rc == 0 and len(msg) < 4000,
+            brief[-200:])
+
+
 def t_r22():
     """T-R22 (R-R3a, W-R5; N-053 a confirms that case (a2) runs): records.py brief <ID> --role verifier refuses without
     a target SHA, with a blank or unresolvable one, and with an empty failure-class list; with both, the header names
@@ -143,7 +155,7 @@ def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-M17", t_m17_c12), ("T-R22", t_r22)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-M17", t_m17_c12), ("T-W6", t_w6_len), ("T-R22", t_r22)]
     for name, fn in tests:
         try:
             fn()
