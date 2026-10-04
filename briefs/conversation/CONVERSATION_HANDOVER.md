@@ -22,6 +22,7 @@
 
 1. `CLAUDE.md` (boot steps 1, 2 and 4 to 6; for step 3, see §1 above).
 2. This note.
+2a. `plan/Ek_D_Dusunme_Protokolleri.md` §2: the common floor and the D1–D9 trigger questions (added 2026-10-04 after Batu's input; lesson 8). Run the nine questions before every answer to Batu and every message to another session; read the full text in §3 of each one that fires (yes or uncertain).
 3. `DURUM.md`, then the "Current state" table and section 2 of `plan/ledger.md`.
 4. `briefs/w-c00-12/BATU_PRINCIPLES_TR.md` (principles 1 to 18), and the list of Batu's texts in `briefs/w-c00-12/`.
 5. `plan/builder/w-c00-12/09_batu_briefing_tr.md`, the Turkish briefing on the redesign, and the latest log entries in `plan/ledger/C00-log.md`.
@@ -43,7 +44,7 @@
 ## 4. How to talk with Batu (his own stated preferences)
 
 - **Language and form.** Turkish, plain, short; no jargon. If a topic is too big for one message, explain it in turns. Name files by full path, never by nickname ("defter", "nabız", "dağıtıcı" confused him).
-- **Decisions.** Bring him only his own decisions: purpose, scope, cost, his accounts and acceptance. Use Appendix E, batched. Never make him decide quickly. Technical choices are the builder's. His silence is never approval.
+- **Decisions.** Since 2026-10-04 he is the customer (`briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`; FR-02): bring him only purpose, direction, acceptance of results and money. Never a technical permission, a platform refusal or an operational step; those are the builder's working conditions. Use Appendix E, batched. Never make him decide quickly. His silence is never approval.
 - **No reflexive agreement.**
   - Never answer "haklısın" by default. Test his claims, give the strongest counter-argument, and say plainly when he is wrong.
   - Mark "Varsayım:" and "Mantık boşluğu:" explicitly.
@@ -74,3 +75,7 @@
 5. **Additive bias.** Every input became an addition to the conditions.
 6. **Sliding back to a dial.** Effort was presented as the fix for the common floor.
 7. **A two-repository session.** The settings documentation says that a cloud session with several repositories may not read the project hooks. This session did run them. Start the new one with `devos` only, add the library with `add_repo`, and check that the allow-list hook fires (for example, `list_sessions` should be refused).
+8. **Thinking structure not loaded** (2026-10-04, `session_01Q32nLatKbtDDY1zSVQZiKX`). This role booted without Ek D's trigger questions; its misses that day ("not thought of") fit D1, D2 and D6. Now boot step 2a.
+9. **The customer as the key to a safety check.** It endorsed D-007 and drafted the sentence for Batu to type past a classifier refusal. Never do this (FR-02).
+10. **`/goal` takes the whole first message, at most 4,000 characters**, and a `/goal` sent with `send_message` is not run as a command. A run started from here also needs `environment_id` `env_01AMBDuHjjTsXMeXFyYgk1zR` (devos-kurulum) passed explicitly: this role runs in "Default". Its recorder line reaches `main` by a record PR made from a scratch clone; the run merges it at boot.
+11. **Relay sparingly.** Each cross-session message adds untrusted text to a run's context; two "Instruction Poisoning" refusals followed relayed content on 2026-10-04. Relay facts and Batu's words, not instructions, and never a claim about Batu's decision.
