@@ -1018,3 +1018,17 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-091 · 2026-10-04 · Lease taken or renewed by `session_016nBesoa9ipYxKHpTXH5LRd`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_016nBesoa9ipYxKHpTXH5LRd
+
+### L-092 · 2026-10-04 · Lease taken or renewed by `session_01Q32nLatKbtDDY1zSVQZiKX`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01Q32nLatKbtDDY1zSVQZiKX
+
+### L-093 · 2026-10-04 · D-008 recorded (Batu leaves auto mode; Opus 5.5 at ultracode effort for every session); W-C00-12.6 admitted; Batu's conversation session holds the lease to carry it out
+
+- **Boot facts (observed).** `get_session` on itself at 17:22Z: `session_01Q32nLatKbtDDY1zSVQZiKX`, Batu's conversation session, lineage depth 0 of 8, model `claude-opus-5-5`, effort `xhigh` with ultracode from the session's own flag settings, permission mode `auto`, usage `five_hour` `allowed`, `resetsAt` 1791152400 = sched:2026-10-04T22:20Z. `main` at `f39b7d4`. The lease of run `session_016nBesoa9ipYxKHpTXH5LRd` expired at 15:30Z without a stop record; no run is active, and the runs `session_01T3iFdSpMi3w1pPAysM7c9t` and `session_016nBesoa9ipYxKHpTXH5LRd` are idle without the lease. Issue #6: no comment by `batuhanozgun` after `5978009744` (`check_records.py answers` PASS). The working tree was not checked out to another revision; these records were written in a scratch clone.
+- **Batu's decision D-008** (his conversation session, 15:01:39Z to 17:04:49Z; verbatim in `briefs/conversation/BATU_PERMISSION_MODEL_TR.md`): every block must leave a detailed written reason that can be audited; the system leaves auto mode for Accept edits, with the builder's own written rule file allowing or denying every tool call; every session the builder opens runs on Opus 5.5 with ultracode effort, as a standing rule. He was told the costs before deciding (the classifier's general protection is gone; a missing rule stops work until it is added). It authorises no action refused on 2026-10-04, and FR-02 alternative (A) no longer governs the permission mode (D-008 chosen_because).
+- **W-C00-12.6 admitted** as a child of W-C00-12, class high, with its acceptance written here before any change work. It overlaps tranche 1c (W-C00-12.4, PR #86), which also changes the guard; whichever merges second merges `main` into its branch and keeps both.
+- **Why the conversation session holds the lease.** Its brief says it never takes the lease. The lease had expired and no run holds work. The work carries out a decision Batu made in this session's own conversation, where his request is visible; the day's runs were refused changes to their own guards that no human in their conversations had asked for (L-088; L-090; run `session_016nBesoa9ipYxKHpTXH5LRd`). The lease is taken by `tools/records.py lease`, so the single-writer rule (operating model section 2.2) holds, and the brief is corrected in this item (acceptance (j)). Departure from the brief, recorded here.
+- **Record changes:** plan/decisions/D-008.md · addition · Batu's decision of 2026-10-04 on the permission mode, model and effort
+- **Record changes:** plan/work/W-C00-12.6.md · addition · item admitted with its acceptance written before the work
+- **Record changes:** plan/ledger.md summary_tr · supersession · the summary for Batu at this lease
