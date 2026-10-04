@@ -963,3 +963,9 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Record changes:** plan/builder/design/02_memory.md, plan/builder/design/03_work_model.md, plan/builder/design/04_roles.md, plan/builder/design/05_continuity.md, plan/builder/design/07_mechanism_map.md · supersession · moved from plan/builder/w-c00-12/ (12 §1), status header replaced by the M-R2 pointer
 - **Record changes:** plan/work/C01.md, plan/work/C02.md, plan/work/C03.md, plan/work/C04.md, plan/work/C05.md, plan/work/C06.md, plan/work/C07.md, plan/work/C08.md, plan/work/C09.md, plan/work/C10.md, plan/work/C11.md, plan/work/C12.md, plan/work/W-C00-12.1.md, plan/work/W-C00-12.2.md, plan/work/W-C00-12.3.md, plan/work/W-C00-12.4.md, plan/work/W-C00-12.5.md · correction · the cited path of a moved piece now names plan/builder/design/
 - **Record changes:** plan/ledger.md Governing documents · addition · row for plan/builder/design/*; plan/builder/w-c00-12/MOVED.md · addition · pointer to the moved pieces
+
+### L-064 · 2026-10-04 · W-C00-12: tranche 1c, write-ahead for the rest of the run
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 the departures and the order are committed before the code they describe; D1 the run-brief path is changed only after the measurement in L-062.
+- **Library attached read-only** for the frame review's consultation: `batuhanozgun/agentic-os-search` added with `add_repo` (access `read`) and cloned at `941f027`; `register_repo_root` was not called, so none of its files load as instructions. Observation for N-048 (not a test of it): after the second repository was attached mid-session, the allow-list hook still refused `get_session` on a non-owned ID at 07:5xZ; a session *created* with two sources is untested.
+- **Record changes:** plan/builder/w-c00-12/16_tranche_1c_intent.md · addition · departures 8 to 11 and section 9, the order of the remaining work
