@@ -396,19 +396,49 @@ def tokens(text):
 SEPARATORS = {";", "&&", "||", "|", "&", "|&", ";;", ";&", ";;&"}
 REDIRECT_OUT = {">", ">>", ">|", "&>", "&>>"}
 REDIRECT_OTHER = {"<", "<<", "<<<", "<>", ">&", "<&", "<<-"}
+# bash reserved words and compound-command punctuation. They stand in command position without being the
+# program, so each also ends the current simple command and starts a new one; the real command after them is
+# then identified and checked (R-D008-3 R3-1). The set is the full bash list, so a command cannot hide behind
+# one. A command word the splitter does not recognise as one of these is treated as a program and checked.
+RESERVED = {"!", "{", "}", "if", "then", "elif", "else", "fi", "for", "while", "until", "do", "done", "case",
+            "esac", "select", "function", "in", "time", "coproc", "[[", "]]", "((", "))"}
+# names whose assignment moves where git or another program reads its settings (R-D008-2 N-2; R-D008-3 R3-2)
+PROTECTED_VARS = re.compile(r"(HOME|XDG_[A-Z_]+|GIT_(?!(AUTHOR|COMMITTER)_(NAME|EMAIL|DATE)$|TERMINAL_PROMPT$|"
+                            r"PAGER$)[A-Z_]+)$")
+SET_BUILTINS = {"read", "mapfile", "readarray", "export", "declare", "typeset", "local", "readonly", "unset",
+                "let", "eval", "printf"}
 
 
 def simple_commands(toks):
-    cmds, cur = [], []
-    for t in toks:
-        if t in SEPARATORS or t in ("(", ")"):
+    """Split into simple commands, cutting at control operators, grouping and every reserved word, so a command
+    after a reserved word (then, do, {, !, ...) is its own segment and gets checked (R-D008-3 R3-1). Grouping
+    tokens are emitted so the cwd stack still tracks ( ). A `for`/`select` loop variable is checked (R3-2) and
+    its `in` word-list is data, not commands, so it is skipped."""
+    cmds, cur, st = [], [], None   # st: forvar (expect variable), forin (expect in/do), forlist (skip data words)
+    for tk in toks:
+        if st == "forlist" and tk != "do" and tk not in SEPARATORS:
+            continue                                   # a data word of the for/select list
+        if tk in SEPARATORS or tk in ("(", ")") or tk in RESERVED:
             if cur:
                 cmds.append(cur)
                 cur = []
-            if t in ("(", ")"):
-                cmds.append([t])
-        else:
-            cur.append(t)
+            if tk in ("(", ")"):
+                cmds.append([tk])
+            if tk in ("for", "select"):
+                st = "forvar"
+            elif tk == "in" and st == "forin":
+                st = "forlist"
+            elif tk == "do" or tk in SEPARATORS:
+                st = None if st in ("forlist", "forin") else st
+            elif st in ("forvar", "forin") and tk != "in":
+                st = None
+            continue
+        if st == "forvar":
+            if PROTECTED_VARS.match(tk.split("=", 1)[0].split("+", 1)[0]):
+                raise Bad("B11", f"the loop variable {tk} changes where programs read their settings")
+            st = "forin"
+            continue
+        cur.append(tk)
     if cur:
         cmds.append(cur)
     return cmds
@@ -485,14 +515,15 @@ def strip_wrappers(a):
     """Drop leading variable assignments and wrapper commands; return (argv, bare_env)."""
     while a:
         b = os.path.basename(a[0])
-        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0]):
-            if GIT_ENV_OVERRIDE.match(a[0]):
+        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*\+?=.*", a[0], re.S):
+            if PROTECTED_VARS.match(re.match(r"[A-Za-z_][A-Za-z0-9_]*", a[0]).group(0)):
                 raise Bad("B11", f"the assignment {a[0].split('=', 1)[0]} changes where programs read their settings")
             a = a[1:]
         elif b == "env":
             a = a[1:]
             while a and (a[0].startswith("-") or re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0])):
-                if GIT_ENV_OVERRIDE.match(a[0]):
+                if re.match(r"[A-Za-z_][A-Za-z0-9_]*\+?=", a[0]) and \
+                        PROTECTED_VARS.match(re.match(r"[A-Za-z_][A-Za-z0-9_]*", a[0]).group(0)):
                     raise Bad("B11", f"the assignment {a[0].split('=', 1)[0]} changes where programs read settings")
                 a = a[2:] if a[0] in ("-u", "--unset", "-C", "--chdir", "-S", "--split-string") else a[1:]
             if not a:
@@ -541,6 +572,14 @@ def shell_checks(command, cwd, depth=0):
     m = GIT_ENV_OVERRIDE.search(command)
     if m:
         raise Bad("B11", f"the command sets {m.group(1)}, which changes where programs read their settings")
+    q = None
+    for ch in command:
+        if q:
+            q = None if ch == q else q
+        elif ch in "'\"":
+            q = ch
+        elif ch == "`" and q != "'":
+            raise Bad("G0", "a backtick command substitution is not analysed; use $(...), which the guard reads")
     if any(p in command for p in CREDENTIAL_PATHS) or re.search(r"/proc/\S*env", command):
         raise Bad("B8", "the command reads a credential store or a process environment")
     try:
@@ -577,7 +616,7 @@ def shell_checks(command, cwd, depth=0):
             raise Bad("B8", "env without a command prints the whole environment, including credentials")
         if not args:
             continue
-        if any(c in args[0] for c in "$`*?["):
+        if args[0] not in ("[", "[[") and any(c in args[0] for c in "$`*?["):
             raise Bad("G0", f"the command name {args[0]} is not a plain word (it uses a variable or a glob), so the "
                             "guard cannot tell which program bash would run")
         prog = os.path.basename(args[0])
@@ -647,6 +686,14 @@ def command_checks(prog, args, d):
         raise Bad("B11", f"'{prog}' is a git helper program, which runs outside the guard's git checks")
     if prog == "printenv":
         raise Bad("B8", "printenv prints the environment, including credentials")
+    if prog in SET_BUILTINS:
+        after_v = False
+        for a in args[1:]:
+            name = a.split("=", 1)[0].split("+", 1)[0]
+            if after_v or prog != "printf":
+                if PROTECTED_VARS.match(name):
+                    raise Bad("B11", f"{prog} sets or reads {name}, which changes where programs read their settings")
+            after_v = (a == "-v")
     rest = args[1:]
     names = [x for x in rest if not x.startswith(("-", "+"))]
     flags = set("".join(x[1:] for x in rest if re.fullmatch(r"[-+][A-Za-z]+", x)))   # -px counts as -p and -x
