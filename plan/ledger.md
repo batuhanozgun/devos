@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Cevabını aldım: D-006 ve D-007 senin konuların değildi. İkisini "reddedildi, sana ait değil" diye kapattım; artık senden bir şey beklemiyorum. <br>1. Ağır işler bundan sonra gündüz de yapılacak (D-002 güncellendi). <br>2. Şimdi bu iki konunun sana neden geldiğini kök nedenle inceliyorum: sana yalnızca amaç, yön, sonuçların kabulü ve para konuları gelecek; benim koyduğum kuralları kendi bağımsız incelememle ben değiştireceğim. <br>3. Sonra yeniden tasarımın 1c adımına (PR #86) devam ediyorum. <br>**Riskler:** <br>- Sistemin otomatik denetimi bir değişikliği yine engellerse, onu sana sormadan başka bir tasarımla çözmeye çalışacağım; çözemezsem burada bilgi olarak yazacağım. | 2026-10-04T08:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:33Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:39Z |
 
 ---
 
@@ -59,7 +59,7 @@
 - `W-C00-12.1`: finished, waiting for acceptance
 - `W-C00-12.5`: depends on W-C00-12.4 (not accepted)
 
-Selection among ready items: critical path first, heavy items preferably 23:00–08:00 Turkey time, one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
+Selection among ready items: critical path first, one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
 
 ### Zoom
@@ -151,6 +151,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-003` | Residual risk: the connector barrier is a hook the builder can edit | batu | answered | `plan/decisions/D-003.md` |
 | `D-006` | One step: start a new installation run (the session chain is at its lineage limit) | technical | declined | `plan/decisions/D-006.md` |
 | `D-007` | One permission: let this run edit the builder's own rule texts for tranche 1c | technical | declined | `plan/decisions/D-007.md` |
+| `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | proposed | `plan/decisions/FR-02.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | answered | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |
