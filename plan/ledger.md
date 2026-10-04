@@ -47,8 +47,8 @@
 - none
 
 **Running:**
-- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_01SsLSgp5RLPtNMhc1RxuDoZ`
-- `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: claimed by `session_01SsLSgp5RLPtNMhc1RxuDoZ`
+- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_017bQAUeV7o6pTvG1Pz3hRHx`
+- `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: claimed by `session_017bQAUeV7o6pTvG1Pz3hRHx`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-01`: finished, waiting for acceptance
@@ -103,11 +103,11 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051
-  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01SsLSgp5RLPtNMhc1RxuDoZ)
+  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_017bQAUeV7o6pTvG1Pz3hRHx)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_01SsLSgp5RLPtNMhc1RxuDoZ) · open notes: N-047, N-048, N-052, N-053, N-054, N-055
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_017bQAUeV7o6pTvG1Pz3hRHx) · open notes: N-047, N-048, N-052, N-053, N-054, N-055
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -129,11 +129,11 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | blocked: stage C00 on hold until W-C00-12 is accepted | todo (heavy) | — | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-10.md` |
 | `W-C00-11` | Stage closure review | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-11.md` |
-| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_01SsLSgp5RLPtNMhc1RxuDoZ) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
+| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_017bQAUeV7o6pTvG1Pz3hRHx) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | finished, not accepted | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
 | `W-C00-12.3` | Tranche 1b-ii: checks and stop | accepted | — | — | `plan/work/W-C00-12.3.md` |
-| `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | running (session_01SsLSgp5RLPtNMhc1RxuDoZ) | — | — | `plan/work/W-C00-12.4.md` |
+| `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | running (session_017bQAUeV7o6pTvG1Pz3hRHx) | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | blocked: depends on W-C00-12.4 (not accepted) | — | — | `plan/work/W-C00-12.5.md` |
 <!-- /generated -->
 
