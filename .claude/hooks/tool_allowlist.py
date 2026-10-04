@@ -339,38 +339,57 @@ def strip_heredocs(cmd):
 
 
 def newlines_to_separators(t):
-    """Unquoted newlines end a command; unquoted comments are dropped."""
-    out, q, esc, comment, prev = [], None, False, False, " "
-    for ch in t:
+    """Unquoted newlines end a command; comments are dropped; a backslash-newline is a line continuation
+    (removed) unless it is inside a comment or single quotes, where bash does not join it (R-D008-3 R3 S4)."""
+    out, i, n, q, comment = [], 0, len(t), None, False
+    while i < n:
+        ch = t[i]
         if comment:
             if ch == "\n":
                 comment = False
                 out.append(" ; ")
-            prev = ch
+            i += 1
             continue
-        if esc:
+        if q == "'":
             out.append(ch)
-            esc = False
-        elif ch == "\\" and q != "'":
+            if ch == "'":
+                q = None
+            i += 1
+            continue
+        if ch == "\\" and q != "'":
+            if i + 1 < n and t[i + 1] == "\n":          # line continuation: bash removes both characters
+                i += 2
+                continue
+            if i + 1 < n:
+                out.append(ch)
+                out.append(t[i + 1])
+                i += 2
+                continue
             out.append(ch)
-            esc = True
-        elif q:
-            q = None if ch == q else q
+            i += 1
+            continue
+        if q == '"':
             out.append(ch)
-        elif ch in "'\"":
+            if ch == '"':
+                q = None
+            i += 1
+            continue
+        if ch in "'\"":
             q = ch
             out.append(ch)
-        elif ch == "#" and (prev.isspace() or prev in ";&|()"):
+            i += 1
+            continue
+        if ch == "#" and (i == 0 or t[i - 1].isspace() or t[i - 1] in ";&|()"):
             comment = True
-        else:
-            out.append(" ; " if ch == "\n" else ch)
-        prev = ch
+            i += 1
+            continue
+        out.append(" ; " if ch == "\n" else ch)
+        i += 1
     return "".join(out)
 
 
 def tokens(text):
-    text = newlines_to_separators(strip_heredocs(text).replace("\\\n", ""))   # bash joins a line
-    # continuation with nothing (red-team CRITICAL #1); a split program name must not become two tokens
+    text = newlines_to_separators(strip_heredocs(text))
     lex = shlex.shlex(text, posix=True, punctuation_chars=";&|()<>")
     lex.whitespace_split = True
     lex.commenters = ""
@@ -407,6 +426,95 @@ PROTECTED_VARS = re.compile(r"(HOME|XDG_[A-Z_]+|GIT_(?!(AUTHOR|COMMITTER)_(NAME|
                             r"PAGER$)[A-Z_]+)$")
 SET_BUILTINS = {"read", "mapfile", "readarray", "export", "declare", "typeset", "local", "readonly", "unset",
                 "let", "eval", "printf"}
+
+
+CRED_BASENAMES = {".git-credentials", ".netrc", "_netrc", "credentials"}
+INDIRECT = re.compile(r"\$\{!\w+\}")                 # ${!var} reads the variable named by var (R-D008-1)
+
+
+def substitutions(command):
+    """Pull out every command bash would run via substitution, wherever it sits: $(...), `...`, <(...), >(...),
+    even inside double quotes (R-D008-3 S1, S2). Returns (text with each replaced by a placeholder, [inner
+    commands]). $'...' and single quotes are literal. $((...)) is arithmetic, not a command. Unbalanced -> G0."""
+    out, inners, i, n, q = [], [], 0, len(command), None
+    while i < n:
+        ch = command[i]
+        if q == "'":
+            out.append(ch)
+            if ch == "'":
+                q = None
+            i += 1
+            continue
+        if ch == "$" and i + 1 < n and command[i + 1] == "'":   # ANSI-C quoting: a literal string
+            out.append("_")
+            i += 2
+            while i < n and command[i] != "'":
+                i += 2 if command[i] == "\\" else 1
+            i += 1
+            continue
+        if q is None and ch == "'":
+            q = "'"
+            out.append(ch)
+            i += 1
+            continue
+        if ch == '"':
+            q = None if q == '"' else '"'
+            out.append(ch)
+            i += 1
+            continue
+        if command.startswith("$((", i):
+            k = command.find("))", i + 3)
+            if k == -1:
+                raise Bad("G0", "an unbalanced $(( arithmetic expansion; the guard cannot read the command")
+            out.append("0")
+            i = k + 2
+            continue
+        if command.startswith("$(", i) or command.startswith("<(", i) or command.startswith(">(", i):
+            j, depth, iq = i + 2, 1, None
+            while j < n and depth > 0:
+                c = command[j]
+                if iq:
+                    iq = None if c == iq else iq
+                elif c in "'\"":
+                    iq = c
+                elif c == "(":
+                    depth += 1
+                elif c == ")":
+                    depth -= 1
+                j += 1
+            if depth != 0:
+                raise Bad("G0", "an unbalanced command substitution; the guard cannot read the command")
+            inners.append(command[i + 2:j - 1])
+            out.append("_sub_")
+            i = j
+            continue
+        if ch == "`":
+            j = i + 1
+            while j < n and command[j] != "`":
+                j += 2 if command[j] == "\\" else 1
+            if j >= n:
+                raise Bad("G0", "an unbalanced backtick substitution; the guard cannot read the command")
+            inners.append(command[i + 1:j])
+            out.append("_sub_")
+            i = j + 1
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out), inners
+
+
+def token_credential_check(tok):
+    """A single token that reads a credential or a variable's value by indirection (R-D008-3 false-positive fix:
+    this runs on tokens, not on the raw command, so a credential name inside a comment or a quoted argument of an
+    unrelated command does not trip it)."""
+    m = CREDENTIAL_EXPANSION.search(tok)
+    if m:
+        raise Bad("B8", f"the token expands the credential variable {m.group(1)}")
+    if INDIRECT.search(tok):
+        raise Bad("B8", "indirect expansion ${!...} can read any variable, credentials included")
+    if any(cp in tok for cp in CREDENTIAL_PATHS) or os.path.basename(tok.rstrip("/")) in CRED_BASENAMES \
+            or re.search(r"/proc/[^/\s]*/env", tok):
+        raise Bad("B8", f"the token reads a credential store or a process environment ({tok[:60]})")
 
 
 def simple_commands(toks):
@@ -560,30 +668,18 @@ def strip_wrappers(a):
 
 
 def shell_checks(command, cwd, depth=0):
-    """Raise Bad for the first ban the command breaks."""
+    """Raise Bad for the first ban the command breaks. Depth guards against runaway recursion into nested
+    substitutions (R-D008-3 S1 to S3)."""
+    if depth > 8:
+        raise Bad("G0", "the command nests substitutions too deeply for the guard to read")
     for v in credential_values():
-        if v in command:
+        if v and v in command:
             raise Bad("B8", "the command names the session's token file or messaging socket")
-    m = CREDENTIAL_EXPANSION.search(command)
-    if m:
-        raise Bad("B8", f"the command expands the credential variable {m.group(1)}")
-    if "${!" in command:
-        raise Bad("B8", "indirect expansion (${!...}) can read any variable, credentials included")
-    m = GIT_ENV_OVERRIDE.search(command)
-    if m:
-        raise Bad("B11", f"the command sets {m.group(1)}, which changes where programs read their settings")
-    q = None
-    for ch in command:
-        if q:
-            q = None if ch == q else q
-        elif ch in "'\"":
-            q = ch
-        elif ch == "`" and q != "'":
-            raise Bad("G0", "a backtick command substitution is not analysed; use $(...), which the guard reads")
-    if any(p in command for p in CREDENTIAL_PATHS) or re.search(r"/proc/\S*env", command):
-        raise Bad("B8", "the command reads a credential store or a process environment")
+    cleaned, inners = substitutions(command)   # a command bash runs via $(...), `...`, <(...) is checked too
+    for inner in inners:
+        shell_checks(inner, cwd, depth + 1)
     try:
-        toks = tokens(command)
+        toks = tokens(cleaned)
     except ValueError as e:
         raise Bad("G0", f"the shell command could not be parsed ({e})")
     d, stack = cwd, []
@@ -614,12 +710,19 @@ def shell_checks(command, cwd, depth=0):
         args, bare_env = strip_wrappers(args)
         if bare_env:
             raise Bad("B8", "env without a command prints the whole environment, including credentials")
+        for tk in args:
+            token_credential_check(tk)
         if not args:
             continue
         if args[0] not in ("[", "[[") and any(c in args[0] for c in "$`*?["):
             raise Bad("G0", f"the command name {args[0]} is not a plain word (it uses a variable or a glob), so the "
                             "guard cannot tell which program bash would run")
         prog = os.path.basename(args[0])
+        if prog == "trap" and depth < 8:   # trap runs its handler string later; check it as a command (S3)
+            for a in args[1:]:
+                if not a.startswith("-"):
+                    shell_checks(a, d, depth + 1)
+                    break
         if prog in ("cd", "pushd"):
             d = resolve_dir(d, args[1] if len(args) > 1 else "~")
             continue
@@ -915,6 +1018,7 @@ def file_checks(name, args):
     p = str(args.get(key) or "")
     if not p:
         return ("T1", f"{name} without a path stays in the working directory")
+    p = os.path.expanduser(p)   # ~ expands as the shell would, so the file tools and the shell agree (S5)
     p = os.path.join(ROOT, p) if not os.path.isabs(p) else p
     for v in credential_values():
         if within(p, v):

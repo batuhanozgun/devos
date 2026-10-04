@@ -264,6 +264,36 @@ b deny  "v=GH_; eval \"echo \\\$\${v}TOKEN\""
 b allow "find . -name '*.md' -exec grep -l x {} +"
 b allow "export FOO=1 BAR=2"
 b allow "declare -A map"
+# --- R-D008-3 adversarial pass 2: commands hidden in substitutions (S1,S2), trap (S3), comment+continuation (S4), file-tool ~ (S5)
+b deny  'x="$(git push origin main)"'
+b deny  'echo "$(git checkout HEAD~1)"'
+b deny  'export Y="$(printenv)"'
+b deny  ': "$(rm -rf /)"'
+b deny  'echo "pre$(git push origin main)post"'
+b deny  'for x in $(git push origin main); do :; done'
+b deny  'select x in $(git push origin main); do :; done'
+b deny  'for x in <(git push origin main); do :; done'
+b deny  'trap "git push origin main" EXIT'
+b deny  'trap "git checkout HEAD~1" DEBUG'
+b deny  'trap -- "cp /tmp/x .claude/hooks/tool_allowlist.py" EXIT'
+b deny  $'#ok\ngit push origin main'
+b deny  $'echo ok  # c\ngit push origin main'
+b deny  'x="$(cp /tmp/x .claude/hooks/tool_allowlist.py)"'
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"~/.claude/settings.json\",\"content\":\"x\"}}"
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"~/.config/git/config\",\"content\":\"x\"}}"
+b deny  'cat /proc/self/env?ron'
+# near misses that MUST stay allowed
+b allow 'echo "$(git -C /tmp/scratch rev-parse HEAD)"'
+b allow 'x="$(git -C /tmp/scratch status)"'
+b allow 'for d in $(git -C /tmp/scratch diff --name-only); do echo "$d"; done'
+b allow 'trap "echo bye" EXIT'
+b allow 'echo "$HOME"'
+b allow 'grep -rn HOME= .'
+b allow 'echo GIT_DIR=foo'
+b allow 'echo "${!arr[@]}"'
+b allow 'git log --grep=GIT_DIR= -n1 || true'
+b allow 'printf "HOME=%s\n" /x'
+t allow "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"~/notes.md\",\"content\":\"x\"}}"
 # --- R-D008-3: compound commands and reserved words must not hide a command (R3-1), env without = (R3-2), backticks (R3-3), [ (R3-4)
 b deny  "{ git push origin main; }"
 b deny  "{ git push /tmp/evil.git claude/x; }"
