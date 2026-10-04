@@ -982,3 +982,7 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Stop: S4 (hand-over).** A natural boundary: everything left in 1c needs new sessions. `get_session` at 09:07Z reports `used_tokens` 0 of 1,000,000, which is not a measurement (the field was 0 all run); the context use is unknown, and the hand-over is made at the boundary, not on a figure. Usage at 09:07Z: `five_hour` `allowed`, `resetsAt` 1791116400 = sched:2026-10-04T12:20Z. Lineage: depth 1 of limit 8.
 - **Successor.** After the stop check, as this run's last act: `create_session` on `main`, model `claude-opus-5-5`, environment `env_01AMBDuHjjTsXMeXFyYgk1zR`, first message the R1 goal plus a short scope (under 4,000 characters). Its recorder line goes to an open record PR for the successor to merge at boot. The lease passes to it as this run's child (§2.2).
 - **Record changes:** plan/ledger.md Usage, summary_tr · supersession · readings at 09:07Z and the summary for Batu at this hand-over
+
+### L-085 · 2026-10-04 · Lease taken or renewed by `session_01Ve2me8BKRGmw5tSHA6HAXJ`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01Ve2me8BKRGmw5tSHA6HAXJ

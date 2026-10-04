@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_017bQAUeV7o6pTvG1Pz3hRHx`. Expires 2026-10-04T11:29Z | 2026-10-04T08:29Z |
+| Run lock | `session_01Ve2me8BKRGmw5tSHA6HAXJ` (hand-over from parent session_017bQAUeV7o6pTvG1Pz3hRHx (L-084)). Expires 2026-10-04T12:09Z | 2026-10-04T09:09Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 09:07Z (`get_session`), resets sched:2026-10-04T12:20Z (`resetsAt` 1791116400, converted with `date -u -d @`) (§8: proceed; heavy work at any hour since D-002's amendment). | 2026-10-04T09:07Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. D-006 ve D-007'yi senin cevabınla "sana ait değil" diye kapattım. Ağır işler artık gündüz de yapılıyor (D-002). <br>2. Bunların sana neden geldiğini kök nedenle inceledim (FR-02). Kural, platformun her engelini "senin hesabında" diye sana ait sayıyordu; bir engel karşısında da elimde "bekle ya da sana sor" dışında yol yoktu. Düzelttim: sana yalnızca amaç, kapsam, sonuçların kabulü, para ve hesaplarına erişim gelir. Platform engelleri, oturum adımları ve benim koyduğum kurallar sana gelmez; aşamadığım bir engel olursa burada bilgi olarak yazarım. Düzeltme iki bağımsız denetimden geçti ve yürürlükte. <br>3. 1c'de oturumların birbirini başlatamaması sorununu (ilk mesajın 4.000 karakter sınırı) kuralı gevşetmeden çözdüm; testler geçiyor. Birkaç küçük hata daha düzeldi. <br>4. Sıradaki koşu 1c'nin kalanını yapacak: canlı testler ve bağımsız denetim. <br>**Riskler:** <br>- Otomatik denetim yeni bir değişikliği engellerse iş o noktada durur; sana sormam, burada bilgi olarak yazarım. <br>- 1c henüz main'e birleşmedi; işler PR #86'da duruyor, kaybolmaz. | 2026-10-04T09:07Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T09:07Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T09:09Z |
 
 ---
 
