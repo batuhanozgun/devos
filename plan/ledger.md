@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Cevabını aldım: D-006 ve D-007 senin konuların değildi. İkisini "reddedildi, sana ait değil" diye kapattım; artık senden bir şey beklemiyorum. <br>1. Ağır işler bundan sonra gündüz de yapılacak (D-002 güncellendi). <br>2. Şimdi bu iki konunun sana neden geldiğini kök nedenle inceliyorum: sana yalnızca amaç, yön, sonuçların kabulü ve para konuları gelecek; benim koyduğum kuralları kendi bağımsız incelememle ben değiştireceğim. <br>3. Sonra yeniden tasarımın 1c adımına (PR #86) devam ediyorum. <br>**Riskler:** <br>- Sistemin otomatik denetimi bir değişikliği yine engellerse, onu sana sormadan başka bir tasarımla çözmeye çalışacağım; çözemezsem burada bilgi olarak yazacağım. | 2026-10-04T08:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:39Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:50Z |
 
 ---
 

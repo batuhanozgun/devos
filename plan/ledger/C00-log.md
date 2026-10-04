@@ -949,3 +949,13 @@ The builder had summarised the dispatcher's own account without reading the tran
 
 - **What.** Frame review FR-02 and the text change it decides: operating model v1.7 §3.1 step 6, §6 (customer class, "Never his", channel), §8 (D-002 as amended), §11 denial row; the frontier line of `tools/records.py` without the night clause (the rendered frontier block of `plan/ledger.md` follows). Gate 1b-i re-run on this branch before the commit: `GATE 1b-i PASS` (M1, M2 fail as required). FR-02's decisions for tranche 1c are carried to PR #86 and judged there.
 - **Record changes:** plan/decisions/FR-02.md · addition · frame review of the routing to Batu
+### L-076 · 2026-10-04 · W-C00-12: R-FR02-1 FAIL on PR #98 (two blocking findings); verdict copied; dispositions in FR-02
+
+- **Verdict.** Reviewer `session_01AMgo5eS17g4TqkmCEH455L` (owned, PR #99) pushed `evidence/C00/reviews/R-FR02-1.md` to `claude/review-R-FR02-1` (`5a56c71`): FAIL. B1: the §11 exit tested a different *action*, so the denied outcome could be reached through another tool, and the base ban had been narrowed from "goal" to "covert". B2: "Never his" had no precedence against Batu's own matters (access, money behind a limit, scope after a permanent blocker). The verdict is copied here byte-identical.
+- **Disposition.** Every finding accepted; the fixes are on PR #98 with the dispositions table in `plan/decisions/FR-02.md`, and a fresh review R-FR02-2 judges the corrected head (the verdict says B1 needs one, not a check by the builder).
+- **Record changes:** evidence/C00/reviews/R-FR02-1.md · addition · verdict copied from its review branch
+
+### L-077 · 2026-10-04 · W-C00-12: PR #98 corrected for R-FR02-1; fresh review R-FR02-2 requested
+
+- **What changed on the branch:** the §11 denial row (v1.7 base sentence restored; one exit, defined by its result, with a fixed review question; one attempt per denial and need); §6 (precedence rule; "Never his" bullet 3 narrowed to rules introduced on the builder's own; access next to change; an account action only to carry out a decision of his; the brief-file channel removed again); §12 (chat named); the night clause in `03_work_model.md` §3, `05_continuity.md` and `RUN_BRIEF.md`; FR-02 with its dispositions table.
+- **Record changes:** plan/decisions/FR-02.md · correction · dispositions of R-FR02-1
