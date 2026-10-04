@@ -701,6 +701,27 @@ def inplace_flag(args):
     return False
 
 
+def cluster_opt_value(args, letter):
+    """Values of a value-taking short option `letter` bundled in a single-dash cluster: `-rt DIR`, `-ttools`,
+    `-uo FILE`, `-otools/x` (R-D008-13/14 B13-2, B14-1, B14-2). For each single-dash word containing `letter`,
+    the value is the cluster text after the first `letter` if non-empty, else the next word. Callers UNION this
+    with the ordinary destination, so an over-read (the letter also sits inside another option's value) only
+    adds a usually harmless extra path to check; it never replaces the real target."""
+    vals = []
+    for k, a in enumerate(args):
+        if not (a.startswith("-") and not a.startswith("--") and len(a) > 1):
+            continue
+        i = a.find(letter, 1)
+        if i == -1:
+            continue
+        rest = a[i + 1:]
+        if rest:
+            vals.append(rest)
+        elif k + 1 < len(args):
+            vals.append(args[k + 1])
+    return vals
+
+
 def critical(p):
     if p.endswith("/*"):           # a glob directly under a directory counts as that directory
         p = p[:-2]
@@ -965,7 +986,13 @@ def command_checks(prog, args, d):
     if prog in DEST_COMMANDS:
         tdir = [args[i + 1] for i, a in enumerate(args[:-1]) if a in ("-t", "--target-directory")]
         tdir += [a.split("=", 1)[1] for a in args if a.startswith("--target-directory=")]
-        written = tdir or plain[-1:]
+        tdir += cluster_opt_value(args, "t")      # -rt DIR, -ttools, -vt DIR (R-D008-14 B14-1)
+        dests = tdir or plain[-1:]                # the -t directory(ies), else the last argument
+        written = list(tdir) + plain[-1:]         # union, never replace (a mis-read -t value only over-denies)
+        for dr in dests:                          # a copy INTO a directory writes dir/basename(source), so
+            for s in plain:                       # cp -vt /etc /tmp/gitconfig writes /etc/gitconfig (B14-1)
+                if s not in dests:
+                    written.append(os.path.join(dr, os.path.basename(s.rstrip("/") or s)))
     elif prog in WRITE_COMMANDS:
         written = plain
     elif prog in IN_PLACE_COMMANDS and inplace_flag(args):
@@ -991,9 +1018,11 @@ def command_checks(prog, args, d):
     already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
     reader = prog in PURE_READERS \
         or (prog == "sed" and not inplace_flag(args)) \
-        or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:])) \
+        or (prog == "sort" and not (any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:])
+                                    or cluster_opt_value(args, "o"))) \
         or (prog == "xxd" and not any(a in ("-r", "--revert") for a in args[1:])) \
-        or (prog == "yq" and not any(a in ("-i", "--inplace") for a in args[1:])) \
+        or (prog == "yq" and not any(a == "--inplace" or (a.startswith("-") and not a.startswith("--")
+                                     and "i" in a) for a in args[1:])) \
         or (prog in AWKS and not any("inplace" in a for a in args[1:]))
     if not already and not reader:
         # An interpreter's SCRIPT argument under tools/ is "running", so it is exempt; every other argument it
