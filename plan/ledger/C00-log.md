@@ -1032,3 +1032,7 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Record changes:** plan/decisions/D-008.md · addition · Batu's decision of 2026-10-04 on the permission mode, model and effort
 - **Record changes:** plan/work/W-C00-12.6.md · addition · item admitted with its acceptance written before the work
 - **Record changes:** plan/ledger.md summary_tr · supersession · the summary for Batu at this lease
+
+### L-094 · 2026-10-04 · Lease taken or renewed by `session_01Q32nLatKbtDDY1zSVQZiKX`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01Q32nLatKbtDDY1zSVQZiKX
