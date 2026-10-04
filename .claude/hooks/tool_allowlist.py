@@ -136,6 +136,7 @@ GIT_ENV_OVERRIDE = re.compile(r"(?<![\w$])(HOME|XDG_[A-Z_]+|GIT_(?!(AUTHOR|COMMI
 ACCOUNT_CLIS = {"gh", "gcloud", "gsutil", "bq", "claude"}
 NET_TOOLS = {"ssh", "scp", "sftp", "nc", "ncat", "netcat", "socat", "telnet", "ftp", "rsync"}
 SHELLS = {"bash", "sh", "zsh", "dash"}
+SHELL_FAMILY = {"bash", "sh", "zsh", "dash", "ksh"}   # shells where -s makes stdin the program (R-D008-11 B11-3)
 DEST_COMMANDS = {"cp", "install", "ln"}            # only the destination is written
 WRITE_COMMANDS = {"mv", "rm", "rmdir", "touch", "truncate", "chmod", "chown", "mkdir", "tee", "unzip"}
 IN_PLACE_COMMANDS = {"sed", "perl"}                # write only with -i
@@ -439,8 +440,10 @@ INTERPRETERS = {"python", "python3", "python2", "bash", "sh", "zsh", "dash", "ks
 # interpreter options that take NO value and run no code or module. Only these may precede the script and keep
 # the "running a tools/ script" exemption; anything else (-m, -c, -e, -W/-X and their attached forms -mFOO,
 # -cCODE, a value-taker, a bare -) ends the exemption, so the script and every other argument are then checked
-# as ordinary paths (R-D008-10 B10-3). Being too generous here only over-denies (the script is then checked and,
-# living under tools/, denied); it can never open a hole.
+# as ordinary paths (R-D008-10 B10-3). The list is read PER INTERPRETER: for a shell, -s and -i are dropped,
+# because -s makes standard input the program and a following tools/ path is then its argument, not a script
+# being run — one list shared across interpreters with different grammars can otherwise open a hole (R-D008-11
+# B11-3). An over-generous entry only over-denies (the script, under tools/, is then checked and denied).
 SAFE_INTERP_OPTS = {"-B", "-b", "-bb", "-d", "-E", "-I", "-O", "-OO", "-P", "-q", "-s", "-S", "-t", "-tt",
                     "-u", "-v", "-x"}
 # bash reserved words and compound-command punctuation. They stand in command position without being the
@@ -513,7 +516,7 @@ def substitutions(command):
             if depth != 0:
                 raise Bad("G0", "an unbalanced command substitution; the guard cannot read the command")
             inners.append(command[i + 2:j - 1])
-            out.append("_sub_")
+            out.append("$_sub_")      # carries a $ so resolve_dir/target_path treat it as unresolvable (B11-1)
             i = j
             continue
         if ch == "`":
@@ -523,7 +526,7 @@ def substitutions(command):
             if j >= n:
                 raise Bad("G0", "an unbalanced backtick substitution; the guard cannot read the command")
             inners.append(command[i + 1:j])
-            out.append("_sub_")
+            out.append("$_sub_")      # see above (B11-1)
             i = j + 1
             continue
         out.append(ch)
@@ -647,6 +650,34 @@ def write_guarded(p, remove=False):
     return guarded_zone(p, remove=remove)
 
 
+def literal_guarded(arg):
+    """A write target the guard cannot resolve (it holds a shell variable or a substitution placeholder, both of
+    which carry a `$`) still names a guarded location when a guarded component is literally visible in the token
+    (R-D008-11 B11-2): `$PWD/.claude/x`, `$(pwd)/tools/y`, `$HOME/.config/git/config`. Components that contain a
+    `$` are dropped, so a bare variable (`$DEST`) that expands to a guarded path with nothing guarded visible
+    stays the lexical residual (section 9). Returns a label or None."""
+    parts = [x for x in arg.replace("\\", "/").split("/") if x and "$" not in x and "`" not in x]
+    for x in parts:
+        if x in (".claude", ".git", "tools"):
+            return f"a guarded location named literally inside an unresolved path ({x} in {arg})"
+    for k in range(len(parts) - 1):
+        if parts[k] == ".config" and parts[k + 1] == "git":
+            return f"git's user configuration named inside an unresolved path (.config/git in {arg})"
+    if parts and parts[-1] in PROTECTED_NAMES:
+        return f"a protected configuration file named inside an unresolved path ({parts[-1]} in {arg})"
+    return None
+
+
+def guarded_write(d, arg, remove=False):
+    """The guarded-location label for a write target, or None. A resolvable path uses write_guarded; a path the
+    guard cannot resolve falls back to literal_guarded, so a guarded component behind a variable or substitution
+    is still caught (R-D008-11 B11-2)."""
+    p = target_path(d, arg)
+    if p:
+        return write_guarded(p, remove=remove)
+    return literal_guarded(arg)
+
+
 def critical(p):
     if p.endswith("/*"):           # a glob directly under a directory counts as that directory
         p = p[:-2]
@@ -746,8 +777,7 @@ def shell_checks(command, cwd, depth=0):
                 args.append(t)
                 i += 1
         for o in outs:
-            p = target_path(d, o)
-            z = p and write_guarded(p)
+            z = guarded_write(d, o)
             if z:
                 raise Bad("B5", f"a redirection writes into {z} ({o})")
         args, bare_env = strip_wrappers(args)
@@ -898,8 +928,7 @@ def command_checks(prog, args, d):
     elif prog == "dd":
         written = [a.split("=", 1)[1] for a in args[1:] if a.startswith("of=")]
     for a in written:
-        p = target_path(d, a)
-        z = p and write_guarded(p, remove=remove)
+        z = guarded_write(d, a, remove=remove)
         if z:
             raise Bad("B5", f"{prog} writes into {z} ({a})")
     if prog == "git":
@@ -924,13 +953,17 @@ def command_checks(prog, args, d):
         # .claude/ or .git/ is not exempt (R-D008-9 B9-1: the exemption must not cover those zones).
         exempt = None
         if prog in INTERPRETERS:
+            # For a shell, -s makes standard input the program and -i goes interactive, so a following tools/ path
+            # is an argument to that stdin program, not a script being run (R-D008-11 B11-3). The allow list is one
+            # set across interpreters, so drop those two for the shells; the rest are no-value, no-code flags.
+            safe = SAFE_INTERP_OPTS - {"-s", "-i"} if prog in SHELL_FAMILY else SAFE_INTERP_OPTS
             j = 1
             while j < len(args) and args[j].startswith("-") and args[j] != "-":
-                if args[j] in SAFE_INTERP_OPTS:   # a no-value flag: keep scanning for the script argument
+                if args[j] in safe:               # a no-value flag: keep scanning for the script argument
                     j += 1
                     continue
-                j = None                          # -m, -c, -e, -W, an attached -mFOO/-cCODE, a value-taker: the
-                break                             # thing being run is not a tools/ script, so grant no exemption
+                j = None                          # -m, -c, -e, -W, a shell -s/-i, an attached -mFOO/-cCODE, a
+                break                             # value-taker: the thing run is not a tools/ script, no exemption
             if j is not None and j < len(args) and not args[j].startswith("-"):
                 sp = target_path(d, args[j])
                 tools = os.path.realpath(os.path.join(ROOT, "tools"))
@@ -943,9 +976,8 @@ def command_checks(prog, args, d):
                                                              ([a[2:]] if len(a) > 2 and a[1] != "-" else []))):
                 if not cand:
                     continue
-                pth = target_path(d, cand)
-                z = pth and write_guarded(pth)   # strict zones AND the live tools/ dir (R-D008-8 B8-1)
-                if z:
+                z = guarded_write(d, cand)   # strict zones AND the live tools/ dir (R-D008-8 B8-1); a guarded
+                if z:                        # component behind a variable or substitution too (R-D008-11 B11-2)
                     raise Bad("B5", f"{prog} names {z} ({a}); only a reader (cat, grep, sed -n, ...) or an "
                                     "interpreter running a tools/ script may name it; a write uses a listed writer "
                                     "or a redirection the guard checks")
@@ -980,8 +1012,7 @@ def git_checks(args, d):
     base = e if e is not None else d
 
     def out_guarded(cand):
-        pz = target_path(base, cand)
-        return pz and write_guarded(pz)
+        return guarded_write(base, cand)
 
     # Named output files/directories (R-D008-8 B8-2). --output[=] and --output-directory[=] write a file that B4's
     # in-place checks do not see, on any subcommand (show/log/diff/format-patch); the tree writers also take a

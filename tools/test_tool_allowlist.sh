@@ -403,6 +403,29 @@ b allow "git -C /tmp/scratch clone /tmp/r sub"
 b allow "python3 -mjson.tool /tmp/a /tmp/b"
 b allow "python3 -B tools/check_records.py all"
 b allow "python3 -S -B tools/guard_report.py"
+# --- R-D008-11: substitution placeholder unresolvable (B11-1), variable/subst write targets (B11-2), shell -s (B11-3)
+b deny  'git -C $(pwd)/tools init'
+b deny  'git -C `pwd`/tools init'
+b deny  'cd $(pwd)/tools && git init'
+b deny  'echo x > $(pwd)/.claude/settings.json'
+b deny  'git -C $(git rev-parse --show-toplevel) clone /tmp/r tools/x'
+b deny  'git -C $(mktemp -d) init'
+b deny  'echo x > $PWD/.claude/settings.json'
+b deny  'echo x > $PWD/tools/x'
+b deny  'cp /tmp/a $PWD/tools/check_records.py'
+b deny  'git clone /tmp/r $PWD/tools/x'
+b deny  'git archive -o $PWD/tools/x.tar HEAD'
+b deny  'echo x > $HOME/.config/git/config'
+b deny  'bash -s tools/x'
+b deny  'sh -s tools/records.py'
+b deny  'ksh -s tools/x'
+# reads, non-guarded variable targets, python -s, and a shell -x script stay allowed
+b allow 'echo x > $TMPDIR/out.txt'
+b allow 'echo x > $HOME/notes.md'
+b allow 'cp /tmp/a $DEST'
+b allow 'cd $(pwd)/sub && ls'
+b allow 'bash -x tools/test_tool_allowlist.sh'
+b allow 'python3 -E -s -S -I tools/check_records.py all'
 # --- R-D008-6/7: data-derived guard swap (honest-mistake copy), and the merge gate / tools directory
 b deny  "cp -r /scratch/x/.claude /home/user/devos/"
 b deny  "cp -r /tmp/y/.git ."
