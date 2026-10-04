@@ -906,8 +906,26 @@ def command_checks(prog, args, d):
     reader = prog in PURE_READERS \
         or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
         or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:]))
-    if not already and not reader and prog not in INTERPRETERS:
-        for a in args[1:]:
+    if not already and not reader:
+        # An interpreter's SCRIPT argument under tools/ is "running", so it is exempt; every other argument it
+        # names (an output file, a module data path) still goes through the catch-all, and a script it names under
+        # .claude/ or .git/ is not exempt (R-D008-9 B9-1: the exemption must not cover those zones).
+        exempt = None
+        if prog in INTERPRETERS:
+            j = 1
+            while j < len(args) and args[j].startswith("-"):
+                if args[j] in ("-m", "-c", "-e", "--eval", "--command", "--"):
+                    j = None
+                    break
+                j += 1
+            if j is not None and j < len(args):
+                sp = target_path(d, args[j])
+                tools = os.path.realpath(os.path.join(ROOT, "tools"))
+                if sp and (os.path.realpath(sp) == tools or os.path.realpath(sp).startswith(tools + os.sep)):
+                    exempt = j
+        for k, a in enumerate(args[1:], 1):
+            if k == exempt:
+                continue
             for cand in ([a] if not a.startswith("-") else ([a.split("=", 1)[1]] if "=" in a else
                                                              ([a[2:]] if len(a) > 2 and a[1] != "-" else []))):
                 if not cand:
@@ -916,7 +934,7 @@ def command_checks(prog, args, d):
                 z = pth and write_guarded(pth)   # strict zones AND the live tools/ dir (R-D008-8 B8-1)
                 if z:
                     raise Bad("B5", f"{prog} names {z} ({a}); only a reader (cat, grep, sed -n, ...) or an "
-                                    "interpreter running a script there may name it; a write uses a listed writer "
+                                    "interpreter running a tools/ script may name it; a write uses a listed writer "
                                     "or a redirection the guard checks")
 
 
@@ -954,11 +972,16 @@ def git_checks(args, d):
         elif a2 in ("--output", "--output-directory") and j2 + 1 < len(rest):
             outp = rest[j2 + 1]
             j2 += 1
-        elif a2 == "-o" and sub in ("archive", "format-patch", "bundle") and j2 + 1 < len(rest):
+        elif a2.startswith("--output-directory="):
+            outp = a2.split("=", 1)[1]
+        elif a2 == "--output-directory" and j2 + 1 < len(rest):
             outp = rest[j2 + 1]
             j2 += 1
-        elif a2.startswith("-o") and len(a2) > 2 and sub in ("archive", "format-patch", "bundle"):
-            outp = a2[2:]
+        elif sub in ("archive", "format-patch", "bundle") and re.fullmatch(r"-[A-Za-z]*o", a2) and j2 + 1 < len(rest):
+            outp = rest[j2 + 1]          # a short cluster ending in o takes the next word (e.g. -ko <dir>)
+            j2 += 1
+        elif sub in ("archive", "format-patch", "bundle") and re.match(r"-[A-Za-z]*o.", a2):
+            outp = re.sub(r"^-[A-Za-z]*o", "", a2)   # -o<path> or -ko<path>
         if outp:
             pz = target_path(e if e is not None else d, outp)
             z2 = pz and write_guarded(pz)
@@ -968,6 +991,27 @@ def git_checks(args, d):
     if sub not in GIT_SUBCOMMANDS:
         raise Bad("B11", f"git {sub}: not a listed git subcommand; the guard does not resolve aliases, so an alias "
                          "is denied too")
+    # B9-2 (R-D008-9): subcommands that write a NAMED destination tree. B4 covers in-place changes; these create
+    # a tree at a path, which can land in a guarded zone (a clone into tools/ shadows an import; into .claude/ adds
+    # configuration). Check every positional destination with write_guarded.
+    base = e if e is not None else d
+    pos = [x for x in rest if not x.startswith("-")]
+    dests = []
+    if sub == "clone":
+        dests = pos[1:]                       # clone <url> [<dest>]
+    elif sub == "init":
+        dests = pos                           # init [<dir>]
+        for x in rest:
+            if x.startswith("--separate-git-dir="):
+                dests.append(x.split("=", 1)[1])
+    elif sub in ("worktree", "submodule") and pos[:1] == ["add"]:
+        rest2 = pos[1:]
+        dests = rest2[:1] if sub == "worktree" else rest2[1:2]   # worktree add <path>; submodule add <url> <path>
+    for dpath in dests:
+        pz = target_path(base, dpath)
+        z2 = pz and write_guarded(pz)
+        if z2:
+            raise Bad("B5", f"git {sub} writes a tree into {z2} ({dpath})")
     for x in rest:
         if x.split("=", 1)[0] in GIT_SUB_OPT_DENY or (sub == "clone" and x in ("-u", "-c")):
             raise Bad("B11", f"git {sub} {x} sets configuration or runs another program")
