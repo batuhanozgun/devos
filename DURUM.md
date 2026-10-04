@@ -1,12 +1,12 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
+**Senden beklenen:** Şu kararlar senin: `D-006` (Tek adım: sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz; benim oturum zincirim derinlik sınırında (8/8) ve yeni oturum açamıyorum). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 4 Ekim 2026, 02:01 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 4 Ekim 2026, 10:38 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 
-**Çalışan oturum:** `session_011NtZnNGjojkTcmuzMRLtvL`; kilit 4 Ekim 2026, 04:39 (Türkiye saati) tarihine kadar geçerli.
+**Çalışan oturum:** Çalışan oturum yok; son oturum 4 Ekim 2026, 02:10 (Türkiye saati) itibarıyla işi bıraktı.
 
 **Sıradaki işler:** `W-C00-12`, `W-C00-12.4` sürüyor. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
@@ -16,14 +16,13 @@
 
 **Şu an**
 
-Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor. Kurulumun üçüncü adımı (1b-ii, kayıtları ve durma anını kontrol eden araçlar) bağımsız denetçinin şartlı onayıyla, şartlar karşılandıktan sonra ana dala alındı ve kabul edildi. Sıradaki adım 1c (koruma kuralları, CLAUDE.md, roller); onu yeni bir oturum yapacak. Senin bir şey yapmana gerek yok. 
-1. Önceki denetçilerin bulduğu yollar kapandı: C00'ın bekletmesi artık benim yazdığım bir onay dosyasıyla, eski ilgisiz bir onayla ya da bir alt adımın onayıyla, değişiklik anında kaldırılamıyor. Değişiklik anında üst işin (W-C00-12) kendi kabul kontrolü çalışıyor; alt adımların kendi kontrolleri ise yalnızca durma anında çalışıyor. 
-2. Bilinen açık (denetçi buldu, 1c'de kapatılacak): son alt adım kendi kendine kabul edilmiş gösterilir ve bir denetçi o hâli onaylarsa, bekletme değişiklik anında kaldırılabilir; durma kontrolü bunu sonradan yakalar. Bu, ancak son alt adım (1d) bittikten sonra mümkün. 
-3. Kalan açık (değişmedi): bir oturum denetçi imzasını taklit edebilir; bunu ancak bağımsız denetim ortamı (C03) kapatır. 
-4. Bu oturumun bir kayıt hatası ana dala ulaştı (kilit kaydında eksik bir satır; eski araç yazmıyordu). Kural gereği bu, oturumu devretmeye zorluyor; devrediyorum. 
-5. Dağıtıcı ve zamanlayıcı, yeniden tasarım kabul edilene kadar bilerek kapalı. 
+Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor, ama bu oturum devredemedi: oturum zinciri platformun derinlik sınırına ulaştı (8/8) ve yeni oturum açamıyorum. Senden tek adım istiyorum (sayfanın ilk satırı, D-006): sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz ya da devos üzerinde kendin bir oturum başlat. Bir şey kaybolmadı. 
+1. Dördüncü adımın (1c: koruma kuralları, CLAUDE.md, roller) yeni oturum gerektirmeyen kısmı ayrı bir dalda (PR #86) hazır; ana dala henüz alınmadı, çünkü bağımsız denetçi onayı gerekiyor. Yeni oturumlar artık üretilmiş bir görev özeti olmadan başlatılamayacak; her oturum açılışta bilinen hata kalıplarını görecek; rol tanımları yazıldı. Bunlar dal ana dala alınınca yürürlüğe girer. 
+2. Önceki denetçinin bulduğu açık (son alt adımın kendini onaylı göstermesi) kodda kapatıldı; test önce eski kodda başarısız, yenisinde başarılı. Bir eleştirmen okuması 13 bulgu verdi; üçü düzeltildi, gerisi sıradaki oturuma yazıldı. 
+3. Aynı kontrol yolu beş kez sıkılaştırıldı; tasarım kuralı bu durumda bir çerçeve incelemesi istiyor. Sıradaki oturum bunu denetçiden önce yapacak. 
+4. Sorduğun model ve efor konusu: model her oturum için açıkça sabit; efor için henüz bir yapı yok. Sıradaki oturum önce ölçecek, karar noktası yeniden tasarımın son incelemesine yazıldı. 
 **Riskler:** 
-- Oturum zinciri derinliği: devralan oturum "derinlik 8, sınır 8"de olacak ve kendisi yeni oturum (denetçi ya da devralan) açamayabilir. O zaman yeni bir oturumu senin başlatman tek adımlık bir istek olarak bu sayfanın ilk satırına gelir. 
-- Bekçi henüz kurulmadı; bir oturum ölürse bunu yukarıdaki "Son güncelleme" saatinin eskimesinden görürsün.
+- Zincir yeniden başlasa da her devir ve her denetçi bir seviye ekliyor; bu sınır yine dolacak. Bunun kalıcı çözümü yeniden tasarımın bir parçası olarak ele alınacak. 
+- Bekçi henüz kurulmadı; bir oturum ölürse bunu "Son güncelleme" saatinin eskimesinden görürsün.
 
 **Süreklilik notu:** Bir oturum senden karar beklerken durursa, cevabını bir sonraki oturum okur. Oturumun kendini düzenli uyandırması (altı saatte bir, en çok dört kez) yeniden tasarımın sonraki bir adımında kuruluyor; kurulana kadar cevabın yeni bir oturum başlayana kadar bekler. Kurulduktan sonra da dört boş kontrolden sonra cevabın bir sonraki oturuma kalır.
