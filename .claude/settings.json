@@ -1,4 +1,10 @@
 {
+  "model": "claude-opus-5-5",
+  "effortLevel": "xhigh",
+  "ultracode": true,
+  "permissions": {
+    "defaultMode": "acceptEdits"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -7,6 +13,17 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"; rc=$?; [ $rc -eq 0 ] || exit 2"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\""
           }
         ]
       }
