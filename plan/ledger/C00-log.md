@@ -1038,3 +1038,8 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Finding 12.** The boot map labels its `main` SHA as the last-fetched `origin/main` ("may be stale") and reports a failing chain check by its count and the command, not by its lines, which can name items (work state). `tools/test_1c.py` on `be7911e` (clean): `GATE 1c (deterministic part) PASS`.
 - **Not done here:** Critic findings 4, 5 (the W-R7 (ii) invariant, FR-01), 7, 10, 13 and departure 8's different design (FR-02 item 2) wait for R-FR02-1, because they depend on rules that FR-02 changes; departure 9 (N-054 b) stays open (L-073).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry
+
+### L-078 · 2026-10-04 · W-C00-12: tranche 1c, candidate failure pattern FP-21 (FR-02 item 3)
+
+- **What.** `plan/builder/heritage/FAILURE_PATTERNS.md` gains FP-21, the customer used as the key to a technical blocker (D-006, D-007, FR-02), `status: candidate`, produced by this run, not yet qualified (R-R7: someone other than its producer qualifies it). `tools/test_1c.py`: `GATE 1c (deterministic part) PASS` with the row present (T-M17 reads every pattern from the tree).
+- **Record changes:** plan/ledger/C00-log.md · addition · this entry
