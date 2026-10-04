@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session, carrying out D-008 as item W-C00-12.6). Expires 2026-10-04T21:41Z | 2026-10-04T18:41Z |
+| Run lock | `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session, carrying out D-008 as item W-C00-12.6). Expires 2026-10-04T22:25Z | 2026-10-04T19:25Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 17:22Z (`get_session`), resets 2026-10-04T22:20Z (`resetsAt` 1791152400, converted with `date -u -d @`) (§8: proceed). | 2026-10-04T17:22Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. Kararını kayda geçirdim (D-008): oturumlar otomatik moddan çıkıyor. Her adıma kurucunun yazılı kural dosyası karar verecek ve her reddin gerekçesini ayrıntılı yazacak. Açılan her oturum Opus 5.5 ve ultracode ile çalışacak. <br>2. Bunu konuşma oturumun kuruyor; kilidi o aldı. Değişiklik bağımsız bir incelemeden geçmeden ana kayda girmeyecek. <br>3. Kurulum bitince bu oturumun modunu "Accept edits"e almanı isteyeceğim; o zamana kadar olduğu gibi kalsın. <br>**Riskler:** <br>- Otomatik denetimin genel koruması kalkıyor; yerine yalnızca yazılı kurallar kalıyor. <br>- Kural listesinde eksik varsa iş o noktada durur; eksik eklenince devam eder. | 2026-10-04T17:23Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T18:41Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T19:25Z |
 
 ---
 
