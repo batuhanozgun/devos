@@ -1030,3 +1030,11 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 the planted case was written first and failed on `89bd3a5` (both outcomes: `DURUM.md` said no session was running; the stop check reported a released lease), then passed after the fix, run from the committed fix; principle 18: one function replaces two unanchored patterns, and the lease note is not restricted.
 - **What.** `tools/records.py` gains `lease_state()`, which reads the holder and only the `Expires` or `Released` tail that `lease()` writes; `durum()` and `tools/builder_check.sh` both use it (one home). T-M5r gains case (d) in `tools/test_check_records.py` and in its register row (an addition, no condition loosened). N-055 is `answered` on the branch; it takes effect when 1c merges with its verdict.
 - **Record changes:** plan/work/W-C00-12.4.md · annotate · N-055 answered on the branch
+
+### L-075 · 2026-10-04 · W-C00-12: tranche 1c, Critic findings 6 and 12 fixed with planted cases
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 each planted case was committed first and failed on the previous code (T-M15 (f4) and (f5) on `12a967b`'s checker; T-M17 (c12) on `12a967b`'s boot map), then passed after the fix; failure pattern 1: the claims below are as strong as those cases.
+- **Finding 6.** The verdict stamp check reads only a line that starts with `**Written:**` and compares it with the review-branch commit's committer time. A verdict without that line is not stamp-checked: a stated residual in the function's docstring.
+- **Finding 12.** The boot map labels its `main` SHA as the last-fetched `origin/main` ("may be stale") and reports a failing chain check by its count and the command, not by its lines, which can name items (work state). `tools/test_1c.py` on `be7911e` (clean): `GATE 1c (deterministic part) PASS`.
+- **Not done here:** Critic findings 4, 5 (the W-R7 (ii) invariant, FR-01), 7, 10, 13 and departure 8's different design (FR-02 item 2) wait for R-FR02-1, because they depend on rules that FR-02 changes; departure 9 (N-054 b) stays open (L-073).
+- **Record changes:** plan/ledger/C00-log.md · addition · this entry
