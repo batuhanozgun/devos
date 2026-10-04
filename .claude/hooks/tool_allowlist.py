@@ -45,6 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # the live working tree: its .claude/ is this guard
 HOME = os.path.expanduser("~")
 LOG_DIR = os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard"
+LOG_BASENAME = os.path.basename(LOG_DIR.rstrip("/")) or "devos-guard"   # for literal_guarded (R-D008-12 m-1)
 BUILDER_ENV = "env_01AMBDuHjjTsXMeXFyYgk1zR"           # devos-kurulum
 MODEL = "claude-opus-5-5"                              # D-008
 MODE = "acceptEdits"                                   # D-008
@@ -427,9 +428,12 @@ REDIRECT_OTHER = {"<", "<<", "<<<", "<&", "<<-"}
 # a small fixed set, not on the open set of writing programs. sed/sort are readers only without their
 # write option; a write option moves them out.
 PURE_READERS = {"cat", "head", "tail", "less", "more", "grep", "egrep", "fgrep", "rg", "wc", "ls", "stat",
-                "file", "cmp", "diff", "od", "xxd", "hexdump", "strings", "nl", "tac", "realpath", "readlink",
+                "file", "cmp", "diff", "od", "hexdump", "strings", "nl", "tac", "realpath", "readlink",
                 "basename", "dirname", "cut", "tr", "column", "fold", "md5sum", "sha1sum", "sha256sum",
-                "cksum", "du", "awk", "gawk", "mawk", "nawk", "test", "[", "[[", "jq", "yq"}
+                "cksum", "du", "test", "[", "[[", "jq"}
+# readers only WITHOUT a write flag (R-D008-12 B12-6): xxd -r writes, yq -i edits in place, awk/gawk -i inplace
+# edits in place; jq has no in-place mode. These get the reader exceptions in command_checks, not a blanket pass.
+AWKS = {"awk", "gawk", "mawk", "nawk"}
 # copy-like programs: moving a .claude or .git directory tree into place is a guard/internals swap (R-D008-6 B-1,
 # the honest-mistake case). The general data-derived write (an archive, a patch) is a stated residual (section 9).
 COPY_LIKE = {"cp", "rsync", "tar", "cpio", "unzip", "pax", "install", "ln", "scp", "7z", "7za", "unar"}
@@ -597,10 +601,12 @@ def resolve_dir(d, arg):
 
 
 def target_path(d, arg):
-    if any(c in arg for c in "$`"):
+    if any(c in arg for c in "$`{}"):        # a variable, substitution or brace expansion: unresolvable (B12-5)
         return None
     if arg == "~" or arg.startswith("~/"):
         return HOME + arg[1:]
+    if arg.startswith("~"):                  # ~+, ~-, ~user resolve elsewhere: unresolvable here (R-D008-12 B12-4)
+        return None
     if os.path.isabs(arg):
         return arg
     return None if d is None else os.path.join(d, arg)
@@ -650,32 +656,37 @@ def write_guarded(p, remove=False):
     return guarded_zone(p, remove=remove)
 
 
-def literal_guarded(arg):
-    """A write target the guard cannot resolve (it holds a shell variable or a substitution placeholder, both of
-    which carry a `$`) still names a guarded location when a guarded component is literally visible in the token
-    (R-D008-11 B11-2): `$PWD/.claude/x`, `$(pwd)/tools/y`, `$HOME/.config/git/config`. Components that contain a
-    `$` are dropped, so a bare variable (`$DEST`) that expands to a guarded path with nothing guarded visible
-    stays the lexical residual (section 9). Returns a label or None."""
-    parts = [x for x in arg.replace("\\", "/").split("/") if x and "$" not in x and "`" not in x]
+def literal_guarded(arg, remove=False):
+    """A write target the guard cannot resolve (it holds a shell variable, a substitution placeholder, a brace
+    expansion or a non-`~/` tilde) still names a guarded location when a guarded component is literally visible in
+    the token (R-D008-11 B11-2, R-D008-12 B12-5): `$PWD/.claude/x`, `$(pwd)/tools/y`, `{tools,tmp}/x`. The token
+    is split on `/` and on brace-expansion punctuation (`{ } ,`); components that still contain a `$` or backtick
+    are dropped, so a bare variable (`$DEST`) that expands to a guarded path with nothing guarded visible stays
+    the lexical residual (section 9). Returns a label or None."""
+    parts = [x for x in re.split(r"[/{},]", arg.replace("\\", "/")) if x and "$" not in x and "`" not in x]
     for x in parts:
-        if x in (".claude", ".git", "tools"):
+        if x in (".claude", ".git", "tools", "devos-guard", LOG_BASENAME):  # devos-guard = default log dir (m-1)
             return f"a guarded location named literally inside an unresolved path ({x} in {arg})"
     for k in range(len(parts) - 1):
         if parts[k] == ".config" and parts[k + 1] == "git":
             return f"git's user configuration named inside an unresolved path (.config/git in {arg})"
+        if parts[k] == "etc" and parts[k + 1] == "gitconfig":
+            return f"git's system configuration named inside an unresolved path (/etc/gitconfig in {arg})"
     if parts and parts[-1] in PROTECTED_NAMES:
         return f"a protected configuration file named inside an unresolved path ({parts[-1]} in {arg})"
+    if remove and ".config" in parts:    # m-2: removing an ancestor of ~/.config/git behind a variable
+        return f"an ancestor of git's user configuration in an unresolved removal path (.config in {arg})"
     return None
 
 
 def guarded_write(d, arg, remove=False):
     """The guarded-location label for a write target, or None. A resolvable path uses write_guarded; a path the
-    guard cannot resolve falls back to literal_guarded, so a guarded component behind a variable or substitution
-    is still caught (R-D008-11 B11-2)."""
+    guard cannot resolve falls back to literal_guarded, so a guarded component behind a variable, substitution,
+    brace or tilde is still caught (R-D008-11 B11-2, R-D008-12 B12-4/B12-5)."""
     p = target_path(d, arg)
     if p:
         return write_guarded(p, remove=remove)
-    return literal_guarded(arg)
+    return literal_guarded(arg, remove=remove)
 
 
 def critical(p):
@@ -699,10 +710,13 @@ def strip_wrappers(a):
         elif b == "env":
             a = a[1:]
             while a and (a[0].startswith("-") or re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0])):
+                if a[0] in ("-C", "--chdir") or a[0].startswith(("-C", "--chdir=")):   # R-D008-12 B12-3
+                    raise Bad("B5", "env -C/--chdir changes the working directory, which the guard cannot track; "
+                                    "run the command in that directory another way")
                 if re.match(r"[A-Za-z_][A-Za-z0-9_]*\+?=", a[0]) and \
                         PROTECTED_VARS.match(re.match(r"[A-Za-z_][A-Za-z0-9_]*", a[0]).group(0)):
                     raise Bad("B11", f"the assignment {a[0].split('=', 1)[0]} changes where programs read settings")
-                a = a[2:] if a[0] in ("-u", "--unset", "-C", "--chdir", "-S", "--split-string") else a[1:]
+                a = a[2:] if a[0] in ("-u", "--unset", "-S", "--split-string") else a[1:]
             if not a:
                 return [], True
         elif b in ("sudo", "command", "exec", "nohup", "time", "builtin", "stdbuf", "ionice", "unbuffer", "doas",
@@ -797,7 +811,22 @@ def shell_checks(command, cwd, depth=0):
                     shell_checks(a, d, depth + 1)
                     break
         if prog in ("cd", "pushd"):
-            d = resolve_dir(d, args[1] if len(args) > 1 else "~")
+            operand = None                              # skip options (-L -P -e -@ --, pushd -n) to the real dir
+            for a in args[1:]:                          # (R-D008-12 B12-2: an option was read as the directory)
+                if a in ("-L", "-P", "-e", "-@", "--", "-n"):
+                    continue
+                operand = a
+                break
+            if operand is None:
+                d = resolve_dir(d, "~")                 # cd with no operand -> HOME
+            elif operand == "-" or re.fullmatch(r"[+-]\d+", operand):
+                d = None                                # previous dir, or pushd stack rotation: unknown
+            else:
+                nd = resolve_dir(d, operand)
+                if nd is None and literal_guarded(operand):   # cd $PWD/tools, cd $(pwd)/.claude (R-D008-12 B12-1)
+                    raise Bad("B5", f"{prog} enters a guarded directory named with a variable or substitution "
+                                    f"({operand}); the guard cannot track writes made there")
+                d = nd
             continue
         if prog == "popd":
             d = None
@@ -946,7 +975,10 @@ def command_checks(prog, args, d):
     already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
     reader = prog in PURE_READERS \
         or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
-        or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:]))
+        or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:])) \
+        or (prog == "xxd" and not any(a in ("-r", "--revert") for a in args[1:])) \
+        or (prog == "yq" and not any(a in ("-i", "--inplace") for a in args[1:])) \
+        or (prog in AWKS and not any("inplace" in a for a in args[1:]))
     if not already and not reader:
         # An interpreter's SCRIPT argument under tools/ is "running", so it is exempt; every other argument it
         # names (an output file, a module data path) still goes through the catch-all, and a script it names under
