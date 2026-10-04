@@ -621,19 +621,20 @@ def guarded_zone(p, remove=False):
     return None
 
 
-GATE_FILES = (os.path.join(ROOT, "tools", "check_records.py"), os.path.join(ROOT, "tools", "records.py"))
-
-
 def write_guarded(p, remove=False):
-    """A guarded location for the purpose of a WRITE: the strict zones, plus the merge gate's own code, which may
-    be run (read) but not written in the live tree (R-D008-6 B-2). Reading or running the gate code is allowed, so
-    the non-reader-names-a-path check uses guarded_zone, not this."""
+    """A guarded location for the purpose of a WRITE: the strict zones, plus the live `tools/` directory, which
+    holds the merge gate and the checks. Those may be run or read but not written in the live tree (R-D008-6 B-2,
+    R-D008-7 B7-1: an exact-path guard missed `tools/*.py`, `rm -rf tools` and an import-shadow like `tools/yaml.py`).
+    Reading or running them is allowed, so the non-reader-names-a-path check uses guarded_zone, not this."""
     z = guarded_zone(p, remove=remove)
     if z:
         return z
-    for g in GATE_FILES:
-        if os.path.realpath(p) == os.path.realpath(g):
-            return "the merge gate's code (R-D008-6 B-2; run it, do not write it)"
+    tools = os.path.realpath(os.path.join(ROOT, "tools"))
+    rp = os.path.realpath(p)
+    if rp == tools or rp.startswith(tools + os.sep):
+        return "the live tools/ directory (the merge gate and checks; run them, do not write them)"
+    if remove and tools.startswith(rp.rstrip("/") + os.sep):
+        return "a parent of the live tools/ directory"
     return None
 
 
@@ -899,7 +900,9 @@ def command_checks(prog, args, d):
             if a.startswith("-"):
                 continue
             parts = [x for x in a.replace("\\", "/").split("/") if x]
-            if ".claude" in parts or ".git" in parts or (len(parts) >= 2 and parts[-2:] == [".config", "git"]):
+            hit = any(fnmatch.fnmatch(".claude", c) or fnmatch.fnmatch(".git", c) for c in parts) \
+                or (len(parts) >= 2 and parts[-2:] == [".config", "git"])
+            if hit:
                 raise Bad("B5", f"{prog} moves a .claude, .git or git-config path ({a}); copying guard or git "
                                 "internals into place is a guard swap (R-D008-6 B-1)")
     already = prog in DEST_COMMANDS or prog in WRITE_COMMANDS or prog in IN_PLACE_COMMANDS or prog in ("dd", "git")
@@ -1085,7 +1088,8 @@ def file_checks(name, args):
         return ("T1", f"{name} is a read")
     z = write_guarded(p)   # the same guarded places the shell write-ban uses, so the two cannot drift (R-D008-2 N-4)
     if z:
-        rule = ("F1" if "guard files" in z else "F2" if ".git/" in z else "F4" if "decision log" in z else "F3")
+        rule = ("F1" if ("guard files" in z or "tools/" in z) else "F2" if ".git/" in z else
+                "F4" if "decision log" in z else "F3")
         raise Bad(rule, f"{name} {p}: {z}")
     return ("T1", f"{name} outside the guarded paths")
 
