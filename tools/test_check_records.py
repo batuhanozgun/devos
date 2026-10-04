@@ -1035,12 +1035,12 @@ def t_w9():
     # at the PR head sees the grandchild.
     s = Scratch()
     s.append(".claude/hooks/owned_ids.txt", REVIEWER)
-    for k in ("W-C00-12.1", "W-C00-12.4"):
-        front_edit(s, f"plan/work/{k}.md", lambda m: accept(m, "evidence/C00/reviews/R-W12-6.md"))
+    for k in ("W-C00-12.1", "W-C00-12.4"):  # closed without a verdict, so no other child adds a reason
+        front_edit(s, f"plan/work/{k}.md", lambda m: m.update(execution="cancelled"))
     front_edit(s, "plan/work/W-C00-12.md", lambda m: m.update(execution="finished"))
     new_item(s, "W-C00-12.5.1", "W-C00-12.5", impact="high")
     s.records("render")
-    gb = s.commit("base: reviewer owned, W-C00-12.1 to .4 closed, W-C00-12 finished, grandchild W-C00-12.5.1 planned")
+    gb = s.commit("base: reviewer owned, W-C00-12.1 and .4 cancelled, W-C00-12 finished, grandchild W-C00-12.5.1 planned")
     s.git("checkout", "-q", "-b", "pr-z3")
     front_edit(s, "plan/work/W-C00-12.5.1.md", lambda m: accept(m, "evidence/C00/tests/1b-ii_gate.md", "deterministic"))
     front_edit(s, "plan/work/W-C00-12.5.md", lambda m: m.update(execution="finished"))
