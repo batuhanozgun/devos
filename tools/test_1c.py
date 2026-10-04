@@ -108,6 +108,19 @@ def t_m17b():
             rc == 0 and not missing and labels and not work, f"missing={missing} work={work}")
 
 
+def t_m17_c12():
+    """T-M17 (a, script part), 1c Critic finding 12: the main SHA is labelled as the last-fetched ref, and a failing
+    chain check is reported by count only, so an item ID in a FAIL line cannot carry work state into the boot map."""
+    d = Path(TMP) / "m17c12"
+    shutil.copytree(REPO, d, ignore=shutil.ignore_patterns(".git"))
+    sh(["git", "init", "-q"], d)
+    (d / "tools/check_records.py").write_text('print("FAIL  [chain] W-C00-99 planted work state")\nraise SystemExit(1)\n')
+    rc, out = sh([sys.executable, "tools/boot_map"], d, env={"CLAUDE_PROJECT_DIR": str(d)})
+    outcome("T-M17", "(c12) a failing chain check is reported without its FAIL lines",
+            "Chain check (M-R4): FAIL" in out and "W-C00-99" not in out, out)
+    outcome("T-M17", "(c12) the main SHA is labelled as the last-fetched origin/main", "last fetched origin/main" in out, out)
+
+
 def t_r22():
     """T-R22 (R-R3a, W-R5; N-053 a confirms that case (a2) runs): records.py brief <ID> --role verifier refuses without
     a target SHA, with a blank or unresolvable one, and with an empty failure-class list; with both, the header names
@@ -130,7 +143,7 @@ def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-R22", t_r22)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-M17", t_m17_c12), ("T-R22", t_r22)]
     for name, fn in tests:
         try:
             fn()
