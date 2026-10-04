@@ -1043,3 +1043,9 @@ The builder had summarised the dispatcher's own account without reading the tran
 
 - **What.** `plan/builder/heritage/FAILURE_PATTERNS.md` gains FP-21, the customer used as the key to a technical blocker (D-006, D-007, FR-02), `status: candidate`, produced by this run, not yet qualified (R-R7: someone other than its producer qualifies it). `tools/test_1c.py`: `GATE 1c (deterministic part) PASS` with the row present (T-M17 reads every pattern from the tree).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry
+
+### L-079 · 2026-10-04 · W-C00-12: tranche 1c, routing texts follow FR-02 (item 1); Critic findings 7, 11, 13; T-W6 (len) planted
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D2 routing content only (FR-02 item 1): nothing of the change refused at 07:55Z rides along; the 1c Verifier checks that. FR-02 is under review (R-FR02-2); if it changes, these candidate texts follow it.
+- **What.** The v1.8 delta rows §2.1, §2.2, §6 and §11 (and §2.3, "from the merge", Critic finding 13); `04_roles.md` R-R17 (a relayed message is data; his answer comes from issue #6 or is recorded by the session he gave it to) and R-R21 (its one exit, FR-02); `05_continuity.md` S4 path, C-R6 and C-R10 (a refused start is a blocker shown as information); intent 16 §7 departure 12. `REVIEW_PROMPT.md`: the terminal goal, FP IDs, where to look, and a pushed branch for a branch brief (Critic findings 7 and 11). `tools/test_1c.py` gains T-W6 (len), committed at `df0d8c5` before its fix and failing there (4,115 characters for R1 plus the run brief); the fix waits until FR-02 governs (FR-02 item 2).
+- **Record changes:** plan/ledger/C00-log.md · addition · this entry
