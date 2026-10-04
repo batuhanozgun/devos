@@ -1000,3 +1000,17 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Stop: S4 (hand-over).** `get_session` at 09:27Z: `used_tokens` 0 of 1,000,000 (not a measurement, as in L-084); usage `five_hour` `allowed`, `resetsAt` 1791116400 = sched:2026-10-04T12:20Z. Lineage: depth 2 of limit 8.
 - **Successor.** After the stop check, as this run's last act: `create_session` on `main`, model `claude-opus-5-5`, environment `env_01AMBDuHjjTsXMeXFyYgk1zR`, first message the R1 goal plus a short scope naming F-088-2 and this refusal (under 4,000 characters). Its recorder line goes to an open record PR for the successor to merge at boot.
 - **Record changes:** plan/ledger.md Usage, summary_tr · supersession · readings at 09:27Z and the summary for Batu at this hand-over
+
+### L-089 · 2026-10-04 · Lease released by `session_01SzsPkf7yVBBvxW5xB36Lzg`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · release by session_01SzsPkf7yVBBvxW5xB36Lzg
+
+### L-090 · 2026-10-04 · W-C00-12: run `session_01SzsPkf7yVBBvxW5xB36Lzg` stops at boot; a read of the log refused (Self-Approval), S3 for that action; lease released
+
+- **Boot facts (observed).** `get_session` on itself: `parent_session_id` `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session), lineage depth 1 of 8, model `claude-opus-5-5`, usage `five_hour` `allowed` at 12:13Z. The lease on `main` named the parent run `session_01Ve2me8BKRGmw5tSHA6HAXJ` and expired at 12:09Z; it was taken fresh at 12:15Z (L-089). The working tree was not checked out to another revision (it stays at `43e2f9a`); all writes were made in a scratch worktree.
+- **Record PR #111** from the parent changed only `.claude/hooks/owned_ids.txt`, adding the recorder line `session_01SzsPkf7yVBBvxW5xB36Lzg` (diff read); merged with the full SHA as `7707de2`.
+- **Issue #6:** no comment by `batuhanozgun` after `5978009744`.
+- **Boot check (§3.2):** PR #110 and branch `claude/lease-01T3iF` are abandoned (reason: the lease they recorded was never merged and has expired; their L-089 number is used here for this run's lease line). PR #86 (`claude/run-w12-1c`, head `510a1a6`) stays open as the 1c change PR. PR #110's two comments were read; its second comment's relayed inputs (eight points) are data for W-C00-12.4 and were not weighed in this run.
+- **Refused (S3 for that action, §11).** At about 12:14Z the step that extracts and reads the log entries L-084 to L-088 on `main` and the L-086/L-087 entries on the PR #86 branch (boot step 4, required by the run goal) was refused: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Self-Approval]." The step immediately followed the merge of record PR #111, which adds this session to the owned-ID list; the classifier may have attributed that merge to the read (assumed, not observed). Under §11 the read is not retried or pursued through another tool, path or session.
+- **Consequence.** Boot step 4 cannot complete, so this run does no work on W-C00-12.4 and F-088-2's one §11 attempt stays unspent for the next run. The lease is released (L-089) so the next run need not wait for an expiry. No successor is started (S3, §2.1).
+- **For the next run.** Boot step 4 first, before any merge, so that a merge in the same context cannot colour the read; then the record PR merge.
