@@ -338,6 +338,22 @@ def t_m5r():
             lines[1].startswith("**Senden beklenen:**") and "dört boş kontrolden sonra" in s.read("DURUM.md"))
 
 
+def t_m5r_d():
+    """T-M5r (d) (N-055): "Released <time>" inside the lease note, with a live Expires at the end of the cell."""
+    s = Scratch(remote=True)
+    base = s.release_and_baseline()
+    rc, out = s.records("lease", "--session", RUN, "--note", "previous lease Released 2026-10-03T23:10Z")
+    assert rc == 0, out
+    s.commit("lease with a note naming an earlier release", session=RUN)
+    s.push()
+    durum = s.read("DURUM.md")
+    outcome("T-M5r", "(d) DURUM.md names the holder when the note contains an earlier Released time",
+            f"`{RUN}`" in durum and "Çalışan oturum yok" not in durum, durum[:600])
+    rc, out = s.bc("S4", "--since", base, env={"BUILDER_RUN": "1"})
+    outcome("T-M5r", "(d) the stop check reads the expiry, not the Released time in the note",
+            "run lock released" not in out and "within the next 3h15m" in out, out)
+
+
 def t_m6r():
     batu = "batuhanozgun"
     s = Scratch()
@@ -1126,7 +1142,7 @@ def main():
         print("GATE 1b-ii FAIL")
         return 1
     print("PRECONDITIONS OK (full history; a review ref for every verdict)")
-    tests = [("T-R20", t_r20), ("T-M1", t_m1), ("T-M2", t_m2), ("T-M3", t_m3), ("T-M4", t_m4), ("T-M5r", t_m5r),
+    tests = [("T-R20", t_r20), ("T-M1", t_m1), ("T-M2", t_m2), ("T-M3", t_m3), ("T-M4", t_m4), ("T-M5r", t_m5r), ("T-M5r", t_m5r_d),
              ("T-M6r", t_m6r), ("T-M7a", t_m7a), ("T-M7b", t_m7b), ("T-M7c", t_m7c), ("T-M11", t_m11),
              ("T-M14", t_m14), ("T-M15", t_m15), ("T-W1", t_w1_r11), ("T-W3r", t_w3r), ("T-W4", t_w4),
              ("T-W9", t_w9), ("T-R4", t_r4), ("T-R9", t_r9), ("T-MAP", t_map)]

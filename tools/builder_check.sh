@@ -51,9 +51,11 @@ else
   if [ -n "$sid" ] && [ "$holder" = "session_$sid" ]; then ok "run lock holder is this session ($holder)"
   elif [ "${BUILDER_RUN:-0}" = "1" ]; then bad lease "run lock does not name this session (BUILDER_RUN=1)"
   else echo "INFO  run lock does not name this session (expected for reviewers, probes and the dispatcher; runs set BUILDER_RUN=1)"; fi
-  exp=$(printf '%s' "$lock" | grep -oE 'Expires [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z' | head -1 | cut -d' ' -f2)
+  # the lease state is read only from the tail that records.py lease writes (N-055; one home: records.lease_state)
+  lstate=$(python3 -c 'import sys; sys.path.insert(0, "tools"); import records as R; h, s, t = R.lease_state(sys.argv[1]); print(s or "", t or "")' "$lock" 2>/dev/null || true)
+  exp=""; [ "${lstate%% *}" = "expires" ] && exp="${lstate#* }"
   e=$(date -u -d "${exp:-1970-01-01T00:00Z}" +%s 2>/dev/null || echo 0); now=$(date -u +%s)
-  if printf '%s' "$lock" | grep -qE 'Released [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z'; then ok "run lock released at a clean stop (Builder Operating Model 2.2)"; released=1
+  if [ "${lstate%% *}" = "released" ]; then ok "run lock released at a clean stop (Builder Operating Model 2.2)"; released=1
   elif [ "$e" -le "$now" ]; then bad lease "run lock expiry missing or past (${exp:-none})"
   elif [ $((e - now)) -gt 11700 ]; then bad lease "run lock expiry $exp is more than 3h15m ahead (Builder Operating Model 2.2)"
   else ok "run lock expiry $exp is within the next 3h15m"; fi

@@ -520,13 +520,11 @@ def durum(text, items, decisions, changes):
                     + ". Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.")
     else:
         expected = "Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok."
-    holder = re.search(r"`(session_[A-Za-z0-9]+)`", lock)
-    exp = re.search(r"Expires (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
-    rel = re.search(r"Released (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
-    if rel:
-        run = f"Çalışan oturum yok; son oturum {tr_time(rel.group(1))} (Türkiye saati) itibarıyla işi bıraktı."
-    elif holder and exp:
-        run = f"`{holder.group(1)}`; kilit {tr_time(exp.group(1))} (Türkiye saati) tarihine kadar geçerli."
+    holder, state, when = lease_state(lock)
+    if state == "released":
+        run = f"Çalışan oturum yok; son oturum {tr_time(when)} (Türkiye saati) itibarıyla işi bıraktı."
+    elif holder and state == "expires":
+        run = f"`{holder}`; kilit {tr_time(when)} (Türkiye saati) tarihine kadar geçerli."
     else:
         run = "bilinmiyor (kilit satırı okunamadı)."
     um = re.search(r"`(five_hour|seven_day)`\s+`(\w+)`", usage)
@@ -670,6 +668,23 @@ def finish(lines, iid, role):
 
 
 # ---------------------------------------------------------------- lease
+
+LEASE_TAIL = re.compile(r"\b(Expires|Released) (\d{4}-\d\d-\d\dT\d\d:\d\dZ)\s*$")
+
+
+def lease_state(lock):
+    """(holder, 'expires'|'released'|None, time) of a Run lock cell, or of the whole row. Only the tail that
+    `lease()` writes counts, so a time named inside the note cannot be read as the lease state (N-055)."""
+    lock = lock.strip()
+    if lock.startswith("| Run lock |"):
+        cells = [c.strip() for c in re.split(r"(?<!\\)\|", lock)[1:-1]]
+        lock = cells[1] if len(cells) > 1 else ""
+    holder = re.match(r"`(session_[A-Za-z0-9]+)`", lock)
+    tail = LEASE_TAIL.search(lock)
+    return (holder.group(1) if holder else None, tail.group(1).lower() if tail else None,
+            tail.group(2) if tail else None)
+
+
 
 def lease(text, session, note, release, now=None):
     now = now or datetime.now(timezone.utc)
