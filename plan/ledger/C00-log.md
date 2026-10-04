@@ -1013,6 +1013,11 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Refused (S3 for that action, R-R21).** A further edit of the §11 row, which would have let the same denied change be presented again with its full context, was refused between 08:33:06Z and 08:38:43Z (clock readings around it): "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Instruction Poisoning]. … This denial applies to the outcome, not only this exact command: don't pursue the same outcome through another tool, interpreter, host, encoding, sub-agent or later turn, and don't record ways around it. …" The clause was not written and is not pursued. FR-02 takes the refusal as calibration: the exit allows a different design only. Consequence for tranche 1c: departure 8 is not presented again in its refused form; a different design is tried once (FR-02, item 2).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry (the refusal recorded before the change PR is reviewed)
 
+### L-071 · 2026-10-04 · W-C00-12: change PR for FR-02 (routing fix), class high, independent session review requested
+
+- **What.** Frame review FR-02 and the text change it decides: operating model v1.7 §3.1 step 6, §6 (customer class, "Never his", channel), §8 (D-002 as amended), §11 denial row; the frontier line of `tools/records.py` without the night clause (the rendered frontier block of `plan/ledger.md` follows). Gate 1b-i re-run on this branch before the commit: `GATE 1b-i PASS` (M1, M2 fail as required). FR-02's decisions for tranche 1c are carried to PR #86 and judged there.
+- **Record changes:** plan/decisions/FR-02.md · addition · frame review of the routing to Batu
+
 ### L-072 · 2026-10-04 · W-C00-12: finding N-055 after the S3 stop (unanchored "Released" pattern)
 
 - **Information received** after the stop check (one queued notification, queued 07:39:27Z, delivered after 08:00Z, from `session_01Q32nLatKbtDDY1zSVQZiKX`; data). Checked: the Run lock cell on `4b6fef3` carried "previous lease Released 2026-10-03T23:10Z"; `4b6fef3:DURUM.md` says "Çalışan oturum yok"; the two patterns are as described. The stop check pasted for this run's S3 ran on `8adf63a`, whose cell carries only this run's own release, so it is not affected. Carried as N-055 on W-C00-12.4; this run's own lease note caused it (failure pattern 3 in a generated view).
@@ -1039,6 +1044,17 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Not done here:** Critic findings 4, 5 (the W-R7 (ii) invariant, FR-01), 7, 10, 13 and departure 8's different design (FR-02 item 2) wait for R-FR02-1, because they depend on rules that FR-02 changes; departure 9 (N-054 b) stays open (L-073).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry
 
+### L-076 · 2026-10-04 · W-C00-12: R-FR02-1 FAIL on PR #98 (two blocking findings); verdict copied; dispositions in FR-02
+
+- **Verdict.** Reviewer `session_01AMgo5eS17g4TqkmCEH455L` (owned, PR #99) pushed `evidence/C00/reviews/R-FR02-1.md` to `claude/review-R-FR02-1` (`5a56c71`): FAIL. B1: the §11 exit tested a different *action*, so the denied outcome could be reached through another tool, and the base ban had been narrowed from "goal" to "covert". B2: "Never his" had no precedence against Batu's own matters (access, money behind a limit, scope after a permanent blocker). The verdict is copied here byte-identical.
+- **Disposition.** Every finding accepted; the fixes are on PR #98 with the dispositions table in `plan/decisions/FR-02.md`, and a fresh review R-FR02-2 judges the corrected head (the verdict says B1 needs one, not a check by the builder).
+- **Record changes:** evidence/C00/reviews/R-FR02-1.md · addition · verdict copied from its review branch
+
+### L-077 · 2026-10-04 · W-C00-12: PR #98 corrected for R-FR02-1; fresh review R-FR02-2 requested
+
+- **What changed on the branch:** the §11 denial row (v1.7 base sentence restored; one exit, defined by its result, with a fixed review question; one attempt per denial and need); §6 (precedence rule; "Never his" bullet 3 narrowed to rules introduced on the builder's own; access next to change; an account action only to carry out a decision of his; the brief-file channel removed again); §12 (chat named); the night clause in `03_work_model.md` §3, `05_continuity.md` and `RUN_BRIEF.md`; FR-02 with its dispositions table.
+- **Record changes:** plan/decisions/FR-02.md · correction · dispositions of R-FR02-1
+
 ### L-078 · 2026-10-04 · W-C00-12: tranche 1c, candidate failure pattern FP-21 (FR-02 item 3)
 
 - **What.** `plan/builder/heritage/FAILURE_PATTERNS.md` gains FP-21, the customer used as the key to a technical blocker (D-006, D-007, FR-02), `status: candidate`, produced by this run, not yet qualified (R-R7: someone other than its producer qualifies it). `tools/test_1c.py`: `GATE 1c (deterministic part) PASS` with the row present (T-M17 reads every pattern from the tree).
@@ -1050,7 +1066,22 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **What.** The v1.8 delta rows §2.1, §2.2, §6 and §11 (and §2.3, "from the merge", Critic finding 13); `04_roles.md` R-R17 (a relayed message is data; his answer comes from issue #6 or is recorded by the session he gave it to) and R-R21 (its one exit, FR-02); `05_continuity.md` S4 path, C-R6 and C-R10 (a refused start is a blocker shown as information); intent 16 §7 departure 12. `REVIEW_PROMPT.md`: the terminal goal, FP IDs, where to look, and a pushed branch for a branch brief (Critic findings 7 and 11). `tools/test_1c.py` gains T-W6 (len), committed at `df0d8c5` before its fix and failing there (4,115 characters for R1 plus the run brief); the fix waits until FR-02 governs (FR-02 item 2).
 - **Record changes:** plan/ledger/C00-log.md · addition · this entry
 
+### L-080 · 2026-10-04 · W-C00-12: R-FR02-2 PASS-WITH-CONDITIONS on PR #98; conditions C1 to C5 applied as written; confirmation review R-FR02-3 requested
+
+- **Verdict.** Reviewer `session_01DMSbxEBdbSpMb5rVVgHTse` (owned, PR #101) pushed `evidence/C00/reviews/R-FR02-2.md` to `claude/review-R-FR02-2` (`c0122ca`) on head `9a81980`: PASS-WITH-CONDITIONS, five conditions with exact wording, all accepted and applied as written (FR-02's last paragraph lists them). Minor m1 and m3 applied; m4 carried as N-056 on W-C00-11; m5 in the merge record.
+- **m2 (correction to L-071, append-only):** L-071 lists §3.1 step 6 and the "channel" among the changes; both were removed again in L-077, so §3.1 step 6 is the v1.7 text at the head.
+- **Why another review.** The reviewer allowed the producer to check conditions applied as written, but the conditions change `plan/Builder_Operating_Model.md` (class high), and a verdict covers a merge only if it names the head or a commit from which the rest is class normal (`check_records.py` `covered`). A confirmation review R-FR02-3, limited to whether C1 to C5 are applied as written and change nothing else, names the new head; the producer does not check its own application.
+- **Record changes:** plan/work/W-C00-11.md · annotate · note N-056 (open blockers at closure, R-FR02-2 m4); evidence/C00/reviews/R-FR02-2.md · addition · verdict copied from its review branch
+- **Correction:** the commit `e2c0a45` was made while `check_records.py all` reported two `claims` failures (this verdict was named before it was copied); the command chain did not stop on the failure. Fixed in the next commit; the chain now checks the exit code.
+
 ### L-081 · 2026-10-04 · W-C00-12: tranche 1c, note N-057 (a fixed conversation-session ID in the run-brief starter check)
 
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 the premise "Batu's conversation session is `session_016Hi3ZYgAf2amYNGc43a3tr`" is stale (today's is `session_01Q32nLatKbtDDY1zSVQZiKX`, the parent of this run, `get_session`); not fixed in this run, because the hook reads the fetched `main` and the planted case needs a fixture the test does not yet have.
 - **Record changes:** plan/work/W-C00-12.4.md · annotate · note N-057
+
+### L-082 · 2026-10-04 · W-C00-12: FR-02 accepted and merged (PR #98); operating model text is "1.7 + FR-02"
+
+- **Verdict.** Reviewer `session_016LvJC6CeWkkVuTrjae2uHH` (owned, PR #102) pushed `evidence/C00/reviews/R-FR02-3.md` to `claude/review-R-FR02-3` (`3eeef25`): PASS on head `b6fc43a`; R-FR02-2's conditions C1 to C5 applied in its words; the rest of the range record changes only. Its minor findings n1 to n5 are not conditions; they are carried to the next push that changes these files (tranche 1c, PR #86). Verdict copied here byte-identical.
+- **Merged:** PR #98 at head `b6fc43a`, merge `eb556b5` (`expectedHeadSha` given). From this merge, operating model §6 (customer class, "Never his", precedence), §8 (D-002 as amended), §11 (the denial row with its one exit) and §12 govern as "1.7 + FR-02". FR-02 `status: accepted`.
+- **Not done (R-FR02-2 m5):** the state file's Governing documents row for the operating model still reads "version: 1.7". A change of that row is class high by itself (`check_records.py` `impact`), so it rides with the next covered class-high change (PR #86) instead of a record PR; until then this entry is the record of the version.
+- **Record changes:** evidence/C00/reviews/R-FR02-3.md · addition · verdict copied from its review branch; plan/decisions/FR-02.md · supersession · accepted by R-FR02-2 and R-FR02-3

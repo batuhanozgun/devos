@@ -53,7 +53,7 @@ Any `unknown` makes the item not ready, and an empty group is never ready.
 
 **Selection** (the counter-design's §4.6, adopted for R-W12-1 m2 item 3). The run takes from the frontier:
 1. critical-path items first: items with many dependants, or that a stage gate or Batu's batch depends on;
-2. heavy items preferably 23:00–08:00 Turkey time (D-002).
+2. heavy items at any hour (D-002 as amended on 2026-10-04; it removed the night preference).
 
 It logs a one-sentence reason. The choice is a judgement, and the closure review samples it.
 
