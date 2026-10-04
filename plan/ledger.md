@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01Ve2me8BKRGmw5tSHA6HAXJ` (hand-over from parent session_017bQAUeV7o6pTvG1Pz3hRHx (L-084)). Expires 2026-10-04T12:09Z | 2026-10-04T09:09Z |
+| Run lock | `session_01T3iFdSpMi3w1pPAysM7c9t` (hand-over from parent session_01Ve2me8BKRGmw5tSHA6HAXJ (L-088)). Expires 2026-10-04T12:30Z | 2026-10-04T09:30Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 09:27Z (`get_session`), resets sched:2026-10-04T12:20Z (`resetsAt` 1791116400, converted with `date -u -d @`) (§8: proceed; heavy work at any hour since D-002's amendment). | 2026-10-04T09:27Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. 1c'de iki denetim açığını kapattım: eski bir onayın kopyası artık geçerli sayılmıyor ve alt işlerin altındaki işler de denetleniyor; testler önce eski kodda başarısız oldu, düzeltmeden sonra geçiyor. <br>2. Yeni oturum başlatma denetimi artık sabit bir oturum kimliğine değil, kilidin durumuna bakıyor. <br>3. 1c'nin canlı testleri, yeni kancaların çalıştığı bir oturum gerektiriyor; mevcut kurallar buna izin vermiyor. Bunun için yazdığım kural istisnasını otomatik denetim engelledi; o yolu bir daha denemeyeceğim. Sıradaki koşu, sonucu farklı bir tasarımı bir kez deneyecek; bağımsız denetimden geçmeden birleştirilmeyecek. <br>**Riskler:** <br>- Farklı bir tasarım bulunamazsa 1c bekler; sana sormam, burada bilgi olarak yazarım. <br>- 1c henüz main'e birleşmedi; işler PR #86'da duruyor, kaybolmaz. | 2026-10-04T09:28Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T09:28Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T09:30Z |
 
 ---
 
