@@ -36,7 +36,7 @@
 | answers seen through | issue #6 comment `5946719804` (2026-10-02T06:27Z, `batuhanozgun`), recorded in `plan/decisions/D-002.md` and `D-003.md` | 2026-10-03T19:50Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Çalışma düzenimin yeniden tasarımı (W-C00-12) sürüyor, ama bu oturum devredemedi: oturum zinciri platformun derinlik sınırına ulaştı (8/8) ve yeni oturum açamıyorum. Senden tek adım istiyorum (sayfanın ilk satırı, D-006): sohbet oturumuna "devos için yeni bir kurulum koşusu başlat" yaz ya da devos üzerinde kendin bir oturum başlat. Bir şey kaybolmadı. <br>1. Dördüncü adımın (1c: koruma kuralları, CLAUDE.md, roller) yeni oturum gerektirmeyen kısmı ayrı bir dalda (PR #86) hazır; ana dala henüz alınmadı, çünkü bağımsız denetçi onayı gerekiyor. Yeni oturumlar artık üretilmiş bir görev özeti olmadan başlatılamayacak; her oturum açılışta bilinen hata kalıplarını görecek; rol tanımları yazıldı. Bunlar dal ana dala alınınca yürürlüğe girer. <br>2. Önceki denetçinin bulduğu açık (son alt adımın kendini onaylı göstermesi) kodda kapatıldı; test önce eski kodda başarısız, yenisinde başarılı. Bir eleştirmen okuması 13 bulgu verdi; üçü düzeltildi, gerisi sıradaki oturuma yazıldı. <br>3. Aynı kontrol yolu beş kez sıkılaştırıldı; tasarım kuralı bu durumda bir çerçeve incelemesi istiyor. Sıradaki oturum bunu denetçiden önce yapacak. <br>4. Sorduğun model ve efor konusu: model her oturum için açıkça sabit; efor için henüz bir yapı yok. Sıradaki oturum önce ölçecek, karar noktası yeniden tasarımın son incelemesine yazıldı. <br>**Riskler:** <br>- Zincir yeniden başlasa da her devir ve her denetçi bir seviye ekliyor; bu sınır yine dolacak. Bunun kalıcı çözümü yeniden tasarımın bir parçası olarak ele alınacak. <br>- Bekçi henüz kurulmadı; bir oturum ölürse bunu "Son güncelleme" saatinin eskimesinden görürsün. | 2026-10-03T23:10Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T07:57Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T08:01Z |
 
 ---
 
@@ -75,7 +75,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, running 2 | 13 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -107,7 +107,7 @@ Selection among ready items: critical path first, heavy items preferably 23:00�
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_01SsLSgp5RLPtNMhc1RxuDoZ) · open notes: N-047, N-048, N-052, N-053, N-054
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_01SsLSgp5RLPtNMhc1RxuDoZ) · open notes: N-047, N-048, N-052, N-053, N-054, N-055
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
 <!-- /generated -->
 
@@ -203,6 +203,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-052` | `W-C00-12.4` | L-049 | open | **Annotation (run `session_01Gfj3M4MjrMb4YcRHwsA1X8`, 2026-10-03, `get_session` on itself at boot):** `"lineage":{"depth":7,"limit":8}`, ... |
 | `N-053` | `W-C00-12.4` | R-W12-4 | open | **Items of R-W12-4 for 1c** (`evidence/C00/reviews/R-W12-4.md`; `plan/builder/w-c00-12/15_tranche_1b-ii_intent.md` §7 departures 11 and 1... |
 | `N-054` | `W-C00-12.4` | L-058 | open | **Carried by run `session_011NtZnNGjojkTcmuzMRLtvL` from information sent by `session_01Q32nLatKbtDDY1zSVQZiKX` (a session that describes... |
+| `N-055` | `W-C00-12.4` | L-068 | open | **Unanchored "Released" pattern** (reported by `session_01Q32nLatKbtDDY1zSVQZiKX` at 07:39Z, checked by run `session_01SsLSgp5RLPtNMhc1Rx... |
 
 Notes `answered` (the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds it merges; checked at W-C00-12's composition review, not closed): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
 Notes `closed` (closed with their disposition): 5 (N-001, N-021, N-026, N-049, N-050).

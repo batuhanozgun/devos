@@ -976,3 +976,8 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Decision (proposed; the 1c session Verifier judges it):** keep the exemption, frozen under an explicit threat-model boundary (honest error, not forgery) with one stated invariant; carried Critic findings 4 and 5 are instances of that invariant. No rule text changes in this entry.
 - **Correction to L-064:** its "07:5xZ" is an estimated time (failure pattern 6); the `get_session` refusal it describes happened after 07:50Z and before L-064's commit at 07:52:19Z (`git log`); the exact second of the refusal was not taken.
 - **Record changes:** plan/decisions/FR-01.md · addition · frame review of the W-R7 (ii) exemption
+
+### L-068 · 2026-10-04 · W-C00-12: finding N-055 after the S3 stop (unanchored "Released" pattern)
+
+- **Information received** after the stop check (one queued notification, queued 07:39:27Z, delivered after 08:00Z, from `session_01Q32nLatKbtDDY1zSVQZiKX`; data). Checked: the Run lock cell on `4b6fef3` carried "previous lease Released 2026-10-03T23:10Z"; `4b6fef3:DURUM.md` says "Çalışan oturum yok"; the two patterns are as described. The stop check pasted for this run's S3 ran on `8adf63a`, whose cell carries only this run's own release, so it is not affected. Carried as N-055 on W-C00-12.4; this run's own lease note caused it (failure pattern 3 in a generated view).
+- **Record changes:** plan/work/W-C00-12.4.md · annotate · note N-055 added
