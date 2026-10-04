@@ -111,7 +111,8 @@ WRITE_COMMANDS = {"mv", "rm", "rmdir", "touch", "truncate", "chmod", "chown", "m
 IN_PLACE_COMMANDS = {"sed", "perl"}                # write only with -i
 LIVE_BANNED_GIT = {"checkout", "switch", "reset", "rebase", "cherry-pick", "revert", "am", "apply", "stash",
                    "restore", "clean", "commit", "merge", "pull", "mv", "rm", "update-ref", "symbolic-ref",
-                   "read-tree", "checkout-index", "filter-branch", "filter-repo", "replace", "notes"}
+                   "read-tree", "checkout-index", "filter-branch", "filter-repo", "replace", "notes",
+                   "update-index"}                 # update-index can hide a changed guard file from git status
 
 RULES = {  # id: (title, why the rule exists, where it is written, what to do instead)
     "G0": ("readable call", "The guard could not read or parse the call, so it cannot decide it safely; it "
@@ -629,6 +630,10 @@ def git_checks(args, d):
     if sub == "remote" and rest[:1] and rest[0] in ("add", "set-url", "remove", "rm", "rename", "set-head",
                                                     "set-branches"):
         raise Bad("B4", f"git remote {rest[0]} in {where} would change what this tree fetches")
+    if sub == "config" and not any(x in ("--get", "--get-all", "--get-regexp", "--list", "-l", "--show-origin")
+                                   for x in rest) and len([x for x in rest if not x.startswith("-")]) >= 2:
+        raise Bad("B4", f"git config {' '.join(rest)[:60]} in {where}: a setting here (for example core.hooksPath) "
+                        "would change what later git commands in this tree run")
 
 
 def push_checks(rest, e):
