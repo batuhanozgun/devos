@@ -1036,3 +1036,7 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-094 · 2026-10-04 · Lease taken or renewed by `session_01Q32nLatKbtDDY1zSVQZiKX`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01Q32nLatKbtDDY1zSVQZiKX
+
+### L-095 · 2026-10-04 · Lease taken or renewed by `session_01Q32nLatKbtDDY1zSVQZiKX`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01Q32nLatKbtDDY1zSVQZiKX
