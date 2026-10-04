@@ -5,8 +5,10 @@ The guard (.claude/hooks/tool_allowlist.py) appends every decision to <log dir>/
 the denials in full and the allowed calls counted by rule, so that a run's log entry records every denial
 with its rule and reason (operating model section 11). Only summaries are printed: the guard already
 redacted credentials, and the session's transcript keeps the full call under the logged tool-use ID.
-Each record names the hash of the record before it, so an edited or truncated log shows as a broken chain;
-the log is still written in the audited session's own container, and the transcript is the independent record.
+Each record names the hash of the record before it, so a record edited or removed inside the log shows as a
+broken chain. Records removed from the end, or a deleted log, do not show: the report prints the last record
+number, which the session states in its log entry. The log is written in the audited session's own container;
+the transcript on the platform is the independent record.
 
 Usage: tools/guard_report.py [--session ID] [--since 2026-10-04T17:00Z] [--dir DIR]
 The session defaults to this cloud session ($CLAUDE_CODE_REMOTE_SESSION_ID, cse_ read as session_);
@@ -36,7 +38,7 @@ def main(argv=None):
         print(f"GUARD REPORT: no decision log for session '{sid or 'any'}' in {a.dir}")
         return 1
     since = a.since.replace("Z", "")
-    denials, allowed, passed, breaks, efforts = [], Counter(), 0, [], Counter()
+    denials, allowed, passed, breaks, efforts, last = [], Counter(), 0, [], Counter(), 0
     for name in names:
         prev = b""
         with open(os.path.join(a.dir, name), "rb") as f:
@@ -51,6 +53,7 @@ def main(argv=None):
                 if r.get("prev", "") != want:  # each record names the hash of the one before it
                     breaks.append(f"{name} #{r.get('n')}")
                 prev = raw
+                last = max(last, r.get("n") or 0)
                 efforts[r.get("effort") or "not reported"] += 1
                 if since and str(r.get("time", "")).replace("Z", "") < since:
                     continue
@@ -65,7 +68,9 @@ def main(argv=None):
     print("Allowed by rule: " + (", ".join(f"{k} {v}" for k, v in sorted(allowed.items())) or "none"))
     print("Effort reported by the harness: " + ", ".join(f"{k} {v}" for k, v in sorted(efforts.items())))
     print("Hash chain: " + ("intact" if not breaks else "BROKEN at " + ", ".join(breaks[:10]) +
-                            " (the log was edited, truncated or written by something other than the guard)"))
+                            " (a record was edited or removed inside the log, or written by something else)"))
+    print(f"Last record: #{last} (state it in the log entry; a later report with a lower number shows records "
+          "removed from the end, which the chain alone cannot show)")
     for r in denials:
         first = (r.get("reason") or "").split("\n")[0]
         print(f"- {r.get('time')} #{r.get('n')} {r.get('event') or 'PreToolUse'} {r.get('tool')} "

@@ -31,6 +31,7 @@ PreToolUse exits 2, so the call is blocked; on PermissionRequest it prints a den
 wrapper maps any other non-zero exit to 2, so a guard that cannot run also blocks.
 """
 import fcntl
+import fnmatch
 import hashlib
 import json
 import os
@@ -105,9 +106,28 @@ CREDENTIAL_VARS = ("GH_TOKEN", "GITHUB_TOKEN", "CLOUDSDK_AUTH_ACCESS_TOKEN", "CL
                    "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDE_CODE_OAUTH_TOKEN")
 CREDENTIAL_EXPANSION = re.compile(r"\$\{?!?(" + "|".join(CREDENTIAL_VARS) + r")\b")
 CREDENTIAL_PATHS = (".git-credentials", ".config/gh/hosts.yml", "/proc/self/environ")
-# git settings that reroute a push or fetch, or make git run another program (R-D008-1 B-1)
-GIT_RISKY_KEYS = re.compile(r"(url\.|remote\.|credential\.|include\.|includeif\.|http\.|core\.(hookspath|sshcommand|gitproxy|askpass|fsmonitor|pager|editor)|sequence\.editor|diff\..*\.(command|textconv)|filter\.|merge\..*\.driver|protocol\.|uploadpack\.|receivepack\.|gpg\.)", re.I)
-GIT_ENV_OVERRIDE = re.compile(r"\bGIT_(CONFIG\w*|SSH\w*|PROXY_COMMAND|ASKPASS|EXEC_PATH|DIR|WORK_TREE|NAMESPACE|TEMPLATE_DIR|ALTERNATE_OBJECT_DIRECTORIES|OBJECT_DIRECTORY|INDEX_FILE)\s*=")
+# git is handled by allow lists (R-D008-2 N-1, N-2): the subcommands, global options and settings below. Anything
+# else, aliases and git-* helper programs included, is denied, because git expands aliases and reads settings
+# that this guard cannot see.
+GIT_SUBCOMMANDS = {
+    "add", "am", "apply", "archive", "bisect", "blame", "branch", "cat-file", "check-ignore", "checkout", "cherry",
+    "cherry-pick", "clean", "clone", "commit", "config", "count-objects", "describe", "diff", "diff-tree", "fetch",
+    "for-each-ref", "format-patch", "fsck", "gc", "grep", "help", "init", "log", "ls-files", "ls-remote", "ls-tree",
+    "merge", "merge-base", "mv", "name-rev", "notes", "prune", "pull", "push", "range-diff", "rebase", "reflog",
+    "remote", "reset", "restore", "rev-list", "rev-parse", "revert", "rm", "shortlog", "show", "show-branch",
+    "show-ref", "stash", "status", "switch", "symbolic-ref", "tag", "update-index", "update-ref", "var",
+    "verify-commit", "version", "whatchanged", "worktree"}
+GIT_GLOBAL_FLAGS = {"--no-pager", "-P", "--paginate", "-p", "--no-optional-locks", "--literal-pathspecs",
+                    "--glob-pathspecs", "--noglob-pathspecs", "--icase-pathspecs", "--no-replace-objects",
+                    "--version", "--help", "-h"}
+GIT_SAFE_KEYS = re.compile(r"(core\.quotepath|color\..*|user\.(name|email)|commit\.gpgsign|tag\.gpgsign|advice\..*|"
+                           r"init\.defaultbranch|pull\.(rebase|ff)|merge\.ff|log\.[a-z]+|format\.pretty|"
+                           r"diff\.(renames|algorithm|context|noprefix|mnemonicprefix)|safe\.directory|"
+                           r"protocol\.version|fetch\.(prune|parallel)|status\.[a-z]+|rebase\.autostash)$", re.I)
+GIT_SUB_OPT_DENY = {"--upload-pack", "--receive-pack", "--exec", "--template", "--config", "--separate-git-dir"}
+# environment that changes where git, or any program, reads its settings (R-D008-1 B-1; R-D008-2 N-2)
+GIT_ENV_OVERRIDE = re.compile(r"(?<![\w$])(HOME|XDG_[A-Z_]+|GIT_(?!(AUTHOR|COMMITTER)_(NAME|EMAIL|DATE)\b|"
+                              r"TERMINAL_PROMPT\b|PAGER\b)[A-Z_]+)=")
 ACCOUNT_CLIS = {"gh", "gcloud", "gsutil", "bq", "claude"}
 NET_TOOLS = {"ssh", "scp", "sftp", "nc", "ncat", "netcat", "socat", "telnet", "ftp", "rsync"}
 SHELLS = {"bash", "sh", "zsh", "dash"}
@@ -216,7 +236,13 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
     "B9": ("critical paths", "Removing the filesystem root, a top-level directory, the home directory or this "
            "working tree destroys the session's state.", "section 9; Claude Code critical paths",
            "Remove only specific paths inside a scratch directory."),
-    "B11": ("no git settings that reroute pushes or run programs", "A git setting (git config, git -c, --config-env or a GIT_ environment variable) can send a push to another address than the one the guard checks, or make git run another program; this is how a hidden instruction could send data out without any upload command (R-D008-1 B-1).", "section 9 (D-008)", "Push with plain git push to origin; set only harmless local settings such as user.name in a scratch clone."),
+    "B11": ("git only through its allow lists", "git expands aliases and reads settings from files and "
+            "environment variables the guard cannot see. A setting (git config, git -c, an alias, or HOME, XDG_ or "
+            "GIT_ variables) could send a push to another address than the one the guard checks, run another "
+            "program, or change revisions under another name (R-D008-1 B-1; R-D008-2 N-1, N-2). So only listed "
+            "subcommands, global options and settings are allowed.", "section 9, Shell (D-008)",
+            "Use a listed git subcommand by its own name, with -C <literal path>; push with git push origin "
+            "<claude/ branch>; write only settings such as user.name and user.email."),
     "B10": ("the sandbox stays on", "Disabling the sandbox for a command removes a layer this guard relies on.",
             "section 9 (D-008)", "Run the command without dangerouslyDisableSandbox."),
 }
@@ -410,17 +436,37 @@ def target_path(d, arg):
     return None if d is None else os.path.join(d, arg)
 
 
-def guarded_zone(p):
-    if within(p, os.path.join(ROOT, ".claude")) and not within(p, os.path.join(ROOT, ".claude", "worktrees")):
-        return "the live guard files (.claude/ of this working tree)"
-    if within(p, os.path.join(ROOT, ".git")):
-        return "the live repository's .git/"
-    if within(p, os.path.join(HOME, ".claude")):
-        return "Claude Code's own configuration (~/.claude)"
-    if within(p, LOG_DIR):
-        return "the guard's decision log"
+def guarded_roots():
+    return [(os.path.join(ROOT, ".claude"), "the live guard files (.claude/ of this working tree)"),
+            (os.path.join(ROOT, ".git"), "the live repository's .git/"),
+            (os.path.join(HOME, ".claude"), "Claude Code's own configuration (~/.claude)"),
+            (os.path.join(HOME, ".config", "git"), "git's user configuration (~/.config/git)"),
+            ("/etc/gitconfig", "git's system configuration"),
+            (LOG_DIR, "the guard's decision log")]
+
+
+def guarded_zone(p, remove=False):
+    """The guarded place that a write at p (or, with remove, a removal of p) would touch; None when none.
+    A glob counts for every path it could match, and a removal also for what lies inside it (R-D008-2 N-5)."""
+    parts = [x for x in os.path.normpath(p).split(os.sep) if x]
+    real = [x for x in os.path.realpath(p).split(os.sep) if x]
+    if ".git" in parts or ".git" in real:
+        return "a .git/ directory (git's internals and hooks; R-D008-2 N-4)"
     if os.path.basename(p) in PROTECTED_NAMES:
         return f"the protected configuration file {os.path.basename(p)}"
+    worktrees = os.path.join(ROOT, ".claude", "worktrees")
+    globbed = any(c in p for c in "*?[")
+    for base, label in guarded_roots():
+        if not globbed:
+            if within(p, base) and not within(p, worktrees):
+                return label
+            if remove and within(base, p):
+                return label + ", which lies inside the removed path"
+            continue
+        bparts = [x for x in os.path.realpath(base).split(os.sep) if x]
+        k = min(len(parts), len(bparts))
+        if all(fnmatch.fnmatchcase(bparts[i], parts[i]) for i in range(k)) and (len(parts) >= len(bparts) or remove):
+            return label + f" (the glob {p} can match it)"
     return None
 
 
@@ -440,11 +486,13 @@ def strip_wrappers(a):
         b = os.path.basename(a[0])
         if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0]):
             if GIT_ENV_OVERRIDE.match(a[0]):
-                raise Bad("B11", f"the environment assignment {a[0].split('=', 1)[0]} changes what git reads or runs")
+                raise Bad("B11", f"the assignment {a[0].split('=', 1)[0]} changes where programs read their settings")
             a = a[1:]
         elif b == "env":
             a = a[1:]
             while a and (a[0].startswith("-") or re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0])):
+                if GIT_ENV_OVERRIDE.match(a[0]):
+                    raise Bad("B11", f"the assignment {a[0].split('=', 1)[0]} changes where programs read settings")
                 a = a[2:] if a[0] in ("-u", "--unset", "-C", "--chdir", "-S", "--split-string") else a[1:]
             if not a:
                 return [], True
@@ -485,8 +533,8 @@ def shell_checks(command, cwd, depth=0):
         raise Bad("B8", "indirect expansion (${!...}) can read any variable, credentials included")
     m = GIT_ENV_OVERRIDE.search(command)
     if m:
-        raise Bad("B11", f"the command sets {m.group(0).rstrip('= ')}, which changes what git reads or runs")
-    if any(p in command for p in CREDENTIAL_PATHS) or re.search(r"/proc/[^/\s]+/environ", command):
+        raise Bad("B11", f"the command sets {m.group(1)}, which changes where programs read their settings")
+    if any(p in command for p in CREDENTIAL_PATHS) or re.search(r"/proc/\S*env", command):
         raise Bad("B8", "the command reads a credential store or a process environment")
     try:
         toks = tokens(command)
@@ -522,6 +570,8 @@ def shell_checks(command, cwd, depth=0):
             raise Bad("B8", "env without a command prints the whole environment, including credentials")
         if not args:
             continue
+        if any(c in args[0] for c in "$`"):
+            raise Bad("G0", f"the command name {args[0]} is computed at run time, so the guard cannot read it")
         prog = os.path.basename(args[0])
         if prog in ("cd", "pushd"):
             d = resolve_dir(d, args[1] if len(args) > 1 else "~")
@@ -529,34 +579,86 @@ def shell_checks(command, cwd, depth=0):
         if prog == "popd":
             d = None
             continue
+        if prog == "eval":
+            raise Bad("G0", "eval runs text that is put together at run time, so the guard cannot read it")
         if prog in SHELLS and "-c" in args[1:]:
             i = args.index("-c", 1)
             if i + 1 < len(args) and depth < 3:
                 shell_checks(args[i + 1], d, depth + 1)
             continue
-        if prog == "eval" and depth < 3:
-            shell_checks(" ".join(args[1:]), d, depth + 1)
-            continue
+        if prog == "find":
+            find_checks(args, d)
         command_checks(prog, args, d)
+
+
+def find_checks(args, d):
+    """find runs commands (-exec and similar) and removes files (-delete): check both (R-D008-2 N-3, N-5)."""
+    starts, i = [], 1
+    while i < len(args) and not args[i].startswith(("-", "(", "!", ")")):
+        starts.append(args[i])
+        i += 1
+    rest, j = args[i:], 0
+    targets = [p for p in (target_path(d, s) for s in (starts or ["."])) if p]
+    while j < len(rest):
+        if rest[j] in ("-exec", "-execdir", "-ok", "-okdir"):
+            k, sub = j + 1, []
+            while k < len(rest) and rest[k] not in (";", "+", "\;"):
+                sub.append(rest[k])
+                k += 1
+            sub, bare = strip_wrappers(sub)
+            if bare:
+                raise Bad("B8", "find -exec env prints the whole environment, including credentials")
+            if sub:
+                if any(c in sub[0] for c in "$`"):
+                    raise Bad("G0", f"find runs a computed command {sub[0]}")
+                prog = os.path.basename(sub[0])
+                command_checks(prog, sub, d)
+                if prog in WRITE_COMMANDS | DEST_COMMANDS | IN_PLACE_COMMANDS:
+                    for p in targets:
+                        z = guarded_zone(p, remove=True)
+                        if z:
+                            raise Bad("B5", f"find {p} -exec {prog} writes into {z}")
+            j = k + 1
+        else:
+            j += 1
+    if "-delete" in rest:
+        for p in targets:
+            z = guarded_zone(p, remove=True)
+            if z:
+                raise Bad("B5", f"find {p} -delete removes files in {z}")
+
+
+PS_VALUE_OPTS = {"-p", "-o", "-O", "-u", "-U", "-g", "-G", "-t", "-C", "-q", "-s", "-k", "--pid", "--ppid",
+                 "--format", "--sort", "--user", "--group"}
 
 
 def command_checks(prog, args, d):
     if prog in ACCOUNT_CLIS or any("@anthropic-ai/claude-code" in a for a in args):
         raise Bad("B7", f"'{prog}' acts with the account's credentials")
+    if prog.startswith("git-"):
+        raise Bad("B11", f"'{prog}' is a git helper program, which runs outside the guard's git checks")
     if prog == "printenv":
         raise Bad("B8", "printenv prints the environment, including credentials")
     rest = args[1:]
     names = [x for x in rest if not x.startswith(("-", "+"))]
+    flags = set("".join(x[1:] for x in rest if re.fullmatch(r"[-+][A-Za-z]+", x)))   # -px counts as -p and -x
     if prog == "set" and not rest:
         raise Bad("B8", "set without arguments prints every variable, credentials included")
-    if prog == "export" and (not rest or "-p" in rest) and not names:
-        raise Bad("B8", "export without names (or with -p) prints every exported variable")
-    if prog in ("declare", "typeset", "local", "readonly") and (not names or "-p" in rest):
+    if prog == "export" and (not names or "p" in flags):
+        raise Bad("B8", f"export {' '.join(rest)} without names (or with p) prints exported variables")
+    if prog in ("declare", "typeset", "local", "readonly") and (not names or "p" in flags):
         raise Bad("B8", f"{prog} {' '.join(rest)} prints variables, credentials included")
-    if prog == "compgen" and any(x in ("-v", "-e", "-A") for x in rest):
+    if prog == "compgen" and any(x.startswith("-A") or x in ("-v", "-e") for x in rest):
         raise Bad("B8", "compgen lists variables")
-    if prog == "ps" and rest[:1] and re.fullmatch(r"[A-Za-z]+", rest[0]) and "e" in rest[0]:   # BSD-style options
-        raise Bad("B8", "ps with the e option prints process environments")
+    if prog == "ps":
+        skip = False
+        for x in rest:
+            if skip:
+                skip = False
+            elif x in PS_VALUE_OPTS:
+                skip = True
+            elif not x.startswith("-") and re.fullmatch(r"[A-Za-z]+", x) and "e" in x:
+                raise Bad("B8", f"ps with the BSD option {x} prints process environments")
     if prog in NET_TOOLS:
         raise Bad("B6", f"'{prog}' opens a raw or remote connection")
     if prog == "curl":
@@ -582,7 +684,7 @@ def command_checks(prog, args, d):
             p = target_path(d, a)
             if p and critical(p):
                 raise Bad("B9", f"{prog} targets the critical path {a}")
-    written = []
+    written, remove = [], prog in ("rm", "rmdir", "mv", "truncate", "shred")
     plain = [a for a in args[1:] if not a.startswith("-")]
     if prog in DEST_COMMANDS:
         tdir = [args[i + 1] for i, a in enumerate(args[:-1]) if a in ("-t", "--target-directory")]
@@ -596,7 +698,7 @@ def command_checks(prog, args, d):
         written = [a.split("=", 1)[1] for a in args[1:] if a.startswith("of=")]
     for a in written:
         p = target_path(d, a)
-        z = p and guarded_zone(p)
+        z = p and guarded_zone(p, remove=remove)
         if z:
             raise Bad("B5", f"{prog} writes into {z} ({a})")
     if prog == "git":
@@ -604,6 +706,7 @@ def command_checks(prog, args, d):
 
 
 def git_checks(args, d):
+    """git through allow lists (R-D008-2 N-1, N-2): global options, -c settings and subcommands must be listed."""
     e, i, cfg = d, 1, []
     while i < len(args):
         a = args[i]
@@ -611,36 +714,27 @@ def git_checks(args, d):
             e = resolve_dir(e, args[i + 1])
             i += 2
         elif a == "-c" and i + 1 < len(args):
-            if GIT_RISKY_KEYS.match(args[i + 1].split("=", 1)[0].strip()):
-                raise Bad("B11", f"git -c {args[i + 1][:80]}")
+            if not GIT_SAFE_KEYS.match(args[i + 1].split("=", 1)[0].strip()):
+                raise Bad("B11", f"git -c {args[i + 1][:80]}: not a listed setting")
             cfg.append(args[i + 1])
             i += 2
-        elif a.startswith("--config-env"):
-            raise Bad("B11", f"git {a}")
-        elif a in ("--git-dir", "--work-tree", "--namespace") and i + 1 < len(args):
-            if a == "--work-tree":
-                e = resolve_dir(e, args[i + 1])
-            elif a == "--git-dir":
-                g = resolve_dir(e, args[i + 1])
-                e = os.path.dirname(g) if g and g.endswith(".git") else None
-            i += 2
-        elif a.startswith("--work-tree="):
-            e = resolve_dir(e, a.split("=", 1)[1])
-            i += 1
-        elif a.startswith("--git-dir="):
-            g = resolve_dir(e, a.split("=", 1)[1])
-            e = os.path.dirname(g) if g and g.endswith(".git") else None
+        elif a in GIT_GLOBAL_FLAGS:
             i += 1
         elif a.startswith("-"):
-            i += 1
+            raise Bad("B11", f"git {a}: not a listed global option (--git-dir, --work-tree, --config-env and "
+                             "similar change what git reads)")
         else:
             break
     if i >= len(args):
         return
     sub, rest = args[i], args[i + 1:]
+    if sub not in GIT_SUBCOMMANDS:
+        raise Bad("B11", f"git {sub}: not a listed git subcommand; the guard does not resolve aliases, so an alias "
+                         "is denied too")
+    for x in rest:
+        if x.split("=", 1)[0] in GIT_SUB_OPT_DENY or (sub == "clone" and x in ("-u", "-c")):
+            raise Bad("B11", f"git {sub} {x} sets configuration or runs another program")
     where = "an unknown directory (written with a variable or not literally)" if e is None else e
-    if sub == "credential":
-        raise Bad("B8", "git credential reads or writes stored credentials")
     if sub == "push":
         if cfg:
             raise Bad("B11", "git -c on a push: a setting given here is not seen by the guard's address check")
@@ -673,16 +767,16 @@ def git_checks(args, d):
         raise Bad("B4", f"git remote {rest[0]} in {where} would change what this tree fetches")
     if sub == "config" and not any(x in ("--get", "--get-all", "--get-regexp", "--list", "-l", "--show-origin")
                                    for x in rest) and len([x for x in rest if not x.startswith("-")]) >= 2:
-        raise Bad("B4", f"git config {' '.join(rest)[:60]} in {where}: a setting here (for example core.hooksPath) "
-                        "would change what later git commands in this tree run")
+        raise Bad("B4", f"git config {' '.join(rest)[:60]} in {where}: a setting here would change what later git "
+                        "commands in this tree run")
 
 
 def config_checks(rest, e):
-    """B11: git config writes of keys that reroute or run programs, anywhere; and any global or system write."""
+    """B11: git config writes only of listed settings, and never to global, system or other files."""
     reads = {"--get", "--get-all", "--get-regexp", "--get-urlmatch", "--list", "-l", "--show-origin",
              "--show-scope", "--get-color", "--get-colorbool"}
     words = [x for x in rest if not x.startswith("-")]
-    if words[:1] in (["get"], ["list"]) or any(x in reads for x in rest):
+    if words[:1] in (["get"], ["list"]) or any(x.split("=", 1)[0] in reads for x in rest):
         return
     if words[:1] in (["set"], ["unset"], ["rename-section"], ["remove-section"], ["edit"]):
         words = words[1:]
@@ -693,8 +787,8 @@ def config_checks(rest, e):
         return
     if any(x.split("=", 1)[0] in ("--global", "--system", "--file", "-f", "--blob", "--worktree") for x in rest):
         raise Bad("B11", f"git config {' '.join(rest)[:80]} writes outside this repository's own settings")
-    if words and GIT_RISKY_KEYS.match(words[0]):
-        raise Bad("B11", f"git config {' '.join(rest)[:80]}")
+    if not (words and GIT_SAFE_KEYS.match(words[0])):
+        raise Bad("B11", f"git config {' '.join(rest)[:80]}: only listed settings may be written")
 
 
 def push_checks(rest, e):
@@ -731,11 +825,12 @@ def push_checks(rest, e):
     remote, refspecs = pos[0], pos[1:]
     if e is None:
         raise Bad("B3", "git push from a directory the guard cannot tell, so its remote cannot be checked")
-    if "://" in remote or remote.startswith("git@") or "/" in remote:
-        urls = [remote]
-    else:   # the push URLs, after pushurl, insteadOf and pushInsteadOf (R-D008-1 B-1)
-        r = git("remote", "get-url", "--push", "--all", remote, cwd=e)
-        urls = r.stdout.split() if r.returncode == 0 else []
+    if "://" in remote or remote.startswith(("git@", ".", "~")) or "/" in remote or ":" in remote:
+        raise Bad("B3", f"git push to the address '{remote}': push only to a named remote, whose push address the "
+                        "guard resolves as git will (git rewrites a written address too; R-D008-2 N-2)")
+    # the push URLs, after pushurl, insteadOf and pushInsteadOf (R-D008-1 B-1)
+    r = git("remote", "get-url", "--push", "--all", remote, cwd=e)
+    urls = r.stdout.split() if r.returncode == 0 else []
     bad = [u for u in urls if not DEVOS_REMOTE.fullmatch(u)]
     if not urls or bad:
         raise Bad("B3", f"git push to remote '{remote}', whose push address is "
@@ -1016,13 +1111,20 @@ def deny_text(data, rule, detail):
 
 def main():
     data, event = {}, "PreToolUse"
+    raw = sys.stdin.read()
     try:
-        data = json.load(sys.stdin)
-        if isinstance(data, dict) and data.get("hook_event_name") == "PermissionRequest":
-            event = "PermissionRequest"
-        decision, rule, detail = decide(data)
-    except Exception as exc:
-        decision, rule, detail = "deny", "G0", f"guard error {type(exc).__name__}: {exc}"
+        data = json.loads(raw)
+    except ValueError:
+        data = None
+    if isinstance(data, dict) and data.get("hook_event_name") == "PermissionRequest":
+        event = "PermissionRequest"
+    if data is None:
+        decision, rule, detail = "deny", "G0", "the hook input is not JSON"
+    else:
+        try:
+            decision, rule, detail = decide(data)
+        except Exception as exc:   # an internal error: fail closed, and say so (the test asserts there are none)
+            decision, rule, detail = "deny", "G0", f"guard error {type(exc).__name__}: {exc}"
     ctx = data if isinstance(data, dict) else {}
     text = deny_text(ctx, rule, detail) if decision == "deny" else f"allowed by rule {rule}: {detail}"
     where = log_decision(ctx, decision, rule, detail, text)
