@@ -908,3 +908,15 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-061 · 2026-10-04 · Lease taken or renewed by `session_01SsLSgp5RLPtNMhc1RxuDoZ`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01SsLSgp5RLPtNMhc1RxuDoZ
+
+### L-066 · 2026-10-04 · W-C00-12: tranche 1c stopped by a refusal (S3); D-007 for Batu; lease released
+
+- **Where the work is.** Tranche 1c stays on draft PR #86, branch `claude/run-w12-1c`, head `a1f421b`, not merged (class high; no session verdict yet). This run's progress is in L-062 to L-065 on that branch: `main` merged in, the `plan/builder/design/` move (gate 1b-ii re-run: `GATE 1b-ii PASS`, 142 PASS lines, run after `fb0ed2d` was committed and pushed; its HEAD line was not kept, so it is not gate evidence), the write-ahead for the rest (intent 16 §7 departures 8 to 11 and §9), and the frame review `FR-01` (proposed).
+- **Refused (S3 for the action, R-R21).** After the planted cases for departures 8 and 9 had failed on the branch's hook and passed on a patched hook in a scratch copy (`ALLOWLIST_TEST PASS`, 134 outcomes), the edit of the matching rule texts (W-R6 in `03_work_model.md`, C-R10 in `05_continuity.md`, the v1.8 delta's §2.1, §9 and R1 rows) was refused at 07:55Z: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Self-Modification]. … If you believe this capability is essential to complete the user's request, … STOP and explain to the user what you were trying to do and why you need this permission. Let the user decide how to proceed." The patched hook and its tests were the mechanical form of the same change, so they were reverted uncommitted (`git checkout`), and nothing else was tried. Earlier in this run (after the lease merge at 07:37Z and before 07:44:29Z, the clock of the resumed session's boot map; L-062 on the branch), writing D-006 as answered was refused as "Instruction Poisoning"; D-006 stays open.
+- **Why this stops the run, not only the action.** Without departure 8 no run can hand over (L-062), and a Verifier asked now would judge a tranche with that defect known; the remaining 1c work (live tests, Critic, Verifier) waits for Batu's answer. The one step for Batu is D-007; D-006's closure needs his own word too. Both go to issue #6 as one comment that mentions him (operating model §6; F-062-1), and to `DURUM.md`'s first line.
+- **Stop: S3.** `get_session` at 07:57Z: `used_tokens` 162,315 of 1,000,000 (16%); usage `five_hour` `allowed`, `resetsAt` 1791116400 = sched:2026-10-04T12:20Z. Lineage: depth 1 of limit 8. No successor (S3 has none); no wake-up armed (nothing to wait for but Batu; the starters stay disabled).
+- **Record changes:** plan/decisions/D-007.md · addition · one permission for Batu: let this run edit its own rule texts for tranche 1c; plan/ledger.md Usage, summary_tr · supersession · readings at 07:57Z and the summary for Batu at this stop
+
+### L-067 · 2026-10-04 · Lease released by `session_01SsLSgp5RLPtNMhc1RxuDoZ`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · release by session_01SsLSgp5RLPtNMhc1RxuDoZ
