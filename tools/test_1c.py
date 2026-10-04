@@ -98,7 +98,7 @@ def t_m17b():
     rc, out = sh(["sh", "-c", cmd], REPO, env={"CLAUDE_PROJECT_DIR": str(REPO)})
     fps = [l.split("|")[1].strip() for l in (REPO / "plan/builder/heritage/FAILURE_PATTERNS.md").read_text().splitlines()
            if l.startswith("| FP-")]
-    need = ["UTC;", "Turkey time", "main: ", "Chain check (M-R4): "] + [f"- {f} " for f in fps]
+    need = ["UTC;", "Turkey time", "main (last fetched origin/main", "Chain check (M-R4): "] + [f"- {f} " for f in fps]
     missing = [n for n in need if n not in out]
     labels = all(("[candidate" in l) for l in out.splitlines() if l.startswith("- FP-") and "candidate" in
                  next((r for r in (REPO / "plan/builder/heritage/FAILURE_PATTERNS.md").read_text().splitlines()

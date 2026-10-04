@@ -34,7 +34,8 @@ def main():
     tr = now.astimezone(timezone(timedelta(hours=3)))  # Europe/Istanbul, fixed UTC+3 since 2016
     main_sha = git("rev-parse", "--verify", "-q", "origin/main") or "unknown (no origin/main ref)"
     print("BOOT MAP (tools/boot_map, M-R18): generated now from the files; it carries no work state.")
-    print(f"Clock: {now:%Y-%m-%dT%H:%M:%SZ} UTC; {tr:%Y-%m-%d %H:%M} Turkey time. main: {main_sha}")
+    print(f"Clock: {now:%Y-%m-%dT%H:%M:%SZ} UTC; {tr:%Y-%m-%d %H:%M} Turkey time. "
+          f"main (last fetched origin/main, may be stale): {main_sha}")
     print("Boot order: CLAUDE.md, then plan/Builder_Operating_Model.md section 3.1. Homes (plan/builder/MEMORY_MAP.md):")
     with open(os.path.join(ROOT, "plan/builder/MEMORY_MAP.md")) as f:
         lines = [l for l in f if l.startswith("| ")]
@@ -46,8 +47,9 @@ def main():
     r = subprocess.run([sys.executable, "tools/check_records.py", "chain"], cwd=ROOT, capture_output=True, text=True,
                        timeout=60)
     fails = [l for l in r.stdout.splitlines() if l.startswith("FAIL")]
+    # FAIL lines can name items, which is work state: the map gives their count and the command (1c Critic 12)
     print(f"Chain check (M-R4): {'PASS' if r.returncode == 0 else 'FAIL'}" +
-          "".join(f"\n  {l}" for l in fails[:10]))
+          (f" ({len(fails)} failing line(s); run tools/check_records.py chain)" if fails else ""))
     with open(os.path.join(ROOT, "plan/builder/heritage/FAILURE_PATTERNS.md")) as f:
         rows = [cells(l) for l in f if re.match(r"\| FP-\d+ \|", l)]
     print("Failure patterns (plan/builder/heritage/FAILURE_PATTERNS.md; R-R7). Ask each question before you act:")
