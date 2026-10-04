@@ -485,6 +485,12 @@ b allow "cp -vt /tmp/out /tmp/a"
 b allow "install -Dm755 -t /usr/bin /tmp/prog"
 b allow "cp -rt /tmp/d /tmp/a"
 b allow "sort -u tools/x"
+# --- R-D008-15 C15-1: a tools/ source copied OUT with -t stays allowed; the dest is parsed letter by letter
+b allow "cp -t /tmp/d tools/x"
+b allow "cp -rt /tmp/d tools/x"
+b allow "cp --target-directory=/tmp/d tools/x"
+b allow "install -Dt /tmp/bin tools/x"
+b deny  "install -gstaff /tmp/a tools/x"
 # --- R-D008-6/7: data-derived guard swap (honest-mistake copy), and the merge gate / tools directory
 b deny  "cp -r /scratch/x/.claude /home/user/devos/"
 b deny  "cp -r /tmp/y/.git ."

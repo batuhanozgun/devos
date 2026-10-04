@@ -139,6 +139,9 @@ NET_TOOLS = {"ssh", "scp", "sftp", "nc", "ncat", "netcat", "socat", "telnet", "f
 SHELLS = {"bash", "sh", "zsh", "dash"}
 SHELL_FAMILY = {"bash", "sh", "zsh", "dash", "ksh"}   # shells where -s makes stdin the program (R-D008-11 B11-3)
 DEST_COMMANDS = {"cp", "install", "ln"}            # only the destination is written
+# value-taking SHORT options for the destination writers, so a short cluster is parsed letter by letter and
+# stops at the first value-taker: install -gstaff is -g staff, not a -t (R-D008-15 C15-1)
+DEST_VALUE_OPTS = {"cp": set("tS"), "install": set("tmogS"), "ln": set("tS")}
 WRITE_COMMANDS = {"mv", "rm", "rmdir", "touch", "truncate", "chmod", "chown", "mkdir", "tee", "unzip"}
 IN_PLACE_COMMANDS = {"sed", "perl"}                # write only with -i
 LIVE_BANNED_GIT = {"checkout", "switch", "reset", "rebase", "cherry-pick", "revert", "am", "apply", "stash",
@@ -722,6 +725,33 @@ def cluster_opt_value(args, letter):
     return vals
 
 
+def target_dirs(prog, args):
+    """The -t/--target-directory values for cp/install/ln in any spelling (R-D008-14 B14-1, R-D008-15 C15-1). A
+    short cluster is walked letter by letter and stops at the first value-taking option (DEST_VALUE_OPTS), so the
+    `t` inside another option's value — install -gstaff is -g staff — is not mistaken for -t. When -t is found,
+    its value is the rest of the cluster, else the next word."""
+    dirs, valset = [], DEST_VALUE_OPTS.get(prog, set("t"))
+    for k, a in enumerate(args):
+        if a in ("-t", "--target-directory") and k + 1 < len(args):
+            dirs.append(args[k + 1])
+            continue
+        if a.startswith("--target-directory="):
+            dirs.append(a.split("=", 1)[1])
+            continue
+        if not (a.startswith("-") and not a.startswith("--") and len(a) > 1):
+            continue
+        j = 1
+        while j < len(a):
+            c = a[j]
+            if c == "t":
+                dirs.append(a[j + 1:] if j + 1 < len(a) else (args[k + 1] if k + 1 < len(args) else ""))
+                break
+            if c in valset:          # another value-taking letter consumes the rest of the cluster
+                break
+            j += 1
+    return [d for d in dirs if d]
+
+
 def critical(p):
     if p.endswith("/*"):           # a glob directly under a directory counts as that directory
         p = p[:-2]
@@ -984,15 +1014,15 @@ def command_checks(prog, args, d):
     written, remove = [], prog in ("rm", "rmdir", "mv", "truncate", "shred")
     plain = [a for a in args[1:] if not a.startswith("-")]
     if prog in DEST_COMMANDS:
-        tdir = [args[i + 1] for i, a in enumerate(args[:-1]) if a in ("-t", "--target-directory")]
-        tdir += [a.split("=", 1)[1] for a in args if a.startswith("--target-directory=")]
-        tdir += cluster_opt_value(args, "t")      # -rt DIR, -ttools, -vt DIR (R-D008-14 B14-1)
-        dests = tdir or plain[-1:]                # the -t directory(ies), else the last argument
-        written = list(tdir) + plain[-1:]         # union, never replace (a mis-read -t value only over-denies)
-        for dr in dests:                          # a copy INTO a directory writes dir/basename(source), so
-            for s in plain:                       # cp -vt /etc /tmp/gitconfig writes /etc/gitconfig (B14-1)
-                if s not in dests:
-                    written.append(os.path.join(dr, os.path.basename(s.rstrip("/") or s)))
+        tdir = target_dirs(prog, args)            # -t DIR in any spelling, incl. a short cluster (B14-1)
+        if tdir:                                  # with -t, every plain arg is a SOURCE and DIR the destination
+            dests, srcs, written = tdir, [a for a in plain if a not in tdir], list(tdir)
+        else:                                     # no -t: the last plain arg is the destination
+            dests, srcs, written = plain[-1:], plain[:-1], list(plain[-1:])
+        for dr in dests:                          # a copy INTO a directory writes dir/basename(source):
+            for s in srcs:                        # cp -vt /etc /tmp/gitconfig -> /etc/gitconfig (B14-1), while a
+                written.append(os.path.join(dr, os.path.basename(s.rstrip("/") or s)))  # tools/ source copied
+                                                  # OUT with -t to /tmp stays allowed (R-D008-15 C15-1)
     elif prog in WRITE_COMMANDS:
         written = plain
     elif prog in IN_PLACE_COMMANDS and inplace_flag(args):
