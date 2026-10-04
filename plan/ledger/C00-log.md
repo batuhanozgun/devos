@@ -924,3 +924,16 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-068 · 2026-10-04 · Lease taken or renewed by `session_017bQAUeV7o6pTvG1Pz3hRHx`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_017bQAUeV7o6pTvG1Pz3hRHx
+
+### L-069 · 2026-10-04 · W-C00-12: run `session_017bQAUeV7o6pTvG1Pz3hRHx` boots; Batu's input of 2026-10-04 recorded in D-002, D-006, D-007
+
+- **Boot (D8).** Run `session_017bQAUeV7o6pTvG1Pz3hRHx`, created at 08:27:25Z (`get_session` on itself) with `parent_session_id` `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session); model `claude-opus-5-5`; environment `env_01AMBDuHjjTsXMeXFyYgk1zR`; permission mode `auto`; `lineage` depth 1 of limit 8. First message: the R1 goal plus the W-C00-12 scope and Batu's input of 2026-10-04.
+  - **Record PR from the parent.** PR #94 changed only one appended line in `.claude/hooks/owned_ids.txt` naming this session (diff read); merged as `cd854f7`.
+  - **Lease.** Released at 07:58Z (L-067), so stale; taken with `tools/records.py lease` in record PR #95 (merge `93b3d02`; L-068).
+  - **Batu's answers.** Issue #6 has a new comment by `batuhanozgun`, `5978009744` (08:13:51Z), declining D-006 and D-007; recorded below. The comment `5977909225` is the machine account's batch, not an answer.
+  - **Status page and starters.** `DURUM.md` agreed with the state file (generated). The starters stay disabled (standing exception); boot step 7 recreated nothing.
+  - **Open branches.** PR #86 (`claude/run-w12-1c`, head `051e371`, draft, class high) holds tranche 1c; its log carries L-062 to L-065 and an entry numbered L-068 (N-055) written after the S3 stop. That number collides with `main`'s L-068 (this run's lease); when the branch takes `main` in, the branch entry is renumbered after the last `main` entry, with a correction line naming the old number.
+  - **Usage** at 08:28Z: `five_hour` `allowed`, `resetsAt` 1791116400 = sched:2026-10-04T12:20Z.
+- **Batu's input recorded (from his own comment and the brief file merged in PR #93).** D-006 and D-007: status `declined`, class corrected from `batu` to `technical` (the former `owner_reason` kept as `routed_as`), his words pointed to verbatim, the interpretation in English. D-002: the night preference removed (`amended`); the restating texts are corrected in the change that carries the routing fix. Nothing waits for Batu now.
+- **Item: W-C00-12 (input before 1c); discipline trigger:** D2 Batu's words are his direction on his own role, recorded as such, not a technical approval; D6 the routing failure gets a cause analysis (frame review FR-02) before any rule is added; D5 the D-006 effect (a run started outside the chain) rests on `get_session` of this run and of L-062, observed, not on a relayed claim.
+- **Record changes:** plan/decisions/D-002.md · annotate · night preference removed by Batu (amended); plan/decisions/D-006.md · supersession · declined by Batu, class corrected to technical; plan/decisions/D-007.md · supersession · declined by Batu, class corrected to technical; plan/ledger.md Usage, answers seen through, summary_tr · supersession · readings at 08:28Z and the summary for Batu
