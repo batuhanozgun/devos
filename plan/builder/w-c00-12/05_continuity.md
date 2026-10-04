@@ -91,7 +91,7 @@ The dispatcher would not have restarted L-039's run any sooner: it was disabled,
 
 Capacity follows operating model §8 and D-002 (Batu's answer (a)):
 - read `rate_limit_info` at boot and before heavy items, and record it in the state file with its source (`get_session`) and time;
-- heavy work preferably 23:00–08:00 Turkey time;
+- heavy work at any hour (D-002 as amended on 2026-10-04);
 - take the reset time from `resetsAt` and convert it by command (F-037-2).
 
 **Limit, from the K3 re-read:** the usage reading at 17:35Z showed `allowed` eleven minutes before L-039's abort on an account problem. So a usage reading does not predict account-level failures, and the detector is the layer for those.

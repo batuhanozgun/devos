@@ -21,7 +21,7 @@
 
 These steps are the first branch of the work, not a full plan. Detail later branches when you reach them (acceptance (a2)).
 
-1. **Boot** as `CLAUDE.md` says. The run lock is `Released`, so take it in a record PR that touches only the state file (L-032 lesson). Read `rate_limit_info` and apply §8. Heavy work is preferably done between 23:00 and 08:00 Turkey time.
+1. **Boot** as `CLAUDE.md` says. The run lock is `Released`, so take it in a record PR that touches only the state file (L-032 lesson). Read `rate_limit_info` and apply §8. Heavy work may run at any hour (D-002 as amended on 2026-10-04).
 2. **Consolidate before adding.** Conditions (a) to (m) grew one input at a time, always by addition (`BATU_GROWTH_AND_FRAMING_TR.md`).
    - Propose merges that keep every requirement. For example, the mechanism map of (m) may carry (g)'s role map and (l)'s root chain.
    - Dropping or weakening a condition is loosening, and ledger rule 3 forbids it. Record any such proposal for the independent review; do not apply it yourself.
