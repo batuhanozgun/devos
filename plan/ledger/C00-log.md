@@ -1014,3 +1014,7 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Refused (S3 for that action, §11).** At about 12:14Z the step that extracts and reads the log entries L-084 to L-088 on `main` and the L-086/L-087 entries on the PR #86 branch (boot step 4, required by the run goal) was refused: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Self-Approval]." The step immediately followed the merge of record PR #111, which adds this session to the owned-ID list; the classifier may have attributed that merge to the read (assumed, not observed). Under §11 the read is not retried or pursued through another tool, path or session.
 - **Consequence.** Boot step 4 cannot complete, so this run does no work on W-C00-12.4 and F-088-2's one §11 attempt stays unspent for the next run. The lease is released (L-089) so the next run need not wait for an expiry. No successor is started (S3, §2.1).
 - **For the next run.** Boot step 4 first, before any merge, so that a merge in the same context cannot colour the read; then the record PR merge.
+
+### L-091 · 2026-10-04 · Lease taken or renewed by `session_016nBesoa9ipYxKHpTXH5LRd`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_016nBesoa9ipYxKHpTXH5LRd

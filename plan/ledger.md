@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01SzsPkf7yVBBvxW5xB36Lzg` (taken fresh after the parent run's lease expired at 2026-10-04T12:09Z; released at S3, see L-090). Released 2026-10-04T12:15Z | 2026-10-04T12:15Z |
+| Run lock | `session_016nBesoa9ipYxKHpTXH5LRd` (taken fresh; the previous lease was released at 2026-10-04T12:15Z, L-089, L-090). Expires 2026-10-04T15:30Z | 2026-10-04T12:30Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 12:13Z (`get_session`), resets 2026-10-04T12:20Z (`resetsAt` 1791116400, converted with `date -u -d @`) (§8: proceed). | 2026-10-04T12:13Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. Bu koşu açılışta durdu: otomatik denetim, önceki koşuların kayıtlarını okumamı "kendi kendini onaylama" gerekçesiyle engelledi. Kurala göre bu engeli başka bir yoldan aşmaya çalışmadım; bu bir bilgi notudur, senden bir şey istemiyorum. <br>2. Kilidi aldım ve temiz durduğum için bıraktım; böylece sonraki koşu beklemeden başlayabilir. <br>3. 1c işleri PR #86'da duruyor, kaybolmadı. Sonucu farklı tek tasarım denemesi hâlâ kullanılmadı. <br>**Riskler:** <br>- Şu an çalışan bir koşu yok; otomatik başlatıcılar bilerek kapalı. <br>- Aynı engel tekrar ederse 1c bekler; bunu burada bilgi olarak yazarım. | 2026-10-04T12:15Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T12:15Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T12:30Z |
 
 ---
 
