@@ -427,6 +427,10 @@ PURE_READERS = {"cat", "head", "tail", "less", "more", "grep", "egrep", "fgrep",
 # copy-like programs: moving a .claude or .git directory tree into place is a guard/internals swap (R-D008-6 B-1,
 # the honest-mistake case). The general data-derived write (an archive, a patch) is a stated residual (section 9).
 COPY_LIKE = {"cp", "rsync", "tar", "cpio", "unzip", "pax", "install", "ln", "scp", "7z", "7za", "unar"}
+# interpreters name a script to RUN it, so naming a guarded path is not a write by them; a write performed
+# inside their own language is the stated interpreter residual (section 9), not caught here.
+INTERPRETERS = {"python", "python3", "python2", "bash", "sh", "zsh", "dash", "ksh", "perl", "ruby", "node",
+                "nodejs", "php", "lua", "Rscript", "deno", "bun", "tclsh", "expect"}
 # bash reserved words and compound-command punctuation. They stand in command position without being the
 # program, so each also ends the current simple command and starts a new one; the real command after them is
 # then identified and checked (R-D008-3 R3-1). The set is the full bash list, so a command cannot hide behind
@@ -589,6 +593,8 @@ def target_path(d, arg):
 
 def guarded_roots():
     return [(os.path.join(ROOT, ".claude"), "the live guard files (.claude/ of this working tree)"),
+            (os.path.join(ROOT, "tools"), "the live tools/ directory (the merge gate and checks; run them, "
+                                          "do not write them)"),
             (os.path.join(ROOT, ".git"), "the live repository's .git/"),
             (os.path.join(HOME, ".claude"), "Claude Code's own configuration (~/.claude)"),
             (os.path.join(HOME, ".config", "git"), "git's user configuration (~/.config/git)"),
@@ -622,20 +628,11 @@ def guarded_zone(p, remove=False):
 
 
 def write_guarded(p, remove=False):
-    """A guarded location for the purpose of a WRITE: the strict zones, plus the live `tools/` directory, which
-    holds the merge gate and the checks. Those may be run or read but not written in the live tree (R-D008-6 B-2,
-    R-D008-7 B7-1: an exact-path guard missed `tools/*.py`, `rm -rf tools` and an import-shadow like `tools/yaml.py`).
-    Reading or running them is allowed, so the non-reader-names-a-path check uses guarded_zone, not this."""
-    z = guarded_zone(p, remove=remove)
-    if z:
-        return z
-    tools = os.path.realpath(os.path.join(ROOT, "tools"))
-    rp = os.path.realpath(p)
-    if rp == tools or rp.startswith(tools + os.sep):
-        return "the live tools/ directory (the merge gate and checks; run them, do not write them)"
-    if remove and tools.startswith(rp.rstrip("/") + os.sep):
-        return "a parent of the live tools/ directory"
-    return None
+    """Kept as the name the write-detection call sites use. The live `tools/` directory is now a guarded root
+    (R-D008-7 B7-1, R-D008-8 B8-1), so this is just guarded_zone: writes into tools/ are caught with the same
+    glob and ancestor handling as the other zones, while the catch-all exempts readers and interpreters so the
+    gate and checks stay runnable."""
+    return guarded_zone(p, remove=remove)
 
 
 def critical(p):
@@ -909,17 +906,18 @@ def command_checks(prog, args, d):
     reader = prog in PURE_READERS \
         or (prog == "sed" and not any(a.startswith(("-i", "--in-place")) for a in args[1:])) \
         or (prog == "sort" and not any(a == "-o" or a.startswith(("-o", "--output")) for a in args[1:]))
-    if not already and not reader:
+    if not already and not reader and prog not in INTERPRETERS:
         for a in args[1:]:
             for cand in ([a] if not a.startswith("-") else ([a.split("=", 1)[1]] if "=" in a else
                                                              ([a[2:]] if len(a) > 2 and a[1] != "-" else []))):
                 if not cand:
                     continue
                 pth = target_path(d, cand)
-                z = pth and guarded_zone(pth)
+                z = pth and write_guarded(pth)   # strict zones AND the live tools/ dir (R-D008-8 B8-1)
                 if z:
-                    raise Bad("B5", f"{prog} names {z} ({a}); only a reader (cat, grep, sed -n, ...) may name a "
-                                    "guarded path, and a write uses a listed writer or a redirection the guard checks")
+                    raise Bad("B5", f"{prog} names {z} ({a}); only a reader (cat, grep, sed -n, ...) or an "
+                                    "interpreter running a script there may name it; a write uses a listed writer "
+                                    "or a redirection the guard checks")
 
 
 def git_checks(args, d):
@@ -945,6 +943,28 @@ def git_checks(args, d):
     if i >= len(args):
         return
     sub, rest = args[i], args[i + 1:]
+    # B8-2 (R-D008-8): git's own output-file options write a named file that B4 does not see. --output[=] on
+    # show/log/diff, and -o/--output-directory on archive/format-patch/bundle, are write destinations.
+    j2 = 0
+    while j2 < len(rest):
+        a2 = rest[j2]
+        outp = None
+        if a2.startswith("--output="):
+            outp = a2.split("=", 1)[1]
+        elif a2 in ("--output", "--output-directory") and j2 + 1 < len(rest):
+            outp = rest[j2 + 1]
+            j2 += 1
+        elif a2 == "-o" and sub in ("archive", "format-patch", "bundle") and j2 + 1 < len(rest):
+            outp = rest[j2 + 1]
+            j2 += 1
+        elif a2.startswith("-o") and len(a2) > 2 and sub in ("archive", "format-patch", "bundle"):
+            outp = a2[2:]
+        if outp:
+            pz = target_path(e if e is not None else d, outp)
+            z2 = pz and write_guarded(pz)
+            if z2:
+                raise Bad("B5", f"git {sub} writes its output into {z2} ({outp})")
+        j2 += 1
     if sub not in GIT_SUBCOMMANDS:
         raise Bad("B11", f"git {sub}: not a listed git subcommand; the guard does not resolve aliases, so an alias "
                          "is denied too")
