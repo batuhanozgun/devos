@@ -133,6 +133,29 @@ def t_w6_len():
             brief[-200:])
 
 
+def t_w6_lease():
+    """N-057: the hook's copy of lease_state() reads every Run lock row as tools/records.py does (one reading in
+    two files, because the hook must not import the tree's tools)."""
+    import importlib.util
+    sys.path.insert(0, str(REPO / "tools"))
+    import records as R
+    spec = importlib.util.spec_from_file_location("hook", REPO / ".claude/hooks/tool_allowlist.py")
+    H = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(H)
+    A = "session_01HOLDERAxxxxxxxxxxxxxxx"
+    rows = [f"| Run lock | `{A}`. Expires 2026-10-04T12:09Z | 2026-10-04T09:09Z |",
+            f"| Run lock | `{A}`. Released 2026-10-04T07:58Z | 2026-10-04T07:58Z |",
+            f"| Run lock | `{A}` (previous lease Released 2026-10-03T23:10Z). Expires 2026-10-04T10:37Z | x |",
+            f"| Run lock | `{A}` (a note with a \\| pipe). Expires 2026-10-04T10:37Z | x |",
+            f"| Run lock | `{A}` (hand-over from parent session_017bQAUeV7o6pTvG1Pz3hRHx (L-084)). Expires 2026-10-04T12:09Z | x |",
+            "| Run lock | none | x |", f"| Run lock | `{A}`. Expires soon | x |", "| Run lock | |"]
+    bad = [r for r in rows if H.lease_state(r) != R.lease_state(r)]
+    outcome("T-W6", f"(N-057) the hook reads {len(rows)} Run lock rows as tools/records.py lease_state() does",
+            not bad, repr(bad))
+    with open(REPO / ".claude/hooks/tool_allowlist.py") as f:
+        outcome("T-W6", "(N-057) the hook names no fixed conversation session", "BATU_CONVERSATION" not in f.read())
+
+
 def t_r22():
     """T-R22 (R-R3a, W-R5; N-053 a confirms that case (a2) runs): records.py brief <ID> --role verifier refuses without
     a target SHA, with a blank or unresolvable one, and with an empty failure-class list; with both, the header names
@@ -155,7 +178,7 @@ def main():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True).stdout.strip())
     print(f"HEAD {head}{' (working tree DIRTY: not valid as gate evidence)' if dirty else ' (clean)'}")
-    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-M17", t_m17_c12), ("T-W6", t_w6_len), ("T-R22", t_r22)]
+    tests = [("T-M8", t_m8), ("T-R12", t_r12b), ("T-M17", t_m17b), ("T-M17", t_m17_c12), ("T-W6", t_w6_len), ("T-W6", t_w6_lease), ("T-R22", t_r22)]
     for name, fn in tests:
         try:
             fn()

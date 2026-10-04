@@ -34,11 +34,11 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILDER_ENV = "env_01AMBDuHjjTsXMeXFyYgk1zR"     # devos-kurulum
 DEVOS_URL = re.compile(r"https://github\.com/batuhanozgun/devos(\.git)?/?", re.I)
-BATU_CONVERSATION = "session_016Hi3ZYgAf2amYNGc43a3tr"  # may start a run (R-R17)
 BRIEF_LINE = re.compile(r"^Task-Brief: (\S+) (\S+) ([0-9a-f]{16})$", re.M)
 
 ALLOWED_PREFIXES = (
@@ -97,6 +97,21 @@ def norm(i):
     return "session_" + i[4:] if i.startswith("cse_") else i
 
 
+LEASE_TAIL = re.compile(r"\b(Expires|Released) (\d{4}-\d\d-\d\dT\d\d:\d\dZ)\s*$")
+
+
+def lease_state(row):
+    """(holder, 'expires'|'released'|None, time) of the Run lock row: the same reading as tools/records.py
+    lease_state() (N-055; only the tail that lease() writes counts). Kept here because the hook must not import
+    the tree's tools; T-H4 (N-057) and tools/test_1c.py check that the two agree."""
+    cells = [c.strip() for c in re.split(r"(?<!\\)\|", row.strip())[1:-1]]
+    lock = cells[1] if len(cells) > 1 else ""
+    holder = re.match(r"`(session_[A-Za-z0-9]+)`", lock)
+    tail = LEASE_TAIL.search(lock)
+    return (holder.group(1) if holder else None, tail.group(1).lower() if tail else None,
+            tail.group(2) if tail else None)
+
+
 def git(*args):
     root = os.path.dirname(os.path.dirname(HERE))
     return subprocess.run(["git", "-C", root, *args], capture_output=True, text=True, timeout=20)
@@ -122,8 +137,9 @@ def revision_has_barrier(rev):
 def brief_gate(prompt, sha):
     """W-R6 (H-BRF): the first message carries a line `Task-Brief: <ID> <role> <hash>`; the brief is regenerated
     with tools/records.py from the fetched source revision; its hash must match and its whole text must appear in
-    the message (N-053 b). A `run` brief is allowed only from the Run lock holder on the fetched main, or from
-    Batu's conversation session (R-R17). Returns None when allowed, otherwise the reason."""
+    the message (N-053 b). A `run` brief is allowed from the Run lock holder while the lease on the fetched main is
+    live, and from any session once it is released or expired (the run takes the lease at boot; N-057, no fixed
+    session ID). Returns None when allowed, otherwise the reason."""
     found = BRIEF_LINE.findall(prompt)
     if not found:
         return "the first message carries no 'Task-Brief: <ID> <role> <hash>' line"
@@ -135,10 +151,13 @@ def brief_gate(prompt, sha):
         if git("fetch", "-q", "origin", "main").returncode != 0:
             return "main could not be fetched to read the Run lock row"
         ledger = git("show", "FETCH_HEAD:plan/ledger.md").stdout
-        m = re.search(r"^\| Run lock \| `?(session_[A-Za-z0-9]+)`?", ledger, re.M)
-        holder = m.group(1) if m else None
-        if me not in (holder, BATU_CONVERSATION):
-            return f"a run brief only from the Run lock holder ({holder}) or Batu's conversation session, not '{me}'"
+        row = next((l for l in ledger.splitlines() if l.startswith("| Run lock |")), "")
+        holder, state, at = lease_state(row)
+        live = state == "expires" and at is not None and at > datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+        stale = state == "released" or (state == "expires" and not live)
+        if not holder or not (stale or me == holder):
+            return (f"a run brief only from the Run lock holder ({holder}) while its lease is live, or from any "
+                    f"session once it is released or expired; not '{me}'")
         args = ["brief", "run", "--role", "producer"]
     else:
         args = ["brief", iid, "--role", role]
