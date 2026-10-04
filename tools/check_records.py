@@ -382,8 +382,9 @@ def impact(base, head, allow_bg=True):
 def exemption_problems(base, head, item_path, hm):
     """W-R7 (ii) (R-W12-4 C-1, R-W12-5 C-1): the acceptance change of an edge or hold target is class normal only
     when, at the PR head, the item is accepted by a session verdict, the work check of that item passes there
-    (item_work_problems: W-R1 binding, W-R4 composition and closed children, R-R3, W-R9), and every verdict the
-    item names is bound by M-R16 (b) to a review session that made no commit of the PR. Empty list: exempt."""
+    (item_work_problems: W-R1 binding, W-R4 composition and closed children, R-R3, W-R9), the same work check passes
+    for every descendant at every depth, and every verdict the item names is bound by M-R16 (b) to a review session
+    that made no commit of the PR. Empty list: exempt. FR-01: the threat model is honest error, not forgery."""
     out = []
     if hm.get("acceptance") != "accepted":
         return [f"acceptance '{hm.get('acceptance')}' is not accepted, so no verdict can exempt it"]
@@ -402,8 +403,10 @@ def exemption_problems(base, head, item_path, hm):
         iid = str(hm.get("id"))
         out += [f"work check at the PR head: {x}" for x in work_problems_at(iid, head)]
         items = records_at(head)[0]
-        for k in sorted(R.children(items, iid), key=lambda k: R.sortkey(k["id"])):  # R-W12-6 B-1, N-053 g
-            out += [f"work check of child {k['id']} at the PR head: {x}" for x in work_problems_at(k["id"], head)]
+        kids = {k["id"] for k in R.children(items, iid)}
+        for d in R.descendants(items, iid):  # R-W12-6 B-1, N-053 g; every depth, 1c Critic finding 5
+            rel = "child" if d in kids else "descendant"
+            out += [f"work check of {rel} {d} at the PR head: {x}" for x in work_problems_at(d, head)]
     except (R.RecordError, yaml.YAMLError, subprocess.CalledProcessError, OSError) as e:
         out.append(f"work check at the PR head could not run: {e}")
     return out
@@ -423,7 +426,10 @@ def verdict_bound_at(vf, base, head):
     rid = Path(vf).stem
     ref = next((r for r in (f"refs/remotes/origin/claude/review-{rid}", f"refs/heads/claude/review-{rid}")
                 if resolve(r)), None)
-    rc = review_commit_for(ref, vf, content(head or "HEAD", vf, raw=True)) if ref else None
+    cb = content(head or "HEAD", vf, raw=True)
+    rc = review_commit_for(ref, vf, cb) if ref else None
+    if rc and superseded_by(ref, vf, rc, cb):  # 1c Critic finding 4
+        return False
     msg = (git("log", "-1", "--format=%B", rc, ok=True) or "") if rc else ""
     ss = re.findall(r"Claude-Session:\s*\S*?(session_[A-Za-z0-9]+)", msg)
     return bool(ss) and ss[-1] not in sessions_in(base, head or "HEAD")  # R-W12-5 m-2
@@ -781,6 +787,20 @@ def review_commit_for(ref, p, cb):
     return None
 
 
+def superseded_by(ref, p, rc, cb):
+    """1c Critic finding 4 (FR-01 invariant): the first review-branch commit after rc whose version of p carries a
+    different verdict line than the copy cb, or removes p; None if every later version keeps the copy's verdict line.
+    A later version that changes other text but keeps the verdict line does not supersede (a stated residual)."""
+    want = VERDICT_RE.search(cb.decode("utf-8", "replace"))
+    want = want.group(1) if want else None
+    for c in reversed((git("log", "--format=%H", f"{rc}..{ref}", "--", p, ok=True) or "").split()):
+        bb = content(c, p, raw=True)
+        got = VERDICT_RE.search(bb.decode("utf-8", "replace")) if bb is not None else None
+        if bb is None or (got.group(1) if got else None) != want:
+            return c
+    return None
+
+
 def stamp_after_commit(text, c):
     """N-053 f: the verdict's own Written: stamp must not be later than its review-branch commit (M-R14).
     Only a line that starts with **Written:** counts, and the bound is the committer time (1c Critic finding 6).
@@ -813,6 +833,11 @@ def check_claims_diff(base, head, out, only=None, owned_rev=None):
         rc = review_commit_for(ref, p, cb)
         if rc is None:
             out.fail("claims", f"{p}: differs from every review-branch version beyond pattern substitutions (M-R16 b)")
+            continue
+        sup = superseded_by(ref, p, rc, cb)
+        if sup:
+            out.fail("claims", f"{p}: its review branch revised the verdict line after the copied version, at "
+                               f"{sup[:7]} (M-R16 b; 1c Critic finding 4)")
             continue
         for prob in stamp_after_commit(cb.decode("utf-8", "replace"), rc):
             out.fail("stamps", f"{p}: Written: stamp later than its review-branch commit {rc[:7]}: {prob} (M-R14, "
