@@ -575,6 +575,32 @@ def t_m15():
             rc, out = sh(["python3", "-c", probe], s.d)
             outcome("T-M15", "(f3) the late-stamped copy of (f1) stays bound (verdict_bound)",
                     "BOUND" in out and "UNBOUND" not in out, out)
+    # 1c Critic finding 6: (f4) only the **Written:** line counts, not a quoted "Written:" earlier in the text;
+    # (f5) the bound is the commit's committer time, not its author time
+    for label, decoy, author_shift in (
+            ("(f4) a quoted Written: line above the real **Written:** stamp is ignored: passes", True, 0),
+            ("(f5) a stamp after the author time but before the committer time passes", False, -20)):
+        s = Scratch()
+        s.append(".claude/hooks/owned_ids.txt", REVIEWER)
+        main = s.commit("fixture: the reviewer is an owned session")
+        when = NOW - timedelta(minutes=30)
+        head_lines = f"Quoted from the producer: Written: {iso(when + timedelta(minutes=40))}.\n\n" if decoy else ""
+        vt = (f"# Review fixture\n\n{head_lines}**Written:** {iso(when - timedelta(minutes=5))} by a reviewer.\n\n"
+              + plain(main))
+        s.git("checkout", "-q", "-b", "claude/review-R-FX1")
+        s.write("evidence/C00/reviews/R-FX1.md", vt)
+        s.git("add", "-A")
+        fmt = "%Y-%m-%dT%H:%M:%S+0000"
+        rc, out = s.git("commit", "-q", "-m", f"R-FX1 verdict\n\nClaude-Session: https://claude.ai/code/{REVIEWER}",
+                        env={"GIT_AUTHOR_DATE": (when + timedelta(minutes=author_shift)).strftime(fmt),
+                             "GIT_COMMITTER_DATE": when.strftime(fmt)})
+        assert rc == 0, out
+        s.git("checkout", "-q", "main")
+        s.git("checkout", "-q", "-b", "pr")
+        s.write("evidence/C00/reviews/R-FX1.md", vt)
+        head = s.commit("copy R-FX1", session=PRODUCER)
+        rc, out = s.cr("claims", "--base", main, "--head", head)
+        outcome("T-M15", label, not fails(out, "stamps") and not fails(out, "claims"), out)
     # N-053 (e): (e1) a later push to the review branch does not unbind an earlier copy; (e2) the owned list is
     # judged on the tree being checked, so a copy made before the recorder line reached the branch binds once it has
     s = Scratch()
