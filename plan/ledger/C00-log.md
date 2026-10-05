@@ -1391,4 +1391,5 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Change.** `plan/Installation_Working_Order.md` section 3, opening check step 1: the mode is `acceptEdits` or `default`; in both the guard decides every call. Class high; checked by a fresh-context checker subagent, verdict `evidence/C00/checks/CHK-C00-001.md`.
 - **Guard:** no denial in this change; `tools/guard_report.py` for this session: 64 denied, 3,037 allowed, 0 passed to the user, hash chain intact, last record #3101.
 - **Checker:** CHK-C00-001 PASS-WITH-CONDITIONS at `73fdd3b`; its two conditions (the evidence times above, and this Guard line) are met in this class-normal follow-up.
+- **Merge.** PR #149 passed the gate ("covered by evidence/C00/checks/CHK-C00-001.md (reviewed_head 73fdd3bbbaea)") and merged as `013c585`; the first merge call was denied by the guard, #3108 (M6: the head SHA was passed in a field named `sha`, not `expectedHeadSha`), and was repeated well-formed. `tools/stop_check.sh` on the synced live tree: `STOP_CHECK PASS`.
 - **Record changes:** evidence/C00/checks/CHK-C00-001.md · addition · checker verdict for this change
