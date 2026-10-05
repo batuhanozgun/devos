@@ -4,7 +4,7 @@
 
 **Sources:** P4 v4 report §8–§18 and §30 (state axes, readiness and claim, request-contribution-use, knowledge families, context contracts, relation queries, operation intent, release, recovery, composite product, learning); P5 v2 guide §7 (object table); installation plan 2.0 Sections 4 and 6 (families added in this version: decision rules, unnecessary-prerequisite rule, learning, exam run, user model, constraint, effort policy, dead end, leak fingerprint).
 
-**Reader:** Builder. Field names are in English, descriptions in Turkish.
+**Reader:** Builder. Field names and descriptions are in English.
 
 ---
 
@@ -32,7 +32,7 @@ These principles hold for every family; if a family breaks one of them, that is 
 
 | Database role | Who uses it | What it can do | Cannot do |
 |---|---|---|---|
-| `devos_kurulum` | Builder (stage A) | Installation operations; closed in C12 | Issuing tokens |
+| `devos_kurulum` | Builder (phase A) | Installation operations; closed in C12 | Issuing tokens |
 | `devos_calisma` | Working environment | Opening work other than missions, need and decision records, claiming, writing contributions and candidates, findings, context, proposals, external-effect intents | Binding verdicts, acceptance, release activation, approving rule changes, reading exam records |
 | `devos_denetim` | Audit environment | Reviews, verdicts, acceptance, review of rule and control changes, authority approval for high-impact merges, advancing recovery stages | Writing products and candidates, reading exam records |
 | `devos_sinav` | Exam environment | Opening exam tasks as ordinary work, writing exam runs and competence | Writing products, writing verdicts |

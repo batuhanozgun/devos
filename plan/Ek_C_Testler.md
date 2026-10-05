@@ -1,14 +1,14 @@
 # Appendix C — Tests: failure classes and counterexamples
 
-**Version:** 1.0 · **Date:** 29 September 2026 · **Status:** [Proposal]. The tests are run in the relevant stages (most of them C02–C11) on real PostgreSQL, real GitHub and real Claude sessions.
+**Version:** 1.1 (aligned with plan 2.1 and with its recorded changes from PC-05, 1 October 2026, onwards) · **Date:** 29 September 2026 · **Status:** [Proposal]. The tests are run in the relevant stages (most of them C02–C11) on real PostgreSQL, real GitHub and real Claude sessions.
 
-**Source:** P4 v4 report §13, §20–§23 (findings F01–F08 and counterexamples 21.1–21.12); installation plan 2.0 Sections 4 and 8.
+**Source:** P4 v4 report §13, §20–§23 (findings F01–F08 and counterexamples 21.1–21.12); installation plan 2.0 Sections 4 and 8; plan 2.1 (Section C2) and its recorded changes in `plan/decisions/`.
 
 ---
 
 ## C0. The form of every test
 
-Every test carries the following fields. A test with an empty field is not accepted.
+Every test carries the following fields. A test with an empty field is not accepted. The entries in C1–C3 are specifications, not finished tests: they give the claim, the failure class rule, the examples, the controls and the break attempt, and the other fields are filled in when each test is written (from C02). In them, "Class rule" is the failure class rule, "Negative" and "Positive" are the negative and positive controls, and "Break" is the break attempt.
 
 | Field | Content |
 |---|---|
@@ -56,7 +56,7 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 - **Examples:** (a) an effect attempt with an old claim; (b) preparing an operation (`prepare_operation`) under a claim of the old epoch (PC-08); (c) access to the new project with the old project's token; (d) a claim that appears active in the restored database; (e) **while the old system has been left reachable**, a PR opened by an old session getting into `main`; (f) an old routine running against the new project.
 - **Negative:** All are rejected.
 - **Positive:** A new claim opened in the new epoch can do the right work; the reconnected environment works.
-- **Break:** When the epoch check is removed, (a) and (d) must pass; when the release job's re-reading of authority is removed, (e) must pass. (c) alone does not test the epoch check (the new project's different keys already reject it); so the epoch check is tested with (a), (b) and (d). Stage: C09, with a real restore in the test project.
+- **Break:** When the epoch check is removed, (a), (b) and (d) must pass; when the release job's re-reading of authority is removed, (e) must pass. (c) alone does not test the epoch check (the new project's different keys already reject it); so the epoch check is tested with (a), (b) and (d). Stage: C09, with a real restore in the test project.
 
 ### F04 — The affected-records query exploding with the number of paths
 
@@ -164,8 +164,8 @@ These are tested not only with database tests but with real sessions. For each o
 | K09 | New design, old whole | A product whose parts stay old although the design changed is not counted as "current"; the work items to be redone are opened | C08, C11 |
 | K10 | A bad combination of two good methods | Applying together two methods that each passed the exam separately is tested in its own right; loss of conditions and counter-evidence is caught | C10 |
 | K11 | Approval of a change to a check | A proposal that changes the check itself goes to the audit environment for approval as a high-impact change (plan PC-05); the check cannot approve its own change | C10 |
-| K13 | The check works correctly, but the definition of a mandatory requirement is missing (the original question of P4 §21.11) | Without any change to the checks, an operation that complies with the rules but misses a required basis is carried out; the mechanical checks pass. Success: a review looking from outside the frame (the audit environment or a frame review) catches the missing requirement. Mechanical safety is not semantic adequacy | C07, C10 |
 | K12 | A completed report, a system not accepted | The C12 acceptance file carries evidence and the independence level for each criterion; the installation being finished is not presented as DevOS's competence | C12 |
+| K13 | The check works correctly, but the definition of a mandatory requirement is missing (the original question of P4 §21.11) | Without any change to the checks, an operation that complies with the rules but misses a required basis is carried out; the mechanical checks pass. Success: a review looking from outside the frame (the audit environment or a frame review) catches the missing requirement. Mechanical safety is not semantic adequacy | C07, C10 |
 
 ---
 
@@ -185,7 +185,7 @@ These are tested not only with database tests but with real sessions. For each o
 
 1. **The criteria** are written in plan Section 9, C07, and are fixed before the result is seen.
 2. **Hint ban:** The task text cannot imply the gap that is expected to be found. If the person who prepares the task is one who knows the expected result, the task text is reviewed for hints by an independent session.
-3. **Assessment:** The audit environment assesses technical correctness and materiality; Batu makes a separate assessment in terms of purpose and value (a plain question in the Appendix E format). The two assessments are recorded separately. In a controlled exam, the gap hidden in advance must be found; in a real task, "no gap could be found" is not by itself a failure, because this rule rewards inventing defects.
+3. **Assessment:** The audit environment assesses technical correctness and materiality; Batu makes a separate assessment in terms of purpose and value (a plain question in the Appendix E format). The two assessments are recorded separately. In a controlled exam, the gap hidden in advance must be found; in a real task, "no gap could be found" is not by itself a failure, because counting it as a failure would reward inventing defects.
 4. **On failure:** A system review (plan Section 6.11); after the fix, not the same task but a new task is used. Repeating the same task measures memorisation.
 
 *Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

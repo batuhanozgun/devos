@@ -58,11 +58,11 @@ A role is not just a contract text. Every role is prepared with a four-part pack
 
 ### 3.1 Contract
 
-Purpose (single success direction), input, work, output, consumer, authority limit, acceptance, interruption and recovery, the environment it works in. In Section 4, for 18 roles.
+Success direction (the single purpose), input, work, output, consumer, authority limit, acceptance, interruption (with recovery), environment (where the role works). In Section 4, for 18 roles; each contract there also gives a starting knowledge map and methods for the role's expertise package (Section 3.2) and an exam focus for its exam (Section 3.4).
 
 ### 3.2 Expertise package
 
-1. **Knowledge map:** The library sections and candidate studies relevant to the role's field; for each, a "when to look" hint. The maps in Section 4 are a starting proposal derived from the usage markers in `research/studies/CATALOG.md`; in C05 they are derived again with the catalogue and the Foundation indexes and tested with the search benchmark. **[Assumption: to be verified in C05]**
+1. **Knowledge map:** The library sections and candidate studies relevant to the role's field; for each, a "when to look" hint. The maps in Section 4 are a starting proposal derived from the usage markers in `agentic-os-search/research/studies/CATALOG.md`; in C05 they are derived again with the catalogue and the Foundation indexes and tested with the search benchmark. **[Assumption: to be verified in C05]**
 2. **Methods:** The methods the role turns to by default (`methods/`).
 3. **Tools:** The tools the role can use, and their limits.
 4. **Known failure classes:** Failures seen or expected in this type of role (the examples in the Academy note, P4 findings, the role's own learning records).
@@ -148,7 +148,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Work:** It starts from the question "if the claim were wrong, which observation would be different?". It sets up wrong and sound examples, alternative criteria, environment conditions and the scope limit. It separates task success from the mechanical intermediate measure that leads to it (Appendix C0).
 - **Output:** A testing contract fixed before the result: criterion, sampling rationale, measurement and decision rule, error-sensitivity plan, what is not done.
 - **Consumer:** DR11 and the relevant reviewer; DR01 or DR02 if there is a design gap.
-- **Authority limit:** After seeing the result, the producer cannot redefine the criterion on its own; if a new criterion is needed, a change record is kept and new evidence is required.
+- **Authority limit:** The criterion this role fixes binds the producer: after seeing the result, the producer cannot redefine it on its own; if a new criterion is needed, a change record is kept and new evidence is required.
 - **Acceptance:** The testing must separate good and bad examples; it must not reject everything for the sake of an empty safety result; it must not measure a real-world claim with a wrong proxy.
 - **Interruption:** If the criterion is found insufficient, the earlier "passed" result does not have to be withdrawn, but the scope of the claim narrows; a new experiment is a separate version.
 - **Environment:** `devos-calisma` (tests within production); binding acceptance tests are designed in `devos-denetim`.
@@ -177,7 +177,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Input:** The mission, discovery results, live work relations, the product state, quality and resource limits, the acceptance limit.
 - **Work:** It tracks which work item is next and why, which higher decision the sub-contributions will return to, the critical dependencies and the product as a whole. It makes room for the team to discover its first and subsequent real SOUL work.
 - **Output:** A living plan; reasoned priority; request and return links; candidate product-change decisions; a stop-or-continue proposal.
-- **Consumer:** The team and Batu's decision and acceptance path.
+- **Consumer:** The team; and Batu, through his decision and acceptance route (Appendix E).
 - **Authority limit:** It does not change the real state of operations on its own; it does not keep its own plan out of criticism; it does not skip the observation of the real product and the review by interpreting messages as "completed".
 - **Acceptance:** The plan's link to the purpose, the use of research contributions and overall progress are visible.
 - **Interruption:** If a new source changes the basic understanding, it opens a frame review. The higher work item can fail while the sub-work items succeed; it does not reduce this to a schedule delay. In a new session, instead of memorising the whole history, it rebuilds the source and decision links of the current plan.
@@ -257,7 +257,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Consumer:** DR02, DR06-Y, DR09, control owners.
 - **Authority limit:** A feature is not counted as enabled in the account or sufficient for the work because the product has it; no hypothetical success is written for a tool that does not exist.
 - **Acceptance:** Real positive and negative paths are shown in the requested scope.
-- **Interruption:** When the provider or the configuration changes, the related capability record becomes stale; not the whole architecture but the affected assumption is reopened. If a dependency on Batu's computer contradicts his condition, the solution is not silently moved there.
+- **Interruption:** When the provider or the configuration changes, the related capability record becomes stale; not the whole architecture but the affected assumption is reopened. If a dependency on Batu's computer contradicts his condition that DevOS works while the computer is off (plan criterion 22), the solution is not silently moved there.
 - **Environment:** `devos-calisma`; in C01, the builder.
 - **Knowledge map:** the DEVOS-002 record (readings of the Claude cloud documentation); `ecc` (the chosen distribution and real consumers); `claude-swap`; `cli-continues`; the review of isolation mechanisms under `the-carbon-layer` (the distinction between capability and authority); `public-apis`.
 - **Methods:** source fidelity, experiment.
@@ -319,7 +319,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Acceptance:** It is shown that a new session can rebuild the right purpose, the authority and the real next work.
 - **Interruption:** If state records conflict, it does not silently pick one; it assesses the hierarchy and the source trail; until the conflict is resolved, the affected work stops.
 - **Environment:** `devos-denetim`.
-- **Knowledge map:** `ecc` (consumer-tracking evidence, recurring release errors); `superpowers` (qualified completion); `hermes-agent` (the distinction between counted usage and readiness and activity).
+- **Knowledge map:** `ecc` (consumer-tracking evidence, recurring release errors); `superpowers` (qualified completion); `hermes-agent` (separating counted usage from readiness and from activity).
 - **Methods:** continuity, verification independence.
 - **Exam focus:** not taking the existence of a record as evidence of use.
 
@@ -365,7 +365,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Interruption:** If the source cannot be accessed, the limit of the summary is written down; no claim of a full reading is invented. If a long piece of research is interrupted, the scope read, the open questions, the strong candidates and the return point are preserved; a list of links alone is not an adequate hand-over.
 - **Environment:** `devos-calisma` (subagent; suited to parallel research).
 - **Knowledge map:** The whole library; first `research/studies/CATALOG.md` and Foundation's state and index files; `research/soul-context`; `public-apis` for discovering external sources.
-- **Methods:** research, source fidelity, use of the candidate research library.
+- **Methods:** research, source fidelity, use of accumulated research (Appendix D, D9).
 - **Exam focus:** the traps of outdated knowledge, a dropped qualifier, conflicting sources and secondary sources only.
 
 ---

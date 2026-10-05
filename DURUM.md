@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-013` (Hesabına bağlı servislerin adları devos'un açık geçmişinde (OI-012, L-147): kabul mü, geçmişi yeniden yazmak mı, depoyu geçmişsiz yeniden kurmak mı), `D-014` (Araştırma kütüphanesini C04'ten önce doğrudan okumak ve hangi koşullarla (D-011'in yerine geçer)). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 6 Ekim 2026, 02:06 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 02:36 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 

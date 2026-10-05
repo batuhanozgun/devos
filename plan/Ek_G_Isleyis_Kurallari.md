@@ -25,7 +25,7 @@
 3. **Limits are applied inside the query.** Adding only a row limit to the outer query does not count as an execution budget, because the underlying query can still run for the most part.
 4. **Authority:** The existence of the root record and the authority to access it are checked; the names or contents of nodes that cannot be seen are not leaked in the result. If the region that cannot be seen limits completeness, this is stated without revealing content. A safe "unknown" is not the same as a wrong "none".
 5. **Live change:** No external effect is made directly from a query result; the effect function re-checks the current conditions.
-5a. **Continuation:** The continuation of a limited query is bound to the same snapshot (revision, policy, remaining search limit). If the data changes in the meantime, the continuation information becomes invalid and the query explicitly starts again; parts coming from different snapshots are not combined and called "complete".
+   - 5a. **Continuation:** The continuation of a limited query is bound to the same snapshot (revision, policy, remaining search limit). If the data changes in the meantime, the continuation information becomes invalid and the query explicitly starts again; parts coming from different snapshots are not combined and called "complete".
 6. **Looking beyond the relations:** The relation record finds recorded links; it does not find semantic effects that were never recorded. In large product changes, the affected parts are also read separately, alongside the relation query. A missing recorded relation is a maintenance finding, not a verdict of "no semantic relation".
 
 ## G3. Release and interruption windows
@@ -100,8 +100,8 @@ Degradation is not reported as normal operation; it is made visible which guaran
 1. Capacity is not reduced to a single number; discovery latency, production quality, review cost, source access, the release queue and the recovery load affect one another.
 2. Work classes have separate acceptance profiles: a short direct query, deep research, review of a large composite product, long production, a high-impact release, recovery.
 3. The priority order does not starve normal work by always letting recovery dominate.
-3a. **Routine budget:** The limit of 15 runs a day is distributed according to the table in plan Section 6.4; session duration measurement and usage observation change the budget, with reasons. If the routine budget or the usage allowance is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu. Usage is recorded per stage (plan U-5; PC-10).
-3b. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection; a triggered loop stops and is recorded.
+   - 3a. **Routine budget:** The limit of 15 runs a day is distributed according to the table in plan Section 6.4; session duration measurement and usage observation change the budget, with reasons. If the routine budget or the usage allowance is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu. Usage is recorded per stage (plan U-5; PC-10).
+   - 3b. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection; a triggered loop stops and is recorded.
 4. **What is measured:** Mechanical (claim conflicts, the stale rebase rate, request turnaround latency, query incompleteness, time spent uncertain in release, rejection of the old authority after recovery) and work value (discovery of material gaps, the rate of unnecessary prerequisites, research contributions consumed, holistic product defects, technical load carried to Batu, regression in method transfer). These are not added up into a single score. Thresholds are written down before measuring.
 
 ## G10. Work list hygiene

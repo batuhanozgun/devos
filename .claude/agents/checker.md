@@ -38,7 +38,7 @@ target: <what was checked>
 reviewed_head: <full 40-character SHA of the commit you judged>
 verdict: <PASS | PASS-WITH-CONDITIONS | FAIL>
 conditions: none
-independence: "same session, fresh-context subagent (declared, Ek A 373)"
+independence: "same session, fresh-context subagent (declared, Ek A 5.3)"
 checker_run: <run reference from your task>
 date: <YYYY-MM-DD>
 ---

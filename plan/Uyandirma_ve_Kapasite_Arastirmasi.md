@@ -1,6 +1,6 @@
 # Working order, wake-up and capacity (A1) — version 2
 
-**Date:** 29 September 2026 · **Status:** Decided (technical decision). It will go into installation plan 2.1.
+**Date:** 29 September 2026 · **Status:** Decided (technical decision). It went into installation plan 2.1.
 
 **Why does this version exist?** The first version accepted, without questioning it, the premise "every role is a separate session and every hand-over requires the system to wake itself up again". This premise was carried over from the design in P4 and P5 (separate processes run by a manager). When the limit of 15 routines a day blocked this premise, the plan started adding new mechanisms. The right move was not to add mechanisms but to question the premise. This version does that.
 
@@ -19,7 +19,7 @@
 
 ---
 
-## 2. Decision: the "team in the office, checker apart" arrangement
+## 2. Decision: the "team in the office, checker apart" working order
 
 **Three environments** (instead of the previous five):
 
@@ -48,7 +48,7 @@ Routines only make sessions start; they are not used for hand-overs between role
 | Exam | 1 | Night, only when an exam is needed |
 | Reserve | Up to 8 | An extra working session if sessions stay short, an urgent decision or recovery |
 
-It starts with 7 runs in total; half of the limit of 15 stays in reserve. The real length of sessions is measured in C01; if it turns out short, the number of working sessions is increased from the reserve.
+It starts with 7 runs in total; about half of the limit of 15 (up to 8 runs) stays in reserve. The real length of sessions is measured in C01; if it turns out short, the number of working sessions is increased from the reserve.
 
 **Expectation:** Hand-overs between roles take minutes inside the working session. A binding verdict waits until the next audit session (a few hours). Decisions that belong to Batu are processed in the first session after Batu answers.
 
