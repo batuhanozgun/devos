@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. ECC karşılaştırması bağımsız denetimden geçti ve kabul edildi: 85 bileşen; 5 fikir benimsendi, 31 kalem ilgili aşamada karara bağlanacak, 76'sı gerekçesiyle dışarıda. <br>2. Planın bağımsız incelemesinin ilk geçişi bitti: iki denetçi planı onayladı, ama düzeltilmesi gereken noktalar buldu (ör. C00–C04 arasında kütüphaneden açık depoya sızıntıyı kodla denetleyen kontrol yok). Bunlar C00'ın karar adımında işlenecek; incelemenin kütüphane kısmı bu kontrol kurulmadan başlamaz. <br>3. Planı görmeyen karşı tasarım geldi, planla karşılaştırılıyor. Sana dönük Türkçe özet yazıldı, denetimde. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T21:30Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:30Z |
+| summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. Sana dönük Türkçe özet hazır ve denetimden geçti: `plan/Summary_for_Batu_TR.md` (genel resim, kararların, yapacakların). Bağlayıcı metin İngilizce plan. <br>2. ECC karşılaştırması kabul edildi (85 bileşen; 5 fikir benimsendi). Planın bağımsız incelemesinin ilk geçişi bitti; bulunan düzeltmeler C00'ın karar adımında işlenecek. <br>3. Planı görmeyen karşı tasarım planla karşılaştırılıyor. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T21:41Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:40Z |
 
 ---
 
@@ -38,7 +38,6 @@
 **Running:**
 - `W-C00-08` Independent plan review (plan C00 step 4): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
-- `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-03`: finished, waiting for acceptance
@@ -55,7 +54,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 7, blocked 2, cancelled 6, finished 1, running 3 | 10 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 8, blocked 2, cancelled 6, finished 1, running 2 | 11 |
 | `C01` | Platform verification | planned | no items | 5 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -71,7 +70,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045
+- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-062
   - `W-C00-01` Read the plan package: accepted
   - `W-C00-02` Preparation verification (plan C00 step 1): accepted
   - `W-C00-03` Gap and contradiction list: finished, not accepted · open notes: N-002
@@ -84,7 +83,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: depends on W-C00-09 (not accepted) · open notes: N-060
   - `W-C00-11` Stage closure review: blocked: depends on W-C00-03 (not accepted) · open notes: N-051, N-056, N-059
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
-  - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): running (session_01WKJi23FwAjFtiyD1DbQ2Rs)
+  - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
 <!-- /generated -->
 
 ### Work index
@@ -112,7 +111,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | cancelled | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | cancelled | — | — | `plan/work/W-C00-12.5.md` |
 | `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | cancelled | — | — | `plan/work/W-C00-12.6.md` |
-| `W-C00-13` | Turkish summary for Batu (plan 0.6 item 1) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | — | — | `plan/work/W-C00-13.md` |
+| `W-C00-13` | Turkish summary for Batu (plan 0.6 item 1) | accepted | — | plan/Summary_for_Batu_TR.md; CHK-C00-025 (conditions); CHK-C00-026 (conditions met, K1 and K2 in L-144) | `plan/work/W-C00-13.md` |
 <!-- /generated -->
 
 ---
@@ -160,6 +159,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 |---|---|---|---|---|
 | `N-027` | `C00` | OI-003 | open | **Item:** Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are us... |
 | `N-045` | `C00` | OI-004 | open | **Pointer** to N-029 on `C01` (verbatim there): the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11. |
+| `N-062` | `C00` | CHK-C00-025 | open | **For Batu's next batch: D-003's coverage of OI-012** (from W-C00-13's check, 2026-10-05, L-144). D-003's `reopen_if` (L-045, 2026-10-03)... |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
