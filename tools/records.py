@@ -1,25 +1,17 @@
 #!/usr/bin/env python3
-"""records.py: the builder's file records (W-C00-12 tranche 1b-i).
+"""records.py: the installation's file records (plan/Installation_Working_Order.md section 4).
 
 Run from the repository root.
 
   records.py render [--check]          write (or compare) the generated blocks of plan/ledger.md and DURUM.md
-  records.py brief <ID> --role <role>  print a task brief for a work item
-  records.py brief run --role producer print the run brief
   records.py durum                     print the generated DURUM.md to stdout
-  records.py lease --session <ID> [--note TEXT] [--release]
-                                       rewrite the Run lock row and write its Record changes line
-                                       under a new log entry of its own
 
-Homes (02_memory.md section 3): work items and stages in plan/work/<ID>.md; decisions in
-plan/decisions/<ID>.md; the current state in plan/ledger.md section 1. Everything this script
-writes is generated from those homes; nothing here is a home. Readiness follows
-03_work_model.md section 3 (three-valued: an unresolved reference makes an item not ready).
+Homes: work items and stages in plan/work/<ID>.md; decisions in plan/decisions/<ID>.md; the current
+state in plan/ledger.md section 1. Everything this script writes is generated from those homes; nothing
+here is a home. Readiness is three-valued: an unresolved reference makes an item not ready.
 """
 import argparse
-import hashlib
 import re
-import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -32,22 +24,11 @@ WORK = ROOT / "plan/work"
 DECISIONS = ROOT / "plan/decisions"
 LEDGER = ROOT / "plan/ledger.md"
 DURUM = ROOT / "DURUM.md"
-LOGDIR = ROOT / "plan/ledger"
 TR = timezone(timedelta(hours=3))  # Europe/Istanbul, fixed UTC+3 since 2016
 
 ACC_RE = re.compile(r"<!-- acceptance -->\n(.*?)\n<!-- /acceptance -->", re.S)
 NOTE_RE = re.compile(r"<!-- note (N-\d+)((?: [a-z_]+=[^ >]+)*) -->\n(.*?)\n<!-- /note -->", re.S)
 GEN_RE = r"(<!-- generated:{name} -->\n)((?:(?!<!-- /?generated).)*?)(\n<!-- /generated -->)"
-
-ROLE_FILES = {
-    "producer": "CLAUDE.md and plan/Builder_Operating_Model.md section 3.1 (the producer has no separate role file, 04_roles.md section 3)",
-    "verifier": "plan/builder/REVIEW_PROMPT.md",
-    "critic": ".claude/agents/critic.md",
-    "triager": ".claude/agents/triager.md",
-    "researcher": ".claude/agents/researcher.md",
-    "counter-designer": "plan/builder/roles/counter-designer.md",
-    "probe": "plan/builder/roles/probe.md",
-}
 
 
 class RecordError(Exception):
@@ -173,8 +154,7 @@ ROOT_FOR_ACCEPT = [ROOT]
 
 
 def is_accepted(item):
-    """Accepted only when `accepted_by` names an existing file (critic of 1b-i, finding 2). Whether that file is
-    a bound verdict or deterministic evidence is the work check's job (W-R1, tranche 1b-ii)."""
+    """Accepted only when `accepted_by` names an existing file under evidence/ (critic of 1b-i, finding 2)."""
     if item.get("acceptance") != "accepted":
         return False
     ab = item.get("accepted_by")
@@ -329,7 +309,7 @@ def view_frontier(items, decisions, changes):
     out = ["**Ready (startable now):**", *(ready or ["- none"]), "",
            "**Running:**", *(running or ["- none"]), "",
            "**Not ready, with the first unmet condition:**", *(rest or ["- none"]), "",
-           "Selection among ready items: critical path first, one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). "
+           "Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). "
            "Candidates never appear here; they are in the zoom view."]
     return "\n".join(out)
 
@@ -442,8 +422,7 @@ def view_notes(items):
             lines.append(f"| `{n['id']}` | `{iid}` | {esc(n['origin'])} | open{' (blocks)' if n['blocks'] else ''} "
                          f"| {esc(first)} |")
     lines.append("")
-    why = {"answered": "the W-C00-12 design answers them, but an answer takes effect only when the tranche that builds "
-                       "it merges; checked at W-C00-12's composition review, not closed",
+    why = {"answered": "answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history",
            "closed": "closed with their disposition"}
     for st, ids in sorted(other.items()):
         lines.append(f"Notes `{st}` ({why.get(st, 'kept on their items')}): {len(ids)} ({', '.join(ids)}).")
@@ -508,9 +487,7 @@ def tr_time(iso):
 def durum(text, items, decisions, changes):
     rows = state_rows(text)
     summary, summary_asof = rows.get("summary_tr", ("", ""))
-    lock = rows.get("Run lock", ("", ""))[0]
     usage = rows.get("Usage", ("", ""))[0]
-    wakes = rows.get("Armed wakes", ("", ""))[0]
     open_batu = [d for d in sorted(decisions, key=sortkey) if decisions[d].get("class") == "batu"
                  and decisions[d].get("status") == "open"]
     if open_batu:
@@ -519,15 +496,6 @@ def durum(text, items, decisions, changes):
                     + ". Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.")
     else:
         expected = "Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok."
-    holder = re.search(r"`(session_[A-Za-z0-9]+)`", lock)
-    exp = re.search(r"Expires (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
-    rel = re.search(r"Released (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
-    if rel:
-        run = f"Çalışan oturum yok; son oturum {tr_time(rel.group(1))} (Türkiye saati) itibarıyla işi bıraktı."
-    elif holder and exp:
-        run = f"`{holder.group(1)}`; kilit {tr_time(exp.group(1))} (Türkiye saati) tarihine kadar geçerli."
-    else:
-        run = "bilinmiyor (kilit satırı okunamadı)."
     um = re.search(r"`(five_hour|seven_day)`\s+`(\w+)`", usage)
     ur = re.search(r"resets (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", usage)
     if um:
@@ -546,8 +514,8 @@ def durum(text, items, decisions, changes):
     ready = [i for i in sorted(items, key=sortkey) if readiness(items, decisions, changes, i)[0] is True]
     running = [i for i in sorted(items, key=sortkey) if items[i].get("kind") == "item"
                and items[i].get("execution") == "running"]
-    nxt = (", ".join(f"`{i}`" for i in running) + " sürüyor" if running else "") + \
-          ("; başlatılabilir: " + ", ".join(f"`{i}`" for i in ready) if ready else "")
+    nxt = "; ".join(p for p in ((", ".join(f"`{i}`" for i in running) + " sürüyor") if running else "",
+                                ("başlatılabilir: " + ", ".join(f"`{i}`" for i in ready)) if ready else "") if p)
     body = summary.replace("<br>", "\n")
     asof = rows.get("Rendered", ("", ""))[1].strip()
     upd = tr_time(asof) if re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\dZ", asof) else "bilinmiyor"
@@ -559,132 +527,17 @@ def durum(text, items, decisions, changes):
 
 **Aşama:** {st}.{hold_line}
 
-**Çalışan oturum:** {run}
-
 **Sıradaki işler:** {nxt or "yok"}. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** {u}
 
-**Kurulu uyandırmalar:** {"yok" if wakes.strip() in ("", "none") else wakes}
+**Çalışma oturumu:** Kurulumu tek bir çalışma oturumu yürütüyor. Kullanım limiti dolarsa, limit sıfırlandıktan sonra o oturuma yazacağın "devam" mesajı işi kaldığı yerden sürdürür.
 
 **Şu an**
 
 {body}
-
-**Süreklilik notu:** Bir oturum senden karar beklerken durursa, cevabını bir sonraki oturum okur. Oturumun kendini düzenli uyandırması (altı saatte bir, en çok dört kez) yeniden tasarımın sonraki bir adımında kuruluyor; kurulana kadar cevabın yeni bir oturum başlayana kadar bekler. Kurulduktan sonra da dört boş kontrolden sonra cevabın bir sonraki oturuma kalır.
 """
     return out
-
-
-# ---------------------------------------------------------------- briefs (W-R5, 03 section 9)
-
-def chain(items, iid):
-    nodes = list(reversed([items[iid]] + ancestors(items, iid)))
-    out = []
-    for n in nodes:
-        if n.get("kind") == "root":
-            out.extend(n.get("purpose_chain") or [])
-        else:
-            out.append(f"{n['id']}: {n.get('title', '')}")
-    return " → ".join(out)
-
-
-def brief_item(items, decisions, changes, iid, role, target_sha=None, failure_classes=None):
-    if iid not in items:
-        raise RecordError(f"no work item {iid}")
-    if role not in ROLE_FILES:
-        raise RecordError(f"unknown role '{role}'")
-    if role == "verifier":
-        if not target_sha or not target_sha.strip():
-            raise RecordError("a verifier brief needs --target-sha (R-R3a)")
-        r = subprocess.run(["git", "rev-parse", "--verify", "-q", f"{target_sha.strip()}^{{commit}}"],
-                           capture_output=True, text=True)
-        if r.returncode != 0:  # R-W12-3 F-4: the SHA must resolve to a commit
-            raise RecordError(f"--target-sha {target_sha.strip()} does not resolve to a commit (R-R3a)")
-        target_sha = r.stdout.strip()
-        if not failure_classes or any(not f.strip() for f in failure_classes):
-            raise RecordError("a verifier brief needs a non-empty --failure-classes list with no blank entry (R-R3a)")
-    it = items[iid]
-    parent = it.get("parent")
-    sib = [s for s in children(items, parent) if s["id"] != iid] if parent else []
-    down = [i for i in sorted(items, key=sortkey) if any(d["id"] == iid for d in deps(items[i]))]
-    lines = [f"# Task brief: {iid}, role {role}", "",
-             f"Purpose chain: {chain(items, iid)}",
-             f"Scope: {it.get('scope', 'unknown')}",
-             f"Record: {it['_path']}", ""]
-    if role == "verifier":
-        lines += [f"Target SHA: {target_sha}", "Failure classes to look for:",
-                  *[f"- {f}" for f in failure_classes], "",
-                  "Claims to test (the item's acceptance block, verbatim):"]
-    else:
-        lines.append("Acceptance block (verbatim):")
-    lines += ["", it.get("_acceptance") or "(no acceptance block)", "",
-              "Siblings:", *([f"- {s['id']} {s.get('title', '')}: {state_label(items, decisions, changes, s['id'])}"
-                             for s in sib] or ["- none"]),
-              "Downstream (items that depend on this one):",
-              *([f"- {d}: {state_label(items, decisions, changes, d)}" for d in down] or ["- none"]),
-              f"Parent composition: {parent or 'none'}"
-              + (" (the parent is done only after its own composition check, not from its children)" if parent else ""),
-              "Assumes:", *([f"- {a}: {decisions[a].get('status') if a in decisions else 'see its home'}"
-                             for a in it.get("assumes") or []] or ["- nothing recorded"]),
-              "Open notes on this item and its ancestors:"]
-    on = [(a["id"], n) for a in [it] + ancestors(items, iid) for n in a["_notes"] if n["status"] == "open"]
-    lines += [f"- {n['id']} on {a}: {note_summary(n)[:160]}" for a, n in on] or ["- none"]
-    # R-W12-3 F-8: answered notes are answers that take effect only when their tranche builds them
-    ans = [(a["id"], n) for a in [it] + ancestors(items, iid) for n in a["_notes"] if n["status"] == "answered"]
-    lines += ["Answered notes on this item and its ancestors (the design answers them; the answer takes effect "
-              "only when the tranche that builds it merges):"]
-    lines += [f"- {n['id']} on {a}: {note_summary(n)[:160]}" for a, n in ans] or ["- none"]
-    rf = ROLE_FILES[role]
-    built = Path(rf.split(" ")[0]).exists()
-    lines += ["", f"Role file: {rf}" + ("" if built else " (not yet built; tranche 1c)"),
-              "Common floor: plan/Ek_A_Rol_Sozlesmeleri.md section 2 and plan/Ek_D_Dusunme_Protokolleri.md section 2 "
-              "(by reference)."]
-    return finish(lines, iid, role)
-
-
-def brief_run(items, decisions, changes):
-    stages = [s for s in items.values() if s.get("kind") == "stage" and s.get("execution") == "running"]
-    if len(stages) != 1:
-        raise RecordError(f"a run brief needs exactly one running stage, found {len(stages)}")
-    s = stages[0]
-    lines = ["# Run brief: role producer", "",
-             f"Purpose chain: {chain(items, s['id'])}", f"Scope: {s.get('scope', 'unknown')}", "",
-             f"Active stage {s['id']} acceptance (verbatim from {s['_path']}):", "",
-             s.get("_acceptance") or "(none)", ""]
-    if s.get("hold_until"):
-        lines += [f"Stage hold: {s['id']} items wait until {s['hold_until']} is accepted.", ""]
-    se = state_rows(LEDGER.read_text()).get("Standing exceptions", ("", ""))[0] if LEDGER.exists() else ""
-    if se:
-        lines += ["Standing exceptions (plan/ledger.md section 1):", "", se, ""]
-    lines += ["Frontier (generated):", "", view_frontier(items, decisions, changes), "",
-              "Boot order: " + ROLE_FILES["producer"] + ". Take or confirm the lease before any record write."]
-    return finish(lines, "run", "producer")
-
-
-def finish(lines, iid, role):
-    text = "\n".join(lines) + "\n"
-    h = hashlib.sha256(text.encode()).hexdigest()[:16]
-    return text + f"\nTask-Brief: {iid} {role} {h}\n"
-
-
-# ---------------------------------------------------------------- lease
-
-def lease(text, session, note, release, now=None):
-    now = now or datetime.now(timezone.utc)
-    stamp = now.strftime("%Y-%m-%dT%H:%MZ")
-    if release:
-        tail = f"Released {stamp}"
-    else:
-        tail = "Expires " + (now + timedelta(hours=3)).strftime("%Y-%m-%dT%H:%MZ")
-    body = f"`{session}`" + (f" ({note})" if note else "") + f". {tail}"
-    new = f"| Run lock | {esc(body)} | {stamp} |"
-    lines = text.splitlines(keepends=True)
-    hits = [n for n, l in enumerate(lines) if l.startswith("| Run lock |")]
-    if len(hits) != 1:
-        raise RecordError(f"plan/ledger.md: expected one Run lock row, found {len(hits)}")
-    lines[hits[0]] = new + "\n"
-    return "".join(lines), f"plan/ledger.md Run lock · supersession · {'release' if release else 'lease take or renewal'} by {session}"
 
 
 # ---------------------------------------------------------------- main
@@ -694,16 +547,7 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("render")
     r.add_argument("--check", action="store_true")
-    b = sub.add_parser("brief")
-    b.add_argument("id")
-    b.add_argument("--role", required=True)
-    b.add_argument("--target-sha")
-    b.add_argument("--failure-classes", nargs="*")
     sub.add_parser("durum")
-    l_ = sub.add_parser("lease")
-    l_.add_argument("--session", required=True)
-    l_.add_argument("--note", default="")
-    l_.add_argument("--release", action="store_true")
     a = ap.parse_args(argv)
     try:
         items, decisions = load_records()
@@ -733,41 +577,8 @@ def main(argv=None):
                     print(f"note: summary_tr was last written at {sa}; update it if the state changed")
             except ValueError:
                 print("note: summary_tr has no readable As-of time")
-        elif a.cmd == "brief":
-            if a.id == "run":
-                if a.role != "producer":
-                    raise RecordError("a run brief has role producer")
-                sys.stdout.write(brief_run(items, decisions, changes))
-            else:
-                sys.stdout.write(brief_item(items, decisions, changes, a.id, a.role, a.target_sha,
-                                            a.failure_classes))
         elif a.cmd == "durum":
             sys.stdout.write(durum(text, items, decisions, changes))
-        elif a.cmd == "lease":
-            lock = state_rows(text).get("Run lock", ("", ""))[0]
-            held = re.search(r"`(session_[A-Za-z0-9]+)`", lock)
-            exp = re.search(r"Expires (\d{4}-\d\d-\d\dT\d\d:\d\dZ)", lock)
-            if held and held.group(1) != a.session and exp and datetime.strptime(exp.group(1), "%Y-%m-%dT%H:%MZ").replace(
-                    tzinfo=timezone.utc) > datetime.now(timezone.utc):
-                print(f"WARNING: overwriting the unexpired lease of {held.group(1)} (expires {exp.group(1)}); "
-                      "this is allowed only for a hand-over from your parent run (operating model section 2.2)")
-            new, line = lease(text, a.session, a.note, a.release)
-            new = render_ledger(stamp_rendered(new), items, decisions, changes)
-            LEDGER.write_text(new)
-            DURUM.write_text(durum(new, items, decisions, changes))
-            logs = sorted(LOGDIR.glob("*-log.md"))
-            if logs:  # the row and its Record changes line are written together (02 section 7, K2 walk-through),
-                # under an entry of their own, so that the line is not attributed to the previous entry (R-W12-4 m-6)
-                nums = [int(n) for f in logs for n in re.findall(r"(?m)^### L-(\d+) ", f.read_text())]
-                eid = f"L-{(max(nums) if nums else 0) + 1:03d}"
-                what = "released" if a.release else "taken or renewed"
-                lt = logs[-1].read_text()
-                logs[-1].write_text(lt + ("" if lt.endswith("\n") else "\n") +
-                                    f"\n### {eid} · {datetime.now(timezone.utc):%Y-%m-%d} · Lease {what} by "
-                                    f"`{a.session}`\n\n- **Record changes:** {line}\n")
-                print(f"{line} (written as {eid} in {logs[-1]})")
-            else:
-                print(line)
     except (RecordError, OSError, ValueError, yaml.YAMLError) as e:
         print(f"records.py: {e}", file=sys.stderr)
         return 2

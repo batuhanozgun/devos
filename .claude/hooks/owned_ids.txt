@@ -5,8 +5,8 @@
 # and create_trigger with persistent_session_id.
 # IDs returned by this session's own create_session and create_trigger calls are
 # appended automatically by .claude/hooks/record_owned_id.py (a record change).
-# Any hand edit (adding another ID, or removing one) is a high-impact change that
-# needs a review (Builder Operating Model §9).
+# Any hand edit (adding another ID, or removing one) is a class-high change that
+# needs a checker verdict (plan/Installation_Working_Order.md section 10; tools/merge_gate.py).
 session_016Hi3ZYgAf2amYNGc43a3tr
 trig_01PPvVV1VzS8o5fBWWRtvFZj
 trig_01ThFCkbe9fBofuB7DKBrdnn

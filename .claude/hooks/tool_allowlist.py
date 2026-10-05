@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""DevOS guard: the PreToolUse and PermissionRequest hook of every DevOS session (Builder Operating Model,
-section 9; Batu's decision D-008; item W-C00-12.6).
+"""DevOS guard: the PreToolUse and PermissionRequest hook of every DevOS session (described in
+plan/Installation_Working_Order.md; Batu's decisions D-008 and D-010).
 
 Sessions run in Accept edits mode, without Claude Code's auto-mode classifier (D-008). This script is the
 written rule file that decides every tool call instead. It allows the call, or it denies it with a reason
@@ -13,7 +13,7 @@ Rule families (the IDs are the keys of RULES):
      isolation option; AskUserQuestion and ExitPlanMode are passed to the user, who answers them by design.
   M  MCP: only the listed servers; GitHub writes only to batuhanozgun/devos and never onto main; no
      auto-merge; no approving reviews; a merge names the full head SHA and, for a class-high head, needs a
-     covering review verdict (the merge gate, `tools/check_records.py gate`).
+     covering checker verdict (the merge gate, `tools/merge_gate.py`).
   S  session tools: owned IDs only; new sessions are full devos checkouts in the builder environment, on
      main or this session's branch, carrying .claude/settings.json, on claude-opus-5-5 in acceptEdits.
   F  files: no writes to this working tree's .claude/ (the guard itself), to any .git/ directory, to
@@ -22,9 +22,10 @@ Rule families (the IDs are the keys of RULES):
      sending data out, credential-bearing command lines, credentials, critical paths, the sandbox); every
      other command is allowed.
 
-Threat model (section 9): accidents and injected instructions, not a session that deliberately edits this
-file. A deliberate bypass stays visible in git and is a stated residual risk (D-003). The shell analysis is
-lexical: a command it cannot parse is denied, and a directory it cannot tell is treated as the live tree.
+Threat model (plan/Installation_Working_Order.md): accidents and injected instructions, not a session that
+deliberately edits this file. A deliberate bypass stays visible in git and is a stated residual risk (D-003).
+The shell analysis is lexical: a command it cannot parse is denied, and a directory it cannot tell is treated
+as the live tree.
 
 Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). An internal error on
 PreToolUse exits 2, so the call is blocked; on PermissionRequest it prints a deny decision. The settings
@@ -149,112 +150,111 @@ LIVE_BANNED_GIT = {"checkout", "switch", "reset", "rebase", "cherry-pick", "reve
                    "read-tree", "checkout-index", "filter-branch", "filter-repo", "replace", "notes",
                    "update-index"}                 # update-index can hide a changed guard file from git status
 
+WO = "plan/Installation_Working_Order.md"   # where the guard's rules are described (D-010)
 RULES = {  # id: (title, why the rule exists, where it is written, what to do instead)
     "G0": ("readable call", "The guard could not read or parse the call, so it cannot decide it safely; it "
-           "fails closed.", "operating model section 9 (fail closed)",
+           "fails closed.", WO + " (fail closed)",
            "Repeat the call in a well-formed way; for the shell, write the command so that its quotes balance."),
     "T1": ("non-MCP tool allow list", "Only the tools a DevOS session needs are allowed. A tool not named here, "
            "including tools that reach the account's other sessions, publishing surfaces, connector and plugin "
            "tools, MCP resource readers and worktree switching, is denied, so nothing new appears unguarded.",
-           "operating model section 9, Non-MCP tools", "Use an allowed tool. A new tool is added only by a "
-           "reviewed change to this file."),
+           WO, "Use an allowed tool. A new tool is added only by a reviewed change to this file."),
     "T2": ("subagents in-process only", "A subagent with an isolation mode runs in another worktree or as a new "
-           "cloud session, outside the session-tool rules.", "section 9; R-C00-BOM-5 N-B1",
+           "cloud session, outside the session-tool rules.", WO + "; R-C00-BOM-5 N-B1",
            "Call Agent or Task without an isolation field."),
     "T3": ("workflows in-process only", "A workflow agent with an isolation option runs in another worktree or "
-           "environment, outside this guard's view.", "section 9; D-008",
+           "environment, outside this guard's view.", WO + "; D-008",
            "Write the workflow without any isolation option."),
     "M1": ("MCP server allow list", "Only the GitHub tools, the session tools and the read-only database "
            "connector are allowed. Account connectors (mail, calendar, files and others, some under opaque IDs) "
-           "are never used by DevOS.", "CLAUDE.md; section 9; D-003",
+           "are never used by DevOS.", "CLAUDE.md; " + WO + "; D-003",
            "Do the work without that server."),
     "M2": ("GitHub write scope", "GitHub writes may target only batuhanozgun/devos; repository creation and "
-           "forking are blocked.", "section 9, GitHub writes", "Write only to batuhanozgun/devos."),
+           "forking are blocked.", WO, "Write only to batuhanozgun/devos."),
     "M3": ("main changes only through a merged pull request", "A file written straight onto main skips the pull "
-           "request, its checks and its review.", "PC-02; section 3.2",
+           "request, its checks and its review.", "PC-02; " + WO,
            "Commit to a claude/ branch and open a pull request."),
     "M4": ("no auto-merge", "Auto-merge merges later, without the merge gate's check at that moment.",
-           "section 9 (D-008)", "Merge with merge_pull_request when the gate's conditions hold."),
-    "M5": ("no approving reviews", "A GitHub approval is given in the account owner's name. The builder's "
-           "independent review is a verdict file from a review session (section 5), never a GitHub approval.",
-           "section 5; D-006; D-007", "Use a COMMENT review if a comment is needed."),
+           WO + "; D-008", "Merge with merge_pull_request when the gate's conditions hold."),
+    "M5": ("no approving reviews", "A GitHub approval is given in the account owner's name. The independent "
+           "check is a checker verdict file (evidence/<stage>/checks/), never a GitHub approval.",
+           WO + "; D-006; D-007", "Use a COMMENT review if a comment is needed."),
     "M6": ("merge exactly the reviewed head", "A merge names the full 40-character head SHA (expectedHeadSha), so "
            "that a head that moved after review is not merged, and uses the merge method, because squash and "
-           "rebase create commits that no verdict names (section 2.3: the short-SHA failure of T-A2).",
-           "section 3.2; section 9 (D-008)", "Pass expectedHeadSha with the full SHA and merge_method merge."),
-    "M7": ("merge gate for class-high changes", "A change to rules, hooks, tools, governing documents or "
-           "acceptance conditions (class high) merges only with an independent session verdict that covers its "
-           "head. This written check replaces the classifier's 'merge without review' rule.",
-           "section 5; PC-05; tools/check_records.py gate (W-R7, M-R16 b)",
-           "Get the review verdict (plan/builder/REVIEW_PROMPT.md), merge the reviewer's recorder line, merge "
-           "main into the branch, copy the verdict into the pull request, then merge."),
+           "rebase create commits that no verdict names (the short-SHA failure of T-A2).",
+           WO + "; D-008", "Pass expectedHeadSha with the full SHA and merge_method merge."),
+    "M7": ("merge gate for class-high changes", "A change to rules, hooks, tools or governing documents (class "
+           "high) merges only with a checker verdict that covers its head. This written check replaces the "
+           "classifier's 'merge without review' rule.",
+           WO + "; PC-05 as changed by PC-06; tools/merge_gate.py",
+           "Have a checker subagent judge the head, write its verdict verbatim to "
+           "evidence/<stage>/checks/CHK-<stage>-<nnn>.md on the branch (reviewed_head: the full SHA it judged), "
+           "push, then merge the new head."),
     "S1": ("session tools on owned IDs only", "Session tools reach every session and routine of the account; "
            "DevOS acts only on the ones it created (owned_ids.txt, filled by the recorder hook).",
-           "section 9, Session tools; Owned-ID list", "Act only on sessions and routines this builder created."),
+           WO + "; owned_ids.txt", "Act only on sessions and routines this builder created."),
     "S2": ("new sessions carry the barrier", "A new session is guarded only if it checks out devos fully, in "
            "the builder environment, at a revision that carries .claude/settings.json, and never pushes to main.",
-           "section 9, Session tools; PC-02", "Create the session on main, in the builder environment, with "
+           WO + "; PC-02", "Create the session on main, in the builder environment, with "
            "source_url https://github.com/batuhanozgun/devos and no sparse checkout."),
     "S3": ("Opus 5.5 in Accept edits for every new session", "Batu's standing rule: every session the builder "
            "opens runs on claude-opus-5-5 at ultracode effort, in Accept edits, where this guard decides every "
            "call. Routines that start a fresh session cannot set the model (BP-05).", "D-008",
            "Pass model claude-opus-5-5 and permission_mode acceptEdits; bind routines to an owned session."),
     "S4": ("routines", "A routine runs later without a person; it must carry no connectors and fire only into "
-           "the builder's own sessions in the builder environment.", "section 9, Session tools",
+           "the builder's own sessions in the builder environment.", WO,
            "Create the routine without connectors, bound to an owned session."),
     "S5": ("repositories", "Only devos may be attached, and the research library read-only.",
-           "section 9, Session tools; CLAUDE.md", "Attach only devos, or the library with access read."),
+           WO + "; CLAUDE.md", "Attach only devos, or the library with access read."),
     "F1": ("live guard files", "This working tree's .claude/ holds the guard itself, its settings and the "
            "owned-ID list; a change there takes effect at once, without review.",
-           "section 9, Working-tree rule; PC-05", "Edit in a scratch clone outside this working tree, open a "
-           "pull request, get its review verdict, merge, then run tools/sync_worktree.sh."),
+           WO + "; PC-05 as changed by PC-06", "Edit in a scratch clone outside this working tree, open a "
+           "pull request, get its checker verdict, merge, then run tools/sync_worktree.sh."),
     "F2": ("git internals", "Files under .git/ belong to git; editing them can rewrite history or plant git "
-           "hooks that run on later commands.", "section 9", "Use git commands."),
+           "hooks that run on later commands.", WO, "Use git commands."),
     "F3": ("Claude Code's own configuration", "User settings, shell start-up files and the protected "
            "configuration files decide how sessions start and what they may do; a change there is a "
-           "permission change.", "section 9; D-008", "None from a session: such a change is not made here."),
+           "permission change.", WO + "; D-008", "None from a session: such a change is not made here."),
     "F4": ("credentials", "The session's credential files reach the account's other sessions and services.",
-           "section 9 (R-C00-BOM-5 R-1)", "Use the session tools and the GitHub tools, which are scope-checked."),
-    "B1": ("no push to main", "main changes only through a merged pull request.", "PC-02; section 3.2",
+           WO + "; R-C00-BOM-5 R-1", "Use the session tools and the GitHub tools, which are scope-checked."),
+    "B1": ("no push to main", "main changes only through a merged pull request.", "PC-02; " + WO,
            "Push to a claude/ branch and open a pull request."),
     "B2": ("no remote history rewriting", "Force pushes, mirror and prune pushes and remote branch deletion "
-           "destroy history that other sessions and the records rely on.", "section 9 (D-008); section 11",
-           "Push new commits; leave an abandoned branch in place and record it (section 3.2)."),
+           "destroy history that other sessions and the records rely on.", WO + "; D-008",
+           "Push new commits; leave an abandoned branch in place and record it in the stage log."),
     "B3": ("builder branch space", "The builder pushes only to claude/ branches of devos, named explicitly, so "
-           "that every push is visible to the boot branch check and nothing reaches another repository.",
-           "section 3.2; section 9", "Run git push <devos remote> <branch> with a claude/ branch, in a directory "
-           "written literally."),
+           "that every push stays visible and nothing reaches another repository.",
+           WO, "Run git push <devos remote> <branch> with a claude/ branch, in a directory written literally."),
     "B4": ("the live working tree stays at main", "The guard and owned_ids.txt are read from this working tree; "
            "a checkout, reset, commit or similar here would swap the enforced rules or hide them.",
-           "section 9, Working-tree rule", "Work in a scratch clone or worktree outside this working tree and "
+           WO, "Work in a scratch clone or worktree outside this working tree and "
            "use git -C <literal path>; to update this tree, run tools/sync_worktree.sh."),
     "B5": ("no shell writes into guarded directories", "The live .claude/ (the guard), the live .git/ and "
            "Claude Code's configuration (~/.claude) change only through a reviewed merge or not at all.",
-           "section 9, Working-tree rule; D-008", "Change files in a scratch clone and merge them through a "
-           "reviewed pull request."),
+           WO + "; D-008", "Change files in a scratch clone and merge them through a reviewed pull request."),
     "B6": ("no sending data out", "Uploads and raw network tools can carry data out of the container; once the "
            "classifier is gone (D-008), a hidden instruction in a read document is the main way this happens.",
-           "section 9; D-008", "Read with curl or wget without upload options; write to GitHub with the GitHub "
+           WO + "; D-008", "Read with curl or wget without upload options; write to GitHub with the GitHub "
            "tools."),
     "B7": ("no command lines that carry account credentials", "gh, gcloud, gsutil, bq and the claude command line "
            "act with the account's credentials outside the scope checks of this guard.",
-           "section 9 (R-C00-BOM-5 R-1); D-003", "Use the GitHub tools and the session tools."),
+           WO + "; R-C00-BOM-5 R-1; D-003", "Use the GitHub tools and the session tools."),
     "B8": ("no credentials in the shell", "The session's tokens, token files and environment reach the "
            "account's other sessions and services; printing them, even by a dump such as set, export -p or "
            "declare -x, would also put them in the transcript.",
-           "section 9 (R-C00-BOM-5 R-1)", "Do not read credentials; the tools that need them hold them."),
+           WO + "; R-C00-BOM-5 R-1", "Do not read credentials; the tools that need them hold them."),
     "B9": ("critical paths", "Removing the filesystem root, a top-level directory, the home directory or this "
-           "working tree destroys the session's state.", "section 9; Claude Code critical paths",
+           "working tree destroys the session's state.", WO + "; Claude Code critical paths",
            "Remove only specific paths inside a scratch directory."),
     "B11": ("git only through its allow lists", "git expands aliases and reads settings from files and "
             "environment variables the guard cannot see. A setting (git config, git -c, an alias, or HOME, XDG_ or "
             "GIT_ variables) could send a push to another address than the one the guard checks, run another "
             "program, or change revisions under another name (R-D008-1 B-1; R-D008-2 N-1, N-2). So only listed "
-            "subcommands, global options and settings are allowed.", "section 9, Shell (D-008)",
+            "subcommands, global options and settings are allowed.", WO + "; D-008",
             "Use a listed git subcommand by its own name, with -C <literal path>; push with git push origin "
             "<claude/ branch>; write only settings such as user.name and user.email."),
     "B10": ("the sandbox stays on", "Disabling the sandbox for a command removes a layer this guard relies on.",
-            "section 9 (D-008)", "Run the command without dangerouslyDisableSandbox."),
+            WO + "; D-008", "Run the command without dangerouslyDisableSandbox."),
 }
 
 
@@ -438,10 +438,10 @@ PURE_READERS = {"cat", "head", "tail", "less", "more", "grep", "egrep", "fgrep",
 # edits in place; jq has no in-place mode. These get the reader exceptions in command_checks, not a blanket pass.
 AWKS = {"awk", "gawk", "mawk", "nawk"}
 # copy-like programs: moving a .claude or .git directory tree into place is a guard/internals swap (R-D008-6 B-1,
-# the honest-mistake case). The general data-derived write (an archive, a patch) is a stated residual (section 9).
+# the honest-mistake case). The general data-derived write (an archive, a patch) is a stated residual (WO, "Not protected").
 COPY_LIKE = {"cp", "rsync", "tar", "cpio", "unzip", "pax", "install", "ln", "scp", "7z", "7za", "unar"}
 # interpreters name a script to RUN it, so naming a guarded path is not a write by them; a write performed
-# inside their own language is the stated interpreter residual (section 9), not caught here.
+# inside their own language is the stated interpreter residual (WO, "Not protected"), not caught here.
 INTERPRETERS = {"python", "python3", "python2", "bash", "sh", "zsh", "dash", "ksh", "perl", "ruby", "node",
                 "nodejs", "php", "lua", "Rscript", "deno", "bun", "tclsh", "expect"}
 # interpreter options that take NO value and run no code or module. Only these may precede the script and keep
@@ -665,7 +665,7 @@ def literal_guarded(arg, remove=False):
     the token (R-D008-11 B11-2, R-D008-12 B12-5): `$PWD/.claude/x`, `$(pwd)/tools/y`, `{tools,tmp}/x`. The token
     is split on `/` and on brace-expansion punctuation (`{ } ,`); components that still contain a `$` or backtick
     are dropped, so a bare variable (`$DEST`) that expands to a guarded path with nothing guarded visible stays
-    the lexical residual (section 9). Returns a label or None."""
+    the lexical residual (WO, "Not protected"). Returns a label or None."""
     parts = [x for x in re.split(r"[/{},]", arg.replace("\\", "/")) if x and "$" not in x and "`" not in x]
     for x in parts:
         if x in (".claude", ".git", "tools", "devos-guard", LOG_BASENAME):  # devos-guard = default log dir (m-1)
@@ -1313,9 +1313,9 @@ def merge_checks(args):
     pr = args.get("pullNumber")
     if not isinstance(pr, (int, float)) or int(pr) != pr or pr <= 0:
         raise Bad("M6", "merge_pull_request without a pull request number")
-    tool = os.path.join(ROOT, "tools", "check_records.py")
+    tool = os.path.join(ROOT, "tools", "merge_gate.py")
     try:
-        r = subprocess.run([sys.executable, tool, "gate", "--pr", str(int(pr)), "--head", sha], cwd=ROOT,
+        r = subprocess.run([sys.executable, tool, "--pr", str(int(pr)), "--head", sha], cwd=ROOT,
                            capture_output=True, text=True, timeout=300)
     except subprocess.TimeoutExpired:
         raise Bad("M7", "the merge gate did not finish within 300 seconds; failing closed")
@@ -1528,10 +1528,9 @@ def deny_text(data, rule, detail):
             f"Why this rule exists: {why}\n"
             f"Where it is written: {where}; the rule file is .claude/hooks/tool_allowlist.py.\n"
             f"What to do instead: {todo}\n"
-            "This is the repository's written rule, not a classifier verdict. It changes only through a reviewed "
-            "pull request (operating model section 5, PC-05). Do not pursue the denied effect through another "
-            "tool, wording or session (section 11); record the denial in your log entry "
-            "(tools/guard_report.py).")
+            "This is the repository's written rule, not a classifier verdict. It changes only through a pull "
+            f"request with a checker verdict ({WO}). Do not pursue the denied effect through another "
+            "tool, wording or session; record the denial in your log entry (tools/guard_report.py).")
 
 
 def main():
@@ -1570,6 +1569,6 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except Exception as exc:  # fail closed: on PreToolUse exit 2 blocks the call
-        print(f"tool_allowlist: guard error {type(exc).__name__}; blocking (operating model section 9).",
+        print(f"tool_allowlist: guard error {type(exc).__name__}; blocking ({WO}, fail closed).",
               file=sys.stderr)
         sys.exit(2)

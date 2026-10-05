@@ -1,3 +1,5 @@
+Superseded on 2026-10-05 by D-010; not instructions.
+
 # W-C00-12 run brief: router for the holistic redesign of the builder's working system
 
 **What this file is.** This is the task brief for the run that carries out W-C00-12. It was written on 2026-10-03 by builder session `session_016Hi3ZYgAf2amYNGc43a3tr`, the session Batu talks to. It routes to the material; it does not repeat it.

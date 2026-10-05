@@ -1,3 +1,5 @@
+Superseded on 2026-10-05 by D-010; not instructions.
+
 # Hand-over: the session that talks with Batu
 
 **Written** 2026-10-03, about 22:25Z, by `session_016Hi3ZYgAf2amYNGc43a3tr`. That session had been Batu's conversation partner since 2026-10-01. It hands over because its context is about 50% used, after one compaction, and because it was started with two repositories (see §6, item 7).

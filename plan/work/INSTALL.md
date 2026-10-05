@@ -11,4 +11,4 @@ purpose_chain:
 
 # Installation root
 
-The top of every purpose chain that `tools/records.py brief` prints. It points to the plan; it restates no purpose text.
+The top of every purpose chain (`purpose_chain` above). It points to the plan; it restates no purpose text.
