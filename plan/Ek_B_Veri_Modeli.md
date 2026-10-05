@@ -1,379 +1,381 @@
-# Ek B — Veri modeli
+# Appendix B — Data model
 
-**Sürüm:** 1.1 (plan 2.1 ile uyumlu) · **Tarih:** 29 Eylül 2026 · **Statü:** [Öneri]. C02'de test projesinde uygulanır; kuralların çalıştığı Ek C testleriyle gösterilir.
+**Version:** 1.1 (consistent with plan 2.1) · **Date:** 29 September 2026 · **Status:** [Proposal]. Implemented in the test project in C02; that the rules work is shown with the Appendix C tests.
 
-**Kaynaklar:** P4 v4 raporu §8–§18 ve §30 (durum eksenleri, hazır olma ve üstlenme, talep-katkı-kullanım, bilgi aileleri, bağlam sözleşmeleri, ilişki sorguları, işlem niyeti, yayın, kurtarma, bileşik ürün, öğrenme); P5 v2 rehberi §7 (nesne tablosu); kurulum planı 2.0 Bölüm 4 ve 6 (bu sürümde eklenen aileler: karar kuralları, gereksiz önkoşul kuralı, öğrenme, sınav koşusu, kullanıcı modeli, kısıt, emek politikası, çıkmaz yol, sızıntı parmak izi).
+**Sources:** P4 v4 report §8–§18 and §30 (state axes, readiness and claim, request-contribution-use, knowledge families, context contracts, relation queries, operation intent, release, recovery, composite product, learning); P5 v2 guide §7 (object table); installation plan 2.0 Sections 4 and 6 (families added in this version: decision rules, unnecessary-prerequisite rule, learning, exam run, user model, constraint, effort policy, dead end, leak fingerprint).
 
-**Okuyucu:** Kurucu. Alan adları İngilizce, açıklamalar Türkçedir.
-
----
-
-## 1. Değişmez ilkeler
-
-Bu ilkeler her aile için geçerlidir; bir aile bunlardan birini bozuyorsa tasarım hatasıdır.
-
-1. **Tek yazma yolu.** Ajanlar ve işler yalnız `devos_api` şemasındaki fonksiyonları çağırır. `devos_private` şemasındaki tablolara doğrudan yazma bütün uygulama rollerine kapalıdır (erişim kuralları + yetki kaldırma). Fonksiyonlar tanımlayıcı yetkisiyle çalışır ve çağıranın rolünü kendileri denetler.
-2. **Durum ve olay birlikte.** Her durum değişikliği aynı işlem içinde bir olay (`event`) üretir; işlem geri alınırsa ikisi birlikte geri alınır (F06). Aynı değişikliğin birebir tekrarı yeni olay üretmez.
-3. **Revizyon.** Anlamı olan her nesne bir `revision` numarası taşır. Güncelleme eski revizyonu değiştirmez; yeni revizyon ve gerekçe üretir. Başka nesnelere yapılan atıflar hangi revizyona yapıldığını taşır.
-4. **Kapsam ve revizyon denetimi.** Bir işlem, işin kapsamı ile hedefin ve kaynağın kapsamını ve revizyonunu birlikte denetler. Yalnız birini denetlemek F05 hatasıdır.
-5. **Durum eksenleri ayrıdır.** Bir işin yürütme, geçerlilik, kabul ve dış etki durumları ayrı alanlardır; tek bir "bitti" alanı yoktur.
-6. **Üç değerli mantık.** Hazır olma ve destek grupları doğru, yanlış ya da bilinmiyor değerini alır. ALL grubunda bir yanlış sonucu yanlış yapar; yanlış yokken bilinmiyor varsa sonuç bilinmiyordur. ANY grubunda bir doğru yeterlidir; doğru yokken bilinmiyor varsa sonuç bilinmiyordur. Boş grup hazır sayılmaz.
-7. **Kısa işlem.** Ajanın uzun çalışması boyunca veritabanı işlemi açık tutulmaz. Ajan değişmez bir girdi anlık görüntüsüne dayanır; sonunda kısa bir işlem kabul ya da çatışma üretir. Çatışma çalışmayı çöpe atmaz; sonuç aday olarak korunur.
-8. **Kimlik zinciri.** Rol sınıfı, çağrının taşıdığı **ortam belirtecinden** çıkarılır (belirtecin yalnız özeti `env_tokens` tablosunda durur). Bir işle ilgili her etki, `claim` sırasında yalnız o oturuma dönen **üstlenme belirtecini** ister (özeti `assignment` kaydında durur). Oturum kimliği ve rol adı beyandır: kayda yazılır, `declared` olarak etiketlenir, yetki kararı bunlara dayanmaz. Yetki ayrılığı kuralları ortam düzeyinde tanımlanır. Yetki dönemi ayrı bir kavramdır.
-9. **Yetki dönemi.** Tek bir küresel `authority_epoch` sayacı vardır. Geri yükleme ve anahtar değişimi dönemi artırır; eski dönemin üstlenmeleri ve izinleri etki üretemez.
-10. **Gizlilik sınıfı.** Her bilgi kaydı `public` ya da `private` sınıfı taşır. Özel kaynaktan türetilen içerik varsayılan olarak `private_derived` sınıfındadır; açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS'un tasarım belgeleri girebilir; kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım giremez (plan, K8). İkinci model ailesine yalnız `public` içerik gider.
-11. **Silme.** Bir kaynağın saklama izni geri çekildiğinde ham gövde, parçalar, vektörler, arama dizinleri, bağlam paketleri ve türetilmiş alıntılar birlikte ele alınır. Yalnız "silindi" işareti koymak yeterli değildir. Yedekler geri yüklendiğinde güncel saklama politikası yeniden uygulanmadan arama ve bağlam hizmeti açılmaz.
-12. **Biçim kapısı.** Veritabanı bir alanın dolu olduğunu zorlayabilir, içeriğinin anlamlı olduğunu değil. Bu tür kurallar `format_gate` diye etiketlenir; içerik denetim ortamında ve örneklemle değerlendirilir.
-13. **Dil.** Kayıtların ve alanların dili İngilizcedir; yalnız Batu'nun sözlerinin aslı (`*_original_tr`) ve Batu'ya gösterilen metinler (`*_tr`) Türkçedir. Kütüphaneden gelen kaynaklar kendi dilleriyle saklanır ve `language` alanı taşır.
+**Reader:** Builder. Field names are in English, descriptions in Turkish.
 
 ---
 
-## 2. Veritabanı rolleri ve erişim
+## 1. Invariant principles
 
-| Veritabanı rolü | Kim kullanır | Ne yapabilir | Yapamaz |
+These principles hold for every family; if a family breaks one of them, that is a design error.
+
+1. **Single write path.** Agents and jobs call only the functions in the `devos_api` schema. Writing directly to the tables in the `devos_private` schema is closed to all application roles (access rules + revoking privileges). The functions run with definer rights and check the caller's role themselves.
+2. **State and event together.** Every state change produces an event (`event`) within the same transaction; if the transaction is rolled back, both are rolled back together (F06). An exact repeat of the same change produces no new event.
+3. **Revision.** Every meaningful object carries a `revision` number. An update does not change the old revision; it produces a new revision and a reason. References to other objects carry which revision they refer to.
+4. **Scope and revision check.** An operation checks the work's scope together with the scope and revision of the target and of the source. Checking only one of them is the F05 failure.
+5. **State axes are separate.** A work item's execution, validity, acceptance and external-effect states are separate fields; there is no single "done" field.
+6. **Three-valued logic.** Readiness and support groups take the value true, false or unknown. In an ALL group, one false makes the result false; if there is no false but there is an unknown, the result is unknown. In an ANY group, one true is enough; if there is no true but there is an unknown, the result is unknown. An empty group does not count as ready.
+7. **Short transaction.** No database transaction is held open during the agent's long work. The agent relies on an immutable input snapshot; at the end, a short transaction produces acceptance or a conflict. A conflict does not throw the work away; the result is kept as a candidate.
+8. **Identity chain.** The role class is derived from the **environment token** the call carries (only the token's hash is kept in the `env_tokens` table). Every effect concerning a work item requires the **claim token**, which is returned during `claim` to that session only (its hash is kept in the `assignment` record). The session ID and the role name are declarations: they are written to the record and labelled `declared`, and no authority decision rests on them. Separation-of-authority rules are defined at the environment level. The authority epoch is a separate concept.
+9. **Authority epoch.** There is a single global `authority_epoch` counter. A restore and a key change increment the epoch; the claims and permissions of an old epoch cannot produce effects.
+10. **Privacy class.** Every knowledge record carries the class `public` or `private`. Content derived from a private source is in the `private_derived` class by default; DevOS's own synthesis, source identifiers and DevOS's design documents may enter the public repository; verbatim or near-in-meaning transfer from the research content in the library, and transfer from conversation transcripts, may not (plan, K8). Only `public` content goes to the second model family.
+11. **Deletion.** When a source's retention permission is withdrawn, the raw body, chunks, vectors, search indexes, context packages and derived quotations are handled together. Merely setting a "deleted" mark is not enough. When backups are restored, the search and context service does not open until the current retention policy has been reapplied.
+12. **Format gate.** The database can enforce that a field is filled, not that its content is meaningful. Such rules are labelled `format_gate`; the content is assessed in the audit environment and by sampling.
+13. **Language.** The language of records and fields is English; only the original of Batu's words (`*_original_tr`) and the texts shown to Batu (`*_tr`) are in Turkish. Sources coming from the library are stored in their own languages and carry a `language` field.
+
+---
+
+## 2. Database roles and access
+
+| Database role | Who uses it | What it can do | Cannot do |
 |---|---|---|---|
-| `devos_kurulum` | Kurucu (A aşaması) | Kurulum işlemleri; C12'de kapatılır | Belirteç üretme |
-| `devos_calisma` | Çalışma ortamı | Görev dışındaki iş açma, ihtiyaç ve karar kaydı, üstlenme, katkı ve aday yazma, bulgu, bağlam, öneri, dış etki niyeti | Bağlayıcı hüküm, kabul, sürüm etkinleştirme, kural değişikliğini onaylama, sınav kayıtlarını okuma |
-| `devos_denetim` | Denetim ortamı | İnceleme, hüküm, kabul, kural ve kontrol değişikliği incelemesi, yüksek etkili birleşme için yetki onayı, kurtarma aşaması ilerletme | Ürün ve aday yazma, sınav kayıtlarını okuma |
-| `devos_sinav` | Sınav ortamı | Sınav görevlerini sıradan iş olarak açma, sınav koşusu ve yeterlik yazma | Ürün yazma, hüküm yazma |
-| `devos_ingest` | `devos-backup`'taki aktarım işi | Yalnız kaynak, parça, vektör ve parmak izi yazma | Diğer her şey |
-| `devos_ci` | PR kontrolleri ve yayın işi | Okuma: inceleme hükmü, karar, güncel yetki ve dönem, parmak izi eşleşmesi; gözlem yazma | Hüküm ya da karar yazma |
-| `devos_backup` | Yedek işi | Salt okuma; yalnız `mark_exported` fonksiyonu | Diğer her yazma |
-| `devos_batu` | Yalnız B3 (b) seçilirse: karar paneli | Yalnız kendisine atanmış kararları okuma ve cevaplama | Diğer her şey |
+| `devos_kurulum` | Builder (stage A) | Installation operations; closed in C12 | Issuing tokens |
+| `devos_calisma` | Working environment | Opening work other than missions, need and decision records, claiming, writing contributions and candidates, findings, context, proposals, external-effect intents | Binding verdicts, acceptance, release activation, approving rule changes, reading exam records |
+| `devos_denetim` | Audit environment | Reviews, verdicts, acceptance, review of rule and control changes, authority approval for high-impact merges, advancing recovery stages | Writing products and candidates, reading exam records |
+| `devos_sinav` | Exam environment | Opening exam tasks as ordinary work, writing exam runs and competence | Writing products, writing verdicts |
+| `devos_ingest` | The transfer job in `devos-backup` | Writing only sources, chunks, vectors and fingerprints | Everything else |
+| `devos_ci` | PR checks and the release job | Reading: review verdicts, decisions, current authority and epoch, fingerprint matches; writing observations | Writing verdicts or decisions |
+| `devos_backup` | The backup job | Read only; only the `mark_exported` function | Every other write |
+| `devos_batu` | Only if B3 (b) is chosen: the decision panel | Reading and answering only the decisions assigned to it | Everything else |
 
-- Ajan ortamlarında Supabase'in gizli (servis) anahtarı bulunmaz; ortamlar herkese açık anahtar ve ortam belirteci taşır. Her `devos_api` fonksiyonu önce belirteci doğrular ve rol sınıfını buradan çıkarır.
-- Belirteçler `devos_private.issue_env_token(role_class)` ile üretilir; bu fonksiyonu yalnız proje sahibi (Batu, Supabase panelinden) çalıştırabilir. Fonksiyon belirteci bir kez döndürür ve yalnız özetini saklar. `revoke_env_token` aynı yetkiyle çalışır ve yetki dönemini artırır.
-- Her fonksiyonun başında izin verilen roller denetlenir. Rol listesi fonksiyonun tanımında durur ve Ek C'deki yetki testleriyle sınanır.
+- Agent environments do not hold Supabase's secret (service) key; environments carry the public (publishable) key and an environment token. Every `devos_api` function first verifies the token and derives the role class from it.
+- Tokens are issued with `devos_private.issue_env_token(role_class)`; only the project owner (Batu, from the Supabase dashboard) can run this function. The function returns the token once and stores only its hash. `revoke_env_token` runs with the same authority and increments the authority epoch.
+- At the start of every function, the permitted roles are checked. The role list sits in the function's definition and is tested with the authorization tests in Appendix C.
 
 ---
 
-## 3. Kayıt aileleri
+## 3. Record families
 
-Her aile için: amaç, temel alanlar, kurallar, durumlar ve geçişler. "Kim" sütunu Bölüm 2'deki rolleri kullanır.
+For each family: purpose, core fields, rules, states and transitions. The "Who" column uses the roles in Section 2.
 
-### 3.1 Mission — yetkili amaç
+### 3.1 Mission — authorized purpose
 
-**Alanlar:** `id`, `revision`, `purpose`, `scope`, `constraints` (Constraint atıfları), `acceptance` (kabul sınırı), `owner_authority` (Batu'nun karar kaydına atıf), `status` (active / paused / closed).
+**Fields:** `id`, `revision`, `purpose`, `scope`, `constraints` (references to Constraint), `acceptance` (acceptance boundary), `owner_authority` (reference to Batu's decision record), `status` (active / paused / closed).
 
-**Kurallar:** Görev ancak Batu'ya ait bir kararla açılır ya da genişletilir. İç işlerin açılması görev kapsamını genişletemez.
+**Rules:** A mission is opened or widened only by a decision that belongs to Batu. Opening internal work cannot widen the mission's scope.
 
-### 3.2 Need ve Inquiry — ihtiyaç ve keşif
+### 3.2 Need and Inquiry — need and discovery
 
-**Alanlar:** `id`, `mission_ref`, `condition` (neyin eksik olduğu), `origin` (hedefin gereği / seçilen yöntemin gereği / yalnız faydalı), `method_ref`, `why_needed` (**zorunlu**: hangi karar ya da eylem bu olmadan yanlış olur), `evidence_for`, `evidence_against`, `assumptions`, `alternatives` (en az bir alternatif yol ya da "alternatif yok" gerekçesi), `consumer`, `return_to`, `uncertainty`, `status` (open / investigating / resolved / dropped / superseded).
+**Fields:** `id`, `mission_ref`, `condition` (what is missing), `origin` (required by the goal / required by the chosen method / merely useful), `method_ref`, `why_needed` (**mandatory**: which decision or action would be wrong without it), `evidence_for`, `evidence_against`, `assumptions`, `alternatives` (at least one alternative path, or the reason for "no alternative"), `consumer`, `return_to`, `uncertainty`, `status` (open / investigating / resolved / dropped / superseded).
 
-**Kurallar:**
-- `why_needed` boşsa kayıt reddedilir (gereksiz önkoşul freni, plan K-1).
-- `origin = method` olan bir ihtiyaç, yöntem değişince otomatik olarak yeniden değerlendirmeye düşer.
-- Inquiry sonucu `return_to`'ya bağlanır; sonuç dönmeden inquiry kapatılamaz.
+**Rules:**
+- If `why_needed` is empty, the record is rejected (the unnecessary-prerequisite brake, plan K-1).
+- A need with `origin = method` automatically falls back into re-evaluation when the method changes.
+- An Inquiry's result is linked to `return_to`; an inquiry cannot be closed before the result has returned.
 
-### 3.3 Work ve WorkStanding — iş ve durumları
+### 3.3 Work and WorkStanding — work and its states
 
-**Work alanları:** `id`, `revision`, `mission_ref`, `mission_revision`, `scope`, `purpose`, `input_refs`, `target_refs`, `consumer`, `return_to`, `stop_rule`, `acceptance_ref`, `impact_class` (routine / high), `effort_policy_ref`, `method_refs`.
+**Work fields:** `id`, `revision`, `mission_ref`, `mission_revision`, `scope`, `purpose`, `input_refs`, `target_refs`, `consumer`, `return_to`, `stop_rule`, `acceptance_ref`, `impact_class` (routine / high), `effort_policy_ref`, `method_refs`.
 
-**WorkStanding (ayrı eksenler):**
+**WorkStanding (separate axes):**
 
-| Eksen | Değerler |
+| Axis | Values |
 |---|---|
 | `execution` | planned, ready, running, waiting, finished, cancelled |
 | `qualification` | current, stale, needs_review |
 | `acceptance` | proposed, accepted, rejected |
 | `effect` | none, prepared, observed, unknown |
 
-**Kurallar:**
-- `ready` bir sorgunun anlık sonucudur; üstlenme işlemi aynı koşulları yeniden denetler.
-- `execution = finished` iken `acceptance` otomatik `accepted` olmaz.
-- Bir işin girdisi değişirse `qualification = stale` olur; eski çıktı silinmez.
-- Yeniden açma: dayanağı değişen işler aday inceleme kümesine alınır; otomatik iptal edilmez.
-- İptal edilmiş üstlenmenin geç sonucu aday kanıt olarak saklanır, güncel ürüne karışmaz.
+**Rules:**
+- `ready` is the momentary result of a query; the claim operation re-checks the same conditions.
+- When `execution = finished`, `acceptance` does not automatically become `accepted`.
+- If a work item's input changes, it becomes `qualification = stale`; the old output is not deleted.
+- Reopening: work items whose basis has changed are taken into the candidate review set; they are not cancelled automatically.
+- The late result of a cancelled claim is kept as candidate evidence and does not mix into the current product.
 
-### 3.4 Relation — türlendirilmiş ilişki
+### 3.4 Relation — typed relation
 
-**Alanlar:** `id`, `type`, `from_ref` (+revizyon), `to_ref` (+revizyon), `scope`, `hard` (hazır olmayı etkiler mi), `group_id` ve `group_mode` (ALL / ANY), `validity` (current / stale / retracted), `use` (hangi kullanım için geçerli).
+**Fields:** `id`, `type`, `from_ref` (+revision), `to_ref` (+revision), `scope`, `hard` (whether it affects readiness), `group_id` and `group_mode` (ALL / ANY), `validity` (current / stale / retracted), `use` (which use it is valid for).
 
-**İlişki türleri (başlangıç listesi):** `depends_on` (sert bağımlılık), `supports`, `challenges`, `derived_from` (kaynak türetme), `supersedes`, `uses` (katkı kullanımı), `part_of` (bileşik ürün), `reviews`, `blocks_effect`, `about` (açıklayıcı).
+**Relation types (initial list):** `depends_on` (hard dependency), `supports`, `challenges`, `derived_from` (source derivation), `supersedes`, `uses` (contribution use), `part_of` (composite product), `reviews`, `blocks_effect`, `about` (descriptive).
 
-**Kurallar:**
-- Sert bağımlılıklarda döngü reddedilir; açıklayıcı ilişkilerde döngü serbesttir.
-- Aynı ilişkinin birebir tekrarı yeni kayıt ve olay üretmez.
-- Bir destek kaynağı bayatlayınca destekledikleri otomatik yanlış sayılmaz; destek yeterliği yeniden değerlendirmeye düşer.
+**Rules:**
+- In hard dependencies a cycle is rejected; in descriptive relations a cycle is allowed.
+- An exact repeat of the same relation produces no new record and no new event.
+- When a supporting source goes stale, what it supports is not automatically counted as false; the sufficiency of the support falls back into re-evaluation.
 
-### 3.5 Assignment — üstlenme
+### 3.5 Assignment — claim
 
-**Alanlar:** `id`, `work_ref`, `work_revision`, `declared_session_id` (beyan), `role_class` (belirteçten), `claim_token_hash`, `generation` (aynı iş için kaçıncı üstlenme), `authority_epoch`, `lease_expires_at`, `last_heartbeat_at`, `status` (active / released / expired / revoked).
+**Fields:** `id`, `work_ref`, `work_revision`, `declared_session_id` (declared), `role_class` (from the token), `claim_token_hash`, `generation` (the ordinal number of this claim for the same work item), `authority_epoch`, `lease_expires_at`, `last_heartbeat_at`, `status` (active / released / expired / revoked).
 
-**Kurallar:**
-- Bir iş için aynı anda tek aktif üstlenme olabilir; bu, veritabanı düzeyinde benzersizlik kısıtıyla zorlanır.
-- Oturum düzenli yaşam sinyali gönderir; süre dolarsa üstlenme `expired` olur ve iş yeniden hazır olabilir.
-- Etki üreten her işlem üstlenme belirtecini ister ve üstlenmenin hâlâ aktif, kuşağının güncel ve döneminin geçerli olduğunu denetler. Aynı ortamdaki başka bir oturum başkasının üstlenmesiyle işlem yapamaz.
+**Rules:**
+- A work item can have only one active claim at a time; this is enforced at database level by a uniqueness constraint.
+- The session sends a regular liveness signal; if the time runs out, the claim becomes `expired` and the work item can become ready again.
+- Every operation that produces an effect requires the claim token and checks that the claim is still active, its generation current and its epoch valid. Another session in the same environment cannot carry out an operation with someone else's claim.
 
-### 3.6 Grant — izin
+### 3.6 Grant — permission
 
-**Alanlar:** `id`, `issuer`, `subject` (rol sınıfı ya da üstlenme), `scope`, `permitted_effects`, `revision`, `expires_at`, `revoked_at`, `authority_epoch`.
+**Fields:** `id`, `issuer`, `subject` (role class or claim), `scope`, `permitted_effects`, `revision`, `expires_at`, `revoked_at`, `authority_epoch`.
 
-**Kurallar:** İzin, işin serbest metninden türetilmez. Geri alınmış izinle hazırlık ya da yeniden deneme reddedilir. Bir işlem makbuzunu okumak, etkiyi yeniden yetkilendirmek değildir.
+**Rules:** A permission is not derived from the work's free text. Preparation or a retry with a revoked permission is rejected. Reading an operation receipt is not re-authorizing the effect.
 
-### 3.7 Request, Contribution, UseReceipt — talep, katkı, kullanım
+### 3.7 Request, Contribution, UseReceipt — request, contribution, use
 
-**Request alanları:** `id`, `sender_work`, `recipient` (iş ya da rol), `requested_contribution`, `parent_decision`, `scope`, `source_depth`, `format`, `urgency`, `deadline_reason`, `return_to`, `status` (sent / accepted / narrowed / rejected / fulfilled / withdrawn).
+**Request fields:** `id`, `sender_work`, `recipient` (work item or role), `requested_contribution`, `parent_decision`, `scope`, `source_depth`, `format`, `urgency`, `deadline_reason`, `return_to`, `status` (sent / accepted / narrowed / rejected / fulfilled / withdrawn).
 
-**Contribution alanları:** `id`, `request_ref`, `content_ref` (ürün ya da bulgu revizyonları), `scope`, `rationale`, `uncertainty`, `intended_use`, `qualifiers`, `limitations`, `status` (candidate / delivered / superseded).
+**Contribution fields:** `id`, `request_ref`, `content_ref` (product or finding revisions), `scope`, `rationale`, `uncertainty`, `intended_use`, `qualifiers`, `limitations`, `status` (candidate / delivered / superseded).
 
-**Alt ajan görev tanımı (`Request` içinde, oturum içi talepler için de):** `objective` ve bağlı olduğu karar, `expected_output_format`, `sources_and_tools`, `boundaries` (yapmayacakları), `effort_budget`, `write_target` (sonucun yazılacağı kayıt), `writer` (bu ürünün tek yazarı mı, yalnız okuyucu mu).
+**Subagent task definition (inside `Request`, also for requests within a session):** `objective` and the decision it is tied to, `expected_output_format`, `sources_and_tools`, `boundaries` (what it will not do), `effort_budget`, `write_target` (the record the result is written to), `writer` (whether it is the single writer of this product or only a reader).
 
-**UseReceipt alanları:** `id`, `consumer_work`, `consumer_revision`, `contribution_ref`, `disposition` (used / used_conditionally / not_used / opened_question), `rationale`, `changed_decision_ref`.
+**UseReceipt fields:** `id`, `consumer_work`, `consumer_revision`, `contribution_ref`, `disposition` (used / used_conditionally / not_used / opened_question), `rationale`, `changed_decision_ref`.
 
-**Kurallar:**
-- Kullanım kaydını yalnız tüketici yazar; üretici tüketici adına yazamaz.
-- Aynı talebin yeniden teslimi yeni iş başlatmaz; aynı kimlikle farklı içerik çatışma olarak görünür.
-- "Cevap geldi" ile "kullanıldı" ayrıdır.
+**Rules:**
+- Only the consumer writes the use receipt; the producer cannot write it on the consumer's behalf.
+- Redelivery of the same request does not start new work; different content under the same ID shows up as a conflict.
+- "An answer came" and "used" are separate.
 
-### 3.8 Source, Chunk, Finding — kaynak, parça, bulgu
+### 3.8 Source, Chunk, Finding — source, chunk, finding
 
-**Üç ayrı alan (her kaynak ve bulgu için):** `source_type` (foundation / candidate_study / context / exploration / historical_record / archived_report / legacy_repo), `epistemic_status` (observation / user_decision / inference / hypothesis / proposal), `current_authority` (can_open_work / instruction / information_only). Eski bir gerçek gözlem tarihsel bir belgede durduğu için hipoteze dönüşmez; eski bir karar tarihsel olduğu için bugün talimat sayılmaz.
+**Three separate fields (for every source and finding):** `source_type` (foundation / candidate_study / context / exploration / historical_record / archived_report / legacy_repo), `epistemic_status` (observation / user_decision / inference / hypothesis / proposal), `current_authority` (can_open_work / instruction / information_only). An old genuine observation does not turn into a hypothesis by standing in a historical document; an old decision, being historical, does not count as an instruction today.
 
-**Gövde okuma:** `read_source(source_ref, revision, span)` kaynağın tam gövdesini ya da istenen aralığını döndürür; gizlilik süzgecinden geçer; okuma `DispatchReceipt` olarak kaydedilir.
+**Body reading:** `read_source(source_ref, revision, span)` returns the full body of the source or the requested span; it passes through the privacy filter; the read is recorded as a `DispatchReceipt`.
 
-**Source alanları:** `id`, `revision`, `origin_repo`, `origin_path`, `origin_commit`, `branch`, `body_ref` (dosya deposundaki gövde), `content_owner`, `kind` (original / derived), `authority_status` (foundation / candidate / context / protocol_input / exploratory / historical / historical_trial / exploratory_note), `privacy_class`, `language`, `retention` (keep / archive / retract), `ingested_at`.
+**Source fields:** `id`, `revision`, `origin_repo`, `origin_path`, `origin_commit`, `branch`, `body_ref` (the body in file storage), `content_owner`, `kind` (original / derived), `authority_status` (foundation / candidate / context / protocol_input / exploratory / historical / historical_trial / exploratory_note), `privacy_class`, `language`, `retention` (keep / archive / retract), `ingested_at`.
 
-**Chunk alanları:** `id`, `source_ref`, `source_revision`, `span` (başlangıç ve bitiş), `heading_path`, `text`, `tsv_tr`, `tsv_en`, `tsv_simple`, `embedding` (boyutu C04'te seçilen modele göre), `embedding_model`, `privacy_class`, `authority_status`.
+**Chunk fields:** `id`, `source_ref`, `source_revision`, `span` (start and end), `heading_path`, `text`, `tsv_tr`, `tsv_en`, `tsv_simple`, `embedding` (its dimension according to the model chosen in C04), `embedding_model`, `privacy_class`, `authority_status`.
 
-**Finding alanları:** `id`, `revision`, `claim`, `source_spans`, `qualifiers`, `counter_evidence_searched` (zorunlu: aranan ve bulunan karşı kanıt ya da "bulunamadı"), `confidence`, `open_questions`, `fresh_until` (değişebilir bilgiler için), `status` (candidate / reviewed / accepted_for_use / stale / withdrawn), `use_scope`.
+**Finding fields:** `id`, `revision`, `claim`, `source_spans`, `qualifiers`, `counter_evidence_searched` (mandatory: the counter-evidence searched for and found, or "none found"), `confidence`, `open_questions`, `fresh_until` (for information that can change), `status` (candidate / reviewed / accepted_for_use / stale / withdrawn), `use_scope`.
 
-**Kurallar:**
-- Değişebilir bilgi taşıyan bulgu, tarihsiz ya da yalnız ikincil kaynaklı olarak `accepted_for_use` durumuna geçemez.
-- Tarihsel statülü kaynaklar arama sıralamasında güncel bilgiyi gölgelemez; sonuçta statüleri görünür.
-- Parçaların vektörleri ve dizinleri kaynak revizyonuna bağlıdır; kaynak değişince yeniden üretilir.
-- Model değişince bütün vektörler yeniden üretilir; iki modelin vektörü aynı sorguda karıştırılmaz.
+**Rules:**
+- A finding that carries information that can change cannot move to the `accepted_for_use` state undated or with only secondary sources.
+- Sources with a historical status do not overshadow current information in the search ranking; their status is visible in the result.
+- The vectors and indexes of chunks are tied to the source revision; they are regenerated when the source changes.
+- When the model changes, all vectors are regenerated; vectors of two models are not mixed in the same query.
 
-### 3.9 ContextRequest, ContextPackage, DispatchReceipt — bağlam
+### 3.9 ContextRequest, ContextPackage, DispatchReceipt — context
 
-**ContextRequest alanları:** `id`, `revision`, `work_ref`, `assignment_ref`, `target_refs`, `use` (discovery / design / production / review / acceptance / recovery), `mandatory_obligations` (her biri: ne bilinmeli, neden, hangi derinlikte), `access_limit`, `consumer`.
+**ContextRequest fields:** `id`, `revision`, `work_ref`, `assignment_ref`, `target_refs`, `use` (discovery / design / production / review / acceptance / recovery), `mandatory_obligations` (each: what must be known, why, at what depth), `access_limit`, `consumer`.
 
-**ContextPackage alanları:** `id`, `request_ref`, `request_revision`, `obligation_coverage` (her zorunlu ihtiyaç için kaynak parçaları), `unmet_obligations`, `view_ref`, `view_hash`, `unknown_need_checklist_ref`, `cache_key`.
+**ContextPackage fields:** `id`, `request_ref`, `request_revision`, `obligation_coverage` (source chunks for each mandatory need), `unmet_obligations`, `view_ref`, `view_hash`, `unknown_need_checklist_ref`, `cache_key`.
 
-**DispatchReceipt alanları:** `id`, `package_ref`, `session_id`, `runtime_info`, `observed_extra_context` (gözlenebildiği kadarıyla), `limitations`.
+**DispatchReceipt fields:** `id`, `package_ref`, `session_id`, `runtime_info`, `observed_extra_context` (as far as it can be observed), `limitations`.
 
-**Kurallar:**
-- Paketi hazırlayan, zorunlu ihtiyaç listesini kısaltamaz; değişiklik yeni talep revizyonu gerektirir (F02).
-- Karşılanmamış zorunlu ihtiyacı olan paket kabul edilmez; eksik için keşif başlayabilir.
-- Bütçe daraldığında önce tekrar eden ve karar değeri düşük içerik azaltılır; zorunlu karşı kanıt ve yetki sınırı çıkarılmaz.
-- Önbellek anahtarı iş ve kullanım, hedef ve kaynak revizyonları, izin görünümü, rol ve yöntem sürümleri ve dizin sürümünü içerir (Ek G).
+**Rules:**
+- Whoever prepares the package cannot shorten the list of mandatory needs; a change requires a new request revision (F02).
+- A package with an unmet mandatory need is not accepted; discovery may start for what is missing.
+- When the budget tightens, repeated, low-decision-value content is reduced first; mandatory counter-evidence and the authority boundary are not removed.
+- The cache key includes the work item and use, the target and source revisions, the permission view, the role and method versions, and the index version (Appendix G).
 
-### 3.10 Artifact ve Assembly — ürün ve bileşik ürün
+### 3.10 Artifact and Assembly — product and composite product
 
-**Artifact alanları:** `id`, `revision`, `path`, `commit`, `kind`, `status` (candidate / current / superseded).
+**Artifact fields:** `id`, `revision`, `path`, `commit`, `kind`, `status` (candidate / current / superseded).
 
-**Assembly alanları:** `id`, `name`, `design_baseline` (niyet revizyonu), `working_assembly` (gerçekleşmiş parça revizyonlarının sırası), `delivery_baseline` (kabul edilmiş bütün), `snapshot_id`.
+**Assembly fields:** `id`, `name`, `design_baseline` (intent revision), `working_assembly` (the sequence of realized part revisions), `delivery_baseline` (the accepted whole), `snapshot_id`.
 
-**Kurallar:** Tasarımın değişmesi çalışma halinin ya da teslim halinin değiştiği anlamına gelmez. Her inceleme incelediği anlık görüntünün kimliğini taşır.
+**Rules:** A change in the design does not mean that the working state or the delivered state has changed. Every review carries the ID of the snapshot it reviewed.
 
-### 3.11 Review, Verdict, Acceptance — inceleme, hüküm, kabul
+### 3.11 Review, Verdict, Acceptance — review, verdict, acceptance
 
-**Review alanları:** `id`, `target_ref` (+revizyon ya da anlık görüntü), `claim`, `criterion` (+sürüm), `use`, `basis_refs` (hükmün dayandığı kaynak, karar ve politika revizyonlarının tam kümesi), `reviewer_declared_session`, `reviewer_role_class` (belirteçten), `independence_level` (same_session / same_model_other_session / other_view / other_model_family / batu_expert), `view_ref`.
+**Review fields:** `id`, `target_ref` (+revision or snapshot), `claim`, `criterion` (+version), `use`, `basis_refs` (the full set of source, decision and policy revisions the verdict rests on), `reviewer_declared_session`, `reviewer_role_class` (from the token), `independence_level` (same_session / same_model_other_session / other_view / other_model_family / batu_expert), `view_ref`.
 
-**Verdict alanları:** `id`, `review_ref`, `result` (pass / fail / conditional), `evidence_refs`, `objections`, `limits`.
+**Verdict fields:** `id`, `review_ref`, `result` (pass / fail / conditional), `evidence_refs`, `objections`, `limits`.
 
-**Acceptance alanları:** `id`, `target_ref`, `accepted_use`, `scope`, `current_evidence`, `residual_decisions`, `owner_authority`.
+**Acceptance fields:** `id`, `target_ref`, `accepted_use`, `scope`, `current_evidence`, `residual_decisions`, `owner_authority`.
 
-**Kurallar:**
-- İnceleyen oturum, incelenen ürünü üreten ya da değişikliği öneren oturum olamaz.
-- Bağımsızlık düzeyi kayıtta durur; kabul iddiası bu düzeyle sınırlıdır.
-- Kullanıcının bir tercihi onaylaması teknik bir olgunun kanıtı sayılmaz.
-- Bağlayıcı hüküm ve kabul yalnız `devos_denetim` rolüyle yazılır; `devos_calisma` kendi ürettiğini onaylayamaz.
-- `basis_refs`, `criterion` ya da `use` değişince hüküm bayatlar ve yeniden kabul gerekir; aynı ürünün başka bir kullanımına eski hüküm otomatik taşınmaz.
-- Doğrulayıcı aynı eylemde onarım yapmaz: bir `Review` kaydıyla aynı işlemde hedef ürünün yeni revizyonu yazılamaz.
+**Rules:**
+- The reviewing session cannot be the session that produced the reviewed product or proposed the change.
+- The independence level is kept in the record; the acceptance claim is limited to this level.
+- The user's approval of a preference does not count as evidence of a technical fact.
+- Binding verdicts and acceptance are written only with the `devos_denetim` role; `devos_calisma` cannot approve what it produced itself.
+- When `basis_refs`, `criterion` or `use` changes, the verdict goes stale and a new acceptance is needed; the old verdict is not automatically carried over to another use of the same product.
+- The verifier does not repair in the same action: a new revision of the target product cannot be written in the same transaction as a `Review` record.
 
-### 3.12 Operation ve Observation — dış etki
+### 3.12 Operation and Observation — external effect
 
-**Operation alanları:** `id`, `idempotency_namespace`, `idempotency_key`, `effect_class`, `target`, `expected_base`, `payload_hash`, `work_ref`, `assignment_ref`, `generation`, `authority_epoch`, `grant_ref`, `read_set`, `status` (prepared / attempted / observed / conflicted / abandoned), `attempts`.
+**Operation fields:** `id`, `idempotency_namespace`, `idempotency_key`, `effect_class`, `target`, `expected_base`, `payload_hash`, `work_ref`, `assignment_ref`, `generation`, `authority_epoch`, `grant_ref`, `read_set`, `status` (prepared / attempted / observed / conflicted / abandoned), `attempts`.
 
-**Observation alanları:** `id`, `operation_ref`, `source` (gözlemin güvenilir kaynağı), `observed_at`, `observed_effect` (applied / not_applied / unknown), `details`.
+**Observation fields:** `id`, `operation_ref`, `source` (the reliable source of the observation), `observed_at`, `observed_effect` (applied / not_applied / unknown), `details`.
 
-**Kurallar:**
-- Aynı anahtar ve aynı tam niyet: mevcut kayıt döner. Aynı anahtar ve farklı niyet: çatışma (F01).
-- Etki anında güncel iş, bağımlılıklar, üstlenme, izin ve okuma kümesi yeniden denetlenir (F08). Hangi bağımlılıkların okuma kümesine gireceği işlem türüne göre sunucu tarafında belirlenir; ajanın yazdığı kısa bir listeye bırakılmaz.
-- Gözlemler eklenir, silinmez; sonraki "bilinmiyor" önceki "uygulandı"yı silmez (F07).
+**Rules:**
+- Same key and same full intent: the existing record is returned. Same key and different intent: conflict (F01).
+- At the moment of the effect, the current work item, dependencies, claim, permission and read set are re-checked (F08). Which dependencies enter the read set is determined on the server side according to the operation type; it is not left to a short list written by the agent.
+- Observations are appended, not deleted; a later "unknown" does not erase an earlier "applied" (F07).
 
-### 3.13 Event — olay
+### 3.13 Event — event
 
-**Alanlar:** `id`, `aggregate_type`, `aggregate_id`, `aggregate_revision`, `tx_id`, `event_type`, `payload`, `created_at`, `exported_at`.
+**Fields:** `id`, `aggregate_type`, `aggregate_id`, `aggregate_revision`, `tx_id`, `event_type`, `payload`, `created_at`, `exported_at`.
 
-**Kurallar:** Olay kimliğinin büyümesi tek başına küresel sıra değildir; dışa aktarım ve izleme işlem kimliği ve nesne revizyonuyla çalışır. Olay kaydı saatlik dışa aktarımın kaynağıdır.
+**Rules:** The growth of the event ID is not by itself a global order; export and monitoring work with the transaction ID and the object revision. The event record is the source of the hourly export.
 
-### 3.14 Release — kurallar, roller, yöntemler
+### 3.14 Release — rules, roles, methods
 
-**Alanlar:** `id`, `kind` (common_rules / role / method / config), `name`, `version`, `content_ref` (commit), `applicability`, `owner`, `trial_ref` (sınav koşusu), `rollback_to`, `status` (proposed / trial / active / retired).
+**Fields:** `id`, `kind` (common_rules / role / method / config), `name`, `version`, `content_ref` (commit), `applicability`, `owner`, `trial_ref` (exam run), `rollback_to`, `status` (proposed / trial / active / retired).
 
-**Kurallar:** Bir yöntem dosyasının depoda bulunması etkin olduğu anlamına gelmez; etkinlik sürüm kaydıyla belirlenir. Öneren rol aynı sürümü etkinleştiremez.
+**Rules:** A method file being in the repository does not mean that it is active; being active is determined by the release record. The proposing role cannot activate the same release.
 
-### 3.15 Competence ve EvalRun — yeterlik ve sınav
+### 3.15 Competence and EvalRun — competence and exam
 
-**Competence alanları:** `id`, `role`, `task_class`, `model_and_settings`, `tools_and_context_method`, `eval_refs`, `result_summary`, `known_limits`, `retest_triggers`, `valid_for_release`.
+**Competence fields:** `id`, `role`, `task_class`, `model_and_settings`, `tools_and_context_method`, `eval_refs`, `result_summary`, `known_limits`, `retest_triggers`, `valid_for_release`.
 
-**EvalRun alanları:** `id`, `eval_set_id` (yalnız kimlik; içerik `devos-evals`'te), `eval_set_version`, `subject_role`, `subject_release`, `runner_session`, `results` (olumlu ve olumsuz örnekler ayrı), `run_at`.
+**EvalRun fields:** `id`, `eval_set_id` (ID only; the content is in `devos-evals`), `eval_set_version`, `subject_role`, `subject_release`, `runner_session`, `results` (positive and negative examples separately), `run_at`.
 
-**Kurallar:** Model, rol metni, araç seti ya da bağlam yöntemi değişince ilgili yeterlik `retest_required` olur. `EvalRun` ve `Competence` yalnız `devos_sinav` rolüyle yazılır ve okunur. Sınav görevleri çalışma ortamına sıradan `Work` olarak açılır; `Work` kaydında görevin sınav olduğu çalışma ortamının göremeyeceği bir alanda tutulur.
+**Rules:** When the model, the role text, the tool set or the context method changes, the related competence becomes `retest_required`. `EvalRun` and `Competence` are written and read only with the `devos_sinav` role. Exam tasks are opened in the working environment as ordinary `Work`; in the `Work` record, the fact that the task is an exam is kept in a field the working environment cannot see.
 
-**Ortak kanıt zarfı (`EvidenceEnvelope`, bütün kanıtlar için):** `claim`, `target_commit`, `deployment_config_ref`, `criterion_version`, `inputs_ref`, `observations_ref`, `raw_evidence_ref` (özel içerik veritabanında ya da gizli dosya deposunda), `independence_level`, `evidence_layer` (structural / semantic / behavioral), `run_at`. Farklı hedefte ya da sürümde alınmış bir `pass`, yeni kurulumu kapatamaz.
+**Common evidence envelope (`EvidenceEnvelope`, for all evidence):** `claim`, `target_commit`, `deployment_config_ref`, `criterion_version`, `inputs_ref`, `observations_ref`, `raw_evidence_ref` (private content in the database or in private file storage), `independence_level`, `evidence_layer` (structural / semantic / behavioral), `run_at`. A `pass` obtained on a different target or version cannot close the new installation.
 
-### 3.16 UserModel ve Constraint — kullanıcı modeli ve kısıt
+### 3.16 UserModel and Constraint — user model and constraint
 
-**UserModel alanları:** `id`, `domain`, `level` (expert / knowledgeable / limited), `evidence_original_tr` (Batu'nun Türkçe ifadesi, aynen), `evidence_interpretation_en`, `decision_types_owned`, `updated_at`.
+**UserModel fields:** `id`, `domain`, `level` (expert / knowledgeable / limited), `evidence_original_tr` (Batu's Turkish wording, verbatim), `evidence_interpretation_en`, `decision_types_owned`, `updated_at`.
 
-**Constraint alanları:** `id`, `statement` (İngilizce), `statement_original_tr` (Batu'nun Türkçe ifadesi, aynen), `source` (Batu kararı), `kind` (bütçe / araç / kapsam / zaman / diğer), `questionable` (her zaman true), `conflicts` (tespit edilen çelişkiler), `status` (active / revised / withdrawn).
+**Constraint fields:** `id`, `statement` (English), `statement_original_tr` (Batu's Turkish wording, verbatim), `source` (Batu's decision), `kind` (budget / tool / scope / time / other), `questionable` (always true), `conflicts` (contradictions detected), `status` (active / revised / withdrawn).
 
-**Kural:** Bir kısıtla işin gereği arasında çelişki kaydedildiğinde otomatik bir Batu kararı açılır (3.17).
+**Rule:** When a contradiction between a constraint and what the work requires is recorded, a Batu decision is opened automatically (3.17).
 
-### 3.17 Decision — karar
+### 3.17 Decision — decision
 
-**Alanlar:** `id`, `revision`, `class` (routine / high_impact / batu), `question` (İngilizce), `presented_text_tr` (`batu` sınıfında Batu'ya gösterilen Türkçe metin), `answer_original_tr` (Batu'nun cevabı, aynen), `answer_interpretation_en`, `why_this_owner`, `options` (her biri: tanım, amaç, fayda, bedel, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_at`.
+**Fields:** `id`, `revision`, `class` (routine / high_impact / batu), `question` (English), `presented_text_tr` (in the `batu` class, the Turkish text shown to Batu), `answer_original_tr` (Batu's answer, verbatim), `answer_interpretation_en`, `why_this_owner`, `options` (each: description, purpose, benefit, cost, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_at`.
 
-**Kurallar:**
-- `high_impact` ve `batu` sınıfı kararlar, alternatif araştırmasının sonucu (karşılaştırılan seçenekler ya da `single_viable_path_reason`, ya da `open_exploration` durumu), ölçütler, kanıt, varsayımlar, `premises` (öncül envanteri), geri alınabilirlik ve yeniden açma koşulları girilmeden `open` durumuna geçemez (biçim kapısı).
-- `batu` sınıfı kararın cevabı yalnız Batu'nun kimliğinden gelebilir: B3 (a) seçilirse cevap Batu'nun GitHub hesabından geldiği doğrulanarak işlenir; (b) seçilirse yalnız `devos_batu` rolüyle.
-- Yeni karar açılırken ilgili eski kararlar sorgulanır ve kayda bağlanır; eski karar yalnız yeni maddi bilgi ya da değişen hedefle yeniden açılır.
+**Rules:**
+- Decisions of the `high_impact` and `batu` classes cannot move to the `open` state until the result of the alternatives research (the compared options, or `single_viable_path_reason`, or the `open_exploration` state), the criteria, evidence, assumptions, `premises` (premise inventory), reversibility and the reopening conditions have been entered (format gate).
+- The answer to a `batu`-class decision can come only from Batu's identity: if B3 (a) is chosen, the answer is processed after verifying that it came from Batu's GitHub account; if (b) is chosen, only with the `devos_batu` role.
+- When a new decision is opened, related earlier decisions are queried and linked to the record; an earlier decision is reopened only with new material information or a changed goal.
 
-### 3.18 EffortPolicy — emek politikası
+### 3.18 EffortPolicy — effort policy
 
-**Alanlar:** `id`, `work_ref`, `level` (high varsayılan), `expert_assessment_ref` (uzman değerlendirmesi; hiçbir işte boş olamaz), `reduction_reason`, `approved_by_role_class` (`devos_denetim`), `non_removable_steps` (doğrulama, alternatif araştırması, yüksek etkili işlerde dış kaynak araştırması).
+**Fields:** `id`, `work_ref`, `level` (high by default), `expert_assessment_ref` (expert assessment; cannot be empty for any work item), `reduction_reason`, `approved_by_role_class` (`devos_denetim`), `non_removable_steps` (verification, alternatives research, external source research for high-impact work).
 
-**Kural:** `expert_assessment_ref` ve `non_removable_steps` hiçbir işte boşaltılamaz (biçim kapısı); azaltma yalnız denetim ortamının onayıyla.
+**Rule:** `expert_assessment_ref` and `non_removable_steps` cannot be emptied for any work item (format gate); a reduction only with the audit environment's approval.
 
-### 3.19 DeadEnd — çıkmaz yol
+### 3.19 DeadEnd — dead end
 
-**Alanlar:** `id`, `attempted_path`, `context`, `why_abandoned`, `salvaged_knowledge`, `do_not_retry_unless`, `related_refs`.
+**Fields:** `id`, `attempted_path`, `context`, `why_abandoned`, `salvaged_knowledge`, `do_not_retry_unless`, `related_refs`.
 
-**Kural:** Yeni bir iş açılırken benzer çıkmaz yollar aranır ve bulunanlar kayda bağlanır.
+**Rule:** When a new work item is opened, similar dead ends are searched for and those found are linked to the record.
 
-### 3.20 Learning — öğrenme
+### 3.20 Learning — learning
 
-**Alanlar:** `id`, `class` (observation / incident / finding / pattern / failure_class / capability_gap_candidate / capability_gap / good_example / bad_example / eval / method / proposal), `mas_failure_class` (specification / inter_agent_misalignment / verification / none), `statement`, `evidence_refs`, `versions_involved`, `generalization_level`, `applies_when`, `does_not_apply_when`, `status`.
+**Fields:** `id`, `class` (observation / incident / finding / pattern / failure_class / capability_gap_candidate / capability_gap / good_example / bad_example / eval / method / proposal), `mas_failure_class` (specification / inter_agent_misalignment / verification / none), `statement`, `evidence_refs`, `versions_involved`, `generalization_level`, `applies_when`, `does_not_apply_when`, `status`.
 
-**Kurallar:** Kötü örnek, neden kötü olduğunu taşımadan kaydedilemez. Tek bir güçlü olay `capability_gap_candidate` olarak kaydedilebilir; `capability_gap`'e geçiş yeniden üretim, nedensel ayrım ya da karşı örnek kanıtı ister (olay sayısı tek başına yeterli değildir).
+**Rules:** A bad example cannot be recorded without carrying why it is bad. A single strong event can be recorded as `capability_gap_candidate`; the move to `capability_gap` requires evidence of reproduction, causal separation or a counter-example (the number of events alone is not enough).
 
-### 3.21 Budget ve Usage — sınır ve kullanım
+### 3.21 Budget and Usage — limit and usage
 
-**Alanlar:** `id`, `surface` (routine_runs / session_usage / supabase_db_size / storage / actions_minutes / second_model_quota), `limit_value`, `limit_source` (hesaptan okunan ya da belge), `observed_usage`, `observed_at`, `reservations`, `uncertainty`.
+**Fields:** `id`, `surface` (routine_runs / session_usage / supabase_db_size / storage / actions_minutes / second_model_quota), `limit_value`, `limit_source` (read from the account, or documentation), `observed_usage`, `observed_at`, `reservations`, `uncertainty`.
 
-**Kural:** Bir sınırın belirlenen eşiğine yaklaşıldığında karar kaydı açılır; kapsam sessizce daraltılmaz.
+**Rule:** When a limit's set threshold is approached, a decision record is opened; the scope is not narrowed silently.
 
-### 3.22 Recovery — kurtarma
+### 3.22 Recovery — recovery
 
-**Alanlar:** `id`, `backup_ref`, `restored_into_project`, `authority_epoch_before`, `authority_epoch_after`, `revoked_assignments`, `pending_effects_reconciled`, `reopen_stage` (read_only / candidate / publish), `retention_policy_reapplied`.
+**Fields:** `id`, `backup_ref`, `restored_into_project`, `authority_epoch_before`, `authority_epoch_after`, `revoked_assignments`, `pending_effects_reconciled`, `reopen_stage` (read_only / candidate / publish), `retention_policy_reapplied`.
 
-**Kural:** Kurtarma kaydı `reopen_stage` sırasını atlayamaz.
+**Rule:** A recovery record cannot skip the `reopen_stage` order.
 
-### 3.23 LeakFingerprint — sızıntı parmak izi
+### 3.23 LeakFingerprint — leak fingerprint
 
-**Alanlar:** `hash` (özel kaynak parçalarından üretilen kayan pencere özetleri), `source_ref`. İçerik tutulmaz. Yalnız `devos_ingest` yazar, `devos_ci` okur.
+**Fields:** `hash` (rolling-window hashes produced from private source chunks), `source_ref`. No content is kept. Only `devos_ingest` writes; `devos_ci` reads.
 
 ---
 
-### 3.24 SessionRecord ve LaunchRecord — oturum ve başlatma
+### 3.24 SessionRecord and LaunchRecord — session and launch
 
-**SessionRecord alanları:** `id`, `role_class` (belirteçten), `declared_session_id`, `routine_ref`, `started_at`, `last_seen_at`, `ended_at`, `handoff_ref` (yapılandırılmış devir kaydı).
+**SessionRecord fields:** `id`, `role_class` (from the token), `declared_session_id`, `routine_ref`, `started_at`, `last_seen_at`, `ended_at`, `handoff_ref` (structured hand-over record).
 
-**LaunchRecord alanları (acil API tetikleri için):** `id`, `routine_ref`, `reason`, `intent_at`, `returned_session_id`, `result` (started / uncertain / failed / reconciled), `reconciled_by`.
+**LaunchRecord fields (for emergency API triggers):** `id`, `routine_ref`, `reason`, `intent_at`, `returned_session_id`, `result` (started / uncertain / failed / reconciled), `reconciled_by`.
 
-**Kurallar:** Cevabı kaybolan bir başlatma `uncertain` kalır; yeniden denemeden önce oturum listesinde ve `SessionRecord`'da karşılığı aranır. Kör tekrar yasaktır.
+**Rules:** A launch whose response is lost stays `uncertain`; before a retry, its counterpart is searched for in the session list and in `SessionRecord`. Blind repetition is forbidden.
 
-### 3.25 ProtocolAudit — düşünme disiplini denetim izi
+### 3.25 ProtocolAudit — thinking discipline audit trail
 
-**Alanlar:** `id`, `work_ref`, `turn_ref`, `role_class`, `protocol_release`, `results` (D1–D9 için: loaded / skipped + reason / unavailable), `recorded_at`.
+**Fields:** `id`, `work_ref`, `turn_ref`, `role_class`, `protocol_release`, `results` (for D1–D9: loaded / skipped + reason / unavailable), `recorded_at`.
 
-**Kural:** Gerekli bir disiplin `unavailable` ise ilgili iş aynı turda ilerleyemez.
+**Rule:** If a required discipline is `unavailable`, the related work cannot advance in the same turn.
 
-### 3.26 Premise, FrameReview, MechanismAssumption — çerçeve denetimi
+### 3.26 Premise, FrameReview, MechanismAssumption — frame review
 
-**Premise alanları:** `id`, `design_ref`, `statement`, `origin` (user_decision / source / prior_design / assumption), `still_valid`, `from_scratch_test` (sıfırdan seçer miydik?), `reviewed_at`.
+**Premise fields:** `id`, `design_ref`, `statement`, `origin` (user_decision / source / prior_design / assumption), `still_valid`, `from_scratch_test` (would we choose it from scratch?), `reviewed_at`.
 
-**FrameReview alanları:** `id`, `trigger` (squeeze_signal / major_design / phase_gate), `design_ref`, `counter_design_ref` (mevcut tasarımı görmeyen oturumun tasarımı), `comparison`, `decision_ref`.
+**FrameReview fields:** `id`, `trigger` (squeeze_signal / major_design / phase_gate), `design_ref`, `counter_design_ref` (the design of a session that does not see the current design), `comparison`, `decision_ref`.
 
-**MechanismAssumption alanları:** `id`, `mechanism_ref`, `compensates_for` (modelin tek başına yapamadığı şey), `last_tested_at`, `test_result`, `retest_triggers` (model ya da platform değişikliği).
+**MechanismAssumption fields:** `id`, `mechanism_ref`, `compensates_for` (what the model cannot do on its own), `last_tested_at`, `test_result`, `retest_triggers` (model or platform change).
 
-**Kurallar:** Aynı konuda ikinci bir düzeltme mekanizması önerildiğinde (`Learning.class = proposal` ve aynı `failure_class`) bir `FrameReview` işi kendiliğinden açılır. Büyük tasarım kararlarının `Decision` kaydı `premises` taşımadan açılamaz.
+**Rules:** When a second correction mechanism is proposed on the same subject (`Learning.class = proposal` and the same `failure_class`), a `FrameReview` work item is opened by itself. The `Decision` record of a major design decision cannot be opened without carrying `premises`.
 
-### 3.27 EnvToken — ortam belirteci
+### 3.27 EnvToken — environment token
 
-**Alanlar:** `id`, `role_class`, `token_hash`, `issued_at`, `revoked_at`, `authority_epoch`.
+**Fields:** `id`, `role_class`, `token_hash`, `issued_at`, `revoked_at`, `authority_epoch`.
 
-**Kural:** Belirtecin kendisi hiçbir tabloda ve kayıtta tutulmaz.
+**Rule:** The token itself is kept in no table and no record.
 
-## 4. `devos_api` fonksiyonları
+## 4. `devos_api` functions
 
-Her fonksiyon: izin verilen roller, denetlenen koşullar, ürettiği olay. Başarısızlıkta gerekçeli hata döner ve reddedilen deneme kaydedilir.
+Each function: permitted roles, checked conditions, the event it produces. On failure, an error with a reason is returned and the rejected attempt is recorded.
 
-| Grup | Fonksiyonlar | Önemli denetimler |
+| Group | Functions | Key checks |
 |---|---|---|
-| Oturum | `session_brief(role)`, `register_session`, `record_handoff`, `record_launch`, `reconcile_launch` | Rol sınıfı belirteçten; `role` parametresi yalnız hangi rol paketinin yükleneceğini seçer. Belirsiz başlatma kör tekrar edilmez |
-| Görev ve ihtiyaç | `open_mission`, `revise_mission`, `record_need`, `resolve_need` | Görev yalnız Batu kararıyla; ihtiyaçta `why_needed` zorunlu |
-| İş | `admit_work`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` | Kapsam ve revizyon; görev revizyonuna bağ |
-| Hazır olma ve üstlenme | `ready_works()`, `claim(work_id)` → üstlenme belirteci, `heartbeat`, `release` | Tek aktif üstlenme; dönem ve kuşak; etkiler üstlenme belirteci ister |
-| İlişki | `relate`, `retract_relation`, `affected_entities(root, limits)`, `explain_paths(root, target, limits)` | Sert bağımlılıkta döngü reddi; sonuç tamlık bilgisi taşır |
-| Talep-katkı-kullanım | `send_request`, `answer_request`, `deliver_contribution`, `record_use` | Kullanımı yalnız tüketici yazar |
-| Bilgi | `record_finding`, `review_finding`, `search(query, modes, filters)`, `read_source(source, revision, span)`, `ingest_source` (yalnız `devos_ingest`) | Değişebilir bilgide tarih ve birincil kaynak; gizlilik süzgeci önce uygulanır; üç statü alanı |
-| Bağlam | `request_context`, `build_package`, `record_dispatch` | Zorunlu ihtiyaçlar kısaltılamaz |
-| Ürün | `register_artifact`, `update_assembly`, `snapshot_assembly` | Tasarım ve çalışma hali ayrı |
-| İnceleme | `open_review`, `record_verdict`, `accept` | Yalnız `devos_denetim`; `basis_refs` zorunlu; aynı işlemde onarım yok |
-| Dış etki | `prepare_operation`, `record_attempt`, `record_observation` | Tam niyet; etki anında yeniden denetim |
-| Karar | `open_decision`, `answer_decision`, `link_prior_decisions` | Sınıfa göre zorunlu alanlar; cevap kimliği |
-| Öğrenme ve sınav | `record_learning`, `record_eval_run`, `propose_release`, `activate_release`, `rollback_release` | Öneren etkinleştiremez; sınav gerekli |
-| Sınırlar | `record_usage`, `budget_status` | Eşikte karar açılır |
-| Kullanıcı ve politika | `record_constraint`, `revise_constraint`, `update_user_model`, `set_effort_policy`, `record_dead_end`, `grant`, `revoke_grant` | Emek azaltımı yalnız denetim onayıyla; kısıt değişikliği karar kaydıyla |
-| Disiplin ve çerçeve | `record_protocol_audit`, `record_premises`, `open_frame_review`, `record_mechanism_assumption` | Gerekli disiplin yoksa iş ilerlemez; büyük tasarımda öncüller zorunlu |
-| Yedek | `mark_exported` (yalnız `devos_backup`) | Başka yazma yok |
-| Kurtarma | `begin_recovery`, `advance_recovery_stage` | Sıra atlanmaz; dönem artışı |
+| Session | `session_brief(role)`, `register_session`, `record_handoff`, `record_launch`, `reconcile_launch` | Role class from the token; the `role` parameter only selects which role package is loaded. An uncertain launch is not repeated blindly |
+| Mission and need | `open_mission`, `revise_mission`, `record_need`, `resolve_need` | Mission only by Batu's decision; `why_needed` mandatory for a need |
+| Work | `admit_work`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` | Scope and revision; link to the mission revision |
+| Readiness and claim | `ready_works()`, `claim(work_id)` → claim token, `heartbeat`, `release` | Single active claim; epoch and generation; effects require the claim token |
+| Relation | `relate`, `retract_relation`, `affected_entities(root, limits)`, `explain_paths(root, target, limits)` | Cycle rejection in hard dependencies; the result carries completeness information |
+| Request-contribution-use | `send_request`, `answer_request`, `deliver_contribution`, `record_use` | Only the consumer writes the use |
+| Knowledge | `record_finding`, `review_finding`, `search(query, modes, filters)`, `read_source(source, revision, span)`, `ingest_source` (only `devos_ingest`) | Date and primary source for information that can change; the privacy filter is applied first; three status fields |
+| Context | `request_context`, `build_package`, `record_dispatch` | Mandatory needs cannot be shortened |
+| Product | `register_artifact`, `update_assembly`, `snapshot_assembly` | Design and working state separate |
+| Review | `open_review`, `record_verdict`, `accept` | Only `devos_denetim`; `basis_refs` mandatory; no repair in the same transaction |
+| External effect | `prepare_operation`, `record_attempt`, `record_observation` | Full intent; re-check at the moment of the effect |
+| Decision | `open_decision`, `answer_decision`, `link_prior_decisions` | Mandatory fields by class; answer identity |
+| Learning and exam | `record_learning`, `record_eval_run`, `propose_release`, `activate_release`, `rollback_release` | The proposer cannot activate; an exam is required |
+| Limits | `record_usage`, `budget_status` | A decision is opened at the threshold |
+| User and policy | `record_constraint`, `revise_constraint`, `update_user_model`, `set_effort_policy`, `record_dead_end`, `grant`, `revoke_grant` | Effort reduction only with audit approval; constraint change with a decision record |
+| Discipline and frame | `record_protocol_audit`, `record_premises`, `open_frame_review`, `record_mechanism_assumption` | Without a required discipline, work does not advance; premises mandatory in major design |
+| Backup | `mark_exported` (only `devos_backup`) | No other write |
+| Recovery | `begin_recovery`, `advance_recovery_stage` | The order is not skipped; epoch increment |
 
 ---
 
-## 5. Zamanlanmış işler
+## 5. Scheduled jobs
 
-| İş | Sıklık | Çıktısı |
+| Job | Frequency | Output |
 |---|---|---|
-| Hazır iş işaretleme | Her birkaç dakikada | İşlerin hazır durumuna geçmesi (tetik göndermez; oturumlar zamanlanmıştır) |
-| Süresi dolmuş üstlenmeler | Her birkaç dakikada | `expired` üstlenmeler, işin yeniden hazır olması |
-| Kilitlenme taraması | Saatlik | Bekleme döngüleri için karar kaydı |
-| Bayat kayıt ve bağlantı denetimi | Günlük | Bayat bulgular, kırık atıflar için bakım işi |
-| Amaç denetimi | Günlük | Göreve bağı zayıf işler için bakım işi |
-| Yetenek eksikliği taraması | Haftalık | Tekrarlayan hata örüntüleri için öğrenme kaydı |
-| Sınır takibi | Saatlik | Eşik yaklaşınca karar kaydı; routine bütçesi |
-| Sessiz başarısızlık örneklemesi | Haftalık | "Tamamlandı" ve "geçti" sayılmış işlerden örneklem için denetim işi |
-| Varsayım envanteri sınaması | Aylık ve model ya da platform değişikliğinde | `MechanismAssumption` sınama işleri |
-| Kısıt çelişkisi taraması | Her çalışma oturumu açılışında | Koordinatör için kısıt listesi; denetim her incelemede ayrıca bakar |
+| Marking ready work | Every few minutes | Work items moving to the ready state (sends no trigger; sessions are scheduled) |
+| Expired claims | Every few minutes | `expired` claims, the work item becoming ready again |
+| Deadlock scan | Hourly | A decision record for wait cycles |
+| Stale record and link check | Daily | Maintenance work for stale findings and broken references |
+| Purpose audit | Daily | Maintenance work for work items weakly tied to the mission |
+| Capability gap scan | Weekly | A learning record for recurring failure patterns |
+| Limit tracking | Hourly | A decision record when a threshold nears; routine budget |
+| Silent-failure sampling | Weekly | Audit work for a sample of work counted as "completed" and "passed" |
+| Assumption inventory testing | Monthly and on a model or platform change | `MechanismAssumption` testing work |
+| Constraint contradiction scan | At the opening of every working session | A constraint list for the coordinator; the audit also looks separately in every review |
 
-Sıklıklar başlangıç değerleridir; C06 ve C11'deki gözlemlerle gerekçeli olarak değiştirilir.
-
----
-
-## 6. Oturum başlatma sözleşmesi
-
-- Olağan akışta oturumlar zamanlanmış routine'lerle başlar (plan Bölüm 6.4); veritabanı tetik göndermez.
-- Acil durumlarda (Batu'nun beklenen kararı geldi ve iş bekliyor; kurtarma) yedek bütçeden API tetiği kullanılır. Tetik yalnız iş kimliğini gönderir; oturum asıl bilgiyi veritabanından okur.
-- Her tetik `LaunchRecord` olarak kaydedilir; belirsiz sonuç uzlaştırılmadan tekrarlanmaz.
-- Her oturum açılışta `register_session` ile kendini kaydeder.
-- **Bağımsız izleme:** DevOS bileşenlerinden bağımsız bir yol (örneğin `devos-backup`'ta zamanlanmış bir GitHub Actions işi), son oturum kaydının, son yedeğin ve son içe almanın zamanını denetler; beklenen aralık aşılırsa Batu'ya atanmış bir issue açar. Bu yol, routine'lerin kendini kapatmasını ve Actions dakikalarının bitmesini de fark eder. Ayrıca `agentic-os-search`'te makine hesabının yaptığı her commit'i Batu'ya bildirir (tek yazar ilkesinin gözlemi).
+The frequencies are initial values; they are changed, with reasons, on the basis of observations in C06 and C11.
 
 ---
 
-## 7. Arama ayrıntısı
+## 6. Session launch contract
 
-- **Kelime araması:** `tsv_tr` (Türkçe), `tsv_en` (İngilizce), `tsv_simple` (dile bağlı olmayan; teknik terimler ve kimlikler).
-- **Anlam araması:** C04'te seçilen model; sorgu vektörü oturumun kendi makinesinde üretilir.
-- **Birleştirme:** Kelime ve anlam sonuçları sıra tabanlı bir birleştirme yöntemiyle birleştirilir; birleştirme ayarı C04 ölçüsüyle seçilir.
-- **Statü:** Sonuçlar otorite statüsünü taşır; tarihsel kaynaklar aynı ilgideki güncel kaynağın önüne geçmez.
-- **Devam sorguları:** Sınırlı bir ilişki ya da arama sorgusunun devamı aynı anlık görüntüye (snapshot, revizyon, politika) bağlıdır; bu arada veri değişirse devam bilgisi geçersiz olur ve sorgu açıkça yeniden başlar. Farklı anlık görüntülerden gelen parçalar tek bir "tam" sonuç olarak birleştirilmez.
-- **Gizlilik:** Süzgeç aramadan önce uygulanır; bir rolün göremeyeceği sonuçların varlığı da sızdırılmaz. Görülemeyen bölge yüzünden tamlık sınırlıysa bu, içerik açıklanmadan belirtilir.
+- In the normal flow, sessions start through scheduled routines (plan Section 6.4); the database sends no trigger.
+- In emergencies (Batu's awaited decision has arrived and work is waiting; recovery), an API trigger from the reserve budget is used. The trigger sends only the work ID; the session reads the actual information from the database.
+- Every trigger is recorded as a `LaunchRecord`; an uncertain result is not repeated before it is reconciled.
+- Every session registers itself at opening with `register_session`.
+- **Independent monitoring:** A path independent of the DevOS components (for example a scheduled GitHub Actions job in `devos-backup`) checks the time of the last session record, the last backup and the last ingestion; if the expected interval is exceeded, it opens an issue assigned to Batu. This path also notices routines switching themselves off and Actions minutes running out. It also notifies Batu of every commit the machine account makes in `agentic-os-search` (observation of the single-writer principle).
 
 ---
 
-## 8. C02'de kanıtla seçilecek ayrıntılar
+## 7. Search details
 
-Bunlar bu ekte bilinçli olarak açık bırakılmış uygulama ayrıntılarıdır. Her birinde başlangıç önerisi vardır; seçim C02'de, Ek C'deki testlerle ve gerekçesiyle yapılır.
+- **Keyword search:** `tsv_tr` (Turkish), `tsv_en` (English), `tsv_simple` (language-independent; technical terms and identifiers).
+- **Semantic search:** the model chosen in C04; the query vector is produced on the session's own machine.
+- **Merging:** Keyword and semantic results are merged with a rank-based merging method; the merging setting is chosen with the C04 benchmark.
+- **Status:** Results carry their authority status; historical sources do not get ahead of a current source of the same relevance.
+- **Continuation queries:** The continuation of a bounded relation or search query is tied to the same snapshot (snapshot, revision, policy); if the data changes in the meantime, the continuation information becomes invalid and the query restarts explicitly. Parts coming from different snapshots are not merged into a single "complete" result.
+- **Privacy:** The filter is applied before the search; even the existence of results a role cannot see is not leaked. If completeness is limited because of a region that cannot be seen, this is stated without revealing the content.
 
-| Konu | Başlangıç önerisi | Neye göre seçilecek |
+---
+
+## 8. Details to be chosen with evidence in C02
+
+These are implementation details deliberately left open in this appendix. Each has an initial proposal; the choice is made in C02, with the tests in Appendix C and with its reasons.
+
+| Topic | Initial proposal | What the choice will be based on |
 |---|---|---|
-| Eşzamanlılık denetimi | Üstlenmede satır kilidi ve benzersizlik kısıtı; kritik geçişlerde daha sıkı yalıtım | Eşzamanlılık testleri ve hata sıklığı |
-| Revizyon saklama biçimi | Güncel tablo + ekleme yapılan geçmiş tablosu | Sorgu basitliği ve boyut |
-| Vektör dizini | Seçilen modelin boyutuna uygun yaklaşık en yakın komşu dizini | C04 arama ölçüsü ve boyut |
-| Parça boyutu | Başlık yapısına saygılı, yaklaşık bir iki paragraflık parçalar | C04 arama ölçüsü |
-| Ortam belirtecinin veritabanına ulaşma yolu | Claude ortamının API credential özelliğiyle ayrı bir istek başlığında taşınır; `devos_api` fonksiyonları başlığı okuyup özetini `env_tokens` ile karşılaştırır | C01 #3 gözlemi; C02 olumsuz testleri. Başlık yolu çalışmazsa belirteci doğrulayan bir Edge Function kapısı |
+| Concurrency control | Row lock and uniqueness constraint on claiming; stricter isolation on critical transitions | Concurrency tests and failure frequency |
+| Revision storage form | Current table + a history table that is appended to | Query simplicity and size |
+| Vector index | An approximate nearest neighbour index suited to the dimension of the chosen model | C04 search benchmark and size |
+| Chunk size | Chunks of roughly one or two paragraphs that respect the heading structure | C04 search benchmark |
+| How the environment token reaches the database | Carried in a separate request header through the API credential feature of the Claude environment; `devos_api` functions read the header and compare its hash with `env_tokens` | C01 #3 observation; C02 negative tests. If the header path does not work, an Edge Function gate that verifies the token |
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

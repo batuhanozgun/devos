@@ -1,73 +1,75 @@
-# DevOS çalışma düzeni: karşılaştırmalı araştırma
+# DevOS working order: comparative research
 
-**Tarih:** 29 Eylül 2026 · **Soru:** "Ekip ofiste, denetçi ayrı" düzeni (A1 sürüm 2) sağlam bir temele mi dayanıyor, yoksa uydurma bir yapı mı? Bilinen yaklaşımlarla karşılaştırıldığında nerede uyuşuyor, nerede ayrışıyor, neyi düzeltmek gerekiyor?
+**Date:** 29 September 2026 · **Question:** Does the "team in the office, checker apart" working order (A1 version 2) rest on a sound foundation, or is it a made-up structure? Compared with known approaches, where does it agree, where does it diverge, and what needs to be corrected?
 
-**Yöntem:** Anthropic'in kendi yayınları ve ürün belgeleri, bağımsız uygulayıcı ve araştırma kaynakları ve `agentic-os-search` kütüphanesindeki çalışmalar (multi-agent-patterns, gastown, beads, hermes-agent, ecc, harness-engineering-and-evolution) incelendi. Kaynakların güncel ve birincil olmasına öncelik verildi. İkincil kaynaklar öyle belirtildi.
-
----
-
-## 1. Kısa hüküm
-
-Düzenin çekirdeği uydurma değil. Sektörde ve Anthropic'te bugün en çok doğrulanmış kalıbın bir uygulaması: **bir koordinatör + dar kapsamlı işçiler + üretimden ayrı bir değerlendirici + oturum dışında tutulan kalıcı durum + oturumlar arası yapılandırılmış devir.** Aynı kalıp, bağımsız olarak Anthropic'in uzun süreli uygulama geliştirme düzeninde, Claude Code Projects'te, Cognition'ın "gerçekten çalışan" çoklu ajan düzenlerinde ve Gas Town'da görülüyor.
-
-Ama araştırma, düzenin **altı yerde düzeltilmesi** gerektiğini gösterdi (Bölüm 4). Bunların en önemlisi: paralel alt ajanlar yalnız okuma, araştırma ve inceleme yapmalı; bir ürünü yazan her zaman tek olmalı.
+**Method:** Anthropic's own publications and product documents, independent practitioner and research sources, and the studies in the `agentic-os-search` library (multi-agent-patterns, gastown, beads, hermes-agent, ecc, harness-engineering-and-evolution) were examined. Priority was given to sources being current and primary. Secondary sources were marked as such.
 
 ---
 
-## 2. Karşılaştırılan yaklaşımlar
+## 1. Short verdict
 
-| Yaklaşım | Özü | DevOS düzeniyle ilişkisi |
+The core of the working order is not made up. It is an application of the pattern that is the most verified today, in the industry and at Anthropic: **one coordinator + narrowly scoped workers + an evaluator separate from production + persistent state kept outside the session + structured hand-over between sessions.** The same pattern appears, independently, in Anthropic's harness for long-running application development, in Claude Code Projects, in Cognition's multi-agent setups that "actually work", and in Gas Town.
+
+But the research showed that the working order **needs to be corrected in six places** (Section 4). The most important of these: parallel subagents should only read, research and review; a product should always have a single writer.
+
+---
+
+## 2. Approaches compared
+
+| Approach | Essence | Relation to the DevOS working order |
 |---|---|---|
-| **Anthropic, "Building effective agents"** (Aralık 2024) | Beş kalıp: zincirleme, yönlendirme, paralelleştirme, koordinatör-işçi, üretici-değerlendirici. "Basit başla; karmaşıklığı yalnız sonucu gösterilebilir biçimde iyileştiriyorsa ekle." | Çalışma oturumu koordinatör-işçi; denetim ortamı üretici-değerlendirici. **Uyarı:** 18 rol ve çok sayıda kayıt ailesi, "basit başla" ilkesine karşı gerekçelendirilmeli |
-| **Anthropic, çoklu ajanlı araştırma sistemi** (Haziran 2025) | Ana ajan + paralel alt ajanlar geniş araştırmada tek ajandan belirgin biçimde iyi; ama kabaca 15 kat token harcıyor. Alt ajanlara ayrıntılı görev tanımı (amaç, çıktı biçimi, kaynaklar, sınırlar) verilmeli; sonuçlar kalıcı bir yere yazılmalı ki "kulaktan kulağa" bozulma olmasın | Araştırma rolü (DR16) için doğrudan uygun. **Eksik:** alt ajan görev tanımı standardı |
-| **Anthropic, uzun süreli ajanlar için düzen** (Kasım 2025) | Bir başlatıcı ajan ortamı ve iş listesini kurar; sonraki oturumlar her seferinde bir parça ilerler, temiz durumda bırakır, ilerleme dosyası ve commit'lerle devreder | DevOS'un oturum döngüsü ve kapanış disipliniyle birebir uyumlu |
-| **Anthropic, uzun süreli uygulama geliştirmede düzen tasarımı** (Mart 2026) | Planlayıcı + üretici + ayrı değerlendirici. Bağlamı sıfırlayıp yapılandırılmış devir belgesiyle devam etmek, tek oturumda sıkıştırmaya güvenmekten iyi sonuç verebiliyor. **İlke:** "Düzenin her parçası, modelin tek başına yapamadığı bir şeye dair bir varsayım taşır; bu varsayımlar sınanmalı, çünkü yanlış olabilir ve model geliştikçe eskir." Yeni modelle bazı parçalar kaldırılıp düzen sadeleşmiş | Üretici-değerlendirici ayrımı uyumlu. **İki ders:** (1) çok uzun tek oturuma değil, parçalı iş + yapılandırılmış devre güvenilmeli; (2) her mekanizmanın dayandığı varsayım yazılmalı ve düzenli olarak "hâlâ gerekli mi?" diye sınanmalı. Bu, çerçeve körlüğü mekanizmasının ta kendisi |
-| **Claude Code dynamic workflows** (Mayıs 2026) | Claude görev için bir yönetim betiği yazar, çok sayıda paralel alt ajan çalıştırır, her bulguyu bağımsız doğrular; ilerleme kaydedilir, kesilen iş kaldığı yerden sürer. Normal oturumdan belirgin biçimde fazla kullanım harcar | Büyük tarama işleri (kütüphane denetimi, geniş araştırma) için oturum içi bir araç adayı. Bulut oturumunda çalışıp çalışmadığı C01'de sınanmalı |
-| **Claude Code Projects** (Eylül 2026) | Koordinatör konuşması + işçi oturumlar + ortak proje hafızası | Aynı kalıbın ürünleşmiş hali. Tek ortam kullandığı için yetki ayrılığını kendisi sağlamıyor; DevOS'ta yetki ayrılığı zaten ortam dışı anahtarlarla sağlanıyor |
-| **Cognition, "Don't Build Multi-Agents"** (2025) ve **güncellemesi** (Nisan 2026) | Paralel yazan ajanlar birbirinden habersiz örtük kararlar verir ve ürün tutarsızlaşır. Güncelleme: işe yarayan kalıplar, **birden çok ajanın zekâ kattığı ama yazmanın tek kanaldan yapıldığı** düzenler; "tek bir ana döngü durumu taşır, alt ajanlar dar kapsamlı ve durumsuzdur" | **En önemli düzeltme kaynağı.** DevOS'ta paralel alt ajanlar yazma yapmamalı; her ürünün tek bir yazarı olmalı |
-| **MAST: çoklu ajan sistemleri neden başarısız olur** (NeurIPS 2025) | 7 çerçeve ve binlerce iz üzerinde 14 başarısızlık türü, üç sınıf: tanım sorunları (~%42), ajanlar arası uyumsuzluk (~%37), doğrulama eksikliği (~%21). Çoklu ajan sistemlerinin tek ajana göre kazancı çoğu zaman küçük; başarısızlıkların çoğu model değil tasarım kaynaklı | DevOS'un mekanizmaları bu üç sınıfa karşılık vermeli (Bölüm 3). Roller varlıklarını kanıtla hak etmeli |
-| **Loop engineering** (Haziran 2026'da adlandı) | Bir döngünün dört parçası: tetik, hedef, doğrulayıcı, durdurma kuralları. Üreten ile denetleyen ayrı; her döngüde üst sınır, bütçe ve "ilerleme yok" tespiti. **Açık uçlu işlerde darboğaz model değil doğrulayıcıdır** | Tetik (routine), durum (veritabanı), doğrulayıcı (denetim) var. **Eksik:** döngü başına bütçe, üst sınır ve ilerleme yok tespiti. Doğrulayıcı darboğazı, planın U-2 açık sorunuyla aynı şey |
-| **Graph engineering** (2026 ortası) | İş akışını açık bir durum makinesi olarak kurmak: düğümler, geçişler, paylaşılan durum, kontrol noktaları, insan onayı için duraklamalar. "Koordinatör planlar, atar, birleştirir; her işi kendisi yapmaz." "Yalnız birbirinden bağımsız işler paralel çalışmalı" | DevOS karma bir düzen: denetim ve yetki geçişleri veritabanında belirlenimci bir durum makinesi; düğümlerin içindeki düşünme işi ajana bırakılmış. Bu ayrım bilinçli olarak korunmalı |
-| **Gas Town** (kütüphane çalışması) | Aktör kimliği ile çalışan oturum ayrı ömürlerdedir; iş kaydı ile yönetim ayrı katmanlardır; birleştirme ayrı bir sıra rolüyle (Refinery) yapılır; izleyici roller (Witness, Deacon) canlılığı denetler; iş gönderimi ortam kapasitesine bağlıdır | "Rol ≠ oturum" kararını doğruluyor. Birleştirmenin tek sırada yapılması ve kapasiteye duyarlı gönderim DevOS'a uygun |
-| **Hermes Agent** (kütüphane çalışması) | Zamanlanmış iş bir zincir: tanım → belirli çalıştırma → deneme → bağlamın yeniden kurulması → yürütme → teslim. Her halkanın başarısı diğerini kanıtlamaz; "tetik sayısı ≠ ajan çalışması ≠ teslim edilen rapor" | Routine çalıştırmaları için kayıt ayrımını doğruluyor (niyet, oturum, sonuç ayrı) |
-| **ECC** (kütüphane çalışması) | Tek bir denetleyici değil; yöntemler, kurulum, yürütme ve kayıt parçalarının seçilen birleşimi. Bazı geçişler kod, bazıları ajanın yorumladığı yönerge | ECC'yi kurmak bir çalışma sistemi kurmak değildir. C00'daki seçici karşılaştırma doğru yaklaşım. İki bağımsız inceleyici, üretici-değerlendirici döngüsü ve döngü tasarım denetimi parçaları aday |
-| **Eski `soul` deposundaki DevOS denemesi** (Ağustos 2026) | Roller: tasarımcı/üretici, araştırmacı, doğrulayıcı, karşı inceleyici, bütünleştirici, insan sahibi. "Doğrulayıcı aynı eylemde onarmaz"; doğrulama tam hedef ve sürüme bağlıdır; oturumun tek bir birincil sorumluluğu vardır | Uyumlu. "Doğrulayıcı onarmaz" kuralı denetim ortamına açıkça yazılmalı |
+| **Anthropic, "Building effective agents"** (December 2024) | Five patterns: chaining, routing, parallelisation, coordinator-worker, producer-evaluator. "Start simple; add complexity only if it demonstrably improves the result." | The working session is coordinator-worker; the audit environment is producer-evaluator. **Warning:** 18 roles and many record families must be justified against the "start simple" principle |
+| **Anthropic, multi-agent research system** (June 2025) | A main agent + parallel subagents do markedly better than a single agent at broad research, but spend roughly 15 times as many tokens. Subagents should be given a detailed task description (purpose, output format, sources, limits); results should be written to a persistent place so that there is no "game of telephone" degradation | Directly suitable for the research role (DR16). **Missing:** a standard for subagent task descriptions |
+| **Anthropic, harness for long-running agents** (November 2025) | An initialiser agent sets up the environment and the work list; the following sessions each advance one piece at a time, leave things in a clean state, and hand over through a progress file and commits | Matches DevOS's session loop and closing discipline one to one |
+| **Anthropic, harness design in long-running application development** (March 2026) | Planner + producer + separate evaluator. Resetting the context and continuing with a structured hand-over document can give better results than relying on compaction within a single session. **Principle:** "Every part of the harness carries an assumption about something the model cannot do on its own; these assumptions must be tested, because they may be wrong and they go stale as the model improves." With a new model, some parts were removed and the harness was simplified | The producer-evaluator split is consistent. **Two lessons:** (1) rely not on a very long single session but on chunked work + structured hand-over; (2) the assumption each mechanism rests on should be written down and regularly tested with "is it still needed?". This is the frame blindness mechanism itself |
+| **Claude Code dynamic workflows** (May 2026) | Claude writes a management script for the task, runs a large number of parallel subagents, and verifies each finding independently; progress is recorded, and interrupted work resumes where it left off. Consumes markedly more usage than a normal session | A candidate in-session tool for large scanning jobs (library audit, broad research). Whether it works in a cloud session should be tested in C01 |
+| **Claude Code Projects** (September 2026) | Coordinator conversation + worker sessions + shared project memory | The productised form of the same pattern. Because it uses a single environment, it does not itself provide separation of authority; in DevOS, separation of authority is already provided by keys held outside the environment |
+| **Cognition, "Don't Build Multi-Agents"** (2025) and its **update** (April 2026) | Agents writing in parallel make implicit decisions unaware of one another, and the product becomes inconsistent. The update: the patterns that work are setups **in which several agents contribute intelligence but writing is done through a single channel**; "a single main loop carries the state; subagents are narrowly scoped and stateless" | **The most important source of corrections.** In DevOS, parallel subagents should not write; every product should have a single writer |
+| **MAST: why multi-agent systems fail** (NeurIPS 2025) | 14 failure types over 7 frameworks and thousands of traces, in three classes: specification problems (~42%), inter-agent misalignment (~37%), lack of verification (~21%). The gain of multi-agent systems over a single agent is often small; most failures come from design, not from the model | DevOS's mechanisms should answer these three classes (Section 3). Roles should earn their existence with evidence |
+| **Loop engineering** (named in June 2026) | The four parts of a loop: trigger, goal, verifier, stopping rules. The one that produces and the one that checks are separate; every loop has an upper limit, a budget and "no progress" detection. **In open-ended work the bottleneck is not the model but the verifier** | Trigger (routine), state (database) and verifier (audit) exist. **Missing:** a per-loop budget, upper limit and no-progress detection. The verifier bottleneck is the same thing as the plan's open problem U-2 |
+| **Graph engineering** (mid-2026) | Building the workflow as an explicit state machine: nodes, transitions, shared state, checkpoints, pauses for human approval. "The coordinator plans, assigns and merges; it does not do every job itself." "Only work items independent of one another should run in parallel" | DevOS is a hybrid working order: audit and authority transitions are a deterministic state machine in the database; the thinking work inside the nodes is left to the agent. This distinction should be kept deliberately |
+| **Gas Town** (library study) | Actor identity and the running session have separate lifetimes; the work record and management are separate layers; merging is done by a separate queue role (Refinery); watcher roles (Witness, Deacon) check liveness; dispatching work depends on environment capacity | Confirms the "role ≠ session" decision. Merging in a single queue and capacity-aware dispatch suit DevOS |
+| **Hermes Agent** (library study) | A scheduled job is a chain: definition → specific run → attempt → rebuilding of the context → execution → delivery. The success of each link does not prove the others; "trigger count ≠ agent run ≠ delivered report" | Confirms the separation of records for routine runs (intent, session and result kept separate) |
+| **ECC** (library study) | Not a single controller; a chosen combination of method, installation, execution and record parts. Some transitions are code, some are instructions the agent interprets | Installing ECC is not setting up a working system. The selective comparison in C00 is the right approach. The parts for two independent reviewers, for the producer-evaluator loop and for the loop design audit are candidates |
+| **The DevOS attempt in the old `soul` repository** (August 2026) | Roles: designer/producer, researcher, verifier, counter-reviewer, integrator, human owner. "The verifier does not repair in the same action"; verification is bound to the exact target and version; a session has a single primary responsibility | Consistent. The "verifier does not repair" rule should be written explicitly into the audit environment |
 
 ---
 
-## 3. MAST başarısızlık sınıfları ve DevOS'taki karşılıkları
+## 3. MAST failure classes and their counterparts in DevOS
 
-| Sınıf | Tipik başarısızlık | DevOS'taki karşılık | Açık kalan |
+| Class | Typical failure | Counterpart in DevOS | Still open |
 |---|---|---|---|
-| **Tanım sorunları** | Görevin ya da rolün yanlış tanımlanması; role uymama; adımların tekrarı; sonlanma koşulunu bilmeme | Rol sözleşmeleri, iş kaydında amaç zinciri ve durma kuralı, gizli sınav | Döngü başına üst sınır ve ilerleme yok tespiti eksik |
-| **Ajanlar arası uyumsuzluk** | Bağlam kaybı; bilgiyi aktarmama; diğer ajanın katkısını yok sayma; akıl yürütme ile eylem uyumsuzluğu; görevden sapma | Katkı ve kullanım kayıtları, ortak durum veritabanı, amaç denetimi | Paralel yazarların örtük kararları (Cognition) için tek yazar kuralı eksik |
-| **Doğrulama eksikliği** | Erken bitirme; eksik ya da yanlış doğrulama | Ayrı denetim ortamı, olumsuz ve olumlu kontrol, gizli sınav | Açık uçlu işlerde güçlü bir doğrulayıcı yok (U-2) |
+| **Specification problems** | The task or the role specified wrongly; not following the role; repeating steps; not knowing the termination condition | Role contracts, the purpose chain and the stopping rule in the work record, the hidden exam | A per-loop upper limit and no-progress detection are missing |
+| **Inter-agent misalignment** | Loss of context; not passing information on; ignoring the other agent's contribution; mismatch between reasoning and action; drifting from the task | Contribution and use records, the shared state database, the purpose audit | The single-writer rule for the implicit decisions of parallel writers (Cognition) is missing |
+| **Lack of verification** | Ending early; incomplete or wrong verification | A separate audit environment, negative and positive controls, the hidden exam | No strong verifier for open-ended work (U-2) |
 
-Bir de MAST'ın ölçmediği sınıf: **sessiz başarısızlık.** Hiçbir kontrolün kırmızı yanmadığı, ama sistemin sahibini haftalarca yanlış yönde çalıştırdığı durumlar. Buna karşı düzenli örneklem denetimi ve amaç denetimi gerekir.
-
----
-
-## 4. Araştırmadan çıkan düzeltmeler
-
-1. **Tek yazar kuralı.** Çalışma oturumunda paralel alt ajanlar yalnız okuma, araştırma, analiz ve inceleme yapar. Bir ürüne (kod, belge, tasarım) aynı anda yalnız bir yazar yazar. Birbirinden gerçekten bağımsız ürünler paralel yazılabilir, ama ortak kararlar önce açıkça yazılmış olmalı. Birleştirme tek bir sırada yapılır. (Cognition 2025–2026; graph engineering; Gas Town Refinery)
-2. **Uzun oturum değil, parçalı iş ve yapılandırılmış devir.** Bir çalışma oturumu işi parçalara böler; her parça temiz bağlamlı bir alt ajana ya da bir sonraki oturuma yapılandırılmış bir devir kaydıyla geçer. Uzun bir oturumun bağlam sıkıştırmasına güvenilmez. (Anthropic, Mart 2026 ve Kasım 2025)
-3. **Alt ajan görev tanımı standardı.** Her alt ajan görevi şunları taşır: amaç ve bağlı olduğu karar, beklenen çıktı biçimi, kullanılacak kaynaklar ve araçlar, sınırlar (ne yapmayacağı), emek bütçesi, sonucun yazılacağı yer. (Anthropic, Haziran 2025)
-4. **Döngü denetimleri.** Her iş döngüsünün bir üst sınırı, bir bütçesi ve "ilerleme yok" tespiti vardır; tetiklenince iş durur ve kayda geçer. (Loop engineering)
-5. **Mekanizma varsayım envanteri.** DevOS'un her mekanizması, modelin tek başına yapamadığı hangi şeyi telafi ettiğini yazar. Bu varsayımlar düzenli olarak ve model değiştiğinde sınanır; gereksizleşen mekanizma kaldırılır. Bu, çerçeve körlüğüne karşı mekanizmanın parçasıdır. (Anthropic, Mart 2026)
-6. **Başarısızlık sınıflaması ve sessiz başarısızlık denetimi.** Her olay MAST sınıflarına göre de etiketlenir; ayrıca yeşil görünen işlerden düzenli örneklem alınıp denetlenir.
-
-Ek olarak: **dynamic workflows** büyük tarama işleri için C01'de denenecek; **"doğrulayıcı aynı eylemde onarmaz"** kuralı denetim ortamına eklenecek.
+And one class that MAST does not measure: **silent failure.** Situations in which no check turns red, yet the system keeps its owner working in the wrong direction for weeks. Against this, regular sample audits and purpose audits are needed.
 
 ---
 
-## 5. Kaynakların birbiriyle çeliştiği yer ve DevOS'un tavrı
+## 4. Corrections that came out of the research
 
-- **Anthropic** çoklu ajanın geniş araştırmada açıkça işe yaradığını söylüyor; **Cognition** paralel yazmanın kırılgan olduğunu söylüyor. İkisi çelişmiyor, farklı iş türlerinden söz ediyor: okuma ve araştırma paralelleşir, yazma paralelleşmez. DevOS bu ayrımı kural olarak alır.
-- **Loop engineering** tek döngüyü, **graph engineering** açık akış şemasını öne çıkarıyor. DevOS ikisini katmanlara ayırır: yetki ve denetim geçişleri açık durum makinesi (veritabanı), düşünme işi ajan döngüsü.
+1. **Single-writer rule.** In the working session, parallel subagents only read, research, analyse and review. Only one writer writes to a product (code, document, design) at a time. Products that are truly independent of one another may be written in parallel, but the shared decisions must first have been written down explicitly. Merging is done in a single queue. (Cognition 2025–2026; graph engineering; Gas Town Refinery)
+2. **Not a long session, but chunked work and structured hand-over.** A working session splits the work into pieces; each piece passes to a subagent with a clean context, or to the next session, with a structured hand-over record. The context compaction of a long session is not relied on. (Anthropic, March 2026 and November 2025)
+3. **Standard for subagent task descriptions.** Every subagent task carries: the purpose and the decision it is tied to, the expected output format, the sources and tools to be used, the limits (what it will not do), the effort budget, and the place where the result is to be written. (Anthropic, June 2025)
+4. **Loop controls.** Every work loop has an upper limit, a budget and "no progress" detection; when triggered, the work stops and is recorded. (Loop engineering)
+5. **Mechanism assumption inventory.** Every DevOS mechanism writes down which thing it compensates for that the model cannot do on its own. These assumptions are tested regularly and whenever the model changes; a mechanism that has become unnecessary is removed. This is part of the mechanism against frame blindness. (Anthropic, March 2026)
+6. **Failure classification and silent failure audit.** Every event is also labelled according to the MAST classes; in addition, regular samples are taken from work that looks green and are audited.
+
+In addition: **dynamic workflows** will be tried in C01 for large scanning jobs; the **"the verifier does not repair in the same action"** rule will be added to the audit environment.
 
 ---
 
-## 6. Hâlâ açık olan
+## 5. Where the sources contradict one another, and DevOS's stance
 
-- **Doğrulayıcı darboğazı:** Araştırma ve tasarım gibi açık uçlu işlerde güçlü, otomatik bir doğrulayıcı yok. Kaynakların hepsi bunu en zor sorun olarak görüyor. DevOS'ta bağımsız denetim, gizli sınavlar, ikinci model ailesi ve Batu'nun uzman olduğu alanlardaki değerlendirmesi bu açığı daraltır ama kapatmaz (U-2).
-- **Rol ve kayıt sayısı:** 18 rol ve çok sayıda kayıt ailesi, "basit başla" ilkesine karşı her biri için gerekçelendirilmeli. Roller ihtiyaç doğdukça etkinleşiyor; kayıt ailelerinin başlangıç kapsamı C00'daki bağımsız karşı tasarımda ayrıca sorgulanacak.
+- **Anthropic** says that multi-agent work clearly pays off in broad research; **Cognition** says that parallel writing is fragile. The two do not contradict each other; they speak of different kinds of work: reading and research parallelise, writing does not. DevOS adopts this distinction as a rule.
+- **Loop engineering** puts the single loop first, **graph engineering** the explicit flow diagram. DevOS separates the two into layers: authority and audit transitions are an explicit state machine (the database); the thinking work is an agent loop.
+
+---
+
+## 6. Still open
+
+- **Verifier bottleneck:** In open-ended work such as research and design there is no strong, automatic verifier. All the sources see this as the hardest problem. In DevOS, independent audit, hidden exams, the second model family and Batu's assessment in the fields where he is an expert narrow this gap but do not close it (U-2).
+- **Number of roles and records:** 18 roles and many record families must each be justified against the "start simple" principle. Roles are activated as the need arises; the initial scope of the record families will be questioned separately in the independent counter-design in C00.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

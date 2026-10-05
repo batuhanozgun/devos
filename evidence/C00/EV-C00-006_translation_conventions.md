@@ -145,3 +145,22 @@ Existing English records of the repository already use most of these terms (stag
 | hazırlık planı | preparation plan |
 | gerekçe belgeleri; değerlendirme ve araştırma belgeleri | rationale documents; evaluation and research documents |
 | yönetici (GitHub admin) | administrator |
+
+## 6. Revision 2 (2026-10-05, at assembly, before any fidelity check)
+
+Decisions the executor made when the thirteen parts came in, so that the parts agree; recorded before any checker judges the text.
+
+1. **Appendix F.** The file is translated into English, including the section for Batu; directly after that section a subsection "Text shown to Batu (Turkish, verbatim)" keeps the original Turkish lines of that section byte for byte, because that text is addressed to Batu and communication with him stays Turkish (plan 0.6). The `/goal` paragraph stays byte for byte.
+2. **Turkish words inside code spans** that are not identifiers of the system (a parameter name or a placeholder written in Turkish, for example `session_brief(rol)`, `read_source(kaynak, sürüm, aralık)`, `.claude/agents/<rol>.md`) are translated; Appendix B's English names are used where it has them (`session_brief(role)`). Identifiers that exist in the system (file, table, field, function, role and environment names) stay unchanged (section 2 item 2).
+3. **Labelled passages.** A bare decision number in parentheses that cites a decision, for example "(K8)", is a cross-reference, not a labelled passage; the decision's own text is labelled where the plan records it (section 11.1). Bracketed labels such as "[K6 ve K8 kararlarının sonucu]" or "[B3 = (a)]", and dated attributions to Batu with round brackets, are labelled passages.
+4. **The checker's judgement.** Where the source calls the binding approval of a fresh-context checker subagent until C03 its "karar", the English says "verdict" (as PC-06, the working order and `.claude/agents/checker.md` do), to keep it apart from Batu's decisions.
+5. **Recurring senses settled across parts:** "yedek" in the budget and run sense → "reserve" (data backup stays "backup"); a scheduled or Actions "iş" → "job", its "iş kayıtları" → "job logs" or "job records"; "rutin değişiklik" → "ordinary change" (to avoid confusion with routines); "B aşaması" and "Üç aşama" → "stage B", "three stages" as written (the plan uses "aşama" for both senses; a proposal asks to separate them).
+6. **Spelling.** British spelling is preferred; a British/American variance between parts is cosmetic and not a finding.
+
+## 7. Revision 3 (2026-10-05, after the fidelity review, before acceptance)
+
+Made after the thirteen fidelity verdicts (CHK-C00-007 to CHK-C00-019), on a finding of CHK-C00-014 (P1). Form only; no text of the translation changes by it.
+
+1. **Line alignment.** The translation note of section 1 item 4 moves from under the title to the end of the translated text, directly before the closing section (or at the very end where there is none). Every translator kept the line structure of the source exactly, so without the note under the title every line of the English text has the line number of its Turkish source line. Records cite the plan by line number ("plan line 419", "Ek A 373" in the independence string of every verdict, `.claude/agents/checker.md`, `plan/Installation_Working_Order.md`, `tools/test_merge_gate.py`); with the note under the title all those citations would have shifted by two lines. Appendix F is the exception: its Turkish verbatim block (section 6 item 1) must stand before the line under which Batu copies the `/goal`, so its note stays under its title.
+2. **The closing section** is preceded by a `---` rule, like every top-level section of the source (CHK-C00-012 F7, CHK-C00-014 F9, CHK-C00-016 item 6).
+3. **Correction.** Section 3 item 3 says the codes are given "per translator (section 5)"; they were given per translator in each translator's task, not in section 5 (CHK-C00-019 item 8). Codes are unique within a file, not across files.

@@ -1,83 +1,91 @@
-# Çalışma düzeni, uyandırma ve kapasite (A1) — sürüm 2
+# Working order, wake-up and capacity (A1) — version 2
 
-**Tarih:** 29 Eylül 2026 · **Statü:** Karar verildi (teknik karar). Kurulum planı 2.1'e girecek.
+**Date:** 29 September 2026 · **Status:** Decided (technical decision). It will go into installation plan 2.1.
 
-**Bu sürüm neden var?** İlk sürüm, "her rol ayrı bir oturumdur ve her devir sistemin kendini yeniden uyandırmasını gerektirir" öncülünü sorgulamadan kabul etti. Bu öncül P4 ve P5'teki tasarımdan (bir yöneticinin yönettiği ayrı süreçler) taşındı. Günde 15 routine sınırı bu öncülü tıkayınca plan yeni mekanizmalar eklemeye başladı. Doğru hamle mekanizma eklemek değil, öncülü sorgulamaktı. Bu sürüm onu yapıyor.
+**Why does this version exist?** The first version accepted, without questioning it, the premise "every role is a separate session and every hand-over requires the system to wake itself up again". This premise was carried over from the design in P4 and P5 (separate processes run by a manager). When the limit of 15 routines a day blocked this premise, the plan started adding new mechanisms. The right move was not to add mechanisms but to question the premise. This version does that.
 
 ---
 
-## 1. Öncül denetimi
+## 1. Premise audit
 
-| Öncül | Kaynağı | Hâlâ geçerli mi? | Sıfırdan seçer miydik? |
+| Premise | Its source | Does it still hold? | Would we choose it from scratch? |
 |---|---|---|---|
-| DevOS, Batu başlatmadan ve bilgisayar kapalıyken çalışmalı | Batu'nun kriterleri 21, 22 | Evet | Evet |
-| Her rol ayrı bir oturumda çalışır | P4/P5'in süreç tasarımı | **Hayır.** Rol bir sorumluluk ve bir paket; oturum bir çalışma yeri. Rol bir alt ajanda da taşınabilir | Hayır |
-| Roller arası her devir yeni bir oturum başlatmayı gerektirir | Önceki öncülün sonucu | **Hayır.** Aynı oturumdaki alt ajanlar arasında devir zil gerektirmez | Hayır |
-| Bağımsızlık ayrı kimlik gerektirir | Kriter 30 | **Kısmen.** İki tür bağımsızlık var. *Düşünme bağımsızlığı* (temiz bağlam, farklı bilgi görünümü, farklı talimat, gerekirse farklı model ailesi) alt ajanlarla sağlanabilir. *Yetki bağımsızlığı* (kendi değişikliğini onaylayamama, sınav cevaplarını görememe, kontrol kurallarını değiştirememe) veritabanının doğrulayabildiği ayrı kimlik ister | Yalnız yetki bağımsızlığı için |
-| İş hacmi için çok sayıda paralel oturum gerekir | Varsayım | **Hayır.** Asıl sınır kullanım hakkı (token), oturum sayısı değil. Paralellik oturum içinde alt ajanlarla da sağlanır | Hayır |
-| Oturumlar saatlerce çalışabilir | Varsayım | **Bilinmiyor.** Bulut oturumunun ne kadar sürebileceği C01'de ölçülecek | Ölçüme bağlı |
+| DevOS must work without Batu starting it and while the computer is off | Batu's criteria 21, 22 | Yes | Yes |
+| Every role works in a separate session | The process design of P4/P5 | **No.** A role is a responsibility and a package; a session is a place of work. A role can also be carried in a subagent | No |
+| Every hand-over between roles requires starting a new session | Consequence of the previous premise | **No.** A hand-over between subagents in the same session needs no bell | No |
+| Independence requires a separate identity | Criterion 30 | **Partly.** There are two kinds of independence. *Thinking independence* (clean context, a different information view, different instructions, a different model family if needed) can be provided with subagents. *Authority independence* (not being able to approve one's own change, not being able to see exam answers, not being able to change check rules) needs a separate identity that the database can verify | Only for authority independence |
+| The volume of work needs many parallel sessions | Assumption | **No.** The real limit is the usage allowance (tokens), not the number of sessions. Parallelism is also achieved within a session, with subagents | No |
+| Sessions can run for hours | Assumption | **Unknown.** How long a cloud session can last will be measured in C01 | Depends on measurement |
 
 ---
 
-## 2. Karar: "ekip ofiste, denetçi ayrı" düzeni
+## 2. Decision: the "team in the office, checker apart" arrangement
 
-**Üç ortam** (önceki beş yerine):
+**Three environments** (instead of the previous five):
 
-| Ortam | Ne yapar? | Yetkisi |
+| Environment | What does it do? | Its authority |
 |---|---|---|
-| `devos-calisma` | Koordinasyon, keşif, araştırma, tasarım, üretim, bilgi düzeni, teşhis. Rollerin çoğu bu oturumun içinde alt ajan olarak çalışır | İş açma ve üstlenme, katkı ve aday ürün yazma, `claude/` dallarına gönderim, PR açma. **Yapamaz:** bağlayıcı inceleme hükmü, kabul, sürüm etkinleştirme, kontrol kuralı değişikliği, sınav cevaplarına erişim |
-| `devos-denetim` | Bağımsız inceleme hükümleri (DR13-G, DR13-Y), kabul önerileri, kontrol ve kural değişikliği incelemesi, yüksek etkili birleşmeler için yetki kontrolü, kurtarma aşamalarının ilerletilmesi | Hüküm ve kabul yazma; çalışma ortamının ürettiğini onaylama. **Yapamaz:** ürün üretme, sınav cevaplarına erişim |
-| `devos-sinav` | Gizli sınav setlerini tutar ve puanlar | Yalnız `devos-evals` deposuna ve sınav kayıtlarına erişim |
+| `devos-calisma` | Coordination, discovery, research, design, production, knowledge organisation, diagnosis. Most roles work inside this session as subagents | Opening and claiming work items, writing contributions and candidate products, pushing to `claude/` branches, opening PRs. **Cannot:** give binding review verdicts, give acceptance, activate versions, change check rules, access exam answers |
+| `devos-denetim` | Independent review verdicts (DR13-G, DR13-Y), acceptance proposals, review of check and rule changes, the authority check for high-impact merges, advancing the recovery stages | Writing verdicts and acceptances; approving what the working environment produced. **Cannot:** produce products, access exam answers |
+| `devos-sinav` | Holds and scores the hidden exam sets | Access only to the `devos-evals` repository and the exam records |
 
-**Sınavlar nasıl yürür?** Sınav ortamı, sınav görevini veritabanına sıradan bir iş olarak koyar. Çalışma ortamı bu işi normal iş gibi yürütür; görevin sınav olduğunu bilmek zorunda değildir. Sınav ortamı sonucu cevap anahtarıyla puanlar. Böylece sınanan rol cevap anahtarına hiçbir yoldan ulaşamaz ve "sınava göre davranma" riski azalır.
+**How do exams run?** The exam environment puts the exam task into the database as an ordinary work item. The working environment carries out this work item like normal work; it does not need to know that the task is an exam. The exam environment scores the result against the answer key. So the role under test has no way at all to reach the answer key, and the risk of "behaving for the exam" is reduced.
 
-**Oturum içinde:** Çalışma oturumunun ana ajanı koordinatördür (DR06-G ve DR06-Y). İşin gerektirdiği rolleri kendi rol paketleriyle alt ajan olarak başlatır; birbirinden bağımsız işleri paralel yürütür. Her alt ajanın katkısı veritabanına katkı olarak yazılır, tüketen taraf kullanım kaydını yazar. Böylece oturum kesilse bile bir sonraki oturum kaldığı yerden devam eder (Ek D, D7).
+**Within the session:** The main agent of the working session is the coordinator (DR06-G and DR06-Y). It starts the roles the work requires as subagents with their own role packages; it runs mutually independent work items in parallel. Each subagent's contribution is written to the database as a contribution, and the consuming side writes the use receipt. So even if the session is interrupted, the next session continues where it left off (Appendix D, D7).
 
-**Düşünme bağımsızlığı nerede yeterli?** Araştırma incelemesi, tasarım eleştirisi ve çerçeve incelemesi gibi bağlayıcı olmayan incelemeler, çalışma oturumunda temiz bağlamlı ve farklı bilgi görünümlü bir alt ajanla yapılabilir. Bağlayıcı hükümler (kabul, birleşme için yetki, kural değişikliği) yalnız denetim ortamında verilir.
+**Where is thinking independence enough?** Non-binding reviews such as research review, design critique and frame review can be done in the working session by a subagent with a clean context and a different information view. Binding verdicts (acceptance, authority to merge, rule change) are given only in the audit environment.
 
 ---
 
-## 3. Uyandırma
+## 3. Wake-up
 
-Routine'ler yalnız oturumların başlamasını sağlar; roller arası devirler için kullanılmaz.
+Routines only make sessions start; they are not used for hand-overs between roles.
 
-| Ortam | Günlük çalışma (başlangıç) | Zamanlama |
+| Environment | Daily runs (initial) | Timing |
 |---|---|---|
-| Çalışma | 3 uzun oturum | Gece, sabah erken, akşam (Batu'nun yoğun saatleri dışında) |
-| Denetim | 3 | Her çalışma oturumundan sonra |
-| Sınav | 1 | Gece, yalnız sınav gerektiğinde |
-| Yedek | 8'e kadar | Oturumlar kısa kalırsa ek çalışma oturumu, acil karar ya da kurtarma |
+| Working | 3 long sessions | Night, early morning, evening (outside Batu's busy hours) |
+| Audit | 3 | After each working session |
+| Exam | 1 | Night, only when an exam is needed |
+| Reserve | Up to 8 | An extra working session if sessions stay short, an urgent decision or recovery |
 
-Toplam 7 çalışma ile başlar; 15 sınırının yarısı yedek kalır. Oturumların gerçek süresi C01'de ölçülür; kısa çıkarsa çalışma oturumlarının sayısı yedekten artırılır.
+It starts with 7 runs in total; half of the limit of 15 stays in reserve. The real length of sessions is measured in C01; if it turns out short, the number of working sessions is increased from the reserve.
 
-**Beklenti:** Roller arası devirler çalışma oturumunun içinde dakikalar sürer. Bağlayıcı bir hüküm, bir sonraki denetim oturumuna kadar (birkaç saat) bekler. Batu'ya ait kararlar, Batu cevap verdikten sonraki ilk oturumda işlenir.
-
----
-
-## 4. Diğer güvenlik ve süreklilik kararları
-
-- **Connector'lar:** Her routine'den çıkarılır; ayrıca depodaki izin kuralları connector araçlarının çağrılmasını engeller. İki katman C01 ve C03'te sınanır.
-- **Kimlik zinciri:** Ortam belirteci rol sınıfını verir; üstlenme belirteci o oturumun o işi yaptığını kanıtlar. Oturum içindeki alt ajanlar aynı kimliği paylaşır; bu yüzden yetki ayrılığı gerektiren hiçbir iş oturum içinde yapılmaz.
-- **Açık depoya yazım:** Depodaki kancalar ve git'in gönderim öncesi kancası, her gönderimden önce sızıntı kontrolünü çalıştırır.
-- **Oturum kaydı:** Her oturum açılışta kendini kaydeder (ortam, başlangıç, hangi routine). Acil API tetiklerinde niyet ve dönen oturum kimliği kaydedilir; cevap kaybolursa önce oturumun varlığı kontrol edilir.
-- **Projects:** Artık zorunlu değil. Hesapta açılırsa ve C01'de doğrulanırsa, çalışma ortamının işini hızlandırmak için kullanılabilir; güvenlik modeli değişmez, çünkü yetki oturumun açılış yolundan değil anahtardan gelir.
-- **Kullanım paylaşımı:** Yoğun çalışma oturumları Batu'nun çalışma saatleri dışına konur; etkisi ölçülür; Batu'nun işi ciddi biçimde yavaşlarsa bu Batu'ya karar olarak gelir.
+**Expectation:** Hand-overs between roles take minutes inside the working session. A binding verdict waits until the next audit session (a few hours). Decisions that belong to Batu are processed in the first session after Batu answers.
 
 ---
 
-## 5. Bu kararın bedeli ve C01'de önce sınananlar
+## 4. Other security and continuity decisions
 
-**Bedel:** Bir çalışma oturumu düşerse o anda çalışan bütün roller birlikte durur; iş veritabanından devam ettiği için veri kaybı olmaz, gecikme olur. Alt ajanlar oturumun kullanım hakkından ve bağlamından pay alır; çok büyük işler birden fazla oturuma bölünür.
-
-**C01'in ilk satırları:**
-1. Bir bulut çalışma oturumunun kuyruk işleyerek ne kadar süre çalışabildiği; bağlam sıkıştırmasından sonra işi doğru sürdürüp sürdürmediği.
-2. Alt ajanların rol paketleriyle doğru başlatıldığı; `CLAUDE.md`'yi atlayan yerleşik yardımcıların rol işi için kullanılmadığı.
-3. Connector engellerinin gerçekten çalıştığı.
-4. Üç ortamın anahtarlarının birbirinin yetkisini kullanamadığı.
-5. Bir haftalık gözlemde kullanım payı.
+- **Connectors:** Removed from every routine; in addition, the permission rules in the repository block calls to connector tools. The two layers are tested in C01 and C03.
+- **Identity chain:** The environment token gives the role class; the claim token proves that this session did this work item. Subagents within a session share the same identity; so no work that requires separation of authority is done within a session.
+- **Writing to the public repository:** The hooks in the repository and git's pre-push hook run the leak check before every push.
+- **Session record:** Every session records itself at opening (environment, start, which routine). For urgent API triggers, the intent and the returned session ID are recorded; if the response is lost, the existence of the session is checked first.
+- **Projects:** No longer required. If it is enabled on the account and verified in C01, it can be used to speed up the work of the working environment; the security model does not change, because authority comes from the key, not from the way the session was opened.
+- **Usage sharing:** Heavy working sessions are placed outside Batu's working hours; their effect is measured; if Batu's work slows down seriously, this comes to Batu as a decision.
 
 ---
 
-## 6. Bu olaydan çıkan kalıcı ders
+## 5. The cost of this decision and what is tested first in C01
 
-Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir (Batu, 29 Eylül 2026). Bu olayın öğrettiği işaret: **bir tasarım bir sınıra takıldığında ve çözüm olarak yeni mekanizmalar üretmeye başladığında, önce çerçevenin kendisi sorgulanmalıdır.** Kurulum planı 2.1'e bunun mekanizması girer: öncül envanteri, sıkışma sinyalinde zorunlu çerçeve denetimi ve yalnız amaç ile kısıtları gören bağımsız bir oturumun kendi tasarımını çıkarıp mevcut tasarımla karşılaştırması.
+**Cost:** If a working session goes down, all the roles running at that moment stop together; because the work continues from the database, there is no data loss, only delay. Subagents take a share of the session's usage allowance and context; very large work items are split across more than one session.
+
+**The first lines of C01:**
+1. How long a cloud working session can run while processing the queue; whether it carries on the work correctly after context compaction.
+2. That subagents are started correctly with their role packages; that built-in helpers that skip `CLAUDE.md` are not used for role work.
+3. That the connector blocks really work.
+4. That the keys of the three environments cannot use each other's authority.
+5. The usage share over one week of observation.
+
+---
+
+## 6. The lasting lesson from this incident
+
+Frame blindness is the greatest danger for DevOS and for SOUL (Batu, 29 September 2026) (original: TR-A1). The sign this incident taught: **when a design runs into a limit and starts producing new mechanisms as the solution, the frame itself must be questioned first.** The mechanism for this goes into installation plan 2.1: a premise inventory, a mandatory frame review on a squeeze signal, and an independent session that sees only the purpose and the constraints working out its own design and comparing it with the current design.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
+
+---
+
+## Turkish originals of Batu's decisions
+
+**TR-A1** · Section 6 "The lasting lesson from this incident", first sentence · Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir (Batu, 29 Eylül 2026).

@@ -1,1119 +1,1297 @@
-# DevOS Kurulum Planı (Claude Code)
+# DevOS Installation Plan (Claude Code)
 
-**Sürüm:** 2.1 · **Tarih:** 29 Eylül 2026 · **Durum:** Plan. Hiçbir bileşen kurulmadı; hedef ortamda hiçbir test çalıştırılmadı.
+**Version:** 2.1 · **Date:** 29 September 2026 · **Status:** Plan. No component has been set up; no test has been run in the target environment.
 
-Bu sürüm 2.0'ın yerine geçer. 2.1'de değişenler:
+This version replaces 2.0. What changed in 2.1:
 
-- **Çalışma düzeni yeniden kuruldu** ("ekip ofiste, denetçi ayrı"): Roller oturum değil sorumluluk paketidir; rollerin çoğu bir çalışma oturumunun içinde alt ajan olarak çalışır. Yalnız yetki ayrılığı gerektiren işler (bağlayıcı inceleme ve kabul, kural değişikliği, sınav) ayrı ortamlarda ve ayrı anahtarlarla yapılır. Routine'ler yalnız oturum başlatmak için kullanılır. Önceki düzen, P4 ve P5'ten sorgulanmadan taşınmış bir öncüle ("her rol ayrı oturumdur") dayanıyordu ve günde 15 routine çalışması sınırına takılıyordu.
-- **İki bağımsız incelemenin** (ayrı bir Claude sohbeti ve ChatGPT) kabul edilen bulguları işlendi: connector'lar üzerinden kural kapısını atlama, açık depoya ilk yazımdan önce sızıntı kontrolü, kimlik zinciri, kurtarmada eski yolların kapatılması, sınav yürütme yolu, yedek biçimi ve diğerleri.
-- **Karşılaştırmalı araştırmanın** düzeltmeleri işlendi: tek yazar kuralı, parçalı iş ve yapılandırılmış devir, alt ajan görev tanımı, döngü sınırları, mekanizma varsayım envanteri, başarısızlık sınıflaması ve sessiz başarısızlık denetimi.
-- **Çerçeve körlüğüne karşı mekanizma** eklendi (Bölüm 6.12).
-- Batu'nun K6 ve K7 kararları işlendi.
-- **2.1 sonrası kayıtlı plan değişiklikleri (1 ve 5 Ekim 2026; kurucunun değişiklikleri `PC-` önekiyle numaralanır, `K1`–`K9` biçimindeki numaralar yalnız Batu'nun kararlarıdır; Bölüm 4'teki `K-1`…`K-11` kabiliyet başlıkları ve Ek C'deki `K01`…`K13` sınama kimlikleri karar değildir):** PC-01 kurulum ritmi (`/goal`; PC-06 ile değişti); PC-02 dal yönetimi; PC-03 süreklilik; PC-04 kurucunun çalışma düzeni (kurucu kısmı PC-06 ile değişti; Batu'nun gereksinimi ve beklentileri 1–5 geçerli); PC-05 yüksek etkili değişikliklerin teknik onayı bağımsız denetimdedir, Batu'da değil (değişen yerler: 4 K-11 madde 7, 5.5, 5.6, 6.1, 6.7, 6.8, 6.9, 7.4, C01 satır 11; Ek A DR12 ve Bölüm 6; Ek C K11; Ek E Bölüm 8); PC-06 kurulum tek çalışma oturumunda yürür ve C03'e kadar bağlayıcı onayı taze bağlamlı Denetçi alt ajanı, bağımsızlık düzeyini yazarak verir (Batu'nun D-010 kararı; değişen yerler: 0.6 madde 1, 4 K-11 madde 7, 6.1, 6.12 madde 3, 8 madde 7, Bölüm 9 girişi, C00 adım 0, 4 ve 5, 11.1; Ek A Bölüm 5; Ek F). Kayıtlar `plan/decisions/` altında.
+- **The working order was rebuilt** ("the team in the office, the checker apart"): Roles are packages of responsibility, not sessions; most roles run as subagents inside a working session. Only work that requires separation of authority (binding review and acceptance, rule changes, exams) is done in separate environments and with separate keys. Routines are used only to start sessions. The previous order rested on a premise carried over unquestioned from P4 and P5 ("every role is a separate session") and ran into the limit of 15 routine runs per day.
+- The accepted findings of **two independent reviews** (a separate Claude conversation and ChatGPT) were incorporated: bypassing the rule gate through connectors, a leak check before the first write to the public repository, the identity chain, closing the old paths in recovery, the exam execution path, the backup format and others.
+- The corrections of **the comparative research** were incorporated: the single-writer rule, chunked work and structured hand-over, the subagent task definition, loop limits, the mechanism assumption inventory, failure classification and the silent-failure audit.
+- **A mechanism against frame blindness** was added (Section 6.12).
+- Batu's decisions K6 and K7 were incorporated.
+- **Recorded plan changes after 2.1 (1 and 5 October 2026; the builder's changes are numbered with the `PC-` prefix, numbers of the form `K1`–`K9` are only Batu's decisions; the `K-1`…`K-11` capability headings in Section 4 and the `K01`…`K13` testing identifiers in Appendix C are not decisions):** PC-01 installation rhythm (`/goal`; changed by PC-06); PC-02 branch management; PC-03 continuity; PC-04 the builder's working order (the builder part changed by PC-06; Batu's requirement and expectations 1–5 stand); PC-05 the technical approval of high-impact changes lies with independent review, not with Batu (changed places: 4 K-11 item 7, 5.5, 5.6, 6.1, 6.7, 6.8, 6.9, 7.4, C01 row 11; Appendix A DR12 and Section 6; Appendix C K11; Appendix E Section 8); PC-06 the installation runs in a single working session, and until C03 the binding approval is given by a fresh-context Checker subagent, which writes down the independence level (Batu's decision D-010 (original: TR-A1); changed places: 0.6 item 1, 4 K-11 item 7, 6.1, 6.12 item 3, 8 item 7, the introduction of Section 9, C00 steps 0, 4 and 5, 11.1; Appendix A Section 5; Appendix F). The records are under `plan/decisions/`.
 
-Değerlendirme ve araştırma belgeleri: `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md` (C00'da `devos/plan/` altına alınır).
+Evaluation and research documents: `Inceleme_Degerlendirmesi_Claude.md`, `Inceleme_Degerlendirmesi_ChatGPT.md`, `Uyandirma_ve_Kapasite_Arastirmasi.md`, `Calisma_Duzeni_Karsilastirmali_Arastirma.md` (placed under `devos/plan/` in C00).
 ---
 
-## 0. Belge hakkında
+## 0. About this document
 
-### 0.1 Okuyucular
+### 0.1 Readers
 
-- **Batu:** Bölüm 1, 3, 11 ve 12 yeterli. Bölüm 11 senden beklenen kararları, Bölüm 12 senin yapacağın işleri içerir.
-- **Kurucu Claude Code oturumu:** Belgenin tamamını ve bütün ekleri okur, C00'dan başlar.
+- **Batu:** Sections 1, 3, 11 and 12 are enough. Section 11 contains the decisions expected from you, Section 12 the work you will do.
+- **Builder Claude Code session:** Reads the whole document and all the appendices, starts from C00.
 
-### 0.2 Statü etiketleri
+### 0.2 Status labels
 
-Her önemli ifade şu etiketlerden birini taşır. Kullanıcı kararı, teknik öneri, doğrulanmış bilgi ve varsayım birbirine karıştırılmaz.
+Every significant statement carries one of these labels. User decision, technical proposal, verified information and assumption are not mixed up with one another.
 
-| Etiket | Anlamı |
+| Label | Meaning |
 |---|---|
-| **[Batu kararı]** | Batu'nun açıkça verdiği karar. Değiştirilmesi Batu'nun kararını gerektirir |
-| **[Öneri]** | Bu planın teknik önerisi. Gerekçesi yazılıdır; daha iyisi gösterilirse değişir. Batu'nun sessizliği bir öneriyi karara çevirmez |
-| **[Doğrulandı]** | Birincil ya da güvenilir bir kaynakta okunmuş bilgi. Kaynağı ve tarihi yazılıdır. Hesapta denenmiş olmayabilir |
-| **[Doğrulama bekliyor]** | Çözümü tasarlanmış, ama hedef hesapta ya da gerçek kullanımda henüz gösterilmemiş |
-| **[Varsayım]** | Kanıtı olmayan, geçici olarak kabul edilen bilgi. Hangi aşamada sınanacağı yazılıdır |
-| **[Açık sorun]** | Çözümü henüz bulunmamış ya da yalnız kısmen bulunmuş tasarım sorunu. Bölüm 10'da ayrıca listelenir |
+| **[Batu's decision]** | A decision Batu has given explicitly. Changing it requires Batu's decision |
+| **[Proposal]** | A technical proposal of this plan. Its rationale is written down; it changes if something better is shown. Batu's silence does not turn a proposal into a decision |
+| **[Verified]** | Information read in a primary or reliable source. Its source and date are written down. It may not have been tried on the account |
+| **[Awaiting verification]** | Its solution has been designed, but not yet shown on the target account or in real use |
+| **[Assumption]** | Information without evidence, accepted provisionally. The stage in which it will be tested is written down |
+| **[Open problem]** | A design problem whose solution has not been found yet, or has been found only in part. Listed separately in Section 10 |
 
-### 0.3 Bu planın uyduğu ilkeler [Batu kararı]
+### 0.3 Principles this plan follows [Batu's decision] (original: TR-A2)
 
-1. Kalite kolaylık ya da ucuzluk uğruna düşürülmez. Varsayılan emek ve derinlik yüksektir; daha azı gerekçeyle yapılır.
-2. Pahalı ya da karmaşık olan daha iyi sayılmaz. Aynı gereksinimi aynı kalitede karşılayan daha sade çözüm tercih edilir.
-3. Ücret, farklı bir araç ya da bir kısıtın değişmesi gerekiyorsa bu Batu'ya kazancı, gerekçesi, alternatifi ve bedeliyle sunulur. Masraf ne Batu adına kabul edilir ne de ihtiyaç sessizce budanır.
-4. Gereksinim sıralamak yetmez; her gereksinimi karşılayan mekanizma, parçaların birlikte çalışması, koşullar, başarısızlık hali ve sınama yolu yazılır.
-5. Teknolojiden değil ihtiyaçtan başlanır. Maddi alternatifler seçimden önce karşılaştırılır.
-6. Tasarlanmış ama doğrulanmamış olan ile çözümü bulunmamış olan açıkça ayrılır. Çözülmemiş bir tasarım sorunu "kurulumda sınanacak" diye çözülmüş gösterilmez.
-7. Testlerin sayısı değil neyi kanıtladığı önemlidir. Her test yanlış çözümü yakalamalı, doğru çözüme izin vermeli ve iddia edilen kabiliyeti gerçekten temsil etmelidir.
-8. Aşamalı çalışılır ama hedef küçültülmez. Kritik belirsizlikler, onlara bağlı büyük işlerden önce ele alınır.
-9. Eksikleri bulmak planı hazırlayanın ve kurucunun sorumluluğudur; Batu'ya yalnız ona ait kararlar, gereken bilgiyle birlikte gelir.
-10. Asıl ölçüt, DevOS'un SOUL'u gerçekten geliştirebilmesidir. Daha çok kayıt ve kontrol, SOUL'un ilerlediği anlamına gelmez.
-11. **Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir.** Bir tasarım bir sınıra takılıp çözüm olarak yeni mekanizmalar üretmeye başladığında, önce çerçevenin kendisi sorgulanır. Teknik kararlar, etkileri büyük olsa da, gerekçesiyle ekip tarafından verilir; Batu'ya yalnız ona ait kararlar gelir. **[Batu, 29 Eylül 2026]**
-12. **Güncel platform okuması:** Planın dayandığı her platform davranışı, resmî belgenin güncel sürümünden ve tarihiyle okunur; ikincil kaynak "doğrulandı" sayılmaz. **[2.0 incelemesinden çıkan ders]**
-13. **Etki kanalı envanteri:** Ajanın dünyada etki üretebildiği her kanal (veritabanı, GitHub, connector'lar, ağ, ikinci model, zamanlanmış işler) tek listede tutulur; her biri için sınır ve olumsuz test yazılır. **[2.0 incelemesinden çıkan ders]**
+1. Quality is not lowered for the sake of convenience or cheapness. The default effort and depth are high; less is done with a rationale.
+2. What is expensive or complex is not counted as better. The simpler solution that meets the same requirement at the same quality is preferred.
+3. If a fee, a different tool or a change to a constraint is needed, it is presented to Batu with its gain, rationale, alternative and cost. An expense is neither accepted on Batu's behalf nor is the need silently cut back.
+4. Listing requirements is not enough; for every requirement, the mechanism that meets it, how the parts work together, the conditions, the failure case and the way of testing it are written down.
+5. The starting point is the need, not the technology. Material alternatives are compared before the choice.
+6. What has been designed but not verified is clearly separated from what has no solution found. An unsolved design problem is not shown as solved by saying "it will be tested in the installation".
+7. What matters is not the number of tests but what they prove. Every test must catch the wrong solution, allow the right solution and truly represent the claimed capability.
+8. The work proceeds in stages, but the goal is not shrunk. Critical uncertainties are dealt with before the large pieces of work that depend on them.
+9. Finding the gaps is the responsibility of whoever prepares the plan and of the builder; only the decisions that belong to Batu come to him, together with the information needed.
+10. The real measure is whether DevOS can actually develop SOUL. More records and checks do not mean that SOUL is advancing.
+11. **Frame blindness is the greatest danger for DevOS and for SOUL.** When a design gets stuck at a limit and starts producing new mechanisms as the solution, the frame itself is questioned first. Technical decisions, even when their effects are large, are made by the team with their rationale; only the decisions that belong to Batu come to him. **[Batu, 29 September 2026]** (original: TR-A3)
+12. **Current platform reading:** Every platform behaviour the plan relies on is read from the current version of the official documentation, with its date; a secondary source does not count as "verified". **[Lesson from the 2.0 review]**
+13. **Effect channel inventory:** Every channel through which the agent can produce an effect in the world (database, GitHub, connectors, network, second model, scheduled jobs) is kept in a single list; for each of them a limit and a negative test are written. **[Lesson from the 2.0 review]**
 
-### 0.4 Belge ailesi
+### 0.4 Document family
 
-| Belge | İçerik | Kim okur |
+| Document | Content | Who reads it |
 |---|---|---|
-| Bu plan (`DevOS_Kurulum_Plani.md`) | Ne kurulacak, neden, nasıl, hangi sırayla, neyle kanıtlanacak | Kurucu; Batu seçili bölümleri |
-| **Ek A** (`Ek_A_Rol_Sozlesmeleri.md`) | 18 rol sözleşmesi, rol paketleri, rol hazırlama protokolü | Kurucu |
-| **Ek B** (`Ek_B_Veri_Modeli.md`) | Veri modeli: kayıt aileleri, alanlar, durum geçişleri, kurallar, API fonksiyonları | Kurucu |
-| **Ek C** (`Ek_C_Testler.md`) | F01–F08 ve diğer karşı örneklerin hata sınıfı düzeyindeki testleri | Kurucu |
-| **Ek D** (`Ek_D_Dusunme_Protokolleri.md`) | Dokuz düşünme protokolünün `CLAUDE.md`'ye uyarlanmış metni | Kurucu |
-| **Ek E** (`Ek_E_Iletisim.md`) | Batu ile iletişim kuralları | Batu ve kurucu |
-| **Ek F** (`Ek_F_Baslangic_Mesaji.md`) | Kurucunun başlangıç mesajı | Batu ve kurucu |
-| **Ek G** (`Ek_G_Isleyis_Kurallari.md`) | Ayrıntılı işleyiş kuralları: bağlam bayatlaması, ilişki sorgularının tamlığı, yayın kesintileri, bileşik ürünler, yeniden açma ve iptal, bozulma halleri | Kurucu |
-| Değerlendirme ve araştırma belgeleri | İki bağımsız incelemenin değerlendirmesi; çalışma düzeni, uyandırma ve kapasite araştırması; karşılaştırmalı araştırma | Kurucu |
-| Hazırlık planı | Kurucu başlamadan önce yapılacaklar (H0–H10) | Batu ve bu sohbet |
-| ChatGPT görevi | `agentic-os-search`'ün güncellenmesi | ChatGPT |
+| This plan (`DevOS_Kurulum_Plani.md`) | What will be set up, why, how, in what order, with what it will be proven | Builder; Batu, selected sections |
+| **Appendix A** (`Ek_A_Rol_Sozlesmeleri.md`) | 18 role contracts, role packages, the role preparation protocol | Builder |
+| **Appendix B** (`Ek_B_Veri_Modeli.md`) | Data model: record families, fields, state transitions, rules, API functions | Builder |
+| **Appendix C** (`Ek_C_Testler.md`) | Tests of F01–F08 and of the other counterexamples at the level of the failure class | Builder |
+| **Appendix D** (`Ek_D_Dusunme_Protokolleri.md`) | The text of the nine thinking protocols, adapted to `CLAUDE.md` | Builder |
+| **Appendix E** (`Ek_E_Iletisim.md`) | Rules of communication with Batu | Batu and builder |
+| **Appendix F** (`Ek_F_Baslangic_Mesaji.md`) | The builder's start message | Batu and builder |
+| **Appendix G** (`Ek_G_Isleyis_Kurallari.md`) | Detailed operating rules: context staleness, completeness of relation queries, release interruptions, composite products, reopening and cancellation, degradation states | Builder |
+| Evaluation and research documents | The evaluation of the two independent reviews; the research on the working order, wake-up and capacity; the comparative research | Builder |
+| Preparation plan | What is to be done before the builder starts (H0–H10) | Batu and this conversation |
+| ChatGPT task | Updating `agentic-os-search` | ChatGPT |
 
-Bütün ekler `devos/plan/` altında durur ve kurucu için zorunludur. Önceki P4, P5 ve "SOUL ve DevOS" raporları `agentic-os-search`'te arşivdedir; geçerli parçaları eklere aktarılmıştır. Arşiv uygulama kaynağı değildir; "bu karar neden böyle verildi?" sorusu ve uyarlama sadakatinin denetimi (bir gereksinim eklere doğru aktarılmış mı?) için okunur.
+All the appendices are kept under `devos/plan/` and are mandatory for the builder. The earlier P4, P5 and "SOUL ve DevOS" (SOUL and DevOS) reports are archived in `agentic-os-search`; their valid parts have been carried over into the appendices. The archive is not a source for implementation; it is read for the question "why was this decision made this way?" and for checking the fidelity of the adaptation (has a requirement been carried over into the appendices correctly?).
 
-**Önkoşul:** C00'dan önce hazırlık planı tamamlanmış olmalıdır.
+**Precondition:** The preparation plan must have been completed before C00.
 
-### 0.5 Depolar ve yazarları
+### 0.5 Repositories and their writers
 
-Her deponun tek yazarı vardır; yazar olmayan yalnız okur. Aynı kayıtları iki farklı sistemin birbirinden habersiz değiştirmesi bu projede daha önce karışıklığa yol açtı. [Batu kararı: tek yazar ilkesi ve depo kararları]
+Every repository has a single writer; whoever is not the writer only reads. Two different systems changing the same records without knowing of each other has caused confusion in this project before. [Batu's decision: the single-writer principle and the repository decisions] (original: TR-A4)
 
-| Depo | Görünürlük | Yazar | Kurucu |
+| Repository | Visibility | Writer | Builder |
 |---|---|---|---|
-| `devos` (yeni) | Açık **[Batu kararı K6]** | Kurucu, sonra DevOS ekibi | Yazar |
-| `soul-system` (yeni) | Açık | DevOS'un yayın işi | Yalnız yayın akışıyla yazar |
-| `devos-evals` (yeni) | Gizli | Sınav hazırlayan oturumlar | Sınanan rollerin oturumlarına hiç eklenmez |
-| `devos-backup` (yeni) | Gizli | Yedek ve kütüphane aktarım işleri | İşleri kurar, içeriğe elle yazmaz |
-| `agentic-os-search` (var) | Gizli | ChatGPT, Batu'nun onayıyla | **Yalnız okur** |
-| Eski deneme depoları (var): `soul`, `soul-development-os`, `soul-development-os_02`, `soul-development-os2-claudecloud`, `soul-development-os3_claudecode`, `soul-production`, `loom-development`, `os-architect`, `keel`, `keel-dev`, `keel-research`, `KEEL-Work`, `oyun2` | Karışık | Kimse | **Yalnız okur** |
+| `devos` (new) | Public **[Batu's decision K6]** (original: TR-A5) | Builder, then the DevOS team | Writer |
+| `soul-system` (new) | Public | DevOS's release job | Writes only through the release flow |
+| `devos-evals` (new) | Private | The sessions that prepare exams | Never added to the sessions of the roles under test |
+| `devos-backup` (new) | Private | Backup and library transfer jobs | Sets up the jobs, does not write to the content by hand |
+| `agentic-os-search` (existing) | Private | ChatGPT, with Batu's approval | **Only reads** |
+| Old experiment repositories (existing): `soul`, `soul-development-os`, `soul-development-os_02`, `soul-development-os2-claudecloud`, `soul-development-os3_claudecode`, `soul-production`, `loom-development`, `os-architect`, `keel`, `keel-dev`, `keel-research`, `KEEL-Work`, `oyun2` | Mixed | Nobody | **Only reads** |
 
-**Makine hesabı ve erişimleri [B3 = (a)]:** Sistemin GitHub kimliği `batuhanozgun-devos`'tur. Yazma erişimi: `devos`, `soul-system`, `devos-evals`. `agentic-os-search`'e de erişimi vardır, çünkü kurucu C00–C04 arasında kütüphaneyi doğrudan okur. GitHub, kişisel hesaba ait depolarda ortak çalışanlara yalnız okuma yetkisi verilmesine izin vermez; bu yüzden bu erişim teknik olarak yazma yetkisidir. Kural değişmez: DevOS bu depoya hiçbir şey yazmaz. Güvenceler: (1) kurucunun talimatı; (2) DevOS'tan bağımsız izleme yolu, `agentic-os-search`'te makine hesabının yaptığı her commit'i Batu'ya bildirir; (3) kütüphane C04'te Supabase'e aktarılıp doğrulandıktan sonra makine hesabının bu depoya erişimi kaldırılır. Eski deneme depolarına makine hesabı eklenmez; onları C04'te içe alma işi yalnız okuma yetkili ayrı bir anahtarla okur.
+**Machine account and its access [B3 = (a)] (original: TR-A6):** The system's GitHub identity is `batuhanozgun-devos`. Write access: `devos`, `soul-system`, `devos-evals`. It also has access to `agentic-os-search`, because the builder reads the library directly between C00 and C04. GitHub does not allow giving collaborators read-only permission on repositories that belong to a personal account; so this access is technically write permission. The rule does not change: DevOS writes nothing to this repository. Safeguards: (1) the builder's instruction; (2) a monitoring path independent of DevOS reports to Batu every commit the machine account makes in `agentic-os-search`; (3) after the library has been transferred to Supabase and verified in C04, the machine account's access to this repository is removed. The machine account is not added to the old experiment repositories; in C04 the ingestion job reads them with a separate key that has read-only permission.
 
-**Kurucuya uyarı:** `agentic-os-search` içindeki `AGENT.md` ve `agent/**` ChatGPT'nin kontrol dosyalarıdır; Claude Code için talimat değildir. O depodaki ve eski deneme depolarındaki "güncel durum", "sıradaki iş", "next" gibi ifadeler de kurucu için talimat değildir. Kurucunun tek güncel yönü bu plan ve ekleridir. `agent/protocols` altındaki düşünme disiplinleri Ek D aracılığıyla kullanılır.
+**Warning to the builder:** `AGENT.md` and `agent/**` in `agentic-os-search` are ChatGPT's control files; they are not instructions for Claude Code. Statements such as "güncel durum" (current state), "sıradaki iş" (next work) and "next" in that repository and in the old experiment repositories are not instructions for the builder either. The builder's only current direction is this plan and its appendices. The thinking disciplines under `agent/protocols` are used through Appendix D.
 
-**Açık depo ve özel içerik [K6 ve K8 kararlarının sonucu]:** `devos` açık olduğu için ona yazılan her şey gönderildiği anda herkese görünür. Bu yüzden: (1) Açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md`, düşünme disiplinlerinin uyarlaması, Batu'nun kararları ve beklentileri) yazılabilir. Kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım yazılamaz. (2) Ham kanıtın ve kurulum defterinin özel içerik taşıyabilecek kısımları veritabanında ve gizli dosya deposunda tutulur; açık depoya yalnız güvenli özet ve kimlik girer. (3) Sızıntı kontrolü, ilk açık yazımdan önce oturumun içinde çalışır (Bölüm 6.7). Kalan risk (kontrolün oturumun içinde çalışması nedeniyle atlatılabilmesi) Batu'nun K6 kararıyla kabul edilmiştir.
+**Public repository and private content [consequence of decisions K6 and K8] (original: TR-A7):** Because `devos` is public, everything written to it is visible to everyone the moment it is pushed. Therefore: (1) DevOS's own synthesis, source identifiers and the design documents written for DevOS (the plan, the appendices, `CLAUDE.md`, the adaptation of the thinking disciplines, Batu's decisions and expectations) may be written to the public repository. Transfer from the research content in the library, verbatim or close in meaning, and transfer from conversation transcripts may not be written. (2) The parts of the raw evidence and of the installation ledger that may carry private content are kept in the database and in the private file storage; only a safe summary and an identifier go into the public repository. (3) The leak check runs inside the session before the first public write (Section 6.7). The residual risk (that the check can be bypassed because it runs inside the session) has been accepted by Batu's decision K6.
 
-### 0.6 Dil [Batu kararı K9, 29 Eylül 2026]
+### 0.6 Language [Batu's decision K9, 29 September 2026] (original: TR-A8)
 
-**Kural:** DevOS'un bütün dosyaları (kod, yorumlar, belgeler, `CLAUDE.md`, rol ve yöntem metinleri, sınavlar), veritabanı kayıtları, commit ve PR metinleri, iç iş kayıtları ve ajanlar arası bütün iletişim **İngilizcedir**. Batu ile iletişim — karar mesajları, raporlar, kullanım kılavuzu ve Batu'ya giden her metin — **Türkçedir**.
+**Rule:** All of DevOS's files (code, comments, documents, `CLAUDE.md`, role and method texts, exams), database records, commit and PR texts, internal work records and all communication between agents **are in English**. Communication with Batu — decision messages, reports, the user guide and every text that goes to Batu — **is in Turkish**.
 
-**Sonuçları:**
+**Consequences:**
 
-1. **Plan paketi:** Bu plan ve ekleri şu an Türkçedir. C00'ın ilk işi, plan paketini İngilizceye çevirmek ve çevirinin sadakatini taze bağlamlı bir Denetçi alt ajanına inceletmektir (bağımsızlık düzeyi yazılı; PC-06). Çeviri bir yeniden yazım değildir: çeviri sırasında fark edilen iyileştirmeler ayrı öneri olarak kaydedilir. İnceleme geçene kadar Türkçe metin bağlayıcıdır; geçtikten sonra İngilizce metin tek bağlayıcı metindir ve Türkçe sürümler depodan kaldırılır (Batu'daki kopya okuma amaçlıdır). Batu'ya dönük Türkçe bir özet (genel resim, Batu'nun kararları ve yapacakları) DevOS tarafından ayrıca tutulur.
-2. **Batu'nun sözleri:** Batu'nun kararları, kısıtları ve beklentileri kayda hem **Türkçe aslıyla** hem **İngilizce yorumuyla** girer. Batu'ya bir karar sunulurken Türkçe metin İngilizce kayıttan üretilir ve ilgili yerlerde Batu'nun kendi Türkçe ifadesi gösterilir. Yorum ile asıl arasında anlam farkı fark edilirse bu bir bulgudur.
-3. **Arama:** Kütüphanenin büyük kısmı Türkçedir; ajanlar İngilizce çalışır. Bu yüzden kütüphane aramaları gerektiğinde iki dilde yapılır ve C04'teki arama ölçüsü diller arası soruları (İngilizce soru, Türkçe kaynak) ayrıca ölçer. Çok dilli anlam modelinin önemi bu kararla artar.
-4. **Karar issue'ları:** Batu'ya atanan karar issue'ları Türkçe; aynı kararın veritabanı kaydı İngilizcedir.
-5. **SOUL:** SOUL'un kodu ve belgeleri de DevOS'un ürettiği dosyalar olarak İngilizcedir. SOUL'un son kullanıcılarla hangi dillerde konuşacağı ayrı bir ürün kararıdır ve SOUL gereksinim kaydına açık soru olarak girer.
+1. **Plan package:** This plan and its appendices are in Turkish at present. C00's first work is to translate the plan package into English and to have the fidelity of the translation reviewed by a fresh-context Checker subagent (independence level written down; PC-06). The translation is not a rewrite: improvements noticed during the translation are recorded as separate proposals. Until the review passes, the Turkish text is binding; after it passes, the English text is the only binding text and the Turkish versions are removed from the repository (Batu's copy is for reading). A Turkish summary addressed to Batu (the big picture, Batu's decisions and what he is to do) is kept separately by DevOS.
+2. **Batu's words:** Batu's decisions, constraints and expectations enter the record both **with their Turkish original** and **with their English interpretation**. When a decision is presented to Batu, the Turkish text is produced from the English record, and in the relevant places Batu's own Turkish wording is shown. If a difference in meaning between the interpretation and the original is noticed, that is a finding.
+3. **Search:** Most of the library is in Turkish; the agents work in English. So library searches are done in both languages when needed, and the search benchmark in C04 measures cross-language questions (English question, Turkish source) separately. The importance of the multilingual embedding model grows with this decision.
+4. **Decision issues:** The decision issues assigned to Batu are in Turkish; the database record of the same decision is in English.
+5. **SOUL:** SOUL's code and documents, as files that DevOS produces, are in English too. In which languages SOUL will talk with end users is a separate product decision and enters the SOUL requirements record as an open question.
 
 ---
 
-## 1. Hedef
+## 1. Goal
 
-### 1.1 SOUL [Batu kararı]
+### 1.1 SOUL [Batu's decision] (original: TR-A9)
 
-> SOUL, kullanıcının uzmanlığının yetmediği işlerde bu açığı kapatan; işi, bilgiyi, aktörleri ve çalışma koşullarını keşfedip bir çalışma sistemi halinde birleştiren ve yöneten; kullanıcıyı yalnız onun karar vermesi gereken yerlerde, karar verebileceği kadar bilgilendirerek sürece katan; gerektiğinde kendi çalışma kapasitesini kontrollü biçimde uyarlayan bir yapıdır.
+> SOUL is a structure that, in work where the user's expertise falls short, closes this gap; that discovers the work, the knowledge, the actors and the working conditions, and combines and manages them as a working system; that brings the user into the process only where the user must make a decision, informing them as much as they need to be able to decide; that, when needed, adapts its own working capacity in a controlled way.
 
-"Bilgilendirmek", ders anlatmak değildir. Kullanıcı bir amaç, tercih ya da bütçe belirlerken işin gerekleri hakkında eksik bilgiye sahip olabilir. SOUL bu kısıtları sabit girdi saymaz: işin gereğiyle çelişen bir kısıtta kaliteli seçeneği, amacını, faydasını, bedelini ve alternatifini sunar; kararı kullanıcı verir. SOUL açık kaynak olacak ve başkaları kendi hesaplarıyla kurabilecek. [Batu kararı]
+"Informing" is not lecturing. When setting a goal, a preference or a budget, the user may have incomplete knowledge of what the work requires. SOUL does not treat these constraints as fixed input: for a constraint that conflicts with what the work requires, it presents the high-quality option, its purpose, its benefit, its cost and its alternative; the user makes the decision. SOUL will be open source, and others will be able to set it up with their own accounts. [Batu's decision] (original: TR-A10)
 
 ### 1.2 DevOS
 
-DevOS, SOUL'u geliştiren çalışma sistemidir. SOUL için hangi işin gerektiğini kendisi keşfeder, araştırır, tasarlar, uygular ve sınar. SOUL'un ilk gerçek işini ne Batu ne de bu plan seçer; kurulan ekip bulur.
+DevOS is the working system that develops SOUL. It discovers by itself which work SOUL needs, and researches, designs, implements and tests it. Neither Batu nor this plan chooses SOUL's first real work; the team that is set up finds it.
 
-DevOS aynı zamanda **SOUL'un ilk örneğidir**: konusu önceden belli olan bir SOUL. Bu yüzden:
+DevOS is at the same time **the first instance of SOUL**: a SOUL whose subject is known in advance. Therefore:
 
-1. DevOS'un bağlam, hafıza, bilgi bulma, iş takibi ve sınama katmanı atılacak bir iskele değil, SOUL çekirdeğinin ilk halidir.
-2. DevOS'un SOUL'u geliştirmekteki başarısı ya da başarısızlığı, SOUL yönteminin ilk kanıtıdır.
+1. DevOS's layer for context, memory, finding information, tracking work and testing is not scaffolding to be thrown away, but the first form of the SOUL core.
+2. DevOS's success or failure in developing SOUL is the first evidence for the SOUL method.
 
-### 1.3 Üç aşama
+### 1.3 Three stages
 
-| Aşama | Ne oluyor? | Kim çalışıyor? |
+| Stage | What is happening? | Who is working? |
 |---|---|---|
-| **A. Kurulum** | DevOS kuruluyor (C00–C12) | Kurucu Claude Code oturumu |
-| **B. DevOS'un çalışması** | DevOS ekibi SOUL'u geliştiriyor | DevOS rolleri: çoğu çalışma oturumunda alt ajan olarak; bağlayıcı inceleme ve sınav ayrı ortamlarda. Oturumları routine'ler başlatır |
-| **C. SOUL'un çalışması** | SOUL kullanıcıların işlerini yapıyor; başkalarının hesaplarında da | SOUL'un kendi ajanları |
+| **A. Installation** | DevOS is being set up (C00–C12) | Builder Claude Code session |
+| **B. DevOS in operation** | The DevOS team is developing SOUL | DevOS roles: most of them as subagents in the working session; binding review and exams in separate environments. Routines start the sessions |
+| **C. SOUL in operation** | SOUL is doing users' work; in other people's accounts too | SOUL's own agents |
 
-Araştırma kütüphanesine erişim: **A'da** kurucu depoları doğrudan okur. **B'de** ekip aynı bilgiye, depolar açılarak değil, bilginin aktarıldığı kütüphanede arama yapılarak ulaşır; böylece arama, otorite statüsü ve gizlilik kuralları çalışır. **C'de** SOUL bu depolara bağlı değildir; SOUL'un ihtiyaç duyduğu bilgiyi DevOS, SOUL'un kendi ürününe ve kütüphanesine uygun biçimde koyar.
+Access to the research library: **In A** the builder reads the repositories directly. **In B** the team reaches the same information not by opening the repositories but by searching in the library into which the information has been transferred; that way the search, authority status and confidentiality rules take effect. **In C** SOUL is not tied to these repositories; DevOS puts the information SOUL needs into SOUL's own product and library in a suitable form.
 
-### 1.4 DevOS'un başarısı neyle ölçülür? [Batu kararı]
+### 1.4 What is DevOS's success measured by? [Batu's decision] (original: TR-A11)
 
-Veritabanının çalışması, rol dosyalarının bulunması ya da görevlerin aktarılması tek başına başarı değildir. DevOS şu kabiliyetleri gerçek işte gösterdiğinde başarılıdır:
+A working database, existing role files or tasks being passed on are not success on their own. DevOS is successful when it shows these capabilities in real work:
 
-1. Doğru işi keşfetmek.
-2. İyi araştırmak.
-3. Gerekçeli karar vermek.
-4. Hatalarını sınamak ve genel kuralına kadar götürmek.
-5. Uzun ve bileşik işleri bütünlüğünü kaybetmeden sürdürmek.
-6. Araştırma birikimini gerçekten kullanmak.
-7. Bunları Batu'nun mesaj taşımasına ya da teknik bakım yapmasına ihtiyaç duymadan yapmak.
+1. Discovering the right work.
+2. Researching well.
+3. Making reasoned decisions.
+4. Testing its mistakes and taking them all the way to their general rule.
+5. Carrying long and composite work forward without losing its integrity.
+6. Actually using the accumulated research.
+7. Doing all this without needing Batu to carry messages or do technical maintenance.
 
-Bölüm 4 her kabiliyetin mekanizmasını, Bölüm 8 bunların nasıl sınanacağını, Bölüm 10 hangilerinin henüz tam çözülmediğini anlatır.
-
----
-
-## 2. Kabul edilmiş kriterler
-
-Bu 34 madde planın sözleşmesidir. Her aşama hangi maddeleri karşıladığını gösterir (Bölüm 9).
-
-**SOUL (ürün)**
-
-1. **Tanım:** Bölüm 1.1. [Batu kararı]
-2. **Açık kaynak:** Başkaları kendi hesaplarıyla kurabilir; SOUL, Batu'nun altyapısına bağımlı değildir. [Batu kararı]
-3. **Kullanıcı verisi:** Kullanıcının kendi alanında kalır; ortak öğrenmeye özel bilgi sızmaz. [Batu kararı]
-4. **Sağlayıcı bağımsızlığı:** SOUL, Claude dışındaki bir modelle de çalışabilecek biçimde tasarlanır ve bu gerçek bir sınamayla gösterilir (C11). Gösterilene kadar iddia edilmez. [Batu kararı]
-
-**DevOS (çalışma sistemi)**
-
-5. **Bulunabilirlik:** Her bilginin katalog kaydı ve üç tür araması vardır: kelime, anlam, ilişki.
-6. **Farkındalık:** Her ajan işe o anki durum özetiyle başlar.
-7. **Kaynağa bağlılık:** Her iddia kaynaklıdır; çelişkiler işaretlidir; inceleme farklı bir bilgi görünümüyle yapılır.
-8. **Makine kuralları:** Kuralları ajan değil sistem uygular.
-9. **Sensiz akış:** Roller Batu olmadan birbirine bağlanır; katkılar gerçekten kullanılır.
-10. **Kesinti:** Yarım iş kayıttan devam eder; eski yetki geri gelmez.
-11. **Ölçek:** Binlerce dosyada, her şeyi okumadan çalışır.
-12. **Çıkmaz yollar:** Başarısız denemedeki bilgi korunur, başarısızlık nedeni kaydedilir.
-13. **Esnek roller:** Yeni rol kurulabilir, yeterliği sınanır, gerekmediğinde bırakılır.
-14. **Kullanıcı modeli:** Batu'nun neyi bildiği ve neye onun karar vermesi gerektiği takip edilir.
-15. **Emek:** Güvenceler her işte tamdır. Emek derinliği varsayılan olarak yüksektir; azaltma gerekçeli ve başka bir rolün onayıyladır. Kullanıcı uzmanlığı araştırmayı kısaltabilir, ama değişebilir bilgilerin doğrulanmasını, alternatif taramasını ve yüksek etkili kararlarda dış kaynak araştırmasını kaldırmaz.
-16. **Kısıtlar sorgulanabilir:** İşin gereğiyle çelişen kısıtta kaliteli seçenek, amacı, faydası, bedeli ve alternatifi sunulur.
-17. **Güncel araştırma:** Model bilgisine körü körüne güvenilmez; değişebilir bilgi doğrulanır.
-18. **Amaçtan kopmama:** Ana hedef düzenli denetlenir; her yeni süreç parçası SOUL'un ilerlemesine hizmet ettiğini gösterir.
-19. **Öğrenme:** Dersler kaydedilir, uygun olan seçilir; yöntem değişiklikleri eski iyi davranışı bozmadan sınanır.
-20. **Test verisi:** Kişisel ve iş verisi testlerde hiç kullanılmaz; yalnız sahte veri. DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. **[Batu kararı K7, 29 Eylül 2026]**
-28. **Hata ile yetenek eksikliği ayrılır:** Her hata belirti, hata sınıfı ya da yetenek eksikliği olarak sınıflandırılır; onarım ve regresyon testi bulunan en genel düzeyde yapılır.
-29. **Dış kaynak birikimi zorunludur:** Yüksek etkili kararlarda başka alanlardaki bilinen çözümler ve karşı örnekler araştırılır.
-30. **Ölçüm bağımsızdır:** Yeterlik, sınanan rolün göremediği sınavlarla ölçülür; hiçbir rol kendi değişikliğini onaylayamaz.
-31. **Özel kaynak korunur:** Gizli kütüphanedeki içerik açık depolara taşınmaz.
-32. **Ortak düşünme standardı ve rol hazırlama:** Her rol, uzmanlığı ne olursa olsun aynı ortak düşünme tabanını taşır. Yeni bir rol yalnız bir ad ve görev cümlesiyle değil; bilgi haritası, yöntemler, araçlar, bilinen hata sınıfları, örnekler ve gizli sınavla hazırlanır; bu hazırlık her oturum açılışında, katkı talebinde ve kesintiden dönüşte yeniden kurulur. İşin küçüklüğü uzman değerlendirmesini atlama gerekçesi değildir; değerlendirme sonucunda az iş yapılabilir. **[Batu kararı, 29 Eylül 2026]**
-33. **SOUL'daki ajan kalitesi bir alt sınırdır, tavan değil:** SOUL'un kendi ajanları ve SOUL'un bir iş için oluşturduğu ya da sonradan eklediği ajanlar en az DevOS rolleri kadar yüksek bir düşünme standardı taşır. SOUL'un ajanları nasıl hazırlayacağı ve bu kaliteyi nasıl koruyacağı, DevOS'un kendi yönteminin kopyalanmasıyla değil, DevOS'un araştırma, tasarım ve sınama işiyle bulunur; DevOS'un bugünkü rol hazırlama yöntemi bu işin çıkış noktası ve karşılaştırma ölçütüdür. SOUL için daha iyi bir yöntem bulunursa bunun daha iyi olduğu aynı tür gizli sınavlarla gösterilir ve DevOS kendi rollerini de bu yöntemle iyileştirmeyi değerlendirir. **[Batu kararı, 29 Eylül 2026]**
-34. **Çerçeve körlüğüne karşı mekanizma:** DevOS, dayandığı öncülleri açıkça yazar, bir tasarım bir sınıra takıldığında önce çerçeveyi sorgular ve büyük tasarım kararlarında mevcut tasarımı görmeyen bağımsız bir karşı tasarımla karşılaştırma yapar (Bölüm 6.12). Bu aynı zamanda SOUL'a aktarılacak bir gereksinimdir. **[Batu, 29 Eylül 2026]**
-
-**Ortam ve Batu'nun rolü** [Batu kararı]
-
-21. **Rol:** Amaç, karar, kabul. Mesaj taşımak ve bakım yapmak yok.
-22. **Bilgisayar kapalıyken çalışır.**
-23. **Telefon:** Claude uygulaması ve kesin ulaşan bir yedek kanal; kararlar tek listede, sade Türkçe, kısa seçenekli.
-24. **Kendi bakımı:** Yedek, izleme ve denetim düzenli çalışır; çözülemeyen karar listesine düşer.
-
-**Altyapı**
-
-25. **Claude:** Max 200 $ planı. Ekstra kullanım kapalı. Ortam ayarlarında Anthropic API anahtarı yok. [Batu kararı]
-26. **Canlı durum:** Batu'nun kişisel Supabase hesabı. Ajanlar kısıtlı yetkiyle, gizli anahtar özelliği üzerinden erişir; Supabase MCP çalışan sistemde kullanılmaz. [Batu kararı: Supabase; plan seviyesi Bölüm 11'de yeniden karara sunuldu]
-27. **GitHub:** Bölüm 0.5'teki depolar. Dal koruması yöneticileri de kapsar; her PR'da otomatik kontroller; gizli bilgi taraması açık; tetikler dış hesaplardan gelen olaylara cevap vermez. [Batu kararı: depolar; ayrıntılar Öneri]
-
-(21–27 numaraları önceki sürümlerle uyum için korunmuştur.)
+Section 4 describes the mechanism of each capability, Section 8 how they will be tested, Section 10 which of them are not yet fully solved.
 
 ---
 
-## 3. Genel resim (Batu için)
+## 2. Accepted criteria
 
-DevOS'un parçaları:
+These 34 items are the plan's contract. Each stage shows which items it meets (Section 9).
 
-| Parça | Ne yapar? | Benzetme |
+**SOUL (product)**
+
+1. **Definition:** Section 1.1. [Batu's decision] (original: TR-A12)
+2. **Open source:** Others can set it up with their own accounts; SOUL does not depend on Batu's infrastructure. [Batu's decision] (original: TR-A13)
+3. **User data:** It stays in the user's own space; no private information leaks into shared learning. [Batu's decision] (original: TR-A14)
+4. **Provider independence:** SOUL is designed so that it can also work with a model other than Claude, and this is shown by a real test (C11). Until it is shown, it is not claimed. [Batu's decision] (original: TR-A15)
+
+**DevOS (working system)**
+
+5. **Findability:** Every piece of information has a catalogue record and three kinds of search: keyword, semantic, relation.
+6. **Awareness:** Every agent starts work with the state brief of that moment.
+7. **Faithfulness to sources:** Every claim is sourced; contradictions are marked; review is done with a different view of the information.
+8. **Machine rules:** The system, not the agent, enforces the rules.
+9. **Flow without Batu:** Roles connect to one another without Batu; contributions are actually used.
+10. **Interruption:** Unfinished work resumes from the record; old authority does not come back.
+11. **Scale:** It works across thousands of files without reading everything.
+12. **Dead ends:** The knowledge in a failed attempt is kept, the reason for the failure is recorded.
+13. **Flexible roles:** A new role can be set up, its competence is tested, it is dropped when it is not needed.
+14. **User model:** What Batu knows and what he must decide are tracked.
+15. **Effort:** Safeguards are complete in every piece of work. Effort depth is high by default; reducing it requires a rationale and another role's approval. The user's expertise can shorten research, but it does not remove the verification of changeable information, the scan of alternatives and, for high-impact decisions, research in external sources.
+16. **Constraints can be questioned:** For a constraint that conflicts with what the work requires, the high-quality option, its purpose, benefit, cost and alternative are presented.
+17. **Current research:** The model's knowledge is not trusted blindly; changeable information is verified.
+18. **Staying tied to the purpose:** The main goal is audited regularly; every new piece of process shows that it serves SOUL's progress.
+19. **Learning:** Lessons are recorded, the suitable ones are selected; method changes are tested without breaking the old good behaviour.
+20. **Test data:** Personal and business data are never used in tests; only fake data. DevOS's own research library may be used in measurements. **[Batu's decision K7, 29 September 2026]** (original: TR-A16)
+28. **An error is distinguished from a capability gap:** Every error is classified as a symptom, a failure class or a capability gap; the repair and the regression test are made at the most general level found.
+29. **Accumulated knowledge from outside sources is mandatory:** For high-impact decisions, the known solutions and counterexamples in other fields are researched.
+30. **Measurement is independent:** Competence is measured with exams that the role under test cannot see; no role can approve its own change.
+31. **Private sources are protected:** Content in the private library is not carried into public repositories.
+32. **Common thinking standard and role preparation:** Every role, whatever its expertise, carries the same common thinking floor. A new role is prepared not just with a name and a task sentence, but with a knowledge map, methods, tools, known failure classes, examples and a hidden exam; this preparation is rebuilt at every session opening, at every contribution request and on return from an interruption. The smallness of the work is not a reason to skip the expert assessment; the assessment may result in little work being done. **[Batu's decision, 29 September 2026]** (original: TR-A17)
+33. **Agent quality in SOUL is a floor, not a ceiling:** SOUL's own agents, and the agents that SOUL creates for a piece of work or adds later, carry a thinking standard at least as high as the DevOS roles. How SOUL will prepare agents and how it will keep this quality is found not by copying DevOS's own method but through DevOS's research, design and testing work; DevOS's present role preparation method is the starting point of this work and the yardstick for comparison. If a better method is found for SOUL, that it is better is shown with the same kind of hidden exams, and DevOS considers improving its own roles with this method too. **[Batu's decision, 29 September 2026]** (original: TR-A18)
+34. **Mechanism against frame blindness:** DevOS writes down explicitly the premises it relies on, questions the frame first when a design gets stuck at a limit, and for major design decisions makes a comparison with an independent counter-design that does not see the existing design (Section 6.12). This is also a requirement to be carried over to SOUL. **[Batu, 29 September 2026]** (original: TR-A19)
+
+**Environment and Batu's role** [Batu's decision] (original: TR-A20)
+
+21. **Role:** Purpose, decision, acceptance. No carrying messages and no maintenance.
+22. **It works while the computer is off.**
+23. **Phone:** The Claude app and a backup channel that is certain to get through; decisions in a single list, in plain Turkish, with short options.
+24. **Its own maintenance:** Backup, monitoring and audit run regularly; what cannot be solved drops into the decision list.
+
+**Infrastructure**
+
+25. **Claude:** Max $200 plan. Extra usage off. No Anthropic API key in the environment settings. [Batu's decision] (original: TR-A21)
+26. **Live state:** Batu's personal Supabase account. Agents access it with restricted permissions, through the secret key feature; the Supabase MCP is not used in the running system. [Batu's decision: Supabase; the plan level was put up for decision again in Section 11] (original: TR-A22)
+27. **GitHub:** The repositories in Section 0.5. Branch protection covers administrators too; automatic checks on every PR; secret scanning on; triggers do not respond to events coming from outside accounts. [Batu's decision: repositories; details: Proposal] (original: TR-A23)
+
+(The numbers 21–27 have been kept for consistency with earlier versions.)
+
+---
+
+## 3. The big picture (for Batu)
+
+The parts of DevOS:
+
+| Part | What does it do? | Analogy |
 |---|---|---|
-| **Claude Code cloud** | Ajanların düşündüğü, araştırdığı, yazdığı yer | Ofis |
-| **Çalışma oturumu** | Günde birkaç kez açılır; koordinatör ajan işin gerektirdiği rolleri alt ajan olarak çalıştırır; roller arası devir oturumun içinde olur | Ofiste çalışan ekip |
-| **Denetim ve sınav oturumları** | Ayrı anahtarlarla bağlayıcı incelemeyi, kabulü, kural değişikliği incelemesini ve sınavları yapar | Dışarıdan gelen denetçi |
-| **Routines** | Hiçbir oturum açık değilken oturum başlatır; günde birkaç kez | Sabah açılan kapı |
-| **Supabase** | Canlı iş kayıtları, kurallar, arama kütüphanesi; kimin ne yapabileceğine karar verir | Kayıt defteri, kapı görevlisi ve kütüphane |
-| **GitHub** | Üretilen her şey; her değişiklik kontrollerden geçmeden ana ürüne girmez | Arşiv ve kalite kontrol |
-| **Karar kanalı** | Senden karar gerektiğinde telefonuna bildirim gelir; cevabını güvenli bir yoldan verirsin | Senin masan |
+| **Claude Code cloud** | The place where the agents think, research and write | Office |
+| **Working session** | Opened a few times a day; the coordinator agent runs the roles the work requires as subagents; the hand-over between roles happens inside the session | The team working in the office |
+| **Audit and exam sessions** | With separate keys, carry out the binding review, the acceptance, the review of rule changes and the exams | The checker who comes from outside |
+| **Routines** | Start a session when no session is open; a few times a day | The door that opens in the morning |
+| **Supabase** | Live work records, rules, the search library; decides who can do what | Register, doorkeeper and library |
+| **GitHub** | Everything that is produced; no change enters the main product without passing the checks | Archive and quality control |
+| **Decision channel** | When a decision is needed from you, a notification comes to your phone; you give your answer through a secure path | Your desk |
 
-**Bir günün akışı:** Sabah bir çalışma oturumu açılır → koordinatör durum özetini okur, hazır işleri seçer → işin gerektirdiği rolleri (keşif, araştırma, tasarım, üretim) kendi paketleriyle alt ajan olarak çalıştırır; araştırma ve inceleme paralel yürür, bir ürünü aynı anda tek bir ajan yazar → sonuçlar kayda geçer, değişiklikler PR olarak gönderilir → denetim oturumu gelir, bağlayıcı incelemeyi ve kabulü yapar → senden karar gerekiyorsa telefonuna gelir → cevabın bir sonraki oturumda işlenir.
+**The flow of a day:** In the morning a working session opens → the coordinator reads the state brief and picks the ready work → it runs the roles the work requires (discovery, research, design, production) as subagents with their own packages; research and review run in parallel, a single agent writes a product at any one time → the results are recorded, the changes are sent as PRs → the audit session comes and does the binding review and the acceptance → if a decision is needed from you, it comes to your phone → your answer is processed in the next session.
 
-**Senin görmediğin ama sürekli çalışan işler:** yedekleme, kütüphanenin güncel tutulması, takılan işlerin tespiti, kullanım takibi, tekrarlayan hata örüntülerinin taranması, amaç denetimi, sessiz başarısızlık örneklemesi.
+**Work you do not see but that runs all the time:** backups, keeping the library current, detecting stuck work, usage tracking, scanning for recurring error patterns, purpose audit, silent-failure sampling.
 
 ---
-## 4. İhtiyaçtan çözüme: kabiliyetler ve mekanizmaları
+## 4. From need to solution: capabilities and their mechanisms
 
-Her kabiliyet için: hangi ihtiyacı karşıladığı, hangi mekanizmayla karşılandığı, gereken koşullar, başarısızlık halinde ne olacağı, nasıl sınanacağı ve statüsü. Ayrıntılı kurallar Ek B (veri modeli), Ek D (düşünme disiplinleri) ve Ek G'dedir.
+For each capability: which need it meets, by which mechanism it is met, the conditions it requires, what happens on failure, how it will be tested, and its status. The detailed rules are in Appendix B (data model), Appendix D (thinking disciplines) and Appendix G.
 
-### K-1 Doğru işi keşfetmek
+### K-1 Discovering the right work
 
-**İhtiyaç:** Bir amaçtan, onu gerçekleştirmek için gereken işe gitmek. Açıkça söylenmemiş ama maddi önkoşulları bulmak; yöntem değişince ortadan kalkan önkoşulları evrensel gereklilik sanmamak; gereksiz hazırlık yığmamak; ne zaman durulacağını bilmek.
+**Need:** To go from a goal to the work needed to achieve it. To find prerequisites that are not stated explicitly but are material; not to mistake prerequisites that disappear when the method changes for universal requirements; not to pile up unnecessary preparation; to know when to stop.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **İhtiyaç kaydı** (`Need` / `Inquiry`, Ek B): Her ihtiyaç şunları taşır: bağlı olduğu üst amaç, beklenen değer, hedefin mi yoksa seçilen yöntemin mi gereği olduğu, destekleyen ve karşı kanıt, açık varsayımlar, alternatif yollar, başlanabilirlik ve sonucun döneceği yer (`return_to`).
-2. **Keşif protokolü** (DR01 rolü, `methods/rpd.md`): (a) Ham talep ile onun güncel yorumu yan yana yazılır. (b) **Alternatif araştırması:** Hedefe giden farklı yöntemler aranır ve her yöntemin önkoşulları ayrı çıkarılır. Araştırmadan sonra tek uygulanabilir yol kalırsa bu gerekçesiyle yazılır; seçenek alanı henüz bilinmiyorsa iş "açık keşif" durumunda kalır. Sabit sayıda alternatif üretmek zorunlu değildir; uydurma alternatif üretmek hatadır. (c) **Kapsama taraması:** `agentic-os-search`'teki Foundation araştırmasının çalışma sistemi alanları (iş, bilgi, aktörler, ortam ve bunların bileşimleri) sistemli bir soru listesine çevrilir: "Bu alanda bu iş için eksik bir koşul var mı?" Liste C05'te bir kez türetilir ve sürümlenir. (d) **Geçmiş taraması:** Aynı yol daha önce denendi mi? Çıkmaz yol kayıtları (`DeadEnd`) ve eski deneme depoları aranır. (e) Önkoşullar üç sınıfa ayrılır: hedefin gereği, seçilen yöntemin gereği, yalnız faydalı. (f) Başlanabilir en dar bilgi edinme işi belirlenir.
-3. **Gereksiz önkoşul freni:** Her önkoşul "hangi karar ya da eylem bu olmadan yanlış olur?" sorusunu cevaplamak zorundadır. Cevaplayamayan önkoşul reddedilir. Veritabanı bir **biçim kapısı** uygular: cevap alanı boş bir önkoşul kaydı kabul edilmez. Veritabanı cevabın anlamlı olduğunu denetleyemez; içerik örneklem incelemesiyle ve denetim oturumunda değerlendirilir.
-4. **Çerçeve incelemesi:** Keşfi yapmamış, temiz bağlamlı bir inceleme (bağlayıcı olmayan işlerde çalışma oturumunda bir alt ajan; yüksek etkili işlerde denetim oturumu) keşif sonucunu, ham talebi ve kullanılmayan alternatifleri görür. Sorusu: "Problem yanlış mı çerçevelendi? Bu iş, doğru olduğu için mi, yoksa kolay ölçüldüğü için mi seçildi?"
-5. **Durma kuralı:** Kalan belirsizlik şu anki yetkili eylemi maddi biçimde değiştirmiyorsa ilerlenir. Bütçenin ya da bağlamın bitmesi "hazır olundu" demek değildir.
+1. **Need record** (`Need` / `Inquiry`, Appendix B): Every need carries: the parent goal it is tied to, the expected value, whether it is required by the goal or by the chosen method, supporting and counter-evidence, explicit assumptions, alternative paths, startability, and the place the result returns to (`return_to`).
+2. **Discovery protocol** (role DR01, `methods/rpd.md`): (a) The raw request and its current interpretation are written side by side. (b) **Alternatives research:** Different methods that lead to the goal are searched for, and the prerequisites of each method are worked out separately. If only one feasible path remains after the research, this is written down with its rationale; if the option space is not yet known, the work stays in the "open discovery" state. Producing a fixed number of alternatives is not mandatory; producing made-up alternatives is an error. (c) **Coverage scan:** The working-system domains of the Foundation research in `agentic-os-search` (work, knowledge, actors, environment and their combinations) are turned into a systematic list of questions: "Is there a missing condition in this domain for this work?" The list is derived once in C05 and versioned. (d) **History scan:** Has the same path been tried before? Dead-end records (`DeadEnd`) and the old experiment repositories are searched. (e) Prerequisites are split into three classes: required by the goal, required by the chosen method, merely useful. (f) The narrowest information-gathering work that can be started is determined.
+3. **Brake on unnecessary prerequisites:** Every prerequisite must answer the question "which decision or action would be wrong without this?" A prerequisite that cannot answer it is rejected. The database applies a **format gate**: a prerequisite record whose answer field is empty is not accepted. The database cannot check that the answer is meaningful; the content is assessed by sample review and in the audit session.
+4. **Frame review:** A clean-context review that did not do the discovery (for non-binding work, a subagent in the working session; for high-impact work, the audit session) sees the discovery result, the raw request and the unused alternatives. Its question: "Was the problem framed wrongly? Was this work chosen because it is right, or because it is easy to measure?"
+5. **Stop rule:** If the remaining uncertainty does not materially change the currently authorised action, work proceeds. Running out of budget or context does not mean "ready".
 
-**Koşullar:** Kütüphanenin içe alınmış olması (C04); rollerin ve yöntemlerin kurulmuş olması (C05).
+**Conditions:** The library has been ingested (C04); the roles and methods have been set up (C05).
 
-**Başarısızlık halinde:** C07 bilişsel kapısı başarısız olursa Bölüm 6.11'deki sistem incelemesi yapılır. "Bir ajan daha ekleyelim" ya da "promptu uzatalım" düzeltme sayılmaz.
+**On failure:** If the C07 cognitive gate fails, the system review in Section 6.11 is carried out. "Let's add one more agent" or "let's make the prompt longer" does not count as a fix.
 
-**Sınama:** Gizli sınav setinde iki tür görev: (1) içinde açıkça söylenmemiş maddi bir önkoşul gizlenmiş görevler (bulunmalı), (2) ek önkoşul gerektirmeyen görevler (gereksiz hazırlık üretilmemeli). İkisi birlikte ölçülür; yalnız birincisi ölçülürse her şeye önkoşul ekleyen bir sistem başarılı görünür. Ayrıca C07'deki gerçek görev.
+**Testing:** Two kinds of task in the hidden exam set: (1) tasks in which a material prerequisite that is not stated explicitly is hidden (it must be found), (2) tasks that need no extra prerequisite (unnecessary preparation must not be produced). The two are measured together; if only the first is measured, a system that adds prerequisites to everything looks successful. In addition, the real task in C07.
 
-**Statü:** Mekanizma **[Öneri]**. Kapsama taramasının gerçekten bilinmeyen eksikleri yakalayıp yakalamadığı **[Açık sorun: U-1]**.
+**Status:** Mechanism **[Proposal]**. Whether the coverage scan really catches unknown gaps **[Open problem: U-1]**.
 
-### K-2 İyi araştırmak
+### K-2 Researching well
 
-**İhtiyaç:** Belirsizliği uygun kaynaklarla azaltmak; güncel olmayan bilgiyi, yalnız ikincil kaynağa dayanmayı ve niteleyici kaybını önlemek; sonucun gerçekten bir kararda kullanılması.
+**Need:** To reduce uncertainty with suitable sources; to prevent outdated information, reliance on a secondary source alone and the loss of qualifiers; for the result to be actually used in a decision.
 
-**Mekanizma** (DR16 rolü, Ek D'deki kaynak-özet ve varsayım disiplinleri):
+**Mechanism** (role DR16, the source-summary and assumption disciplines in Appendix D):
 
-1. **Soru çerçevesi:** Araştırma hangi kararı etkileyecek, neyi bilmek o kararı değiştirir? Bunu yazmayan araştırma işi açılamaz.
-2. **Kaynak sırası:** Önce gizli kütüphane (Foundation, aday çalışmalar, önceki denemeler); sonra birincil ve güncel kaynaklar (resmî belgeler, standartlar, kaynak kod); ikincil kaynaklar yalnız birincilin olmadığı yerde ve öyle işaretlenerek.
-3. **Güncellik kuralı:** Zamanla değişebilecek bilgi (ürün özelliği, fiyat, sınır, sürüm) ancak tarihli ve birincil kaynakla kayda girer.
-4. **Karşı kanıt adımı:** Her bulgu için karşı kanıt aranır ve aramanın sonucu yazılır ("bulunamadı" da bir sonuçtur).
-5. **Dış alan araştırması:** Yüksek etkili kararlarda başka alanlardaki bilinen çözümler aranır (kriter 29); uygulanabilirlikleri ayrıca değerlendirilir, popüler oldukları için benimsenmez.
-6. **Çıktı biçimi** (`Finding`, Ek B): iddia, kaynak kimliği ve pasajı, niteleyiciler ("yalnız şu koşulda"), güven düzeyi, açık sorular.
-7. **Tüketim kaydı:** Araştırmayı isteyen taraf, sonucu nasıl kullandığını (`UseReceipt`) yazar: kullanıldı, koşullu kullanıldı, kullanılmadı (neden), yeni soru açtı.
-8. **Araştırma incelemesi:** Ayrı bir oturum bulguları kaynağına dönerek kontrol eder; özellikle niteleyici kaybını ve kaynağın gerçekten iddiayı destekleyip desteklemediğini.
+1. **Question frame:** Which decision will the research affect, and what knowledge would change that decision? A research work item that does not write this down cannot be opened.
+2. **Source order:** First the private library (Foundation, candidate studies, earlier experiments); then primary and current sources (official documents, standards, source code); secondary sources only where there is no primary one, and marked as such.
+3. **Recency rule:** Information that can change over time (product feature, price, limit, version) enters the record only with a dated, primary source.
+4. **Counter-evidence step:** For every finding, counter-evidence is searched for and the result of the search is written down ("not found" is also a result).
+5. **Outside-domain research:** For high-impact decisions, known solutions in other domains are searched for (criterion 29); their applicability is assessed separately, and they are not adopted because they are popular.
+6. **Output format** (`Finding`, Appendix B): claim, source identifier and passage, qualifiers ("only under this condition"), confidence level, open questions.
+7. **Use receipt:** The party that requested the research writes how it used the result (`UseReceipt`): used, used conditionally, not used (why), opened a new question.
+8. **Research review:** A separate session checks the findings by going back to their source; in particular the loss of qualifiers and whether the source really supports the claim.
 
-**Sınama:** Gizli sınav setinde bilinçli tuzaklar: eskimiş bilgi, düşürülmüş niteleyici, birbiriyle çelişen iki kaynak, yalnız ikincil kaynakla desteklenen iddia. Her tuzağın yakalanma oranı ve doğru bulguların gereksiz reddedilmemesi birlikte ölçülür. Gerçek kullanımda (C07) araştırmanın bir kararı görünür biçimde değiştirmesi, sınırlaması ya da gerekçelendirmesi.
+**Testing:** Deliberate traps in the hidden exam set: outdated information, a dropped qualifier, two sources that contradict each other, a claim supported only by a secondary source. The catch rate of each trap and the avoidance of needless rejection of correct findings are measured together. In real use (C07), the research visibly changing, limiting or justifying a decision.
 
-**Statü:** Mekanizma **[Öneri]**. Araştırma kalitesini genel olarak ölçen otomatik bir ölçüt yok **[Açık sorun: U-2]**.
+**Status:** Mechanism **[Proposal]**. There is no automatic metric that measures research quality in general **[Open problem: U-2]**.
 
-### K-3 Gerekçeli karar vermek
+### K-3 Making reasoned decisions
 
-**İhtiyaç:** Kararların alternatifleri tartılarak, varsayımları açık, geri alınabilirliği bilinerek verilmesi; aynı tartışmanın yeni bilgi olmadan tekrar açılmaması; yeni bilginin eski kararı koruma içgüdüsüyle dışlanmaması.
+**Need:** For decisions to be made by weighing the alternatives, with their assumptions explicit and their reversibility known; for the same debate not to be reopened without new information; for new information not to be excluded out of an instinct to protect the old decision.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Karar kaydı** (`Decision`, Ek B). Üç sınıf: rutin, yüksek etkili, Batu'ya ait.
-2. **Yüksek etkili kararlar için biçim kapısı:** Alternatif araştırmasının sonucu (karşılaştırılan seçenekler ya da tek uygulanabilir yol kaldıysa gerekçesi), karşılaştırma ölçütleri, kanıt bağlantıları, açık varsayımlar, geri alınabilirlik değerlendirmesi ve yeniden açma koşulları girilmeden karar "kabul" durumuna geçemez. Alanların içeriğinin kalitesi denetim oturumunda değerlendirilir.
-3. **Karar öncesi geri çağırma:** Yeni bir karar açılmadan önce ilgili eski kararlar aranır. Eski karar yalnız yeni maddi bilgiyle ya da değişen hedefle yeniden açılır.
-4. **Karar incelemesi:** Yüksek etkili kararlar denetim ortamında, kararı hazırlamayan bir oturumca incelenir.
-5. **Batu'ya ait kararlar:** Bölüm 4 K-11'deki karar kanalı ve Ek E biçimiyle gelir.
+1. **Decision record** (`Decision`, Appendix B). Three classes: routine, high-impact, belonging to Batu.
+2. **Format gate for high-impact decisions:** A decision cannot move to the "accepted" state until the result of the alternatives research (the options compared or, if only one feasible path remained, its rationale), the comparison criteria, the evidence links, the explicit assumptions, the reversibility assessment and the reopening conditions have been entered. The quality of the fields' content is assessed in the audit session.
+3. **Recall before deciding:** Before a new decision is opened, the related earlier decisions are searched for. An earlier decision is reopened only with new material information or a changed goal.
+4. **Decision review:** High-impact decisions are reviewed in the audit environment by a session that did not prepare the decision.
+5. **Decisions belonging to Batu:** They come through the decision channel in Section 4 K-11 and in the Appendix E format.
 
-**Sınama:** Veritabanı kuralı testleri: eksik alanlı yüksek etkili karar reddedilir, eksiksiz karar kabul edilir; kural bilerek kaldırıldığında test başarısız olur (Bölüm 8). Gizli sınavda: ilk bakışta çekici görünen seçeneğin daha kötü olduğu bir karar görevi.
+**Testing:** Database rule tests: a high-impact decision with missing fields is rejected, a complete decision is accepted; when the rule is deliberately removed, the test fails (Section 8). In the hidden exam: a decision task in which the option that looks attractive at first sight is the worse one.
 
-**Statü:** **[Öneri]**; kuralın veritabanında çalışması **[Doğrulama bekliyor: C02]**.
+**Status:** **[Proposal]**; the rule working in the database **[Awaiting verification: C02]**.
 
-### K-4 Hataları sınamak ve genel kuralına götürmek
+### K-4 Testing for errors and tracing them to their general rule
 
-**İhtiyaç:** Hatayı görünen yerinden onarıp bırakmamak; tek seferlik hata ile tekrarlayan yetenek eksikliğini ayırmak; testlerin gerçekten yanlışı yakalaması.
+**Need:** Not to fix an error where it shows and leave it there; to tell a one-off error apart from a recurring capability gap; for tests to really catch what is wrong.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Sınama tasarımı** (DR04): Her test bir iddiaya bağlıdır ve iki kontrol taşır: yanlış çözümü yakalayan olumsuz kontrol ve doğru çözüme izin veren olumlu kontrol (Bölüm 8).
-2. **Kusur sınıflandırması** (kriter 28): belirti, hata sınıfı, yetenek eksikliği. Hata sınıfında genel kural açıkça yazılır ve regresyon testi sınıf düzeyinde kurulur.
-3. **Sistem incelemesi:** Nedeni aranırken önce sistem incelenir: model mi, bağlam mı, kaynak mı, araç mı, rol tanımı mı, yöntem mi, iş dağılımı mı, doğrulama mı? "Ajan hatası" hükmü bu inceleme yapılmadan verilmez.
-4. **Bağımsız inceleme:** Bağlayıcı hükümler denetim ortamında, farklı bilgi görünümüyle çalışan bir oturumca verilir. Aynı modelin aynı öncüllerle tekrar bakması bağımsız doğrulama sayılmaz. Doğrulayıcı aynı eylemde onarım yapmaz; onarım ayrı bir iştir.
-5. **Tek olaydan aday:** Tek bir güçlü olay yetenek eksikliği **adayı** olarak kaydedilebilir. Kesinleşmesi olay sayısıyla değil, yeniden üretim, nedensel ayrım ve karşı örnekle olur.
-6. **Başarısızlık sınıflaması:** Her olay ayrıca çoklu ajan başarısızlık sınıflarından birine bağlanır: tanım sorunu, ajanlar arası uyumsuzluk, doğrulama eksikliği (Bölüm 6.11).
+1. **Test design** (DR04): Every test is tied to a claim and carries two controls: a negative control that catches the wrong solution and a positive control that allows the correct solution (Section 8).
+2. **Defect classification** (criterion 28): symptom, failure class, capability gap. For a failure class, the general rule is written explicitly and the regression test is built at class level.
+3. **System review:** When the cause is sought, the system is reviewed first: is it the model, the context, the source, the tool, the role definition, the method, the distribution of work, or the verification? The verdict "agent error" is not given without this review.
+4. **Independent review:** Binding verdicts are given in the audit environment by a session that works with a different view of the information. The same model looking again with the same premises does not count as independent verification. The verifier does not make a fix in the same action; the fix is a separate work item.
+5. **Candidate from a single event:** A single strong event can be recorded as a capability gap **candidate**. It is confirmed not by the number of events but by reproduction, causal separation and counter-example.
+6. **Failure classification:** Each event is also tied to one of the multi-agent failure classes: specification problem, inter-agent misalignment, verification gap (Section 6.11).
 
-**Sınama:** Veritabanı kurallarında bozma testi (her kural bilerek bozulur, ilgili test başarısız olmalı). Academy notundaki "sistemik hata genelleme" sınavı: farklı soyutlama düzeylerinde anlatılmış hatalar verilir; doğrudan neden, sistem nedeni, ortak kural ve belirti onarımı ile sınıf onarımı ayrımı ölçülür.
+**Testing:** Break tests on the database rules (each rule is deliberately broken; the related test must fail). The "systemic error generalisation" exam in the Academy note: errors described at different levels of abstraction are given; the direct cause, the system cause, the common rule, and the distinction between a symptom fix and a class fix are measured.
 
-**Statü:** **[Öneri]**. Genellemenin kalitesi **[Açık sorun: U-2]** kapsamında.
+**Status:** **[Proposal]**. The quality of the generalisation falls under **[Open problem: U-2]**.
 
-### K-5 Uzun ve bileşik işleri bütünlüğüyle sürdürmek
+### K-5 Sustaining long and composite work as a whole
 
-**İhtiyaç:** Parçalar tek tek iyi olsa da bütünün yanlış kalmaması; tasarım değişince ürünün de değişmiş sanılmaması; uzun sürede amacın kaybolmaması.
+**Need:** For the whole not to remain wrong even when the parts are good one by one; for the product not to be assumed to have changed when the design changes; for the purpose not to be lost over a long period.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Üç hal ayrı tutulur** (`Assembly`, Ek B): tasarım hali (niyet), çalışma hali (gerçekleşmiş birleşim), teslim hali (kabul edilmiş ürün). Birinin değişmesi diğerinin değiştiği anlamına gelmez.
-2. **Tam kimlikli anlık görüntü:** Her inceleme, hangi parçanın hangi sürümünün incelendiğini kaydeder; eski bir incelemenin sonucu yeni sürüme sessizce taşınmaz.
-3. **İki ayrı okuma:** Tasarımı bilen inceleme (uygulama tasarıma uyuyor mu) ile yalnız ürünü okuyan inceleme (okur ürünün kendisinden ne görüyor). İkisi tek puana indirgenmez.
-4. **Etki analizi:** İlişki sorguları etkilenebilecek parçaları bulur, ama kayıtlı olmayan anlam ilişkilerini bulamaz. Bu yüzden büyük değişikliklerde etkilenen parçalar ayrıca okunur (Ek G).
-5. **Amaç denetimi:** Düzenli aralıklarla açık işlerin ana hedefle bağı denetlenir; bağı kopmuş işler işaretlenir.
+1. **Three states are kept apart** (`Assembly`, Appendix B): the design state (intent), the working state (the assembly as realised), the delivery state (the accepted product). A change in one does not mean that another has changed.
+2. **Fully identified snapshot:** Every review records which version of which part was reviewed; the result of an old review is not silently carried over to a new version.
+3. **Two separate readings:** A review that knows the design (does the implementation conform to the design?) and a review that reads only the product (what does the reader see from the product itself?). The two are not reduced to a single score.
+4. **Impact analysis:** Relation queries find the parts that may be affected, but they cannot find meaning relations that are not recorded. Therefore, in large changes, the affected parts are read in addition (Appendix G).
+5. **Purpose audit:** At regular intervals, the link of open work items to the main goal is audited; work items whose link is broken are flagged.
 
-**Sınama:** C11'deki uzun senaryo; gizli sınavda tasarım değiştiği halde parçaları eski kalan bir ürün.
+**Testing:** The long scenario in C11; in the hidden exam, a product whose parts stayed old although the design changed.
 
-**Statü:** **[Öneri]**. Bütün ürünün kalitesini değerlendirme **[Açık sorun: U-2]** kapsamında.
+**Status:** **[Proposal]**. Assessing the quality of the whole product falls under **[Open problem: U-2]**.
 
-### K-6 Araştırma birikimini gerçekten kullanmak
+### K-6 Really using the accumulated research
 
-**İhtiyaç:** Yaklaşık 2.300 dosyalık araştırma kütüphanesi ve eski denemeler içinde doğru bilgiyi, her şeyi okumadan bulmak; bilginin statüsünü (temel, aday, tarihsel, keşif) bilmek; bulunan bilginin gerçekten kullanılması.
+**Need:** To find the right information in the research library of about 2,300 files and in the old experiments without reading everything; to know the status of information (foundation, candidate, historical, exploration); for the information found to be actually used.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **İçe alma:** Gizli `devos-backup` deposundaki zamanlanmış bir iş, `agentic-os-search`'ü salt okunur anahtarla okur ve değişen dosyaları parçalara bölerek Supabase'e aktarır. Eski deneme depoları (bütün dallarıyla) C04'te bir kez aktarılır. Kaynak depolara hiçbir şey yazılmaz. İş gizli bir depoda çalışır, çünkü açık depolardaki iş kayıtları herkese görünür.
-2. **Katalog:** Her parça bir katalog kaydı alır: kaynak dosya ve sürüm, otorite statüsü (Bölüm 6.6), gizlilik sınıfı, dil.
-3. **Üç arama:** (a) **Kelime araması:** PostgreSQL tam metin arama; Türkçe için Türkçe kök ayırıcı, İngilizce için İngilizce, teknik terimler için dile bağlı olmayan yapılandırma. (b) **Anlam araması:** Bölüm 5.4'te seçilen çok dilli açık modelle üretilen vektörler (pgvector). (c) **İlişki sorgusu:** Kayıtlar arası türlendirilmiş bağlar. Sonuçta hangi yoldan bulunduğu ve kaynağın statüsü görünür.
-4. **"Nerede bulurum" rehberi:** Katalogdan otomatik üretilir: hangi soru türü hangi kayıt ailesinde, hangi aramayla cevaplanır.
-5. **Bağlam paketi:** Bilgiyi kullanacak taraf zorunlu ihtiyaçlarını yazar (`ContextRequest`); paketi hazırlayan bu listeyi kısaltamaz; her ihtiyaç kaynak ve pasajla karşılanır (`ContextPackage`); oturuma gerçekte ne gittiği kaydedilir (`DispatchReceipt`). Bayatlama kuralları Ek G'dedir.
-6. **Bilinmeyen ihtiyaç kontrolü:** Her pakete iş türüne göre "gözden kaçmış olabilecekler" listesi ve üreticinin görmediği açıdan bir eksiklik taraması eklenir.
-7. **Kaynak gövdesine dönüş:** Arama sonucu kaynağın kendisi değildir. `devos_api.read_source(kaynak, sürüm, aralık)` ile kaynağın tam gövdesi ya da istenen aralığı okunabilir (Ek D, D5). Depolar B aşamasında doğrudan açılmaz; bu fonksiyon onların yerini tutar.
-8. **Rol bilgi haritaları:** Her rolün paketinde, alanıyla ilgili kütüphane bölümleri ve "ne zaman bakılır" ipuçları (Ek A 3.2).
-9. **Kullanım ölçüsü:** Kütüphaneden gelen bilginin bir kararı değiştirdiği, sınırladığı ya da gerekçelendirdiği durumlar raporlanır. Atıf sayısı ölçü değildir.
+1. **Ingestion:** A scheduled job in the private `devos-backup` repository reads `agentic-os-search` with a read-only key, splits the changed files into chunks and transfers them to Supabase. The old experiment repositories (with all their branches) are transferred once in C04. Nothing is written to the source repositories. The job runs in a private repository because job logs in public repositories are visible to everyone.
+2. **Catalogue:** Every chunk gets a catalogue record: source file and version, authority status (Section 6.6), confidentiality class, language.
+3. **Three searches:** (a) **Keyword search:** PostgreSQL full-text search; a Turkish stemmer for Turkish, an English one for English, a language-independent configuration for technical terms. (b) **Semantic search:** vectors produced with the multilingual open model chosen in Section 5.4 (pgvector). (c) **Relation query:** typed links between records. The result shows by which path it was found and the status of the source.
+4. **"Where do I find it" guide:** Generated automatically from the catalogue: which kind of question is answered in which record family, with which search.
+5. **Context package:** The party that will use the information writes its mandatory needs (`ContextRequest`); whoever prepares the package cannot shorten this list; each need is met with a source and a passage (`ContextPackage`); what actually went to the session is recorded (`DispatchReceipt`). The staleness rules are in Appendix G.
+6. **Unknown-need check:** Every package gets, according to the type of work, a list of "things that may have been missed" and a gap scan from an angle the producer did not see.
+7. **Return to the source body:** A search result is not the source itself. With `devos_api.read_source(source, revision, span)` the full body of the source, or a requested range of it, can be read (Appendix D, D5). In stage B the repositories are not opened directly; this function takes their place.
+8. **Role knowledge maps:** In each role's package, the library sections relevant to its domain and "when to look" hints (Appendix A 3.2).
+9. **Usage measure:** Cases in which information from the library changed, limited or justified a decision are reported. The number of citations is not a measure.
 
-**Sınama:** **Arama ölçüsü:** Ayrı bir oturum, gerçek kütüphaneden en az 50 Türkçe ve İngilizce soru ile her birinin doğru kaynaklarını hazırlar; bu liste gizli tutulur. Liste ikiye ayrılır: **ayar soruları** (model, parça boyutu ve birleşim ayarının seçimi için) ve **son değerlendirme soruları** (seçim bittikten sonra bir kez kullanılır; seçimi etkilemez). Kelime, anlam ve birleşik arama ilk 10 sonuçta doğru kaynağın bulunma oranıyla ölçülür. Başarı eşiği ölçümden önce yazılır. Ayar sorularındaki sonuç seçim kanıtıdır; kabul son değerlendirme sorularına göre verilir. Ayrıca niteleyicisi düşürülmüş özet testi ve eksik paketin reddi.
+**Testing:** **Search benchmark:** A separate session prepares at least 50 Turkish and English questions from the real library, together with the correct sources for each; this list is kept hidden. The list is split in two: **tuning questions** (for choosing the model, the chunk size and the combination setting) and **final evaluation questions** (used once, after the choice is finished; they do not influence the choice). Keyword, semantic and hybrid search are measured by the rate at which the correct source is found in the top 10 results. The success threshold is written down before the measurement. The result on the tuning questions is evidence for the choice; acceptance is given on the final evaluation questions. In addition, a test with a summary whose qualifier has been dropped, and the rejection of an incomplete package.
 
-**Statü:** Mekanizma **[Öneri]**. Anlam modeli ve ayarı **[Doğrulama bekliyor: C04 ölçümü]**. Bir paketin anlamca yeterli olup olmadığının otomatik ölçümü **[Açık sorun: U-4]**.
+**Status:** Mechanism **[Proposal]**. The embedding model and its setting **[Awaiting verification: C04 measurement]**. Automatic measurement of whether a package is sufficient in meaning **[Open problem: U-4]**.
 
-### K-7 Sensiz akış
+### K-7 Flow without Batu
 
-**İhtiyaç:** Roller arası talep ve cevabın Batu mesaj taşımadan akması; bilgisayar kapalıyken işin sürmesi; katkıların gerçekten kullanılması; bütün bunların günde 15 routine çalışması sınırı altında ve kaliteden taviz vermeden yapılması.
+**Need:** For requests and answers between roles to flow without Batu carrying messages; for work to continue while the computer is off; for contributions to be actually used; for all of this to be done under the limit of 15 routine runs a day and without compromising on quality.
 
-**Öncül denetimi:** 2.0'daki düzen, "her rol ayrı bir oturumdur ve her devir sistemin kendini yeniden uyandırmasını gerektirir" öncülüne dayanıyordu. Bu öncül P4 ve P5'in süreç tasarımından sorgulanmadan taşınmıştı ve routine sınırına takıldı. Rol bir sorumluluk ve bir pakettir; oturum bir çalışma yeridir. Bağımsızlığın iki türü ayrılır: **düşünme bağımsızlığı** (temiz bağlam, farklı bilgi görünümü, farklı talimat) alt ajanlarla sağlanabilir; **yetki bağımsızlığı** (kendi değişikliğini onaylayamama, sınav cevaplarını görememe, kontrol kurallarını değiştirememe) veritabanının doğrulayabildiği ayrı bir kimlik ister. Ayrıntı: `Uyandirma_ve_Kapasite_Arastirmasi.md`.
+**Premise audit:** The arrangement in 2.0 rested on the premise "every role is a separate session, and every hand-over requires the system to wake itself up again". This premise had been carried over unquestioned from the process design of P4 and P5, and it ran into the routine limit. A role is a responsibility and a package; a session is a place where work is done. Two kinds of independence are distinguished: **thinking independence** (clean context, a different view of the information, different instructions) can be provided by subagents; **authority independence** (not being able to approve one's own change, not being able to see exam answers, not being able to change the control rules) requires a separate identity that the database can verify. Details: `Uyandirma_ve_Kapasite_Arastirmasi.md`.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Üç ortam:** Çalışma, denetim ve sınav (Bölüm 6.3). Routine'ler yalnız bu ortamlarda oturum başlatır; roller arası devir için kullanılmaz (Bölüm 6.4).
-2. **Çalışma oturumu:** Koordinatör ajan (DR06-G ve DR06-Y) durum özetini okur, hazır işleri seçer ve işin gerektirdiği rolleri kendi paketleriyle alt ajan olarak başlatır (Bölüm 6.5). Roller arası talep ve katkı oturumun içinde dakikalar sürer; her katkı ve kullanımı veritabanına yazılır.
-3. **Tek yazar kuralı:** Paralel alt ajanlar yalnız okuma, araştırma, analiz ve inceleme yapar. Bir ürüne aynı anda tek bir yazar yazar. Gerçekten bağımsız ürünler paralel yazılabilir, ancak ortak kararlar önce açıkça yazılmış olmalıdır. Birleştirme tek bir sırada yapılır.
-4. **Parçalı iş ve yapılandırılmış devir:** Bir oturum işi parçalara böler; her parça temiz bağlamlı bir alt ajana ya da bir sonraki oturuma yapılandırılmış devir kaydıyla geçer. Uzun bir oturumun bağlam sıkıştırmasına güvenilmez.
-5. **Denetim oturumu:** Bağlayıcı hükümleri, kabulleri ve yüksek etkili değişikliklerin incelemesini yapar. Çalışma oturumlarının sonrasına zamanlanır.
-6. **Üstlenme ve süre:** Üstlenilen işin süresi vardır; oturum yaşadığını düzenli bildirir. Süre dolarsa iş yeniden atanır; eski oturumun geç gelen sonucu aday kanıt olarak saklanır.
-7. **Döngü sınırları:** Her iş döngüsünün bir üst sınırı, bir emek bütçesi ve "ilerleme yok" tespiti vardır. Tetiklenince iş durur, nedeni kayda geçer ve koordinatör ya da Batu'ya ait kararsa Batu bilgilendirilir.
-8. **Kilitlenme tespiti:** Birbirini bekleyen işler zinciri düzenli taranır.
-9. **Kullanım takibi:** Routine çalışmaları, oturum süreleri ve kullanım payı kaydedilir; kapasite yetmezse kalite değil hız düşer ve bu Batu'ya görünür olur.
+1. **Three environments:** Working, audit and exam (Section 6.3). Routines start sessions only in these environments; they are not used for hand-overs between roles (Section 6.4).
+2. **Working session:** The coordinator agent (DR06-G and DR06-Y) reads the state brief, selects the ready work items and starts the roles the work needs as subagents, each with its own package (Section 6.5). A request and a contribution between roles take minutes inside the session; every contribution and its use is written to the database.
+3. **Single-writer rule:** Parallel subagents only read, research, analyse and review. Only one writer writes to a product at any one time. Truly independent products can be written in parallel, but the shared decisions must first have been written down explicitly. Merging is done in a single sequence.
+4. **Chunked work and structured hand-over:** A session splits the work into chunks; each chunk passes to a clean-context subagent or to the next session with a structured hand-over record. The context compaction of a long session is not relied on.
+5. **Audit session:** It gives the binding verdicts and acceptances and reviews high-impact changes. It is scheduled after the working sessions.
+6. **Claim and time limit:** A claimed work item has a time limit; the session regularly reports that it is alive. If the time runs out, the work is reassigned; the late result of the old session is kept as candidate evidence.
+7. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection. When triggered, the work stops, the reason is recorded, and the coordinator is informed, or Batu if it is a decision that belongs to Batu.
+8. **Deadlock detection:** The chain of work items waiting for one another is scanned regularly.
+9. **Usage tracking:** Routine runs, session durations and the usage share are recorded; if capacity is not enough, speed drops, not quality, and this becomes visible to Batu.
 
-**Koşullar:** Routines **[Doğrulandı: code.claude.com/docs/en/routines ve Anthropic duyurusu, Eylül 2026]**: Max'te günde 15 çalışma; tek seferlik zamanlanmış çalışmalar sınıra sayılmıyor ama bulut oturumunun içinden oluşturulamıyor; hesaptaki bütün connector'lar varsayılan olarak ekleniyor; GitHub bağlantısı 72 saatten uzun koparsa routine kendini kapatıyor; araştırma önizlemesi. Bir bulut oturumunun kuyruk işleyerek ne kadar süre çalışabildiği **[Doğrulama bekliyor: C01]**.
+**Conditions:** Routines **[Verified: code.claude.com/docs/en/routines and the Anthropic announcement, September 2026]**: 15 runs a day on Max; one-off scheduled runs do not count towards the limit but cannot be created from inside a cloud session; all connectors on the account are added by default; if the GitHub connection is broken for more than 72 hours, the routine disables itself; research preview. How long a cloud session can run while processing a queue **[Awaiting verification: C01]**.
 
-**Başarısızlık halinde:** Oturumlar beklenenden kısa çalışırsa yedek routine bütçesinden ek çalışma oturumu açılır. Kapasite yine yetmezse seçenekler bedelleriyle Batu'ya gelir (U-5).
+**On failure:** If sessions run shorter than expected, an extra working session is opened from the reserve routine budget. If capacity is still not enough, the options come to Batu with their costs (U-5).
 
-**Sınama:** C06: A → B → A zinciri Batu'dan mesaj almadan tamamlanır; oturum işin ortasında kesilir, bir sonraki oturum doğru yerden devam eder; aynı katkı iki kez gelir, bir kez tüketilir; iki paralel alt ajan aynı ürüne yazmaya çalışır, ikincisi reddedilir; "ilerleme yok" durumu tespit edilir.
+**Testing:** C06: an A → B → A chain is completed without a message from Batu; a session is cut off in the middle of the work and the next session continues from the right place; the same contribution arrives twice and is consumed once; two parallel subagents try to write to the same product and the second is rejected; a "no progress" state is detected.
 
-**Statü:** **[Öneri]**; oturum süresi ve alt ajan davranışı **[Doğrulama bekliyor: C01, C06]**.
+**Status:** **[Proposal]**; session duration and subagent behaviour **[Awaiting verification: C01, C06]**.
 
-### K-8 Kesinti ve kurtarma
+### K-8 Interruption and recovery
 
-**İhtiyaç:** Yarım işin kayıttan devam etmesi; tamamlanmış işin ya da dış etkinin tekrarlanmaması; yedekten dönüşte geri alınmış bir yetkinin ya da eski sistemin etki üretmemesi.
+**Need:** For half-finished work to continue from the record; for completed work or an external effect not to be repeated; on return from a backup, for a revoked authority or the old system not to produce effects.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **İşlem kimliği:** Her dış etki tam niyetiyle kayda geçer; aynı kimlikle farklı niyet çatışma olarak reddedilir (F01).
-2. **Gözlem geçmişi:** "Uygulandı" gözlemi sonraki "bilinmiyor" gözlemiyle silinmez (F07).
-3. **Oturum kapanış disiplini ve yapılandırılmış devir:** Bölüm 6.5.
-4. **Yedek:** Bölüm 5.7.
-5. **Geri yükleme:** (a) Eski projedeki bütün routine'ler durdurulur ve eski ortam belirteçleri iptal edilir. (b) Yedek yeni bir Supabase projesine yüklenir. (c) Geri yüklenen veritabanındaki bütün aktif üstlenmeler iptal edilir; yetki dönemi artırılır. (d) Ortamlar, routine'ler ve GitHub kontrolleri yeni projeye yeniden bağlanır (Batu'nun adımları Bölüm 12'de). (e) Yayın denetimi güncel yetkiyi yeni projeden okur; eski bir oturumun açtığı PR bu denetimden geçemez. (f) Açık dış etkiler GitHub'daki gerçek durumla karşılaştırılır. (g) Sistem kademeli açılır: önce okuma, sonra aday üretimi, en son yayın.
+1. **Operation identifier:** Every external effect is recorded with its full intent; a different intent under the same identifier is rejected as a conflict (F01).
+2. **Observation history:** An "applied" observation is not erased by a later "unknown" observation (F07).
+3. **Session closing discipline and structured hand-over:** Section 6.5.
+4. **Backup:** Section 5.7.
+5. **Restore:** (a) All routines in the old project are stopped and the old environment tokens are revoked. (b) The backup is loaded into a new Supabase project. (c) All active claims in the restored database are revoked; the authority epoch is incremented. (d) The environments, routines and GitHub checks are reconnected to the new project (Batu's steps are in Section 12). (e) The release check reads the current authority from the new project; a PR opened by an old session cannot pass this check. (f) Open external effects are compared with the actual state on GitHub. (g) The system is opened in stages: first reading, then candidate production, release last.
 
-**Sınama:** C09 tatbikatı: eski sistem erişilebilir bırakılarak `main`'e etki denemesi reddedilir; yeni sistemde doğru iş ilerler; en az bir ortam gerçekten yeni projeye yeniden bağlanır.
+**Testing:** The C09 drill: with the old system left reachable, an attempt to affect `main` is rejected; in the new system the correct work proceeds; at least one environment is really reconnected to the new project.
 
-**Statü:** **[Öneri]**; **[Doğrulama bekliyor: C09]**.
+**Status:** **[Proposal]**; **[Awaiting verification: C09]**.
 
-### K-9 Güven sınırları ve gizlilik
+### K-9 Trust boundaries and confidentiality
 
-**İhtiyaç:** Kuralların aşılamaz olması; ajanın yetkisinin işi kadar olması; özel içeriğin açık depolara sızmaması; dışarıdan gelen içeriğin talimat olarak işlenmemesi.
+**Need:** For the rules to be impossible to get around; for an agent's authority to be only as much as its work needs; for private content not to leak into public repositories; for content coming from outside not to be processed as instructions.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Kural kapısı:** Ajanlar veritabanına yalnız `devos_api` fonksiyonları üzerinden erişir; tablolara doğrudan yazamaz.
-2. **Kimlik zinciri:** (a) Her ortamın bir **ortam belirteci** vardır; veritabanı rol sınıfını buradan çıkarır. (b) Bir işi üstlenen oturuma yalnız ona dönen tek seferlik bir **üstlenme belirteci** verilir; o işle ilgili her etki bu belirteci ister. Aynı ortamdaki başka bir oturum başkasının üstlenmesiyle işlem yapamaz. (c) Oturum kimliği ve rol adı beyana dayanır ve öyle etiketlenir; yetki kararı bunlara dayanmaz. (d) Oturum içindeki alt ajanlar aynı kimliği paylaşır; yetki ayrılığı gerektiren hiçbir iş oturum içinde yapılmaz.
-3. **Anahtar kuralı:** Ajan ortamlarında Supabase'in gizli (servis) anahtarı hiçbir zaman bulunmaz; bu anahtar erişim kurallarını atlar. Ortamlara yalnız herkese açık anahtar ve ortam belirteci verilir (Bölüm 6.3).
-4. **Etki kanalı envanteri:** Veritabanı, GitHub, connector'lar, ağ, ikinci model ve zamanlanmış işler tek listede; her birinin sınırı ve olumsuz testi var. **Connector'lar:** Hesaptaki connector'lar routine'lere varsayılan olarak ekleniyor ve yazma dahil izinsiz kullanılabiliyor **[Doğrulandı: routines belgesi]**. Bu yüzden (a) her routine'den bütün connector'lar çıkarılır; (b) depodaki izin kuralları connector araçlarının çağrılmasını engeller. İki katman C01 ve C03'te sınanır.
-5. **Açık depoya yazım:** Her gönderimden, PR'dan ve issue ya da yorum yazımından önce oturumun içinde koda dayalı bir sızıntı kontrolü çalışır (Claude Code kancası ve git'in gönderim öncesi kancası). PR üzerindeki kontrol ikinci katmandır. Kalan risk Bölüm 0.5'te.
-6. **Türetilmiş içerik:** Özel kaynaktan öğrenmek ile özel içeriği açıklamak ayrıdır. Açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS'un tasarım belgeleri girer; kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım girmez (K8).
-7. Tek yazar ilkesi (Bölüm 0.5).
-8. Açık depolarda dışarıdan açılan issue ve PR'lar hiçbir routine'i tetiklemez; dış içerik ajanlar için yalnız veridir.
-9. Kurucunun Supabase bağlantısı yalnız okuma kipinde ve tek projeyle sınırlıdır; çalışan sistem Supabase MCP'sini kullanmaz.
-10. Kimlik ayrımı: Bölüm 5.5.
+1. **Rule gate:** Agents access the database only through the `devos_api` functions; they cannot write to tables directly.
+2. **Identity chain:** (a) Every environment has an **environment token**; the database derives the role class from it. (b) A session that claims a work item is given a one-time **claim token** that is returned only to it; every effect related to that work requires this token. Another session in the same environment cannot carry out operations with someone else's claim. (c) The session identity and the role name rest on self-declaration and are labelled as such; no authority decision rests on them. (d) Subagents inside a session share the same identity; no work that requires separation of authority is done inside a session.
+3. **Key rule:** Supabase's secret (service) key is never present in agent environments; this key bypasses the access rules. Environments are given only the public (publishable) key and the environment token (Section 6.3).
+4. **Effect channel inventory:** The database, GitHub, connectors, the network, the second model and scheduled jobs are in a single list; each has its limit and its negative test. **Connectors:** The connectors on the account are added to routines by default and can be used without permission, writing included **[Verified: routines documentation]**. Therefore (a) all connectors are removed from every routine; (b) the permission rules in the repository block calls to connector tools. The two layers are tested in C01 and C03.
+5. **Writing to a public repository:** Before every push, every PR and every issue or comment write, a code-based leak check runs inside the session (a Claude Code hook and git's pre-push hook). The check on the PR is the second layer. The remaining risk is in Section 0.5.
+6. **Derived content:** Learning from a private source and disclosing private content are separate things. What goes into a public repository is DevOS's own synthesis, source identifiers and DevOS's design documents; verbatim or closely paraphrased reproduction of the research content in the library, and reproduction from conversation transcripts, do not go in (K8).
+7. Single-writer principle (Section 0.5).
+8. Issues and PRs opened from outside in public repositories trigger no routine; outside content is only data for agents.
+9. The builder's Supabase connection is in read-only mode and limited to a single project; the running system does not use the Supabase MCP.
+10. Identity separation: Section 5.5.
 
-**Sınama:** C03'teki olumsuz testler, her birinin "doğru yetkiyle doğru iş" karşılığıyla.
+**Testing:** The negative tests in C03, each with its "right work with the right authority" counterpart.
 
-**Statü:** **[Öneri]**; **[Doğrulama bekliyor: C01, C03]**. Tamamen farklı sözcüklerle yeniden anlatılmış özel içeriğin yakalanması **[Açık sorun: U-6]**.
+**Status:** **[Proposal]**; **[Awaiting verification: C01, C03]**. Catching private content retold in entirely different words **[Open problem: U-6]**.
 
-### K-10 Öğrenme ve kendini geliştirme
+### K-10 Learning and self-improvement
 
-**İhtiyaç:** Derslerin kalıcı olması ve doğru yerde seçilmesi; yöntem değişikliklerinin eski iyi davranışı bozmaması; kendi kendine onay verilmemesi; sürecin kendi amacına dönüşmemesi; modeller geliştikçe gereksizleşen mekanizmaların kaldırılabilmesi.
+**Need:** For lessons to persist and to be selected in the right place; for method changes not to break earlier good behaviour; for there to be no self-approval; for the process not to become its own purpose; for mechanisms that become unnecessary as models improve to be removable.
 
-**Mekanizma:** Öğrenme kayıtları (gözlem, olay, bulgu, örüntü, hata sınıfı, yetenek eksikliği adayı ve kesinleşmiş yetenek eksikliği, iyi ve kötü örnek, sınav, yöntem, öneri); düzenli yetenek eksikliği taraması; yöntem değişikliği akışı (öneri → gizli sınavla ölçme → denetim ortamında onay → etkinleşme → izleme → gerekirse geri alma); süreç sınırı: her yeni kural, kayıt ya da süreç hangi SOUL ilerlemesine hizmet ettiğini göstermek zorunda; **mekanizma varsayım envanteri** (Bölüm 6.12): her mekanizma modelin tek başına yapamadığı hangi şeyi telafi ettiğini yazar ve bu varsayım düzenli olarak ve model değiştiğinde sınanır.
+**Mechanism:** Learning records (observation, event, finding, pattern, failure class, capability gap candidate and confirmed capability gap, good and bad example, exam, method, proposal); a regular capability gap scan; the method-change flow (proposal → measurement with a hidden exam → approval in the audit environment → activation → monitoring → rollback if needed); process limit: every new rule, record or process must show which SOUL progress it serves; **mechanism assumption inventory** (Section 6.12): every mechanism writes down what it compensates for that the model cannot do on its own, and this assumption is tested regularly and whenever the model changes.
 
-**Sınama:** C10.
+**Testing:** C10.
 
-**Statü:** **[Öneri]**.
+**Status:** **[Proposal]**.
 
-### K-11 Batu ile etkileşim
+### K-11 Interaction with Batu
 
-**İhtiyaç:** Batu'nun yalnız kendisine ait kararlarla, karar verebileceği bilgiyle karşılaşması; kısıtlarının sorgulanabilmesi; telefondan çalışabilmesi; teknik yük taşımaması.
+**Need:** For Batu to be faced only with decisions that belong to him, with information he can decide on; for his constraints to be open to questioning; for him to be able to work from his phone; for him not to carry a technical load.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Karar kaydı ve biçimi** (Ek E): ne soruluyor, neden Batu'ya soruluyor, seçenekler (her biri için amaç, fayda, bedel), öneri ve gerekçesi, karar için bilinmesi gerekenler, cevap verilmezse ne olur.
-2. **Karar kanalı:** Bölüm 5.5'teki seçime göre.
-3. **Kullanıcı modeli** (`UserModel`): Batu'nun uzman olduğu alanlar (finans, raporlama, SAP, Fabric, Power BI), bilgisinin sınırlı olduğu alanlar, ona ait karar türleri.
-4. **Kısıt sorgulama:** Her kısıt (`Constraint`) sorgulanabilir statüdedir. Koordinatör her iş planlanırken ve denetim oturumu her incelemede, işin gereğinin bir kısıtla çelişip çelişmediğine bakar; çelişki bulununca karar kaydı açılır.
-5. **Emek politikası:** Bölüm 6.10.
-6. **Dil:** Batu ile Türkçe, sistemin içinde İngilizce (Bölüm 0.6).
-7. **Batu'nun onayının kapsamı [PC-05; Batu, 1 Ekim 2026]:** Teknik doğruluğu ve yüksek etkili değişikliklerin teknik onayını bağımsız denetim verir (kurulumda C03'e kadar taze bağlamlı Denetçi alt ajanının kararı, bağımsızlık düzeyi yazılı, PC-06; C03'ten sonra denetim ortamı). Batu'ya teknik onay sorusu gelmez. Batu'ya yalnız ona ait kararlar gelir: amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler ve kabul. Bir değişiklik bunlardan birine dokunuyorsa (örneğin bir kısıtı ya da maliyeti değiştiriyorsa) o yönüyle Ek E biçiminde karar olarak gelir.
+1. **Decision record and its format** (Appendix E): what is being asked, why it is being asked of Batu, the options (for each: purpose, benefit, cost), the recommendation and its rationale, what must be known for the decision, what happens if no answer is given.
+2. **Decision channel:** According to the choice in Section 5.5.
+3. **User model** (`UserModel`): the domains in which Batu is an expert (finance, reporting, SAP, Fabric, Power BI), the domains in which his knowledge is limited, the kinds of decision that belong to him.
+4. **Constraint questioning:** Every constraint (`Constraint`) has a status that allows it to be questioned. The coordinator, whenever a work item is planned, and the audit session, in every review, check whether what the work requires conflicts with a constraint; when a conflict is found, a decision record is opened.
+5. **Effort policy:** Section 6.10.
+6. **Language:** Turkish with Batu, English inside the system (Section 0.6).
+7. **Scope of Batu's approval [PC-05; Batu, 1 October 2026]:** (original: TR-B1) Independent audit judges technical correctness and gives the technical approval of high-impact changes (during installation, up to C03, the verdict of a fresh-context Checker subagent, with its independence level written down, PC-06; after C03, the audit environment). No technical-approval question goes to Batu. Only the decisions that belong to him go to Batu: purpose, scope, cost, choices that affect his accounts and his other work, and acceptance. If a change touches one of these (for example, if it changes a constraint or a cost), it comes to him, in that respect, as a decision in the Appendix E format.
 
-**Sınama:** C06 karar akışı; C07'de kısıtla çelişen bir durumun doğru sunulması; Ek E'ye uyumun Batu tarafından değerlendirilmesi.
+**Testing:** The C06 decision flow; in C07, the correct presentation of a situation that conflicts with a constraint; Batu's assessment of conformity with Appendix E.
 
-**Statü:** **[Öneri]**.
+**Status:** **[Proposal]**.
 
 ---
 
-## 5. Teknoloji seçimleri: ihtiyaç, alternatifler, seçim
+## 5. Technology choices: need, alternatives, choice
 
-Her bileşen için önce ihtiyaç, sonra seçimden önce değerlendirilen alternatifler, sonra seçim ve statüsü.
+For each component: first the need, then the alternatives assessed before the choice, then the choice and its status.
 
-### 5.1 Bilişsel çalışma ortamı
+### 5.1 Cognitive working environment
 
-**İhtiyaç:** Ajanların güçlü muhakemeyle çalışması; bilgisayar kapalıyken çalışabilmesi; ek ücret ve bakım gerektirmemesi; telefondan izlenebilmesi.
+**Need:** Agents working with strong reasoning; being able to work while the computer is off; requiring no extra fee and no maintenance; being monitorable from the phone.
 
-| Seçenek | Değerlendirme |
+| Option | Assessment |
 |---|---|
-| Claude Code cloud | Max planına dahil; bilgisayar kapalıyken çalışıyor; telefondan izlenebiliyor; routine'lerle uyandırılabiliyor |
-| Codex (uygulama ve bulut) | Abonelik içinde, bilgisayar kapalıyken belirli bir depoda bulut görevini otomatik başlatan yol 28 Eylül itibarıyla yoktu (kullanıcı hata kaydı ve belgeler) |
-| Codex Agents API | Kullanım başına ücretli; ayrıca kendi sunucunuzu gerektiriyor |
-| Yerel Claude Code | Bilgisayarın açık kalmasını gerektiriyor (kriter 22'yi bozuyor) |
-| Kendi sunucusunda ajan çerçevesi | Sunucu maliyeti ve bakım gerektiriyor |
+| Claude Code cloud | Included in the Max plan; works while the computer is off; can be monitored from the phone; can be woken by routines |
+| Codex (app and cloud) | Within the subscription, as of 28 September there was no way to start a cloud task automatically in a given repository while the computer is off (user bug report and documentation) |
+| Codex Agents API | Paid per use; also requires your own server |
+| Local Claude Code | Requires the computer to stay on (breaks criterion 22) |
+| Agent framework on one's own server | Requires server cost and maintenance |
 
-**Seçim:** Claude Code cloud. **[Batu kararı]** Gerekçesi bu konuşmada karşılaştırılarak kuruldu.
+**Choice:** Claude Code cloud. **[Batu's decision]** (original: TR-C1) Its rationale was established by comparison in this conversation.
 
-### 5.2 Uyandırıcı ve çalışma düzeni
+### 5.2 Wake-up mechanism and working order
 
-**İhtiyaç:** Açık oturum yokken oturum başlatmak; roller arası devirlerin Batu olmadan akması; günde 15 routine çalışması sınırı altında yeterli kapasite.
+**Need:** Starting a session when no session is open; hand-overs between roles flowing without Batu; enough capacity under the limit of 15 routine runs a day.
 
-| Seçenek | Değerlendirme |
+| Option | Assessment |
 |---|---|
-| **Routines yalnız oturum başlatmak için + roller oturum içinde alt ajan** | Günde birkaç oturumla yetinir; yetki ayrılığı ayrı ortamlarla korunur. **Seçilen** |
-| Her devir için routine tetiği (2.0'daki düzen) | Günde 15 çalışmaya sığmaz; yanlış öncüle dayanıyordu |
-| Claude Code Projects (Eylül 2026, beta) | Koordinatör + işçi oturumlar; günde 200 yeni oturum. Tek ortam kullandığı için yetki ayrılığını sağlamaz; hesaptaki bütün connector'ları alır; Batu'nun hesabında henüz açık olmayabilir. Çalışma ortamını hızlandıran isteğe bağlı bir katman olarak C01'de değerlendirilir |
-| Claude Code dynamic workflows (Mayıs 2026) | Oturum içinde çok sayıda paralel alt ajanı bir betikle yönetir; büyük tarama işleri için aday. Bulutta çalışması C01'de sınanır |
-| GitHub Actions ile ek işçi | Gizli depoda dakika sınırı; açık depoda iş kayıtları herkese açık. Şimdilik kullanılmıyor |
-| Ücretli ek kullanım | Yalnız ölçümden sonra ve bedeliyle Batu'ya karar olarak |
+| **Routines only to start sessions + roles as subagents inside the session** | Makes do with a few sessions a day; separation of authority is kept by separate environments. **Chosen** |
+| A routine trigger for every hand-over (the arrangement in 2.0) | Does not fit into 15 runs a day; it rested on a wrong premise |
+| Claude Code Projects (September 2026, beta) | Coordinator + worker sessions; 200 new sessions a day. Because it uses a single environment, it does not provide separation of authority; it takes all the connectors in the account; it may not yet be enabled on Batu's account. Assessed in C01 as an optional layer that speeds up the working environment |
+| Claude Code dynamic workflows (May 2026) | Manages many parallel subagents inside a session with a script; a candidate for large scanning jobs. Whether it works in the cloud is tested in C01 |
+| Extra worker with GitHub Actions | Minute limit in a private repository; in a public repository the job logs are public. Not used for now |
+| Paid extra usage | Only after measurement, and to Batu as a decision with its cost |
 
-**Seçim:** **[Öneri; teknik karar verildi]** Ayrıntı: `Uyandirma_ve_Kapasite_Arastirmasi.md` ve `Calisma_Duzeni_Karsilastirmali_Arastirma.md`. Yetki her zaman anahtardan gelir, oturumun açılış yolundan değil; bu yüzden Projects ya da dynamic workflows eklense de güvenlik modeli değişmez.
+**Choice:** **[Proposal; technical decision made]** Details: `Uyandirma_ve_Kapasite_Arastirmasi.md` and `Calisma_Duzeni_Karsilastirmali_Arastirma.md`. Authority always comes from the key, not from the way the session was opened; so even if Projects or dynamic workflows are added, the security model does not change.
 
-### 5.3 Canlı durum ve kural kapısı
+### 5.3 Live state and rule gate
 
-**İhtiyaç:** Aynı işin iki kez alınmasını engelleyen işlemler; kuralların sistem tarafından zorlanması; ilişki sorguları; kelime ve anlam araması; dosya deposu; zamanlanmış işler; oturumdan anahtar eklenmiş HTTP isteğiyle erişim; olay olduğunda dışarıya HTTP çağrısı.
+**Need:** Transactions that prevent the same work item from being taken twice; rules enforced by the system; relation queries; keyword and semantic search; file storage; scheduled jobs; access from the session by an HTTP request with a key attached; an outbound HTTP call when an event occurs.
 
-| Seçenek | Güçlü yanı | Zayıf yanı |
+| Option | Strength | Weakness |
 |---|---|---|
-| Yalnız Git (dosyalar, issue'lar) | Ek bileşen yok; geçmiş kendiliğinden tutulur | Aynı anda üstlenmeyi ve kuralları zorlayamaz; sorgu ve arama zayıf |
-| **Supabase** | PostgreSQL, satır bazlı erişim, HTTP API, fonksiyonlar, anlam araması (pgvector), dosya deposu, zamanlanmış işler, dışarıya HTTP çağrısı tek pakette | Ücretsiz planda bir hafta kullanılmayan proje uyuyor, otomatik yedek yok, veritabanı 500 MB **[Doğrulandı: supabase.com/pricing]** |
-| Neon | Boşta kalınca kapanıp bağlantıda kendiliğinden açılıyor; ücretsiz planda 6 saatlik geri alma geçmişi; 0,5 GB **[Doğrulandı: neon.com/docs]** | HTTP API, dosya deposu, zamanlanmış işler ve dışarıya çağrı için ek bileşenler gerekiyor; parça sayısı artıyor |
-| Cloudflare Workers + Durable Objects | Güçlü eşzamanlılık denetimi; ücretsiz planda kullanılabilir **[Doğrulandı: developers.cloudflare.com]** | Kural kapısı kendi yazılan sunucusuz koddur; PostgreSQL'in sorgu, erişim kuralı ve arama olanakları yok; anlam araması ayrı hizmet gerektirir |
+| Git only (files, issues) | No extra component; history is kept automatically | Cannot enforce simultaneous claiming or the rules; querying and search are weak |
+| **Supabase** | PostgreSQL, row-level access, HTTP API, functions, semantic search (pgvector), file storage, scheduled jobs, outbound HTTP calls in one package | On the free plan a project not used for a week goes to sleep, there is no automatic backup, the database is 500 MB **[Verified: supabase.com/pricing]** |
+| Neon | Shuts down when idle and starts again by itself on connection; 6 hours of restore history on the free plan; 0.5 GB **[Verified: neon.com/docs]** | Needs extra components for the HTTP API, file storage, scheduled jobs and outbound calls; the number of parts grows |
+| Cloudflare Workers + Durable Objects | Strong concurrency control; usable on the free plan **[Verified: developers.cloudflare.com]** | The rule gate is self-written serverless code; PostgreSQL's query, access-rule and search capabilities are absent; semantic search needs a separate service |
 
-**Seçim:** Supabase. **[Öneri; Batu kabul etti]** Gerekçe: gereksinimlerin tamamını en az parçayla karşılayan seçenek bu.
+**Choice:** Supabase. **[Proposal; Batu accepted]** (original: TR-C2) Rationale: this is the option that meets all the requirements with the fewest parts.
 
-**Plan seviyesi yeniden karara sunuldu (Bölüm 11, B1).** Önceki kararda ücretsiz plan seçilmişti. Bu sürümde kapasite tahmini yapıldı ve ücretsiz planın bir gereksinimi kısabileceği görüldü:
+**The plan tier was put up for decision again (Section 11, B1).** The earlier decision had chosen the free plan. In this version a capacity estimate was made, and it was seen that the free plan could curtail a requirement:
 
-- Kütüphane metni: `agentic-os-search`'ün ana dalında yaklaşık 18,5 MB metin; eski deneme depoları (dallarıyla) sıkıştırılmış halde yaklaşık 22 MB.
-- Tahmini parça sayısı 30–50 bin. Anlam vektörleri, arama dizinleri ve kelime araması dizinleriyle birlikte veritabanında yaklaşık 250–400 MB. **[Varsayım: C04'te ölçülecek]**
-- Buna DevOS'un kendi kayıtları, olay geçmişi ve sınav sonuçları eklenecek.
+- Library text: about 18.5 MB of text on the main branch of `agentic-os-search`; the old experiment repositories (with their branches) about 22 MB compressed.
+- Estimated number of chunks: 30–50 thousand. Together with the embedding vectors, search indexes and keyword-search indexes, about 250–400 MB in the database. **[Assumption: to be measured in C04]**
+- DevOS's own records, the event history and the exam results will be added to this.
 
-Ücretsiz planın 500 MB sınırı ilk aylarda dolabilir. Bu durumda ya anlam araması kütüphanenin bir kısmına uygulanır (kriter 5 ve 11'den taviz) ya da plan yükseltilir. Pro planı (aylık 25 $'dan) 8 GB veritabanı, günlük yedek ve uyumayan proje sağlıyor **[Doğrulandı: supabase.com/pricing]**. Seçenekler ve önerim Bölüm 11'de.
+The free plan's 500 MB limit may fill up in the first months. In that case either semantic search is applied to a part of the library (a concession on criteria 5 and 11) or the plan is upgraded. The Pro plan (from $25 a month) provides an 8 GB database, daily backups and a project that does not sleep **[Verified: supabase.com/pricing]**. The options and my recommendation are in Section 11.
 
-### 5.4 Anlam araması modeli
+### 5.4 Semantic search model
 
-**İhtiyaç:** Büyük ölçüde Türkçe, kısmen İngilizce bir kütüphanede anlamca ilgili içeriği bulmak; özel içeriği dışarıya göndermemek.
+**Need:** Finding content related in meaning in a library that is largely Turkish and partly English; not sending private content outside.
 
-| Seçenek | Değerlendirme |
+| Option | Assessment |
 |---|---|
-| Supabase'in yerleşik `gte-small` modeli | Ek ücretsiz ve Edge Functions içinde hazır **[Doğrulandı: supabase.com/docs, şu an desteklenen tek yerleşik model]**. Ancak İngilizce için eğitilmiş bir model; Türkçe kütüphanede zayıf kalması beklenir **[Varsayım: C04'te ölçülecek]** |
-| Dış hizmetlerin gömme API'leri | Çok dilli ve kaliteli; ama ya ücretli ya da ücretsiz katmanda gönderilen içerik sağlayıcının ürün geliştirmesinde kullanılabiliyor. Özel kütüphane için kriter 31'i bozar |
-| Açık kaynaklı çok dilli model, kendi işlerimizde çalıştırılan | İçerik dışarıya çıkmaz; ek ücret yok. İçe alma sırasında gizli `devos-backup`'taki işte, arama sırasında oturumun kendi makinesinde çalışır |
+| Supabase's built-in `gte-small` model | Free of extra charge and ready inside Edge Functions **[Verified: supabase.com/docs, currently the only supported built-in model]**. But it is a model trained for English; it is expected to be weak on the Turkish library **[Assumption: to be measured in C04]** |
+| Embedding APIs of external services | Multilingual and high quality; but either paid, or on the free tier the content sent can be used in the provider's product development. For the private library it breaks criterion 31 |
+| Open-source multilingual model, run in our own jobs | Content does not go outside; no extra fee. During ingestion it runs in the job in the private `devos-backup`, during search on the session's own machine |
 
-**Seçim:** Açık kaynaklı çok dilli bir model. **[Öneri]** Aday modeller C04'te, Bölüm 4 K-6'daki gizli arama ölçüsüyle karşılaştırılır ve ölçüme göre seçilir; `gte-small` da karşılaştırmaya dahil edilir. Modelin oturum makinesine indirilebilmesi ve Actions süre sınırları **[Doğrulama bekliyor: C01]**.
+**Choice:** An open-source multilingual model. **[Proposal]** The candidate models are compared in C04 with the hidden search benchmark of Section 4 K-6 and chosen according to the measurement; `gte-small` is included in the comparison too. Whether the model can be downloaded to the session machine, and the Actions time limits **[Awaiting verification: C01]**.
 
-### 5.5 Karar kanalı ve sistem kimliği
+### 5.5 Decision channel and system identity
 
-**İhtiyaç:** Batu'nun kararlarının gerçekten Batu'dan geldiğinin bilinmesi; Batu'ya ait kararların (amaç, kapsam, maliyet, hesapları) onun cevabı olmadan uygulanmaması; yüksek etkili değişikliklerin bağımsız denetimin onayı olmadan ana ürüne girmemesi (PC-05); telefondan kolay kullanım.
+**Need:** Knowing that Batu's decisions really come from Batu; decisions that belong to Batu (purpose, scope, cost, his accounts) not being applied without his answer; high-impact changes not entering the main product without the approval of the independent audit (PC-05); easy use from the phone.
 
-**Sorun:** Claude Code'un GitHub'da yaptığı commit'ler ve açtığı PR'lar Batu'nun kişisel GitHub kimliğiyle görünüyor **[Doğrulandı: ikincil kaynak, builder.io, routines rehberi]**. Bunun üç sonucu var: GitHub, sistemin yaptığıyla Batu'nun yaptığını ayırt edemez; GitHub kişinin kendi PR'ını onaylamasına izin vermediği için Batu sistemin PR'larını GitHub'ın kendi onay düzeniyle onaylayamaz; issue'lara yazılan bir "cevabın" Batu'dan mı sistemden mi geldiği bilinemez. Bu, çözülmesi gereken bir tasarım sorunudur; "sonra sınanır" diye bırakılamaz.
+**Problem:** The commits Claude Code makes on GitHub and the PRs it opens appear under Batu's personal GitHub identity **[Verified: secondary source, builder.io, routines guide]**. This has three consequences: GitHub cannot tell what the system did from what Batu did; because GitHub does not let a person approve their own PR, Batu cannot approve the system's PRs with GitHub's own approval process; it cannot be known whether an "answer" written on issues came from Batu or from the system. This is a design problem that must be solved; it cannot be left as "it will be tested later".
 
-| Seçenek | Güçlü yanı | Zayıf yanı |
+| Option | Strength | Weakness |
 |---|---|---|
-| **(a) Sistem için ayrı GitHub makine hesabı** | GitHub'ın kendi onay düzeni (zorunlu inceleme, kod sahibi onayı) tam çalışır; Batu kendisine ait kararları telefondaki GitHub uygulamasından verir (teknik onay PC-05 ile bağımsız denetime geçti); özel arayüz yazılmaz. GitHub kişi başına bir ücretsiz makine hesabına izin veriyor **[Doğrulandı: GitHub Hizmet Şartları]** | Claude'un GitHub bağlantısı makine hesabına geçer; bu Batu'nun diğer Claude Code projelerini de etkiler: o depolara makine hesabının ortak çalışan olarak eklenmesi gerekir ve oradaki commit'ler de makine hesabıyla görünür |
-| (b) Karar paneli (Supabase kimlik doğrulaması + sistemin yazamadığı ayrı bir depoda küçük bir sayfa) | Diğer projeleri etkilemez | GitHub'ın onay düzeni yine kullanılamaz; bütün onaylar özel bir sayfadan geçer; bu sayfanın kendisinin korunması ve güncellenmesi ayrı bir sorun |
-| (c) Belirsizliği kabul etmek | Hiçbir ek iş yok | Kriter 8 ve 21'i bozar; reddedildi |
+| **(a) A separate GitHub machine account for the system** | GitHub's own approval process (required review, code owner approval) works fully; Batu makes the decisions that belong to him from the GitHub app on his phone (technical approval moved to the independent audit with PC-05); no custom interface is written. GitHub allows one free machine account per person **[Verified: GitHub Terms of Service]** | Claude's GitHub connection moves to the machine account; this also affects Batu's other Claude Code projects: the machine account has to be added to those repositories as a collaborator, and the commits there also appear under the machine account |
+| (b) Decision panel (Supabase authentication + a small page in a separate repository the system cannot write to) | Does not affect other projects | GitHub's approval process still cannot be used; all approvals pass through a custom page; protecting and updating this page itself is a separate problem |
+| (c) Accepting the ambiguity | No extra work at all | Breaks criteria 8 and 21; rejected |
 
-**Önerim (a).** Daha az özel parça ve daha güçlü bir koruma sağlıyor. Diğer projelere etkisi tek seferlik bir ayar (hazırlıkta makine hesabının o depolara ortak çalışan olarak eklenmesi). Karar Batu'nun, çünkü diğer projelerini etkiliyor (Bölüm 11, B3). (a) seçilmezse (b) uygulanır.
+**My recommendation is (a).** It provides fewer custom parts and stronger protection. Its effect on other projects is a one-time setting (adding the machine account to those repositories as a collaborator during preparation). The decision is Batu's, because it affects his other projects (Section 11, B3). If (a) is not chosen, (b) is applied.
 
-**Bildirim:** Karar gerektiren her şey GitHub'da Batu'ya atanmış bir issue olarak açılır. (a) seçilirse issue'yu makine hesabı açtığı için Batu bildirim alır; (b) seçilirse issue'lar Batu'nun kendi kimliğiyle açılır ve GitHub kişiye kendi eylemleri için bildirim göndermeyebilir. Bu, (a)'yı destekleyen ek bir nedendir. **Yedek kanal ölçülebilir tanımlıdır:** belirli sürede açılmayan karar ikinci kanaldan (Claude uygulaması bildirimi ya da e-posta) yinelenir; süre Ek E'de.
+**Notification:** Everything that needs a decision is opened on GitHub as an issue assigned to Batu. If (a) is chosen, Batu gets a notification because the machine account opens the issue; if (b) is chosen, the issues are opened under Batu's own identity, and GitHub may not send a person notifications for their own actions. This is an additional reason supporting (a). **The backup channel is defined measurably:** a decision not opened within a set time is repeated through a second channel (a Claude app notification or e-mail); the time is in Appendix E.
 
-### 5.6 Yayın ve ürün deposu
+### 5.6 Release and product repository
 
-**İhtiyaç:** Hiçbir değişikliğin kontrollerden geçmeden ana ürüne girmemesi; yüksek etkili değişikliklerde bağımsız denetimin onayı (PC-05); "PR açıldı" ile "gerçekten girdi"nin ayrılması.
+**Need:** No change entering the main product without passing the checks; for high-impact changes, the approval of the independent audit (PC-05); telling "PR opened" apart from "really got in".
 
-**Seçim:** GitHub PR akışı: routine'ler varsayılan olarak yalnız `claude/` ile başlayan dallara gönderim yapabiliyor **[Doğrulandı: ikincil kaynak]**; `main` dalı korunur ve kurallar yöneticileri de kapsar; zorunlu kontroller (testler, şema, bağlantılar, katalog kaydı, sızıntı kontrolleri, gereken işlerde bağımsız inceleme hükmü); yüksek etkili dosyalarda bağımsız denetimin onayı (PC-05; `CODEOWNERS` ile zorunlu inceleme C08'de); rutin değişikliklerde kontroller geçince otomatik birleşme; niyet ve gözlem kayıtları. **[Öneri]** Alternatif yok denecek kadar dar: GitHub platformun zorunlu parçası.
+**Choice:** GitHub PR flow: by default, routines can push only to branches starting with `claude/` **[Verified: secondary source]**; the `main` branch is protected and the rules cover administrators too; required checks (tests, schema, links, catalogue record, leak checks, an independent review verdict for the work items that need one); for high-impact files, the approval of the independent audit (PC-05; required review with `CODEOWNERS` in C08); automatic merge for ordinary changes once the checks pass; intent and observation records. **[Proposal]** Narrow enough to say there is no alternative: GitHub is a required part of the platform.
 
-### 5.7 Yedek ve felaket kurtarma
+### 5.7 Backup and disaster recovery
 
-**İhtiyaç:** Veri kaybında en fazla ne kadar işin kaybolacağının bilinmesi ve kabul edilebilir olması; Supabase hesabına bir şey olursa bile verinin kurtarılabilmesi.
+**Need:** Knowing at most how much work would be lost in a data loss, and that amount being acceptable; being able to recover the data even if something happens to the Supabase account.
 
-**Seçim:** **[Öneri]**
+**Choice:** **[Proposal]**
 
-1. **Neyin yedekleneceği:** DevOS'un kendi kayıtları (işler, kararlar, katkılar, olaylar, inceleme ve sınav kayıtları, öğrenme kayıtları) ve dosya deposundaki kaynak ve kanıt gövdeleri. **Yeniden üretilebilir veri yedeklenmez:** anlam vektörleri ve kütüphanenin içe alınmış kopyası yerine kaynak commit'i ve model sürümü kaydedilir; geri yüklemede yeniden üretilir.
-2. **Olay kaydının saatlik aktarımı** gizli `devos-backup`'a. Olaylardan yeniden kurma sözleşmesi (hangi olay hangi durumu nasıl yeniden kurar) C09'da yazılır ve sınanır. "En fazla bir saatlik kayıp" bu sınanana kadar **hedeftir**, sonuç değil.
-3. **Günlük tam aktarım:** Yukarıdaki kapsamla, sıkıştırılmış olarak.
-4. **Saklama yeri ve bütçe:** Boyut ve Actions dakika bütçesi C04'ten önce hesaplanır. GitHub dosya ve depo sınırlarına ya da ayda 2.000 ücretsiz dakikaya yaklaşılırsa seçenekler (seyrekleştirme, başka saklama yeri, ücretli plan) bedeliyle Batu'ya gelir. Dakikalar biterse aktarımın durduğu fark edilmelidir; bu, bağımsız izleme yolunun işidir (Ek G, G7).
-5. **Aylık geri yükleme tatbikatı.**
+1. **What is backed up:** DevOS's own records (work items, decisions, contributions, events, review and exam records, learning records) and the source and evidence bodies in file storage. **Reproducible data is not backed up:** instead of the embedding vectors and the ingested copy of the library, the source commit and the model version are recorded; they are reproduced on restore.
+2. **Hourly export of the event log** to the private `devos-backup`. The contract for rebuilding from events (which event rebuilds which state, and how) is written and tested in C09. "At most one hour of loss" is a **target** until this is tested, not a result.
+3. **Daily full export:** With the scope above, compressed.
+4. **Storage location and budget:** The size and the Actions minute budget are calculated before C04. If the GitHub file and repository limits or the 2,000 free minutes a month are approached, the options (thinning out, another storage location, a paid plan) come to Batu with their cost. If the minutes run out, it must be noticed that the export has stopped; this is the job of the independent monitoring path (Appendix G, G7).
+5. **Monthly restore drill.**
 
-Saniye düzeyinde geri alma (aylık 100 $'lık ek) önerilmiyor; saatlik olay kaydı gösterildiğinde gereksizdir.
+Restore to the second (a $100-a-month add-on) is not recommended; once the hourly event log has been demonstrated, it is unnecessary.
 
-### 5.8 İkinci model ailesi
+### 5.8 Second model family
 
-**İhtiyaç:** Kriter 4'ün sınanması; bütün ajanların aynı model ailesinden olmasının yarattığı ortak kör noktaların azaltılması.
+**Need:** Testing criterion 4; reducing the shared blind spots created by all agents being from the same model family.
 
-| Seçenek | Değerlendirme |
+| Option | Assessment |
 |---|---|
-| Google Gemini API ücretsiz katmanı | Ücretsiz, kullanım sınırlı; ücretsiz katmanda gönderilen içerik Google'ın ürün geliştirmesinde kullanılabiliyor **[Doğrulandı: Google geliştirici forumu ve fiyat sayfaları]**. Bu yüzden yalnız sahte veri ve açık depolara girecek içerik gönderilebilir |
-| Ücretli bir ikinci sağlayıcı | Daha güçlü modeller ve veri güvencesi; kullanım başına ücret |
-| Hiçbiri | Kriter 4 sınanamaz; ortak kör nokta riski azaltılmaz |
+| Google Gemini API free tier | Free, usage limited; on the free tier the content sent can be used in Google's product development **[Verified: Google developer forum and pricing pages]**. So only fake data and content that will go into public repositories can be sent |
+| A paid second provider | Stronger models and data assurance; a fee per use |
+| None | Criterion 4 cannot be tested; the risk of shared blind spots is not reduced |
 
-**Önerim:** Gemini ücretsiz katmanı; iki iş için: C11'deki sağlayıcı bağımsızlığı sınaması ve yüksek etkili, açık depolara girecek kararlarda ikinci görüş. Özel kütüphane içeriği hiçbir durumda gönderilmez: giden her istek tek bir fonksiyondan geçer, sızıntı kontrolünden geçer ve kayda girer. Ücretsiz kotanın düşük olabileceği (bazı modellerde günde birkaç düzine istek) kapasite planına girer. Karar Batu'nun (Bölüm 11, B2).
+**My recommendation:** The Gemini free tier, for two jobs: the provider-independence testing in C11, and a second opinion on high-impact decisions that will go into public repositories. Private library content is never sent: every outgoing request passes through a single function, passes a leak check and is recorded. That the free quota may be low (a few dozen requests a day on some models) goes into the capacity plan. The decision is Batu's (Section 11, B2).
 
-### 5.9 Hesaptaki eklentiler, beceriler ve connector'lar
+### 5.9 Plugins, skills and connectors in the account
 
-Hesap düzeyinde etkinleştirilmiş beceriler bulut oturumlarına yükleniyor. Hesap eklentilerinin (ECC dahil) bulut oturumlarına kendiliğinden yüklenip yüklenmediği konusunda kaynaklar çelişiyor: DEVOS-002'deki belge okuması yüklendiğini, güncel resmî belgeler ise yüklenmediğini söylüyor. **[Doğrulama bekliyor; kaynaklar çelişiyor: C01]** Kancalar depodan ve kuruluş ayarlarından geliyor. Connector'lar için Bölüm K-9.
+Skills enabled at account level are loaded into cloud sessions. Sources conflict on whether account plugins (ECC included) are loaded into cloud sessions automatically: the documentation reading in DEVOS-002 says they are, while the current official documentation says they are not. **[Awaiting verification; sources conflict: C01]** Hooks come from the repository and from the organization settings. For connectors, see Section K-9.
 
-ECC kararı C00'da şu ölçütlerle verilir: hangi DevOS ihtiyacını karşılıyor, planın tasarımından iyi mi, DevOS kurallarıyla çatışıyor mu, bulutta gerçekten yükleniyor mu. Toptan benimsenmesi istenmedi (önceki D018 kararı). Aday parçalar: iki bağımsız inceleyici, üretici-değerlendirici döngüsü, döngü tasarım denetimi. **[Öneri: seçici kullanım]**
+The ECC decision is made in C00 by these criteria: which DevOS need it meets, whether it is better than the plan's design, whether it conflicts with DevOS rules, whether it really loads in the cloud. Wholesale adoption was not requested (earlier decision D018). Candidate parts: two independent reviewers, the producer-evaluator loop, loop design review. **[Proposal: selective use]**
 
 ---
-## 6. Hedef mimari
+## 6. Target architecture
 
-Bu bölüm sistemin tam halini tarif eder. Kurulum aşamaları (Bölüm 9) bunu riske göre sıralar; hiçbir aşama "şimdilik hafif hali, sonra gerçeği" mantığıyla kurulmaz.
+This section describes the system in its full form. The installation stages (Section 9) order it by risk; no stage is built on the logic of "a light version for now, the real one later".
 
-### 6.1 `devos` deposunun düzeni
+### 6.1 Layout of the `devos` repository
 
 ```text
 devos/
-  CLAUDE.md                 # ortak kurallar (Ek D) + oturum disiplini + giriş yönlendirmesi
-  .claude/agents/           # rol tanımları (Ek A); kısa, paketi açılışta yükler
-  .claude/protocols/        # dokuz düşünme disiplininin tam metni (Ek D)
-  .claude/settings.json     # izin kuralları (connector araçlarının engellenmesi) ve kancalar (açık depoya yazım öncesi sızıntı kontrolü)
-  methods/                  # çalışma yöntemleri (keşif, araştırma, sınama, karar vb.)
-  plan/                     # bu plan, Ek A–G, değerlendirme ve araştırma belgeleri, aşama kayıtları
-  supabase/migrations/      # sürümlü SQL değişiklikleri
-  supabase/functions/       # Edge Functions (kontrol uçları, ikinci model geçidi)
-  pipelines/                # içe alma, gömme üretimi, yedek ve sızıntı kontrolü kodu
-  .github/workflows/        # PR kontrolleri ve sürüm yayını
-  .github/CODEOWNERS        # yüksek etkili dosyalar
-  tests/                    # birim, veritabanı, akış, güvenlik, geri yükleme, arama ölçüsü, davranış
-  evidence/                 # her aşamanın güvenli özet kanıtı ve kanıt kimlikleri (ham kanıt veritabanında ve gizli dosya deposunda)
-  product/soul/             # SOUL ürünü (sürümde soul-system deposuna yayımlanır)
-  sources/INDEX.md          # kütüphane kaynaklarının kimlik listesi (içerik değil)
+  CLAUDE.md                 # common rules (Appendix D) + session discipline + entry guidance
+  .claude/agents/           # role definitions (Appendix A); short, loads the package at opening
+  .claude/protocols/        # full text of the nine thinking disciplines (Appendix D)
+  .claude/settings.json     # permission rules (blocking of connector tools) and hooks (leak check before writing to the public repository)
+  methods/                  # working methods (discovery, research, testing, decision, etc.)
+  plan/                     # this plan, Appendices A–G, evaluation and research documents, stage records
+  supabase/migrations/      # versioned SQL changes
+  supabase/functions/       # Edge Functions (check endpoints, second-model gateway)
+  pipelines/                # ingestion, embedding generation, backup and leak-check code
+  .github/workflows/        # PR checks and version release
+  .github/CODEOWNERS        # high-impact files
+  tests/                    # unit, database, flow, security, restore, search benchmark, behaviour
+  evidence/                 # each stage's safe summary evidence and evidence IDs (raw evidence in the database and in the private file storage)
+  product/soul/             # the SOUL product (published to the soul-system repository at release)
+  sources/INDEX.md          # ID list of the library sources (not content)
 ```
 
-`.claude/settings.json` ve `.claude/protocols/` yüksek etkili dosyalardır; değişiklikleri bağımsız denetimin onayından geçer (PC-05; C03'e kadar taze bağlamlı Denetçi alt ajanının kararı, bağımsızlık düzeyi yazılı, PC-06; sonra denetim ortamı). Oturum içinde bu dosyaların düzenlenmesini engelleyen bir kanca da vardır. **[Öneri]**
+`.claude/settings.json` and `.claude/protocols/` are high-impact files; changes to them go through the approval of the independent audit (PC-05; until C03, the verdict of a fresh-context Checker subagent, with its independence level written, PC-06; after that, the audit environment). There is also a hook that blocks editing these files within a session. **[Proposal]**
 
-### 6.2 Supabase: canlı durum ve kural kapısı
+### 6.2 Supabase: live state and rule gate
 
-- **Şemalar:** `devos_private` (bütün tablolar, dışarıya kapalı) ve `devos_api` (yalnız fonksiyonlar). Ajanlar yalnız `devos_api` fonksiyonlarını çağırabilir.
-- **Kural kapısı:** Her durum geçişi bir veritabanı fonksiyonudur. Fonksiyon, ortam belirtecinden rol sınıfını, üstlenme belirtecinden işi, güncel yetkiyi, sürümü, önkoşulları ve gereken kanıtı aynı işlem içinde denetler. Reddedilen geçiş gerekçesiyle kaydedilir. Her geçiş aynı işlemde bir olay kaydı üretir (F06).
-- **Veritabanı rol sınıfları:** `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_ci`, `devos_ingest`, `devos_backup` (salt okuma + yalnız "aktarıldı" işareti), `devos_kurulum` (yalnız kurulum süresince). Ayrıntı Ek B.
-- **Kayıt aileleri:** Ek B.
-- **Zamanlanmış işler:** hazır iş taraması, süresi dolmuş üstlenmelerin tespiti, kilitlenme taraması, bayat kayıt ve bağlantı denetimi, amaç denetimi, yetenek eksikliği taraması, kullanım takibi, sessiz başarısızlık örneklemesi için iş açma.
-- **Dışarıya çağrı:** Olağan akışta veritabanı routine tetiklemez; oturumlar zamanlanmıştır. Yalnız acil durumlar (Batu'nun beklenen kararı geldi ve iş bekliyor; kurtarma) yedek bütçeden API tetiği kullanır; her tetik niyet, dönen oturum kimliği ve sonuçla kaydedilir.
-- **Arama:** Tam metin arama, pgvector ile anlam araması, ilişki sorguları; kaynak gövdesi okuma (`read_source`). Etkilenen kayıt sorgusu benzersiz kayıtları ve tamlık bilgisini döndürür; devam sorgusu aynı anlık görüntüye bağlıdır ya da açıkça yeniden başlar (Ek G).
-- **Dosya deposu:** Büyük kaynak ve kanıt gövdeleri gizli alanlarda.
-- **İki proje:** Canlı proje `devos` (ref `zyqgltzfzkdvrmvxlamz`, `https://zyqgltzfzkdvrmvxlamz.supabase.co`, us-east-1) ve test projesi `devos-test` (ref `cqbzxexxwrrbrlszoseg`, us-east-1). 29 Eylül 2026'da ücretsiz planda açıldı. Herkese açık anahtarlar gizli bilgi değildir ve kurucu onları proje panelinden ya da Supabase bağlantısından okur.
-- **Veritabanı değişiklikleri** yalnız `supabase/migrations/` altındaki sürümlü dosyalarla uygulanır. Kurucunun Supabase bağlantısı salt okuma kipinde ve tek projeyle sınırlıdır.
+- **Schemas:** `devos_private` (all tables, closed to the outside) and `devos_api` (functions only). Agents can call only `devos_api` functions.
+- **Rule gate:** Every state transition is a database function. Within the same transaction, the function checks the role class from the environment token, the work item from the claim token, the current authority, the version, the preconditions and the required evidence. A rejected transition is recorded with its reason. Every transition produces an event record in the same transaction (F06).
+- **Database role classes:** `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_ci`, `devos_ingest`, `devos_backup` (read-only + only the "exported" mark), `devos_kurulum` (only for the duration of the installation). Details in Appendix B.
+- **Record families:** Appendix B.
+- **Scheduled jobs:** ready-work scan, detection of expired claims, deadlock scan, stale record and link check, purpose audit, capability gap scan, usage tracking, opening work for silent-failure sampling.
+- **Outbound calls:** In the normal flow, the database does not trigger routines; sessions are scheduled. Only emergencies (an awaited decision from Batu has arrived and work is waiting; recovery) use an API trigger from the reserve budget; every trigger is recorded with its intent, the returned session ID and the result.
+- **Search:** Full-text search, semantic search with pgvector, relation queries; reading source bodies (`read_source`). The affected-records query returns unique records and completeness information; a continuation query is bound to the same snapshot or explicitly starts over (Appendix G).
+- **File storage:** Large source and evidence bodies in private areas.
+- **Two projects:** The live project `devos` (ref `zyqgltzfzkdvrmvxlamz`, `https://zyqgltzfzkdvrmvxlamz.supabase.co`, us-east-1) and the test project `devos-test` (ref `cqbzxexxwrrbrlszoseg`, us-east-1). They were created on the free plan on 29 September 2026. The public (publishable) keys are not secret information, and the builder reads them from the project dashboard or from the Supabase connection.
+- **Database changes** are applied only through versioned files under `supabase/migrations/`. The builder's Supabase connection is in read-only mode and limited to a single project.
 
-### 6.3 Claude Code cloud ortamları ve anahtar akışı
+### 6.3 Claude Code cloud environments and key flow
 
-**Ortamlar:**
+**Environments:**
 
-| Ortam | Ne zaman kurulur | Ne yapar | Yetkisi | Yapamaz |
+| Environment | When it is set up | What it does | Its authority | Cannot |
 |---|---|---|---|---|
-| `devos-kurulum` | Hazırlıkta | Kurucu | C02'den sonra kurulum işlemleri | Kurulum bitince kapatılır |
-| `devos-calisma` | C02–C03 | Koordinasyon, keşif, araştırma, tasarım, üretim, bilgi düzeni, teşhis; roller alt ajan olarak | İş açma ve üstlenme, katkı ve aday yazma, `claude/` dallarına gönderim, PR açma | Bağlayıcı hüküm, kabul, sürüm etkinleştirme, kural değişikliği, sınav cevaplarına erişim |
-| `devos-denetim` | C02–C03 | Bağlayıcı inceleme (DR13-G, DR13-Y), kabul önerisi, kural ve kontrol değişikliği incelemesi, yüksek etkili birleşmelerde yetki kontrolü, kurtarma aşamalarının ilerletilmesi | Hüküm ve kabul yazma | Ürün üretme, sınav cevaplarına erişim, onardığı şeyi onaylama |
-| `devos-sinav` | C05 | Sınav setlerini tutar, sınav görevlerini sıradan iş olarak açar, sonuçları puanlar | Sınav kayıtları, `devos-evals` | Ürün üretme, hüküm yazma |
+| `devos-kurulum` | During preparation | Builder | Installation operations after C02 | Closed when the installation ends |
+| `devos-calisma` | C02–C03 | Coordination, discovery, research, design, production, knowledge organisation, diagnosis; roles as subagents | Opening and claiming work, writing contributions and candidates, pushing to `claude/` branches, opening PRs | Binding verdict, acceptance, version activation, rule change, access to exam answers |
+| `devos-denetim` | C02–C03 | Binding review (DR13-G, DR13-Y), acceptance proposal, review of rule and check changes, authority check on high-impact merges, advancing the recovery stages | Writing verdicts and acceptance | Producing products, access to exam answers, approving what it has repaired |
+| `devos-sinav` | C05 | Holds the exam sets, opens exam tasks as ordinary work, scores the results | Exam records, `devos-evals` | Producing products, writing verdicts |
 
-**Anahtar düzeni:** Her ortama Supabase'in **herkese açık anahtarı** ve ayrı bir başlıkta taşınan bir **ortam belirteci** verilir. Veritabanı belirtecin yalnız özetini saklar; her `devos_api` fonksiyonu rol sınıfını buradan çıkarır. Supabase'in gizli (servis) anahtarı hiçbir ajan ortamına konmaz.
+**Key arrangement:** Each environment is given Supabase's **public (publishable) key** and an **environment token** carried in a separate header. The database stores only the token's hash; every `devos_api` function derives the role class from it. Supabase's secret (service) key is put into no agent environment.
 
-**Belirteç nasıl üretilir?** Kurucu, belirteç üreten bir veritabanı fonksiyonu yazar ama çalıştıramaz (yetkisi yoktur). Batu, Supabase panelinin SQL ekranında kurucunun verdiği tek satırı çalıştırır; fonksiyon rastgele bir belirteç üretir, özetini kaydeder ve belirteci bir kez gösterir. Batu belirteci yalnız ilgili Claude ortamının ayar alanına yapıştırır. Kurucu değeri hiç görmez; yalnız belirtecin var olduğunu ve beklenen yetkiyle çalıştığını sınar. Belirteç sohbete, oturum kaydına ya da depoya yazılmaz; yazılırsa iptal edilip yenilenir.
+**How is the token generated?** The builder writes a database function that generates tokens but cannot run it (it has no authority to). Batu runs the single line the builder gives him in the SQL screen of the Supabase dashboard; the function generates a random token, records its hash and shows the token once. Batu pastes the token only into the settings field of the relevant Claude environment. The builder never sees the value; it only tests that the token exists and works with the expected authority. The token is not written into the chat, the session record or the repository; if it is, it is revoked and renewed.
 
-**Connector'lar:** Hiçbir DevOS routine'inde connector bulunmaz; depodaki izin kuralları connector araçlarını ayrıca engeller (K-9).
+**Connectors:** No DevOS routine has a connector; the permission rules in the repository additionally block connector tools (K-9).
 
-**Ağ:** Her ortam Supabase adresine ve GitHub'a erişir; araştırma yapan çalışma ortamı geniş internet erişimine ihtiyaç duyar. **[Doğrulama bekliyor: geniş erişim ile belirteç eklemenin birlikte çalışması, C01]**
+**Network:** Each environment reaches the Supabase address and GitHub; the working environment, which does research, needs broad internet access. **[Awaiting verification: broad access and adding the token working together, C01]**
 
-**Oturum ömrü:** Bulut oturumunun kum havuzu turlar arasında duraklatılabiliyor; geri gelemezse yeni bir kopyadan devam ediyor ve kaydedilmemiş değişiklikler kaybolabiliyor. Bu yüzden ilerleme sık aralıklarla veritabanına ve dala yazılır; hiçbir iş uzun süre arka planda çalışan bir sürece güvenmez.
+**Session lifetime:** A cloud session's sandbox can be paused between turns; if it cannot come back, it continues from a fresh copy, and unsaved changes can be lost. So progress is written to the database and to the branch at frequent intervals; no work relies on a process that runs in the background for a long time.
 
 ### 6.4 Routines
 
-- Routine'ler yalnız oturum başlatır. Başlangıç bütçesi (günde 15 çalışma sınırı içinde; C01'deki oturum süresi ölçümüne göre gerekçeyle değişir):
+- Routines only start sessions. Starting budget (within the limit of 15 runs a day; changes, with a reason, according to the session-duration measurement in C01):
 
-| Ortam | Günlük çalışma | Zamanlama |
+| Environment | Daily runs | Schedule |
 |---|---|---|
-| Çalışma | 3 | Batu'nun yoğun saatleri dışında (gece, sabah erken, akşam) |
-| Denetim | 3 | Her çalışma oturumundan sonra |
-| Sınav | 1 | Gece, yalnız sınav gerektiğinde |
-| Yedek | 8'e kadar | Oturumlar kısa kalırsa ek çalışma oturumu; acil karar ya da kurtarma |
+| Working | 3 | Outside Batu's busy hours (night, early morning, evening) |
+| Audit | 3 | After each working session |
+| Exam | 1 | At night, only when an exam is needed |
+| Reserve | Up to 8 | An extra working session if sessions stay short; urgent decision or recovery |
 
-- Routine'leri Batu, kurucunun hazırladığı bilgilerle (ad, ortam, depo, başlangıç talimatı, zamanlama) Claude arayüzünden oluşturur ve her birinden bütün connector'ları çıkarır. API tetiği yalnız yedek bütçe için eklenir.
-- Tetik metni oturuma güvenilmeyen veri olarak iletilir; başlangıç talimatı onu yalnız bir iş kimliği olarak kullanır ve asıl bilgiyi veritabanından okur. **[Doğrulandı: routines belgesi]**
-- Her oturum açılışta kendini kaydeder (ortam, routine, başlangıç). Acil tetiklerde niyet, dönen oturum kimliği ve sonuç kaydedilir; cevap kaybolursa önce oturumun varlığı kontrol edilir, kör tekrar yapılmaz.
-- GitHub bağlantısı 72 saatten uzun koparsa routine kendini kapatır; bu, bağımsız izleme yoluyla fark edilir (Ek G, G7).
+- Batu creates the routines in the Claude interface, with the information the builder prepares (name, environment, repository, starting instruction, schedule), and removes all connectors from each of them. The API trigger is added only for the reserve budget.
+- The trigger text is passed to the session as untrusted data; the starting instruction uses it only as a work ID and reads the actual information from the database. **[Verified: routines documentation]**
+- Every session registers itself at opening (environment, routine, start). For emergency triggers, the intent, the returned session ID and the result are recorded; if the response is lost, the session's existence is checked first; no blind retry is made.
+- If the GitHub connection is broken for longer than 72 hours, the routine disables itself; this is noticed through independent monitoring (Appendix G, G7).
 
-### 6.5 Oturum içi düzen
+### 6.5 Order within a session
 
-1. **Açılış:** `session_brief(rol)` (Ek D, D8): amaç zinciri, kuyruk, son kararlar, son oturumdan beri değişenler, açık itirazlar, bekleyen Batu kararları, rol paketleri ve mesleki kayıtlar. Durum tutarsızsa etkilenen işe başlanmaz.
-2. **Üstlenme:** İş üstlenilir; üstlenme belirteci alınır.
-3. **Bağlam:** Bağlam paketi istenir; zorunlu ihtiyaçları karşılanmamış paketle başlanmaz.
-4. **Parçalama:** Koordinatör işi parçalara böler; her parça için hangi rolün, hangi paketle çalışacağını belirler.
-5. **Alt ajan görev tanımı:** Her alt ajan görevi şunları taşır: amaç ve bağlı olduğu karar, beklenen çıktı biçimi, kullanılacak kaynaklar ve araçlar, sınırlar (ne yapmayacağı), emek bütçesi, sonucun yazılacağı kayıt. `CLAUDE.md`'yi yüklemeyen yerleşik yardımcılar rol işi için kullanılmaz.
-6. **Tek yazar:** Paralel alt ajanlar okur, araştırır, analiz eder, inceler; bir ürünü aynı anda tek bir alt ajan yazar. Ortak kararlar yazmadan önce kayda geçer.
-7. **Yazma:** Sonuçlar kurallı fonksiyonlarla yazılır; dosya değişiklikleri açık depoya yazım öncesi kontrolden geçip PR olarak gönderilir.
-8. **Kullanım kaydı:** Her katkının nasıl kullanıldığı ya da neden kullanılmadığı yazılır.
-9. **Döngü sınırları:** Üst sınır, bütçe ve "ilerleme yok" tespiti (K-7).
-10. **Disiplin denetim izi:** Dokuz düşünme sorusunun her iş ve tur başındaki sonucu (yüklendi ya da atlandı ve neden), disiplin sürümü ve iş kimliği veritabanına yazılır (Ek D).
-11. **Kapanış ve yapılandırılmış devir:** Açık sorular, alternatifler, beklenen alt sonuç, dönüş noktası, gerçekleşen ve bilinmeyen dış etkiler, kullanılan kaynaklar, tek bir sonraki sorumluluk. Yeni bir oturum yalnız kayıtlardan doğru devam edebilmeli.
+1. **Opening:** `session_brief(role)` (Appendix D, D8): purpose chain, queue, recent decisions, what has changed since the last session, open objections, pending Batu decisions, role packages and professional records. If the state is inconsistent, the affected work is not started.
+2. **Claim:** The work is claimed; a claim token is obtained.
+3. **Context:** A context package is requested; work does not start with a package whose mandatory needs are not met.
+4. **Chunking:** The coordinator splits the work into chunks; for each chunk it determines which role will work, with which package.
+5. **Subagent task definition:** Every subagent task carries: the purpose and the decision it is tied to, the expected output format, the sources and tools to use, limits (what it will not do), the effort budget, the record the result is written to. Built-in helpers that do not load `CLAUDE.md` are not used for role work.
+6. **Single writer:** Parallel subagents read, research, analyse and review; a product is written by only one subagent at a time. Shared decisions are recorded before writing.
+7. **Writing:** Results are written through rule-governed functions; file changes pass the check before writing to the public repository and are sent as PRs.
+8. **Use receipt:** How each contribution was used, or why it was not used, is written down.
+9. **Loop limits:** Upper bound, budget and "no progress" detection (K-7).
+10. **Discipline audit trail:** The result of the nine thinking questions at the start of each work item and each turn (loaded or skipped, and why), the discipline version and the work ID are written to the database (Appendix D).
+11. **Closing and structured hand-over:** Open questions, alternatives, the expected sub-result, the return point, the external effects that took place and those that are unknown, the sources used, a single next responsibility. A new session must be able to continue correctly from the records alone.
 
-### 6.6 Bilgi katmanı: kaynakların otorite statüleri
+### 6.6 Knowledge layer: authority statuses of the sources
 
-| Kaynak | Statü | Nasıl kullanılır |
+| Source | Status | How it is used |
 |---|---|---|
-| `agentic-os-search/research/soul-foundations` | Yeniden kullanılabilir temel | Gereksinimlerin gerekçesi; hedefe uygulanırken ayrıca değerlendirilir; K-1'deki kapsama taramasının kaynağı |
-| `agentic-os-search/research/studies` | Aday bilgi | Dış kaynak birikimi; kendi başına karar değildir |
-| `agentic-os-search/research/soul-context` | Bağlam | Projenin geçmişi |
-| `agentic-os-search/agent/protocols` | Ortak kural girdisi | Ek D'nin kaynağı |
-| `agentic-os-search/explorations` | Keşif, karar değil | Fikir ve gerekçe kaynağı; iş açma yetkisi vermez |
-| `agentic-os-search/development-os` ve EXP-006 kayıtları | Tarihsel kayıt | Önceki denemelerin dersleri |
-| Arşivdeki P4, P5, "SOUL ve DevOS" raporları | Tarihsel kaynak | Geçerli parçaları eklere aktarıldı |
-| SOUL Academy keşif notu | Keşif notu, karar değil | Notun tarif ettiği karar yolundan geçmeden ondan iş açılmaz |
-| Eski deneme depoları | Tarihsel deneme | Önceki denemelerin dersleri ve karşı örnekleri; içlerindeki "güncel" ifadeler geçersizdir |
+| `agentic-os-search/research/soul-foundations` | Reusable foundation | Rationale for the requirements; assessed separately when applied to the target; source of the coverage scan in K-1 |
+| `agentic-os-search/research/studies` | Candidate knowledge | Accumulated knowledge from outside sources; not a decision on its own |
+| `agentic-os-search/research/soul-context` | Context | The project's history |
+| `agentic-os-search/agent/protocols` | Common-rules input | Source of Appendix D |
+| `agentic-os-search/explorations` | Exploration, not decision | Source of ideas and rationale; gives no authority to open work |
+| `agentic-os-search/development-os` and EXP-006 records | Historical record | Lessons of earlier experiments |
+| The P4, P5 and "SOUL ve DevOS" ("SOUL and DevOS") reports in the archive | Historical source | Their valid parts were carried over into the appendices |
+| SOUL Academy exploration note | Exploration note, not decision | No work is opened from it without going through the decision path the note describes |
+| Old experiment repositories | Historical experiment | Lessons and counter-examples of earlier experiments; the "current" statements in them are invalid |
 
-Kütüphaneden gelen her kayıt "özel" gizlilik sınıfı taşır. Kütüphane depolarının kendi canlı durum kayıtları DevOS'un canlı durumu değildir; DevOS'un canlı durumu yalnız Supabase'tedir.
+Every record that comes from the library carries the "private" confidentiality class. The library repositories' own live-state records are not DevOS's live state; DevOS's live state is only in Supabase.
 
-**Üç ayrı alan:** Her kayıt ya da ifade için **kaynak türü** (temel, aday, tarihsel, keşif), **ifadenin epistemik statüsü** (gerçek gözlem, kullanıcı kararı, çıkarım, hipotez, öneri) ve **bugünkü işlem yetkisi** (iş açabilir mi, talimat mı, yalnız bilgi mi) ayrı tutulur. Eski bir gerçek gözlem, tarihsel bir belgede durduğu için "yalnız fikir"e dönüşmez; eski bir karar ise tarihsel olduğu için bugün talimat sayılmaz.
+**Three separate fields:** For each record or statement, the **source type** (foundation, candidate, historical, exploration), the **epistemic status of the statement** (actual observation, user decision, inference, hypothesis, proposal) and the **present authority to act** (can it open work, is it an instruction, is it information only) are kept separate. An old actual observation does not turn into "just an idea" because it sits in a historical document; an old decision, on the other hand, does not count as an instruction today, since it is historical.
 
-### 6.7 Güven sınırları
+### 6.7 Trust boundaries
 
-- Ajanlar yalnız `devos_api` fonksiyonlarını çağırabilir; tablolara yazamaz.
-- Yetki ortam belirtecinden ve üstlenme belirtecinden gelir; rol adı ve oturum kimliği beyandır (K-9).
-- **Yetki ayrılığı ortam düzeyindedir:** Çalışma ortamının ürettiğini yalnız denetim ortamı bağlayıcı biçimde inceleyebilir ve kabul edebilir; sınav cevaplarını yalnız sınav ortamı görebilir; kural ve kontrol değişikliğini çalışma ortamı önerir, denetim ortamı inceler ve onaylar (PC-05). Bu ayrımlar veritabanında zorlanır. Oturum içindeki ayrımlar (örneğin iki alt ajan arası) beyana dayalıdır ve öyle etiketlenir.
-- **Doğrulayıcı onarmaz:** Denetim oturumu bulduğu sorunu aynı eylemde düzeltmez; düzeltme çalışma ortamında ayrı bir iştir.
-- **Yüksek etkili değişiklikler** (kurallar, rol tanımları, veritabanı şeması, güvenlik ve yayın ayarları, `.claude/settings.json`, karar kanalı): denetim ortamının teknik incelemesi ve onayı (PC-05). Değişiklik Batu'ya ait bir konuya (amaç, kapsam, maliyet, hesapları) dokunuyorsa o yönüyle ayrıca Batu'ya karar olarak gelir.
-- **Dış etkileşim:** Dışarıdan açılan issue ve PR'lar hiçbir routine'i tetiklemez; dış içerik ajanlar için yalnız veridir.
-- **Açık depoya yazımdan önce sızıntı kontrolü** (oturum içinde, koda dayalı): (1) eklenen metin gizli kütüphanenin parmak izleriyle karşılaştırılır; uzun eşleşme gönderimi durdurur; (2) anlam vektörü karşılaştırılır; eşiğin üstündeki yakınlık gönderimi incelemeye düşürür. Kontrol dala gönderim, PR gövdesi, yorum ve issue yazımını kapsar. Denetim kaydına eşleşen metnin kendisi yazılmaz. PR üzerindeki aynı kontrol ikinci katmandır. Eşik C03'te bilinen örneklerle ayarlanır.
-- **Etki kanalı envanteri:** Bölüm 0.3 madde 13; her kanalın olumsuz testi C03'te.
-- Gizli bilgi taraması açıktır.
+- Agents can call only `devos_api` functions; they cannot write to tables.
+- Authority comes from the environment token and the claim token; the role name and the session ID are declarations (K-9).
+- **Separation of authority is at the environment level:** Only the audit environment can review and accept, in a binding way, what the working environment produces; only the exam environment can see exam answers; the working environment proposes rule and check changes, the audit environment reviews and approves them (PC-05). These separations are enforced in the database. Separations within a session (for example between two subagents) rest on declaration and are labelled as such.
+- **The verifier does not repair:** The audit session does not fix a problem it finds in the same action; the fix is a separate work item in the working environment.
+- **High-impact changes** (rules, role definitions, database schema, security and release settings, `.claude/settings.json`, decision channel): technical review and approval by the audit environment (PC-05). If the change touches a matter that belongs to Batu (purpose, scope, cost, his accounts), that aspect of it also comes to Batu separately as a decision.
+- **External interaction:** Issues and PRs opened from outside trigger no routine; for agents, external content is only data.
+- **Leak check before writing to the public repository** (within the session, code-based): (1) the added text is compared with the fingerprints of the private library; a long match stops the write; (2) the embedding vector is compared; similarity above the threshold sends the write to review. The check covers pushing to a branch, PR bodies, comments and writing issues. The matched text itself is not written to the audit record. The same check on the PR is the second layer. The threshold is tuned in C03 with known examples.
+- **Effect channel inventory:** Section 0.3 item 13; the negative test of each channel in C03.
+- Secret scanning is enabled.
 
-### 6.8 Yayın
+### 6.8 Release
 
-1. Oturum değişikliği kendi dalına, açık depoya yazım öncesi kontrolden geçirerek gönderir ve PR açar.
-2. PR açılmadan önce niyet kaydı (`Operation`) oluşturulur.
-3. Zorunlu kontroller çalışır.
-4. **Birleştirme tek bir sıradadır:** Birleştirmeyi bir yayın işi yapar; birleştirmeden hemen önce veritabanındaki güncel yetkiyi ve dönemi yeniden okur. Kontrolün geçtiği an ile birleşme anı arasındaki pencere ölçülür ve yazılır; bu pencerede yetki iptal edilirse birleştirme yapılmaz. Zorunlu kontroller birleşme anında kendiliğinden yeniden koşmadığı için bu yeniden okuma gereklidir.
-5. Rutin değişiklikler kontroller ve yeniden okuma geçince birleşir; yüksek etkili değişikliklerde denetim ortamının onaylayan hükmü de gerekir (PC-05).
-6. Birleşmeden sonra gerçekleşen sonuç gözlem (`Observation`) olarak yazılır; geçmiş gözlem silinmez (F07).
+1. The session pushes the change to its own branch, passing it through the check before writing to the public repository, and opens a PR.
+2. Before the PR is opened, an intent record (`Operation`) is created.
+3. The required checks run.
+4. **Merging is in a single queue:** A release job does the merge; immediately before merging it re-reads the current authority and epoch in the database. The window between the moment the check passed and the moment of the merge is measured and written down; if the authority is revoked in this window, the merge is not done. This re-read is needed because the required checks do not re-run by themselves at the moment of the merge.
+5. Ordinary changes merge once the checks and the re-read pass; high-impact changes also need an approving verdict from the audit environment (PC-05).
+6. After the merge, the actual result is written as an observation (`Observation`); a past observation is not deleted (F07).
 
-`main` dalı korunur; kurallar yöneticileri de kapsar. Otomatik birleşmenin oturumun GitHub bağlantısıyla çalışıp çalışmadığı **[Doğrulama bekliyor: C01]**. Yayın kesintileri Ek G'de.
+The `main` branch is protected; the rules also cover administrators. Whether auto-merge works with the session's GitHub connection: **[Awaiting verification: C01]**. Release interruptions are in Appendix G.
 
-### 6.9 Karar kanalı
+### 6.9 Decision channel
 
-- Her karar önce veritabanında bir `Decision` kaydıdır; Ek E biçimiyle yazılır.
-- Her karar, Batu'ya atanmış bir GitHub issue'su olarak da açılır; bildirim GitHub uygulamasıyla telefona gelir.
-- **B3 = (a) makine hesabı ise:** Batu kendisine ait kararların cevabını issue'ya kendi hesabıyla yazar (teknik PR onayı ondan istenmez; PC-05). Sistem, cevabın Batu'nun hesabından geldiğini denetler.
-- **B3 = (b) karar paneli ise:** Batu cevabı, Supabase kimlik doğrulamasıyla giriş yaptığı küçük bir sayfadan verir; sayfa sistemin yazamadığı ayrı bir depoda durur.
-- Belirli sürede açılmayan karar ikinci kanaldan yinelenir (Bölüm 5.5).
-- Cevaplanmayan kararlar için Ek E'deki "cevap verilmezse ne olur" kuralı uygulanır.
+- Every decision is first a `Decision` record in the database; it is written in the Appendix E format.
+- Every decision is also opened as a GitHub issue assigned to Batu; the notification reaches the phone through the GitHub app.
+- **If B3 = (a) machine account:** Batu writes the answer to the decisions that belong to him on the issue with his own account (technical PR approval is not asked of him; PC-05). The system checks that the answer comes from Batu's account.
+- **If B3 = (b) decision panel:** Batu gives the answer from a small page that he signs in to with Supabase authentication; the page sits in a separate repository that the system cannot write to.
+- A decision that is not opened within a set time is repeated through a second channel (Section 5.5).
+- For unanswered decisions, the "what happens if no answer is given" rule in Appendix E applies.
 
-### 6.10 Kullanıcı modeli, kısıtlar ve emek derinliği
+### 6.10 User model, constraints and effort depth
 
-- **Kullanıcı modeli:** Batu'nun uzman olduğu alanlar, bilgisinin sınırlı olduğu alanlar ve ona ait karar türleri. Batu'nun kendi söylediklerinden ve kararlarından güncellenir.
-- **Kısıtlar:** Batu'nun koyduğu her kısıt sorgulanabilir statüdedir. İşin gereğiyle çelişki tespit edilince otomatik karar kaydı açılır: kaliteli seçenek, amacı, faydası, bedeli, kısıt altında yapılabilecek en iyi şey.
-- **Emek politikası:** Her iş yüksek emek derinliğiyle açılır. Azaltma gerekçeyle ve denetim ortamının onayıyla yapılır; kullanıcı uzmanlığı meşru bir gerekçedir. Uzman değerlendirmesi hiçbir işte atlanmaz; değerlendirme sonucunda az iş yapılabilir (kriter 32). Üç adım hiçbir işte kaldırılamaz: değişebilir bilgilerin doğrulanması, alternatif araştırması, yüksek etkili kararlarda dış kaynak araştırması. Veritabanı bunun **biçim kapısını** uygular (adımın kaydı olmadan ilerlenemez); adımın gerçekten ve iyi yapıldığı denetim oturumunda ve örneklem incelemesinde değerlendirilir.
+- **User model:** The fields in which Batu is an expert, the fields in which his knowledge is limited, and the kinds of decisions that belong to him. It is updated from what Batu himself says and from his decisions.
+- **Constraints:** Every constraint Batu sets has a status that is open to questioning. When a conflict with what the work requires is detected, a decision record is opened automatically: the high-quality option, its purpose, its benefit, its cost, the best that can be done under the constraint.
+- **Effort policy:** Every work item is opened with high effort depth. A reduction is made with a reason and with the approval of the audit environment; the user's expertise is a legitimate reason. Expert assessment is not skipped in any work item; the assessment may result in little work being done (criterion 32). Three steps cannot be removed from any work item: verification of information that can change, research of alternatives, external-source research in high-impact decisions. The database applies the **format gate** for this (there is no moving on without the step's record); whether the step was really, and well, done is assessed in the audit session and in sample review.
 
-### 6.11 Hata, hata sınıfı ve yetenek eksikliği
+### 6.11 Error, failure class and capability gap
 
-Her kusur kaydı üç soruyla kapatılır: tek seferlik belirti mi, aynı genel kuralı ihlal eden bir hata sınıfı mı, yoksa bir rolün farklı işlerde tekrarlayan yetenek eksikliği mi? Hata sınıfında kural yazılır ve regresyon testi sınıf düzeyinde kurulur. Yetenek eksikliği tek bir güçlü olaydan **aday** olarak kaydedilebilir; kesinleşmesi yeniden üretim, nedensel ayrım ve karşı örnekle olur. Onarım rolde yapılır (bağlam, yöntem, araç, rol tanımı ya da model) ve gizli sınavla ölçülmeden etkinleşmez. Sık görülen bir hata, sırf sık olduğu için doğru teşhis edilmiş sayılmaz; aynı modeli kullanan roller aynı kör noktayı paylaşabilir.
+Every defect record is closed with three questions: is it a one-off symptom, a failure class that violates the same general rule, or a capability gap of a role that recurs across different work items? For a failure class, a rule is written and the regression test is built at class level. A capability gap can be recorded as a **candidate** from a single strong event; it is confirmed through reproduction, causal separation and a counter-example. The repair is made in the role (context, method, tool, role definition or model) and does not become active before it is measured with a hidden exam. A frequent error does not count as correctly diagnosed just because it is frequent; roles that use the same model can share the same blind spot.
 
-**Çoklu ajan başarısızlık sınıfları:** Her olay ayrıca üç sınıftan birine bağlanır: **tanım sorunu** (görev ya da rol yanlış tanımlanmış, sonlanma koşulu bilinmiyor), **ajanlar arası uyumsuzluk** (bağlam ya da bilgi aktarılmamış, katkı yok sayılmış, görevden sapılmış), **doğrulama eksikliği** (erken bitirme, eksik ya da yanlış doğrulama). Sınıfların dağılımı düzenli raporlanır; hangi mekanizmanın hangi sınıfta zayıf kaldığını gösterir.
+**Multi-agent failure classes:** Each event is also tied to one of three classes: **definition problem** (the task or role is wrongly defined, the termination condition is unknown), **inter-agent misalignment** (context or information not passed on, a contribution ignored, deviation from the task), **verification gap** (premature termination, missing or wrong verification). The distribution of the classes is reported regularly; it shows which mechanism stays weak in which class.
 
-**Sessiz başarısızlık denetimi:** Hiçbir kontrolün alarm vermediği ama işin yanlış yöne gittiği durumlar için, "tamamlandı" ve "geçti" sayılmış işlerden düzenli örneklem alınır ve denetim ortamında baştan değerlendirilir.
+**Silent-failure audit:** For cases where no check raises an alarm but the work is going in the wrong direction, regular samples are taken from work counted as "completed" and "passed" and assessed again from scratch in the audit environment.
 
-### 6.12 Çerçeve denetimi ve mekanizma varsayım envanteri
+### 6.12 Frame review and mechanism assumption inventory
 
-**Neden:** Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir (Bölüm 0.3, madde 11). Bu planın 2.0 sürümü de bir çerçeve körlüğü yaşadı: "her rol ayrı oturumdur" öncülü sorgulanmadan taşındı ve tasarım bir sınıra takılınca yeni mekanizmalar üretmeye başladı.
+**Why:** Frame blindness is the greatest danger for DevOS and SOUL (Section 0.3, item 11). Version 2.0 of this plan also went through a frame blindness: the premise "every role is a separate session" was carried over without being questioned, and when the design hit a limit it began producing new mechanisms.
 
-**Mekanizma:**
+**Mechanism:**
 
-1. **Öncül envanteri:** Her büyük tasarım (mimari, yöntem, rol düzeni, önemli karar) dayandığı öncülleri tek tek yazar: öncül, nereden geldiği (kullanıcı kararı, kaynak, önceki tasarım, varsayım), hâlâ geçerli mi, "bugün sıfırdan seçseydik yine bunu seçer miydik?" testi.
-2. **Sıkışma sinyali:** Bir tasarım bir sınıra, çelişkiye ya da tekrarlayan soruna takılıp çözüm olarak yeni mekanizma, kural ya da istisna üretmeye başladığında çerçeve denetimi zorunludur: sınırı yaratan öncül hangisi, o öncül gerçekten gerekli mi? Veritabanında bir iş aynı konuda ikinci düzeltme mekanizmasını önerdiğinde bu denetim işi kendiliğinden açılır.
-3. **Bağımsız karşı tasarım:** Büyük tasarım kararlarında, mevcut tasarımı görmeyen ve yalnız amacı, kısıtları ve kriterleri bilen temiz bağlamlı bir oturum (kurulumda C00'da planı görmeyen Karşı tasarımcı alt ajanı, bağımsızlık düzeyi yazılı; PC-06) kendi tasarımını çıkarır; ikisi karşılaştırılır. Fark, karar kaydında gerekçesiyle kapatılır.
-4. **Mekanizma varsayım envanteri:** DevOS'un her mekanizması, modelin tek başına yapamadığı hangi şeyi telafi ettiğini yazar. Bu varsayım düzenli olarak ve model ya da platform değiştiğinde sınanır: mekanizma kaldırılınca sonuç kötüleşiyor mu? Kötüleşmiyorsa mekanizma kaldırılır.
-5. **Teknik kararların sahibi:** Çerçeveden çıkıldığında görülen teknik düzeltme, etkisi büyük olsa da gerekçesiyle ekip tarafından verilir; Batu'ya yalnız ona ait kararlar gelir.
+1. **Premise inventory:** Every major design (architecture, method, role arrangement, important decision) writes down, one by one, the premises it rests on: the premise, where it came from (user decision, source, earlier design, assumption), whether it is still valid, the test "if we chose from scratch today, would we choose this again?".
+2. **Squeeze signal:** When a design hits a limit, a contradiction or a recurring problem and begins producing new mechanisms, rules or exceptions as the solution, a frame review is mandatory: which premise creates the limit, and is that premise really necessary? In the database, when a work item proposes a second fix mechanism on the same subject, this review work item opens automatically.
+3. **Independent counter-design:** In major design decisions, a clean-context session that does not see the current design and knows only the purpose, the constraints and the criteria (during the installation, in C00, a Counter-designer subagent that does not see the plan, with its independence level written; PC-06) produces its own design; the two are compared. The difference is closed in the decision record with its reason.
+4. **Mechanism assumption inventory:** Every DevOS mechanism writes down what it compensates for that the model cannot do on its own. This assumption is tested regularly and whenever the model or the platform changes: does the result get worse when the mechanism is removed? If it does not, the mechanism is removed.
+5. **Owner of technical decisions:** A technical correction seen on stepping outside the frame is made by the team, with its reason, even if its impact is large; only the decisions that belong to Batu come to him.
 
-**SOUL gereksinimi:** Aynı kabiliyet SOUL için de gereksinimdir: SOUL'un kullanıcı adına kurduğu çalışma sistemleri de kendi öncüllerini yazmalı ve sıkışma sinyalinde çerçevelerini sorgulamalıdır. DevOS bunu SOUL gereksinim kaydına ilk kayıtlardan biri olarak girer.
+**SOUL requirement:** The same capability is a requirement for SOUL too: the working systems SOUL builds on the user's behalf must also write down their own premises and question their frame at a squeeze signal. DevOS enters this into the SOUL requirement record as one of the first entries.
 
-**Sınama:** C00'da bu planın kendisine uygulanır (bağımsız karşı tasarım). C07'de ekibin bir sıkışma anında çerçeveyi sorgulayıp sorgulamadığı gözlenir. Gizli sınavda: sorgulanmadan taşınmış bir öncül yüzünden bir sınıra takılan bir tasarım görevi.
+**Testing:** In C00 it is applied to this plan itself (independent counter-design). In C07 it is observed whether the team questions the frame at a moment of squeeze. In the hidden exam: a design task that hits a limit because of a premise carried over without being questioned.
 
-**Statü:** **[Öneri]**. Bir çerçeve körlüğünün yakalanacağını güvenceye alan bir yöntem yoktur **[Açık sorun: U-1 ile birlikte]**.
+**Status:** **[Proposal]**. There is no method that guarantees that a frame blindness will be caught **[Open problem: together with U-1]**.
 
 ---
 
-## 7. Roller, ortak kurallar ve yeterlik
+## 7. Roles, common rules and competence
 
-### 7.1 Kaynaklar
+### 7.1 Sources
 
-1. **Ek A: 18 rol sözleşmesi.** P4 v4 §29 ve yüklenen P5 paketinin (K00–K15) rol dosyalarından çıkarılıp Claude Code'a uyarlanır. P5'in S00–S12 sürümüne erişilemedi; rol sözleşmeleri için gerekli değildi. Kaynaklar arasındaki farklar Ek A'da kayıtlıdır.
-2. **Ek D: Dokuz düşünme protokolü** (`agentic-os-search/agent/protocols` kaynaklı): karar-kritik varsayımlar, kanıt dışı etkiden bağımsız muhakeme, amaç hizalaması ve uçtan uca doğrulama, doğrulama bağımsızlığı, kaynak-özet ayrımı, nedensel derinlik, çalışma sürekliliği, çalışma öncesi durum kontrolü, aday araştırma kütüphanesinin kullanımı. ChatGPT'ye özgü kısımlar çıkarılır, disiplinlerin kendisi korunur.
-3. **ECC'den seçilen parçalar** (C00 kararına göre).
+1. **Appendix A: 18 role contracts.** Extracted from P4 v4 §29 and from the role files of the uploaded P5 package (K00–K15), and adapted to Claude Code. The S00–S12 version of P5 could not be accessed; it was not needed for the role contracts. The differences between the sources are recorded in Appendix A.
+2. **Appendix D: Nine thinking protocols** (sourced from `agentic-os-search/agent/protocols`): decision-critical assumptions, reasoning independent of non-evidential influence, purpose alignment and end-to-end verification, verification independence, source-summary separation, causal depth, work continuity, pre-work state check, use of the candidate research library. The ChatGPT-specific parts are removed; the disciplines themselves are kept.
+3. **Parts selected from ECC** (according to the C00 decision).
 
-### 7.2 Claude Code'a yerleşim
+### 7.2 Placement in Claude Code
 
-- Ortak kurallar ve oturum disiplini → `CLAUDE.md`.
-- Rol profilleri → `.claude/agents/` altında alt ajan tanımları; her tanım rolün sorumluluğunu, devredemeyeceği sınırı, çıktı biçimini ve çalıştığı ortamı taşır. Rollerin çoğu çalışma oturumunda koordinatörün başlattığı alt ajanlar olarak çalışır; yetki ayrılığı gerektirenler denetim ve sınav ortamlarında. **[Doğrulama bekliyor: bulut oturumunda yüklenme, C01]**
-- Düşünme disiplinlerinin tam metinleri → `.claude/protocols/`; izin kuralları ve kancalar → `.claude/settings.json`.
-- Yöntemler → `methods/`; bir işe hangi yöntemin uygulanacağı işin kaydında belirtilir.
-- Agent teams ve dynamic workflows temel alınmaz; tek oturum içinde yararlı olduğu yerde (örneğin büyük tarama işleri) yardımcı olarak kullanılabilir. Tek yazar kuralı bu araçlarda da geçerlidir.
+- Common rules and session discipline → `CLAUDE.md`.
+- Role profiles → subagent definitions under `.claude/agents/`; each definition carries the role's responsibility, the limit it cannot delegate, its output format and the environment it works in. Most roles work as subagents that the coordinator starts in the working session; those that require separation of authority work in the audit and exam environments. **[Awaiting verification: loading in a cloud session, C01]**
+- Full texts of the thinking disciplines → `.claude/protocols/`; permission rules and hooks → `.claude/settings.json`.
+- Methods → `methods/`; which method is applied to a work item is stated in the work record.
+- Agent teams and dynamic workflows are not taken as the basis; within a single session, where they are useful (for example large scanning jobs), they can be used as helpers. The single-writer rule applies to these tools as well.
 
-### 7.3 Yeterlik profili ve gizli sınavlar
+### 7.3 Competence profile and hidden exams
 
-Her rol için bir yeterlik profili tutulur: hangi iş türünde, hangi model ve ayarlarla, hangi bilgi ve araçlarla, hangi sınavdan geçerek yeterli bulunduğu; bilinen sınırları; ne değişirse yeniden sınanacağı.
+For each role a competence profile is kept: in which type of work, with which model and settings, with which knowledge and tools, and by passing which exam it was found competent; its known limits; what change would make it be tested again.
 
-- **Sınav nasıl yürür:** Sınav setleri sınav ortamında hazırlanır ve `devos-evals`'te durur. Sınav ortamı, sınav görevini veritabanına sıradan bir iş olarak koyar; çalışma ortamı onu normal iş gibi yürütür ve görevin sınav olduğunu bilmek zorunda değildir. Sınav ortamı sonucu cevap anahtarıyla puanlar. Sınanan rol cevap anahtarına hiçbir yoldan ulaşamaz: `devos-evals` yalnız sınav routine'ine bağlıdır ve sınav kayıtlarını yalnız sınav ortamının anahtarı okuyabilir.
-- **İnceleme rollerinin sınavı:** Denetim ortamındaki rollerin sınav görevleri de sınav ortamından gelir; denetim ortamı kendi sınavını hazırlayamaz.
-- Her sınav seti hem yanlış hem doğru yapılmış örnekler içerir.
-- Sınav setleri düzenli yenilenir; sınavda iyileşip gerçek işte iyileşmeyen rol "sınava göre öğrenme" olarak kaydedilir.
-- Rolün kendi değerlendirmesi ipucudur, kanıt değildir.
-- Ölçülen düşünme yetenekleri: problemi yeniden çerçeveleme, sorgulanmamış öncülü fark etme, genel kuralı bulma, hatayı sınıfına götürme, alternatifleri karşılaştırma, dış kaynaktan doğru aktarım, kanıt kalitesini değerlendirme, gereksiz mekanizma üretmeme.
+- **How an exam runs:** Exam sets are prepared in the exam environment and kept in `devos-evals`. The exam environment puts the exam task into the database as an ordinary work item; the working environment carries it out like normal work and does not have to know that the task is an exam. The exam environment scores the result against the answer key. The tested role cannot reach the answer key by any path: `devos-evals` is connected only to the exam routine, and only the exam environment's key can read the exam records.
+- **Exams of the review roles:** The exam tasks of the roles in the audit environment also come from the exam environment; the audit environment cannot prepare its own exam.
+- Every exam set contains both wrongly done and correctly done examples.
+- Exam sets are renewed regularly; a role that improves in the exam but does not improve in real work is recorded as "learning to the exam".
+- The role's own assessment is a hint, not evidence.
+- Thinking abilities measured: reframing the problem, noticing an unquestioned premise, finding the general rule, taking an error to its class, comparing alternatives, accurate transfer from an external source, assessing the quality of evidence, not producing unnecessary mechanisms.
 
-### 7.4 Rol yaşam döngüsü ve başlangıç kümesi
+### 7.4 Role life cycle and starting set
 
-Yeni bir rol, bir uzmanı işe hazırlar gibi hazırlanır: ihtiyaç ve sistem incelemesi → sözleşme → uzmanlık paketi → mesleki süreklilik düzeni → gizli sınav → bağımsız inceleme ve onay (PC-05) → izleme ve gerektiğinde emeklilik (Ek A Bölüm 6).
+A new role is prepared the way an expert is prepared for a job: need and system review → contract → expertise package → professional continuity arrangement → hidden exam → independent review and approval (PC-05) → monitoring and, when needed, retirement (Appendix A Section 6).
 
-**Başlangıç kümesi:** 18 rol sözleşmesi korunur, ama roller ihtiyaç doğdukça etkinleşir. Paket, sınav ve yeterlik profili rol etkinleşirken hazırlanır. Başlangıç kümesi C07'nin gerektirdiği rollerle sınırlıdır: DR01, DR02, DR06-G, DR06-Y, DR08, DR13-G, DR13-Y, DR16 ve üretim gerekiyorsa DR05. Diğerleri gerçek bir ihtiyaç doğduğunda aynı protokolle etkinleşir. Her rol varlığını kanıtla hak eder; etkin bir rolün katkısı ölçülemiyorsa bu bir bulgudur.
-
----
-
-## 8. Sınama ilkeleri: testler neyi kanıtlar?
-
-1. **Her test bir iddiaya bağlıdır.** Testin adı değil, hangi iddiayı sınadığı kaydedilir.
-2. **Olumsuz ve olumlu kontrol:** Her test hem yanlış çözümü yakalamalı hem doğru çözüme izin vermelidir. Her şeyi reddeden bir kontrol güvenli görünür ama işe yaramaz.
-3. **Bozma testi:** Veritabanı kuralları ve kontroller için her kural bilerek bozulur; ilgili test başarısız olmalıdır. Başarısız olmuyorsa test kuralı sınamıyordur.
-4. **Temsil:** Sınanan şey iddia edilen kabiliyeti gerçekten temsil etmelidir. Örneğin "doğru işi bulur" iddiası, önceden bilinen cevabı ipucuyla veren bir görevle sınanamaz.
-5. **Bütünleşme:** Parçalar ayrı ayrı geçerken bütün sistem başarısız olabilir. Her aşamanın sonunda o ana kadar kurulanlar birlikte bir senaryoda sınanır; C11 bütünleşik sınamadır.
-6. **Önceden yazılan ölçüt:** Bilişsel kapıların ve arama ölçüsünün başarı ölçütleri sonuç görülmeden yazılır. Sonuç görüldükten sonra ölçüt gevşetilirse eski sonuç geçersiz sayılır ve sınama yeni veriyle tekrarlanır.
-7. **Bağımsızlık düzeyi açıkça yazılır:** Aynı oturumun kendi testi, aynı oturumda taze bağlamlı alt ajan, aynı modelin ayrı oturumu, farklı bilgi görünümüyle ayrı oturum, farklı model ailesi, Batu'nun uzman incelemesi. Bir sonucun hangi düzeyde doğrulandığı kanıt kaydında durur ve iddia buna göre sınırlanır.
-8. **Kanıt kaydı:** Her sonuç ham haliyle kanıt deposunda (özel içerik taşıyabilecek ham kanıt veritabanında ve gizli dosya deposunda; açık depoda güvenli özet ve kimlik); yapılmamış iş, denenmemiş davranış ya da açık soru başarı gibi sunulmaz.
-9. **Ortak kanıt zarfı:** Her kanıt şunları birlikte taşır: kaynak commit'i, dağıtım yapılandırması, ölçüt sürümü, girdi, gerçek gözlem, ham kanıt kimliği, bağımsızlık düzeyi. Farklı sürümde ya da farklı hedefte alınmış bir "geçti" kaydı yeni kurulumu kapatamaz.
-10. **Kanıt katmanları ayrıdır:** Yapısal bir testin (örneğin veritabanının zorunlu alanı denetlemesi) geçmesi, anlamsal bir yeterliği (örneğin özetin niteleyiciyi doğru taşıması) kapatmaz. Her test hangi katmanı ölçtüğünü yazar.
-11. **Ayar ve son değerlendirme ayrıdır:** Bir seçimi yapmak için kullanılan örnekler, o seçimin son değerlendirmesinde kullanılmaz.
-12. **Biçim kapısı içerik güvencesi değildir:** Veritabanının "alan dolu mu?" denetimi adımın yapıldığını değil, kaydının girildiğini gösterir; testler "dolu ama anlamsız" örneği de içerir ve içerik örneklemle değerlendirilir.
+**Starting set:** The 18 role contracts are kept, but roles become active as the need arises. The package, the exam and the competence profile are prepared when the role becomes active. The starting set is limited to the roles C07 requires: DR01, DR02, DR06-G, DR06-Y, DR08, DR13-G, DR13-Y, DR16 and, if production is needed, DR05. The others become active through the same protocol when a real need arises. Every role earns its existence with evidence; if an active role's contribution cannot be measured, that is a finding.
 
 ---
-## 9. Kurulum aşamaları
 
-**Sıralama ilkesi:** En belirsiz ve yanlış çıkarsa en pahalıya patlayacak şey en önce sınanır. Her aşama nihai kalitede kurulur; hiçbiri sonradan atılacak bir ara çözüm değildir. Bilişsel kapı (C07), altyapının sonuna değil, sınanabileceği en erken yere konmuştur.
+## 8. Testing principles: what do tests prove?
 
-**Kurulum defteri:** Supabase kurulana kadar (C02 sonu) ilerleme `plan/ledger.md`'de tutulur (özel içerik olmadan; kanıt kimlikleriyle). C02 sonunda veritabanına aktarılır. Aktarımın kabulü: tekrar çalıştırıldığında çoğalma yok; yarıda kesilirse kaldığı yerden devam ediyor; kayıtların bağları ve sürümleri eşleşiyor; aktarımdan sonra `ledger.md` yetkili yazma yüzeyi değil (dosyada açık bir devir işareti, sonraki yazma denemesi kontrolde reddediliyor).
+1. **Every test is tied to a claim.** What is recorded is not the test's name but which claim it tests.
+2. **Negative and positive control:** Every test must both catch the wrong solution and allow the right solution. A check that rejects everything looks safe but is useless.
+3. **Break test:** For database rules and checks, each rule is broken on purpose; the related test must fail. If it does not fail, the test is not testing the rule.
+4. **Representation:** What is tested must really represent the claimed capability. For example, the claim "finds the right work" cannot be tested with a task that gives away the answer known in advance through a hint.
+5. **Integration:** The whole system can fail while the parts pass one by one. At the end of each stage, what has been built up to that point is tested together in one scenario; C11 is integrated testing.
+6. **Criterion written in advance:** The success criteria of the cognitive gates and of the search benchmark are written before the result is seen. If a criterion is loosened after the result is seen, the old result counts as invalid and the testing is repeated with new data.
+7. **The independence level is written explicitly:** The same session's own test, a fresh-context subagent in the same session, a separate session of the same model, a separate session with a different view of the information, a different model family, Batu's expert review. The level at which a result was verified stands in the evidence record, and the claim is limited accordingly.
+8. **Evidence record:** Every result is in the evidence store in its raw form (raw evidence, which may carry private content, in the database and in the private file storage; in the public repository, a safe summary and ID); work not done, behaviour not tried or an open question is not presented as success.
+9. **Common evidence envelope:** Every piece of evidence carries the following together: the source commit, the deployment configuration, the criterion version, the input, the actual observation, the raw evidence ID, the independence level. A "passed" record taken on a different version or on a different target cannot close a new installation.
+10. **Evidence layers are separate:** A structural test passing (for example the database checking a required field) does not close a semantic competence (for example a summary carrying the qualifier correctly). Every test writes down which layer it measures.
+11. **Tuning and final evaluation are separate:** The examples used to make a choice are not used in the final evaluation of that choice.
+12. **A format gate is not a content guarantee:** The database's "is the field filled?" check shows not that the step was done but that its record was entered; tests also include the "filled but meaningless" example, and content is assessed by sampling.
 
-**Her aşamanın kapanışı:** Kabul koşulları sonuç görülmeden yazılır; kanıt ortak kanıt zarfıyla kaydedilir (Bölüm 8); aşama kapanışı C03'e kadar taze bağlamlı bir Denetçi alt ajanınca (bağımsızlık düzeyi yazılı; PC-06), sonra denetim ortamında gözden geçirilir.
+---
+## 9. Installation stages
 
-**Kurucunun çalışma düzeni [PC-06, 5 Ekim 2026, Batu'nun D-010 kararı; kurallar: `plan/Installation_Working_Order.md`; defter: `plan/ledger.md`]:** Kurucu da bir çalışma sistemidir. Kurulum işinin nasıl yürüdüğü o İngilizce belgededir; neyin kurulacağını bu plan belirler. Batu'nun PC-04'teki gereksinimi ve beklentileri 1–5 geçerlidir **[Batu, 1 Ekim 2026]**; tek istisnası 1. maddede yazılıdır **[Batu, 5 Ekim 2026, D-010]**. Özü:
+**Ordering principle:** What is most uncertain, and would cost the most if it turned out wrong, is tested first. Every stage is built at final quality; none of them is an interim solution to be thrown away later. The cognitive gate (C07) is placed not at the end of the infrastructure but at the earliest point where it can be tested.
 
-1. **Tek çalışma oturumu:** Kurulumu tek bir çalışma oturumu yürütür. Batu onu Claude uygulamasından bir kez açar ve hazırlanan ilk mesajı (Ek F; kurulumun tamamı için tek `/goal`) yapıştırır. Bundan sonra yalnız kendi kararlarını cevaplamak ve kullanım sınırı sıfırlandıktan sonra bir "devam" mesajı yazmak için yazar (bulut oturumu sınırdan sonra kendiliğinden sürmez). Oturum planı kendisi okur, plan sırasındaki sonraki adımı alır, işi bölüp rol tanımlı alt ajanlara ve workflow'lara verir (Üretici, Araştırmacı, Sınayıcı, Denetçi, Karşı tasarımcı; C02'den Test tasarımcısı) ve `main`'e yalnız kendisi yazar. Aşama sınırı duruş değildir. Batu'nun kararını ya da işlemini beklemek, kullanım sınırı ve henüz aşılamayan bir engel geçici "henüz değil" hâlleridir. Ayrı oturum ya da ortam yalnız planın gerektirdiği yerlerde kalır (C01'de gözlenen oturum ve routine'ler, C03'ten itibaren denetim ortamı, C04'ün gizli arama soru seti, sınavlar); gerektiğinde Batu'ya tek ve dar bir soru olarak gelir. **[Varsayım: tek oturum, özetlemeye rağmen yeniden okumayla plandan kopmadan sürer; ilk özetlemede ve C01'de sınanır]**
-2. **Tek doğru kaynak `main`'dir.** Her tamamlanan işten sonra ve her duruştan önce iş `main`'e alınır. Nerede kalındığını oturum değil kayıt taşır: oturum açılışta ve her özetlemeden sonra (bir kanca bunu hatırlatır) kuralları, defteri, `DURUM.md`'yi ve aşama günlüğünün son kayıtlarını yeniden okur. Durum dosyası kısa tutulur; kayıtlar aşama başına ayrı ve yalnız eklenen dosyalardadır.
-3. **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmayı görür. Bu yüzden duruş mesajları `tools/stop_check.sh` adlı denetim betiğinin çıktısını olduğu gibi taşır. Aşama kabulü, C03'e kadar işi yapmamış taze bağlamlı bir Denetçi alt ajanının kararıyla (bağımsızlık düzeyi yazılı: aynı oturumda taze bağlamlı alt ajan, Bölüm 8 madde 7), C03'ten sonra denetim ortamında verilir.
-4. **Batu'ya yalnız ona ait kararlar gelir** (amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler, kabul). Bunlar ve Batu'nun yapması gereken işler toplanır; tek bir GitHub issue'sunda, adım adım iletilir. Durum Türkçe `DURUM.md` sayfasında her zaman günceldir.
-5. **Bağımsız inceleme** C03'e kadar Denetçi alt ajanınca yapılır; kararı bağımsızlık düzeyiyle depoda bir dosyada durur ve yüksek etkili bir değişiklik bu karar olmadan `main`'e alınmaz. Sonuçlar Batu üzerinden değil, depo üzerinden gelir. C03'ten sonra bağlayıcı inceleme denetim ortamındadır.
-6. **Connector engeli:** Engel tek bir kancadır: `.claude/hooks/tool_allowlist.py`. Görevi kazaları ve dışarıdan sızan talimatları durdurmaktır. Kurucunun kendisi kancayı bilerek değiştirebilir; bu kalan risk Batu'nun D-003 kararıyla denetim ortamına kadar kabul edildi. Kanca bütün araç çağrılarına bakar ve yalnız açıkça izin verilenleri geçirir. Hesaptaki connector'ları, hesabın başka oturumlarına ulaşan araçları, uzak alt ajanları (ayrı bir bulut oturumu açtıkları için) ve izin listesinde olmayan her aracı engeller. GitHub'da yazmayı `devos` ile sınırlar. Yeni oturuma yalnız `devos`'un `.claude/` klasörünü taşıyan bir sürümüyle izin verir. Kurucunun kendi açmadığı oturum ve routine'lere dokunmayı engeller. Kurucunun açtığı oturumlarda depodaki kancaların çalıştığı gözlendi (T-H3). Kanca birim testleriyle sınandı (T-H4) ve canlı olarak engelledi (T-H5, T-H6). Kanca yalnız araç adına ve girdisine bakar; kabuk (shell) üzerinden kalan yollar dahil, kapsamadığı yollar `plan/Installation_Working_Order.md`'deki "Not protected" listesindedir.
+**Installation ledger:** Until Supabase is set up (end of C02), progress is kept in `plan/ledger.md` (without private content; with evidence IDs). At the end of C02 it is transferred to the database. Acceptance of the transfer: no duplication when it is run again; if it is interrupted midway, it resumes from where it left off; the records' links and versions match; after the transfer, `ledger.md` is not an authoritative write surface (an explicit hand-over mark in the file; a later write attempt is rejected by the checks).
 
-**PC-01 (1 Ekim 2026; önceki adı "K10"), PC-06 ile değişti (5 Ekim 2026):** Aşama başına `/goal` ve aşama sonunda duruş yerine kurulumun tamamı için tek `/goal` vardır (yukarıda 1. madde). Batu, PC-01'in kendi kararı olmadığını belirtti (D-010, ek E1). Eski metin PC-06 kaydındadır.
+**Closing each stage:** Acceptance conditions are written before results are seen; evidence is recorded with the common evidence envelope (Section 8); the stage closure is reviewed until C03 by a fresh-context Checker subagent (independence level written; PC-06), and after that in the audit environment.
 
-**PC-02 (1 Ekim 2026; önceki adı "K11"):** Dal yönetimi kurucudadır. **[Batu, 1 Ekim 2026]**: dal açmak, `main`'e almak ve silmek kurucunun yönetimindedir; birleştirme için Batu'dan onay istenmez. Kurucunun sınırları: (1) Kütüphane depolarına hiçbir zaman dokunulmaz (Bölüm 0.5). (2) `main`'e giriş yalnız PR iledir; dal koruması kapatılmaz ve atlatılmaz. (3) Her birleştirme ve dal silme deftere yazılır. (4) Süreklilik (PC-03): her duruştan önce iş `main`'e alınır.
+**The builder's working order [PC-06, 5 October 2026, Batu's decision D-010; rules: `plan/Installation_Working_Order.md`; ledger: `plan/ledger.md`] (original: TR-E1):** The builder is a working system too. How the installation work runs is in that English document; what is to be built is determined by this plan. Batu's requirement and expectations 1–5 in PC-04 hold **[Batu, 1 October 2026]** (original: TR-E1); their only exception is written in item 1 **[Batu, 5 October 2026, D-010]** (original: TR-E1). In essence:
 
-**Aşamaların özeti:**
+1. **One working session:** A single working session runs the installation. Batu opens it once from the Claude app and pastes the prepared first message (Appendix F; one `/goal` for the whole installation). After that he types only to answer his own decisions and, after the usage limit has reset, to write one "devam" ("continue") message (a cloud session does not continue by itself after the limit). The session reads the plan itself, takes the next step in plan order, splits the work and gives it to subagents with defined roles and to workflows (Producer, Researcher, Prober, Checker, Counter-designer; from C02, Test designer), and is the only one that writes to `main`. A stage boundary is not a stop. Waiting for Batu's decision or action, the usage limit, and a blocker that cannot be passed yet are temporary "not yet" states. A separate session or environment remains only where the plan requires it (the session and routines observed in C01, the audit environment from C03 on, C04's hidden search question set, the exams); when one is needed, it comes to Batu as a single, narrow question. **[Assumption: the single session continues, despite compaction, without breaking away from the plan, through re-reading; tested at the first compaction and in C01]**
+2. **The only source of truth is `main`.** After every completed piece of work and before every stop, the work is merged into `main`. Where the work left off is carried by the record, not by the session: at opening and after every compaction (a hook reminds it of this), the session re-reads the rules, the ledger, `DURUM.md` and the last entries of the stage log. The status file is kept short; the records are in separate, append-only files per stage.
+3. **Meeting the goal is not stage acceptance.** The evaluator is a small model and sees only the conversation. So stop messages carry the output of the check script named `tools/stop_check.sh` unedited. Stage acceptance is given, until C03, by the verdict of a fresh-context Checker subagent that did not do the work (independence level written: fresh-context subagent in the same session, Section 8 item 7), and after C03 in the audit environment.
+4. **Only the decisions that are his come to Batu** (purpose, scope, cost, choices that affect his accounts and his other work, acceptance). These, and the work Batu has to do, are collected and passed on, step by step, in a single GitHub issue. The status is always current on the Turkish `DURUM.md` page.
+5. **Independent review** is done until C03 by a Checker subagent; its verdict, with its independence level, is kept in a file in the repository, and a high-impact change is not merged into `main` without this verdict. Results come through the repository, not through Batu. After C03 the binding review is in the audit environment.
+6. **Connector barrier:** The barrier is a single hook: `.claude/hooks/tool_allowlist.py`. Its job is to stop accidents and instructions leaking in from outside. The builder itself can deliberately change the hook; this residual risk was accepted by Batu's decision D-003 until the audit environment. The hook looks at every tool call and lets through only those explicitly allowed. It blocks the account's connectors, tools that reach the account's other sessions, remote subagents (because they open a separate cloud session) and every tool that is not on the allow list. It limits writing on GitHub to `devos`. It allows a new session only with a version of `devos` that carries its `.claude/` folder. It blocks touching sessions and routines that the builder did not open itself. In the sessions the builder opened, the repository's hooks were observed to run (T-H3). The hook was tested with unit tests (T-H4) and blocked live (T-H5, T-H6). The hook looks only at the tool name and its input; the routes it does not cover, including the routes that remain through the shell, are in the "Not protected" list in `plan/Installation_Working_Order.md`.
 
-| Aşama | Tamamladığı | Açık bıraktığı ve nerede kapanacağı |
+**PC-01 (1 October 2026; formerly "K10"), changed by PC-06 (5 October 2026):** Instead of a `/goal` per stage and a stop at the end of each stage, there is one `/goal` for the whole installation (item 1 above). Batu stated that PC-01 was not his own decision (D-010, addendum E1) (original: TR-E2). The old text is in the PC-06 record.
+
+**PC-02 (1 October 2026; formerly "K11"):** Branch management lies with the builder. **[Batu, 1 October 2026]** (original: TR-E3): opening branches, merging them into `main` and deleting them are under the builder's management; no approval is asked from Batu for a merge. The builder's limits: (1) The library repositories are never touched (Section 0.5). (2) Entry into `main` is only through a PR; branch protection is not turned off and not bypassed. (3) Every merge and every branch deletion is written to the ledger. (4) Continuity (PC-03): before every stop, the work is merged into `main`.
+
+**Summary of the stages:**
+
+| Stage | What it completes | What it leaves open, and where that will close |
 |---|---|---|
-| C00 | Hazırlığın doğrulanması, ECC kararı, planın bağımsız incelemesi ve bağımsız karşı tasarım | — |
-| C01 | Planın dayandığı platform bilgilerinin hesapta gözlenmesi; önce oturum süresi, connector'lar, anahtarlar | Başarısız satırlar planı burada değiştirir |
-| C02 | Veri modeli, kural kapısı, kimlik zinciri, F01–F08 regresyonları, defter aktarımı | Karar kanalının arayüzü (C06) |
-| C03 | Güven sınırları ve etki kanallarının olumsuz testlerle gösterilmesi | Sızıntı eşiği ayarı kütüphane içe alındıktan sonra (C04) |
-| C04 | Kütüphane, üç arama, kaynak gövdesi okuma, bağlam paketi, anlam modeli seçimi | Paketin anlamca yeterliği (U-4) |
-| C05 | Ortak kurallar, başlangıç rol kümesi, yöntemler, sınav düzeni | Rollerin gerçek işteki başarısı (C07) |
-| C06 | Çalışma düzeni, denetim, karar kanalı | Kapasite yeterliği (C11, U-5) |
-| C07 | İlk gerçek döngüde bilişsel kapı | Genel kalite ölçümü (U-2) |
-| C08 | Model erişim ara katmanı, yayın, bütün ürün, SOUL deposu | SOUL'un ilk kullanılabilir sürümü DevOS'un işidir |
-| C09 | Kesinti, yedek, geri yükleme ve yeniden bağlama | — |
-| C10 | Öğrenme, amaç denetimi, süreç sınırı, varsayım envanteri | — |
-| C11 | Bütünleşik sınama, gözetimsiz çalışma, kapasite, sağlayıcı bağımsızlığı | — |
-| C12 | Devir ve kabul dosyası | Bölüm 10'daki açık sorunların son durumu |
+| C00 | Verification of the preparation, the ECC decision, the independent review of the plan and the independent counter-design | — |
+| C01 | Observing in the account the platform facts the plan rests on; first session duration, connectors, keys | Failed rows change the plan here |
+| C02 | Data model, rule gate, identity chain, F01–F08 regressions, ledger transfer | The decision channel's interface (C06) |
+| C03 | Showing the trust boundaries and effect channels with negative tests | Tuning of the leak threshold after the library is ingested (C04) |
+| C04 | Library, the three searches, reading the source body, context package, choice of the embedding model | The package's semantic adequacy (U-4) |
+| C05 | Common rules, the starting role set, methods, the exam setup | The roles' success in real work (C07) |
+| C06 | Working order, audit, decision channel | Adequacy of capacity (C11, U-5) |
+| C07 | The cognitive gate in the first real loop | General quality measurement (U-2) |
+| C08 | Model access layer, release, whole product, SOUL repository | SOUL's first usable version is DevOS's work |
+| C09 | Outage, backup, restore and reconnection | — |
+| C10 | Learning, purpose audit, process limit, assumption inventory | — |
+| C11 | Integrated testing, unattended operation, capacity, provider independence | — |
+| C12 | Hand-over and the acceptance file | The final state of the open problems in Section 10 |
 
-### C00 — Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi
+### C00 — Start, function comparison and independent review of the plan
 
-**Amaç:** Hazırlığın gerçekten tamamlandığını görmek; ECC'nin hangi parçalarının kullanılacağına karar vermek; planın kendisini çerçeve körlüğüne karşı sınamak.
+**Purpose:** To see that the preparation is really complete; to decide which parts of ECC will be used; to test the plan itself against frame blindness.
 
-**Yapılacaklar:**
+**Tasks:**
 
-0. **Plan paketinin çevirisi (Bölüm 0.6):** Plan, Ek A–G ve gerekçe belgeleri İngilizceye çevrilir; taze bağlamlı bir Denetçi alt ajanı çeviriyi Türkçe asılla bölüm bölüm karşılaştırır (bağımsızlık düzeyi yazılı; PC-06); farklar düzeltilir; sonra İngilizce metin bağlayıcı olur.
-1. **Hazırlık doğrulaması:** Yeni depolar ve Supabase projeleri mevcut mu? Claude GitHub uygulaması gereken depolarda kurulu mu? B3'e göre makine hesabı kurulmuş mu? `agentic-os-search`'te D030 kaydı var mı ve depo eski yönü güncel olarak göstermiyor mu? Eksik varsa kurucu işe başlamaz; eksiği Batu'ya karar biçiminde bildirir.
-2. **Okuma:** Plan, Ek A–G ve değerlendirme ile araştırma belgeleri baştan sona okunur.
-3. **ECC işlev karşılaştırması:** Her bileşen DevOS ihtiyaçlarıyla tek tek karşılaştırılır. Sonuç: benimsenecek, devre dışı bırakılacak ve kararsız kalan parçaların listesi.
-4. **Bağımsız plan incelemesi:** Planı yazanın gerekçelerini görmemiş, taze bağlamlı bir Denetçi alt ajanı (bağımsızlık düzeyi yazılı; PC-06) planı yalnız kriterlere ve kaynaklara göre eleştirir; Foundation'ı ve aday çalışmaları tarar; daha önce denenip başarısız olmuş bir yolun tekrar önerilip önerilmediğine bakar. Eski deneme depoları C04'te içe alındıktan sonra aynı soru onlar için de sorulur ve sonuç C00 kaydına eklenir.
-5. **Bağımsız karşı tasarım (Bölüm 6.12):** Mevcut planı görmeyen ve yalnız SOUL'un amacını, Batu'nun kararlarını, kriterleri ve platform bilgilerini bilen Karşı tasarımcı alt ajanı (planı görmemesi araç kısıtıyla sağlanır, sağlanamazsa bağımsızlık düzeyi düşük yazılır; PC-06) DevOS için kendi çalışma düzenini ve veri modelinin kapsamını tasarlar. İki tasarım karşılaştırılır; özellikle kayıt ailelerinin ve rollerin kapsamı "basit başla" ilkesine göre sorgulanır.
-6. **Öncül envanteri:** Planın dayandığı öncüller tek tek yazılır ve sıfırdan seçim testine sokulur.
-7. Sonuçlar karara bağlanır; plan gerekirse güncellenir (Bölüm 14).
+0. **Translation of the plan package (Section 0.6):** The plan, Appendices A–G and the rationale documents are translated into English; a fresh-context Checker subagent compares the translation with the Turkish original, section by section (independence level written; PC-06); the differences are corrected; then the English text becomes binding.
+1. **Preparation verification:** Do the new repositories and Supabase projects exist? Is the Claude GitHub app installed on the repositories that need it? Has the machine account been set up according to B3? Does `agentic-os-search` have the D030 record, and does the repository not show the old direction as current? If anything is missing, the builder does not start the work; it reports what is missing to Batu in the form of a decision.
+2. **Reading:** The plan, Appendices A–G and the evaluation and research documents are read from beginning to end.
+3. **ECC function comparison:** Each component is compared, one by one, with DevOS's needs. Result: the list of the parts to be adopted, the parts to be disabled and the parts left undecided.
+4. **Independent plan review:** A fresh-context Checker subagent that has not seen the plan author's reasons (independence level written; PC-06) criticises the plan only against the criteria and the sources; scans the Foundation and the candidate studies; checks whether a path that was tried before and failed is being proposed again. After the old experiment repositories are ingested in C04, the same question is asked for them too, and the result is added to the C00 record.
+5. **Independent counter-design (Section 6.12):** A Counter-designer subagent that does not see the current plan and knows only SOUL's purpose, Batu's decisions, the criteria and the platform facts (that it does not see the plan is ensured by a tool restriction; if this cannot be ensured, the independence level is written as low; PC-06) designs its own working order for DevOS and the scope of the data model. The two designs are compared; in particular, the scope of the record families and of the roles is questioned against the "start simple" principle.
+6. **Premise inventory:** The premises the plan rests on are written down one by one and put through the from-scratch test.
+7. Decisions are made on the results; the plan is updated if necessary (Section 14).
 
-**Kabul:** ✔ Çevirinin sadakat incelemesi geçmiş; çeviri sırasında önerilen değişiklikler ayrı kayıtlı. ✔ Hazırlık listesinin her maddesi kanıtla doğrulanmış. ✔ ECC tablosu, bağımsız inceleme, karşı tasarım karşılaştırması ve öncül envanteri kayıtlı; her bulgunun karşılığı yazılı. ✘ Kurucu kütüphane depolarına hiçbir şey yazmadı. ✘ Hiçbir gizli bilgi depoda, ortam değişkeninde ya da sohbette görünmüyor.
+**Acceptance:** ✔ The translation fidelity review has passed; changes proposed during translation are recorded separately. ✔ Every item of the preparation list is verified with evidence. ✔ The ECC table, the independent review, the counter-design comparison and the premise inventory are recorded; the disposition of every finding is written. ✘ The builder wrote nothing to the library repositories. ✘ No secret is visible in a repository, an environment variable or the chat.
 
-**Kriterler:** 18, 21, 25–27, 29, 34.
+**Criteria:** 18, 21, 25–27, 29, 34.
 
-### C01 — Platform doğrulaması
+### C01 — Platform verification
 
-**Amaç:** Planın dayandığı her platform bilgisini, pahalı kurulumdan önce Batu'nun gerçek hesabında gözlemek. İlk dört satır diğerlerinden önce yapılır; çünkü çalışma düzeninin tamamı onlara bağlıdır.
+**Purpose:** To observe every platform fact the plan rests on in Batu's real account, before the expensive installation. The first four rows are done before the others, because the whole working order depends on them.
 
-| # | Sınanan | Başarı koşulu | Başarısız olursa |
+| # | Tested | Success condition | If it fails |
 |---|---|---|---|
-| 1 | **Oturum süresi ve parçalı iş** | Bir routine'in başlattığı bulut oturumu kuyruktan birden fazla işi yürütebiliyor; ne kadar süre çalıştığı, kum havuzunun duraklatılıp duraklatılmadığı ve yapılandırılmış devirle bir sonraki oturumun doğru devam ettiği gözleniyor | Çalışma oturumu sayısı yedek bütçeden artırılır; gerekirse seçenekler bedeliyle karara |
-| 2 | **Connector engeli** | Connector'ları çıkarılmış bir routine'de ve depo izin kurallarıyla, hiçbir connector aracı çağrılamıyor | Hesap düzeyinde seçenekler Batu'ya (diğer sohbetlerine etkisiyle) |
-| 3 | **Ortam belirteci** | Belirteç Supabase isteğine ayrı bir başlıkla ekleniyor; oturum belirteci hiçbir yoldan göremiyor; veritabanı rol sınıfını doğru çıkarıyor | Kimlik doğrulayan bir Edge Function kapısı |
-| 4 | **Alt ajanlar** | `.claude/agents/` tanımları bulutta yükleniyor; rol paketi açılışta yüklenebiliyor; `CLAUDE.md`'yi yüklemeyen yerleşik yardımcılar belirleniyor | Rol metinleri oturumda açıkça yüklenir; yükleme kanıtı kaydedilir |
-| 5 | Günlük routine sınırı | Hesaptaki gerçek değer, sayma biçimi ve sıfırlanma saati | Bütçe tablosu (Bölüm 6.4) güncellenir |
-| 6 | Bildirim | GitHub bildirimi geliyor; B3'e göre kendi eylemleri için bildirim davranışı; ikinci kanal | Yedek kanal değiştirilir |
-| 7 | Anlam modeli | Aday çok dilli model oturumda ve Actions işinde çalışıyor ve süre sınırına sığıyor | Model küçültülür ya da içe alma seyrekleştirilir; kalite etkisi ölçülüp karara |
-| 8 | Yayın zinciri | Dala gönderim + PR + zorunlu kontroller + yayın işinin yetkiyi yeniden okuyup birleştirmesi + yöneticileri kapsayan koruma | Eksik halkaya göre yeniden tasarım |
-| 9 | Tek depolu oturum | Tek depolu oturumda izin kuralları ve kancalar uygulanıyor; açık depoya yazım öncesi kontrol çalışıyor | Kontrol yalnız PR katmanında kalır; kalan risk Batu'ya |
-| 10 | Kullanım gözlemi | Bir oturumun kullanım hakkına etkisi ve Batu'nun kendi kullanımıyla paylaşım gözlenebiliyor | Kapasite tahminle yapılır; belirsizlik kaydedilir |
-| 11 | Kimlik | B3 (a) ise: sistemin commit, PR ve yorumları makine hesabıyla görünüyor; Batu'nun kararları (issue cevapları) GitHub'da onun hesabından geldiği doğrulanarak alınabiliyor. B3 (b) ise: karar paneli girişi yalnız Batu'nun hesabıyla çalışıyor | Diğer seçeneğe geçilir |
-| 12 | Depo erişim sınırı | Çalışma ve denetim oturumları `devos-evals`'i hiçbir yoldan okuyamıyor | Sınavlar Supabase'te yalnız sınav ortamının okuyabildiği şemaya taşınır |
-| 13 | Eklenti ve beceri envanteri | Oturuma yüklenen bütün eklenti, beceri, alt ajan ve kancalar listeleniyor | Karara; gerekirse hesap düzeyinde kapatma |
-| 14 | Dynamic workflows ve Projects | Bulut oturumunda dynamic workflows çalışıyor mu; Projects hesapta açık mı, açıksa koordinatör kullanıcı mesajı olmadan sıradaki işi başlatıyor mu | İsteğe bağlı katmanlar kullanılmaz |
-| 15 | Kütüphane aktarımı | `devos-backup`'taki iş kütüphane depolarını salt okunur anahtarla okuyabiliyor; iş kayıtlarına içerik düşmüyor | Aktarım yöntemi yeniden tasarlanır |
-| 16 | İkinci model (B2 onaylanırsa) | Ücretsiz katmanın gerçek sınırları ve koşulları | Bedeliyle karara |
+| 1 | **Session duration and chunked work** | A cloud session started by a routine can run more than one work item from the queue; how long it runs, whether the sandbox is paused, and that the next session continues correctly through a structured hand-over are observed | The number of working sessions is increased from the reserve budget; if needed, the options go to a decision, with their cost |
+| 2 | **Connector barrier** | In a routine with its connectors removed, and with the repository's permission rules, no connector tool can be called | Account-level options to Batu (with their effect on his other chats) |
+| 3 | **Environment token** | The token is added to the Supabase request in a separate header; the session cannot see the token by any route; the database derives the role class correctly | An Edge Function gate that authenticates |
+| 4 | **Subagents** | The `.claude/agents/` definitions load in the cloud; the role package can be loaded at opening; the built-in helpers that do not load `CLAUDE.md` are identified | The role texts are loaded explicitly in the session; evidence of the loading is recorded |
+| 5 | Daily routine limit | The real value in the account, how it is counted and the reset time | The budget table (Section 6.4) is updated |
+| 6 | Notification | The GitHub notification arrives; the notification behaviour for one's own actions, according to B3; the second channel | The backup channel is changed |
+| 7 | Embedding model | The candidate multilingual model runs in the session and in the Actions job, and fits within the time limit | The model is made smaller or ingestion is made less frequent; the effect on quality is measured and goes to a decision |
+| 8 | Release chain | Push to a branch + PR + required checks + the release job re-reading the authority and merging + protection that covers administrators | Redesign according to the missing link |
+| 9 | Single-repository session | In a single-repository session the permission rules and hooks are applied; the check before writing to the public repository runs | The check stays only at the PR layer; the residual risk goes to Batu |
+| 10 | Usage observation | A session's effect on the usage allowance, and the sharing with Batu's own usage, can be observed | Capacity is worked out by estimate; the uncertainty is recorded |
+| 11 | Identity | If B3 is (a): the system's commits, PRs and comments appear under the machine account; Batu's decisions (issue answers) can be taken on GitHub, with verification that they come from his account. If B3 is (b): the login to the decision panel works only with Batu's account | Switch to the other option |
+| 12 | Repository access limit | Working and audit sessions cannot read `devos-evals` by any route | The exams are moved, in Supabase, to a schema that only the exam environment can read |
+| 13 | Plugin and skill inventory | All plugins, skills, subagents and hooks loaded into the session are listed | To a decision; if needed, turning them off at account level |
+| 14 | Dynamic workflows and Projects | Whether dynamic workflows run in a cloud session; whether Projects is enabled on the account, and if it is, whether the coordinator starts the next work item without a user message | The optional layers are not used |
+| 15 | Library transfer | The job in `devos-backup` can read the library repositories with a read-only key; no content ends up in the job records | The transfer method is redesigned |
+| 16 | Second model (if B2 is approved) | The real limits and terms of the free tier | To a decision, with its cost |
 
-**Kabul:** ✔ Her satırın sonucu ortak kanıt zarfıyla kayıtlı. ✔ Başarısız her satır için plan değişikliği kararı alınmış. ✘ Hiçbir sınama ücretli bir özelliği açmadı.
+**Acceptance:** ✔ The result of every row is recorded with the common evidence envelope. ✔ For every failed row, a plan change decision has been taken. ✘ No test enabled a paid feature.
 
-**Kriterler:** 17, 22, 23, 25–27.
+**Criteria:** 17, 22, 23, 25–27.
 
-### C02 — Veri modeli, kural kapısı ve kimlik zinciri
+### C02 — Data model, rule gate and identity chain
 
-**Yapılacaklar:**
+**Tasks:**
 
-1. Ek B'deki şema, sürümlü SQL olarak; önce test projesinde.
-2. Bütün durum geçişleri `devos_api` fonksiyonları olarak; her geçiş aynı işlemde olay üretir.
-3. Kimlik zinciri: ortam belirteci, üstlenme belirteci, belirteç üreten fonksiyon (Bölüm 6.3).
-4. Erişim kuralları ve rol sınıfları; tablolara doğrudan yazım kapalı.
-5. Biçim kapıları (K-1, K-3, emek politikası); ortam düzeyindeki yetki ayrılığı kuralları.
-6. Ek C'deki testler gerçek PostgreSQL'de; eşzamanlılık testleri.
-7. Üç çalışma ortamı ve belirteçleri (Batu, Bölüm 6.3 akışıyla).
-8. Kurulum defterinin aktarımı (Bölüm 9 girişindeki kabul koşullarıyla).
+1. The schema in Appendix B, as versioned SQL; first in the test project.
+2. All state transitions as `devos_api` functions; every transition produces an event in the same transaction.
+3. Identity chain: environment token, claim token, the function that issues tokens (Section 6.3).
+4. Access rules and role classes; direct writes to the tables closed.
+5. Format gates (K-1, K-3, effort policy); the environment-level rules for separation of authority.
+6. The tests in Appendix C on real PostgreSQL; concurrency tests.
+7. The three working environments and their tokens (Batu, through the Section 6.3 flow).
+8. Transfer of the installation ledger (with the acceptance conditions in the introduction of Section 9).
 
-**Kabul:** ✔ Ek C testleri geçiyor; her kural bilerek bozulduğunda ilgili test başarısız oluyor. ✘ Hiçbir rol tablolara doğrudan yazamıyor. ✘ Her ortamın gerçek belirteciyle başka ortamın yetkisini gerektiren işlem reddediliyor. ✘ Başka oturumun üstlenmesiyle ve sahte oturum kimliğiyle işlem reddediliyor. ✘ Biçim kapıları boş alanları reddediyor; "dolu ama anlamsız" örnekler örneklem incelemesine düşüyor. ✔ Eksiksiz kayıtlar kabul ediliyor. ✔ Defter aktarımının dört kabul koşulu sağlanıyor.
+**Acceptance:** ✔ The Appendix C tests pass; when each rule is deliberately broken, the related test fails. ✘ No role can write directly to the tables. ✘ With each environment's real token, an operation that requires another environment's authority is rejected. ✘ An operation with another session's claim, and with a fake session ID, is rejected. ✘ The format gates reject empty fields; "filled but meaningless" examples fall to the sample review. ✔ Complete records are accepted. ✔ The four acceptance conditions of the ledger transfer are met.
 
-**Kriterler:** 8, 10, 12, 14–16, 28, 30.
+**Criteria:** 8, 10, 12, 14–16, 28, 30.
 
-### C03 — Güven sınırları ve etki kanalları
+### C03 — Trust boundaries and effect channels
 
-**Sınamalar:** (1) Her ortamın belirteci yalnız kendi rol sınıfının fonksiyonlarını çağırabiliyor. (2) Kasıtlı saldırı görevi: bir ajan kuralı atlamanın yolunu arıyor; bulamamalı. (3) **Etki kanalı envanterindeki her kanal için olumsuz test:** connector araçları çağrılamıyor; ajan ortamında gizli anahtar yok; ikinci model geçidi dışından istek gönderilemiyor. (4) Dışarıdan açılmış bir issue hiçbir routine'i tetiklemiyor ve içindeki talimat uygulanmıyor. (5) Yönetici hesabıyla bile kontrolleri geçmemiş değişiklik `main`'e girmiyor. (6) **İlk açık yazımdan önce sızıntı kontrolü:** kütüphaneye yerleştirilmiş sahte "gizli" bir metnin aynen ve yeniden anlatılmış biçimleri, dala gönderimde, PR gövdesinde ve yorumda durduruluyor; denetim kaydına eşleşen metin yazılmıyor. (7) `.claude/settings.json` oturum içinde düzenlenemiyor. (8) Yedek rolü yalnız okuyabiliyor.
+**Tests:** (1) Each environment's token can call only the functions of its own role class. (2) Deliberate attack task: an agent looks for a way to bypass a rule; it must not find one. (3) **A negative test for every channel in the effect channel inventory:** connector tools cannot be called; there is no secret key in the agent environment; no request can be sent outside the second-model gateway. (4) An issue opened from outside triggers no routine, and the instruction in it is not carried out. (5) Even with an administrator account, a change that has not passed the checks does not enter `main`. (6) **Leak check before the first public write:** the verbatim and paraphrased forms of a fake "secret" text planted in the library are stopped in a push to a branch, in a PR body and in a comment; the matching text is not written to the audit record. (7) `.claude/settings.json` cannot be edited inside the session. (8) The backup role can only read.
 
-**Kabul:** ✘ Bütün olumsuz sınamalar reddedildi. ✔ Her birinin "doğru yetkiyle doğru iş" karşılığı başarılı; örneğin DevOS'un kendi sentezi ve kaynak kimliği açık depoya girebiliyor.
+**Acceptance:** ✘ All the negative tests were rejected. ✔ The "right work with the right authority" counterpart of each of them succeeds; for example, DevOS's own synthesis and the source ID can enter the public repository.
 
-**Kriterler:** 8, 27, 30, 31.
+**Criteria:** 8, 27, 30, 31.
 
-### C04 — Bilgi, arama ve bağlam
+### C04 — Knowledge, search and context
 
-**Yapılacaklar:**
+**Tasks:**
 
-1. İçe alma işleri: `agentic-os-search` sürekli, eski deneme depoları bir kez; kaynak türü, epistemik statü, işlem yetkisi ve gizlilik sınıfıyla.
-2. **Arama ölçüsü:** Ayrı bir oturum, gerçek kütüphaneden en az 50 soru ve doğru kaynaklarını hazırlar; ayar soruları ve son değerlendirme soruları ayrılır; soruların en az üçte biri diller arasıdır (İngilizce soru, Türkçe kaynak). Başarı eşiği ölçümden önce yazılır.
-3. **Anlam modeli seçimi:** Aday modeller (en az iki çok dilli açık model ve karşılaştırma için `gte-small`) ayar sorularıyla denenir; seçim bittikten sonra son değerlendirme sorularıyla bir kez ölçülür.
-4. `read_source`, "nerede bulurum" rehberi, `session_brief()`, bağlam paketi akışı.
-5. Sızıntı kontrolü için parmak izleri ve anlam eşiğinin ayarı.
-6. **Kapasite ölçümü:** Veritabanı boyutu, bellek kullanımı ve arama gecikmesi. Plan sınırına yaklaşılıyorsa kapsam daraltılmadan önce Batu'ya karar olarak gelir. Yedek boyutu ve Actions dakika bütçesi de burada hesaplanır.
+1. Ingestion jobs: `agentic-os-search` continuously, the old experiment repositories once; with source type, epistemic status, authority to act and confidentiality class.
+2. **Search benchmark:** A separate session prepares at least 50 questions from the real library, with their correct sources; tuning questions and final evaluation questions are kept apart; at least one third of the questions are cross-language (English question, Turkish source). The success threshold is written before the measurement.
+3. **Embedding model choice:** The candidate models (at least two multilingual open models, and `gte-small` for comparison) are tried with the tuning questions; after the choice is finished, it is measured once with the final evaluation questions.
+4. `read_source`, the "where do I find it" guide, `session_brief()`, the context package flow.
+5. For the leak check, fingerprints and the tuning of the semantic threshold.
+6. **Capacity measurement:** Database size, memory use and search latency. If the plan limit is being approached, this comes to Batu as a decision before the scope is narrowed. The backup size and the Actions minutes budget are also calculated here.
 
-**Kabul:** ✔ Son değerlendirme soruları önceden yazılan eşiği geçiyor. ✘ Niteleyicisi düşürülmüş özet (anlamsal katman) ve zorunlu ihtiyacı karşılanmamış paket (yapısal katman) reddediliyor; iki katman ayrı raporlanıyor. ✔ Ajan, "Önceki DevOS denemelerinde Claude cloud hakkında ne öğrenildi?" gibi sorulara doğru kaynaktan cevap buluyor ve gerektiğinde kaynağın gövdesini okuyor. ✘ Keşif notundan doğrudan iş açılamıyor. ✔ Durum özeti son oturumdan beri değişenleri eksiksiz gösteriyor.
+**Acceptance:** ✔ The final evaluation questions pass the threshold written in advance. ✘ A summary whose qualifier was dropped (semantic layer) and a package whose mandatory need is not met (structural layer) are rejected; the two layers are reported separately. ✔ The agent finds the answer, from the right source, to questions such as "What was learned about Claude cloud in the earlier DevOS experiments?", and reads the source's body when needed. ✘ No work item can be opened directly from a discovery note. ✔ The state brief shows, completely, what has changed since the last session.
 
-**Kriterler:** 5–7, 11, 17, 31.
+**Criteria:** 5–7, 11, 17, 31.
 
-### C05 — Ortak kurallar, roller ve yöntemler
+### C05 — Common rules, roles and methods
 
-**Yapılacaklar:**
+**Tasks:**
 
-1. `CLAUDE.md` ve `.claude/protocols/` (Ek D), `.claude/agents/` (başlangıç rol kümesi, Ek A ve Bölüm 7.4), `methods/`, `.claude/settings.json`.
-2. Başlangıç kümesindeki her rolün paketi (Ek A Bölüm 3); bilgi haritaları katalogdan yeniden türetilir ve arama ölçüsüyle sınanır.
-3. **Kapsama listesi:** Foundation'ın çalışma sistemi alanlarından K-1'deki keşif soru listesi türetilir ve sürümlenir.
-4. **Sınav düzeni:** Sınav ortamı başlangıç kümesi için sınav setlerini hazırlar; sınavlar Bölüm 7.3'teki gibi sıradan iş olarak yürür.
-5. Mekanizma varsayım envanterinin ilk hali (Bölüm 6.12).
+1. `CLAUDE.md` and `.claude/protocols/` (Appendix D), `.claude/agents/` (the starting role set, Appendix A and Section 7.4), `methods/`, `.claude/settings.json`.
+2. The package of every role in the starting set (Appendix A Section 3); knowledge maps are re-derived from the catalogue and tested with the search benchmark.
+3. **Coverage list:** The discovery question list in K-1 is derived from the Foundation's working-system areas, and versioned.
+4. **Exam setup:** The exam environment prepares the exam sets for the starting set; the exams run as ordinary work, as in Section 7.3.
+5. The first version of the mechanism assumption inventory (Section 6.12).
 
-**Kabul:** ✔ Her rol gizli sınavında "devredemeyeceği sınır" maddesine uyuyor. ✘ Sınava gizlenmiş tuzakları (kısıtla çelişen iş, eskimiş bilgi, düşmüş niteleyici, gizli önkoşul, sorgulanmamış öncül) yakalıyor. ✔ Doğru yapılmış örnekleri gereksiz yere reddetmiyor. ✔ Yeni bir rol hazırlama protokolüyle kurulup sınanabiliyor; rol paketi onu hazırlamayan bir oturumca incelenmiş. ✔ Dokuz düşünme sorusunun denetim izi veritabanında görülüyor.
+**Acceptance:** ✔ In its hidden exam, every role complies with the "limit it cannot delegate" item. ✘ It catches the traps hidden in the exam (work that conflicts with a constraint, stale information, a dropped qualifier, a hidden prerequisite, an unquestioned premise). ✔ It does not needlessly reject correctly done examples. ✔ A new role can be set up and tested with the preparation protocol; the role package has been reviewed by a session that did not prepare it. ✔ The audit trail of the nine thinking questions is visible in the database.
 
-**Kriterler:** 7, 13, 15–17, 28–30, 32.
+**Criteria:** 7, 13, 15–17, 28–30, 32.
 
-### C06 — Çalışma düzeni, denetim ve karar kanalı
+### C06 — Working order, audit and decision channel
 
-**Yapılacaklar:** K-7'deki düzenin tamamı; routine'lerin Batu tarafından oluşturulması (connector'lar çıkarılmış); talep-katkı-kullanım akışı; tek yazar kuralı; döngü sınırları; denetim oturumunun bağlayıcı incelemesi; karar kanalı ve yedek kanal; takılı iş ve kilitlenme taraması.
+**Tasks:** The whole of the order in K-7; the creation of the routines by Batu (with connectors removed); the request-contribution-use flow; the single-writer rule; loop limits; the binding review by the audit session; the decision channel and the backup channel; the scan for stuck work and deadlock.
 
-**Kabul:** ✔ A → B → A zinciri Batu'dan mesaj almadan tamamlanıyor. ✔ B'nin katkısı A'nın kararında görünür biçimde kullanılıyor ya da kullanılmama gerekçesi yazılı. ✘ Oturum kesildiğinde tamamlanmış katkı tekrar üretilmiyor; bir sonraki oturum doğru yerden devam ediyor. ✘ Aynı ürüne ikinci bir yazar reddediliyor. ✘ "İlerleme yok" durumu tespit ediliyor ve iş duruyor. ✔ Karar telefona ulaşıyor; belirli sürede açılmazsa ikinci kanaldan yineleniyor; cevapla iş devam ediyor. ✘ Batu dışından gelen "cevap" kabul edilmiyor. ✔ Batu'nun onay sayısı ve onaylarının biçimselleşip biçimselleşmediği ölçülmeye başlanıyor.
+**Acceptance:** ✔ The A → B → A chain completes without a message from Batu. ✔ B's contribution is visibly used in A's decision, or the reason for not using it is written. ✘ When a session is interrupted, a completed contribution is not produced again; the next session continues from the right place. ✘ A second writer to the same product is rejected. ✘ A "no progress" state is detected and the work stops. ✔ The decision reaches the phone; if it is not opened within a set time, it is repeated through the second channel; with the answer, the work continues. ✘ An "answer" that comes from anyone other than Batu is not accepted. ✔ The number of Batu's approvals, and whether his approvals are becoming a formality, start to be measured.
 
-**Kriterler:** 9, 10, 21–23.
+**Criteria:** 9, 10, 21–23.
 
-### C07 — İlk gerçek döngü: bilişsel kapı
+### C07 — First real loop: the cognitive gate
 
-**Amaç:** DevOS'un varlık gerekçesini ilk kez gerçek işte sınamak.
+**Purpose:** To test DevOS's reason for existing in real work, for the first time.
 
-**Görev:** Ekibe SOUL'un amacı, kütüphane, geçmiş dersler ve kısıtlar verilir. Ekip, SOUL'u geliştirmek için ilk gerçek işi kendisi keşfeder, gerekçelendirir ve yürütmeye başlar.
+**Task:** The team is given SOUL's purpose, the library, past lessons and the constraints. The team itself discovers, justifies and starts carrying out the first real work for developing SOUL.
 
-**Ölçütler (sonuç görülmeden sabitlenir):**
+**Measures (fixed before results are seen):**
 
-1. **Kontrollü sınavda:** Görevin içine önceden gizlenmiş maddi bir eksik bulunuyor. **Gerçek görevde:** ekibin bulduğu eksiklikler ve yanlış varsayımlar kaydediliyor; "eksik bulunamadı" tek başına başarısızlık sayılmıyor, ama bulunanların maddi olup olmadığını teknik açıdan denetim ortamı, amaç ve değer açısından Batu ayrı ayrı değerlendiriyor.
-2. İşe katkısı olmayan önkoşul ve hazırlık yığılmıyor.
-3. Araştırma bir kararı görünür biçimde değiştiriyor, sınırlıyor ya da gerekçelendiriyor.
-4. Batu mesaj taşımıyor; yalnız kendisine ait kararlara cevap veriyor.
-5. Kısıtla çelişen durum Batu'ya kaliteli seçenek, amaç, fayda, bedel ve alternatifle sunuluyor.
-6. Bir yerel hata belirtiden hata sınıfına ya da yetenek eksikliğine kadar götürülüyor.
-7. Yüksek etkili bir kararda kütüphanedeki aday çalışmalar ya da güncel dış kaynaklar araştırılıyor ve karara yansıyor.
-8. Kütüphaneden gelen bilginin bir kararı değiştirdiği, sınırladığı ya da gerekçelendirdiği durumlar raporlanıyor; atıf sayısı ölçü değil.
-9. Bir sıkışma anında ekip önce çerçeveyi sorguluyor (Bölüm 6.12).
+1. **In the controlled exam:** A material gap hidden in the task in advance is found. **In the real task:** the gaps and wrong assumptions the team finds are recorded; "no gap found" is not counted as failure by itself, but whether what was found is material is assessed separately: from the technical side by the audit environment, and from the side of purpose and value by Batu.
+2. Prerequisites and preparation that do not contribute to the work do not pile up.
+3. Research visibly changes, limits or justifies a decision.
+4. Batu does not carry messages; he only answers the decisions that are his.
+5. A situation that conflicts with a constraint is presented to Batu with a high-quality option, purpose, benefit, cost and alternative.
+6. A local error is followed from the symptom to the failure class or to a capability gap.
+7. For a high-impact decision, the candidate studies in the library or current external sources are researched, and this is reflected in the decision.
+8. The cases where information from the library changed, limited or justified a decision are reported; the number of citations is not the measure.
+9. At a moment of squeeze, the team first questions the frame (Section 6.12).
 
-**Başarısız olursa:** Sistem incelemesi (Bölüm 6.11); düzeltme ilgili katmanda; sınama yeni bir görevle tekrarlanır. C08 ve sonrası, C07 geçilmeden SOUL ürünü üzerinde büyük işe başlamaz.
+**If it fails:** A system review (Section 6.11); the fix in the relevant layer; the test is repeated with a new task. C08 and what follows do not start major work on the SOUL product before C07 is passed.
 
-**Kriterler:** 1, 9, 14–16, 18, 28, 29, 34.
+**Criteria:** 1, 9, 14–16, 18, 28, 29, 34.
 
-### C08 — Model erişim ara katmanı, yayın, bütün ürün ve SOUL deposu
+### C08 — Model access layer, release, whole product and the SOUL repository
 
-**Yapılacaklar:**
+**Tasks:**
 
-1. **Model erişim ara katmanı:** SOUL ürününün model çağrılarının tek bir katmandan geçmesi; Claude ayağı abonelik içindeki oturumla (ortamda API anahtarı yok, kriter 25), ikinci model ayağı ikinci model geçidiyle.
-2. Bölüm 6.8'in tamamı; bileşik ürün takibi; tek sıralı birleştirme; etiketlenen sürümün `soul-system`'e aktarılması; açık kaynak hazırlığı: kurulum belgesi ve lisans kararı (MIT ile Apache 2.0 karşılaştırmasıyla Batu'ya); yayın kesintisi senaryoları (Ek G).
+1. **Model access layer:** The SOUL product's model calls pass through a single layer; the Claude leg through the session within the subscription (no API key in the environment, criterion 25), the second-model leg through the second-model gateway.
+2. The whole of Section 6.8; composite product tracking; single sequential merging; transfer of the tagged version to `soul-system`; open-source preparation: the installation document and the licence decision (to Batu, with a comparison of MIT and Apache 2.0); release interruption scenarios (Appendix G).
 
-**Kabul:** ✔ Niyet ve gözlem kayıtları tutarlı. ✘ Kontrolsüz ya da onaysız değişiklik birleşmiyor; kontrol ile birleşme arasında iptal edilen yetki birleşmeyi durduruyor. ✘ Birleşme cevabı kaybolursa değişiklik ikinci kez uygulanmıyor. ✔ Deneme sürümü `soul-system`'e yalnız ürün dosyalarıyla aktarılıyor. ✔ Başka bir test hesabı yalnız kurulum belgesini izleyerek SOUL'un o ana kadarki halini kurabiliyor.
+**Acceptance:** ✔ The intent and observation records are consistent. ✘ A change without checks or without approval does not merge; an authority revoked between the check and the merge stops the merge. ✘ If the merge response is lost, the change is not applied a second time. ✔ The trial version is transferred to `soul-system` with the product files only. ✔ Another test account can install SOUL as it stands at that point by following only the installation document.
 
-**Kriterler:** 2, 4, 27. (Kriter 3, SOUL'un ortak öğrenme düzeni DevOS'un sonraki işi olduğu için SOUL gereksinim kaydına devredilir.)
+**Criteria:** 2, 4, 27. (Criterion 3 is handed over to the SOUL requirements record, because SOUL's shared learning arrangement is DevOS's later work.)
 
-### C09 — Kesinti, yedek, geri yükleme ve yeniden bağlama
+### C09 — Outage, backup, restore and reconnection
 
-**Yapılacaklar:** Bölüm 5.7'deki yedek (yeniden üretilebilir veri hariç; gövdeler dahil); olaylardan yeniden kurma sözleşmesi; yedek rolü; geri yükleme yöntemi (K-8) ve test projesinde tatbikatı; kesinti senaryoları (oturumun iş ortasında kapanması, Supabase'e erişimin kesilmesi, kullanım sınırının dolması, routine'in kendini kapatması, Actions dakikalarının bitmesi).
+**Tasks:** The backup in Section 5.7 (excluding reproducible data; including bodies); the contract for rebuilding from events; the backup role; the restore method (K-8) and its drill in the test project; outage scenarios (the session closing in the middle of work, access to Supabase being cut, the usage limit being reached, a routine turning itself off, the Actions minutes running out).
 
-**Kabul:** ✔ Yedek test projesinde eksiksiz açılıyor; olaylardan yeniden kurma sözleşmesiyle kayıp süresi ölçülüyor ve hedefle karşılaştırılıyor. ✘ Eski sistem erişilebilir bırakıldığında `main`'e etki denemesi reddediliyor; eski belirteçler çalışmıyor. ✔ En az bir ortam yeni projeye gerçekten yeniden bağlanıyor ve doğru yeni iş ilerliyor. ✔ Her kesinti senaryosunda iş doğru yerden devam ediyor; tamamlanmış dış etki tekrarlanmıyor. ✔ Aktarımın durması bağımsız izleme yoluyla fark ediliyor. ✔ Yedekler açık depolarda değil.
+**Acceptance:** ✔ The backup opens completely in the test project; with the contract for rebuilding from events, the loss period is measured and compared with the target. ✘ When the old system is left accessible, an attempt to affect `main` is rejected; the old tokens do not work. ✔ At least one environment really reconnects to the new project, and the correct new work progresses. ✔ In every outage scenario the work continues from the right place; a completed external effect is not repeated. ✔ A stop of the transfer is noticed through independent monitoring. ✔ The backups are not in public repositories.
 
-**Kriterler:** 10, 24.
+**Criteria:** 10, 24.
 
-### C10 — Öğrenme, amaç denetimi, süreç sınırı ve varsayım envanteri
+### C10 — Learning, purpose audit, process limit and assumption inventory
 
-**Yapılacaklar:** Öğrenme kayıtları ve yöntem kütüphanesi; yöntem değişikliği akışı; yetenek eksikliği taraması; amaç denetimi; süreç sınırı; çıkmaz yol kayıtlarının kullanımı; mekanizma varsayım envanterinin sınanması; sessiz başarısızlık örneklemesi.
+**Tasks:** Learning records and the method library; the method change flow; the capability gap scan; purpose audit; process limit; the use of dead-end records; testing of the mechanism assumption inventory; silent failure sampling.
 
-**Kabul:** ✔ Bir ders yeni bir görevde doğru yerde seçiliyor, uygun olmadığı yerde seçilmiyor. ✘ Eski iyi davranışı bozan yöntem değişikliği etkinleşmiyor. ✘ Çalışma ortamı kendi değişikliğini onaylayamıyor. ✔ Bilerek yerleştirilmiş tekrarlayan hata örüntüsü yetenek eksikliği olarak yakalanıyor; tek seferlik hata aday olarak kalıyor. ✔ Hedeften saptırılmış sahte iş amaç denetiminde yakalanıyor. ✘ Çıkmaz yol tekrar denenmeden önce hatırlatılıyor. ✔ Süreç sınırı: SOUL ilerlemesine hizmet ettiğini gösteremeyen yeni bir süreç önerisi reddediliyor. ✔ Bir rol, kullanılmadığı gösterildiğinde gerekçesiyle emekliye ayrılabiliyor ve geçmişi korunuyor. ✔ En az bir mekanizmanın varsayımı sınanmış ve sonucu kayıtlı.
+**Acceptance:** ✔ A lesson is selected in a new task at the right place, and not selected where it does not fit. ✘ A method change that breaks earlier good behaviour does not become active. ✘ The working environment cannot approve its own change. ✔ A deliberately planted recurring error pattern is caught as a capability gap; a one-off error stays a candidate. ✔ Fake work diverted from the goal is caught in the purpose audit. ✘ A dead end is recalled before it is tried again. ✔ Process limit: a new process proposal that cannot show that it serves SOUL's progress is rejected. ✔ A role, when it is shown not to be used, can be retired with its reason, and its history is kept. ✔ The assumption of at least one mechanism has been tested, and its result is recorded.
 
-**Kriterler:** 12, 13, 18, 19, 28, 30, 34.
+**Criteria:** 12, 13, 18, 19, 28, 30, 34.
 
-### C11 — Bütünleşik sınama, gözetimsiz çalışma, kapasite ve sağlayıcı bağımsızlığı
+### C11 — Integrated testing, unattended operation, capacity and provider independence
 
-**Yapılacaklar:**
+**Tasks:**
 
-1. Birden fazla işin aynı anda yürüdüğü; kaynak değişikliği, gecikmiş katkı, oturum kesintisi ve Batu kararı içeren uzun bir senaryo.
-2. **Gözetimsiz çalışma:** DevOS en az yedi gün boyunca, Batu yalnız kendisine gelen kararlara cevap vererek çalışır; düzenli işler (yedek, içe alma, amaç denetimi, örneklem) aksamadan yürür.
-3. Kapasite gözlemi: aynı kalite hedefiyle bir günde ne kadar iş ilerliyor, nerede tıkanıyor; Batu'nun kendi Claude kullanımına etkisi.
-4. Maliyet ve sınır gözlemi.
-5. **Sağlayıcı bağımsızlığı (B2 onaylanırsa):** SOUL ürününün sınanan kısmı, model erişim ara katmanı üzerinden ikinci modelle sahte veriyle çalıştırılır. Sınanan kısmın asgari kapsamı sonuç görülmeden yazılır; boşa yakın bir ürün üzerinde geçen sınama kriter 4 için kanıt sayılmaz.
+1. A long scenario in which more than one work item runs at the same time, and which includes a source change, a delayed contribution, a session interruption and a Batu decision.
+2. **Unattended operation:** DevOS runs for at least seven days, with Batu only answering the decisions that come to him; the regular jobs (backup, ingestion, purpose audit, sampling) run without faltering.
+3. Capacity observation: with the same quality target, how much work progresses in a day and where it gets blocked; the effect on Batu's own Claude usage.
+4. Cost and limit observation.
+5. **Provider independence (if B2 is approved):** The tested part of the SOUL product is run with the second model, through the model access layer, on fake data. The minimum scope of the tested part is written before results are seen; a test passed on a nearly empty product does not count as evidence for criterion 4.
 
-**Kabul:** ✔ Uzun senaryo Batu'nun yalnız kendi kararlarıyla tamamlanıyor. ✔ Yedi günlük gözetimsiz çalışmada düzenli işler aksamadı; aksayan varsa fark edildi ve kaydedildi. ✔ Kapasite ve sınır raporu sade dille Batu'ya sunuluyor. ✔ SOUL'un sınanan kısmı ikinci modelle, kodunda Claude'a özgü değişiklik yapılmadan çalışıyor. ✘ Ürün kodunda ara katman dışında Claude'a özgü bir çağrı yok.
+**Acceptance:** ✔ The long scenario is completed with only Batu's own decisions. ✔ In the seven days of unattended operation the regular jobs did not falter; if any faltered, this was noticed and recorded. ✔ The capacity and limit report is presented to Batu in plain language. ✔ The tested part of SOUL runs with the second model without any Claude-specific change to its code. ✘ There is no Claude-specific call in the product code outside the access layer.
 
-**Kriterler:** 2, 4, 9–11, 22–26.
+**Criteria:** 2, 4, 9–11, 22–26.
 
-### C12 — Devir
+### C12 — Hand-over
 
-**Yapılacaklar:** Kurulum işlerinin kapanması ya da gerekçesiyle DevOS kuyruğuna devri; Batu için sade Türkçe, telefona göre kullanım kılavuzu; kabul dosyası: her kriter hangi kanıtla, hangi bağımsızlık düzeyinde karşılandı, hangisi kısmen, hangisi açık; Bölüm 10'daki açık sorunların son durumu; `devos-kurulum` ortamının kapatılması.
+**Tasks:** Closing the installation work items, or handing them over, with a reason, to the DevOS queue; a usage guide for Batu in plain Turkish, made for the phone; the acceptance file: with which evidence and at which independence level each criterion was met, which only partly, which is open; the final state of the open problems in Section 10; shutting down the `devos-kurulum` environment.
 
-**Kabul:** ✔ Batu kılavuzla DevOS'u telefondan kullanabiliyor. ✔ Kabul dosyası her kriter için kanıt bağlantısı taşıyor. ✘ Kurulumun bitmesi SOUL'un bitmesi ya da DevOS'un yeterliğinin kanıtlanması olarak sunulmuyor.
+**Acceptance:** ✔ With the guide, Batu can use DevOS from the phone. ✔ The acceptance file carries an evidence link for every criterion. ✘ The end of the installation is not presented as SOUL being finished or as proof of DevOS's competence.
 
 ---
-## 10. Açık sorunlar ve doğrulama bekleyenler
+## 10. Open problems and items awaiting verification
 
-### 10.1 Çözümü tasarlanmış, doğrulaması bekleyenler
+### 10.1 Items whose solution is designed, awaiting verification
 
-Bunların çözümü bu planda tasarlanmıştır; hedef hesapta henüz gösterilmemiştir. Her biri C01 tablosunda ya da ilgili aşamanın kabul koşullarında sınanır ve başarısız olursa ne yapılacağı yazılıdır: çalışma düzeni ve routine bütçesi (K-7, 6.4), ortam belirteci ve kimlik zinciri (6.3, K-9), connector engeli, alt ajanların ve rol paketlerinin yüklenmesi, açık depoya yazım öncesi sızıntı kontrolü, sınav yürütme yolu (7.3), yayın zinciri ve birleşmede yetkinin yeniden okunması (6.8), kimlik ayrımı (B3), anlam modelinin oturumda ve işlerde çalışması, yedek biçimi ve olaylardan yeniden kurma (5.7), geri yüklemede eski yolların kapatılması ve yeniden bağlama (K-8), bağımsız izleme yolu (Ek G, G7).
+The solutions to these are designed in this plan; they have not yet been shown in the target account. Each is tested in the C01 table or in the acceptance conditions of the relevant stage, and what is done if it fails is written down: the working order and the routine budget (K-7, 6.4), the environment token and the identity chain (6.3, K-9), the connector block, the loading of subagents and role packages, the leak check before writing to the public repository, the exam execution path (7.3), the release chain and the re-reading of authority at merge (6.8), identity separation (B3), the embedding model working in the session and in jobs, the backup format and rebuilding from events (5.7), closing the old paths on restore and reconnection (K-8), the independent monitoring path (Appendix G, G7).
 
-Tasarımı bir ölçüme bağlı olanlar: bulut oturumunun gerçek süresi (C01 #1); yedek boyutu ve Actions dakika bütçesi (C04). Ölçüm tasarımı değiştirirse değişiklik Bölüm 14'e göre yapılır.
+Those whose design depends on a measurement: the real duration of a cloud session (C01 #1); the backup size and the Actions minutes budget (C04). If a measurement changes the design, the change is made according to Section 14.
 
-### 10.2 Çözümü bulunmamış ya da yalnız kısmen bulunmuş sorunlar
+### 10.2 Problems whose solution has not been found, or has been found only in part
 
-Bunlar "kurulumda sınanacak" diye çözülmüş sayılmaz. Her biri için ne olduğu, neyin eksik kaldığı, nasıl ele alındığı, neyin ona bağlı olduğu ve çözülemezse ne olacağı yazılıdır.
+These are not counted as solved on the grounds that they "will be tested in the installation". For each, what it is, what is missing, how it is handled, what depends on it and what happens if it cannot be solved are written down.
 
-| # | Sorun | Var olan | Eksik olan | Ele alınışı | Bağlı olanlar | Çözülemezse |
+| # | Problem | What exists | What is missing | How it is handled | What depends on it | If it cannot be solved |
 |---|---|---|---|---|---|---|
-| U-1 | **Bilinmeyen ihtiyacın keşfi:** Ajanın bilmediğini bilmemesi | İki yöntem karşılaştırması, Foundation kapsama listesi, geçmiş taraması, çerçeve incelemesi (K-1) | Hiçbir listede olmayan bir ihtiyacın bulunacağını güvenceye alan bir mekanizma; güvenilir bir ölçü | Gizli sınavlarda gömülü eksikler (C05); C07'deki gerçek görev; sonradan ortaya çıkan her kaçırılmış ihtiyaç ayrı kayıt olarak tutulur ve yetenek eksikliği analizine girer | SOUL'un temel değeri; C08 ve sonrasındaki büyük ürün işleri C07'yi bekler | DevOS çalışır ama "doğru işi bulur" iddiası kanıtın düzeyiyle sınırlandırılır; Batu'ya açıkça bildirilir |
-| U-2 | **Araştırma, karar ve ürün kalitesinin ölçülmesi (doğrulayıcı darboğazı).** Karşılaştırmalı araştırmadaki bütün kaynaklar açık uçlu işlerde darboğazın model değil doğrulayıcı olduğunu söylüyor | Tuzaklı gizli sınavlar, bağımsız inceleme, Batu'nun uzman olduğu alanlarda incelemesi, ikinci model (B2) | Genel kaliteyi ölçen otomatik bir hakem | Her iş için önceden yazılan ölçütler; kör karşılaştırmalar; sonuçların sonradan izlenmesi (geri alınan kararlar, yeniden yapılan işler) | Kalite iddiaları | Kalite iddiaları kanıtın bağımsızlık düzeyiyle sınırlı kalır |
-| U-3 | **Aynı model ailesinin ortak kör noktaları** | Farklı bilgi görünümleri, gizli sınavlar, ikinci model, Batu incelemesi | Batu'nun uzman olmadığı alanlarda bağımsız insan uzman | İkinci modelin yüksek etkili kararlarda kullanılması (B2) | Yüksek etkili kararlar | Bu alanlardaki kararlara "bağımsız insan doğrulaması yok" notu düşülür |
-| U-4 | **Bağlam paketinin anlamca yeterliği** | Zorunlu ihtiyaç listesi, niteleyici testleri, inceleme, bilinmeyen ihtiyaç kontrolü | Paketin anlamca yeterli olduğunu otomatik ölçen bir yöntem | Örneklem denetimleri; inceleme rolünün paket eleştirisi; kaçırılan bilgi kayıtları | Bütün roller | Kaçırılan bilgi kayıtlarının oranı izlenir ve raporlanır |
-| U-5 | **Kullanım sınırları altında yeterli kapasite** | Çalışma düzeni (routine yalnız oturum başlatır), bütçe tablosu, kullanım takibi, oturumların Batu'nun yoğun saatleri dışına konması | "Her işte yüksek emek" kararının Max sınırlarına sığıp sığmadığı; DevOS'un Batu'nun kendi Claude kullanımını ne kadar etkileyeceği; bulut oturumunun gerçek süresi | C06–C07'den itibaren ölçüm; C11 raporu | Hız ve kapsam | Seçenekler Batu'ya sunulur: daha yavaş ilerleme, belirli işler için ücretli kullanım, gerekçeli emek ayarı. Kalite sessizce düşürülmez |
-| U-6 | **Özel içeriğin yeniden anlatılarak sızması** | Aynen kopyalama ve anlam benzerliği kontrolleri, kural, inceleme | Tamamen farklı sözcük ve yapıyla yeniden anlatılmış içeriğin güvenilir tespiti | Açık depoya yalnız kaynak kimliğiyle birlikte özet yazma zorunluluğu; düzenli örneklem denetimi | Kriter 31 | Kalan risk Batu'ya açıkça bildirilmiştir; kütüphanede gerçekten gizli kalması gereken bir bölüm varsa o bölüm ajanların erişiminden tamamen çıkarılabilir (Batu kararı) |
-| U-7 | **Çerçeve körlüğü** | Öncül envanteri, sıkışma sinyali, bağımsız karşı tasarım, mekanizma varsayım envanteri (Bölüm 6.12) | Bir çerçeve körlüğünün yakalanacağını güvenceye alan bir yöntem | C00'da planın kendisine uygulanır; C07'de gözlenir; her yakalanan ya da sonradan fark edilen çerçeve hatası kaydedilir | Bütün tasarım kararları | Sonradan fark edilen her çerçeve hatası bir sistem incelemesi başlatır; oran raporlanır |
+| U-1 | **Discovering the unknown need:** The agent not knowing what it does not know | Comparison of two methods, the Foundation coverage list, history scan, frame review (K-1) | A mechanism that guarantees that a need which is on no list will be found; a reliable measure | Gaps embedded in hidden exams (C05); the real task in C07; every missed need that comes to light later is kept as a separate record and goes into capability gap analysis | SOUL's core value; the large product work of C08 and later waits for C07 | DevOS works, but the claim that it "finds the right work" is limited to the level of the evidence; Batu is told this explicitly |
+| U-2 | **Measuring the quality of research, decisions and product (the verifier bottleneck).** All the sources in the comparative research say that in open-ended work the bottleneck is not the model but the verifier | Hidden exams with traps, independent review, Batu's review in the fields where he is an expert, the second model (B2) | An automatic judge that measures general quality | Criteria written in advance for each work item; blind comparisons; following the results up afterwards (decisions reversed, work redone) | Quality claims | Quality claims stay limited to the independence level of the evidence |
+| U-3 | **Shared blind spots of the same model family** | Different views of the information, hidden exams, the second model, Batu's review | An independent human expert in the fields where Batu is not an expert | Using the second model in high-impact decisions (B2) | High-impact decisions | Decisions in these fields get the note "no independent human verification" |
+| U-4 | **Semantic adequacy of the context package** | Mandatory need list, qualifier tests, review, unknown-need check | A method that automatically measures whether the package is semantically adequate | Sample audits; the review role's critique of the package; missed-information records | All roles | The rate of missed-information records is tracked and reported |
+| U-5 | **Enough capacity under the usage limits** | Working order (a routine only starts sessions), budget table, usage tracking, placing sessions outside Batu's busy hours | Whether the "high effort in every work item" decision fits within the Max limits; how much DevOS will affect Batu's own Claude usage; the real duration of a cloud session | Measurement from C06–C07 on; the C11 report | Speed and scope | Options are put to Batu: slower progress, paid usage for certain work items, a justified effort setting. Quality is not lowered silently |
+| U-6 | **Private content leaking by being retold** | Verbatim-copy and semantic-similarity checks, rule, review | Reliable detection of content retold with entirely different words and structure | The requirement to write to the public repository only a summary together with the source identifier; regular sample audit | Criterion 31 | The remaining risk has been reported to Batu explicitly; if there is a section of the library that really must stay secret, that section can be removed entirely from the agents' access (Batu's decision) (original: TR-F1) |
+| U-7 | **Frame blindness** | Premise inventory, squeeze signal, independent counter-design, mechanism assumption inventory (Section 6.12) | A method that guarantees that a frame blindness will be caught | Applied to the plan itself in C00; observed in C07; every frame error that is caught or noticed later is recorded | All design decisions | Every frame error noticed later starts a system review; the rate is reported |
 
 ---
 
-## 11. Batu'nun kararları
+## 11. Batu's decisions (original: TR-F2)
 
-### 11.1 Verilmiş kararlar
+### 11.1 Decisions made
 
-**29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6). **1 Ekim 2026'da Batu'nun verdikleri** (kayıt numaraları kurucunun plan değişiklikleridir; Batu'nun sözleri `plan/ledger/C00-log.md`'de aslıyla): kurulum aşamalarının `/goal` hedefiyle ve üç duruş koşuluyla yürümesi (PC-01; Batu 5 Ekim 2026'da bunun kendi kararı olmadığını belirtti, PC-06 ile değişti); dal yönetiminin kurucuda olması ve birleştirme için Batu'dan onay istenmemesi (PC-02); kurucunun kendi çalışma düzenini tasarlayıp sınaması ve beklentileri (PC-04); teknik onayın Batu'da değil bağımsız denetimde olması (PC-05). **5 Ekim 2026'da Batu'nun verdikleri** (D-010; sözleri `briefs/conversation/KARAR_OZETI_2026-10-05_TR.md`'de aslıyla): kurulumun, işi rol tanımlı alt ajanlara ve workflow'lara dağıtan tek bir çalışma oturumunda yürümesi ve kurucunun eski çalışma düzeninin kaldırılması; kurulumun tamamı için tek `/goal` (ek E2); bu oturumu kendisinin bir kez açıp ilk mesajı yapıştırması ve kullanım sınırı sıfırlandıktan sonra bir "devam" mesajı yazması; PC-04 ve PC-05'teki kendi kısımlarına dokunanlar dahil PC-06 plan değişiklikleri (madde 35); geçişin bir kez bağımsız incelenmesi için konuşma oturumunun yaklaşık bir dakika otomatik moda alınması, D-008'e tek seferlik istisna (madde 34); workflow'ların ve paralel alt ajanların ortak kullanımdan daha çok harcaması (madde 36).
+**Added on 29 September 2026:** K6 — `devos` stays public; the risk of private content being exposed by accident was accepted as reduced by code-based pre-checks. K7 — the "only fake data" rule covers personal and business data; DevOS's own research library may be used in measurements. Criteria 32, 33 and 34 were accepted. Technical decisions (including the working order) are made by the team, with their rationale. **B1 = (2):** The free plan until the C04 measurement; if the measurement shows that the limit is being approached, the decision comes to Batu before the scope is narrowed. **B2 = (1):** The Gemini API free tier; only public content, through a single gateway. **B3 = (a):** A separate GitHub machine account for the system. **K8 = (a):** The design documents written for DevOS (the plan, the appendices, `CLAUDE.md` and the adaptation of the thinking disciplines) and Batu's decisions and expectations are kept in the public repository. **K9:** All of DevOS's files, records and internal communication are in English; communication with Batu is in Turkish (Section 0.6). **Made by Batu on 1 October 2026** (the record numbers are those of the builder's plan changes; Batu's words are in `plan/ledger/C00-log.md` in their original): the installation stages running with the `/goal` target and three stop conditions (PC-01; on 5 October 2026 Batu stated that this was not his decision; changed by PC-06); branch management resting with the builder, and no approval being asked of Batu for merging (PC-02); the builder designing and testing its own working order, and the expectations (PC-04); technical approval resting not with Batu but with independent audit (PC-05). **Made by Batu on 5 October 2026** (D-010; his words are in `briefs/conversation/KARAR_OZETI_2026-10-05_TR.md` in their original): the installation running in a single working session that distributes the work to role-defined subagents and to workflows, and the removal of the builder's old working order; a single `/goal` for the whole installation (addendum E2); his opening this session once himself and pasting the first message, and writing a "devam" (continue) message after the usage limit resets; the PC-06 plan changes, including those that touch his own parts of PC-04 and PC-05 (item 35); putting the conversation session into auto mode for about one minute so that the transition is independently reviewed once, a one-time exception to D-008 (item 34); workflows and parallel subagents spending more of the shared usage (item 36).
 
-SOUL tanımı; SOUL'un açık kaynak olması; DevOS'un Claude Code cloud'da çalışması; Max 200 $ planı, ekstra kullanımın kapalı olması, ortamda Anthropic API anahtarı olmaması; Supabase'in kişisel hesapta kullanılması; depoların herkese açık olabilmesi; yeni depolar (`devos`, `soul-system`, `devos-evals`, `devos-backup`) ve eski depolara dokunulmaması; eski deneme depolarının kütüphaneye alınması; eski raporların ChatGPT tarafından arşivlenmesi ve deponun kurucu başlamadan hemen önce düzeltilmesi; tek yazar ilkesi; güvencelerin her işte tam, emek derinliğinin varsayılan olarak yüksek olması; testlerde yalnız sahte veri; telefondan kullanım; Academy notunun karar değil keşif notu olması; bu planın uyduğu ilkeler (Bölüm 0.3).
+The SOUL definition; SOUL being open source; DevOS running in Claude Code cloud; the Max $200 plan, extra usage being off, no Anthropic API key in the environment; Supabase being used in the personal account; the repositories being allowed to be public; the new repositories (`devos`, `soul-system`, `devos-evals`, `devos-backup`) and not touching the old repositories; taking the old experiment repositories into the library; ChatGPT archiving the old reports and correcting the repository right before the builder starts; the single-writer principle; safeguards being complete in every work item and effort depth being high by default; only fake data in tests; use from the phone; the Academy note being a discovery note, not a decision; the principles this plan follows (Section 0.3).
 
-### 11.2 Verilmiş kararların seçenekleri (kayıt için)
+### 11.2 Options of the decisions made (for the record)
 
-Aşağıdaki üç karar 29 Eylül 2026'da verildi (Bölüm 11.1). Seçenekler, kararın hangi bilgiyle verildiğini göstermek için korunur.
+The three decisions below were made on 29 September 2026 (Section 11.1). The options are kept to show on what information the decision was made.
 
-**B1 — Supabase plan seviyesi.** Ücretsiz planın 500 MB veritabanı sınırı, kütüphanenin tamamına anlam araması uygulanırsa ilk aylarda dolabilir (Bölüm 5.3).
+**B1 — Supabase plan level.** The free plan's 500 MB database limit may fill up in the first months if semantic search is applied to the whole library (Section 5.3).
 
-| Seçenek | Aylık | Kazancı | Kaybı |
+| Option | Monthly | Gain | Loss |
 |---|---|---|---|
-| (1) Ücretsiz planda kalmak | 0 $ | — | Sınır dolunca anlam araması kütüphanenin bir kısmıyla sınırlı kalır; bu kriter 5 ve 11'den tavizdir |
-| (2) C04'teki ölçüme kadar ücretsiz plan, sonra ölçüme göre karar | 0 $, sonra muhtemelen 25 $ | Para, gerçek boyut ölçülmeden harcanmaz. C00–C03 arasında veri küçüktür, kalite etkisi yoktur | Ölçüm sınırı aşacağını gösterirse geçiş kurulumun ortasında yapılır |
-| (3) Canlı projeyi şimdi Pro'ya almak; test projesi ayrı ücretsiz bir organizasyonda | 25 $ | 8 GB veritabanı, günlük yedek, uyumayan proje; boyut kaygısı olmadan kurulum | Aylık 25 $ |
+| (1) Staying on the free plan | $0 | — | Once the limit is reached, semantic search stays limited to part of the library; this is a concession on criteria 5 and 11 |
+| (2) The free plan until the measurement in C04, then a decision based on the measurement | $0, then probably $25 | Money is not spent before the real size is measured. In C00–C03 the data is small; there is no effect on quality | If the measurement shows that the limit will be exceeded, the switch is made in the middle of the installation |
+| (3) Moving the live project to Pro now; the test project in a separate free organisation | $25 | 8 GB database, daily backups, a project that does not go to sleep; installation without size worries | $25 a month |
 
-**Önerim (2), şu kuralla:** Ücretsiz plana sığmak için hiçbir kapsam daraltılmaz. C04'te ölçüm sınırın yaklaşacağını gösterirse, kapsam daraltılmadan önce karar sana gelir. Kendi tahminim, ölçümün Pro'ya geçişi gerektireceği yönünde; (3)'ü seçmen de tamamen makul.
+**My recommendation (2), with this rule:** No scope is narrowed to fit into the free plan. If the measurement in C04 shows that the limit will be approached, the decision comes to you before the scope is narrowed. My own estimate is that the measurement will call for moving to Pro; your choosing (3) would also be entirely reasonable.
 
-**B2 — İkinci model ailesi (Google Gemini API ücretsiz katmanı).**
+**B2 — Second model family (Google Gemini API free tier).**
 
-| Seçenek | Kazancı | Kaybı |
+| Option | Gain | Loss |
 |---|---|---|
-| (1) Evet | Kriter 4 gerçekten sınanır; yüksek etkili ve açık depolara girecek kararlarda farklı bir modelin görüşü ortak kör noktaları azaltır | Ücretsiz bir Google hesabı anahtarı gerekir; ücretsiz katmanda gönderilen içerik Google'ın ürün geliştirmesinde kullanılabilir. Bu yüzden yalnız sahte veri ve açık depolara girecek içerik gönderilir; özel kütüphane hiçbir zaman gönderilmez |
-| (2) Ücretli bir ikinci sağlayıcı | Daha güçlü model, veri güvencesi | Kullanım başına ücret |
-| (3) Hayır | — | Kriter 4 sınanamaz; ortak kör nokta riski azaltılamaz |
+| (1) Yes | Criterion 4 is really tested; in high-impact decisions and decisions that will go into public repositories, a different model's view reduces shared blind spots | A key from a free Google account is needed; content sent on the free tier may be used in Google's product development. So only fake data and content that will go into public repositories is sent; the private library is never sent |
+| (2) A paid second provider | Stronger model, data assurance | A fee per use |
+| (3) No | — | Criterion 4 cannot be tested; the risk of shared blind spots cannot be reduced |
 
-**Önerim (1).**
+**My recommendation (1).**
 
-**B3 — Sistemin GitHub kimliği.** Bölüm 5.5'teki sorun.
+**B3 — The system's GitHub identity.** The problem in Section 5.5.
 
-| Seçenek | Kazancı | Kaybı |
+| Option | Gain | Loss |
 |---|---|---|
-| (a) Sistem için ayrı GitHub makine hesabı | GitHub'ın kendi onay düzeni tam çalışır; onayları telefondaki GitHub uygulamasından verirsin; özel arayüz yazılmaz | Claude'un GitHub bağlantısı makine hesabına geçer; bu, diğer Claude Code projelerini de etkiler. O projelerin depolarına makine hesabının ortak çalışan olarak eklenmesi gerekir (hazırlıkta yapılabilir) ve oradaki commit'ler de makine hesabı adına görünür |
-| (b) Karar paneli | Diğer projelerin etkilenmez | Bütün onaylar özel bir sayfadan verilir; GitHub'ın kendi onay düzeni kullanılamaz; sayfanın güvenliği ve güncellenmesi ayrı bir iştir |
+| (a) A separate GitHub machine account for the system | GitHub's own approval flow works fully; you give approvals from the GitHub app on your phone; no custom interface is written | Claude's GitHub connection moves to the machine account; this also affects the other Claude Code projects. The machine account has to be added as a collaborator to those projects' repositories (can be done in preparation), and the commits there also appear under the machine account |
+| (b) Decision panel | Your other projects are not affected | All approvals are given from a custom page; GitHub's own approval flow cannot be used; the security and updating of the page is a separate piece of work |
 
-**Önerim (a).** Daha az özel parçayla daha güçlü bir koruma sağlıyor. Diğer projelerine etkisi tek seferlik bir ayar; AI commit'lerinin ayrı bir hesapta görünmesi o projelerde de ayırt ediciliği artırır. Ayrıca (a)'da karar issue'larını makine hesabı açtığı için bildirimler sana güvenilir biçimde ulaşır; (b)'de issue'lar senin kimliğinle açılacağından GitHub sana kendi eylemin için bildirim göndermeyebilir.
+**My recommendation (a).** It gives stronger protection with fewer custom parts. Its effect on your other projects is a one-time setting; AI commits appearing under a separate account makes them easier to tell apart in those projects as well. Also, in (a) the machine account opens the decision issues, so notifications reach you reliably; in (b) the issues would be opened under your identity, so GitHub might not send you a notification for your own action.
 
 ---
 
-## 12. Batu'nun yapacakları
+## 12. What Batu will do
 
-Zamanı gelince kurucu her birini adım adım yazar. Anahtar ve belirteç gibi gizli bilgiler hiçbir zaman sohbete yazılmaz.
+When the time comes, the builder writes out each of them step by step. Secret information such as keys and tokens is never written into the chat.
 
-**Hazırlıkta** (hazırlık planına göre): B1–B3 kararları; B3 (a) seçilirse makine hesabının açılması ve Claude'un GitHub bağlantısının ona geçirilmesi; Claude GitHub uygulamasının gereken depolara kurulması; kurucu ortamının açılması; ekstra kullanımın kapalı olduğunun kontrolü; kurucunun Supabase bağlantısının salt okuma ve tek projeyle sınırlanması; telefon uygulamaları; ChatGPT'ye düzeltme görevinin verilmesi; GitHub erişim anahtarının silinmesi; kurucunun başlatılması.
+**In preparation** (according to the preparation plan): the B1–B3 decisions; if B3 (a) is chosen, creating the machine account and moving Claude's GitHub connection to it; installing the Claude GitHub app on the required repositories; creating the builder environment; checking that extra usage is off; limiting the builder's Supabase connection to read-only and a single project; the phone apps; giving ChatGPT the correction task; deleting the GitHub access key; starting the builder.
 
-**Kurulum sırasında:**
+**During the installation:**
 
-1. **C02:** Üç çalışma ortamını açmak; her biri için Supabase panelinde kurucunun verdiği tek SQL satırını çalıştırıp çıkan belirteci ilgili ortamın ayar alanına yapıştırmak.
-2. **C04:** Kütüphane aktarımı için yalnız okuma yetkili bir GitHub anahtarı oluşturup `devos-backup`'ın gizli ayarlarına girmek. İçe alma doğrulandıktan sonra makine hesabını `agentic-os-search`'ün ortak çalışanlarından çıkarmak.
-3. **C06:** Routine'leri oluşturmak; her birinden bütün connector'ları çıkarmak; yedek bütçe için API tetiği anahtarını Supabase'in gizli ayarlarına girmek.
-4. **C09:** Yedek rolünün bağlantı bilgisini `devos-backup`'ın gizli ayarlarına girmek. Geri yükleme gerekirse: eski routine'leri durdurmak, yeni proje için belirteçleri yeniden üretip ortamlara, routine'lere ve GitHub kontrollerine girmek.
-5. **C11 (B2 onaylanırsa):** Gemini API anahtarını oluşturup ikinci model geçidinin gizli ayarına girmek.
-6. **Gerekirse:** C00 ya da C01'de çatışan bir eklenti ya da connector çıkarsa onu hesap ayarlarından kapatmak (diğer sohbetlerine etkisi sana önceden yazılır).
-7. **Her zaman:** Karar listesine düşen kararlara cevap vermek; yüksek etkili değişiklikleri amaç ve risk açısından kabul etmek ya da reddetmek.
-8. **C07:** Ekibin bulduğu ilk işi ve eksiklikleri amaç ve değer açısından değerlendirmek.
+1. **C02:** Creating the three working environments; for each, running in the Supabase dashboard the single SQL line the builder gives, and pasting the resulting token into that environment's settings field.
+2. **C04:** Creating a read-only GitHub key for the library transfer and entering it into the secret settings of `devos-backup`. After the ingestion has been verified, removing the machine account from the collaborators of `agentic-os-search`.
+3. **C06:** Creating the routines; removing all connectors from each of them; entering the API trigger key for the reserve budget into Supabase's secret settings.
+4. **C09:** Entering the backup role's connection details into the secret settings of `devos-backup`. If a restore is needed: stopping the old routines, regenerating the tokens for the new project and entering them into the environments, the routines and the GitHub checks.
+5. **C11 (if B2 is approved):** Creating the Gemini API key and entering it into the secret setting of the second-model gateway.
+6. **If needed:** If a conflicting plugin or connector turns up in C00 or C01, turning it off in the account settings (its effect on your other chats is written out for you in advance).
+7. **Always:** Answering the decisions that land on the decision list; accepting or rejecting high-impact changes in terms of purpose and risk.
+8. **C07:** Assessing the first work item and the gaps that the team finds, in terms of purpose and value.
 
-**Anahtar envanteri:** Kurucu C00'da tek bir envanter tutar: her anahtar ve belirteç için sahibi, durduğu yer, yetkisi ve iptal yolu (değerlerin kendisi değil). Envanterde en az şunlar bulunur: üç ortam belirteci, kurulum ortamının belirteci, CI rolünün anahtarı, içe alma rolünün anahtarı, yedek rolünün bağlantı bilgisi, kütüphane okuma anahtarı, yayın işinin `soul-system` yetkisi, routine API tetik anahtarı, (B2) Gemini anahtarı.
+**Key inventory:** The builder keeps a single inventory in C00: for each key and token, its owner, where it is kept, its permissions and its revocation path (not the values themselves). The inventory contains at least: the three environment tokens, the installation environment's token, the CI role's key, the ingestion role's key, the backup role's connection details, the library read key, the release job's `soul-system` permission, the routine API trigger key, (B2) the Gemini key.
 
-**Kurulumdan sonra:** Amaç ver, karar ver, kabul et.
+**After the installation:** Give purpose, decide, accept.
 
 ---
 
-## 13. Riskler
+## 13. Risks
 
-| Risk | Olası etkisi | Azaltma |
+| Risk | Possible effect | Mitigation |
 |---|---|---|
-| Routines araştırma önizlemesinde; biçim ve sınırlar değişebilir | Sensiz akış bozulur | Tetik tek fonksiyonda; iş kayıtları Supabase'te; zamanlanmış yedek çalışma; değişiklik günlüğü bakım işlerince izlenir |
-| Günlük routine sınırı (Max'te 15) | İş hacmi sınırlanır | Routine'ler yalnız oturum başlatır; roller oturum içinde; yedek bütçe; C01'de gerçek değer |
-| Max kullanım sınırları | Hız düşer | U-5; kapasite raporu; seçenekler Batu'ya |
-| Claude uygulaması bildirimleri güvenilmez olabilir | Kararlar gecikir | GitHub uygulaması birincil kanal |
-| Supabase plan sınırları | Kapsam daralır | B1; C04 ölçümü; kapsam daraltılmadan önce karar |
-| Oturum içindeki alt ajanlar aynı kimliği paylaşıyor | Oturum içinde gerçek yetki ayrımı yok | Yetki ayrılığı gerektiren işler ayrı ortamlarda; oturum içi ayrımlar "beyana dayalı" etiketli |
-| Paralel yazan alt ajanların örtük kararları | Tutarsız ürün | Tek yazar kuralı; ortak kararlar yazmadan önce kayıtta; tek sıralı birleştirme |
-| Connector'lar üzerinden kural kapısının atlanması | Veritabanına kuralsız yazım; Batu adına e-posta ya da dosya işlemi | Routine'lerden connector'ların çıkarılması; depo izin kuralları; C01 ve C03 testleri |
-| DevOS'un Batu'nun kendi Claude kullanımıyla aynı sınırları paylaşması | Batu'nun işi yavaşlar ya da DevOS durur | Yoğun saatler dışına zamanlama; kullanım takibi; gerekirse karar |
-| Routine'in GitHub bağlantısı koparsa 72 saat sonra kendini kapatması | Sistem sessizce durur | DevOS'tan bağımsız izleme yolu (Ek G, G7) |
-| Açık depoda sızıntı (K6 kararıyla kabul edilen kalan risk) | Özel içerik görünür olur ve geri alınamayabilir | İlk yazımdan önce koda dayalı kontrol; türetilmiş içerik kuralı; ham kanıt açık depoda değil |
-| Gizli depolarda (`devos-evals`, `devos-backup`) dal koruması yok (GitHub Free) | Bu depolara yazma yetkisi olan bir oturum geçmişi değiştirebilir | `devos-evals` yalnız sınav routine'ine, `devos-backup` yalnız yedek işlerine bağlı; makine hesabı `devos-backup`'ın ortak çalışanı değildir (Claude GitHub uygulaması Batu'nun bütün depolarına kurulu olsa da bulut oturumlarının yalnız makine hesabının erişebildiği depolara ulaşabildiği varsayılır **[Doğrulama bekliyor: C01 #12]**); değişiklikler git geçmişinde izlenir; gerekirse GitHub Pro kararı Batu'ya |
-| Çeviri kayması (plan paketinin çevirisi ya da Batu'nun Türkçe ifadelerinin İngilizce yorumu) | Talimat ya da karar anlamı değişir | Bağımsız sadakat incelemesi; Batu'nun sözlerinin aslıyla birlikte saklanması; sunumda aslının gösterilmesi |
-| Türkçe kütüphanede İngilizce arama | Kaynaklar bulunamaz | İki dilde arama; diller arası arama ölçüsü; çok dilli anlam modeli |
-| Beta ve önizleme özelliklerine bağımlılık (routines, Projects, dynamic workflows) | Davranış değişebilir | Yetki anahtardan gelir, açılış yolundan değil; isteğe bağlı katmanlar zorunlu değil; değişiklikler bakım işlerince izlenir |
-| Aynı model ailesinin ortak kör noktaları | İnceleme üreticinin hatasını tekrarlar | U-3; B2 |
-| Platform özellikleri hızla değişiyor | Plan eskir | [C01] doğrulamaları; bakım işleri değişiklikleri izler |
-| Bu planın ve ekibin çerçeve körlüğü | Yanlış öncül bütün kurulumu etkiler | Bölüm 6.12; C00 bağımsız inceleme ve karşı tasarım; C07; U-7 |
-| Açık depolarda yabancıların içerik eklemesi | İçerik yoluyla talimat sokulması | Dış etkileşim kısıtı, tetik filtresi, dış içeriğin veri sayılması |
-| Hesap eklentilerinin kendiliğinden yüklenmesi | Çatışan hook ya da becerilerin davranışı değiştirmesi | C01 envanteri, C00 kararı; eklenti sürümü değişince ilgili sınavlar yeniden koşulur |
-| Özel içeriğin sızması | Özel konuşma ve notların açılması | Bölüm 6.7; U-6 |
-| Kurucunun eski kayıtlardan etkilenmesi | Eski "sıradaki iş" ifadesini talimat sanması | ChatGPT düzeltmesi ve doğrulaması; Bölüm 0.5 uyarısı; tek yazar ilkesi |
-| Araştırma deposunun yeniden eskimesi | İki sistemin bilgisi yine ayrışır | D030; DevOS'un canlı durumu yalnız Supabase'te; "güncel" iddialı yeni kayıtlar bakım işlerince işaretlenir |
-| Sınava göre öğrenme | Sınavda iyileşme, gerçek işte iyileşmeme | Sınavların yenilenmesi; gerçek iş sonuçlarıyla karşılaştırma |
-| Her hatayı "eksik beceri" sayma | Gereksiz mekanizma ve süreç şişmesi | Süreç sınırı; tek seferlik ile tekrarlayan hatanın ayrılması |
-| Anlam modelinin Türkçe kalitesi | Arama zayıf kalır | C04 ölçüsü; birleşik arama; ölçüme göre model seçimi |
-| Makine hesabına geçişin diğer projelere etkisi (B3 a) | Diğer projelerde erişim kesintisi | Hazırlıkta makine hesabının bütün ilgili depolara eklenmesi ve kontrolü |
+| Routines are in research preview; their format and limits may change | Flow without Batu breaks | The trigger is in a single function; work records are in Supabase; a scheduled reserve run; the changelog is followed by maintenance work |
+| The daily routine limit (15 on Max) | Work volume is limited | Routines only start sessions; roles inside the session; reserve budget; the real value in C01 |
+| Max usage limits | Speed drops | U-5; capacity report; options to Batu |
+| Claude app notifications may be unreliable | Decisions are delayed | The GitHub app is the primary channel |
+| Supabase plan limits | Scope narrows | B1; the C04 measurement; a decision before the scope is narrowed |
+| Subagents within a session share the same identity | No real separation of authority within the session | Work that requires separation of authority runs in separate environments; in-session separations are labelled "declaration-based" |
+| Implicit decisions of subagents writing in parallel | Inconsistent product | Single-writer rule; shared decisions recorded before writing; a single sequential merge |
+| Bypassing the rule gate through connectors | Writes to the database without the rules; e-mail or file operations in Batu's name | Removing the connectors from the routines; repository permission rules; C01 and C03 tests |
+| DevOS sharing the same limits as Batu's own Claude usage | Batu's work slows down or DevOS stops | Scheduling outside busy hours; usage tracking; a decision if needed |
+| A routine switching itself off after 72 hours if its GitHub connection breaks | The system stops silently | A monitoring path independent of DevOS (Appendix G, G7) |
+| Leak in the public repository (the remaining risk accepted by decision K6) (original: TR-F3) | Private content becomes visible and may not be retractable | Code-based check before the first write; derived-content rule; raw evidence not in the public repository |
+| No branch protection in the private repositories (`devos-evals`, `devos-backup`) (GitHub Free) | A session with write access to these repositories can change the history | `devos-evals` is tied only to the exam routine, `devos-backup` only to the backup jobs; the machine account is not a collaborator of `devos-backup` (although the Claude GitHub app is installed on all of Batu's repositories, cloud sessions are assumed to reach only the repositories the machine account can access **[Awaiting verification: C01 #12]**); changes are tracked in the git history; if needed, a GitHub Pro decision goes to Batu |
+| Translation drift (the translation of the plan package or the English interpretation of Batu's Turkish statements) | The meaning of an instruction or a decision changes | Independent fidelity review; keeping Batu's words together with their original; showing the original in presentation |
+| English search in a Turkish library | Sources are not found | Searching in two languages; cross-language search benchmark; multilingual embedding model |
+| Dependence on beta and preview features (routines, Projects, dynamic workflows) | Behaviour may change | Authority comes from the key, not from the launch path; optional layers are not mandatory; changes are followed by maintenance work |
+| Shared blind spots of the same model family | The review repeats the producer's error | U-3; B2 |
+| Platform features change fast | The plan goes stale | [C01] verifications; maintenance work follows the changes |
+| Frame blindness of this plan and of the team | A wrong premise affects the whole installation | Section 6.12; C00 independent review and counter-design; C07; U-7 |
+| Strangers adding content in the public repositories | Instructions being slipped in through content | External interaction constraint, trigger filter, external content counted as data |
+| Account plugins loading by themselves | Conflicting hooks or skills changing behaviour | C01 inventory, C00 decision; when a plugin version changes, the related exams are run again |
+| Leak of private content | Private conversations and notes being exposed | Section 6.7; U-6 |
+| The builder being influenced by old records | Taking an old "sıradaki iş" (next task) statement for an instruction | The ChatGPT correction and its verification; the Section 0.5 warning; single-writer principle |
+| The research repository going stale again | The knowledge of the two systems diverges again | D030; DevOS's live state only in Supabase; new records claiming to be "current" are flagged by maintenance work |
+| Learning for the exam | Improvement on the exam, no improvement in real work | Renewing the exams; comparison with real work results |
+| Counting every error as a "missing skill" | Needless mechanism and process bloat | Process limit; separating one-off errors from recurring ones |
+| Turkish quality of the embedding model | Search stays weak | C04 benchmark; hybrid search; choosing the model according to measurement |
+| Effect of the switch to the machine account on other projects (B3 a) | Interruption of access in other projects | In preparation, adding the machine account to all relevant repositories and checking it |
 
 ---
 
-## 14. Planın değişme kuralları
+## 14. Rules for changing the plan
 
-Plan şu durumlarda yeniden açılır: bir sıkışma sinyali çerçeve denetimi gerektirirse (Bölüm 6.12); C01'de bir satır başarısız olursa; C03'te bir kuralın aşılabildiği gösterilirse; C04'te arama ölçüsü eşiği geçemezse; C07 başarısız olursa; platform özelliği değişirse; Batu'nun bir kararı değişirse; Bölüm 10.2'deki bir sorun için daha iyi bir çözüm bulunursa.
+The plan is reopened in these cases: a squeeze signal requires a frame review (Section 6.12); a row fails in C01; C03 shows that a rule can be bypassed; the search benchmark cannot pass its threshold in C04; C07 fails; a platform feature changes; a decision of Batu's changes; a better solution is found for a problem in Section 10.2.
 
-Değişiklikler sessizce yapılmaz: eski hali, yeni hali, gerekçesi ve etkilenen aşamalar kaydedilir. Bir aşamanın kabul koşulu sonuç görüldükten sonra gevşetilemez; gevşetilmesi gerekiyorsa eski sonuç geçersiz sayılır ve sınama yeni koşulla tekrarlanır. Bir öneri, bu planda yazılmış olduğu için korunmaz; daha iyisi gösterilirse değişir.
+Changes are not made silently: the old version, the new version, the rationale and the affected stages are recorded. A stage's acceptance condition cannot be loosened after the result has been seen; if it has to be loosened, the old result is counted as invalid and the testing is repeated with the new condition. A proposal is not kept just because it is written in this plan; if something better is shown, it changes.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
+
+---
+
+## Turkish originals of Batu's decisions
+
+**TR-A1** · header, change list of version 2.1, last item (recorded plan changes after 2.1; PC-06 attributed to Batu's decision D-010) · - **2.1 sonrası kayıtlı plan değişiklikleri (1 ve 5 Ekim 2026; kurucunun değişiklikleri `PC-` önekiyle numaralanır, `K1`–`K9` biçimindeki numaralar yalnız Batu'nun kararlarıdır; Bölüm 4'teki `K-1`…`K-11` kabiliyet başlıkları ve Ek C'deki `K01`…`K13` sınama kimlikleri karar değildir):** PC-01 kurulum ritmi (`/goal`; PC-06 ile değişti); PC-02 dal yönetimi; PC-03 süreklilik; PC-04 kurucunun çalışma düzeni (kurucu kısmı PC-06 ile değişti; Batu'nun gereksinimi ve beklentileri 1–5 geçerli); PC-05 yüksek etkili değişikliklerin teknik onayı bağımsız denetimdedir, Batu'da değil (değişen yerler: 4 K-11 madde 7, 5.5, 5.6, 6.1, 6.7, 6.8, 6.9, 7.4, C01 satır 11; Ek A DR12 ve Bölüm 6; Ek C K11; Ek E Bölüm 8); PC-06 kurulum tek çalışma oturumunda yürür ve C03'e kadar bağlayıcı onayı taze bağlamlı Denetçi alt ajanı, bağımsızlık düzeyini yazarak verir (Batu'nun D-010 kararı; değişen yerler: 0.6 madde 1, 4 K-11 madde 7, 6.1, 6.12 madde 3, 8 madde 7, Bölüm 9 girişi, C00 adım 0, 4 ve 5, 11.1; Ek A Bölüm 5; Ek F). Kayıtlar `plan/decisions/` altında.
+
+**TR-A2** · Section 0.3, label in the heading (the whole section, items 1–13) ·
+> ### 0.3 Bu planın uyduğu ilkeler [Batu kararı]
+>
+> 1. Kalite kolaylık ya da ucuzluk uğruna düşürülmez. Varsayılan emek ve derinlik yüksektir; daha azı gerekçeyle yapılır.
+> 2. Pahalı ya da karmaşık olan daha iyi sayılmaz. Aynı gereksinimi aynı kalitede karşılayan daha sade çözüm tercih edilir.
+> 3. Ücret, farklı bir araç ya da bir kısıtın değişmesi gerekiyorsa bu Batu'ya kazancı, gerekçesi, alternatifi ve bedeliyle sunulur. Masraf ne Batu adına kabul edilir ne de ihtiyaç sessizce budanır.
+> 4. Gereksinim sıralamak yetmez; her gereksinimi karşılayan mekanizma, parçaların birlikte çalışması, koşullar, başarısızlık hali ve sınama yolu yazılır.
+> 5. Teknolojiden değil ihtiyaçtan başlanır. Maddi alternatifler seçimden önce karşılaştırılır.
+> 6. Tasarlanmış ama doğrulanmamış olan ile çözümü bulunmamış olan açıkça ayrılır. Çözülmemiş bir tasarım sorunu "kurulumda sınanacak" diye çözülmüş gösterilmez.
+> 7. Testlerin sayısı değil neyi kanıtladığı önemlidir. Her test yanlış çözümü yakalamalı, doğru çözüme izin vermeli ve iddia edilen kabiliyeti gerçekten temsil etmelidir.
+> 8. Aşamalı çalışılır ama hedef küçültülmez. Kritik belirsizlikler, onlara bağlı büyük işlerden önce ele alınır.
+> 9. Eksikleri bulmak planı hazırlayanın ve kurucunun sorumluluğudur; Batu'ya yalnız ona ait kararlar, gereken bilgiyle birlikte gelir.
+> 10. Asıl ölçüt, DevOS'un SOUL'u gerçekten geliştirebilmesidir. Daha çok kayıt ve kontrol, SOUL'un ilerlediği anlamına gelmez.
+> 11. **Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir.** Bir tasarım bir sınıra takılıp çözüm olarak yeni mekanizmalar üretmeye başladığında, önce çerçevenin kendisi sorgulanır. Teknik kararlar, etkileri büyük olsa da, gerekçesiyle ekip tarafından verilir; Batu'ya yalnız ona ait kararlar gelir. **[Batu, 29 Eylül 2026]**
+> 12. **Güncel platform okuması:** Planın dayandığı her platform davranışı, resmî belgenin güncel sürümünden ve tarihiyle okunur; ikincil kaynak "doğrulandı" sayılmaz. **[2.0 incelemesinden çıkan ders]**
+> 13. **Etki kanalı envanteri:** Ajanın dünyada etki üretebildiği her kanal (veritabanı, GitHub, connector'lar, ağ, ikinci model, zamanlanmış işler) tek listede tutulur; her biri için sınır ve olumsuz test yazılır. **[2.0 incelemesinden çıkan ders]**
+
+**TR-A3** · Section 0.3, item 11 · 11. **Çerçeve körlüğü DevOS'un ve SOUL'un en büyük tehlikesidir.** Bir tasarım bir sınıra takılıp çözüm olarak yeni mekanizmalar üretmeye başladığında, önce çerçevenin kendisi sorgulanır. Teknik kararlar, etkileri büyük olsa da, gerekçesiyle ekip tarafından verilir; Batu'ya yalnız ona ait kararlar gelir. **[Batu, 29 Eylül 2026]**
+
+**TR-A4** · Section 0.5, first paragraph and the repository table it names ·
+> Her deponun tek yazarı vardır; yazar olmayan yalnız okur. Aynı kayıtları iki farklı sistemin birbirinden habersiz değiştirmesi bu projede daha önce karışıklığa yol açtı. [Batu kararı: tek yazar ilkesi ve depo kararları]
+>
+> | Depo | Görünürlük | Yazar | Kurucu |
+> |---|---|---|---|
+> | `devos` (yeni) | Açık **[Batu kararı K6]** | Kurucu, sonra DevOS ekibi | Yazar |
+> | `soul-system` (yeni) | Açık | DevOS'un yayın işi | Yalnız yayın akışıyla yazar |
+> | `devos-evals` (yeni) | Gizli | Sınav hazırlayan oturumlar | Sınanan rollerin oturumlarına hiç eklenmez |
+> | `devos-backup` (yeni) | Gizli | Yedek ve kütüphane aktarım işleri | İşleri kurar, içeriğe elle yazmaz |
+> | `agentic-os-search` (var) | Gizli | ChatGPT, Batu'nun onayıyla | **Yalnız okur** |
+> | Eski deneme depoları (var): `soul`, `soul-development-os`, `soul-development-os_02`, `soul-development-os2-claudecloud`, `soul-development-os3_claudecode`, `soul-production`, `loom-development`, `os-architect`, `keel`, `keel-dev`, `keel-research`, `KEEL-Work`, `oyun2` | Karışık | Kimse | **Yalnız okur** |
+
+**TR-A5** · Section 0.5, repository table, row `devos` · | `devos` (yeni) | Açık **[Batu kararı K6]** | Kurucu, sonra DevOS ekibi | Yazar |
+
+**TR-A6** · Section 0.5, paragraph "Makine hesabı ve erişimleri" (machine account), label [B3 = (a)] · **Makine hesabı ve erişimleri [B3 = (a)]:** Sistemin GitHub kimliği `batuhanozgun-devos`'tur. Yazma erişimi: `devos`, `soul-system`, `devos-evals`. `agentic-os-search`'e de erişimi vardır, çünkü kurucu C00–C04 arasında kütüphaneyi doğrudan okur. GitHub, kişisel hesaba ait depolarda ortak çalışanlara yalnız okuma yetkisi verilmesine izin vermez; bu yüzden bu erişim teknik olarak yazma yetkisidir. Kural değişmez: DevOS bu depoya hiçbir şey yazmaz. Güvenceler: (1) kurucunun talimatı; (2) DevOS'tan bağımsız izleme yolu, `agentic-os-search`'te makine hesabının yaptığı her commit'i Batu'ya bildirir; (3) kütüphane C04'te Supabase'e aktarılıp doğrulandıktan sonra makine hesabının bu depoya erişimi kaldırılır. Eski deneme depolarına makine hesabı eklenmez; onları C04'te içe alma işi yalnız okuma yetkili ayrı bir anahtarla okur.
+
+**TR-A7** · Section 0.5, paragraph "Açık depo ve özel içerik" (public repository and private content), label naming decisions K6 and K8 · **Açık depo ve özel içerik [K6 ve K8 kararlarının sonucu]:** `devos` açık olduğu için ona yazılan her şey gönderildiği anda herkese görünür. Bu yüzden: (1) Açık depoya DevOS'un kendi sentezi, kaynak kimlikleri ve DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md`, düşünme disiplinlerinin uyarlaması, Batu'nun kararları ve beklentileri) yazılabilir. Kütüphanedeki araştırma içeriğinden aynen ya da anlamca yakın aktarım ve konuşma dökümlerinden aktarım yazılamaz. (2) Ham kanıtın ve kurulum defterinin özel içerik taşıyabilecek kısımları veritabanında ve gizli dosya deposunda tutulur; açık depoya yalnız güvenli özet ve kimlik girer. (3) Sızıntı kontrolü, ilk açık yazımdan önce oturumun içinde çalışır (Bölüm 6.7). Kalan risk (kontrolün oturumun içinde çalışması nedeniyle atlatılabilmesi) Batu'nun K6 kararıyla kabul edilmiştir.
+
+**TR-A8** · Section 0.6, label in the heading (the whole section) ·
+> ### 0.6 Dil [Batu kararı K9, 29 Eylül 2026]
+>
+> **Kural:** DevOS'un bütün dosyaları (kod, yorumlar, belgeler, `CLAUDE.md`, rol ve yöntem metinleri, sınavlar), veritabanı kayıtları, commit ve PR metinleri, iç iş kayıtları ve ajanlar arası bütün iletişim **İngilizcedir**. Batu ile iletişim — karar mesajları, raporlar, kullanım kılavuzu ve Batu'ya giden her metin — **Türkçedir**.
+>
+> **Sonuçları:**
+>
+> 1. **Plan paketi:** Bu plan ve ekleri şu an Türkçedir. C00'ın ilk işi, plan paketini İngilizceye çevirmek ve çevirinin sadakatini taze bağlamlı bir Denetçi alt ajanına inceletmektir (bağımsızlık düzeyi yazılı; PC-06). Çeviri bir yeniden yazım değildir: çeviri sırasında fark edilen iyileştirmeler ayrı öneri olarak kaydedilir. İnceleme geçene kadar Türkçe metin bağlayıcıdır; geçtikten sonra İngilizce metin tek bağlayıcı metindir ve Türkçe sürümler depodan kaldırılır (Batu'daki kopya okuma amaçlıdır). Batu'ya dönük Türkçe bir özet (genel resim, Batu'nun kararları ve yapacakları) DevOS tarafından ayrıca tutulur.
+> 2. **Batu'nun sözleri:** Batu'nun kararları, kısıtları ve beklentileri kayda hem **Türkçe aslıyla** hem **İngilizce yorumuyla** girer. Batu'ya bir karar sunulurken Türkçe metin İngilizce kayıttan üretilir ve ilgili yerlerde Batu'nun kendi Türkçe ifadesi gösterilir. Yorum ile asıl arasında anlam farkı fark edilirse bu bir bulgudur.
+> 3. **Arama:** Kütüphanenin büyük kısmı Türkçedir; ajanlar İngilizce çalışır. Bu yüzden kütüphane aramaları gerektiğinde iki dilde yapılır ve C04'teki arama ölçüsü diller arası soruları (İngilizce soru, Türkçe kaynak) ayrıca ölçer. Çok dilli anlam modelinin önemi bu kararla artar.
+> 4. **Karar issue'ları:** Batu'ya atanan karar issue'ları Türkçe; aynı kararın veritabanı kaydı İngilizcedir.
+> 5. **SOUL:** SOUL'un kodu ve belgeleri de DevOS'un ürettiği dosyalar olarak İngilizcedir. SOUL'un son kullanıcılarla hangi dillerde konuşacağı ayrı bir ürün kararıdır ve SOUL gereksinim kaydına açık soru olarak girer.
+
+**TR-A9** · Section 1.1, label in the heading (the whole section) ·
+> ### 1.1 SOUL [Batu kararı]
+>
+> > SOUL, kullanıcının uzmanlığının yetmediği işlerde bu açığı kapatan; işi, bilgiyi, aktörleri ve çalışma koşullarını keşfedip bir çalışma sistemi halinde birleştiren ve yöneten; kullanıcıyı yalnız onun karar vermesi gereken yerlerde, karar verebileceği kadar bilgilendirerek sürece katan; gerektiğinde kendi çalışma kapasitesini kontrollü biçimde uyarlayan bir yapıdır.
+>
+> "Bilgilendirmek", ders anlatmak değildir. Kullanıcı bir amaç, tercih ya da bütçe belirlerken işin gerekleri hakkında eksik bilgiye sahip olabilir. SOUL bu kısıtları sabit girdi saymaz: işin gereğiyle çelişen bir kısıtta kaliteli seçeneği, amacını, faydasını, bedelini ve alternatifini sunar; kararı kullanıcı verir. SOUL açık kaynak olacak ve başkaları kendi hesaplarıyla kurabilecek. [Batu kararı]
+
+**TR-A10** · Section 1.1, second paragraph · "Bilgilendirmek", ders anlatmak değildir. Kullanıcı bir amaç, tercih ya da bütçe belirlerken işin gerekleri hakkında eksik bilgiye sahip olabilir. SOUL bu kısıtları sabit girdi saymaz: işin gereğiyle çelişen bir kısıtta kaliteli seçeneği, amacını, faydasını, bedelini ve alternatifini sunar; kararı kullanıcı verir. SOUL açık kaynak olacak ve başkaları kendi hesaplarıyla kurabilecek. [Batu kararı]
+
+**TR-A11** · Section 1.4, label in the heading (the whole section) ·
+> ### 1.4 DevOS'un başarısı neyle ölçülür? [Batu kararı]
+>
+> Veritabanının çalışması, rol dosyalarının bulunması ya da görevlerin aktarılması tek başına başarı değildir. DevOS şu kabiliyetleri gerçek işte gösterdiğinde başarılıdır:
+>
+> 1. Doğru işi keşfetmek.
+> 2. İyi araştırmak.
+> 3. Gerekçeli karar vermek.
+> 4. Hatalarını sınamak ve genel kuralına kadar götürmek.
+> 5. Uzun ve bileşik işleri bütünlüğünü kaybetmeden sürdürmek.
+> 6. Araştırma birikimini gerçekten kullanmak.
+> 7. Bunları Batu'nun mesaj taşımasına ya da teknik bakım yapmasına ihtiyaç duymadan yapmak.
+>
+> Bölüm 4 her kabiliyetin mekanizmasını, Bölüm 8 bunların nasıl sınanacağını, Bölüm 10 hangilerinin henüz tam çözülmediğini anlatır.
+
+**TR-A12** · Section 2, criterion 1 · 1. **Tanım:** Bölüm 1.1. [Batu kararı]
+
+**TR-A13** · Section 2, criterion 2 · 2. **Açık kaynak:** Başkaları kendi hesaplarıyla kurabilir; SOUL, Batu'nun altyapısına bağımlı değildir. [Batu kararı]
+
+**TR-A14** · Section 2, criterion 3 · 3. **Kullanıcı verisi:** Kullanıcının kendi alanında kalır; ortak öğrenmeye özel bilgi sızmaz. [Batu kararı]
+
+**TR-A15** · Section 2, criterion 4 · 4. **Sağlayıcı bağımsızlığı:** SOUL, Claude dışındaki bir modelle de çalışabilecek biçimde tasarlanır ve bu gerçek bir sınamayla gösterilir (C11). Gösterilene kadar iddia edilmez. [Batu kararı]
+
+**TR-A16** · Section 2, criterion 20 · 20. **Test verisi:** Kişisel ve iş verisi testlerde hiç kullanılmaz; yalnız sahte veri. DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. **[Batu kararı K7, 29 Eylül 2026]**
+
+**TR-A17** · Section 2, criterion 32 · 32. **Ortak düşünme standardı ve rol hazırlama:** Her rol, uzmanlığı ne olursa olsun aynı ortak düşünme tabanını taşır. Yeni bir rol yalnız bir ad ve görev cümlesiyle değil; bilgi haritası, yöntemler, araçlar, bilinen hata sınıfları, örnekler ve gizli sınavla hazırlanır; bu hazırlık her oturum açılışında, katkı talebinde ve kesintiden dönüşte yeniden kurulur. İşin küçüklüğü uzman değerlendirmesini atlama gerekçesi değildir; değerlendirme sonucunda az iş yapılabilir. **[Batu kararı, 29 Eylül 2026]**
+
+**TR-A18** · Section 2, criterion 33 · 33. **SOUL'daki ajan kalitesi bir alt sınırdır, tavan değil:** SOUL'un kendi ajanları ve SOUL'un bir iş için oluşturduğu ya da sonradan eklediği ajanlar en az DevOS rolleri kadar yüksek bir düşünme standardı taşır. SOUL'un ajanları nasıl hazırlayacağı ve bu kaliteyi nasıl koruyacağı, DevOS'un kendi yönteminin kopyalanmasıyla değil, DevOS'un araştırma, tasarım ve sınama işiyle bulunur; DevOS'un bugünkü rol hazırlama yöntemi bu işin çıkış noktası ve karşılaştırma ölçütüdür. SOUL için daha iyi bir yöntem bulunursa bunun daha iyi olduğu aynı tür gizli sınavlarla gösterilir ve DevOS kendi rollerini de bu yöntemle iyileştirmeyi değerlendirir. **[Batu kararı, 29 Eylül 2026]**
+
+**TR-A19** · Section 2, criterion 34 · 34. **Çerçeve körlüğüne karşı mekanizma:** DevOS, dayandığı öncülleri açıkça yazar, bir tasarım bir sınıra takıldığında önce çerçeveyi sorgular ve büyük tasarım kararlarında mevcut tasarımı görmeyen bağımsız bir karşı tasarımla karşılaştırma yapar (Bölüm 6.12). Bu aynı zamanda SOUL'a aktarılacak bir gereksinimdir. **[Batu, 29 Eylül 2026]**
+
+**TR-A20** · Section 2, group heading (environment and Batu's role), label on the group heading (criteria 21–24) ·
+> **Ortam ve Batu'nun rolü** [Batu kararı]
+>
+> 21. **Rol:** Amaç, karar, kabul. Mesaj taşımak ve bakım yapmak yok.
+> 22. **Bilgisayar kapalıyken çalışır.**
+> 23. **Telefon:** Claude uygulaması ve kesin ulaşan bir yedek kanal; kararlar tek listede, sade Türkçe, kısa seçenekli.
+> 24. **Kendi bakımı:** Yedek, izleme ve denetim düzenli çalışır; çözülemeyen karar listesine düşer.
+
+**TR-A21** · Section 2, criterion 25 · 25. **Claude:** Max 200 $ planı. Ekstra kullanım kapalı. Ortam ayarlarında Anthropic API anahtarı yok. [Batu kararı]
+
+**TR-A22** · Section 2, criterion 26 · 26. **Canlı durum:** Batu'nun kişisel Supabase hesabı. Ajanlar kısıtlı yetkiyle, gizli anahtar özelliği üzerinden erişir; Supabase MCP çalışan sistemde kullanılmaz. [Batu kararı: Supabase; plan seviyesi Bölüm 11'de yeniden karara sunuldu]
+
+**TR-A23** · Section 2, criterion 27 · 27. **GitHub:** Bölüm 0.5'teki depolar. Dal koruması yöneticileri de kapsar; her PR'da otomatik kontroller; gizli bilgi taraması açık; tetikler dış hesaplardan gelen olaylara cevap vermez. [Batu kararı: depolar; ayrıntılar Öneri]
+
+**TR-B1** · Section 4, K-11, Mechanism, item 7 · 7. **Batu'nun onayının kapsamı [PC-05; Batu, 1 Ekim 2026]:** Teknik doğruluğu ve yüksek etkili değişikliklerin teknik onayını bağımsız denetim verir (kurulumda C03'e kadar taze bağlamlı Denetçi alt ajanının kararı, bağımsızlık düzeyi yazılı, PC-06; C03'ten sonra denetim ortamı). Batu'ya teknik onay sorusu gelmez. Batu'ya yalnız ona ait kararlar gelir: amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler ve kabul. Bir değişiklik bunlardan birine dokunuyorsa (örneğin bir kısıtı ya da maliyeti değiştiriyorsa) o yönüyle Ek E biçiminde karar olarak gelir.
+
+**TR-C1** · Section 5.1, Choice paragraph · **Seçim:** Claude Code cloud. **[Batu kararı]** Gerekçesi bu konuşmada karşılaştırılarak kuruldu.
+
+**TR-C2** · Section 5.3, Choice paragraph · **Seçim:** Supabase. **[Öneri; Batu kabul etti]** Gerekçe: gereksinimlerin tamamını en az parçayla karşılayan seçenek bu.
+
+**TR-E1** · Section 9, "The builder's working order" (PC-06 block): the lead paragraph with its labels and items 1–6 ·
+> **Kurucunun çalışma düzeni [PC-06, 5 Ekim 2026, Batu'nun D-010 kararı; kurallar: `plan/Installation_Working_Order.md`; defter: `plan/ledger.md`]:** Kurucu da bir çalışma sistemidir. Kurulum işinin nasıl yürüdüğü o İngilizce belgededir; neyin kurulacağını bu plan belirler. Batu'nun PC-04'teki gereksinimi ve beklentileri 1–5 geçerlidir **[Batu, 1 Ekim 2026]**; tek istisnası 1. maddede yazılıdır **[Batu, 5 Ekim 2026, D-010]**. Özü:
+>
+> 1. **Tek çalışma oturumu:** Kurulumu tek bir çalışma oturumu yürütür. Batu onu Claude uygulamasından bir kez açar ve hazırlanan ilk mesajı (Ek F; kurulumun tamamı için tek `/goal`) yapıştırır. Bundan sonra yalnız kendi kararlarını cevaplamak ve kullanım sınırı sıfırlandıktan sonra bir "devam" mesajı yazmak için yazar (bulut oturumu sınırdan sonra kendiliğinden sürmez). Oturum planı kendisi okur, plan sırasındaki sonraki adımı alır, işi bölüp rol tanımlı alt ajanlara ve workflow'lara verir (Üretici, Araştırmacı, Sınayıcı, Denetçi, Karşı tasarımcı; C02'den Test tasarımcısı) ve `main`'e yalnız kendisi yazar. Aşama sınırı duruş değildir. Batu'nun kararını ya da işlemini beklemek, kullanım sınırı ve henüz aşılamayan bir engel geçici "henüz değil" hâlleridir. Ayrı oturum ya da ortam yalnız planın gerektirdiği yerlerde kalır (C01'de gözlenen oturum ve routine'ler, C03'ten itibaren denetim ortamı, C04'ün gizli arama soru seti, sınavlar); gerektiğinde Batu'ya tek ve dar bir soru olarak gelir. **[Varsayım: tek oturum, özetlemeye rağmen yeniden okumayla plandan kopmadan sürer; ilk özetlemede ve C01'de sınanır]**
+> 2. **Tek doğru kaynak `main`'dir.** Her tamamlanan işten sonra ve her duruştan önce iş `main`'e alınır. Nerede kalındığını oturum değil kayıt taşır: oturum açılışta ve her özetlemeden sonra (bir kanca bunu hatırlatır) kuralları, defteri, `DURUM.md`'yi ve aşama günlüğünün son kayıtlarını yeniden okur. Durum dosyası kısa tutulur; kayıtlar aşama başına ayrı ve yalnız eklenen dosyalardadır.
+> 3. **Hedefin sağlanması aşama kabulü değildir.** Değerlendirici küçük bir modeldir ve yalnız konuşmayı görür. Bu yüzden duruş mesajları `tools/stop_check.sh` adlı denetim betiğinin çıktısını olduğu gibi taşır. Aşama kabulü, C03'e kadar işi yapmamış taze bağlamlı bir Denetçi alt ajanının kararıyla (bağımsızlık düzeyi yazılı: aynı oturumda taze bağlamlı alt ajan, Bölüm 8 madde 7), C03'ten sonra denetim ortamında verilir.
+> 4. **Batu'ya yalnız ona ait kararlar gelir** (amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler, kabul). Bunlar ve Batu'nun yapması gereken işler toplanır; tek bir GitHub issue'sunda, adım adım iletilir. Durum Türkçe `DURUM.md` sayfasında her zaman günceldir.
+> 5. **Bağımsız inceleme** C03'e kadar Denetçi alt ajanınca yapılır; kararı bağımsızlık düzeyiyle depoda bir dosyada durur ve yüksek etkili bir değişiklik bu karar olmadan `main`'e alınmaz. Sonuçlar Batu üzerinden değil, depo üzerinden gelir. C03'ten sonra bağlayıcı inceleme denetim ortamındadır.
+> 6. **Connector engeli:** Engel tek bir kancadır: `.claude/hooks/tool_allowlist.py`. Görevi kazaları ve dışarıdan sızan talimatları durdurmaktır. Kurucunun kendisi kancayı bilerek değiştirebilir; bu kalan risk Batu'nun D-003 kararıyla denetim ortamına kadar kabul edildi. Kanca bütün araç çağrılarına bakar ve yalnız açıkça izin verilenleri geçirir. Hesaptaki connector'ları, hesabın başka oturumlarına ulaşan araçları, uzak alt ajanları (ayrı bir bulut oturumu açtıkları için) ve izin listesinde olmayan her aracı engeller. GitHub'da yazmayı `devos` ile sınırlar. Yeni oturuma yalnız `devos`'un `.claude/` klasörünü taşıyan bir sürümüyle izin verir. Kurucunun kendi açmadığı oturum ve routine'lere dokunmayı engeller. Kurucunun açtığı oturumlarda depodaki kancaların çalıştığı gözlendi (T-H3). Kanca birim testleriyle sınandı (T-H4) ve canlı olarak engelledi (T-H5, T-H6). Kanca yalnız araç adına ve girdisine bakar; kabuk (shell) üzerinden kalan yollar dahil, kapsamadığı yollar `plan/Installation_Working_Order.md`'deki "Not protected" listesindedir.
+
+**TR-E2** · Section 9, the PC-01 paragraph · **PC-01 (1 Ekim 2026; önceki adı "K10"), PC-06 ile değişti (5 Ekim 2026):** Aşama başına `/goal` ve aşama sonunda duruş yerine kurulumun tamamı için tek `/goal` vardır (yukarıda 1. madde). Batu, PC-01'in kendi kararı olmadığını belirtti (D-010, ek E1). Eski metin PC-06 kaydındadır.
+
+**TR-E3** · Section 9, the PC-02 paragraph · **PC-02 (1 Ekim 2026; önceki adı "K11"):** Dal yönetimi kurucudadır. **[Batu, 1 Ekim 2026]**: dal açmak, `main`'e almak ve silmek kurucunun yönetimindedir; birleştirme için Batu'dan onay istenmez. Kurucunun sınırları: (1) Kütüphane depolarına hiçbir zaman dokunulmaz (Bölüm 0.5). (2) `main`'e giriş yalnız PR iledir; dal koruması kapatılmaz ve atlatılmaz. (3) Her birleştirme ve dal silme deftere yazılır. (4) Süreklilik (PC-03): her duruştan önce iş `main`'e alınır.
+
+**TR-F1** · Section 10.2, table row U-6 · | U-6 | **Özel içeriğin yeniden anlatılarak sızması** | Aynen kopyalama ve anlam benzerliği kontrolleri, kural, inceleme | Tamamen farklı sözcük ve yapıyla yeniden anlatılmış içeriğin güvenilir tespiti | Açık depoya yalnız kaynak kimliğiyle birlikte özet yazma zorunluluğu; düzenli örneklem denetimi | Kriter 31 | Kalan risk Batu'ya açıkça bildirilmiştir; kütüphanede gerçekten gizli kalması gereken bir bölüm varsa o bölüm ajanların erişiminden tamamen çıkarılabilir (Batu kararı) |
+
+**TR-F2** · Section 11, whole section (heading, 11.1 and 11.2) ·
+> ## 11. Batu'nun kararları
+>
+> ### 11.1 Verilmiş kararlar
+>
+> **29 Eylül 2026 eklenenler:** K6 — `devos` açık kalır; özel içeriğin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi. K7 — "yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Kriter 32, 33 ve 34 kabul edildi. Teknik kararlar (çalışma düzeni dahil) ekip tarafından gerekçesiyle verilir. **B1 = (2):** C04 ölçümüne kadar ücretsiz plan; ölçüm sınıra yaklaşıldığını gösterirse kapsam daraltılmadan önce karar Batu'ya gelir. **B2 = (1):** Gemini API ücretsiz katmanı; yalnız açık içerik, tek geçitten. **B3 = (a):** Sistem için ayrı GitHub makine hesabı. **K8 = (a):** DevOS için yazılmış tasarım belgeleri (plan, ekler, `CLAUDE.md` ve düşünme disiplinlerinin uyarlaması) ve Batu'nun kararları ile beklentileri açık depoda durur. **K9:** DevOS'un bütün dosyaları, kayıtları ve kendi içindeki iletişimi İngilizcedir; Batu ile iletişim Türkçedir (Bölüm 0.6). **1 Ekim 2026'da Batu'nun verdikleri** (kayıt numaraları kurucunun plan değişiklikleridir; Batu'nun sözleri `plan/ledger/C00-log.md`'de aslıyla): kurulum aşamalarının `/goal` hedefiyle ve üç duruş koşuluyla yürümesi (PC-01; Batu 5 Ekim 2026'da bunun kendi kararı olmadığını belirtti, PC-06 ile değişti); dal yönetiminin kurucuda olması ve birleştirme için Batu'dan onay istenmemesi (PC-02); kurucunun kendi çalışma düzenini tasarlayıp sınaması ve beklentileri (PC-04); teknik onayın Batu'da değil bağımsız denetimde olması (PC-05). **5 Ekim 2026'da Batu'nun verdikleri** (D-010; sözleri `briefs/conversation/KARAR_OZETI_2026-10-05_TR.md`'de aslıyla): kurulumun, işi rol tanımlı alt ajanlara ve workflow'lara dağıtan tek bir çalışma oturumunda yürümesi ve kurucunun eski çalışma düzeninin kaldırılması; kurulumun tamamı için tek `/goal` (ek E2); bu oturumu kendisinin bir kez açıp ilk mesajı yapıştırması ve kullanım sınırı sıfırlandıktan sonra bir "devam" mesajı yazması; PC-04 ve PC-05'teki kendi kısımlarına dokunanlar dahil PC-06 plan değişiklikleri (madde 35); geçişin bir kez bağımsız incelenmesi için konuşma oturumunun yaklaşık bir dakika otomatik moda alınması, D-008'e tek seferlik istisna (madde 34); workflow'ların ve paralel alt ajanların ortak kullanımdan daha çok harcaması (madde 36).
+>
+> SOUL tanımı; SOUL'un açık kaynak olması; DevOS'un Claude Code cloud'da çalışması; Max 200 $ planı, ekstra kullanımın kapalı olması, ortamda Anthropic API anahtarı olmaması; Supabase'in kişisel hesapta kullanılması; depoların herkese açık olabilmesi; yeni depolar (`devos`, `soul-system`, `devos-evals`, `devos-backup`) ve eski depolara dokunulmaması; eski deneme depolarının kütüphaneye alınması; eski raporların ChatGPT tarafından arşivlenmesi ve deponun kurucu başlamadan hemen önce düzeltilmesi; tek yazar ilkesi; güvencelerin her işte tam, emek derinliğinin varsayılan olarak yüksek olması; testlerde yalnız sahte veri; telefondan kullanım; Academy notunun karar değil keşif notu olması; bu planın uyduğu ilkeler (Bölüm 0.3).
+>
+> ### 11.2 Verilmiş kararların seçenekleri (kayıt için)
+>
+> Aşağıdaki üç karar 29 Eylül 2026'da verildi (Bölüm 11.1). Seçenekler, kararın hangi bilgiyle verildiğini göstermek için korunur.
+>
+> **B1 — Supabase plan seviyesi.** Ücretsiz planın 500 MB veritabanı sınırı, kütüphanenin tamamına anlam araması uygulanırsa ilk aylarda dolabilir (Bölüm 5.3).
+>
+> | Seçenek | Aylık | Kazancı | Kaybı |
+> |---|---|---|---|
+> | (1) Ücretsiz planda kalmak | 0 $ | — | Sınır dolunca anlam araması kütüphanenin bir kısmıyla sınırlı kalır; bu kriter 5 ve 11'den tavizdir |
+> | (2) C04'teki ölçüme kadar ücretsiz plan, sonra ölçüme göre karar | 0 $, sonra muhtemelen 25 $ | Para, gerçek boyut ölçülmeden harcanmaz. C00–C03 arasında veri küçüktür, kalite etkisi yoktur | Ölçüm sınırı aşacağını gösterirse geçiş kurulumun ortasında yapılır |
+> | (3) Canlı projeyi şimdi Pro'ya almak; test projesi ayrı ücretsiz bir organizasyonda | 25 $ | 8 GB veritabanı, günlük yedek, uyumayan proje; boyut kaygısı olmadan kurulum | Aylık 25 $ |
+>
+> **Önerim (2), şu kuralla:** Ücretsiz plana sığmak için hiçbir kapsam daraltılmaz. C04'te ölçüm sınırın yaklaşacağını gösterirse, kapsam daraltılmadan önce karar sana gelir. Kendi tahminim, ölçümün Pro'ya geçişi gerektireceği yönünde; (3)'ü seçmen de tamamen makul.
+>
+> **B2 — İkinci model ailesi (Google Gemini API ücretsiz katmanı).**
+>
+> | Seçenek | Kazancı | Kaybı |
+> |---|---|---|
+> | (1) Evet | Kriter 4 gerçekten sınanır; yüksek etkili ve açık depolara girecek kararlarda farklı bir modelin görüşü ortak kör noktaları azaltır | Ücretsiz bir Google hesabı anahtarı gerekir; ücretsiz katmanda gönderilen içerik Google'ın ürün geliştirmesinde kullanılabilir. Bu yüzden yalnız sahte veri ve açık depolara girecek içerik gönderilir; özel kütüphane hiçbir zaman gönderilmez |
+> | (2) Ücretli bir ikinci sağlayıcı | Daha güçlü model, veri güvencesi | Kullanım başına ücret |
+> | (3) Hayır | — | Kriter 4 sınanamaz; ortak kör nokta riski azaltılamaz |
+>
+> **Önerim (1).**
+>
+> **B3 — Sistemin GitHub kimliği.** Bölüm 5.5'teki sorun.
+>
+> | Seçenek | Kazancı | Kaybı |
+> |---|---|---|
+> | (a) Sistem için ayrı GitHub makine hesabı | GitHub'ın kendi onay düzeni tam çalışır; onayları telefondaki GitHub uygulamasından verirsin; özel arayüz yazılmaz | Claude'un GitHub bağlantısı makine hesabına geçer; bu, diğer Claude Code projelerini de etkiler. O projelerin depolarına makine hesabının ortak çalışan olarak eklenmesi gerekir (hazırlıkta yapılabilir) ve oradaki commit'ler de makine hesabı adına görünür |
+> | (b) Karar paneli | Diğer projelerin etkilenmez | Bütün onaylar özel bir sayfadan verilir; GitHub'ın kendi onay düzeni kullanılamaz; sayfanın güvenliği ve güncellenmesi ayrı bir iştir |
+>
+> **Önerim (a).** Daha az özel parçayla daha güçlü bir koruma sağlıyor. Diğer projelerine etkisi tek seferlik bir ayar; AI commit'lerinin ayrı bir hesapta görünmesi o projelerde de ayırt ediciliği artırır. Ayrıca (a)'da karar issue'larını makine hesabı açtığı için bildirimler sana güvenilir biçimde ulaşır; (b)'de issue'lar senin kimliğinle açılacağından GitHub sana kendi eylemin için bildirim göndermeyebilir.
+
+**TR-F3** · Section 13, table row "Leak in the public repository" · | Açık depoda sızıntı (K6 kararıyla kabul edilen kalan risk) | Özel içerik görünür olur ve geri alınamayabilir | İlk yazımdan önce koda dayalı kontrol; türetilmiş içerik kuralı; ham kanıt açık depoda değil |
