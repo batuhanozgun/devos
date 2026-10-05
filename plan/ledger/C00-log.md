@@ -1447,6 +1447,26 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Open for 1c, all needing a new session (D-009):** F-088-2 (the live part of gate 1c), the planted-problems file and the live tests, a Critic pass on the final diff, the gate evidence on the final head and the session Verifier. Departure 8 in its refused form and L-088's refused outcome are not presented again.
 - **Record changes:** plan/Builder_Operating_Model.md · supersession · the v1.8 delta brought onto "1.7 + FR-02 + D-008" (history line, §9 and §11 rows); plan/builder/design/04_roles.md R-R21 · correction · a guard denial follows operating model §11's guard row; plan/builder/mechanisms.md · correction · the 1c carrier tools/test_1c.py is A-16, not A-13; plan/ledger.md Governing documents: `plan/Builder_Operating_Model.md` · supersession · version "1.7 + FR-02 + D-008" on main and its D-008 verdict
 
+### L-121 · 2026-10-05 · W-C00-12: checkpoint — tranche 1c brought onto the D-008 guard on PR #86 (its entry L-120 is on that branch); D-009 sent
+
+- **Number note.** L-120 is on the PR #86 branch (`claude/run-w12-1c`) and reaches `main` when the PR merges; this entry skips it, as L-059 skipped the branch's L-057 and L-058.
+- **Tranche 1c (W-C00-12.4), on PR #86.** `main` (`ed2619b`, then `50ebb8f`) merged into the branch; head `86a253e`, pushed. The D-008 guard is taken whole and 1c's brief gate becomes its rule S6 (details, conflicts and test runs in L-120 on the branch). On the pushed head, clean tree: T-H4 `tools/test_tool_allowlist.sh` **ALLOWLIST_TEST PASS**, 642 `ok` lines, no `BAD`. Not merged: class high, it needs a session verdict, and every remaining 1c step needs a new session (D-009).
+- **D-009 sent.** Issue #6 comment `5992085009` (09:50:16Z, guard record #162), mentioning Batu, in the Appendix E §3 format.
+- **Running.** A non-binding Critic (R-R16; a fresh-context subagent of this session, read-only, given `.claude/agents/critic.md` from the branch) reads the port on `86a253e`; its findings are answered on the branch.
+- **Usage** at 10:05Z (`get_session`): `five_hour` `allowed`, `resetsAt` 1791198600 = sched:2026-10-05T11:10Z.
+- **Record changes:** plan/ledger.md Usage · supersession · reading at 10:05Z
+
+### L-122 · 2026-10-05 · Lease taken or renewed by `session_01XBdYJwHjvsouur4ayJJM5Z`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01XBdYJwHjvsouur4ayJJM5Z
+
+### L-123 · 2026-10-05 · W-C00-12: frame review FR-03 for F-088-2 (proposed): the live part of gate 1c runs on `main` after the merge, under the reviewed hook
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 the premise of the 1c intent that live tests run on the branch is false (F-088-2); D2 the refused design is not presented again; the record names what the refusal protected before proposing anything; D4 the acceptance block of W-C00-12.4 is not touched, and whether the reorder is a loosening is left to the Verifier; D6 cause: the gate's order assumed a session could check out the branch; D9 library not consulted (stated in FR-03).
+- **What.** `plan/decisions/FR-03.md`, status `proposed`: operating model §11's frame review for L-088's refusal (F-088-2). Proposed design (A): the deterministic part of gate 1c and the session Verifier stay before the merge; the live part runs on `main` after the merge, under the merged and reviewed hook, before W-C00-12.4 can be accepted; the revert branch is pushed before the merge; a failed live test reopens the item. Rejected: a session on the 1c head (the refused outcome), dropping or simulating the live tests (loosening).
+- **Not carried out here.** §11 requires the design to be carried out in a session whose task names it and the denial; this run's task does not. The next run's task names FR-03 and L-088's denial, makes the text change on PR #86 (12 §2.2 and the T-M17 (a) row) and asks the 1c Verifier §11's fixed question. Every live test also waits for D-009.
+- **Record changes:** plan/decisions/FR-03.md · addition · frame review of F-088-2, proposed
+
 ### L-124 · 2026-10-05 · W-C00-12: tranche 1c, the Critic of the port (8 findings); the lease and the source revision are read from private refs, never from FETCH_HEAD; texts as strong as the code
 
 - **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D4 the planted case for findings 1 and 2 was committed first (`2fdd4b7`) and failed on that guard (`BAD exp=lease got=passes the lease rule`), then passed after the fix; three mutants were run against the fixed test; D5 every claim below names its run; failure pattern 1: L-120 claimed more than its runs showed in two places, corrected here.
