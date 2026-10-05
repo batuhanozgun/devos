@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 5 Ekim 2026, 22:55 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 5 Ekim 2026, 23:02 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
@@ -14,10 +14,10 @@
 
 **Şu an**
 
-Senden beklenen bir şey yok. 
-1. Kurulumu nasıl yürüteceğimize birlikte karar verdik ve sen onayladın (D-010): tek bir çalışma oturumu planı adım adım işletecek, işi rol tanımlı alt ajanlara ve workflow'lara dağıtacak; kurucunun eski oturum zinciri düzeni kaldırılıyor. 
-2. D-009 geri çekildi, cevaplaman gerekmiyor. PC-01 (her aşamaya ayrı /goal) senin kararın değildi; bütün kurulum için tek /goal olacak. 
-3. Şu an geçiş yapılıyor: yeni kural dosyaları yazılıyor, sonra bir kez bağımsız incelenecek (o an bu oturumu 1 dakika Auto'ya alman gerekecek), sonra çalışma oturumunu sen açacaksın. 
+Senden beklenen: çalışma oturumunu açman. 
+1. Kurulumun yeni düzeni canlıda (D-010): tek bir çalışma oturumu planı adım adım işletecek, işi rol tanımlı alt ajanlara dağıtacak; kurucunun eski oturum zinciri kaldırıldı. Bağımsız inceleme (R-TRANS-1) ikinci turda PASS verdi. 
+2. Yapman gereken (bir kez): claude.ai/code'da yeni bir oturum aç; ortam devos-kurulum, yalnız devos deposu, Accept edits, Opus 5.5. İlk mesaj olarak plan/Ek_F_Baslangic_Mesaji.md'deki /goal metnini olduğu gibi yapıştır. 
+3. Sonrası: yalnız senin kararların (o oturuma yazarsın) ve kullanım limiti sıfırlanınca bir "devam" mesajı. Konuşma oturumu bu devirle kapanıyor. 
 **Riskler:** 
 - Tek oturumun özetlemeyle uzun süre plandan kopmadan çalışacağı varsayım; ilk özetlemede gözlenecek. 
-- Kullanım limiti dolarsa, sıfırlandıktan sonra senin bir "devam" mesajın gerekecek.
+- /goal'un uygulamadan yazılarak çalıştığı ilk kez görülecek; çalışmazsa çalışma oturumu sana yazar.
