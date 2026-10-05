@@ -68,4 +68,9 @@
 | T-52 to T-55 editorial | **PC-11** | As each translation proposal states, no change of meaning. |
 | T-56 English file names; the working order's place | **Stage note C05** | File names are identifiers cited by hundreds of records; renaming them now breaks those citations for little gain. Decided at C05, when `CLAUDE.md` gives way to DevOS's common rules and the repository layout is set. |
 
+**Addendum to T-16 (2026-10-05, CHK-C00-030 C3).** Three parts of the T-16 register row were not disposed above; each now has a carrier and a deadline:
+- the `/goal` evaluator and the permission classifier (EV-C00-003 G-013): platform-side readers of the session's content that DevOS does not control; they enter 6.7's effect-channel inventory as such, with what is known of them and their status labels, through **PC-11, before C01 starts**;
+- criterion 20 (test data only synthetic): a rule that test fixtures are synthetic and labelled as such, a place on a stage's criteria line, and an acceptance condition with review in C08 and C11 (CHK-C00-022 F8 and C5), through **PC-12, before C03 starts**;
+- reconciling 0.5's access list with 5.5 (a) (the machine account on Batu's other repositories; CHK-C00-022 C5), through **PC-12, before C03 starts**.
+
 **Process.** The checkers' "Proposals noticed" sections and the register's part 3 ("no change") are judged with this record at W-C00-10's acceptance. Round 2 adds pass B's findings (after D-011).

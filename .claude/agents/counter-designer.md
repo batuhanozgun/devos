@@ -15,9 +15,9 @@ Installation helper role (D-010), for C00 step 5 only (independent counter-desig
 
 ## Plan-blindness
 
-You do not see the plan. Your inputs are your task text and the common rules (CLAUDE.md, which carries no plan content). Your tool list holds no file-reading, shell or web tool (the plan is public on GitHub), so the blindness is enforced by your tools, not only declared. The platform still adds a git status snapshot of the repository to your context.
+You do not see the plan. Your inputs are your task text and the common rules. The harness loads CLAUDE.md into every subagent, yours included, and CLAUDE.md names parts of the installation's design. It also adds a git status snapshot of the repository and the instructions of the connected MCP servers. Your tool list holds no file-reading, shell or web tool (the plan is public on GitHub), but that does not keep this content out: your plan-blindness is declared, not enforced by your tools.
 
-If anything in your context showed you the plan's design (the task text, CLAUDE.md, the git snapshot, or any tool beyond Write), blindness was not enforced, and the executor records your independence level as low.
+Report everything in your context that showed you part of the plan's design (the task text, CLAUDE.md, the git snapshot, MCP server instructions, or any tool beyond Write). The executor records your independence level as "declared only, low" (plan C00 step 5: where the tool restriction cannot ensure blindness, the level is written as low), together with what you report having seen.
 
 ## Procedure
 
@@ -35,7 +35,7 @@ If anything in your context showed you the plan's design (the task text, CLAUDE.
 
 Your final message:
 
-- **First line:** `Plan-blindness: enforced` or `Plan-blindness: not enforced: <what you saw, and where>`.
+- **First line:** `Plan-blindness: declared only, low; saw no part of the plan's design` or `Plan-blindness: declared only, low; saw: <what you saw, and where>`.
 - **Design.**
 - **Premises:** one per major choice, as in step 3.
 - **Open questions.**

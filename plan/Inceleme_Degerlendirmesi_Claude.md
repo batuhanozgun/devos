@@ -52,7 +52,7 @@
 | 26 | **Accept** | The labels will be updated with the primary source and the date; `gte-small` is defined in the official documentation as English-only (my assumption was confirmed). |
 | 27 | **Accept** | The wording "the checks must pass at that moment" is too strong; it will be corrected. Automatic merge will be tested separately in C01. |
 | 28 | **Accept** | A single key inventory: key, owner, location, authority, revocation path. |
-| 29 | **Partial accept** | The contradictions are real; the "open the file" wording in D9 and DR16 will be written for stage B as "search the library and fetch the source body through `devos_api`"; `.claude/protocols/` will be added to the tree; the `session_brief` signature will be made single. |
+| 29 | **Partial accept** | The contradictions are real; the "open the file" wording in D9 and DR16 will be written for phase B as "search the library and fetch the source body through `devos_api`"; `.claude/protocols/` will be added to the tree; the `session_brief` signature will be made single. |
 
 ---
 

@@ -8,6 +8,8 @@
 
 ## G1. Staleness and renewal of the context package
 
+**Until the context package is activated** (deferred, Appendix B 3.9; PC-08), these rules apply to the subagent task definition recorded with the work item (Appendix B 3.7): the revisions it rests on are the elements of the key in item 1; when one changes, the task definition is not reused but written again as a new revision (items 2 and 3); a mandatory need without a source is a gap record (item 4); items 5 to 7 apply as written, with "task definition" in place of "package".
+
 1. **The cache key** is not the question text alone. It includes: the work and the use type, the target and source revisions, the permission view, the role class and scope, the common rules and the role and method versions, the search index and the embedding model version.
 2. **Events that make a package stale:** When any element of the key changes, the package becomes `stale`. Staleness based on time alone is not used; time is an additional upper bound against changes that were not recorded.
 3. **Rebuild order:** First the use type is determined; then the mandatory needs and the permissions; then the candidate sources (direct access by identifier, keyword and semantic search, relation neighbours); the candidate set first passes through the authority filter and, after selection, through the sufficiency review. The result is a new package revision, not a prompt that changes silently.
@@ -23,7 +25,7 @@
 3. **Limits are applied inside the query.** Adding only a row limit to the outer query does not count as an execution budget, because the underlying query can still run for the most part.
 4. **Authority:** The existence of the root record and the authority to access it are checked; the names or contents of nodes that cannot be seen are not leaked in the result. If the region that cannot be seen limits completeness, this is stated without revealing content. A safe "unknown" is not the same as a wrong "none".
 5. **Live change:** No external effect is made directly from a query result; the effect function re-checks the current conditions.
-5a. **Continuation:** The continuation of a limited query is bound to the same snapshot (revision, policy, remaining search limit). If the data changes in the meantime, the continuation information becomes invalid and the query explicitly starts again; parts coming from different snapshots are not combined and called "complete".
+   - 5a. **Continuation:** The continuation of a limited query is bound to the same snapshot (revision, policy, remaining search limit). If the data changes in the meantime, the continuation information becomes invalid and the query explicitly starts again; parts coming from different snapshots are not combined and called "complete".
 6. **Looking beyond the relations:** The relation record finds recorded links; it does not find semantic effects that were never recorded. In large product changes, the affected parts are also read separately, alongside the relation query. A missing recorded relation is a maintenance finding, not a verdict of "no semantic relation".
 
 ## G3. Release and interruption windows
@@ -58,7 +60,7 @@ The change in Git and the record in the database are not a single transaction. E
 1. When the basis of a decision changes, the affected work items are taken into the **candidate review set**; they are not all automatically counted as wrong or cancelled. The review determines for which use the earlier output is still valid.
 2. The late result of a cancelled or expired claim is kept as candidate evidence; it does not mix into the current product.
 3. That a cancel command has been sent does not mean that the external effect path has really stopped; this is verified by observation.
-4. **On reassignment**, first the authorised result object, the request link and the last dispatch record are checked: if a result has been produced, the work moves on to the consumer's review; if not, a new claim is opened. The same research is not repeated blindly.
+4. **On reassignment**, first the authorised result object, the task definition recorded with the work item and the last hand-over event are checked (the request link and the dispatch record once the request protocol and the context package are activated, PC-08): if a result has been produced, the work moves on to the consumer's review; if not, a new claim is opened. The same research is not repeated blindly.
 5. **Cycles and deadlock:** Where A waits for B, and B waits for a decision that A has not yet produced, it is first established whether this is a real dependency cycle, a request for information or a malformed request. Asking for a limited draft or an explicit assumption instead of a final decision can open the cycle; this change does not make an unauthorised assumption real.
 
 ## G6. Recovery sequence
@@ -76,7 +78,7 @@ Degradation is not reported as normal operation; it is made visible which guaran
 
 | Situation | Continues | Stops | Visibility |
 |---|---|---|---|
-| Semantic search is unavailable | Keyword and relation search, direct access by identifier | Discoveries that need semantic search are treated as incomplete | A "no semantic search" note in context packages |
+| Semantic search is unavailable | Keyword and relation search, direct access by identifier | Discoveries that need semantic search are treated as incomplete | A "no semantic search" note in subagent task definitions (in context packages once they are activated, Appendix B 3.9) |
 | Supabase cannot be reached | The session only tries to write its own local work to a branch as a candidate and to leave its closing note | Claim, state transition, external effect | The session closes; the next scheduled session starts the recovery when access returns |
 | The routine limit is used up | The work of open sessions | Starting new sessions | A limit record and a wait visible to Batu |
 | A routine's GitHub connection is lost (after 72 hours the routine turns itself off) | The other routines | That routine's sessions | The independent monitoring path checks the time of the last session and opens an issue for Batu; Batu renews the GitHub connection and turns the routine back on |
@@ -98,8 +100,8 @@ Degradation is not reported as normal operation; it is made visible which guaran
 1. Capacity is not reduced to a single number; discovery latency, production quality, review cost, source access, the release queue and the recovery load affect one another.
 2. Work classes have separate acceptance profiles: a short direct query, deep research, review of a large composite product, long production, a high-impact release, recovery.
 3. The priority order does not starve normal work by always letting recovery dominate.
-3a. **Routine budget:** The limit of 15 runs a day is distributed according to the table in plan Section 6.4; session duration measurement and usage observation change the budget, with reasons. If the budget is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu.
-3b. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection; a triggered loop stops and is recorded.
+   - 3a. **Routine budget:** The limit of 15 runs a day is distributed according to the table in plan Section 6.4; session duration measurement and usage observation change the budget, with reasons. If the routine budget or the usage allowance is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu. Usage is recorded per stage (plan U-5; PC-10).
+   - 3b. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection; a triggered loop stops and is recorded.
 4. **What is measured:** Mechanical (claim conflicts, the stale rebase rate, request turnaround latency, query incompleteness, time spent uncertain in release, rejection of the old authority after recovery) and work value (discovery of material gaps, the rate of unnecessary prerequisites, research contributions consumed, holistic product defects, technical load carried to Batu, regression in method transfer). These are not added up into a single score. Thresholds are written down before measuring.
 
 ## G10. Work list hygiene

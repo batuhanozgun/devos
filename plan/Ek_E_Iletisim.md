@@ -1,6 +1,6 @@
 # Appendix E — Rules for communicating with Batu
 
-**Version:** 1.2 (aligned with plan 2.1; PC-05, 1 October 2026) · **Date:** 29 September 2026 · **Source:** the preparation conversation with Batu (28–29 September 2026). These rules apply to DevOS's builder and to all its roles.
+**Version:** 1.2 (aligned with plan 2.1; PC-05, 1 October 2026) · **Date:** 29 September 2026 · **Source:** the preparation conversation with Batu (28–29 September 2026). These rules apply to DevOS's builder (in the installation, the single working session; plan Section 9) and to all its roles.
 
 ---
 
@@ -59,7 +59,7 @@ Before a piece of work is presented to Batu as "done", its conformity with this 
 
 ## 6. Secret information
 
-Keys, passwords, tokens or connection details are never caused to be written into the chat, a decision record, a repository or a session record, and are not asked from Batu in the chat. Batu is only told, step by step, on which screen and in which field he is to enter this information.
+Keys, passwords, tokens or connection details are never written, and never caused to be written, into the chat, a decision record, a repository or a session record, and are not asked from Batu in the chat. Batu is only told, step by step, on which screen and in which field he is to enter this information.
 
 ## 7. Step-by-step guidance
 
