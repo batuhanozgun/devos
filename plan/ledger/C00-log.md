@@ -1384,3 +1384,9 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **m8 (R-TRANS-1).** summary_tr and DURUM.md now tell Batu his one remaining step: open the working session from the app (environment devos-kurulum, only the devos repository, Accept edits, Opus 5.5) and paste the first message from `plan/Ek_F_Baslangic_Mesaji.md`. After that he types only for his own decisions and after a usage-limit reset (D-010 addendum E3).
 - **Hand-over.** The conversation session `session_01Q32nLatKbtDDY1zSVQZiKX` stops after this entry (D-010 item 13). The working session's first records step is the checker acceptance of W-C00-01, 02 and 04 (N-051), then C00 step 0 (W-C00-06).
 - **Record changes:** plan/ledger.md summary_tr · supersession · the hand-over summary for Batu (R-TRANS-1 m8)
+
+### L-135 · 2026-10-05 · Opening check accepts the permission mode `default` as well as `acceptEdits`
+
+- **Why.** The working order's opening check required `get_session` to show `acceptEdits` and stops all plan work otherwise. A session Batu opens from the app with "Accept edits" registers as `default` (observed twice on 2026-10-05 in his conversation session; L-118 CR-1). The working session would have stopped at opening and asked Batu for a change he cannot make. Found by the conversation session before hand-over, when Batu asked what the session would do first.
+- **Change.** `plan/Installation_Working_Order.md` section 3, opening check step 1: the mode is `acceptEdits` or `default`; in both the guard decides every call. Class high; checked by a fresh-context checker subagent, verdict `evidence/C00/checks/CHK-C00-001.md`.
+- **Record changes:** evidence/C00/checks/CHK-C00-001.md · addition · checker verdict for this change

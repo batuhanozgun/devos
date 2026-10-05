@@ -31,7 +31,7 @@ Summary section B, items 3–9, verbatim (all of them Batu's), each with its Eng
 ## 3. Opening, and re-reading
 
 **Opening check** (once, when the session starts; summary 12):
-1. `get_session` without `session_id`: the model is `claude-opus-5-5` and the permission mode is `acceptEdits`. Effort, ultracode and the goal condition (`external_metadata.goal`) are recorded as shown; a setting that is not shown is recorded as not visible, not as absent (the repository pins effort at `xhigh`). The evidence of the goal is the session's own first message.
+1. `get_session` without `session_id`: the model is `claude-opus-5-5` and the permission mode is `acceptEdits` or `default` (the app's "Accept edits" choice registers as `default` for a session Batu opens, observed on 2026-10-05, L-118 CR-1; in both the guard decides every call). Effort, ultracode and the goal condition (`external_metadata.goal`) are recorded as shown; a setting that is not shown is recorded as not visible, not as absent (the repository pins effort at `xhigh`). The evidence of the goal is the session's own first message.
 2. `python3 tools/guard_report.py`: this session's decision log exists and counts allowed calls, so the guard is live; note the effort the harness reports.
 3. If the model, the mode or the guard is not as required, or the session's own first message is not the installation `/goal` of Appendix F, do no plan work: tell Batu in one short Turkish message what to change in the session, and record it.
 4. Write what was found in a log entry, then continue.
