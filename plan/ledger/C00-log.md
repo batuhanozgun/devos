@@ -1332,3 +1332,18 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-126 · 2026-10-05 · Lease released by `session_01XBdYJwHjvsouur4ayJJM5Z`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · release by session_01XBdYJwHjvsouur4ayJJM5Z
+
+### L-127 · 2026-10-05 · Lease taken or renewed by `session_01XBdYJwHjvsouur4ayJJM5Z`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01XBdYJwHjvsouur4ayJJM5Z
+
+### L-128 · 2026-10-05 · W-C00-12: the stop check of run `session_01XBdYJwHjvsouur4ayJJM5Z` failed on an earlier merged commit (L-114's Record changes line); acknowledged
+
+- **What failed.** `BUILDER_RUN=1 tools/builder_check.sh` at 10:38Z on `main` `7b0e757` (after L-126 released the lease) printed `BUILDER_CHECK FAIL` with two lines, both `FAIL [kinds] merged 3bdc893`: the Record changes line of L-114, written by Batu's conversation session (`session_01Q32nLatKbtDDY1zSVQZiKX`, trailer of `3bdc893`), reads "none (the T-G3 report is a probe artifact …; the merge and review verdicts are already recorded in L-093..L-113)", which the kinds check splits into two items without a kind. Every other check passed. The line states that no record changed, and `3bdc893` changed only `DURUM.md` and the log; nothing is missing from the records. Not this run's error; it is acknowledged here, as L-058 acknowledged `58f16bb`.
+- record-check exception: 3bdc893 kinds: L-114's Record changes line says "none (...)" in prose, which the kinds check reads as items without a kind; the commit changed only DURUM.md and the log, so no record change went unrecorded (written by session_01Q32nLatKbtDDY1zSVQZiKX)
+- **Lease.** Taken again for this entry (L-127; it was released at 10:38Z and named this session) and released in the next entry, in the same record PR.
+- **Record changes:** plan/ledger/C00-log.md · addition · this entry
+
+### L-129 · 2026-10-05 · Lease released by `session_01XBdYJwHjvsouur4ayJJM5Z`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · release by session_01XBdYJwHjvsouur4ayJJM5Z
