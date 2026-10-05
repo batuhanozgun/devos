@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. Sana dönük Türkçe özet hazır ve denetimden geçti: `plan/Summary_for_Batu_TR.md` (genel resim, kararların, yapacakların). Bağlayıcı metin İngilizce plan. <br>2. ECC karşılaştırması kabul edildi (85 bileşen; 5 fikir benimsendi). Planın bağımsız incelemesinin ilk geçişi bitti; bulunan düzeltmeler C00'ın karar adımında işlenecek. <br>3. Planı görmeyen karşı tasarım planla karşılaştırılıyor. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T21:41Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:40Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:46Z |
 
 ---
 
@@ -55,16 +55,16 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | running | accepted 8, blocked 2, cancelled 6, finished 1, running 2 | 11 |
-| `C01` | Platform verification | planned | no items | 5 |
-| `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
-| `C03` | Trust boundaries and effect channels | planned | no items | 2 |
-| `C04` | Knowledge, search and context | planned | no items | 3 |
-| `C05` | Common rules, roles and methods | planned | no items | 1 |
-| `C06` | Working order, audit and decision channel | planned | no items | 1 |
+| `C01` | Platform verification | planned | no items | 6 |
+| `C02` | Data model, rule gate and identity chain | planned | no items | 3 |
+| `C03` | Trust boundaries and effect channels | planned | no items | 3 |
+| `C04` | Knowledge, search and context | planned | no items | 4 |
+| `C05` | Common rules, roles and methods | planned | no items | 2 |
+| `C06` | Working order, audit and decision channel | planned | no items | 2 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 1 |
-| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 2 |
-| `C09` | Outage, backup, restore and reconnection | planned | no items | 1 |
-| `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 0 |
+| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 3 |
+| `C09` | Outage, backup, restore and reconnection | planned | no items | 2 |
+| `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 1 |
 | `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 1 |
 | `C12` | Hand-over | planned | no items | 0 |
 
@@ -165,19 +165,28 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
 | `N-047` | `C01` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
 | `N-048` | `C01` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
+| `N-063` | `C01` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
+| `N-064` | `C02` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
+| `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-034` | `C04` | OI-011#18 | open | (18) a bounded scan of the connector catalogue as an outside-in discovery method (Batu's suggestion; it complements need-first selection)... |
 | `N-035` | `C04` | OI-011#19 | open | (19) the hook's blanket block of catalogue tools. The search tools (`SearchMcpRegistry`, `SearchPlugins`, `SearchSkills`) are read-only, ... |
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
+| `N-066` | `C04` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
+| `N-067` | `C05` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
+| `N-068` | `C06` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-041` | `C07` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): conversational agent builders as SOUL comp... |
 | `N-042` | `C08` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): deployment hosts. |
 | `N-044` | `C08` | 06#3a-g | open | **Pointer** to N-038 on `C09` (verbatim there): the recovery drill also restores the builder's state (06 section 3a row g names C08–C09). |
+| `N-069` | `C08` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-038` | `C09` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
+| `N-070` | `C09` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
+| `N-071` | `C10` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-043` | `C11` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): model hubs. |
 | `N-002` | `W-C00-03` | OI-002 | open | **Item:** Safeguard 2 of plan Section 0.5 (independent monitoring of machine-account commits in the library) is probably not in place. |
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
