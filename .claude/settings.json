@@ -15,7 +15,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"; rc=$?; [ $rc -eq 0 ] || exit 2"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"; rc=$?; [ $rc -eq 0 ] || exit 2",
+            "timeout": 600
           }
         ]
       }
@@ -26,7 +27,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"",
+            "timeout": 600
           }
         ]
       }
