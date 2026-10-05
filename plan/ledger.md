@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden bir karar bekleniyor: **D-009** (issue #6'da). <br>1. Accept edits modundaki bir oturum yeni oturum açamıyor: platform "onay gerekiyor" diyerek reddediyor; belgelerine göre bunu hiçbir kural dosyası aşamıyor. D-008 kararın olduğu gibi kalırsa sistem kendi kendine devam edemez ve bağımsız incelemeler başlatılamaz. <br>2. Bu oturum yeni oturum gerektirmeyen işi bitiriyor: tranche 1c (W-C00-12.4, PR #86) yeni guard'ın üzerine taşınıyor. Sonra duracak. <br>**Açık uç:** Ayrı "ultracode" bayrağı hâlâ doğrulanamadı: oturum kaydında bu bilgi görünmüyor; effort "xhigh" olarak doğrulandı. <br>**Riskler:** <br>- D-009 cevaplanana kadar yeni çalışma ve inceleme oturumları yalnız senin sohbet oturumundan (otomatik moddayken) başlatılabilir. <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. | 2026-10-05T09:49Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:06Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:08Z |
 
 ---
 
@@ -157,6 +157,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-008` | Sessions leave auto mode: a written rule file allows or denies every tool call with a detailed reason; every session the builder opens runs on Opus 5.5 at ultracode effort | batu | answered | `plan/decisions/D-008.md` |
 | `D-009` | Starting sessions under D-008: may one builder session, whose only job is to start runs and review sessions, run in auto mode? | batu | open | `plan/decisions/D-009.md` |
 | `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | accepted | `plan/decisions/FR-02.md` |
+| `FR-03` | Frame review of F-088-2: the live part of gate 1c runs on main after the merge, under the reviewed hook, before acceptance | technical | proposed | `plan/decisions/FR-03.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | answered | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |

@@ -1308,3 +1308,10 @@ The builder had summarised the dispatcher's own account without reading the tran
 ### L-122 · 2026-10-05 · Lease taken or renewed by `session_01XBdYJwHjvsouur4ayJJM5Z`
 
 - **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01XBdYJwHjvsouur4ayJJM5Z
+
+### L-123 · 2026-10-05 · W-C00-12: frame review FR-03 for F-088-2 (proposed): the live part of gate 1c runs on `main` after the merge, under the reviewed hook
+
+- **Item: W-C00-12, part 1c (W-C00-12.4); discipline trigger:** D1 the premise of the 1c intent that live tests run on the branch is false (F-088-2); D2 the refused design is not presented again; the record names what the refusal protected before proposing anything; D4 the acceptance block of W-C00-12.4 is not touched, and whether the reorder is a loosening is left to the Verifier; D6 cause: the gate's order assumed a session could check out the branch; D9 library not consulted (stated in FR-03).
+- **What.** `plan/decisions/FR-03.md`, status `proposed`: operating model §11's frame review for L-088's refusal (F-088-2). Proposed design (A): the deterministic part of gate 1c and the session Verifier stay before the merge; the live part runs on `main` after the merge, under the merged and reviewed hook, before W-C00-12.4 can be accepted; the revert branch is pushed before the merge; a failed live test reopens the item. Rejected: a session on the 1c head (the refused outcome), dropping or simulating the live tests (loosening).
+- **Not carried out here.** §11 requires the design to be carried out in a session whose task names it and the denial; this run's task does not. The next run's task names FR-03 and L-088's denial, makes the text change on PR #86 (12 §2.2 and the T-M17 (a) row) and asks the 1c Verifier §11's fixed question. Every live test also waits for D-009.
+- **Record changes:** plan/decisions/FR-03.md · addition · frame review of F-088-2, proposed
