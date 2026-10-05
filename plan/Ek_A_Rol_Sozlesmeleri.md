@@ -87,7 +87,8 @@ Each role's hidden exam set (plan Section 7.3). The exam measures the contract's
 - `.claude/agents/<role>.md`: the role's short contract, success direction, authority limit and how it loads its package at opening. It is kept short; the detail is in the package and the library.
 - Most roles work inside the working session, as **subagents** started by the coordinator; a role is not a session but a package of responsibility. The roles that require separation of authority (binding review and acceptance, exam) work in separate environments (plan Section 6.3).
 - The coordinator starts every subagent with a task definition: the purpose and the decision it depends on, the expected output format, sources and tools, limits, effort budget, the record the result will be written to, whether it is a writer or a reader.
-- The expertise package and the professional continuity records are in the database; the role receives them at opening with `session_brief(role)` and a context request.
+- The expertise package and the professional continuity records are in the database; the role receives them at opening with `session_brief(role)` and, as a subagent, with its task definition (Appendix B 3.7); a context request only once the context package is activated (Appendix B 3.9).
+- **Deferred record families** (PC-08): Appendix B gives each record family the stage that activates it. Where this appendix names a family that is deferred (the contribution record in Section 1, the request and dispatch records in the inputs of DR06-Y and DR13-Y, permission records, the context request and package of DR08), a role works without it until it is activated: the subagent task definition carries the purpose, scope, mandatory needs and limits of a hand-over, the use receipt carries its use, and the claim and the authority epoch carry permission.
 - The common floor is in `CLAUDE.md` (Appendix D).
 
 ---
@@ -216,6 +217,8 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Exam focus:** taking a historical record for current; taking a change of meaning for a change of place.
 
 ### DR08 — Context assembly
+
+**Not in the starting set** (PC-08; plan 7.4): the context package this role produces is deferred (Appendix B 3.9); until it is activated, the coordinator writes the mandatory needs into each subagent task definition (Appendix B 3.7). DR08 becomes active with the package.
 
 - **Success direction:** To give the assigned role the knowledge the work requires, preserving the mandatory needs and tied to its source.
 - **Input:** A trusted context request, the use and target, permitted sources and indexes, the role and method version, budget, the required reading depth.

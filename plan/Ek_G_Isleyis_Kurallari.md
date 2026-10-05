@@ -8,6 +8,8 @@
 
 ## G1. Staleness and renewal of the context package
 
+**Until the context package is activated** (deferred, Appendix B 3.9; PC-08), these rules apply to the subagent task definition recorded with the work item (Appendix B 3.7): the revisions it rests on are the elements of the key in item 1; when one changes, the task definition is not reused but written again as a new revision (items 2 and 3); a mandatory need without a source is a gap record (item 4); items 5 to 7 apply as written, with "task definition" in place of "package".
+
 1. **The cache key** is not the question text alone. It includes: the work and the use type, the target and source revisions, the permission view, the role class and scope, the common rules and the role and method versions, the search index and the embedding model version.
 2. **Events that make a package stale:** When any element of the key changes, the package becomes `stale`. Staleness based on time alone is not used; time is an additional upper bound against changes that were not recorded.
 3. **Rebuild order:** First the use type is determined; then the mandatory needs and the permissions; then the candidate sources (direct access by identifier, keyword and semantic search, relation neighbours); the candidate set first passes through the authority filter and, after selection, through the sufficiency review. The result is a new package revision, not a prompt that changes silently.
@@ -58,7 +60,7 @@ The change in Git and the record in the database are not a single transaction. E
 1. When the basis of a decision changes, the affected work items are taken into the **candidate review set**; they are not all automatically counted as wrong or cancelled. The review determines for which use the earlier output is still valid.
 2. The late result of a cancelled or expired claim is kept as candidate evidence; it does not mix into the current product.
 3. That a cancel command has been sent does not mean that the external effect path has really stopped; this is verified by observation.
-4. **On reassignment**, first the authorised result object, the request link and the last dispatch record are checked: if a result has been produced, the work moves on to the consumer's review; if not, a new claim is opened. The same research is not repeated blindly.
+4. **On reassignment**, first the authorised result object, the task definition recorded with the work item and the last hand-over event are checked (the request link and the dispatch record once the request protocol and the context package are activated, PC-08): if a result has been produced, the work moves on to the consumer's review; if not, a new claim is opened. The same research is not repeated blindly.
 5. **Cycles and deadlock:** Where A waits for B, and B waits for a decision that A has not yet produced, it is first established whether this is a real dependency cycle, a request for information or a malformed request. Asking for a limited draft or an explicit assumption instead of a final decision can open the cycle; this change does not make an unauthorised assumption real.
 
 ## G6. Recovery sequence

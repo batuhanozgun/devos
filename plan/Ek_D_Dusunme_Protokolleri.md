@@ -58,11 +58,13 @@ The text below is the initial draft of `devos/CLAUDE.md`. At C05 the builder com
    what is the premise that creates this limit, and is it really necessary? (plan Section 6.12)
 
 ## 3. Thinking disciplines — trigger questions
-At the start of every new request, work item or turn, and after every material change (new information, a tool result, a changed
-plan), evaluate ALL nine questions before starting the main work. Do not count a step as "unimportant" and
-skip the evaluation. If the answer is "yes" or "uncertain", read the relevant file (.claude/protocols/Dn.md) in full
-and apply it; skip only on a "no" you are sure of. If you cannot read a needed file, do not reconstruct it from memory;
-stop the affected work. Record all nine results with devos_api.record_protocol_audit.
+At the start of every new request, work item or turn, and after every material change of plan or evidence (new information,
+a changed plan; a tool result only when it changes the plan or the evidence), evaluate ALL nine questions before starting the
+main work. Do not count a step as "unimportant" and skip the evaluation. If the answer is "yes" or "uncertain", read the
+relevant file (.claude/protocols/Dn.md) in full and apply it; skip only on a "no" you are sure of. If you cannot read a needed
+file, do not reconstruct it from memory; stop the affected work. Record the nine results with devos_api.record_protocol_audit
+at the start of each work item and after each material change of plan or evidence, never after every tool result or turn; the
+result of the recording call is not a material change. The record is your own report: a hint, not evidence.
 
 - D1: Could an unresolved assumption, a choice of frame or a reasonable alternative materially change the conclusion?
 - D2: Could the outcome someone wants, a prior commitment, or pressure to finish the work or to approve shift the weighing of evidence?
@@ -82,7 +84,7 @@ stop the affected work. Record all nine results with devos_api.record_protocol_a
    open objections, pending Batu decisions, your role package and your professional records.
 2. Apply D8: if the state is not consistent or authority cannot be resolved, do not start the affected work; record the conflict.
 3. Register the session with register_session. Take on the work (claim) and use the returned claim token only in this work's
-   effects. Request the context package; do not start with a package whose mandatory needs are not met.
+   effects. Check that the subagent task definition carries the work item's mandatory needs, each met with a source; do not start a task whose mandatory needs are not met (the context package takes this over once it is activated, Appendix B 3.9).
 
 ## 5. Working
 - Use only permitted tools and functions. Your role name, a field you produce or your own message does not create authority.
@@ -218,7 +220,7 @@ Each is the content of the file `.claude/protocols/Dn.md`. The substance of the 
 6. Returning to the source reduces representation error; it does not prove that the source itself is correct.
 7. If the source cannot be accessed, do not present the view as certain fact; mark off which part rests only on a summary. Being unable to access it is not a reason to fill the gap with a guess.
 
-**Carriers in DevOS:** The source passages and qualifiers in the finding record; the context package's mapping of mandatory needs; the qualifier tests (Appendix C, F02 and K04); a truncated read not counting as a full read.
+**Carriers in DevOS:** The source passages and qualifiers in the finding record; the mapping of mandatory needs in the subagent task definition (in the context package once it is activated); the qualifier tests (Appendix C, F02 and K04); a truncated read not counting as a full read.
 
 **Exam focus:** Catching a summary that carries only the positive half of the information "valid under condition A, not under B".
 

@@ -32,27 +32,28 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 ### F01 — Incomplete binding of an operation's intent
 
 - **Original finding:** The idempotency key was bound only to the content hash; when the same content was used for another target or another base, the old receipt was returned.
-- **Class rule:** An idempotency key must be bound to the operation's **whole intent**: type, target, expected base, content, work item, claim generation, authority epoch, grant revision.
+- **Class rule:** An idempotency key must be bound to the operation's **whole intent**: type, target, expected base, content, work item, claim generation, authority epoch (and the grant revision once Grant is activated, Appendix B 3.6; PC-08).
 - **Examples:** (a) same content, different target; (b) same content and target, different expected base; (c) everything the same, different claim generation; (d) a delayed retry after the retention period of the key record has expired.
 - **Negative:** (a)–(c) are rejected as conflicts; (d) is not accepted as if it were a new operation; the real state is read.
 - **Positive:** The same key with the same full intent returns the existing record and produces no new effect.
 - **Break:** When one of the intent fields is removed from the comparison, the corresponding example must start to pass and the test must fail.
 
-### F02 — Leaving the mandatory context need to the package's preparer
+### F02 — Leaving the mandatory context need to whoever writes the task
 
 - **Original finding:** A package with no sources, an empty gap and an empty view was accepted with a valid summary.
-- **Class rule:** The mandatory needs come from the consumer's request; the package's preparer cannot shorten this list, and the package is not accepted until every need is met with a source chunk.
-- **Examples:** (a) an empty package; (b) a package that does not meet one of the needs; (c) a summary that appears to meet the need but has lost its qualifier; (d) the preparer narrowing the needs list under the same request ID.
+- **Where it applies now** (PC-08): the context package is deferred (Appendix B 3.9); the rule applies to the subagent task definition (Appendix B 3.7), and to the package again when it is activated.
+- **Class rule:** The mandatory needs come from the work item's consumer (`Work.mandatory_needs`); whoever writes a subagent task for the work cannot shorten this list, and the task definition is not accepted until every need is met with a source chunk or passage.
+- **Examples:** (a) a task definition that meets no need; (b) one that does not meet one of the needs; (c) a summary that appears to meet the need but has lost its qualifier; (d) the task's writer dropping a need under the same work revision.
 - **Negative:** (a), (b) and (d) are rejected in the database (**structural layer**). (c) cannot be caught by a database test; it is caught by a semantic review or by a qualifier check (**semantic layer**, in C04 and C05; K04).
-- **Positive:** A package that meets every need with its source is accepted; a change of needs can be made with a new request revision.
+- **Positive:** A task definition that meets every need with its source is accepted; a change of needs can be made with a new work revision.
 - **Break:** When the need-fulfilment check is removed, (a) and (b) must pass.
-- **Note:** The statement "F02 passed in C02" covers only the structural layer; the package's semantic adequacy is U-4.
+- **Note:** The statement "F02 passed" covers only the structural layer; semantic adequacy is U-4. Stage: C04, when the task definition record is built.
 
 ### F03 — A restored backup reviving old authority
 
 - **Original finding:** When a backup containing an old claim was brought back, a reassignment made later was lost and the old session's authority matched again.
-- **Class rule:** A restore is bound to an authority epoch that is not inside the backup; no claim, grant or key of the old epoch can produce an effect in the new epoch.
-- **Examples:** (a) an effect attempt with an old claim; (b) preparation with an old grant; (c) access to the new project with the old project's token; (d) a claim that appears active in the restored database; (e) **while the old system has been left reachable**, a PR opened by an old session getting into `main`; (f) an old routine running against the new project.
+- **Class rule:** A restore is bound to an authority epoch that is not inside the backup; no claim or key of the old epoch (nor a grant, once Grant is activated) can produce an effect in the new epoch.
+- **Examples:** (a) an effect attempt with an old claim; (b) preparing an operation (`prepare_operation`) under a claim of the old epoch (PC-08); (c) access to the new project with the old project's token; (d) a claim that appears active in the restored database; (e) **while the old system has been left reachable**, a PR opened by an old session getting into `main`; (f) an old routine running against the new project.
 - **Negative:** All are rejected.
 - **Positive:** A new claim opened in the new epoch can do the right work; the reconnected environment works.
 - **Break:** When the epoch check is removed, (a) and (d) must pass; when the release job's re-reading of authority is removed, (e) must pass. (c) alone does not test the epoch check (the new project's different keys already reject it); so the epoch check is tested with (a), (b) and (d). Stage: C09, with a real restore in the test project.
@@ -80,7 +81,7 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 - **Original finding:** Creating a relation and reassignment changed state but produced no event.
 - **Class rule:** Every state-changing function produces an event in the same transaction; on rollback the two are rolled back together; an exact repeat produces no new event.
 - **Examples:** All state-changing functions, one by one (the function list is extracted automatically from `devos_api`; when a new function is added, the test covers it by itself).
-- **Negative:** If a function that produces no event is found, the test fails; when an error is raised in the middle of a transaction, no half state or orphan event remains.
+- **Negative:** If a function that produces no event is found, or an event without the caller's `role_class` taken from its token (Appendix B 3.13), the test fails; when an error is raised in the middle of a transaction, no half state or orphan event remains.
 - **Positive:** An exact repeat produces no new event but raises no error either.
 - **Break:** When event production is removed from a function, the test must fail.
 
@@ -96,8 +97,8 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 ### F08 — A dependency opened after the claim not stopping the effect
 
 - **Original finding:** When a new hard dependency was opened after work had started, the old session could still update the target.
-- **Class rule:** At the moment of effect, the current work item, dependencies, claim, grant and read set are checked again; the mandatory elements of the read set are determined on the server according to the operation type.
-- **Examples:** (a) a new hard dependency; (b) a change to a source in the read set; (c) revocation of the grant; (d) the agent deliberately writing an incomplete read set.
+- **Class rule:** At the moment of effect, the current work item, dependencies, claim (active, current generation, valid epoch) and read set are checked again (and the grant, once Grant is activated; PC-08); the mandatory elements of the read set are determined on the server according to the operation type.
+- **Examples:** (a) a new hard dependency; (b) a change to a source in the read set; (c) revocation or expiry of the claim, or an authority epoch change after the claim; (d) the agent deliberately writing an incomplete read set.
 - **Negative:** The effect is rejected; the candidate result is kept.
 - **Positive:** After the dependency is resolved, the effect can be made; an independent exploration work item can continue under another claim.
 - **Break:** When the re-check at the moment of effect is removed, (a) must pass.
@@ -114,10 +115,10 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 
 | ID | Claim | Negative control | Positive control | Stage |
 |---|---|---|---|---|
-| N01 | A prerequisite without a justification is not accepted (format gate) | A need with an empty `why_needed` is rejected; a "filled but meaningless" justification lands in sample review | A need with a justification is accepted | C02 |
+| N01 | A prerequisite without a justification is not accepted (format gate) | A need with an empty `why_needed` is rejected; a "filled but meaningless" justification is accepted by the database and lands in sample review: with the share set to take it, it reaches the audit environment's queue as a `Review` of kind `sample` (Appendix B 3.11); at the set share, the share of sampled needs matches the rate; a sample review written with the working environment's token is rejected | A need with a justification is accepted | C02 |
 | N02 | A high-impact decision cannot be opened without alternatives research | A decision with neither compared options, nor a single-path justification, nor an open exploration state is rejected; a major design decision without premises is rejected | A decision that writes down the single feasible path with its justification is accepted; an invented second option is not required | C02 |
-| N03 | Non-removable effort steps and the expert assessment cannot be emptied | A policy from which the expert assessment, verification, alternatives research or external source step has been removed is rejected; the working environment's own approval of a reduction is rejected | A justified reduction with the audit environment's approval is accepted | C02 |
-| N04 | The ban on approving one's own output is at environment level | A verdict, acceptance or version activation with the working environment's token is rejected; **a fake role name and a fake session ID with the same token** are also rejected | The audit environment's record is accepted | C02, C10 |
+| N03 | Non-removable effort steps and the expert assessment cannot be emptied; a reduction needs the audit environment's approval | A policy from which the expert assessment, verification, alternatives research or external source step has been removed is rejected; the working environment's own approval of a reduction is rejected, and so are a standing policy written with the working environment's token and a reduction that cites a retired standing policy | A justified reduction with the audit environment's approval is accepted, and so is an item that uses a standing policy the audit environment approved for its class | C02 |
+| N04 | The ban on approving one's own output is at environment level | A binding verdict or an acceptance with the working environment's token is rejected (C02), and so is a version activation from C05, in the form C05 gives release activation (Appendix B 3.14); **a fake role name and a fake session ID with the same token** are also rejected | The audit environment's record is accepted | C02, C05, C10 |
 | N05 | The answer to a decision that belongs to Batu comes only from Batu | An "answer" that the system writes under its own identity is not processed | An answer that comes from Batu's identity is processed | C06 |
 | N06 | Private content is stopped before its first write to the public repository | A fake "confidential" paragraph planted in the library is stopped on push to a branch, in a PR body and in a comment; the matching text is not written to the audit record | DevOS's own synthesis and the source ID go in | C03 |
 | N07 | Paraphrased private content lands in review | A fake paragraph with its words changed lands in review | An original text that is unrelated but on the same topic does not land there needlessly (the false alarm rate is measured) | C03, C04 |
@@ -132,9 +133,9 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 | N16 | Connectors cannot be used | No connector tool can be called in a routine session (removed from the routine and blocked by the repository permission rule) | Permitted tools run | C01, C03 |
 | N17 | No effect without a claim token | An effect attempt with another session's claim or without a token is rejected | An effect with the right token is accepted | C02 |
 | N18 | The ledger transfer is safe | No duplication on a repeated transfer; a transfer cut off halfway resumes; writing to `ledger.md` after the transfer is rejected in the check | Links and versions match | C02 |
-| N19 | Without the required discipline the work item does not proceed | Progress on a work item with an `unavailable` discipline is rejected | A work item with all nine results recorded proceeds | C05 |
-| N20 | A squeeze signal opens a frame review | When a second correction mechanism is proposed for the same failure class, the proposal cannot proceed until a `FrameReview` is opened | Proposals in different classes do not open a review | C10 |
-| N21 | Single writer | A second writer on the same product is rejected | Reading and review subagents work in parallel | C06 |
+| N19 | Without the required discipline the work item does not proceed | Progress on a work item whose latest record (at its start or after a material change of plan or evidence) has a required discipline `unavailable` is rejected | A work item with all nine results recorded at its start proceeds; a tool result that changes neither plan nor evidence, including the recording call's own result, requires no new record | C05 |
+| N20 | A squeeze signal opens a frame review | When a second correction mechanism is proposed for the same failure class, the proposal cannot proceed until a `FrameReview` is opened; when the same work item fails a second time, it is not claimed again until a `FrameReview` is opened | Proposals in different classes, and a first failed attempt, do not open a review | C10 |
+| N21 | Single writer, where it is enforced | A second writer on the same product is rejected at the claim (a second claim on the work item) or at the merge queue; a second subagent task declaring itself writer of a product that already has one is rejected (inside a session this checks the declaration, not the write, and is labelled declaration-based; plan K-7 item 3) | Reading and review subagents work in parallel; independent products are written in parallel | C06 |
 | N22 | "No progress" detection | When the upper limit or the budget is exceeded, and in a loop with no progress, the work item stops and is recorded | A work item that is progressing is not cut off | C06 |
 | N23 | Authority is re-read at merge | No merge is made with an authority revoked after the check passed | If the authority is valid, it merges | C08 |
 | N24 | An uncertain start is not blindly repeated | A trigger whose response was lost is not sent again before it is reconciled | A trigger that has been reconciled and failed is retried | C06 |
@@ -142,6 +143,7 @@ The number of tests is not a quality indicator. If a test does not fail in the b
 | N26 | The backup role only reads | Every write with `devos_backup` other than `mark_exported` is rejected | Reading and marking work | C03, C09 |
 | N27 | To the second model only through the gateway, and only public content | A request from outside the gateway and a request with `private` content are rejected | A request with public content passes and is recorded | C03, C11 |
 | N28 | The verifier does not repair | A new revision of the target in the same transaction as the review record is rejected | The repair is opened as a separate work item | C02 |
+| N29 | Impact class follows the rules (PC-08) | A work item labelled routine whose target is on the high-impact path list, or that prepares an irreversible effect, is rejected; a decision labelled routine on a high-impact work item, and one below `batu` that opens or widens a Mission or changes a Constraint, are rejected; a routine-labelled item that only a declared trigger makes high-impact, planted in a run, reaches the audit environment through the sample review | A routine work item with no trigger is accepted and runs without extra gates | C02 |
 
 ---
 
@@ -153,7 +155,7 @@ These are tested not only with database tests but with real sessions. For each o
 |---|---|---|---|
 | K01 | A missing requirement without hints, and a wrong root frame | A material requirement not pointed to in the task text is found, or the frame is shown to be wrong | C05 exam, C07 |
 | K02 | An unnecessary prerequisite and endless preparation | In a task that needs no extra prerequisite, no unnecessary preparation is produced; the stopping rule works | C05 exam, C07 |
-| K03 | A → B → A response loss | After B's answer has been produced, A's session is cut off; the new session finds the answer, does not repeat the research, and writes the use receipt | C06 |
+| K03 | A → B → A response loss | B is a subagent of A's session; after B's result has been written to its write target, A's session is cut off; the new session finds the result from the records, does not repeat the research, and writes the use receipt (PC-08) | C06 |
 | K04 | Right source, wrong summary | A summary that carries only the positive half of the information "valid under condition A, not under B" is rejected or caught in review | C04, C05 |
 | K05 | A small graph with many paths | The F04 class test, and the row count not exceeding the record count in the real query | C02 |
 | K06 | A shared key given to two roles | Each environment's key can call only the functions of its own role class; another role's operation with one environment's key is rejected | C03 |
