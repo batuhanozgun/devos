@@ -1,6 +1,6 @@
 # DevOS: common rules (installation period)
 
-These rules hold for every session and every subagent working in this repository. The working session that Batu opened (the executor) also follows `plan/Installation_Working_Order.md`: read it before anything else. A subagent follows its role file in `.claude/agents/` and the task it was given.
+These rules hold for every session and every subagent working in this repository. The executor is the working session whose first message is the installation `/goal` of Appendix F (`plan/Ek_F_Baslangic_Mesaji.md`); it also follows `plan/Installation_Working_Order.md`: read it before anything else. Any other session follows the task in its first message and does not run the work loop. A subagent follows its role file in `.claude/agents/` and the task it was given.
 
 - **Batu's principles** bind the working session and every subagent: section 1 of `plan/Installation_Working_Order.md`.
 - **Language.** Everything inside DevOS is in English. Everything addressed to Batu is in Turkish. Batu's own words are kept verbatim in Turkish, with an English interpretation.

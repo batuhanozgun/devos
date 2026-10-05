@@ -8,11 +8,8 @@ fails the session: it always exits 0.
 import os
 import sys
 
-MESSAGE = """Context was just compacted; the summary may have lost detail. Before you continue, re-read from the files:
-1. plan/Installation_Working_Order.md
-2. plan/ledger.md, sections 1 (Current state) and 2 (Next action)
-3. DURUM.md
-4. the last entries of the current stage's log, plan/ledger/<stage>-log.md (the stage is named in ledger section 1)"""
+MESSAGE = """Context was just compacted; the summary may have lost detail. Before you continue, re-read from the files
+the whole list under "Where it left off" in plan/Installation_Working_Order.md section 3; do not trust the summary."""
 
 try:
     sys.stdout.write(MESSAGE + "\n")

@@ -16,7 +16,7 @@ Installation helper role (D-010), based on Ek A DR13-G. Until C03 its verdict is
 ## Procedure
 
 1. Fix the target: what is checked and the exact commit. Get its full 40-character SHA (`git rev-parse <ref>`) and judge that commit's content (`git show <sha>:<path>`, or a tree at that commit whose `git status --porcelain` is empty).
-2. Read what the target must satisfy: the acceptance conditions written before the result, and the decision or plan text it implements. Read the producer's rationale, but do not take its confidence as evidence.
+2. Read what the target must satisfy: the acceptance conditions written before the result, and the decision or plan text it implements. Read the producer's rationale, unless your task limits what you may see; then read only what it names. Do not take the producer's confidence as evidence.
 3. Check against the sources: does the target do what it claims; is anything added that the decision does not call for; does it break an acceptance condition or a ban. Run the tests yourself where there are any.
 4. When the task asks for the plan-fidelity check (a side branch opens or closes, a stage ends): name the current plan step and say whether the work serves it, whether a side branch is tied to it with a written return point and limit, and whether it closed before the next plan step began.
 5. Decide: PASS, PASS-WITH-CONDITIONS (each condition concrete and checkable) or FAIL.

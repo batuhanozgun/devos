@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""test_merge_gate.py: planted cases for tools/merge_gate.py and guard rule M7 (D-010; PC-06).
+"""test_merge_gate.py: planted cases for tools/merge_gate.py and guard rule M7 (D-010; PC-06; R-TRANS-1).
 
 The fixture is a scratch repository whose origin is a local bare repository; it carries copies of this working
 tree's gate and guard. Each pull request head is pushed to refs/pull/N/head and the gate is run as M7 runs it
@@ -29,6 +29,18 @@ date: 2026-10-05
 Findings: none (fixture).
 """
 INDEPENDENCE = 'independence: "same session, fresh-context subagent (declared, Ek A 373)"\n'
+ITEM = """---
+id: W-T-01
+---
+
+# W-T-01
+
+<!-- acceptance -->
+All 20 cases pass, reviewed by a fresh-context checker
+<!-- /acceptance -->
+
+## Notes
+"""
 
 
 def run(args, cwd, stdin=None, env=None):
@@ -54,6 +66,8 @@ class Fixture:
         self.write(".claude/hooks/owned_ids.txt", "# owned IDs\n")
         self.write("CLAUDE.md", "rules\n")
         self.write("plan/notes.md", "notes\n")
+        self.write("plan/work/W-T-01.md", ITEM)
+        self.write("plan/work/T01.md", "# T01 (a stage file without an acceptance block)\n")
         self.commit("base")
         self.git("push", "-q", "origin", "main")
 
@@ -81,6 +95,11 @@ class Fixture:
     def push(self, pr):
         self.git("push", "-q", "origin", f"+HEAD:refs/pull/{pr}/head")
         return self.git("rev-parse", "HEAD")
+
+    def merge(self, name):
+        self.git("checkout", "-q", "main")
+        self.git("merge", "-q", "--no-ff", "-m", f"Merge {name}", name)
+        self.git("push", "-q", "origin", "main")
 
     def verdict(self, n, sha, verdict="PASS", independence=INDEPENDENCE):
         self.write(f"evidence/C00/checks/CHK-C00-{n:03d}.md",
@@ -186,6 +205,70 @@ def main():
         rc, out = s.gate(13, s.push(13))
         case("(13) a change to plan/Installation_Working_Order.md is class high", rc == 1 and
              "class high: plan/Installation_Working_Order.md" in out, out)
+        # (14, 15, 16) acceptance conditions (R-TRANS-1 B1; probe P1): changing, removing or deleting is class high
+        s.branch("pr14")
+        s.write("plan/work/W-T-01.md", ITEM.replace("All 20 cases pass, reviewed by a fresh-context checker",
+                                                    "Most cases pass"))
+        s.commit("loosen an acceptance condition")
+        rc, out = s.gate(14, s.push(14))
+        case("(14) changing the text of an existing acceptance block is class high", rc == 1 and "GATE FAIL" in out
+             and "plan/work/W-T-01.md (an existing acceptance block changed or removed)" in out, out)
+        s.branch("pr14b")
+        s.write("plan/work/W-T-01.md", ITEM.split("<!-- acceptance -->")[0] + "## Notes\n")
+        s.commit("remove an acceptance block")
+        rc, out = s.gate(14, s.push(14))
+        case("(14b) removing an existing acceptance block is class high", rc == 1 and
+             "plan/work/W-T-01.md (an existing acceptance block changed or removed)" in out, out)
+        s.branch("pr15")
+        s.git("rm", "-q", "plan/work/W-T-01.md")
+        s.commit("delete a work item file")
+        rc, out = s.gate(15, s.push(15))
+        case("(15) deleting a plan/work/*.md file is class high", rc == 1 and
+             "plan/work/W-T-01.md (work item file deleted)" in out, out)
+        s.branch("pr16")
+        s.append("plan/work/T01.md", "<!-- acceptance -->\nA new condition\n<!-- /acceptance -->")
+        s.write("plan/work/W-T-02.md", ITEM.replace("W-T-01", "W-T-02"))
+        s.append("plan/work/W-T-01.md", "A note outside the acceptance block.")
+        s.commit("add acceptance blocks where none existed")
+        rc, out = s.gate(16, s.push(16))
+        case("(16) adding a block where none existed, and editing outside a block, stay class normal", rc == 0 and
+             "class normal" in out, out)
+        # (17) a repeated front-matter key fails closed (R-TRANS-1 m1; probe P3)
+        s.branch("pr17")
+        s.append("CLAUDE.md", "class-high change 17")
+        x = s.commit("class-high change 17")
+        s.verdict(8, x, verdict="FAIL\nverdict: PASS")
+        rc, out = s.gate(17, s.push(17))
+        case("(17) a verdict file with a repeated key does not cover", rc == 1 and "a key repeats" in out, out)
+        # (18) nested rule files are class high (R-TRANS-1 m2; probe P4)
+        s.branch("pr18")
+        s.write("plan/CLAUDE.md", "nested rules\n")
+        s.write("docs/.claude/settings.json", "{}\n")
+        s.commit("nested rule files")
+        rc, out = s.gate(18, s.push(18))
+        case("(18) a nested CLAUDE.md and a nested .claude/ path are class high", rc == 1 and
+             "docs/.claude/settings.json" in out and "plan/CLAUDE.md" in out, out)
+        # (19) only a verdict the pull request adds, for a commit of the pull request, covers (R-TRANS-1 B2; probe P2)
+        s.branch("prA")
+        s.append("CLAUDE.md", "rule A")
+        rules_a = (s.d / "CLAUDE.md").read_text()
+        xa = s.commit("rule A")
+        s.verdict(5, xa)
+        s.merge("prA")
+        s.branch("prB")
+        s.append("CLAUDE.md", "security rule B")
+        s.verdict(6, s.commit("security rule B"))
+        s.merge("prB")
+        s.branch("prC")
+        s.write("CLAUDE.md", rules_a)
+        s.commit("remove rule B")
+        rc, out = s.gate(19, s.push(19))
+        case("(19) a pull request that reverts a reviewed change, adding no verdict, is not covered by an older "
+             "verdict on main", rc == 1 and "class high: CLAUDE.md" in out and "GATE FAIL" in out, out)
+        s.verdict(7, xa)
+        rc, out = s.gate(19, s.push(19))
+        case("(19b) a verdict the pull request adds for a commit already on main does not cover", rc == 1 and
+             "is an ancestor of the merge base" in out, out)
     ok = bool(RESULTS) and all(RESULTS)
     print(f"MERGE_GATE_TEST {'PASS' if ok else 'FAIL'} ({sum(RESULTS)}/{len(RESULTS)})")
     return 0 if ok else 1

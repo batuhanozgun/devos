@@ -9,8 +9,9 @@ bad() { echo "FAIL  $1"; fail=1; }
 git fetch -q origin main 2>/dev/null || bad "cannot fetch origin/main"
 om=$(git rev-parse -q --verify origin/main 2>/dev/null || true)
 br=$(git branch --show-current 2>/dev/null)
-if [ "$br" = "main" ] && [ -n "$om" ] && [ "$(git rev-parse HEAD)" = "$om" ]; then ok "main equals origin/main (${om:0:12})"
-else bad "the working tree is not on main at origin/main (branch '${br:-none}', head $(git rev-parse --short HEAD), origin/main ${om:0:12})"; fi
+echo "      branch: ${br:-none (detached HEAD)} (information only)"
+if [ -n "$om" ] && [ "$(git rev-parse HEAD)" = "$om" ]; then ok "HEAD equals origin/main (${om:0:12})"
+else bad "HEAD is not at origin/main (head $(git rev-parse --short HEAD), origin/main ${om:0:12})"; fi
 
 [ -z "$(git status --porcelain)" ] && ok "working tree clean" || bad "uncommitted changes: $(git status --porcelain | head -5 | tr '\n' ' ')"
 

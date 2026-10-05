@@ -25,7 +25,7 @@
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. Kurulumu nasıl yürüteceğimize birlikte karar verdik ve sen onayladın (D-010): tek bir çalışma oturumu planı adım adım işletecek, işi rol tanımlı alt ajanlara ve workflow'lara dağıtacak; kurucunun eski oturum zinciri düzeni kaldırılıyor. <br>2. D-009 geri çekildi, cevaplaman gerekmiyor. PC-01 (her aşamaya ayrı /goal) senin kararın değildi; bütün kurulum için tek /goal olacak. <br>3. Şu an geçiş yapılıyor: yeni kural dosyaları yazılıyor, sonra bir kez bağımsız incelenecek (o an bu oturumu 1 dakika Auto'ya alman gerekecek), sonra çalışma oturumunu sen açacaksın. <br>**Riskler:** <br>- Tek oturumun özetlemeyle uzun süre plandan kopmadan çalışacağı varsayım; ilk özetlemede gözlenecek. <br>- Kullanım limiti dolarsa, sıfırlandıktan sonra senin bir "devam" mesajın gerekecek. | 2026-10-05T17:58Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T19:22Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T19:55Z |
 
 ---
 
@@ -133,7 +133,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | superseded | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |
-| `PC-04` | Builder operating model for the installation period (`plan/Builder_Operating_Model.md`) | technical | answered | `plan/decisions/PC-04.md` |
+| `PC-04` | Builder operating model for the installation period | technical | answered | `plan/decisions/PC-04.md` |
 | `PC-05` | Technical approval of high-impact changes moves from Batu to independent review | batu | answered | `plan/decisions/PC-05.md` |
 | `PC-06` | The installation runs in one working session: plan text for D-010 (working order in section 9, binding review until C03 by a fresh-context checker subagent, one installation-wide /goal) | batu | answered | `plan/decisions/PC-06.md` |
 <!-- /generated -->

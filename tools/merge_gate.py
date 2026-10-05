@@ -5,16 +5,18 @@ plan/Installation_Working_Order.md).
 Usage, from the repository root: python3 tools/merge_gate.py --pr N --head SHA
 
 It fetches main and the pull request's head from origin; the head must be SHA (40 characters). A head whose
-diff from its merge base with main touches no class-high path passes. A class-high head passes only when its
-own tree holds a checker verdict file evidence/<stage>/checks/CHK-<stage>-<nnn>.md whose front matter names in
-reviewed_head the head, or a commit X that is an ancestor of the head with X..head touching only class-normal
-paths; has verdict PASS or PASS-WITH-CONDITIONS; and has the independence and checker_run fields. Anything else
-fails closed, with the reason.
+diff from its merge base with main is class normal passes. A class-high head passes only when the pull request
+adds or changes a checker verdict file evidence/<stage>/checks/CHK-<stage>-<nnn>.md whose front matter names in
+reviewed_head the head, or a commit X of this pull request (an ancestor of the head, not an ancestor of the merge
+base) with X..head class normal; has verdict PASS or PASS-WITH-CONDITIONS; has the independence and checker_run
+fields; and repeats no key. Anything else fails closed, with the reason.
 
-Class-high paths: .claude/**, tools/**, .github/workflows/**, CLAUDE.md, .gitattributes,
+Class high: .claude/**, tools/**, .github/workflows/**, CLAUDE.md, .gitattributes,
 plan/Installation_Working_Order.md (successor of the retired plan/Builder_Operating_Model.md),
-plan/Ek_A_Rol_Sozlesmeleri.md and plan/Ek_D_Dusunme_Protokolleri.md. A change to .claude/hooks/owned_ids.txt
-that only adds recorder lines (session_... or trig_...) is class normal.
+plan/Ek_A_Rol_Sozlesmeleri.md and plan/Ek_D_Dusunme_Protokolleri.md; any path whose file name is CLAUDE.md or
+that has a .claude/ component; deleting a plan/work/*.md file, or changing or removing an existing
+<!-- acceptance --> block in one (adding a block where none existed is class normal). A change to
+.claude/hooks/owned_ids.txt that only adds recorder lines (session_... or trig_...) is class normal.
 
 Output: reason lines, then GATE PASS (exit 0) or GATE FAIL (exit 1); GATE ERROR (exit 2) when it cannot run.
 """
@@ -30,6 +32,7 @@ HIGH_PREFIXES = (".claude/", "tools/", ".github/workflows/")
 HIGH_FILES = {"CLAUDE.md", ".gitattributes", "plan/Installation_Working_Order.md", "plan/Ek_A_Rol_Sozlesmeleri.md",
               "plan/Ek_D_Dusunme_Protokolleri.md"}
 OWNED = ".claude/hooks/owned_ids.txt"
+ACC_OPEN, ACC_CLOSE = "<!-- acceptance -->", "<!-- /acceptance -->"
 RECORDER_LINE = re.compile(r"(session|trig)_[A-Za-z0-9]+")
 VERDICT_PATH = re.compile(r"evidence/([^/]+)/checks/CHK-\1-\d{3,}\.md")
 SHA40 = re.compile(r"[0-9a-f]{40}")
@@ -66,36 +69,55 @@ def recorder_only(old, new):
                for t, _, _, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes())
 
 
+def acceptance_blocks(text):
+    """The text of each <!-- acceptance --> block, in order (an unclosed block runs to the end of the file)."""
+    return [part.split(ACC_CLOSE)[0] for part in text.split(ACC_OPEN)[1:]]
+
+
 def high_paths(base, head):
     """The class-high paths that base..head touches; empty means class normal."""
     out = []
     for p in changed(base, head):
+        parts = p.split("/")
         if p == OWNED:
             if not recorder_only(show(base, p), show(head, p)):
                 out.append(f"{p} (not only added recorder lines)")
-        elif p.startswith(HIGH_PREFIXES) or p in HIGH_FILES:
+        elif p.startswith(HIGH_PREFIXES) or p in HIGH_FILES or parts[-1] == "CLAUDE.md" or ".claude" in parts[:-1]:
             out.append(p)
+        elif p.startswith("plan/work/") and p.endswith(".md"):
+            old = acceptance_blocks(show(base, p))
+            if git("cat-file", "-e", f"{head}:{p}", ok=True) is None:
+                out.append(f"{p} (work item file deleted)")
+            elif old and acceptance_blocks(show(head, p)) != old:
+                out.append(f"{p} (an existing acceptance block changed or removed)")
     return out
 
 
 def front(text):
-    """The top-level `key: value` lines of the front matter (quotes stripped); None when there is none."""
+    """The top-level `key: value` lines of the front matter (quotes stripped); None when there is none or when a
+    key repeats (fail closed: which occurrence counts would be ambiguous)."""
     if not text.startswith("---\n") or "\n---" not in text[3:]:
         return None
-    lines = (re.match(r"([a-z_]+):(.*)", line) for line in text[4:text.index("\n---", 3)].splitlines())
-    return {m.group(1): m.group(2).strip().strip("\"'") for m in lines if m}
+    meta = {}
+    for line in text[4:text.index("\n---", 3)].splitlines():
+        m = re.match(r"([a-z_]+):(.*)", line)
+        if m:
+            if m.group(1) in meta:
+                return None
+            meta[m.group(1)] = m.group(2).strip().strip("\"'")
+    return meta
 
 
-def cover(head, in_pr):
+def cover(head, base, in_pr):
     """(verdict file, reviewed commit, why): the verdict covering head, (None, None) when none does, and why the
-    verdict files the pull request adds or changes do not cover it."""
+    verdict files the pull request adds or changes do not cover it. Only those files count."""
     why = []
     listing = git("ls-tree", "-r", "-z", "--name-only", head, "--", "evidence")
-    for vf in sorted(p for p in listing.split("\0") if VERDICT_PATH.fullmatch(p)):
+    for vf in sorted(p for p in listing.split("\0") if VERDICT_PATH.fullmatch(p) and p in in_pr):
         meta = front(show(head, vf))
         x = (meta or {}).get("reviewed_head", "")
         if meta is None:
-            problem = "no front matter"
+            problem = "no front matter, or a key repeats in it"
         elif meta.get("verdict") not in COVERING:
             problem = f"verdict {meta.get('verdict')!r} is not PASS or PASS-WITH-CONDITIONS"
         elif not (meta.get("independence") and meta.get("checker_run")):
@@ -104,12 +126,13 @@ def cover(head, in_pr):
             problem = f"reviewed_head {x!r} is not a full 40-character SHA"
         elif x != head and git("merge-base", "--is-ancestor", x, head, ok=True) is None:
             problem = f"reviewed_head {x[:12]} is neither the head nor an ancestor of it"
+        elif git("merge-base", "--is-ancestor", x, base, ok=True) is not None:
+            problem = f"reviewed_head {x[:12]} is an ancestor of the merge base, not a commit of this pull request"
         elif x != head and (hp := high_paths(x, head)):
             problem = f"{x[:12]}..head touches class-high paths: {', '.join(hp[:4])}"
         else:
             return vf, x, why
-        if vf in in_pr:
-            why.append(f"{vf}: {problem}")
+        why.append(f"{vf}: {problem}")
     return None, None, why
 
 
@@ -134,13 +157,14 @@ def gate(pr, head):
     if not high:
         return True, [f"class normal: {base[:12]}..{head[:12]}"]
     lines = ["class high: " + ", ".join(high[:6]) + (" ..." if len(high) > 6 else "")]
-    vf, x, why = cover(head, set(changed(base, head)))
+    vf, x, why = cover(head, base, set(changed(base, head)))
     if vf:
         return True, lines + [f"covered by {vf} (reviewed_head {x[:12]})"]
     return False, lines + why + [
-        "no checker verdict file in the head's tree covers it (evidence/<stage>/checks/CHK-<stage>-<nnn>.md with "
-        "reviewed_head the head or an ancestor X where X..head is class normal, verdict PASS or "
-        "PASS-WITH-CONDITIONS, independence and checker_run)"]
+        "no checker verdict file that this pull request adds or changes covers it "
+        "(evidence/<stage>/checks/CHK-<stage>-<nnn>.md with reviewed_head the head or a commit X of this pull "
+        "request, not an ancestor of the merge base, where X..head is class normal; verdict PASS or "
+        "PASS-WITH-CONDITIONS; independence and checker_run; no repeated key)"]
 
 
 def main(argv=None):

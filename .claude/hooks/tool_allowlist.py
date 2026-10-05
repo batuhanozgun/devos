@@ -183,9 +183,9 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "that a head that moved after review is not merged, and uses the merge method, because squash and "
            "rebase create commits that no verdict names (the short-SHA failure of T-A2).",
            WO + "; D-008", "Pass expectedHeadSha with the full SHA and merge_method merge."),
-    "M7": ("merge gate for class-high changes", "A change to rules, hooks, tools or governing documents (class "
-           "high) merges only with a checker verdict that covers its head. This written check replaces the "
-           "classifier's 'merge without review' rule.",
+    "M7": ("merge gate for class-high changes", "A change to rules, hooks, tools, governing documents or "
+           "acceptance conditions (class high) merges only with a checker verdict that covers its head. This "
+           "written check replaces the classifier's 'merge without review' rule.",
            WO + "; PC-05 as changed by PC-06; tools/merge_gate.py",
            "Have a checker subagent judge the head, write its verdict verbatim to "
            "evidence/<stage>/checks/CHK-<stage>-<nnn>.md on the branch (reviewed_head: the full SHA it judged), "
