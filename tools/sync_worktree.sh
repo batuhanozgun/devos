@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# sync_worktree.sh: fast-forward the live working tree to origin/main (operating model section 9,
-# Working-tree rule; W-C00-12.6). The guard denies other revision changes in this tree (rule B4).
+# sync_worktree.sh: fast-forward the live working tree to origin/main (plan/Installation_Working_Order.md
+# section 4, step 5; W-C00-12.6). The guard denies other revision changes in this tree (rule B4).
 # The only local change it may discard is .claude/hooks/owned_ids.txt, and only when every ID listed there
 # is already on origin/main, so that no owned ID is lost (git refuses a fast-forward over a local change,
 # even an identical one). Any other local change, or an ID that is only local, refuses the sync.

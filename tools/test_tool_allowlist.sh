@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Unit test for .claude/hooks/tool_allowlist.py (the guard, W-C00-12.6; D-008), run through the same wrapper
-# command as .claude/settings.json (negative and positive controls; plan Section 8; T-H4).
+# Unit test for .claude/hooks/tool_allowlist.py (the guard, plan/Installation_Working_Order.md; D-008), run
+# through the same wrapper command as .claude/settings.json (negative and positive controls; plan Section 8; T-H4).
 # Every call must get an explicit decision: allow, deny, or pass (only AskUserQuestion and ExitPlanMode, which
 # the user answers). No output may say "ask". A guard that cannot run must block (exit 2).
 # Usage: tools/test_tool_allowlist.sh [hook-path]   (run from the repository root of a devos clone)

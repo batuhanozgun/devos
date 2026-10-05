@@ -3,7 +3,7 @@
 
 The guard (.claude/hooks/tool_allowlist.py) appends every decision to <log dir>/<session>.jsonl. This prints
 the denials in full and the allowed calls counted by rule, so that a run's log entry records every denial
-with its rule and reason (operating model section 11). Only summaries are printed: the guard already
+with its rule and reason (plan/Installation_Working_Order.md section 9). Only summaries are printed: the guard already
 redacted credentials, and the session's transcript keeps the full call under the logged tool-use ID.
 Each record names the hash of the record before it, so a record edited or removed inside the log shows as a
 broken chain. Records removed from the end, or a deleted log, do not show: the report prints the last record
