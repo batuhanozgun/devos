@@ -1384,3 +1384,11 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **m8 (R-TRANS-1).** summary_tr and DURUM.md now tell Batu his one remaining step: open the working session from the app (environment devos-kurulum, only the devos repository, Accept edits, Opus 5.5) and paste the first message from `plan/Ek_F_Baslangic_Mesaji.md`. After that he types only for his own decisions and after a usage-limit reset (D-010 addendum E3).
 - **Hand-over.** The conversation session `session_01Q32nLatKbtDDY1zSVQZiKX` stops after this entry (D-010 item 13). The working session's first records step is the checker acceptance of W-C00-01, 02 and 04 (N-051), then C00 step 0 (W-C00-06).
 - **Record changes:** plan/ledger.md summary_tr · supersession · the hand-over summary for Batu (R-TRANS-1 m8)
+
+### L-135 · 2026-10-05 · Opening check accepts the permission mode `default` as well as `acceptEdits`
+
+- **Why.** The working order's opening check required `get_session` to show `acceptEdits` and stops all plan work otherwise. A session Batu opens from the app with "Accept edits" registers as `default` (observed in his conversation session `session_01Q32nLatKbtDDY1zSVQZiKX` by `get_session`, each time after he said he had chosen Accept edits in the app: 01:55Z (L-115), 09:24Z (permission_mode_seq 7827) and 09:38Z (seq 8106), all reporting `default`; L-118 CR-1). The working session would have stopped at opening and asked Batu for a change he cannot make. Found by the conversation session after L-134 recorded the hand-over and before the working session was opened, when Batu asked what that session would do first.
+- **Change.** `plan/Installation_Working_Order.md` section 3, opening check step 1: the mode is `acceptEdits` or `default`; in both the guard decides every call. Class high; checked by a fresh-context checker subagent, verdict `evidence/C00/checks/CHK-C00-001.md`.
+- **Guard:** no denial in this change; `tools/guard_report.py` for this session: 64 denied, 3,037 allowed, 0 passed to the user, hash chain intact, last record #3101.
+- **Checker:** CHK-C00-001 PASS-WITH-CONDITIONS at `73fdd3b`; its two conditions (the evidence times above, and this Guard line) are met in this class-normal follow-up.
+- **Record changes:** evidence/C00/checks/CHK-C00-001.md · addition · checker verdict for this change
