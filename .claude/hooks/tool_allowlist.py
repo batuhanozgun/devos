@@ -209,14 +209,18 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "Create the routine without connectors, bound to an owned session."),
     "S5": ("repositories", "Only devos may be attached, and the research library read-only.",
            "section 9, Session tools; CLAUDE.md", "Attach only devos, or the library with access read."),
-    "S6": ("a generated task brief starts every new session", "A new session's task is the brief that "
-           "tools/records.py generates from the records at the revision it checks out, so a session never "
-           "starts from a hand-written or stale task; the brief ends the first message, nothing may follow it "
-           "or ride beside it, and a run brief comes only from the lease holder or once the lease is stale.",
+    "S6": ("a generated task brief ends every new session's first message", "A new session's first message must "
+           "end with the brief that tools/records.py generates from the records at the revision it checks out, so "
+           "that every session starts from the records' current state; nothing may follow the brief and no "
+           "append_system_prompt may ride beside it, and a run brief comes only from the lease holder or once the "
+           "lease on main is stale. Not checked by this rule: the text before the brief (the role file's task) and "
+           "every later message to the session.",
            "plan/builder/design/03_work_model.md W-R6; tranche 1c (W-C00-12.4)",
-           "Generate the brief with tools/records.py brief <ID> --role <role> (or brief run --role producer) on "
-           "the revision the session checks out, end the first message with it, and pass no "
-           "append_system_prompt."),
+           "For a wrong or stale hash: regenerate the brief on the current revision with tools/records.py brief "
+           "<ID> --role <role> (a verifier brief with its --target-sha and --failure-classes; a run brief with "
+           "brief run --role producer), end the first message with it, and pass no append_system_prompt. For a run "
+           "brief refused by the lease: do not start the run; a live lease means another run works, so report and "
+           "stop (operating model section 2.2)."),
     "F1": ("live guard files", "This working tree's .claude/ holds the guard itself, its settings and the "
            "owned-ID list; a change there takes effect at once, without review.",
            "section 9, Working-tree rule; PC-05", "Edit in a scratch clone outside this working tree, open a "
@@ -1419,6 +1423,20 @@ def session_checks(tool, args):
     raise Bad("S1", f"session tool '{tool}' is not on the allow list")
 
 
+def fetch_rev(ref):
+    """Fetch origin's branch `ref` into a ref private to this call and return its commit, or None. Never reads the
+    shared FETCH_HEAD, which a parallel fetch (another guard call, or the session itself) can move between the fetch
+    and the read (1c port Critic, finding 1)."""
+    priv = f"refs/devos-guard/{os.getpid()}-{os.urandom(4).hex()}"
+    try:
+        if git("fetch", "-q", "origin", f"+refs/heads/{ref}:{priv}").returncode != 0:
+            return None
+        sha = git("rev-parse", "--verify", "-q", f"{priv}^{{commit}}").stdout.strip()
+    finally:
+        git("update-ref", "-d", priv)
+    return sha if SHA40.fullmatch(sha) else None
+
+
 def revision_has_barrier(rev):
     """The remote revision a new session will check out must carry .claude/settings.json.
     It is fetched first (R-C00-BOM-4 m2); a failed fetch blocks. Returns the fetched commit, or None."""
@@ -1430,10 +1448,8 @@ def revision_has_barrier(rev):
         ref = rev
     else:
         return None
-    if git("fetch", "-q", "origin", ref).returncode != 0:
-        return None
-    sha = git("rev-parse", "FETCH_HEAD").stdout.strip()
-    if not SHA40.fullmatch(sha) or git("cat-file", "-e", f"{sha}:.claude/settings.json").returncode != 0:
+    sha = fetch_rev(ref)
+    if not sha or git("cat-file", "-e", f"{sha}:.claude/settings.json").returncode != 0:
         return None
     return sha
 
@@ -1452,9 +1468,10 @@ def brief_gate(prompt, sha):
         if role != "producer":
             return f"a run brief has role producer, not '{role}'"
         me = norm(os.environ.get("CLAUDE_CODE_REMOTE_SESSION_ID", ""))
-        if git("fetch", "-q", "origin", "main").returncode != 0:
+        main_sha = fetch_rev("main")   # main's own commit: not FETCH_HEAD, not the source revision (port Critic 1, 2)
+        if not main_sha:
             return "main could not be fetched to read the Run lock row"
-        ledger = git("show", "FETCH_HEAD:plan/ledger.md").stdout
+        ledger = git("show", f"{main_sha}:plan/ledger.md").stdout
         row = next((l for l in ledger.splitlines() if l.startswith("| Run lock |")), "")
         holder, state, at = lease_state(row)
         live = state == "expires" and at is not None and at > datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")

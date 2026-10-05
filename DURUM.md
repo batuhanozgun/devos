@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-009` (D-008 altında oturum başlatma: tek görevi yeni çalışma ve inceleme oturumlarını başlatmak olan bir oturum otomatik modda çalışabilir mi?). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 5 Ekim 2026, 13:03 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 5 Ekim 2026, 13:34 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi). C00'ın geri kalan işleri `W-C00-12` kabul edilene kadar bekliyor.
 

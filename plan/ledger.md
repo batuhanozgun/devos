@@ -36,7 +36,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden bir karar bekleniyor: **D-009** (issue #6'da). <br>1. Accept edits modundaki bir oturum yeni oturum açamıyor: platform "onay gerekiyor" diyerek reddediyor; belgelerine göre bunu hiçbir kural dosyası aşamıyor. D-008 kararın olduğu gibi kalırsa sistem kendi kendine devam edemez ve bağımsız incelemeler başlatılamaz. <br>2. Bu oturum yeni oturum gerektirmeyen işi bitiriyor: tranche 1c (W-C00-12.4, PR #86) yeni guard'ın üzerine taşınıyor. Sonra duracak. <br>**Açık uç:** Ayrı "ultracode" bayrağı hâlâ doğrulanamadı: oturum kaydında bu bilgi görünmüyor; effort "xhigh" olarak doğrulandı. <br>**Riskler:** <br>- D-009 cevaplanana kadar yeni çalışma ve inceleme oturumları yalnız senin sohbet oturumundan (otomatik moddayken) başlatılabilir. <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. | 2026-10-05T09:49Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:03Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:34Z |
 
 ---
 
@@ -47,8 +47,8 @@
 - none
 
 **Running:**
-- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_017bQAUeV7o6pTvG1Pz3hRHx`
-- `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: claimed by `session_017bQAUeV7o6pTvG1Pz3hRHx`
+- `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_01XBdYJwHjvsouur4ayJJM5Z`
+- `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: claimed by `session_01XBdYJwHjvsouur4ayJJM5Z`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-01`: finished, waiting for acceptance
@@ -104,11 +104,11 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: stage C00 on hold until W-C00-12 is accepted
   - `W-C00-11` Stage closure review: blocked: stage C00 on hold until W-C00-12 is accepted · open notes: N-051, N-056
-  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_017bQAUeV7o6pTvG1Pz3hRHx)
+  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): running (session_01XBdYJwHjvsouur4ayJJM5Z)
     - `W-C00-12.1` Tranche 1a: probes: finished, not accepted
     - `W-C00-12.2` Tranche 1b-i: records and render: accepted
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
-    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_017bQAUeV7o6pTvG1Pz3hRHx) · open notes: N-047, N-048, N-052, N-053, N-054
+    - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_01XBdYJwHjvsouur4ayJJM5Z) · open notes: N-047, N-048, N-052, N-053, N-054
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
     - `W-C00-12.6` Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort: finished, not accepted
 <!-- /generated -->
@@ -131,11 +131,11 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | blocked: stage C00 on hold until W-C00-12 is accepted | todo (heavy) | — | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-10.md` |
 | `W-C00-11` | Stage closure review | blocked: stage C00 on hold until W-C00-12 is accepted | todo | — | `plan/work/W-C00-11.md` |
-| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_017bQAUeV7o6pTvG1Pz3hRHx) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
+| `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | running (session_01XBdYJwHjvsouur4ayJJM5Z) | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | finished, not accepted | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
 | `W-C00-12.3` | Tranche 1b-ii: checks and stop | accepted | — | — | `plan/work/W-C00-12.3.md` |
-| `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | running (session_017bQAUeV7o6pTvG1Pz3hRHx) | — | — | `plan/work/W-C00-12.4.md` |
+| `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | running (session_01XBdYJwHjvsouur4ayJJM5Z) | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | blocked: depends on W-C00-12.4 (not accepted) | — | — | `plan/work/W-C00-12.5.md` |
 | `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | finished, not accepted | — | — | `plan/work/W-C00-12.6.md` |
 <!-- /generated -->
