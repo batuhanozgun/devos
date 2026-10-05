@@ -20,6 +20,8 @@ Helpers:
   merged     the diff checks for every first-parent commit of main after the baseline, the verdict
              requirement for class-high merges and break-glass reverts (W-R7), and the patch: count (M-R5)
   answers    Batu's comments on issue #6 accounted for (M-R13)
+  gate       the merge gate of the guard (W-C00-12.6): a class-high PR head merges only when a verdict in
+             its own tree covers it, as `merged` requires (W-R7, M-R16 b); prints GATE PASS or GATE FAIL
   leak       derived service terms in staged and untracked content (A-07)
 
 Output: PASS/FAIL/INFO lines, then RECORDS PASS (exit 0), RECORDS FAIL (exit 1) or RECORDS ERROR (exit 2).
@@ -1487,6 +1489,52 @@ def check_merged(since, main_ref, out):
              (", ".join(f"{k} {v}" for k, v in sorted(counts.items())) or "none"))
 
 
+def merge_gate(pr, head, main_ref, fetch=True):
+    """The merge gate (W-C00-12.6 (e); D-008): (ok, lines). The PR head is fetched from the remote and must equal
+    `head`. A class-normal head passes (a break-glass revert included, as in `merged`); a class-high head passes
+    only when a PASS or PASS-WITH-CONDITIONS verdict in the head's own tree or on main covers it: bound to its
+    review branch by an owned reviewer session that made no commit of the change, naming a commit X with X..head
+    class normal (covered()). This is the check `merged` makes after the merge, made before it."""
+    lines = []
+    if fetch:
+        if (git("rev-parse", "--is-shallow-repository", ok=True) or "").strip() == "true":
+            if git("fetch", "-q", "--unshallow", "origin", ok=True) is None:
+                return False, ["cannot unshallow the repository, so ancestry cannot be checked"]
+        if git("fetch", "-q", "origin", "+refs/heads/main:refs/remotes/origin/main", ok=True) is None:
+            return False, ["cannot fetch main from origin"]
+        if git("fetch", "-q", "origin", f"+refs/pull/{pr}/head:refs/devos-gate/pr-{pr}", ok=True) is None:
+            return False, [f"cannot fetch the head of pull request #{pr}"]
+        got = resolve(f"refs/devos-gate/pr-{pr}")
+        if got != resolve(head):
+            return False, [f"pull request #{pr} has head {got}, not the SHA given ({head}); the head moved"]
+    h, m = resolve(head), resolve(main_ref)
+    if not h or not m:
+        return False, [f"cannot resolve the head {head} or {main_ref}"]
+    base = (git("merge-base", m, h, ok=True) or "").strip()
+    if not base:
+        return False, [f"{head[:12]} has no merge base with {main_ref}"]
+    cls, reasons, bg = impact(base, h)
+    if cls == "normal":
+        why = f"break-glass revert of {bg[:7]}" if bg else "class normal"
+        return True, [f"{why}: {base[:7]}..{h[:7]}"]
+    lines.append(f"class high: {'; '.join(reasons[:6])}")
+    for st, p in changed(base, h):
+        if st in "AM" and fnmatch.fnmatch(p, VERDICT_PATH) and fetch:
+            rid = Path(p).stem
+            git("fetch", "-q", "origin", f"+refs/heads/claude/review-{rid}:refs/remotes/origin/claude/review-{rid}",
+                ok=True)
+    cov = covered(h, h) or covered(h, m)
+    if cov:
+        return True, lines + [f"covered by {cov[0]} at {cov[1][:12]}"]
+    o = Out()
+    check_claims_diff(base, h, o)
+    lines.append("no verdict in the head's tree or on main covers it (PASS or PASS-WITH-CONDITIONS, bound to its "
+                 "review branch by an owned reviewer session outside the change, naming a commit X with X..head class "
+                 "normal)")
+    lines += [f"{s}: {msg}" for s, msg in o.fails]
+    return False, lines
+
+
 def run(out, subs, base=None, head=None):
     for s in subs:
         n = len(out.fails)
@@ -1506,7 +1554,9 @@ def run(out, subs, base=None, head=None):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="check_records.py")
     ap.add_argument("sub", choices=["chain", "views", "docstatus", "decisions", "map", "work", "kinds", "impact",
-                                    "stamps", "claims", "all", "merged", "answers", "leak"])
+                                    "stamps", "claims", "all", "merged", "answers", "leak", "gate"])
+    ap.add_argument("--pr", type=int, help="gate: the pull request number")
+    ap.add_argument("--no-fetch", action="store_true", help="gate: use local refs only (tests)")
     ap.add_argument("--base")
     ap.add_argument("--head")
     ap.add_argument("--worktree", action="store_true", help="diff against the working tree (default for all)")
@@ -1515,6 +1565,18 @@ def main(argv=None):
     ap.add_argument("--url", default=os.environ.get("ISSUE_API_URL", ISSUE_URL))
     a = ap.parse_args(argv)
     out = Out()
+    if a.sub == "gate":
+        try:
+            if not a.pr or not a.head:
+                raise CheckError("gate needs --pr and --head")
+            ok, lines = merge_gate(a.pr, a.head, a.main, fetch=not a.no_fetch)
+        except (CheckError, R.RecordError, OSError, ValueError, yaml.YAMLError, KeyError, IndexError) as e:
+            print(f"GATE ERROR: {type(e).__name__}: {e}")
+            return 2
+        for line in lines[:-1]:
+            print(f"  {line}")
+        print(f"GATE {'PASS' if ok else 'FAIL'}: PR #{a.pr} head {a.head[:12]}: {lines[-1] if lines else ''}")
+        return 0 if ok else 1
     try:
         head = None if (a.worktree or (a.sub == "all" and not a.head)) else (a.head or "HEAD")
         base = a.base

@@ -162,15 +162,18 @@ The roles of `04_roles.md` §2 appear here as helpers. Their terminal goals and 
 
 | # | Carrier | Holds | Runs when | Type |
 |---|---|---|---|---|
-| A-01 | `.claude/hooks/tool_allowlist.py` | allow list (H-AL), owned-ID rule (H-OWN), revision check (H-REV), brief gate (H-BRF); boot gate (H-BOOT) and compaction gate (H-CMP) deferred; reading gate (H-READ) retired | every tool call | M\* (a session can edit its own hook; residual accepted by Batu, D-003 (a)) |
+| A-01 | `.claude/hooks/tool_allowlist.py` | allow list (H-AL), owned-ID rule (H-OWN), revision check (H-REV), brief gate (H-BRF); since D-008 an explicit allow or deny with a written reason for every call, `PermissionRequest` answers, file and shell bans, the decision log, and the call to the merge gate (W-C00-12.6); boot gate (H-BOOT) and compaction gate (H-CMP) deferred; reading gate (H-READ) retired | every tool call | M\* (a session can edit its own hook; residual accepted by Batu, D-003 (a)) |
 | A-02 | `.claude/hooks/record_owned_id.py` | recorder for sessions, routines and `send_later` (M-R11) | after create calls | M\* |
 | A-03 | *read receipts hook* | session-event claims (M-R16 c) | — | deferred |
-| A-04 | `tools/check_records.py` | `chain`, `kinds`, `views`, `work`, `impact`, `docstatus`, `stamps`, `claims`, `decisions`, `map` (a `scope` subcommand is added only when M-R12, deferred, is re-admitted); helper modes `all`, `merged` (the stop check's per-merge checks), `answers` (M-R13) and `leak` (A-07 on staged and untracked content) | stop check | M\* |
+| A-04 | `tools/check_records.py` | `chain`, `kinds`, `views`, `work`, `impact`, `docstatus`, `stamps`, `claims`, `decisions`, `map` (a `scope` subcommand is added only when M-R12, deferred, is re-admitted); helper modes `all`, `merged` (the stop check's per-merge checks), `answers` (M-R13), `leak` (A-07 on staged and untracked content) and `gate` (the merge gate the guard runs before every merge, W-C00-12.6) | stop check; every merge | M\* |
 | A-05 | `tools/builder_check.sh S<n>` | the stop check (C-R1) | before every stop; R1 requires its output | M\* |
-| A-06 | `tools/test_tool_allowlist.sh` | hook unit tests with mutation checks (T-H4) | every hook change; counts only on a pushed branch | M\* |
+| A-06 | `tools/test_tool_allowlist.sh` | hook unit tests with mutation checks (T-H4); since D-008 the guard's decisions, bans and reasons (T-G1) | every hook change; counts only on a pushed branch | M\* |
 | A-07 | `tools/check_service_names.sh`, run by A-05 on staged and committed content | leak check | every stop and every public copy | M\* |
 | A-08 | `tools/boot_map` | boot map (M-R18) | every `SessionStart` | M\* |
 | A-09 | `.github/workflows/watchdog.yml` (and `records-check.yml` when C-R9, deferred, is re-admitted) | detector (C-R8) | hourly | M\* (H15) |
 | A-10 | `tools/test_records.py` | gate tests of tranche 1b-i (T-W10, T-W15, T-W2, T-W5, T-W7, T-W12) with mutation checks | every change to `tools/records.py`; output pasted into `evidence/C00/tests/1b-i_gate.md` | M\* |
 | A-11 | `tools/test_check_records.py` | gate tests of tranche 1b-ii (12 section 2.2) in scratch repositories, with mutation checks | every change to `tools/check_records.py` or `tools/builder_check.sh`; output pasted into `evidence/C00/tests/1b-ii_gate.md` | M\* |
 | A-12 | `tools/check_dispatcher_pr.sh` | scope check of the dispatcher's standing record PR (operating model v1.7 §2.3) | at boot, while a dispatcher PR is open; removed when C-R7 (1d) retires the dispatcher | M\* |
+| A-13 | `tools/guard_report.py` | the guard's decision report: denials with rule and reason, allowed calls counted by rule (W-C00-12.6 (c); D-008) | at every checkpoint and stop of a run, into its log entry | M\* |
+| A-14 | `tools/sync_worktree.sh` | the only way the live working tree moves: a fast-forward to `origin/main` that loses no owned ID (guard rule B4; W-C00-12.6) | when a session needs `main`'s current guard or records in its own tree | M\* |
+| A-15 | `tools/test_merge_gate.py` | planted cases of the merge gate with a mutation check (T-G2) | every change to the gate in `tools/check_records.py` | M\* |
