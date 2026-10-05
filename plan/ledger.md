@@ -19,9 +19,9 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session, carrying out D-008 as item W-C00-12.6). Expires 2026-10-04T22:25Z | 2026-10-04T19:25Z |
+| Run lock | `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session; W-C00-12.6 finished). Released 2026-10-05T01:57Z | 2026-10-05T01:57Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
-| Usage | `five_hour` `allowed` at 17:22Z (`get_session`), resets 2026-10-04T22:20Z (`resetsAt` 1791152400, converted with `date -u -d @`) (§8: proceed). | 2026-10-04T17:22Z |
+| Usage | `five_hour` `allowed` at 01:55Z (`get_session`), resets 2026-10-05T03:20Z (`resetsAt` 1791170400, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T01:57Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 | Standing exceptions | The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled on purpose until W-C00-12 is accepted (L-034); boot step 7 and operating model §2.3 do not recreate them meanwhile. Runs of W-C00-12 also read `briefs/w-c00-12/RUN_BRIEF.md` (its §5 lists the known failure patterns). (Kept from the v1.7 Next action row; restored after the critic of 1b-i, finding 1.) | 2026-10-03T20:05Z |
@@ -30,8 +30,8 @@
 | Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
-| summary_tr | Senden beklenen bir şey yok. <br>1. Kararını kayda geçirdim (D-008): oturumlar otomatik moddan çıkıyor. Her adıma kurucunun yazılı kural dosyası karar verecek ve her reddin gerekçesini ayrıntılı yazacak. Açılan her oturum Opus 5.5 ve ultracode ile çalışacak. <br>2. Bunu konuşma oturumun kuruyor; kilidi o aldı. Değişiklik bağımsız bir incelemeden geçmeden ana kayda girmeyecek. <br>3. Kurulum bitince bu oturumun modunu "Accept edits"e almanı isteyeceğim; o zamana kadar olduğu gibi kalsın. <br>**Riskler:** <br>- Otomatik denetimin genel koruması kalkıyor; yerine yalnızca yazılı kurallar kalıyor. <br>- Kural listesinde eksik varsa iş o noktada durur; eksik eklenince devam eder. | 2026-10-04T17:23Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T19:25Z |
+| summary_tr | Senden beklenen bir şey yok. <br>1. İzin modeli (D-008 kararın) bitti ve canlıda: guard her araç çağrısına yazılı gerekçeyle karar veriyor ve her kararı günlüğe yazıyor. 16 bağımsız inceleme turundan geçti (sonuncusu PASS), canlı sınama T-G3 geçti. <br>2. Bu iş kalemi (W-C00-12.6) "bitti" olarak işaretlendi; resmî kabulünü bağımsız bir doğrulayıcı verecek, ben değil. <br>3. Konuşma oturumun kilidi bıraktı. Sıradaki iş C00'ın yeniden tasarımı (W-C00-12); hazır olan ilk adım tranche 1c (W-C00-12.4). Yeni bir çalışma oturumu bunu sürdürecek. <br>**Açık uç:** Açılan oturumlarda Opus 5.5, en yüksek effort ve Accept edits doğrulandı; ayrı "ultracode" bayrağının açık olduğu henüz doğrulanmadı, bir sonraki oturumda bakılacak. <br>**Riskler:** <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. <br>- Kural listesinde eksik varsa iş o noktada durur; eksik eklenince devam eder. | 2026-10-05T01:57Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T01:57Z |
 
 ---
 
@@ -43,7 +43,6 @@
 
 **Running:**
 - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): claimed by `session_01Gfj3M4MjrMb4YcRHwsA1X8`
-- `W-C00-12.6` Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort: claimed by `session_01Q32nLatKbtDDY1zSVQZiKX`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-01`: finished, waiting for acceptance
@@ -59,6 +58,7 @@
 - `W-C00-11`: stage C00 on hold until W-C00-12 is accepted
 - `W-C00-12.1`: finished, waiting for acceptance
 - `W-C00-12.5`: depends on W-C00-12.4 (not accepted)
+- `W-C00-12.6`: finished, waiting for acceptance
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/builder/w-c00-12/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -70,7 +70,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, ready 1, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 6, ready 1, running 1 | 12 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -104,7 +104,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
     - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: ready · open notes: N-047, N-048, N-052, N-053
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
-    - `W-C00-12.6` Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort: running (session_01Q32nLatKbtDDY1zSVQZiKX)
+    - `W-C00-12.6` Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort: finished, not accepted
 <!-- /generated -->
 
 ### Work index
@@ -131,7 +131,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-12.3` | Tranche 1b-ii: checks and stop | accepted | — | — | `plan/work/W-C00-12.3.md` |
 | `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | ready | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | blocked: depends on W-C00-12.4 (not accepted) | — | — | `plan/work/W-C00-12.5.md` |
-| `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | running (session_01Q32nLatKbtDDY1zSVQZiKX) | — | — | `plan/work/W-C00-12.6.md` |
+| `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | finished, not accepted | — | — | `plan/work/W-C00-12.6.md` |
 <!-- /generated -->
 
 ---
