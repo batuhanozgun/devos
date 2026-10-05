@@ -19,13 +19,13 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_017bQAUeV7o6pTvG1Pz3hRHx`. Expires 2026-10-04T11:29Z | 2026-10-04T08:29Z |
+| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation). Expires 2026-10-05T12:31Z | 2026-10-05T09:31Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
-| Usage | `five_hour` `allowed` at 08:28Z (`get_session`), resets sched:2026-10-04T12:20Z (`resetsAt` 1791116400, converted with `date -u -d @`) (§8: proceed; heavy work at any hour since D-002's amendment). | 2026-10-04T08:28Z |
+| Usage | `five_hour` `allowed` at 09:30Z (`get_session`), resets 2026-10-05T11:10Z (`resetsAt` 1791198600, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T09:37Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 | Standing exceptions | The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled on purpose until W-C00-12 is accepted (L-034); boot step 7 and operating model §2.3 do not recreate them meanwhile. Runs of W-C00-12 also read `briefs/w-c00-12/RUN_BRIEF.md` (its §5 lists the known failure patterns). (Kept from the v1.7 Next action row; restored after the critic of 1b-i, finding 1.) | 2026-10-03T20:05Z |
-| Governing documents: `plan/Builder_Operating_Model.md` | version: 1.8 on the tranche 1c branch (v1.7 + FR-02 plus a delta), "1.7 + FR-02" on `main` until it merges; status: governs whatever W-C00-12 has not yet replaced; accepted by: none for v1.7 as a whole, not independently accepted (W-C00-05); the FR-02 amendment (§6, §8, §11, §12) by `evidence/C00/reviews/R-FR02-2.md` and `R-FR02-3.md`, merged as `eb556b5` (L-082). Its former header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22); since 1b-ii its header points here (M-R2). | 2026-10-04T09:06Z |
+| Governing documents: `plan/Builder_Operating_Model.md` | version: 1.8 on the tranche 1c branch (v1.7 + FR-02 + D-008 plus a delta), "1.7 + FR-02 + D-008" on `main` until it merges; status: governs whatever W-C00-12 has not yet replaced; accepted by: none for v1.7 as a whole, not independently accepted (W-C00-05); the FR-02 amendment (§6, §8, §11, §12) by `evidence/C00/reviews/R-FR02-2.md` and `R-FR02-3.md`, merged as `eb556b5` (L-082); the D-008 amendment (§2.1, §9, §11, §12, §13, Appendix M) by `evidence/C00/reviews/R-D008-16.md`, merged as `be797c6` (L-113, L-114). Its former header word "Binding" is superseded by this row (OI-011 item 22, `plan/builder/w-c00-12/08_oi011_dispositions.md` row 22); since 1b-ii its header points here (M-R2). | 2026-10-05T10:03Z |
 | Governing documents: `plan/builder/mechanisms.md` | version: as moved in 1b-i; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | Governing documents: `plan/builder/w-c00-12/*` | version: revision 3 and its later fixes; status: candidate, not binding, until the tranche that builds each rule merges with its verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T20:36Z |
 | Governing documents: `plan/builder/design/*` | version: tranche 1c branch (pieces 02, 03, 04, 05 and 07, moved from `plan/builder/w-c00-12/` unchanged except for their status header, 12 §1); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-04T07:47Z |
@@ -35,8 +35,8 @@
 | Governing documents: `plan/builder/REVIEW_PROMPT.md` | version: tranche 1c branch (the session Verifier's role file, extended in tranche 1c (R-R3a)); status: candidate, not binding, until tranche 1c merges with its session verdict (`plan/builder/w-c00-12/12_tranche_plan.md` section 1); accepted by: none | 2026-10-03T22:56Z |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
-| summary_tr | Cevabını aldım: D-006 ve D-007 senin konuların değildi. İkisini "reddedildi, sana ait değil" diye kapattım; artık senden bir şey beklemiyorum. <br>1. Ağır işler bundan sonra gündüz de yapılacak (D-002 güncellendi). <br>2. Şimdi bu iki konunun sana neden geldiğini kök nedenle inceliyorum: sana yalnızca amaç, yön, sonuçların kabulü ve para konuları gelecek; benim koyduğum kuralları kendi bağımsız incelememle ben değiştireceğim. <br>3. Sonra yeniden tasarımın 1c adımına (PR #86) devam ediyorum. <br>**Riskler:** <br>- Sistemin otomatik denetimi bir değişikliği yine engellerse, onu sana sormadan başka bir tasarımla çözmeye çalışacağım; çözemezsem burada bilgi olarak yazacağım. | 2026-10-04T08:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-04T09:21Z |
+| summary_tr | Senden beklenen bir şey yok. <br>1. Yeni bir çalışma oturumu (`session_01XBdYJwHjvsouur4ayJJM5Z`) kilidi aldı ve C00'ın yeniden tasarımına (W-C00-12) devam ediyor. <br>2. Önce izin modeli işinin (W-C00-12.6) resmî kabulü için bağımsız bir doğrulayıcı oturum açılıyor; bu, bu oturumdan yeni oturum açılabildiğini de sınıyor. <br>3. Ardından tranche 1c (W-C00-12.4, PR #86) yeni guard'ın üzerine taşınıyor. <br>**Açık uç:** Ayrı "ultracode" bayrağı hâlâ doğrulanamadı: oturum kaydında bu bilgi görünmüyor; effort "xhigh" olarak doğrulandı. <br>**Riskler:** <br>- Bir oturum, kendisinden daha geniş izinli bir alt oturum açamayabilir (doğrulanmadı); bu oturumdan ilk oturum açma denemesi kayda geçecek. <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. | 2026-10-05T09:37Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:03Z |
 
 ---
 
@@ -64,6 +64,7 @@
 - `W-C00-11`: stage C00 on hold until W-C00-12 is accepted
 - `W-C00-12.1`: finished, waiting for acceptance
 - `W-C00-12.5`: depends on W-C00-12.4 (not accepted)
+- `W-C00-12.6`: finished, waiting for acceptance
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/builder/design/03_work_model.md` section 3). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -75,7 +76,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 5, running 2 | 13 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 2, blocked 8, finished 6, running 2 | 13 |
 | `C01` | Platform verification | planned | no items | 3 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -109,6 +110,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
     - `W-C00-12.3` Tranche 1b-ii: checks and stop: accepted
     - `W-C00-12.4` Tranche 1c: hooks, CLAUDE.md, roles: running (session_017bQAUeV7o6pTvG1Pz3hRHx) · open notes: N-047, N-048, N-052, N-053, N-054
     - `W-C00-12.5` Tranche 1d: workflows, retirement, plan text: blocked: depends on W-C00-12.4 (not accepted)
+    - `W-C00-12.6` Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort: finished, not accepted
 <!-- /generated -->
 
 ### Work index
@@ -135,6 +137,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-12.3` | Tranche 1b-ii: checks and stop | accepted | — | — | `plan/work/W-C00-12.3.md` |
 | `W-C00-12.4` | Tranche 1c: hooks, CLAUDE.md, roles | running (session_017bQAUeV7o6pTvG1Pz3hRHx) | — | — | `plan/work/W-C00-12.4.md` |
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | blocked: depends on W-C00-12.4 (not accepted) | — | — | `plan/work/W-C00-12.5.md` |
+| `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | finished, not accepted | — | — | `plan/work/W-C00-12.6.md` |
 <!-- /generated -->
 
 ---
@@ -157,6 +160,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-003` | Residual risk: the connector barrier is a hook the builder can edit | batu | answered | `plan/decisions/D-003.md` |
 | `D-006` | One step: start a new installation run (the session chain is at its lineage limit) | technical | declined | `plan/decisions/D-006.md` |
 | `D-007` | One permission: let this run edit the builder's own rule texts for tranche 1c | technical | declined | `plan/decisions/D-007.md` |
+| `D-008` | Sessions leave auto mode: a written rule file allows or denies every tool call with a detailed reason; every session the builder opens runs on Opus 5.5 at ultracode effort | batu | answered | `plan/decisions/D-008.md` |
 | `FR-01` | Frame review of the W-R7 (ii) exemption (an acceptance that lifts a readiness gate) | technical | proposed | `plan/decisions/FR-01.md` |
 | `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | accepted | `plan/decisions/FR-02.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | answered | `plan/decisions/PC-01.md` |

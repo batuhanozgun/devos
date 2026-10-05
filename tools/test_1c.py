@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""test_1c.py: the deterministic gate tests of W-C00-12 tranche 1c (12_tranche_plan.md section 2.2; carrier A-13).
+"""test_1c.py: the deterministic gate tests of W-C00-12 tranche 1c (12_tranche_plan.md section 2.2; carrier A-16).
 
 Run from the repository root. Every fixture is a scratch repository or a scratch copy in a temporary directory, never
 this working tree. Procedures: plan/builder/w-c00-12/11_test_register.md section 2, made concrete in
