@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01Q32nLatKbtDDY1zSVQZiKX` (Batu's conversation session; W-C00-12.6 finished). Released 2026-10-05T01:57Z | 2026-10-05T01:57Z |
+| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation). Expires 2026-10-05T12:31Z | 2026-10-05T09:31Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 01:55Z (`get_session`), resets 2026-10-05T03:20Z (`resetsAt` 1791170400, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T01:57Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden beklenen bir şey yok. <br>1. İzin modeli (D-008 kararın) bitti ve canlıda: guard her araç çağrısına yazılı gerekçeyle karar veriyor ve her kararı günlüğe yazıyor. 16 bağımsız inceleme turundan geçti (sonuncusu PASS), canlı sınama T-G3 geçti. <br>2. Bu iş kalemi (W-C00-12.6) "bitti" olarak işaretlendi; resmî kabulünü bağımsız bir doğrulayıcı verecek, ben değil. <br>3. Konuşma oturumun kilidi bıraktı. Sıradaki iş C00'ın yeniden tasarımı (W-C00-12); hazır olan ilk adım tranche 1c (W-C00-12.4). Yeni bir çalışma oturumu bunu sürdürecek. <br>**Açık uç:** Açılan oturumlarda Opus 5.5, en yüksek effort ve Accept edits doğrulandı; ayrı "ultracode" bayrağının açık olduğu henüz doğrulanmadı, bir sonraki oturumda bakılacak. <br>**Riskler:** <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. <br>- Kural listesinde eksik varsa iş o noktada durur; eksik eklenince devam eder. | 2026-10-05T01:57Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T01:57Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T09:31Z |
 
 ---
 
