@@ -1295,3 +1295,16 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Guard report** at 09:48Z: 1 denied (#27, L-118), 148 allowed, 0 passed to the user, hash chain intact.
 - **Discipline line (D1–D9):** D1 the premise of D-008's P4 ("a PreToolUse allow skips the prompt") is false for session starts, observed and documented; D2 the parent's account is labelled as such; D4 the diagnostic call was chosen to separate two readings and was made once; D5 documented and observed facts are marked; D6 cause: a platform rule outside the guard's reach, not a guard gap; D9 library not consulted (a platform fact; the documentation is the source).
 - **Record changes:** plan/decisions/D-009.md · addition · Batu's decision on starting sessions under D-008; plan/ledger.md summary_tr · supersession · the summary for Batu with D-009
+
+### L-121 · 2026-10-05 · W-C00-12: checkpoint — tranche 1c brought onto the D-008 guard on PR #86 (its entry L-120 is on that branch); D-009 sent
+
+- **Number note.** L-120 is on the PR #86 branch (`claude/run-w12-1c`) and reaches `main` when the PR merges; this entry skips it, as L-059 skipped the branch's L-057 and L-058.
+- **Tranche 1c (W-C00-12.4), on PR #86.** `main` (`ed2619b`, then `50ebb8f`) merged into the branch; head `86a253e`, pushed. The D-008 guard is taken whole and 1c's brief gate becomes its rule S6 (details, conflicts and test runs in L-120 on the branch). On the pushed head, clean tree: T-H4 `tools/test_tool_allowlist.sh` **ALLOWLIST_TEST PASS**, 642 `ok` lines, no `BAD`. Not merged: class high, it needs a session verdict, and every remaining 1c step needs a new session (D-009).
+- **D-009 sent.** Issue #6 comment `5992085009` (09:50:16Z, guard record #162), mentioning Batu, in the Appendix E §3 format.
+- **Running.** A non-binding Critic (R-R16; a fresh-context subagent of this session, read-only, given `.claude/agents/critic.md` from the branch) reads the port on `86a253e`; its findings are answered on the branch.
+- **Usage** at 10:05Z (`get_session`): `five_hour` `allowed`, `resetsAt` 1791198600 = sched:2026-10-05T11:10Z.
+- **Record changes:** plan/ledger.md Usage · supersession · reading at 10:05Z
+
+### L-122 · 2026-10-05 · Lease taken or renewed by `session_01XBdYJwHjvsouur4ayJJM5Z`
+
+- **Record changes:** plan/ledger.md Run lock · supersession · lease take or renewal by session_01XBdYJwHjvsouur4ayJJM5Z

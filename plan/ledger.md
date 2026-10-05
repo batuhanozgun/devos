@@ -19,9 +19,9 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation). Expires 2026-10-05T12:31Z | 2026-10-05T09:31Z |
+| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation). Expires 2026-10-05T13:06Z | 2026-10-05T10:06Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
-| Usage | `five_hour` `allowed` at 09:30Z (`get_session`), resets 2026-10-05T11:10Z (`resetsAt` 1791198600, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T09:37Z |
+| Usage | `five_hour` `allowed` at 10:05Z (`get_session`), resets 2026-10-05T11:10Z (`resetsAt` 1791198600, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T10:06Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-05 | 2026-10-01 |
 | Standing exceptions | The heartbeat `trig_01NMfRFv1WvPZj9Q9XeZjMS6` and the reset wake-up `trig_01Q16LPhKPWX9oYmaACVsyBx` stay disabled on purpose until W-C00-12 is accepted (L-034); boot step 7 and operating model §2.3 do not recreate them meanwhile. Runs of W-C00-12 also read `briefs/w-c00-12/RUN_BRIEF.md` (its §5 lists the known failure patterns). (Kept from the v1.7 Next action row; restored after the critic of 1b-i, finding 1.) | 2026-10-03T20:05Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden bir karar bekleniyor: **D-009** (issue #6'da). <br>1. Accept edits modundaki bir oturum yeni oturum açamıyor: platform "onay gerekiyor" diyerek reddediyor; belgelerine göre bunu hiçbir kural dosyası aşamıyor. D-008 kararın olduğu gibi kalırsa sistem kendi kendine devam edemez ve bağımsız incelemeler başlatılamaz. <br>2. Bu oturum yeni oturum gerektirmeyen işi bitiriyor: tranche 1c (W-C00-12.4, PR #86) yeni guard'ın üzerine taşınıyor. Sonra duracak. <br>**Açık uç:** Ayrı "ultracode" bayrağı hâlâ doğrulanamadı: oturum kaydında bu bilgi görünmüyor; effort "xhigh" olarak doğrulandı. <br>**Riskler:** <br>- D-009 cevaplanana kadar yeni çalışma ve inceleme oturumları yalnız senin sohbet oturumundan (otomatik moddayken) başlatılabilir. <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. | 2026-10-05T09:49Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T09:49Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:06Z |
 
 ---
 
