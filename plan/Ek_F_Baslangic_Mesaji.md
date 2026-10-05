@@ -1,6 +1,18 @@
-# Ek F — Başlangıç mesajı / Opening message
+# Appendix F — Opening message
 
-**Sürüm:** 2.0 (D-010 ve PC-06, 5 Ekim 2026). Önceki sürüm (1.4) git geçmişinde.
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
+
+**Version:** 2.0 (D-010 and PC-06, 5 October 2026). The previous version (1.4) is in the git history.
+
+**For Batu:**
+
+1. From the Claude app, open a new session in Claude Code. Choose `devos-kurulum` as the environment and **only** `devos` as the repository. Do not add `agentic-os-search`: in a session with more than one repository the guard hook may not be loaded. When the library is needed, the session adds it later, read-only.
+2. Permission mode: **Accept edits**. Model: **Opus 5.5**, ultracode on.
+3. Copy the whole text under the line below and paste it as the first message. The text is in English because the language inside DevOS is English; the session speaks Turkish with you.
+
+At the opening, the session checks the model, the mode and the guard hook; if something is missing, it tells you in a short message what to change. This single session runs the whole installation; it expects nothing from you at stage transitions. You write in only these three places: (1) this first message, once; (2) the answers to the decisions that belong to you, to this session (the decisions are also gathered in the "Batu'dan beklenenler" ("What is expected from Batu") issue); (3) if the 5-hour or the weekly usage limit runs out, a "devam" ("continue") message after it resets. You see the state in `DURUM.md` in the `devos` repository.
+
+**Text shown to Batu (Turkish, verbatim):**
 
 **Batu için:**
 

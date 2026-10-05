@@ -1,69 +1,81 @@
-# ChatGPT incelemesinin değerlendirmesi ve 2.1 revizyon listesi
+# Evaluation of the ChatGPT review and the 2.1 revision list
 
-**Tarih:** 29 Eylül 2026 · **İncelenen:** Kurulum planı 2.0 ve Ek A–G · **İnceleyen:** ChatGPT (kaynak sadakati) · **Değerlendiren:** Planı yazan oturum
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
-**Yöntem:** Claude incelemesiyle aynı: savunma eğilimi uyarısıyla tartıldı (Ek D, D2); iki incelemenin örtüşen bulguları birleştirildi.
+**Date:** 29 September 2026 · **Reviewed:** Installation plan 2.0 and Appendices A–G · **Reviewer:** ChatGPT (source fidelity) · **Evaluator:** The session that wrote the plan
 
-**Özet:** 23 bulgu. 20 kabul, 3 kısmi kabul, 0 ret. ChatGPT kendi yanlılık riskini açıkça yazmış (#1, #2, #6, #7 eski controller tasarımını savunma riski). Bu bulguları "eski bileşeni geri getir" diye değil "korunması gereken davranış" diye okudum; hepsi seçilmiş platformda karşılanabilir.
+**Method:** The same as for the Claude review: weighed with the warning about a tendency to defend (Appendix D, D2); the overlapping findings of the two reviews were merged.
+
+**Summary:** 23 findings. 20 accepts, 3 partial accepts, 0 rejects. ChatGPT openly wrote down its own bias risk (#1, #2, #6, #7: the risk of defending the old controller design). I read these findings not as "bring back the old component" but as "behaviour that must be preserved"; all of them can be met on the chosen platform.
 
 ---
 
-## Bulgu bulgu değerlendirme
+## Finding-by-finding evaluation
 
-| # | Karar | Gerekçe ve yapılacak değişiklik |
+| # | Decision | Rationale and the change to be made |
 |---|---|---|
-| 1 | **Kabul (kritik)** — Claude #4 ve #5 ile birleşir | Kimlik zinciri eksikti. Tasarım: (a) ortam belirteci rol sınıfını verir (Claude #4'teki mekanizma); (b) **üstlenme belirteci:** `claim` işlemi yalnız o oturuma dönen tek seferlik bir gizli değer üretir; veritabanı yalnız özetini saklar; o üstlenmeyle yapılan her etki bu değeri ister. Aynı ortamdaki başka bir oturum başkasının üstlenmesiyle işlem yapamaz. (c) Oturum kimliği beyana dayalı kalır ve öyle etiketlenir. Sınama: başka oturumun üstlenmesiyle ve sahte oturum kimliğiyle çağrı denemeleri. |
-| 2 | **Kabul (kritik)** | Kurtarma yalnız yeni veritabanına erişimi kesiyordu; eski routine'lerin ve oturumların GitHub'a etki yolu açık kalıyordu. Kurtarma adımlarına: eski routine'lerin durdurulması, eski ortam belirteçlerinin iptali, yayın denetiminin yeni projedeki güncel yetki dönemini okuması. Kabul testi: eski sistem erişilebilir bırakılarak `main`'e etki denemesi reddedilir, yeni iş başarılı olur. |
-| 3 | **Kabul** — Claude #7 ile birleşir | "En fazla bir saat kayıp" gösterilmemiş bir iddiaydı. Olaylardan yeniden kurma sözleşmesi, dosya deposundaki gövdelerin ayrı yedeği ve aktarım başarısının izlenmesi tasarlanacak. Gösterilene kadar "hedef" olarak yazılacak. |
-| 4 | **Kabul (kritik)** — Claude #2 ile birleşir | Batu'nun K6 kararı (b): `devos` açık kalıyor. Bu yüzden kontrol ilk açık yazımdan önceye taşınır: oturum içinde her `git push`, PR ve issue yazımı öncesinde çalışan, modelin kararına değil koda dayalı bir kontrol (Claude Code kancası + git'in kendi gönderim öncesi kancası). Kalan açık dürüstçe yazılacak: kontrol oturumun içinde çalıştığı için kararlı bir ajan onu atlatabilir. Bu kalan risk Batu'nun K6 kararıyla kabul edilmiştir. C03 #7 sahte "gizli" metinle yapılacak. |
-| 5 | **Kısmi kabul** | Doğru: özel kaynaktan türetilmiş içerik otomatik olarak yayımlanabilir değildir. Ama her belge için ayrı yayın kararı ağır bir bürokrasi olur; Batu da çalışmada kişisel veri olmadığını söyledi (K7). Kural: açık depo, DevOS'un kendi sentezini ve kaynak kimliklerini içerebilir; özel kaynaktan aynen ya da anlamca yakın aktarım yasaktır; Batu'nun özel konuşmalarından aktarım yasaktır. Ham kanıt ve kurulum defterinin özel içerik taşıyabilecek kısımları açık depoda değil veritabanında ve gizli dosya deposunda tutulur; açık depoya yalnız güvenli özet ve kimlik girer. |
-| 6 | **Kabul** | Routine başlatmanın belirsiz sonucu tasarlanmamıştı; routine API'si tekrar anahtarı sunmuyor. Başlatma niyeti, gözlenen oturum kimliği, belirsiz durum ve uzlaştırma kaydı eklenecek. Günde 15 çalışma sınırı düşünüldüğünde bu, kapasite tasarımının parçası (aşağıda A1). |
-| 7 | **Kabul** — Claude #27 ile birleşir | PR kontrolünün başarısı birleşme anındaki yetkiyi garanti etmiyor. Tasarım: birleştirmeyi bir yayın işi yapar ve birleştirmeden hemen önce veritabanındaki yetkiyi yeniden okur; kalan pencere ölçülüp açıkça yazılır. Test: kontrol başarısı ile birleşme arasına izin iptali koyan senaryo. |
-| 8 | **Kabul** | B aşamasında kaynağın tam gövdesini okuma yolu tanımsızdı. `devos_api`'ye sürüm ve aralıkla gövde okuma fonksiyonu eklenecek (gizlilik denetimli). Arşiv, uyarlama sadakati denetimi için de okunabilecek; uygulama talimatı olarak değil. |
-| 9 | **Kabul** | Özgün P4 §21.11 karşı örneği (kontrol doğru çalışırken kendi zorunlu gereksinim tanımının eksik olması) kaybolmuştu. K11'deki onay testi korunur; özgün karşı örnek ayrıca eklenir. |
-| 10 | **Kabul** | F02'nin yapısal kısmı (veritabanı) ile niteleyici yorumlama kısmı (anlamsal) ayrı kanıt katmanları olarak etiketlenecek; birincinin geçmesi ikincisini kapatmayacak. |
-| 11 | **Kabul** | Hükmün dayanak kümesi (kaynak, karar, politika sürümleri) ve bunlar değişince hükmün bayatlaması veri modeline eklenecek. |
-| 12 | **Kabul** | Ortak kanıt zarfı: commit, yapılandırma, ölçüt sürümü, girdi, gözlem ve ham kanıt kimliği birlikte. Farklı sürümdeki "geçti" kaydı yeni kurulumu kapatamaz. |
-| 13 | **Kabul** — Claude #12 ile birleşir | C07 ölçüt 1 değişecek: kontrollü sınavda gizli eksik bulunması zorunlu; gerçek görevde "eksik bulamadı" tek başına başarısızlık değil. Batu'nun amaç ve kabul değerlendirmesi ile teknik doğrulama ayrı kaydedilecek. |
-| 14 | **Kabul** | Arama ölçüsünde ayar soruları ile son kabul soruları ayrılacak; seçimden etkilenmemiş bir son değerlendirme kümesi kullanılacak. |
-| 15 | **Kabul** | "Her zaman iki alternatif" kotası yanlış aktarımdı. Zorunlu olan alternatif **araştırmasıdır**; araştırmadan sonra tek uygulanabilir yol kalırsa gerekçeli istisna; seçenek alanı henüz bilinmiyorsa açık keşif durumu. Bu, emek derinliğini azaltmaz. |
-| 16 | **Kabul** | Tek olaydan yetenek eksikliği **adayı** kaydedilebilir; kesinleşmesi yeniden üretim, nedensel ayrım ve karşı örnekle olur, olay sayısıyla değil. |
-| 17 | **Kabul** | Tetik zamanı daralmıştı. Düzeltme: her yeni talep, iş ya da tur başında ve her maddi değişiklikten sonra, esas çalışmadan önce dokuz sorunun **tamamı** değerlendirilir; gerekli disiplin dosyasına erişilemezse etkilenen iş durur. |
-| 18 | **Kabul** | Denetim izi: dokuz sorunun sonucunun tamamı (yüklendi / atlandı ve neden), disiplin sürümü, iş ve tur kimliği veritabanına yazılır; denetçinin nasıl erişeceği belirtilir. Batu'ya gösterilmez. |
-| 19 | **Kabul** | Bazı yerleşik yardımcı ajanların `CLAUDE.md`'yi yüklemediği belirtiliyor. C01 ve C05'te bütün taşıyıcılar sınanacak; ortak disiplini almayan taşıyıcıya rol işi verilmeyecek ya da metin açıkça verilecek. (İddia C01'de doğrulanacak.) |
-| 20 | **Kabul** | Sınırlı ilişki sorgusunun devamında aynı anlık görüntüye bağlılık ya da açık yeniden başlama tanımlanacak. |
-| 21 | **Kabul** | Kaynak türü, ifadenin epistemik statüsü ve bugünkü işlem yetkisi üç ayrı alan olacak. Eski bir gerçek gözlem, tarihsel bir belgede durduğu için "yalnız fikir"e dönüşmeyecek. |
-| 22 | **Kabul** | Kurulum defterinin veritabanına aktarımı için kabul koşulları: tekrar güvenliği, kesintide devam, bağ ve sürüm eşliği, eski defterin yazma yüzeyi olmaktan çıkması. |
-| 23 | **Kabul** | Ek A'daki DR12 farkı yanlış tanıtılmış; kaynak zaten mekanik tanımlıyordu. Düzeltilecek. |
-| Ek D toplu hüküm | Not edildi | Dokuz disiplinin içeriği sadık bulundu; eksik olan devreye girme düzeni ve denetim izi (#17–19). |
-| Ek A üç sınır | Not edildi | Sadık bulundu; "kısa özet tavan değildir" notu korunacak. |
+| 1 | **Accept (critical)** — merged with Claude #4 and #5 | The identity chain was missing. Design: (a) the environment token gives the role class (the mechanism in Claude #4); (b) **claim token:** the `claim` operation produces a one-time secret value returned only to that session; the database stores only its hash; every effect made under that claim requires this value. Another session in the same environment cannot act with someone else's claim. (c) The session ID stays declaration-based and is labelled as such. Testing: call attempts with another session's claim and with a fake session ID. |
+| 2 | **Accept (critical)** | Recovery only cut off access to the new database; the old routines' and sessions' path of effect to GitHub stayed open. To the recovery steps: stopping the old routines, revoking the old environment tokens, the release check reading the current authority epoch in the new project. Acceptance test: with the old system left reachable, an attempt to affect `main` is rejected, and the new work succeeds. |
+| 3 | **Accept** — merged with Claude #7 | "At most one hour lost" was an undemonstrated claim. A contract for rebuilding from events, a separate backup of the bodies in the file storage, and monitoring of transfer success will be designed. Until it is demonstrated, it will be written as a "target". |
+| 4 | **Accept (critical)** — merged with Claude #2 | Batu's decision K6 (b): `devos` stays public. So the check is moved to before the first public write: a check that runs inside the session before every `git push`, PR and issue write, and rests on code, not on the model's judgement (a Claude Code hook + git's own pre-push hook). The remaining gap will be written down honestly: because the check runs inside the session, a determined agent can get around it. This remaining risk has been accepted by Batu's decision K6. C03 #7 will be run with fake "secret" text. |
+| 5 | **Partial accept** | Correct: content derived from a private source is not automatically publishable. But a separate publication decision for every document would be heavy bureaucracy; Batu also said that there is no personal data in the work (K7). Rule: the public repository may contain DevOS's own synthesis and source IDs; verbatim or close-in-meaning transfer from a private source is forbidden; transfer from Batu's private conversations is forbidden. Raw evidence and the parts of the installation ledger that may carry private content are kept not in the public repository but in the database and the private file storage; only a safe summary and the ID go into the public repository. |
+| 6 | **Accept** | The uncertain outcome of starting a routine had not been designed; the routine API offers no idempotency key. A start intent, the observed session ID, an uncertain state and a reconciliation record will be added. Given the limit of 15 runs a day, this is part of the capacity design (A1 below). |
+| 7 | **Accept** — merged with Claude #27 | A successful PR check does not guarantee the authority at the moment of merge. Design: a release job does the merge and rereads the authority in the database just before merging; the remaining window is measured and written down explicitly. Test: a scenario that puts a permission revocation between the check success and the merge. |
+| 8 | **Accept** | In stage B, the path for reading the full body of a source was undefined. A function that reads a body by version and range will be added to `devos_api` (with a confidentiality check). The archive may also be read for auditing adaptation fidelity; not as instructions to apply. |
+| 9 | **Accept** | The original P4 §21.11 counterexample (the check working correctly while its own mandatory requirement definition is incomplete) had been lost. The approval test in K11 is kept; the original counterexample is added as well. |
+| 10 | **Accept** | The structural part of F02 (database) and its qualifier interpretation part (semantic) will be labelled as separate evidence layers; the first one passing will not close the second. |
+| 11 | **Accept** | The basis set of a verdict (source, decision and policy versions) and the verdict going stale when these change will be added to the data model. |
+| 12 | **Accept** | A common evidence envelope: commit, configuration, criterion version, input, observation and raw evidence ID together. A "passed" record at a different version cannot close a new installation. |
+| 13 | **Accept** — merged with Claude #12 | C07 criterion 1 will change: in a controlled exam, finding the hidden gap is mandatory; in a real task, "found no gap" is not a failure on its own. Batu's purpose and acceptance assessment and the technical verification will be recorded separately. |
+| 14 | **Accept** | In the search benchmark, the tuning questions and the final acceptance questions will be separated; a final evaluation set unaffected by the selection will be used. |
+| 15 | **Accept** | The "always two alternatives" quota was a wrong carry-over. What is mandatory is the **research** into alternatives; if after the research only one feasible path remains, a justified exception; if the option space is not yet known, an open exploration state. This does not reduce effort depth. |
+| 16 | **Accept** | A capability gap **candidate** can be recorded from a single event; it becomes definite through reproduction, causal separation and a counterexample, not through the number of events. |
+| 17 | **Accept** | The trigger timing had been narrowed. Fix: at the start of every new request, work item or round, and after every material change, **all** nine questions are evaluated before the main work; if a required discipline file cannot be accessed, the affected work stops. |
+| 18 | **Accept** | Audit trail: the complete result of the nine questions (loaded / skipped and why), the discipline version, and the work and round ID are written to the database; how the checker will access them is specified. It is not shown to Batu. |
+| 19 | **Accept** | It is stated that some built-in helper agents do not load `CLAUDE.md`. All carriers will be tested in C01 and C05; a carrier that does not receive the common discipline will not be given role work, or the text will be given to it explicitly. (The claim will be verified in C01.) |
+| 20 | **Accept** | For the continuation of a bounded relation query, binding to the same snapshot or an explicit restart will be defined. |
+| 21 | **Accept** | Source type, the epistemic status of the statement and today's authority to act will be three separate fields. An old real observation will not turn into "an idea only" because it sits in a historical document. |
+| 22 | **Accept** | Acceptance conditions for transferring the installation ledger to the database: idempotency, continuing after an interruption, link and version parity, the old ledger ceasing to be a write surface. |
+| 23 | **Accept** | The DR12 difference in Appendix A was presented wrongly; the source already defined it mechanically. It will be corrected. |
+| Appendix D overall verdict | Noted | The content of the nine disciplines was found faithful; what is missing is the activation scheme and the audit trail (#17–19). |
+| Appendix A three limits | Noted | Found faithful; the note "a short summary is not a ceiling" will be kept. |
 
-**Kısmi kabuller:** #5 (bürokrasiye dönüşmeden, K6 ve K7 kararlarıyla uyumlu bir kural), #4 ve #19'da doğrulanacak iddia bulunması. (#4 kısmen: Batu açık depo kararını verdiği için kökten çözüm uygulanmıyor.)
+**Partial accepts:** #5 (a rule consistent with decisions K6 and K7, without turning into bureaucracy), and the presence of a claim to be verified in #4 and #19. (#4 partly: because Batu made the public repository decision, the root solution is not applied.)
 
 ---
 
-## İki inceleme birlikte: 2.1 revizyon listesi
+## The two reviews together: the 2.1 revision list
 
-### A. Yeniden tasarlanacaklar (çözümü henüz bulunmamış)
+### A. To be redesigned (no solution found yet)
 
-| # | Konu | Kaynak bulgular | Durum |
+| # | Topic | Source findings | Status |
 |---|---|---|---|
-| A1 | **Uyandırma ve kapasite mimarisi:** günde 15 routine çalışmasıyla sensiz akış; ortam sayısı; başlatmanın belirsiz sonucu; Batu'nun kendi Claude kullanımıyla paylaşılan sınırlar | Claude #3, #5, #6, #17, #20; ChatGPT #6 | Önce araştırma: Claude Code Projects, oturumlar arası mesajlaşma, uzun ömürlü oturum, sınıra sayılmadığı bildirilen tek seferlik zamanlanmış çalışmalar, GitHub Actions, ek kullanım. Seçenekler bedelleriyle Batu'ya gelecek |
-| A2 | **Kimlik zinciri:** ortam belirteci + üstlenme belirteci | Claude #4, #5; ChatGPT #1 | Tasarım yukarıda; 2.1'de yazılacak |
-| A3 | **Sınav yürütme yolu:** ayrı sınav ortamı ve rolü | Claude #6 | A1'in ortam sayısıyla birlikte |
-| A4 | **Yedek ve kurtarma:** yeniden üretilebilir veriyi dışlama, gövde yedeği, olaylardan yeniden kurma, eski yolların kapatılması, yeniden bağlama, Actions dakika bütçesi | Claude #7, #14, #15; ChatGPT #2, #3 | Tasarım 2.1'de |
-| A5 | **Açık depoya ilk yazımdan önce kontrol** | Claude #2; ChatGPT #4, #5 | Tasarım 2.1'de; kalan risk K6 ile kabul edildi |
+| A1 | **Wake-up and capacity architecture:** flow without Batu with 15 routine runs a day; the number of environments; the uncertain outcome of a start; the limits shared with Batu's own Claude usage | Claude #3, #5, #6, #17, #20; ChatGPT #6 | Research first: Claude Code Projects, messaging between sessions, a long-lived session, one-shot scheduled runs that are reported not to count toward the limit, GitHub Actions, extra usage. The options will come to Batu with their costs |
+| A2 | **Identity chain:** environment token + claim token | Claude #4, #5; ChatGPT #1 | Design above; to be written in 2.1 |
+| A3 | **Exam execution path:** a separate exam environment and role | Claude #6 | Together with A1's number of environments |
+| A4 | **Backup and recovery:** excluding reproducible data, body backup, rebuilding from events, closing the old paths, reconnection, Actions minutes budget | Claude #7, #14, #15; ChatGPT #2, #3 | Design in 2.1 |
+| A5 | **Check before the first write to the public repository** | Claude #2; ChatGPT #4, #5 | Design in 2.1; the remaining risk was accepted with K6 |
 
-### B. Düzeltilecekler (tasarım belli)
+### B. To be corrected (design known)
 
-Connector'ların routine ve ortamlardan çıkarılması ve etki kanalı envanteri (Claude #1); bildirim ve yedek kanal (Claude #11); Batu onaylarının amaç düzeyine indirilmesi (Claude #12, ChatGPT #13); biçim kapısı etiketi (Claude #13); API tablosunun tamamlanması (Claude #18); ikinci model geçidi (Claude #19); rol etkinleşmesinin ihtiyaca bağlanması (Claude #21); kriter 2, 3, 13, 18, 20, 24 kabul koşulları (Claude #9, #22, #23); bellek ölçümü (Claude #24); etiket düzeltmeleri (Claude #25, #26); anahtar envanteri (Claude #28); iç çelişkiler (Claude #29, başlık notu); PR ile birleşme arasındaki yetki penceresi (Claude #27, ChatGPT #7); gövde okuma fonksiyonu (ChatGPT #8); P4 §21.11 karşı örneği (ChatGPT #9); F02 katmanları (ChatGPT #10); hüküm dayanağı (ChatGPT #11); kanıt zarfı (ChatGPT #12); arama ölçüsünde son değerlendirme kümesi (ChatGPT #14); alternatif araştırması kuralı (ChatGPT #15); yetenek eksikliği adayı (ChatGPT #16); disiplin tetiği ve denetim izi (ChatGPT #17, #18); taşıyıcı sınaması (ChatGPT #19); sorgu devamı (ChatGPT #20); statü üçlüsü (ChatGPT #21); defter aktarımı (ChatGPT #22); DR12 düzeltmesi (ChatGPT #23); model erişim ara katmanı (Claude #10); kendi kendini kapatan routine ve bağımsız izleme (Claude #16).
+Removing the connectors from routines and environments, and the effect channel inventory (Claude #1); notification and backup channel (Claude #11); bringing Batu's approvals down to the purpose level (Claude #12, ChatGPT #13); the format gate label (Claude #13); completing the API table (Claude #18); second-model gateway (Claude #19); tying role activation to need (Claude #21); acceptance conditions for criteria 2, 3, 13, 18, 20, 24 (Claude #9, #22, #23); memory measurement (Claude #24); label corrections (Claude #25, #26); key inventory (Claude #28); internal contradictions (Claude #29, heading note); the authority window between the PR and the merge (Claude #27, ChatGPT #7); body-reading function (ChatGPT #8); the P4 §21.11 counterexample (ChatGPT #9); F02 layers (ChatGPT #10); verdict basis (ChatGPT #11); evidence envelope (ChatGPT #12); final evaluation set in the search benchmark (ChatGPT #14); the rule of research into alternatives (ChatGPT #15); capability gap candidate (ChatGPT #16); discipline trigger and audit trail (ChatGPT #17, #18); carrier testing (ChatGPT #19); query continuation (ChatGPT #20); the status triple (ChatGPT #21); ledger transfer (ChatGPT #22); DR12 correction (ChatGPT #23); model access layer (Claude #10); self-disabling routine and independent monitoring (Claude #16).
 
-### C. Yeni ilkeler
+### C. New principles
 
-1. **Güncel platform okuması:** Planın dayandığı her platform davranışı resmî belgenin güncel sürümünden ve tarihiyle okunur.
-2. **Etki kanalı envanteri:** Ajanın etki üretebildiği her kanal tek listede; her biri için sınır ve olumsuz test.
+1. **Current platform reading:** Every platform behaviour the plan relies on is read from the current version of the official documentation, with its date.
+2. **Effect channel inventory:** Every channel through which the agent can produce effects, in a single list; for each one, a limit and a negative test.
 
-### D. Batu kararları (bu turda verildi)
+### D. Batu's decisions (given in this round) (original: TR-A1)
 
-- **K6 = (b):** `devos` açık kalır. Kayıt: özel araştırma içeriğinin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi.
-- **K7 = (a):** "Yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Batu: çalışmada kişisel veri yok.
+- **K6 = (b):** `devos` stays public. Record: the risk of private research content being exposed by accident was accepted in the form reduced by code-based pre-checks.
+- **K7 = (a):** The "only fake data" rule covers personal and business data; DevOS's own research library can be used in measurements. Batu: there is no personal data in the work.
+
+---
+
+## Turkish originals of Batu's decisions
+
+**TR-A1** · Section "D. Batu's decisions (given in this round)": the heading and its two list items · 
+> ### D. Batu kararları (bu turda verildi)
+>
+> - **K6 = (b):** `devos` açık kalır. Kayıt: özel araştırma içeriğinin kazara açığa çıkma riski, koda dayalı ön kontrollerle azaltılmış haliyle kabul edildi.
+> - **K7 = (a):** "Yalnız sahte veri" kuralı kişisel ve iş verisini kapsar; DevOS'un kendi araştırma kütüphanesi ölçümlerde kullanılabilir. Batu: çalışmada kişisel veri yok.
