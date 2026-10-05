@@ -25,7 +25,7 @@
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. Planın İngilizce çevirisi bitti; bağımsız denetçiler bölüm bölüm Türkçe asılla karşılaştırıyor. W-C00-01, 02 ve 04 kabul edildi. <br>2. Araştırma kütüphanesini bu oturuma eklemek platformda bir kişinin onayını istiyor; Accept edits modunda (senin D-008 kararın) bu onay verilemiyor. Ek F'te "oturum kütüphaneyi sonradan ekler" demiştik; bu yanlıştı. <br>3. Önerim (a): oturumu bir kez kısa süre Auto'ya alman, oturumun kütüphaneyi eklemesi, sonra Accept edits'e geri dönmen. Ayrıntı ve adımlar: plan/decisions/D-011.md ve "Batu'dan beklenenler" issue'su. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; bağımsız plan incelemesinin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T20:52Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:00Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:06Z |
 
 ---
 
@@ -34,11 +34,11 @@
 <!-- generated:frontier -->
 **Ready (startable now):**
 - `W-C00-03` Gap and contradiction list
-- `W-C00-07` ECC function comparison (plan C00 step 3)
 - `W-C00-08` Independent plan review (plan C00 step 4)
 
 **Running:**
 - `W-C00-06` Translate the plan package (plan C00 step 0): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
+- `W-C00-07` ECC function comparison (plan C00 step 3): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
@@ -56,7 +56,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 5, blocked 3, cancelled 6, ready 3, running 2 | 10 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 5, blocked 3, cancelled 6, ready 2, running 3 | 10 |
 | `C01` | Platform verification | planned | no items | 5 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 2 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 2 |
@@ -79,7 +79,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-04` Premise inventory (plan C00 step 6): accepted
   - `W-C00-05` Builder operating model (PC-04): cancelled
   - `W-C00-06` Translate the plan package (plan C00 step 0): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-003, N-004
-  - `W-C00-07` ECC function comparison (plan C00 step 3): ready · open notes: N-005
+  - `W-C00-07` ECC function comparison (plan C00 step 3): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-005
   - `W-C00-08` Independent plan review (plan C00 step 4): ready
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): running (session_01WKJi23FwAjFtiyD1DbQ2Rs)
   - `W-C00-10` Decide on the results (plan C00 step 7): blocked: depends on W-C00-07 (not accepted)
@@ -101,7 +101,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-04` | Premise inventory (plan C00 step 6) | accepted | done (v1) | EV-C00-004 (revised 2026-10-05, L-139); CHK-C00-004 (conditions); CHK-C00-006 (conditions met) | `plan/work/W-C00-04.md` |
 | `W-C00-05` | Builder operating model (PC-04) | cancelled | done by the producer's own judgement (L-033), not independently accepted; superseded in substance by W-C00-12 (principle 11, `briefs/w-c00-12/BATU_TERMINAL_GOALS_TR.md`) | L-015 to L-033; EV-C00-005 (T-A2r, T-E2) | `plan/work/W-C00-05.md` |
 | `W-C00-06` | Translate the plan package (plan C00 step 0) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | EV-C00-006 (conventions, revisions 2 and 3); EV-C00-007 (proposals); EV-C00-008 (verdicts and dispositions); CHK-C00-007 to CHK-C00-019 | `plan/work/W-C00-06.md` |
-| `W-C00-07` | ECC function comparison (plan C00 step 3) | ready | todo (heavy) | — | `plan/work/W-C00-07.md` |
+| `W-C00-07` | ECC function comparison (plan C00 step 3) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-07.md` |
 | `W-C00-08` | Independent plan review (plan C00 step 4) | ready | todo (heavy) | — | `plan/work/W-C00-08.md` |
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | blocked: depends on W-C00-07 (not accepted) | todo | — | `plan/work/W-C00-10.md` |
