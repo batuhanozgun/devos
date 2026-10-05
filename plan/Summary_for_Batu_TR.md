@@ -2,7 +2,7 @@
 
 Bu metin senin için hazırlanmış bir özettir. Bağlayıcı metin İngilizce plandır: `plan/DevOS_Kurulum_Plani.md` ve ekleri (Ek A–G). Plandan sonra verdiğin kararların kayıtları `plan/decisions/` altındadır; onlar da İngilizcedir. Bu özet ile İngilizce metin arasında herhangi bir fark olursa İngilizce metin geçerlidir. Tarih: 5 Ekim 2026. Kaynak: `main` dalındaki `8349242` commit'i (plan sürüm 2.1; İngilizce çevirinin sadakat incelemesi geçtikten sonra). Bu özeti planın kuralı gereği DevOS tutar (Bölüm 0.6 madde 1).
 
-Tırnak içindeki Türkçe metinler senin kararlarının plandaki ya da kayıtlardaki aslıdır; alıntılarda geçen "Batu" sensin.
+Tırnak içindeki ve alıntı biçimindeki Türkçe metinler plandan ya da kayıtlardan aynen alınmıştır. Plandan alınanlar senin kararlarının aslıdır; "senin sözlerin", "senin sözün", "onayın" ya da "cevabın" diye verilenler kendi sözlerindir; karar kayıtlarının Türkçe başlıkları ise kurucunun yazdığı başlıklardır. Alıntılarda geçen "Batu" sensin.
 
 ---
 
@@ -99,7 +99,7 @@ Bunların plandaki ayrıntısı:
 > 12. **Güncel platform okuması:** Planın dayandığı her platform davranışı, resmî belgenin güncel sürümünden ve tarihiyle okunur; ikincil kaynak "doğrulandı" sayılmaz. **[2.0 incelemesinden çıkan ders]**
 > 13. **Etki kanalı envanteri:** Ajanın dünyada etki üretebildiği her kanal (veritabanı, GitHub, connector'lar, ağ, ikinci model, zamanlanmış işler) tek listede tutulur; her biri için sınır ve olumsuz test yazılır. **[2.0 incelemesinden çıkan ders]**
 
-Ek E'deki açık talebin (Ek E Bölüm 5, 29 Eylül 2026):
+Ek E'deki açık talebinin ilk maddesi (Ek E Bölüm 5, 29 Eylül 2026; öbür üç maddesi yukarıdaki ilkelerde, 0.3 madde 1, 2 ve 6'da var):
 
 > Kalite kolaylık ya da ucuzluk uğruna düşürülmez. "Şimdilik bu yeter", "bunu basitleştirelim", "uygulayıcı sonra çözer" yaklaşımlarıyla gerekli kapasite azaltılmaz.
 
@@ -121,7 +121,7 @@ Ek E'deki açık talebin (Ek E Bölüm 5, 29 Eylül 2026):
 ### 1 Ekim 2026'da verdiklerin (Bölüm 11.1, Bölüm 9)
 
 - **PC-02, dal yönetimi:** "dal açmak, `main`'e almak ve silmek kurucunun yönetimindedir; birleştirme için Batu'dan onay istenmez." Senin sözün: "Repolardaki branch yaratmak, branch'ı main'e taşımak, silmek hepsi senin yönetiminde olsun." Kurucunun sınırları: kütüphane depolarına hiç dokunmaz; `main`'e yalnız PR ile girer, dal korumasını kapatmaz ve atlatmaz; her birleştirmeyi ve dal silmeyi deftere yazar; her duruştan önce işi `main`'e alır.
-- **PC-04, kurucunun çalışma düzeni:** Kurucunun kendi çalışma düzenini tasarlayıp sınaması. Beklentilerin 1–5 geçerlidir: (1) sen mesaj taşıyıcı değilsin; (2) sana yalnız senin kararların gelir, yüksek etkili değişikliklerin teknik onayı bağımsız incelemeden gelir ve plan buna göre değişir; (3) kurucu her adımda seni beklemez, senin işlerin toplu gelir; (4) "bitti" kanıta dayanır; (5) her zaman güncel bir Türkçe durum sayfası. Kurucunun o zamanki düzeni PC-06 ile kaldırıldı; beklentilerinin tek istisnası D-010'dadır (aşağıda). (Kaynak: PC-04 kaydı; C00 günlüğü L-015.)
+- **PC-04, kurucunun çalışma düzeni:** Kurucunun kendi çalışma düzenini tasarlayıp sınaması. Beklentilerin 1–5 geçerlidir: (1) sen mesaj taşıyıcı değilsin; (2) sana yalnız senin kararların gelir, yüksek etkili değişikliklerin teknik onayı bağımsız incelemeden gelir ve plan buna göre değişir; (3) kurucu her adımda seni beklemez, senin işlerin toplu gelir; (4) "bitti" kanıta dayanır, senin onayın teknik doğruluğun kanıtı değildir; (5) her zaman güncel bir Türkçe durum sayfası. Kurucunun o zamanki düzeni PC-06 ile kaldırıldı; beklentilerinin tek istisnası D-010'dadır (aşağıda). (Kaynak: PC-04 kaydı; C00 günlüğü L-015.)
 - **PC-05, teknik onay sende değil:** "Batu'ya teknik onay sorusu gelmez. Batu'ya yalnız ona ait kararlar gelir: amaç, kapsam, maliyet, hesaplarını ve diğer işlerini etkileyen seçimler ve kabul. Bir değişiklik bunlardan birine dokunuyorsa (örneğin bir kısıtı ya da maliyeti değiştiriyorsa) o yönüyle Ek E biçiminde karar olarak gelir." (Bölüm 4 K-11 madde 7)
 - **PC-01:** Kurulum aşamalarının `/goal` (oturuma verilen ve sağlanana kadar oturumu sürdüren hedef) ile ve üç duruş koşuluyla, aşama başına bir `/goal` olarak yürümesi. 5 Ekim'de bunun senin kararın olmadığını belirttin; PC-06 ile kurulumun tamamı için tek `/goal` geldi.
 
@@ -147,16 +147,16 @@ Ek E'deki açık talebin (Ek E Bölüm 5, 29 Eylül 2026):
 
 ### Karar kayıtlarındaki diğer kararların
 
-- **D-002, kalıcı kullanım politikası** (2 Ekim; cevabın "D-002: a, D-003: a"): Kullanım durumu serbestken iş sürer; uyarı durumunda yalnız hafif iş yapılır; sınıra ulaşılınca iş durur. 4 Ekim'de gece tercihini kaldırdın: "Ağır işler gündüz de yapılabilsin, benim Claude Code'da başka bir işim yok." D-010'dan sonra "en çok 2 paralel inceleme" sınırı artık yok (ek kullanımı 36. madde ile kabul ettin) ve sınır sıfırlanınca iş senin "devam" mesajınla sürer.
-- **D-003, kalan risk** (2 Ekim; aynı cevap): Connector'ları (hesabındaki posta, takvim, dosya gibi bağlantıları) engelleyen kanca (her araç çağrısına izin veren ya da onu reddeden küçük program), kurucunun kendisinin değiştirebildiği bir programdır. Bu kalan riski denetim ortamı kurulana kadar (C02–C03) kabul ettin; C03'te yeniden değerlendirilir.
+- **D-002, kalıcı kullanım politikası** (2 Ekim; cevabın "D-002: a, D-003: a"): Kullanım durumu serbestken iş sürer; uyarı durumunda yalnız hafif iş yapılır; sınıra ulaşılınca iş durur. 4 Ekim'de gece tercihini kaldırdın: "Ağır işler gündüz de yapılabilsin, benim Claude Code'da başka bir işim yok." D-010'dan sonra en çok iki paralel inceleme sınırı artık yok (ek kullanımı 36. madde ile kabul ettin) ve sınır sıfırlanınca iş senin "devam" mesajınla sürer.
+- **D-003, kalan risk** (2 Ekim; aynı cevap): Connector'ları (hesabındaki posta, takvim, dosya gibi bağlantıları) engelleyen kanca (her araç çağrısına izin veren ya da onu reddeden küçük program), kurucunun kendisinin değiştirebildiği bir programdır. Bu kalan riski denetim ortamı kurulana kadar (C02–C03) kabul ettin; C03'te ya da kancanın bilerek atlatıldığı görülürse yeniden değerlendirilir. Kabulünün, açık deponun geçmişinde görülen bir açığı (OI-012) da kapsayıp kapsamadığı henüz sana sorulmadı; sonraki toplu sorularında teyit için sorulacak.
 - **D-008, izin modu, model ve efor** (4 Ekim): "Oturumlar otomatik moddan çıkar: her araç çağrısına yazılı bir kural dosyası ayrıntılı gerekçesiyle izin verir ya da reddeder; kurucunun açtığı her oturum Opus 5.5 ve ultracode eforuyla çalışır". Senin sözlerin: "denetim yapılamıyor sistemde, bu sorunu çöz"; "auto mode'da çalışmayalım". Oturumlar "Accept edits" modunda çalışır; kanca her reddinde neyin denendiğini, hangi kuralın durdurduğunu, kuralın neden var olduğunu ve onun yerine ne yapılacağını yazar. Önemli değişiklikler bağımsız incelemeden geçmeye devam eder. Karar vermeden önce sana söylenen bedeller: (1) Claude Code'un otomatik denetleyicisinin kimsenin listelemediği tehlikelere karşı genel koruması gider, yalnız kurucunun yazdığı kurallar kalır; (2) eksik bir kural, liste tamamlanana kadar işi ilk boşlukta durdurur. Ayarlar depoda olduğu için bu depoda kendi açtığın oturumlara da uygulanır; kendi oturumun için uygulamada başka mod seçebilirsin, kanca her modda çalışır. Tek istisnası D-010'un 34. maddesidir.
-- **Artık geçerli olmayanlar:** D-001 ("Hafif işlerle ilerle.") yerini D-002'ye bıraktı. D-009, D-010 ile geri çekildi; cevap gerekmez. D-006 ve D-007'yi reddettin: sana sorulmaları yanlıştı. Kurucunun oturumları tek bir sistemdir; kurucunun yaptığı ya da dayandığı bir kural veya izin kurucunundur, sana sorulmaz.
+- **Artık geçerli olmayanlar:** D-001 ("Hafif işlerle ilerle.") yerini D-002'ye bıraktı. D-009, D-010 ile geri çekildi; cevap gerekmez. Ama ayrı bir oturum başlatma ihtiyacı C01'de geri gelir: Accept edits'teki oturum yeni oturum başlatamadığı için bu, o zaman sana tek ve dar bir soru olarak gelir. D-006 ve D-007'yi reddettin: sana sorulmaları yanlıştı. Kurucunun oturumları tek bir sistemdir; kurucunun yaptığı ya da dayandığı bir kural veya izin kurucunundur, sana sorulmaz.
 
 ### Açık karar: D-011 (senin cevabını bekliyor)
 
 "Çalışma oturumunun kütüphaneye erişimi: platform araştırma kütüphanesini oturuma yalnız bir kişinin onayıyla ekliyor; Accept edits (D-008) bu onayı veremiyor". Soru: Bu çalışma oturumu, kütüphaneyi eklemek için bir kez kısa bir süre Auto modda çalışabilir mi (D-008'e tek seferlik istisna)?
 
-- **(a) Önerilen:** Bir kez kısa Auto penceresi; oturum yalnız ekleme çağrısını yapar, sen yeniden Accept edits'e dönersin.
+- **(a) Önerilen:** Bir kez kısa Auto penceresi: sen izin modunu Auto'ya alıp oturuma "auto" yazarsın; oturum yalnız ekleme çağrısını yapar (reddedilirse tekrar denemez); sen yeniden Accept edits'e dönersin.
 - **(b)** Accept edits kalır; C04'ten önce kütüphane doğrudan okunmaz. Plan değişikliği gerekir ve soru C04'te geri gelir.
 - **(c)** Bu oturum bundan sonra Auto'da çalışır; D-008 bu oturumun bütün işi için tersine döner.
 
