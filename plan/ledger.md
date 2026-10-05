@@ -19,7 +19,7 @@
 | Item | State | As of |
 |---|---|---|
 | Stage | **C00 on hold.** No run starts until W-C00-12 (holistic redesign of the builder's operating model) is done. W-C00-05 is done, but the design was built by patching review findings one at a time; Batu's review on 2026-10-02 showed structural gaps (L-034). | 2026-10-02T12:03Z |
-| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation; stopped at S2). Released 2026-10-05T10:38Z | 2026-10-05T10:38Z |
+| Run lock | `session_01XBdYJwHjvsouur4ayJJM5Z` (run; W-C00-12 continuation; stopped at S2). Released 2026-10-05T10:39Z | 2026-10-05T10:39Z |
 | Next action | Generated: the startable frontier in section 2 (W-R2). It is not written by hand. | 2026-10-03T19:50Z |
 | Usage | `five_hour` `allowed` at 10:05Z (`get_session`), resets 2026-10-05T11:10Z (`resetsAt` 1791198600, converted with `date -u -d @`) (§8: proceed). | 2026-10-05T10:06Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
@@ -31,7 +31,7 @@
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | Armed wakes | none | 2026-10-03T19:50Z |
 | summary_tr | Senden bir karar bekleniyor: **D-009** (issue #6'da). <br>1. Accept edits modundaki oturumlar ne yeni oturum açabiliyor ne de ileri bir saate kendine hatırlatma kurabiliyor: platform "onay gerekiyor" diyerek reddediyor. D-008 olduğu gibi kalırsa sistem kendi kendine devam edemez ve bağımsız inceleme başlatılamaz. <br>2. Bu oturum yeni oturum gerektirmeyen işi bitirdi: tranche 1c (W-C00-12.4, PR #86) yeni guard'ın üzerine taşındı ve testleri geçti; taşımayı gözden geçiren denetleyicinin bulduğu, eş zamanlı çağrılarda ortaya çıkan bir açık da kapatıldı. 1c'nin geri kalanı (canlı testler, bağımsız inceleme) yeni oturum gerektiriyor. <br>3. Oturum durdu ve kilidi bıraktı. D-009 cevaplanana kadar yeni bir çalışma ancak otomatik moddaki bir oturumdan başlatılabilir. <br>**Açık uç:** Ayrı "ultracode" bayrağı hâlâ doğrulanamadı; effort "xhigh" olarak doğrulandı. <br>**Riskler:** <br>- D-009 cevaplanana kadar iş bekler; 4 saat sonraki hatırlatmayı kuracak bir oturum da yok. <br>- Guard olağan hataları ve enjekte talimatları yakalar; sıra dışı kabuk yazımlarına karşı "en iyi çaba"dır, arkasında birleştirme-öncesi inceleme var. | 2026-10-05T10:38Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:38Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T10:39Z |
 
 ---
 
