@@ -1,12 +1,12 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Şu kararlar senin: `D-011` (Çalışma oturumunun kütüphaneye erişimi: platform araştırma kütüphanesini oturuma yalnız bir kişinin onayıyla ekliyor; Accept edits (D-008) bu onayı veremiyor). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
+**Senden beklenen:** Şu kararlar senin: `D-011` (Çalışma oturumunun kütüphaneye erişimi: platform araştırma kütüphanesini oturuma yalnız bir kişinin onayıyla ekliyor; Accept edits (D-008) bu onayı veremiyor), `D-012` (Plan 0.5, ikinci güvence: makine hesabının kütüphanedeki commit'lerini DevOS'tan bağımsız bildiren izleme), `D-013` (Hesabına bağlı servislerin adları devos'un açık geçmişinde kalıyor (OI-012): kabul mü, geçmişi kaldırmak mı). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 6 Ekim 2026, 00:52 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 01:19 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
-**Sıradaki işler:** `W-C00-08`, `W-C00-10` sürüyor. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** `W-C00-08`, `W-C00-10` sürüyor; başlatılabilir: `W-C00-14`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere).
 
