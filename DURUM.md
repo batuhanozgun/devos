@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 5 Ekim 2026, 23:25 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 5 Ekim 2026, 23:33 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
-**Sıradaki işler:** başlatılabilir: `W-C00-03`, `W-C00-06`, `W-C00-07`, `W-C00-08`, `W-C00-09`. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** `W-C00-06` sürüyor; başlatılabilir: `W-C00-03`, `W-C00-07`, `W-C00-08`, `W-C00-09`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere).
 
