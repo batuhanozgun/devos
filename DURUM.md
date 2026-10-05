@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-011` (Çalışma oturumunun kütüphaneye erişimi: platform araştırma kütüphanesini oturuma yalnız bir kişinin onayıyla ekliyor; Accept edits (D-008) bu onayı veremiyor). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 6 Ekim 2026, 01:20 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 01:31 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
@@ -14,8 +14,7 @@
 
 **Şu an**
 
-Senden beklenen: bir karar, D-011 (kütüphaneye erişim). 
-1. Planı görmeyen karşı tasarım planla karşılaştırıldı ve denetimden geçti. Karşı tasarım daha küçük bir başlangıç öneriyor: bazı kayıt türleri ve roller ertelenebilir. Bunlar C00'ın karar adımında (W-C00-10) karara bağlanacak. 
-2. Karar adımı başladı: plan incelemesinin, ECC karşılaştırmasının ve karşı tasarımın bütün bulguları tek listede toplanıyor; sonra her biri için karar verilecek, gerekirse plan değişecek. 
-3. Sana dönük Türkçe özet hazır: `plan/Summary_for_Batu_TR.md`. 
+Senden beklenen: bir karar, D-011 (kütüphaneye erişim); yakında bunun yerine daha eksiksiz bir karar gelecek. 
+1. Bir hata yaptım: bugün yazılan üç kayıtta hesabına bağlı servislerin adları yeniden açık depoya girdi. Kaydetmeden önce kontrol etmemiştim. Mevcut dosyalardan temizledim; git geçmişinde kalıyorlar. Bunu sana ayrıca karar olarak getireceğim. Artık her kayıttan önce kontrol ediyorum; koruma kancasına da ekleniyor. 
+2. C00'ın karar adımı sürüyor: 270 bulgu 56 konuda toplandı, her biri için karar verildi. Plan değişiklikleri ve açık depoya yazılanı kodla denetleyecek ara kontrol hazırlanıyor. 
 **Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz.
