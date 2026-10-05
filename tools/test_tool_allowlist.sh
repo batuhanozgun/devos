@@ -729,13 +729,14 @@ $MB" | python3 -c 'import json,sys; d=json.load(sys.stdin); d["tool_input"]["app
   RB=$(brief main run --role producer)
   # (T-W6 d, f) the run brief on the fetched main's real lease: the holder passes; another session passes only once
   # the lease is released or expired (N-057), so the expected decision is read from the same row.
-  read -r holder lstate <<<"$(git show FETCH_HEAD:plan/ledger.md | python3 -c 'import importlib.util,sys
+  # The expectation comes from tools/records.py's lease_state(), not from the guard under test (port Critic 7).
+  read -r holder lstate <<<"$(git show FETCH_HEAD:plan/ledger.md | python3 -c 'import sys
 from datetime import datetime, timezone
-spec=importlib.util.spec_from_file_location("hook",sys.argv[1]); H=importlib.util.module_from_spec(spec); spec.loader.exec_module(H)
+sys.dont_write_bytecode = True; sys.path.insert(0, "tools"); import records as R
 row=next((l for l in sys.stdin.read().splitlines() if l.startswith("| Run lock |")),"")
-h,s,at=H.lease_state(row)
+h,s,at=R.lease_state(row)
 live=s=="expires" and at is not None and at>datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
-print(h or "none", "live" if live else "stale")' "$hook")"
+print(h or "none", "live" if live else "stale")')"
   hexp=allow; [ "$holder" = none ] && hexp=deny
   oexp=deny; [ "$lstate" = stale ] && [ "$holder" != none ] && oexp=allow
   ME="$holder" t $hexp "$(cs "" "$RB")" "(T-W6 d) a correct run brief from the lease holder $holder (lease $lstate)"
@@ -752,7 +753,8 @@ fut = (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%MZ"); past = (now - time
 A, B, OLD = "session_01HOLDERAxxxxxxxxxxxxxxx", "session_01OTHERBxxxxxxxxxxxxxxxx", "session_016Hi3ZYgAf2amYNGc43a3tr"
 def verdict(cell, me):
     led = f"| Item | State | As of |\n|---|---|---|\n| Run lock | {cell} | {past} |\n"
-    H.git = lambda *a, **k: types.SimpleNamespace(returncode=0, stdout=led if a[:1] == ("show",) else "")
+    H.git = lambda *a, **k: types.SimpleNamespace(returncode=0, stderr="", stdout=("1" * 40 + "\n") if a[:1] == ("rev-parse",)
+                                                  else led if a[:1] == ("show",) else "")
     H.os.environ["CLAUDE_CODE_REMOTE_SESSION_ID"] = me
     why = H.brief_gate("Task-Brief: run producer 0000000000000000\n", "0" * 40) or ""
     return "lease" if why.startswith("a run brief only from") else "passes the lease rule"
@@ -769,6 +771,34 @@ for label, cell, me, want in cases:
     print(f"{'ok  ' if got == want else 'BAD '} exp={want} got={got} (N-057 {label})")
     bad |= got != want
 sys.exit(1 if bad else 0)
+PYEOF
+  # Port Critic findings 1 and 2 (L-124): the run brief's lease is read from main's own fetched commit. A parallel
+  # fetch can move the shared FETCH_HEAD, and the source revision may carry a stale lease; neither may decide.
+  python3 - "$hook" <<'PYEOF' || fail=1
+import importlib.util, sys, types
+from datetime import datetime, timedelta, timezone
+spec = importlib.util.spec_from_file_location("hook", sys.argv[1]); H = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(H)
+now = datetime.now(timezone.utc)
+fut = (now + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%MZ"); past = (now - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%MZ")
+A, B = "session_01HOLDERAxxxxxxxxxxxxxxx", "session_01OTHERBxxxxxxxxxxxxxxxx"
+MAIN, SRC, OTHER = "1" * 40, "2" * 40, "3" * 40
+led = lambda cell: f"| Item | State | As of |\n|---|---|---|\n| Run lock | {cell} | {past} |\n"
+LIVE, STALE = led(f"`{A}`. Expires {fut}"), led(f"`{A}`. Released {past}")
+def fake(*a, **k):
+    ns = lambda out="": types.SimpleNamespace(returncode=0, stdout=out, stderr="")
+    if a[:1] == ("rev-parse",):
+        return ns((OTHER if a[-1].startswith("FETCH_HEAD") else MAIN) + "\n")  # FETCH_HEAD moved by a parallel fetch
+    if a[:1] == ("show",):
+        return ns(LIVE if a[1].split(":", 1)[0] == MAIN else STALE)          # only main's own commit has the live lease
+    return ns()
+H.git = fake
+H.os.environ["CLAUDE_CODE_REMOTE_SESSION_ID"] = B
+why = H.brief_gate("Task-Brief: run producer 0000000000000000\n", SRC) or ""
+got = "lease" if why.startswith("a run brief only from") else "passes the lease rule"
+print(f"{'ok  ' if got == 'lease' else 'BAD '} exp=lease got={got} (port Critic 1, 2) a non-holder under main's live lease, "
+      "with FETCH_HEAD moved by a parallel fetch and a stale lease on the source revision")
+sys.exit(0 if got == "lease" else 1)
 PYEOF
   VB=$(brief main W-C00-12.4 --role verifier --target-sha "$(git rev-parse FETCH_HEAD)" --failure-classes "a check that cannot fail" "a claim stronger than the evidence")
   t allow "$(cs "" "Review prompt.
