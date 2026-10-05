@@ -1,7 +1,5 @@
 # DevOS Installation Plan (Claude Code)
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 2.1 · **Date:** 29 September 2026 · **Status:** Plan. No component has been set up; no test has been run in the target environment.
 
 This version replaces 2.0. What changed in 2.1:
@@ -178,7 +176,7 @@ These 34 items are the plan's contract. Each stage shows which items it meets (S
 19. **Learning:** Lessons are recorded, the suitable ones are selected; method changes are tested without breaking the old good behaviour.
 20. **Test data:** Personal and business data are never used in tests; only fake data. DevOS's own research library may be used in measurements. **[Batu's decision K7, 29 September 2026]** (original: TR-A16)
 28. **An error is distinguished from a capability gap:** Every error is classified as a symptom, a failure class or a capability gap; the repair and the regression test are made at the most general level found.
-29. **Drawing on the outside body of knowledge is mandatory:** For high-impact decisions, the known solutions and counterexamples in other fields are researched.
+29. **Accumulated knowledge from outside sources is mandatory:** For high-impact decisions, the known solutions and counterexamples in other fields are researched.
 30. **Measurement is independent:** Competence is measured with exams that the role under test cannot see; no role can approve its own change.
 31. **Private sources are protected:** Content in the private library is not carried into public repositories.
 32. **Common thinking standard and role preparation:** Every role, whatever its expertise, carries the same common thinking floor. A new role is prepared not just with a name and a task sentence, but with a knowledge map, methods, tools, known failure classes, examples and a hidden exam; this preparation is rebuilt at every session opening, at every contribution request and on return from an interruption. The smallness of the work is not a reason to skip the expert assessment; the assessment may result in little work being done. **[Batu's decision, 29 September 2026]** (original: TR-A17)
@@ -241,7 +239,7 @@ For each capability: which need it meets, by which mechanism it is met, the cond
 
 **On failure:** If the C07 cognitive gate fails, the system review in Section 6.11 is carried out. "Let's add one more agent" or "let's make the prompt longer" does not count as a fix.
 
-**Testing:** Two kinds of task in the hidden exam set: (1) tasks in which a material prerequisite that is not stated explicitly is hidden (it must be found), (2) tasks that need no extra prerequisite (no unnecessary preparation should be produced). The two are measured together; if only the first is measured, a system that adds prerequisites to everything looks successful. In addition, the real task in C07.
+**Testing:** Two kinds of task in the hidden exam set: (1) tasks in which a material prerequisite that is not stated explicitly is hidden (it must be found), (2) tasks that need no extra prerequisite (unnecessary preparation must not be produced). The two are measured together; if only the first is measured, a system that adds prerequisites to everything looks successful. In addition, the real task in C07.
 
 **Status:** Mechanism **[Proposal]**. Whether the coverage scan really catches unknown gaps **[Open problem: U-1]**.
 
@@ -325,7 +323,7 @@ For each capability: which need it meets, by which mechanism it is met, the cond
 4. **"Where do I find it" guide:** Generated automatically from the catalogue: which kind of question is answered in which record family, with which search.
 5. **Context package:** The party that will use the information writes its mandatory needs (`ContextRequest`); whoever prepares the package cannot shorten this list; each need is met with a source and a passage (`ContextPackage`); what actually went to the session is recorded (`DispatchReceipt`). The staleness rules are in Appendix G.
 6. **Unknown-need check:** Every package gets, according to the type of work, a list of "things that may have been missed" and a gap scan from an angle the producer did not see.
-7. **Return to the source body:** A search result is not the source itself. With `devos_api.read_source(source, version, range)` the full body of the source, or a requested range of it, can be read (Appendix D, D5). In stage B the repositories are not opened directly; this function takes their place.
+7. **Return to the source body:** A search result is not the source itself. With `devos_api.read_source(source, revision, span)` the full body of the source, or a requested range of it, can be read (Appendix D, D5). In stage B the repositories are not opened directly; this function takes their place.
 8. **Role knowledge maps:** In each role's package, the library sections relevant to its domain and "when to look" hints (Appendix A 3.2).
 9. **Usage measure:** Cases in which information from the library changed, limited or justified a decision are reported. The number of citations is not a measure.
 
@@ -512,7 +510,7 @@ The free plan's 500 MB limit may fill up in the first months. In that case eithe
 
 **Need:** No change entering the main product without passing the checks; for high-impact changes, the approval of the independent audit (PC-05); telling "PR opened" apart from "really got in".
 
-**Choice:** GitHub PR flow: by default, routines can push only to branches starting with `claude/` **[Verified: secondary source]**; the `main` branch is protected and the rules cover administrators too; required checks (tests, schema, links, catalogue record, leak checks, an independent review verdict for the work items that need one); for high-impact files, the approval of the independent audit (PC-05; required review with `CODEOWNERS` in C08); automatic merge for routine changes once the checks pass; intent and observation records. **[Proposal]** Narrow enough to say there is no alternative: GitHub is a required part of the platform.
+**Choice:** GitHub PR flow: by default, routines can push only to branches starting with `claude/` **[Verified: secondary source]**; the `main` branch is protected and the rules cover administrators too; required checks (tests, schema, links, catalogue record, leak checks, an independent review verdict for the work items that need one); for high-impact files, the approval of the independent audit (PC-05; required review with `CODEOWNERS` in C08); automatic merge for ordinary changes once the checks pass; intent and observation records. **[Proposal]** Narrow enough to say there is no alternative: GitHub is a required part of the platform.
 
 ### 5.7 Backup and disaster recovery
 
@@ -643,7 +641,7 @@ devos/
 | Source | Status | How it is used |
 |---|---|---|
 | `agentic-os-search/research/soul-foundations` | Reusable foundation | Rationale for the requirements; assessed separately when applied to the target; source of the coverage scan in K-1 |
-| `agentic-os-search/research/studies` | Candidate knowledge | Accumulation of external sources; not a decision on its own |
+| `agentic-os-search/research/studies` | Candidate knowledge | Accumulated knowledge from outside sources; not a decision on its own |
 | `agentic-os-search/research/soul-context` | Context | The project's history |
 | `agentic-os-search/agent/protocols` | Common-rules input | Source of Appendix D |
 | `agentic-os-search/explorations` | Exploration, not decision | Source of ideas and rationale; gives no authority to open work |
@@ -664,7 +662,7 @@ Every record that comes from the library carries the "private" confidentiality c
 - **The verifier does not repair:** The audit session does not fix a problem it finds in the same action; the fix is a separate work item in the working environment.
 - **High-impact changes** (rules, role definitions, database schema, security and release settings, `.claude/settings.json`, decision channel): technical review and approval by the audit environment (PC-05). If the change touches a matter that belongs to Batu (purpose, scope, cost, his accounts), that aspect of it also comes to Batu separately as a decision.
 - **External interaction:** Issues and PRs opened from outside trigger no routine; for agents, external content is only data.
-- **Leak check before writing to the public repository** (within the session, code-based): (1) the added text is compared with the fingerprints of the private library; a long match stops the push; (2) the embedding vector is compared; similarity above the threshold sends the push to review. The check covers pushing to a branch, PR bodies, comments and writing issues. The matched text itself is not written to the audit record. The same check on the PR is the second layer. The threshold is tuned in C03 with known examples.
+- **Leak check before writing to the public repository** (within the session, code-based): (1) the added text is compared with the fingerprints of the private library; a long match stops the write; (2) the embedding vector is compared; similarity above the threshold sends the write to review. The check covers pushing to a branch, PR bodies, comments and writing issues. The matched text itself is not written to the audit record. The same check on the PR is the second layer. The threshold is tuned in C03 with known examples.
 - **Effect channel inventory:** Section 0.3 item 13; the negative test of each channel in C03.
 - Secret scanning is enabled.
 
@@ -783,7 +781,7 @@ A new role is prepared the way an expert is prepared for a job: need and system 
 
 **The builder's working order [PC-06, 5 October 2026, Batu's decision D-010; rules: `plan/Installation_Working_Order.md`; ledger: `plan/ledger.md`] (original: TR-E1):** The builder is a working system too. How the installation work runs is in that English document; what is to be built is determined by this plan. Batu's requirement and expectations 1–5 in PC-04 hold **[Batu, 1 October 2026]** (original: TR-E1); their only exception is written in item 1 **[Batu, 5 October 2026, D-010]** (original: TR-E1). In essence:
 
-1. **One working session:** A single working session runs the installation. Batu opens it once from the Claude app and pastes the prepared first message (Appendix F; one `/goal` for the whole installation). After that he types only to answer his own decisions and, after the usage limit has reset, to write one "devam" ("continue") message (a cloud session does not continue by itself after the limit). The session reads the plan itself, takes the next step in plan order, splits the work and gives it to subagents with defined roles and to workflows (Producer, Researcher, Prober, Checker, Counter-designer; from C02, Test designer), and is the only one that writes to `main`. A stage boundary is not a stop. Waiting for Batu's decision or action, the usage limit, and a blocker that cannot be passed yet are temporary "not yet" states. A separate session or environment remains only where the plan requires it (the session and routines observed in C01, the audit environment from C03 on, C04's secret search question set, the exams); when one is needed, it comes to Batu as a single, narrow question. **[Assumption: the single session continues, despite compaction, without breaking away from the plan, through re-reading; tested at the first compaction and in C01]**
+1. **One working session:** A single working session runs the installation. Batu opens it once from the Claude app and pastes the prepared first message (Appendix F; one `/goal` for the whole installation). After that he types only to answer his own decisions and, after the usage limit has reset, to write one "devam" ("continue") message (a cloud session does not continue by itself after the limit). The session reads the plan itself, takes the next step in plan order, splits the work and gives it to subagents with defined roles and to workflows (Producer, Researcher, Prober, Checker, Counter-designer; from C02, Test designer), and is the only one that writes to `main`. A stage boundary is not a stop. Waiting for Batu's decision or action, the usage limit, and a blocker that cannot be passed yet are temporary "not yet" states. A separate session or environment remains only where the plan requires it (the session and routines observed in C01, the audit environment from C03 on, C04's hidden search question set, the exams); when one is needed, it comes to Batu as a single, narrow question. **[Assumption: the single session continues, despite compaction, without breaking away from the plan, through re-reading; tested at the first compaction and in C01]**
 2. **The only source of truth is `main`.** After every completed piece of work and before every stop, the work is merged into `main`. Where the work left off is carried by the record, not by the session: at opening and after every compaction (a hook reminds it of this), the session re-reads the rules, the ledger, `DURUM.md` and the last entries of the stage log. The status file is kept short; the records are in separate, append-only files per stage.
 3. **Meeting the goal is not stage acceptance.** The evaluator is a small model and sees only the conversation. So stop messages carry the output of the check script named `tools/stop_check.sh` unedited. Stage acceptance is given, until C03, by the verdict of a fresh-context Checker subagent that did not do the work (independence level written: fresh-context subagent in the same session, Section 8 item 7), and after C03 in the audit environment.
 4. **Only the decisions that are his come to Batu** (purpose, scope, cost, choices that affect his accounts and his other work, acceptance). These, and the work Batu has to do, are collected and passed on, step by step, in a single GitHub issue. The status is always current on the Turkish `DURUM.md` page.
@@ -803,7 +801,7 @@ A new role is prepared the way an expert is prepared for a job: need and system 
 | C02 | Data model, rule gate, identity chain, F01–F08 regressions, ledger transfer | The decision channel's interface (C06) |
 | C03 | Showing the trust boundaries and effect channels with negative tests | Tuning of the leak threshold after the library is ingested (C04) |
 | C04 | Library, the three searches, reading the source body, context package, choice of the embedding model | The package's semantic adequacy (U-4) |
-| C05 | Common rules, the initial role set, methods, the exam setup | The roles' success in real work (C07) |
+| C05 | Common rules, the starting role set, methods, the exam setup | The roles' success in real work (C07) |
 | C06 | Working order, audit, decision channel | Adequacy of capacity (C11, U-5) |
 | C07 | The cognitive gate in the first real loop | General quality measurement (U-2) |
 | C08 | Model access layer, release, whole product, SOUL repository | SOUL's first usable version is DevOS's work |
@@ -887,7 +885,7 @@ A new role is prepared the way an expert is prepared for a job: need and system 
 
 **Tasks:**
 
-1. Ingestion jobs: `agentic-os-search` continuously, the old experiment repositories once; with source type, epistemic status, operational authority and confidentiality class.
+1. Ingestion jobs: `agentic-os-search` continuously, the old experiment repositories once; with source type, epistemic status, authority to act and confidentiality class.
 2. **Search benchmark:** A separate session prepares at least 50 questions from the real library, with their correct sources; tuning questions and final evaluation questions are kept apart; at least one third of the questions are cross-language (English question, Turkish source). The success threshold is written before the measurement.
 3. **Embedding model choice:** The candidate models (at least two multilingual open models, and `gte-small` for comparison) are tried with the tuning questions; after the choice is finished, it is measured once with the final evaluation questions.
 4. `read_source`, the "where do I find it" guide, `session_brief()`, the context package flow.
@@ -902,10 +900,10 @@ A new role is prepared the way an expert is prepared for a job: need and system 
 
 **Tasks:**
 
-1. `CLAUDE.md` and `.claude/protocols/` (Appendix D), `.claude/agents/` (the initial role set, Appendix A and Section 7.4), `methods/`, `.claude/settings.json`.
-2. The package of every role in the initial set (Appendix A Section 3); knowledge maps are re-derived from the catalogue and tested with the search benchmark.
+1. `CLAUDE.md` and `.claude/protocols/` (Appendix D), `.claude/agents/` (the starting role set, Appendix A and Section 7.4), `methods/`, `.claude/settings.json`.
+2. The package of every role in the starting set (Appendix A Section 3); knowledge maps are re-derived from the catalogue and tested with the search benchmark.
 3. **Coverage list:** The discovery question list in K-1 is derived from the Foundation's working-system areas, and versioned.
-4. **Exam setup:** The exam environment prepares the exam sets for the initial set; the exams run as ordinary work, as in Section 7.3.
+4. **Exam setup:** The exam environment prepares the exam sets for the starting set; the exams run as ordinary work, as in Section 7.3.
 5. The first version of the mechanism assumption inventory (Section 6.12).
 
 **Acceptance:** ✔ In its hidden exam, every role complies with the "limit it cannot delegate" item. ✘ It catches the traps hidden in the exam (work that conflicts with a constraint, stale information, a dropped qualifier, a hidden prerequisite, an unquestioned premise). ✔ It does not needlessly reject correctly done examples. ✔ A new role can be set up and tested with the preparation protocol; the role package has been reviewed by a session that did not prepare it. ✔ The audit trail of the nine thinking questions is visible in the database.
@@ -914,7 +912,7 @@ A new role is prepared the way an expert is prepared for a job: need and system 
 
 ### C06 — Working order, audit and decision channel
 
-**Tasks:** The whole of the order in K-7; the routines created by Batu (with connectors removed); the request-contribution-use flow; the single-writer rule; loop limits; the binding review by the audit session; the decision channel and the backup channel; the scan for stuck work and deadlock.
+**Tasks:** The whole of the order in K-7; the creation of the routines by Batu (with connectors removed); the request-contribution-use flow; the single-writer rule; loop limits; the binding review by the audit session; the decision channel and the backup channel; the scan for stuck work and deadlock.
 
 **Acceptance:** ✔ The A → B → A chain completes without a message from Batu. ✔ B's contribution is visibly used in A's decision, or the reason for not using it is written. ✘ When a session is interrupted, a completed contribution is not produced again; the next session continues from the right place. ✘ A second writer to the same product is rejected. ✘ A "no progress" state is detected and the work stops. ✔ The decision reaches the phone; if it is not opened within a set time, it is repeated through the second channel; with the answer, the work continues. ✘ An "answer" that comes from anyone other than Batu is not accepted. ✔ The number of Batu's approvals, and whether his approvals are becoming a formality, start to be measured.
 
@@ -1084,7 +1082,7 @@ When the time comes, the builder writes out each of them step by step. Secret in
 
 | Risk | Possible effect | Mitigation |
 |---|---|---|
-| Routines are in research preview; their format and limits may change | Flow without Batu breaks | The trigger is in a single function; work records are in Supabase; scheduled fallback runs; the changelog is followed by maintenance work |
+| Routines are in research preview; their format and limits may change | Flow without Batu breaks | The trigger is in a single function; work records are in Supabase; a scheduled reserve run; the changelog is followed by maintenance work |
 | The daily routine limit (15 on Max) | Work volume is limited | Routines only start sessions; roles inside the session; reserve budget; the real value in C01 |
 | Max usage limits | Speed drops | U-5; capacity report; options to Batu |
 | Claude app notifications may be unreliable | Decisions are delayed | The GitHub app is the primary channel |
@@ -1119,6 +1117,8 @@ When the time comes, the builder writes out each of them step by step. Secret in
 The plan is reopened in these cases: a squeeze signal requires a frame review (Section 6.12); a row fails in C01; C03 shows that a rule can be bypassed; the search benchmark cannot pass its threshold in C04; C07 fails; a platform feature changes; a decision of Batu's changes; a better solution is found for a problem in Section 10.2.
 
 Changes are not made silently: the old version, the new version, the rationale and the affected stages are recorded. A stage's acceptance condition cannot be loosened after the result has been seen; if it has to be loosened, the old result is counted as invalid and the testing is repeated with the new condition. A proposal is not kept just because it is written in this plan; if something better is shown, it changes.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
 ---
 

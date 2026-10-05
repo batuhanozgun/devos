@@ -1,7 +1,5 @@
 # Evaluation of the ChatGPT review and the 2.1 revision list
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Date:** 29 September 2026 · **Reviewed:** Installation plan 2.0 and Appendices A–G · **Reviewer:** ChatGPT (source fidelity) · **Evaluator:** The session that wrote the plan
 
 **Method:** The same as for the Claude review: weighed with the warning about a tendency to defend (Appendix D, D2); the overlapping findings of the two reviews were merged.
@@ -69,6 +67,8 @@ Removing the connectors from routines and environments, and the effect channel i
 
 - **K6 = (b):** `devos` stays public. Record: the risk of private research content being exposed by accident was accepted in the form reduced by code-based pre-checks.
 - **K7 = (a):** The "only fake data" rule covers personal and business data; DevOS's own research library can be used in measurements. Batu: there is no personal data in the work.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
 ---
 

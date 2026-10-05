@@ -1,7 +1,5 @@
 # Appendix E — Rules for communicating with Batu
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.2 (aligned with plan 2.1; PC-05, 1 October 2026) · **Date:** 29 September 2026 · **Source:** the preparation conversation with Batu (28–29 September 2026). These rules apply to DevOS's builder and to all its roles.
 
 ---
@@ -77,6 +75,8 @@ When an account action is asked of Batu:
 **What is Batu asked about high-impact changes? [PC-05; Batu, 1 October 2026] (original: TR-A3)** No technical approval question is asked. Technical correctness and the approval of high-impact changes come from independent audit. Batu's approval is not evidence of a technical fact. If a change touches a matter that belongs to Batu (purpose, scope, cost, his accounts or his other work), it is asked only in that respect, in the decision form of Section 3. The tasks Batu has to do are gathered and passed to him in one go, step by step.
 
 **Unopened decisions:** If the decision issue is not opened within 24 hours, it is repeated once through the second channel (a Claude app notification or e-mail; which of them is reliable is tested in C01). For decisions that hold up the progress of the work, this period is 4 hours. If the repeat is not opened either, the "what happens if no answer is given" rule is applied. The periods are changed, with a justification, according to the observation in C06–C07.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
 ---
 

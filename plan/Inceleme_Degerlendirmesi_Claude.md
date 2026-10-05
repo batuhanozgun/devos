@@ -1,7 +1,5 @@
 # Evaluation of the independent Claude review
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Date:** 29 September 2026 · **Reviewed:** Installation plan 2.0 and Appendices A–G · **Reviewer:** A separate Claude chat that had not seen this conversation · **Evaluator:** The session that wrote the plan
 
 **Evaluation method:** Each finding was weighed with the warning "since I am the one who wrote the plan, I may tend to defend it" (Appendix D, D2). High-impact factual claims were checked again against the primary source. Decision types: **Accept**, **Partial accept** (the finding is correct, the proposed fix was changed), **Reject**.
@@ -72,3 +70,5 @@ The common cause of the three critical findings: the plan was built without read
 - **K6 — The visibility of the `devos` repository** (#2).
 - **K7 — The scope of the "only fake data" rule** (#9).
 - The wake-up and capacity architecture (#3) will come with its options after research and redesign.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

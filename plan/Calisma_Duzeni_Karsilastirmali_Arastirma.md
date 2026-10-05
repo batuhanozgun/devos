@@ -1,7 +1,5 @@
 # DevOS working order: comparative research
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Date:** 29 September 2026 · **Question:** Does the "team in the office, checker apart" working order (A1 version 2) rest on a sound foundation, or is it a made-up structure? Compared with known approaches, where does it agree, where does it diverge, and what needs to be corrected?
 
 **Method:** Anthropic's own publications and product documents, independent practitioner and research sources, and the studies in the `agentic-os-search` library (multi-agent-patterns, gastown, beads, hermes-agent, ecc, harness-engineering-and-evolution) were examined. Priority was given to sources being current and primary. Secondary sources were marked as such.
@@ -73,3 +71,5 @@ In addition: **dynamic workflows** will be tried in C01 for large scanning jobs;
 
 - **Verifier bottleneck:** In open-ended work such as research and design there is no strong, automatic verifier. All the sources see this as the hardest problem. In DevOS, independent audit, hidden exams, the second model family and Batu's assessment in the fields where he is an expert narrow this gap but do not close it (U-2).
 - **Number of roles and records:** 18 roles and many record families must each be justified against the "start simple" principle. Roles are activated as the need arises; the initial scope of the record families will be questioned separately in the independent counter-design in C00.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

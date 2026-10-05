@@ -1,7 +1,5 @@
 # Working order, wake-up and capacity (A1) — version 2
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Date:** 29 September 2026 · **Status:** Decided (technical decision). It will go into installation plan 2.1.
 
 **Why does this version exist?** The first version accepted, without questioning it, the premise "every role is a separate session and every hand-over requires the system to wake itself up again". This premise was carried over from the design in P4 and P5 (separate processes run by a manager). When the limit of 15 routines a day blocked this premise, the plan started adding new mechanisms. The right move was not to add mechanisms but to question the premise. This version does that.
@@ -83,6 +81,8 @@ It starts with 7 runs in total; half of the limit of 15 stays in reserve. The re
 ## 6. The lasting lesson from this incident
 
 Frame blindness is the greatest danger for DevOS and for SOUL (Batu, 29 September 2026) (original: TR-A1). The sign this incident taught: **when a design runs into a limit and starts producing new mechanisms as the solution, the frame itself must be questioned first.** The mechanism for this goes into installation plan 2.1: a premise inventory, a mandatory frame review on a squeeze signal, and an independent session that sees only the purpose and the constraints working out its own design and comparing it with the current design.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
 ---
 

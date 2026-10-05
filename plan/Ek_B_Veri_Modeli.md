@@ -1,7 +1,5 @@
 # Appendix B — Data model
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.1 (consistent with plan 2.1) · **Date:** 29 September 2026 · **Status:** [Proposal]. Implemented in the test project in C02; that the rules work is shown with the Appendix C tests.
 
 **Sources:** P4 v4 report §8–§18 and §30 (state axes, readiness and claim, request-contribution-use, knowledge families, context contracts, relation queries, operation intent, release, recovery, composite product, learning); P5 v2 guide §7 (object table); installation plan 2.0 Sections 4 and 6 (families added in this version: decision rules, unnecessary-prerequisite rule, learning, exam run, user model, constraint, effort policy, dead end, leak fingerprint).
@@ -158,7 +156,7 @@ For each family: purpose, core fields, rules, states and transitions. The "Who" 
 **Rules:**
 - Whoever prepares the package cannot shorten the list of mandatory needs; a change requires a new request revision (F02).
 - A package with an unmet mandatory need is not accepted; discovery may start for what is missing.
-- When the budget tightens, repeated content and content of low decision value is reduced first; mandatory counter-evidence and the authority boundary are not removed.
+- When the budget tightens, repeated, low-decision-value content is reduced first; mandatory counter-evidence and the authority boundary are not removed.
 - The cache key includes the work item and use, the target and source revisions, the permission view, the role and method versions, and the index version (Appendix G).
 
 ### 3.10 Artifact and Assembly — product and composite product
@@ -379,3 +377,5 @@ These are implementation details deliberately left open in this appendix. Each h
 | Vector index | An approximate nearest neighbour index suited to the dimension of the chosen model | C04 search benchmark and size |
 | Chunk size | Chunks of roughly one or two paragraphs that respect the heading structure | C04 search benchmark |
 | How the environment token reaches the database | Carried in a separate request header through the API credential feature of the Claude environment; `devos_api` functions read the header and compare its hash with `env_tokens` | C01 #3 observation; C02 negative tests. If the header path does not work, an Edge Function gate that verifies the token |
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

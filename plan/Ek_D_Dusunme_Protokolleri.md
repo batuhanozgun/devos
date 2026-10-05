@@ -1,7 +1,5 @@
 # Appendix D — Thinking disciplines and `CLAUDE.md`
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.1 (consistent with plan 2.1) · **Date:** 29 September 2026 · **Status:** [Proposal]. At C05 it is placed in `CLAUDE.md` and under `.claude/protocols/`; its effect is measured with hidden exams.
 
 **Sources:** `agentic-os-search/AGENT.md` and the nine protocols (R01–R09) under `agent/protocols/`; the "SOUL ve DevOS" ("SOUL and DevOS") report, §7 and §10; Appendix A Section 2 (common floor); Appendix E (communication with Batu).
@@ -216,7 +214,7 @@ Each is the content of the file `.claude/protocols/Dn.md`. The substance of the 
 2. Consider from which source, and through which selection or compression, the view was derived, and when it was produced.
 3. "If a material piece of information in this view is missing, stale or distorted, does my conclusion change?" If yes or uncertain, return to the source, fetch the relevant section directly or widen the search.
 4. Do not take absence in the view for absence in the source; a claim of absence requires that the search be really sensitive to finding that thing.
-5. For exact dates, numbers and identities, scope claims such as "never", "always", "all", evidence that affects irreversible decisions, and exact attribution of what someone said, get closer to the source.
+5. For exact dates, numbers and identifiers, scope claims such as "never", "always", "all", evidence that affects irreversible decisions, and exact attribution of what someone said, get closer to the source.
 6. Returning to the source reduces representation error; it does not prove that the source itself is correct.
 7. If the source cannot be accessed, do not present the view as certain fact; mark off which part rests only on a summary. Being unable to access it is not a reason to fill the gap with a guess.
 
@@ -310,3 +308,5 @@ The disciplines do not replace one another; together they form a loop:
 - D5 makes sure whether the view carries the source correctly, D9 that the accumulated research is found and used correctly.
 - D6 tests whether the explanation is deep enough even when a correct cause has been found.
 - D8 ensures that the work is started with the right state, D7 that the state is recorded correctly at the end of the work.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

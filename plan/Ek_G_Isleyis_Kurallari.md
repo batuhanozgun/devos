@@ -1,7 +1,5 @@
 # Appendix G — Detailed operating rules
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.0 · **Date:** 29 September 2026 · **Status:** [Proposal]. Applied in the relevant stages; the tests in Appendix C show that the rules work.
 
 **Source:** P4 v4 report §8.4, §9.3, §11.3–11.5, §12, §15, §16, §17, §18.2–18.3, §19; adapted to Claude Code cloud, Supabase and GitHub.
@@ -37,7 +35,7 @@ The change in Git and the record in the database are not a single transaction. E
 | 1. Before the intent record | No authorised operation record; candidate content may exist | The candidate content is kept; the work starts again |
 | 2. After the intent record, before the PR | The operation exists, the external effect is unknown | First the branch and the PR are looked for on GitHub; if there are none, the work continues |
 | 3. After the PR is opened or a merge is attempted, before the result record | **The most dangerous window** | Before any new attempt is made, the real state is read from GitHub (the PR state, the current commit of `main`, the merge commit). The observation is recorded, then a decision is made |
-| 4. After the result record, before the consumer | Repeated events and consumer runs | Consumers recognise repeats by the same identifier; they produce no second effect |
+| 4. After the result record, before the consumer | Repeated events and repeated consumer runs | Consumers recognise repeats by the same identifier; they produce no second effect |
 | 5. After the consumer, before delivery to the user | Delivery notification | Delivery and use are observed separately |
 
 **Permission withdrawal race:** Mandatory checks do not re-run by themselves at the moment of merge; between the moment a check passed and the merge, the permission or the epoch in the database may change. So the merge is done by the release job in the single queue, which re-reads the current permission and epoch just before merging (plan 6.8). The remaining window (the time between the re-read and the merge on GitHub) is measured and written down; it cannot be brought to zero, because the database and GitHub are not in a single transaction.
@@ -107,3 +105,5 @@ Degradation is not reported as normal operation; it is made visible which guaran
 ## G10. Work list hygiene
 
 A setup that is busy with itself produces a growing work list. Maintenance work regularly flags: work items that no longer have a link to any higher purpose, work items that have not progressed for a long time, and work items that serve only other maintenance work. Each flag goes as a decision not to Batu but to the coordination role; a work item that cannot show that it serves the mission is closed with reasons (process limit, plan K-10).
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*

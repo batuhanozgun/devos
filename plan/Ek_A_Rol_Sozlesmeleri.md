@@ -1,7 +1,5 @@
 # Appendix A — Roles: contracts, expertise packages and preparation
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.1 (consistent with plan 2.1) · **Date:** 29 September 2026 · **Status:** [Proposal]. Applied in C05; the roles' competence is measured with hidden exams.
 
 **Sources:**
@@ -117,7 +115,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 - **Success direction:** To set up correctly the arrangement of roles, methods, tools, knowledge views, communication and acceptance that a given work item needs, without producing unnecessary load.
 - **Input:** The need and work map, actor competences, tool and environment conditions, knowledge and control loads.
 - **Work:** Instead of fitting a ready-made architecture to every work item, it questions which combination the requirements really make mandatory. It compares reasonable alternatives; it assesses the reuse and minimal-implementation options first.
-- **Output:** A candidate working configuration; contracts between components; a comparison with alternatives; open competence loads; a failure and rollback path. A configuration is not just prompt text; which version, identity and context need it depends on is visible.
+- **Output:** A candidate working configuration; contracts between components; a comparison with alternatives; open competence loads; a failure and rollback path. A configuration is not just prompt text; the version, identity and context need it depends on are visible.
 - **Consumer:** DR06-G, DR06-Y, DR09, DR10, the relevant control owners.
 - **Authority limit:** A new role name does not create real expertise or model capacity; a new tool definition does not provide access.
 - **Acceptance:** The chosen combination must meet the loads specific to the work, must not create unnecessary operating load, and must explain on which assumption it was chosen.
@@ -375,7 +373,7 @@ Not all roles have to be active at every moment. Whether roles are combined in t
 3. **What can be combined within a session:** Work in the same success direction that does not require separation of authority; for example DR16's parallel research subagents, DR05's own tests, a non-binding critique subagent in the working session. Separations within a session rest on declaration and are labelled as such; they do not replace independent acceptance.
    *Installation scope (PC-06, 5 October 2026):* From C03 onwards the builder's binding review is in the audit environment, as written in the plan; items 2 and 3 apply to DevOS roles as written. In the installation, until C03, the binding acceptance of the builder's work is the verdict of a fresh-context Checker subagent in the same session; the verdict writes down that it rests on declaration, and its independence level ("same session, fresh-context subagent", plan Section 8 item 7). The builder's helper subagents are not roles of this appendix.
 4. **Single writer:** Only one role writes to a product at a time. Parallel subagents read, research, analyse and review. Shared decisions are recorded before writing; merging goes through a single queue (DR03).
-5. **The decision to combine is justified:** Which roles work in the same session, and the effect of this on independence and on the separation of knowledge, is written in the assignment record.
+5. **The decision to combine carries a rationale:** Which roles work in the same session, and the effect of this on independence and on the separation of knowledge, is written in the assignment record.
 6. **The same model can be used in different roles;** which responsibility it carries at a given moment does not remain unclear. Because of the shared blind spots of the same model family, the "different role" label alone does not count as independence (plan U-3).
 7. **The verifier's success is not stopping the work.** It is to determine honestly whether a specific claim is supported by sufficient evidence. Rejecting sound work needlessly is also a failure. The verifier does not make repairs in the same action.
 8. **Every role earns its existence with evidence:** Roles become active as the need arises (plan Section 7.4); if the contribution of an active role cannot be measured, this is a finding.
@@ -421,6 +419,8 @@ The following expectation in Batu's document (original: TR-B1) is a requirement 
 | DR12 | Also defined in the source as mechanical acceptance and rejection; P5's DR12 file limited the LLM side to proposals | It was in the source; in this appendix the separation of carriers (proposal in the working environment, review in the audit environment) is written more visibly |
 | The roles' environment | Each role a separate process and session | A role is a responsibility package; most are subagents in the working session; those that require separation of authority are in the audit and exam environments |
 | Quality requirement to be transferred to SOUL | None | Added (Section 7) |
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
 
 ---
 

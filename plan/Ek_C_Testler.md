@@ -1,7 +1,5 @@
 # Appendix C — Tests: failure classes and counterexamples
 
-*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
-
 **Version:** 1.0 · **Date:** 29 September 2026 · **Status:** [Proposal]. The tests are run in the relevant stages (most of them C02–C11) on real PostgreSQL, real GitHub and real Claude sessions.
 
 **Source:** P4 v4 report §13, §20–§23 (findings F01–F08 and counterexamples 21.1–21.12); installation plan 2.0 Sections 4 and 8.
@@ -187,3 +185,5 @@ These are tested not only with database tests but with real sessions. For each o
 2. **Hint ban:** The task text cannot imply the gap that is expected to be found. If the person who prepares the task is one who knows the expected result, the task text is reviewed for hints by an independent session.
 3. **Assessment:** The audit environment assesses technical correctness and materiality; Batu makes a separate assessment in terms of purpose and value (a plain question in the Appendix E format). The two assessments are recorded separately. In a controlled exam, the gap hidden in advance must be found; in a real task, "no gap could be found" is not by itself a failure, because this rule rewards inventing defects.
 4. **On failure:** A system review (plan Section 6.11); after the fix, not the same task but a new task is used. Repeating the same task measures memorisation.
+
+*Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
