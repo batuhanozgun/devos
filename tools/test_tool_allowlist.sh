@@ -7,6 +7,9 @@
 hook="${1:-.claude/hooks/tool_allowlist.py}"
 fail=0
 export DEVOS_GUARD_LOG_DIR; DEVOS_GUARD_LOG_DIR=$(mktemp -d)
+# The leak check (W-C00-14) has its own section with a fixture library; everywhere else no clone and no store exist.
+lkroot=$(mktemp -d); export DEVOS_LIBRARY_DIR="$lkroot/no-library" DEVOS_LEAK_STORE="$lkroot/no-store"
+unset DEVOS_SERVICE_NAMES_EXTRA
 # The command and matcher are read from .claude/settings.json, so a changed wrapper or matcher is tested too.
 cmd=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])')
 matcher=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PreToolUse"][0]["matcher"])')
@@ -28,6 +31,15 @@ if (s.get("permissions") or {}).get("defaultMode") != "acceptEdits":
     bad.append("permissions.defaultMode")
 print("BAD  settings: " + ", ".join(bad) if bad else "ok   settings: model, effortLevel, ultracode, defaultMode (D-008)")
 raise SystemExit(1 if bad else 0)
+EOF
+python3 - <<'EOF' || fail=1
+import json, re
+s = json.load(open(".claude/settings.json"))
+gate = int(re.search(r"^MERGE_GATE_TIMEOUT = (\d+)", open(".claude/hooks/tool_allowlist.py").read(), re.M).group(1))
+t = [h.get("timeout") for e in ("PreToolUse", "PermissionRequest") for h in s["hooks"][e][0]["hooks"]]
+ok = all(isinstance(x, int) and x > gate for x in t)
+print(("ok   " if ok else "BAD  ") + f"hook timeouts {t} s, above the merge gate's own {gate} s limit (W-C00-14)")
+raise SystemExit(0 if ok else 1)
 EOF
 OUTS=$(mktemp)
 # decision of one call: allow | deny | pass | block (exit 2) | ? ; the PermissionRequest form when $2 is "perm"
@@ -658,8 +670,8 @@ t allow '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"n
 t allow '{"tool_name":"mcp__claude-code-remote__list_events","tool_input":{"session_id":"cse_016Hi3ZYgAf2amYNGc43a3tr"}}'
 t allow '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative","persistent_session_id":"session_016Hi3ZYgAf2amYNGc43a3tr"}}'
 t allow '{"tool_name":"mcp__github__get_me"}'
-t allow '{"tool_name":"mcp__github__actions_list","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search"}}'
-t allow '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search"}}'
+t deny '{"tool_name":"mcp__github__actions_list","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search"}}'
+t deny '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search"}}'
 t allow "{\"tool_name\":\"mcp__github__create_pull_request\",\"tool_input\":{$D}}"
 t allow '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"threadId":"x"}}'
 t allow '{"tool_name":"Bash"}'
@@ -690,6 +702,141 @@ else
   echo "info main has no .claude/settings.json yet: a session on main is correctly denied"
 fi
 t $bok "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"source_revision\":\"$br\",\"environment_id\":\"env_01AMBDuHjjTsXMeXFyYgk1zR\",\"outcome_branch\":\"claude/x\"}}"
+# --- W-C00-14: leak check (L1 to L3, F5) against a fixture library holding a planted fake secret and a fake
+# service name. Negative controls: the secret's verbatim form and the service name are stopped in a pushed
+# commit's file, a commit message, a PR body, a comment and an issue. Positive controls: DevOS's own synthesis
+# citing the fixture's source identifier passes on the same routes, and so does a push with no library clone.
+# All text here is fake; the labels are printed instead of the calls.
+lk="$lkroot/fx"; mkdir -p "$lk"; lib="$lk/agentic-os-search"; store="$lk/store"
+SECRET="Quillon harbour ledger states that seven amber lanterns guard the northern salt road at dusk"
+SVC="Zorvexa"
+SHARED="This shared sentence about weekly review cadence appears in the library and on devos main"
+SYN="DevOS synthesis: SRC-FIX-0042 describes a coastal signalling practice; we keep only our own summary of it"
+printf '{"permissions":{"deny":["mcp__%s_Ledgerline"]}}\n' "$SVC" > "$lk/svc.json"
+gc() { git -c user.name=t -c user.email=t@example.invalid "$@"; }
+git init -q "$lib"; mkdir -p "$lib/sources"
+printf '# SRC-FIX-0042\n\nSource identifier: SRC-FIX-0042\n\n%s.\n\n%s.\n' "$SECRET" "$SHARED" > "$lib/sources/SRC-FIX-0042.md"
+git -C "$lib" add -A; gc -C "$lib" commit -qm "fixture library"; git -C "$lib" update-ref refs/remotes/origin/main HEAD
+dv="$lk/devos"; git init -q "$dv"; git -C "$dv" remote add origin https://github.com/batuhanozgun/devos
+printf 'Notes.\n%s.\nLegacy line: %s Ledgerline was named here before.\n' "$SHARED" "$SVC" > "$dv/notes.md"
+git -C "$dv" add -A; gc -C "$dv" commit -qm "fixture main"; git -C "$dv" update-ref refs/remotes/origin/main HEAD
+# cm <branch> <file> <content> <message>: one commit on a new branch from the fixture's origin/main
+cm() { git -C "$dv" checkout -q -B "$1" refs/remotes/origin/main; mkdir -p "$(dirname "$dv/$2")"
+       printf '%s\n' "$3" > "$dv/$2"; git -C "$dv" add -A; gc -C "$dv" commit -qm "$4"; }
+export DEVOS_LIBRARY_DIR="$lib" DEVOS_LEAK_STORE="$store" DEVOS_SERVICE_NAMES_EXTRA="$lk/svc.json"
+bo=$(python3 tools/leak_fingerprints.py build --devos "$dv"); n=$(printf '%s' "$bo" | sed -n 's/.*; \([0-9]*\) excluded.*/\1/p')
+[ "${n:-0}" -gt 0 ] && echo "ok   store built; ${n} fingerprints excluded as already on the fixture's origin/main" || { echo "BAD  store build: $bo"; fail=1; }
+# lt <decision> <rule> <label> <json>: the decision and the rule of one call; the label is printed, not the call
+lt() { local out r; out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" sh -c "${lc:-$cmd}" 2>/dev/null); printf '%s\n' "$out" >> "$OUTS"
+  r=$(printf '%s' "$out" | python3 -c 'import json,re,sys
+d=json.load(sys.stdin)["hookSpecificOutput"]; t=d.get("permissionDecisionReason") or (d.get("decision") or {}).get("message") or ""
+m=re.search(r"DENIED by rule (\w+)|allowed by rule (\w+)", t)
+print(d.get("permissionDecision") or (d.get("decision") or {}).get("behavior") or "?", (m.group(1) or m.group(2)) if m else "-")' 2>/dev/null || echo "? -")
+  if [ "$r" = "$1 $2" ]; then echo "ok   exp=$1 $2 $3"; else echo "BAD  exp=$1 $2 got=$r $3"; fail=1; fi; }
+js() { python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$1"; }
+lb() { lt "$1" "$2" "$3" "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":$(js "$4")},\"cwd\":\"$W\"}"; }
+ghw() { echo "{\"tool_name\":\"mcp__github__$1\",\"tool_input\":{$D,$2}}"; }
+# routes: PR body, comment, issue (title and body), merge message, file write, review
+pr() { ghw create_pull_request "\"title\":\"W-x\",\"head\":\"claude/x\",\"base\":\"main\",\"body\":$(js "$1")"; }
+co() { ghw add_issue_comment "\"issue_number\":6,\"body\":$(js "$1")"; }
+is() { ghw issue_write "\"method\":\"create\",\"title\":$(js "$1"),\"body\":\"Details follow.\""; }
+cm claude/t-file docs/a.md "Background. $SECRET." "W: notes"
+cm claude/t-msg docs/b.md "Own words only." "W: $SECRET"
+cm claude/t-mid docs/c.md "First. $SECRET." "W: first"; printf 'Second.\n' > "$dv/docs/c.md"; gc -C "$dv" commit -qam "W: second"
+cm claude/t-path "docs/quillon-harbour-ledger-states-that-seven-amber-lanterns.md" "Own words only." "W: a file"
+cm claude/t-wrap docs/d.md "$(printf 'QUILLON harbour, ledger — states that\nseven *amber* lanterns guard the northern salt road.')" "W: rewrapped"
+cm claude/t-svcf docs/e.md "We used $SVC for this once." "W: notes"
+cm claude/t-svcm docs/f.md "Own words only." "W: move off $SVC"
+cm claude/t-syn docs/g.md "$SYN" "W: synthesis of SRC-FIX-0042"
+cm claude/t-shared docs/h.md "$SHARED." "W: text already on main"
+cm claude/t-svcmain docs/i.md "Legacy line: $SVC Ledgerline was named here before." "W: a line already on main"
+lb deny  L1 "secret in a pushed commit's file"            "git -C $dv push origin claude/t-file"
+lb deny  L1 "secret in a commit message"                  "git -C $dv push origin claude/t-msg"
+lb deny  L1 "secret in an earlier commit of the range"    "git -C $dv push origin claude/t-mid"
+lb deny  L1 "secret words in a pushed path"               "git -C $dv push origin claude/t-path"
+lb deny  L1 "secret rewrapped, recased, punctuated"       "git -C $dv push origin claude/t-wrap"
+lb deny  L1 "service name in a pushed commit's file"      "git -C $dv push origin claude/t-svcf"
+lb deny  L1 "service name in a commit message"            "git -C $dv push origin claude/t-svcm"
+lt deny  L1 "secret in a PR body"                         "$(pr "Summary. $SECRET.")"
+lt deny  L1 "secret in a comment"                         "$(co "As noted: $SECRET.")"
+lt deny  L1 "secret in an issue title"                    "$(is "$SECRET")"
+lt deny  L1 "secret in a merge commit message"            "$(ghw merge_pull_request "\"pullNumber\":4,\"expectedHeadSha\":\"b494008b5924779ce34b5ac2307faae8c27b908a\",\"commit_message\":$(js "$SECRET")")"
+lt deny  L1 "secret in a pushed file through push_files"  "$(ghw push_files "\"branch\":\"claude/x\",\"message\":\"W\",\"files\":[{\"path\":\"a.md\",\"content\":$(js "$SECRET")}]")"
+lt deny  L1 "secret in a review body"                     "$(ghw pull_request_review_write "\"pullNumber\":4,\"method\":\"create\",\"event\":\"COMMENT\",\"body\":$(js "$SECRET")")"
+lt deny  L1 "service name in a PR body"                   "$(pr "Uses $SVC.")"
+lt deny  L1 "service name in a comment"                   "$(co "Ask $SVC.")"
+lt deny  L1 "service name in an issue title"              "$(is "About $SVC")"
+lc="$pcmd" lt deny L1 "secret in a PR body (PermissionRequest)" "{\"hook_event_name\":\"PermissionRequest\",$(pr "$SECRET" | cut -c2-)"
+lb allow L1 "synthesis citing the source ID, pushed"      "git -C $dv push origin claude/t-syn"
+lb allow L1 "a push piped to a reader"                    "git -C $dv push origin claude/t-syn 2>&1 | tail -3"
+lb allow L1 "a push after cd"                             "cd $dv && git push origin claude/t-syn"
+lb allow L1 "text already on origin/main"                 "git -C $dv push origin claude/t-shared"
+lb allow L1 "a service-name line already on origin/main"  "git -C $dv push origin claude/t-svcmain"
+lt allow M2 "synthesis in a PR body"                      "$(pr "$SYN")"
+lt allow M2 "synthesis in a comment"                      "$(co "$SYN")"
+lt allow M2 "synthesis in an issue title"                 "$(is "$SYN")"
+# L3: GitHub tools never read the library; it is read only through its clone
+lt deny  L3 "GitHub file read of the library"             '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search","path":"README.md"}}'
+lt deny  L3 "GitHub code search naming the library"       '{"tool_name":"mcp__github__search_code","tool_input":{"query":"repo:batuhanozgun/agentic-os-search ingest"}}'
+lt deny  L3 "GitHub commit list of the library"           '{"tool_name":"mcp__github__list_commits","tool_input":{"owner":"BatuhanOzgun","repo":"Agentic-OS-Search"}}'
+lt allow M2 "GitHub file read of devos"                   '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"devos","path":"README.md"}}'
+# L2: a push stands alone in its Bash call
+lb deny  L2 "a push after git commit in the same call"    "git -C $dv commit --allow-empty -m x && git -C $dv push origin claude/t-syn"
+lb deny  L2 "a push after a fetch in the same call"       "git -C $dv fetch origin && git -C $dv push origin claude/t-syn"
+lb deny  L2 "a push inside bash -c"                       "bash -c 'git -C $dv push origin claude/t-syn'"
+lb deny  L2 "two pushes in one call"                      "git -C $dv push origin claude/t-syn; git -C $dv push origin claude/t-shared"
+# fail closed: a missing store while the clone exists, a stale store; a store without a clone is still used
+DEVOS_LEAK_STORE="$lk/absent" lb deny L1 "missing store, clone present: synthesis push" "git -C $dv push origin claude/t-syn"
+DEVOS_LEAK_STORE="$lk/absent" lt deny L1 "missing store, clone present: synthesis PR body" "$(pr "$SYN")"
+printf 'more\n' > "$lib/more.md"; git -C "$lib" add -A; gc -C "$lib" commit -qm "library moved on"
+lb deny  L1 "stale store: synthesis push"                 "git -C $dv push origin claude/t-syn"
+git -C "$lib" update-ref refs/remotes/origin/main HEAD; python3 tools/leak_fingerprints.py build --devos "$dv" >/dev/null
+lb allow L1 "rebuilt store: synthesis push"               "git -C $dv push origin claude/t-syn"
+mv "$lib" "$lk/moved"
+lb deny  L1 "store kept, clone gone: secret push"         "git -C $dv push origin claude/t-file"
+mv "$lk/moved" "$lib"
+DEVOS_LIBRARY_DIR="$lk/none" DEVOS_LEAK_STORE="$lk/absent" lb allow L1 "no library clone and no store: synthesis push" "git -C $dv push origin claude/t-syn"
+# L3: the library clone in its one place; F5 and B5: the store is written only by its script
+lb deny  L3 "clone of the library elsewhere"              "git clone https://github.com/batuhanozgun/agentic-os-search /tmp/elsewhere"
+lb deny  L3 "local clone of the clone elsewhere"          "git clone $lib /tmp/elsewhere"
+lb allow B0 "clone of the library to its place"           "git clone https://github.com/batuhanozgun/agentic-os-search $lib"
+lb allow B0 "clone of the library by its default name"    "cd $lk && git clone https://github.com/batuhanozgun/agentic-os-search.git"
+lb deny  L3 "copy of the clone"                           "cp -r $lib /tmp/libcopy"
+lb deny  L3 "move of the clone"                           "mv $lib /tmp/libcopy"
+lb deny  L3 "fetch of the clone into devos"               "git -C $dv fetch $lib"
+lb deny  L3 "the library as a remote of devos"            "git -C $dv remote add lib https://github.com/batuhanozgun/agentic-os-search"
+lb deny  L3 "a worktree of the clone elsewhere"           "git -C $lib worktree add /tmp/libwt"
+lb allow B0 "fetch inside the clone"                      "git -C $lib fetch origin"
+lb allow B0 "reading the clone in place"                  "cat $lib/sources/SRC-FIX-0042.md"
+lt deny  F5 "Write into the store"                        "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$store/meta.json\"}}"
+lb deny  B5 "shell removal of the store"                  "rm -rf $store"
+lb allow B0 "the build script"                            "python3 tools/leak_fingerprints.py build"
+# a shallow checkout cannot derive the service names: a public write fails closed
+shc="$lk/shallow"; git clone -q --depth 1 "file://$PWD" "$shc" 2>/dev/null; mkdir -p "$shc/.claude/hooks"; cp "$hook" "$shc/.claude/hooks/tool_allowlist.py"
+printf '%s' "$(pr "$SYN")" | DEVOS_LIBRARY_DIR="$lk/none" DEVOS_LEAK_STORE="$lk/absent" python3 "$shc/.claude/hooks/tool_allowlist.py" | grep -q 'DENIED by rule L1' \
+  && echo "ok   exp=deny L1 shallow checkout without the service-name revision: a PR body fails closed" || { echo "BAD  shallow checkout did not fail closed"; fail=1; }
+# the scan tool names lines, never text; the service-name terms are the ones tools/check_service_names.sh derives
+printf 'Clean line.\n%s.\nUses %s.\n' "$SECRET" "$SVC" > "$lk/scan.md"
+so=$(python3 tools/leak_fingerprints.py scan "$lk/scan.md"); sr=$?
+[ $sr -eq 1 ] && printf '%s' "$so" | grep -q "scan.md:2: a matching run" && printf '%s' "$so" | grep -q "scan.md:3: names a service" && ! printf '%s' "$so" | grep -qi -e quillon -e "$SVC" \
+  && echo "ok   scan names lines 2 and 3, without their text" || { echo "BAD  scan ($sr)"; fail=1; }
+python3 - <<'EOF' || fail=1
+import importlib.util, re, subprocess
+src = open("tools/check_service_names.sh").read()
+prog = re.search(r"python3 -c '\n(.*?)'\) \|\|", src, re.S).group(1)
+js = subprocess.run(["git", "show", "3cd686a:.claude/settings.json"], capture_output=True, text=True).stdout
+script = sorted(l for l in subprocess.run(["python3", "-c", prog], input=js, capture_output=True, text=True).stdout.split("\n") if l)
+spec = importlib.util.spec_from_file_location("g", ".claude/hooks/tool_allowlist.py")
+g = importlib.util.module_from_spec(spec); spec.loader.exec_module(g)
+ok = bool(script) and g.service_terms(js) == script
+print(("ok   " if ok else "BAD  ") + f"the guard derives the same {len(script)} service-name terms as tools/check_service_names.sh (not printed)")
+raise SystemExit(0 if ok else 1)
+EOF
+# the planted text reaches neither the decision log nor any denial
+if grep -rqi -e quillon -e lanterns -e "$SVC" "$DEVOS_GUARD_LOG_DIR" "$OUTS"; then echo "BAD  the planted text reached the decision log or a denial"; fail=1
+else echo "ok   the planted secret and service name appear in neither the decision log nor any guard output"; fi
+grep -q "DENIED by rule L1" "$OUTS" && echo "ok   leak denials carry their own rule ID (L1)" || { echo "BAD  no L1 denial seen"; fail=1; }
+export DEVOS_LIBRARY_DIR="$lkroot/no-library" DEVOS_LEAK_STORE="$lkroot/no-store"; unset DEVOS_SERVICE_NAMES_EXTRA lc
 # --- R-D008-1 m-1 and m-6: numbering under parallel calls, and the hash chain
 pl=$(mktemp -d)
 for i in 1 2 3 4 5 6 7 8; do printf '{"tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}' | DEVOS_GUARD_LOG_DIR="$pl" python3 "$hook" >/dev/null & done; wait
@@ -781,6 +928,6 @@ for bad in session_FOREIGN session_PARENTX session_AMBIG5 session_AMBIG6 session
   grep -qx "$bad" "$rd/owned_ids.txt" && { echo "BAD  recorder recorded $bad"; fail=1; } || echo "ok   recorder ignores $bad"
 done
 if [ "$r1" = "0" ] && grep -qx session_TESTREC123 "$rd/owned_ids.txt" && grep -qx trig_TESTREC456 "$rd/owned_ids.txt" && ! grep -q SHOULDNOT "$rd/owned_ids.txt" && ! grep -q session_PARENT "$rd/owned_ids.txt"; then echo "ok   recorder appends created IDs only"; else echo "BAD  recorder"; fail=1; fi
-rm -rf "$rd" "$DEVOS_GUARD_LOG_DIR"
+rm -rf "$rd" "$DEVOS_GUARD_LOG_DIR" "$lkroot"
 [ $fail -eq 0 ] && echo "ALLOWLIST_TEST PASS" || echo "ALLOWLIST_TEST FAIL"
 exit $fail

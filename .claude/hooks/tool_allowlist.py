@@ -17,10 +17,14 @@ Rule families (the IDs are the keys of RULES):
   S  session tools: owned IDs only; new sessions are full devos checkouts in the builder environment, on
      main or this session's branch, carrying .claude/settings.json, on claude-opus-5-5 in acceptEdits.
   F  files: no writes to this working tree's .claude/ (the guard itself), to any .git/ directory, to
-     Claude Code's own configuration, or to credential files.
+     Claude Code's own configuration, to credential files, or to the leak check's fingerprint store.
   B  shell: explicit bans (main, remote history, branch space, the live working tree, guarded directories,
      sending data out, credential-bearing command lines, credentials, critical paths, the sandbox); every
      other command is allowed.
+  L  leak check (W-C00-14; plan 0.5 item 3, K-9 item 5, 6.7): a push to devos (every commit it would publish)
+     and every string field of a GitHub write to devos are compared with fingerprints of the private research
+     library and with the service names of tools/check_service_names.sh; a push stands alone in its Bash call;
+     a clone of the library may exist in one place only.
 
 Threat model (plan/Installation_Working_Order.md): accidents and injected instructions, not a session that
 deliberately edits this file. A deliberate bypass stays visible in git and is a stated residual risk (D-003).
@@ -31,16 +35,20 @@ Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). 
 PreToolUse exits 2, so the call is blocked; on PermissionRequest it prints a deny decision. The settings
 wrapper maps any other non-zero exit to 2, so a guard that cannot run also blocks.
 """
+import bisect
 import fcntl
 import fnmatch
 import hashlib
 import json
+import mmap
 import os
 import re
 import shlex
 import subprocess
 import sys
+import unicodedata
 from datetime import datetime, timezone
+from functools import lru_cache
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # the live working tree: its .claude/ is this guard
@@ -54,6 +62,21 @@ DEVOS_URL = re.compile(r"https://github\.com/batuhanozgun/devos(\.git)?/?", re.I
 DEVOS_REMOTE = re.compile(r"(https://github\.com/|git@github\.com:|ssh://git@github\.com/|"
                           r"https?://[^/\s]*127\.0\.0\.1:\d+/git/)batuhanozgun/devos(\.git)?/?", re.I)
 SHA40 = re.compile(r"[0-9a-f]{40}")
+MERGE_GATE_TIMEOUT = 300   # seconds; the hooks' timeout in .claude/settings.json must not be shorter (W-C00-14)
+
+# Leak check (W-C00-14). The one place a clone of the private research library may be (the sibling of the devos
+# checkout, where the session clones it after add_repo), and the fingerprint store, outside every repository and
+# guarded (B5, F5). The environment overrides exist for tools/test_tool_allowlist.sh; a session cannot set the
+# hook's environment (that is .claude/settings.json, F1).
+LIBRARY_DIR = os.environ.get("DEVOS_LIBRARY_DIR") or "/home/user/agentic-os-search"
+LEAK_STORE = os.environ.get("DEVOS_LEAK_STORE") or "/home/user/.devos-leak-store"
+LIBRARY_NAME = re.compile(r"agentic-os-search", re.I)
+SHINGLE_WORDS = 8          # a "long match": one run of 8 consecutive normalised words in common
+STORE_VERSION = 1
+SERVICE_REV = "3cd686a"    # tools/check_service_names.sh derives the service names from this revision's settings
+SERVICE_GENERIC = {"google", "claude", "career", "intelligence", "network", "analytics", "drive", "calendar",
+                   "docs", "flow"}   # the generic words that script leaves out
+TR_FOLD = str.maketrans({"ı": "i", "İ": "i"})
 
 ALLOWED_PREFIXES = (
     "mcp__github__",
@@ -230,8 +253,10 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            WO, "Work in a scratch clone or worktree outside this working tree and "
            "use git -C <literal path>; to update this tree, run tools/sync_worktree.sh."),
     "B5": ("no shell writes into guarded directories", "The live .claude/ (the guard), the live .git/ and "
-           "Claude Code's configuration (~/.claude) change only through a reviewed merge or not at all.",
-           WO + "; D-008", "Change files in a scratch clone and merge them through a reviewed pull request."),
+           "Claude Code's configuration (~/.claude) change only through a reviewed merge or not at all; the leak "
+           "check's fingerprint store only through tools/leak_fingerprints.py.",
+           WO + "; D-008; W-C00-14", "Change files in a scratch clone and merge them through a reviewed pull "
+           "request; rebuild the fingerprint store with python3 tools/leak_fingerprints.py build."),
     "B6": ("no sending data out", "Uploads and raw network tools can carry data out of the container; once the "
            "classifier is gone (D-008), a hidden instruction in a read document is the main way this happens.",
            WO + "; D-008", "Read with curl or wget without upload options; write to GitHub with the GitHub "
@@ -255,7 +280,34 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
             "<claude/ branch>; write only settings such as user.name and user.email."),
     "B10": ("the sandbox stays on", "Disabling the sandbox for a command removes a layer this guard relies on.",
             WO + "; D-008", "Run the command without dangerouslyDisableSandbox."),
+    "F5": ("the fingerprint store", "The leak check's store decides what counts as library text; only "
+           "tools/leak_fingerprints.py writes it, from the library clone.", WO + "; W-C00-14",
+           "Rebuild it with python3 tools/leak_fingerprints.py build."),
+    "L1": ("leak check before a public write", "devos is public: what is pushed or written there is visible at "
+           "once. Text taken verbatim from the private research library (a run of " + str(SHINGLE_WORDS) +
+           " words matching the fingerprints built from the library clone) and the names of the account's "
+           "third-party services may not be written there. Every commit a push would publish is read (message, "
+           "paths, added lines), and every string field of a GitHub write. While a library clone exists, a "
+           "missing, stale or unreadable fingerprint store stops every public write. Text already on origin/main "
+           "does not count. The matched text is never shown or logged.",
+           WO + "; plan 0.5 item 3, K-9 item 5, 6.7; OI-012; D-013; W-C00-14",
+           "Write DevOS's own synthesis and cite the source identifier instead of the library's words; leave the "
+           "service name out. Find the matching lines locally with python3 tools/leak_fingerprints.py scan <file>, "
+           "and remove them from every commit of the branch (for example, rebuild the branch from origin/main), "
+           "not only from the last one. If the store is missing or stale, rebuild it with python3 "
+           "tools/leak_fingerprints.py build."),
+    "L2": ("a push stands alone in its Bash call", "The leak check reads the commits a push would publish when "
+           "the call is decided. Another command in the same call that can create commits or move refs (commit, "
+           "merge, rebase, reset, fetch, a script, a shell) would change what is pushed after the check.",
+           WO + "; W-C00-14", "Run the push as its own Bash call: git -C <literal path> push origin <claude/ "
+           "branch>, alone or with cd, echo and readers such as tail."),
+    "L3": ("the library clone in its one place", "The leak check compares public writes with fingerprints of "
+           "one clone of the private research library, at " + LIBRARY_DIR + ", and fails closed while that clone "
+           "exists without a fresh store. A clone, copy or fetch of the library anywhere else would escape that.",
+           WO + "; W-C00-14", "Clone the library only to " + LIBRARY_DIR + ", read it there, and rebuild the "
+           "store with python3 tools/leak_fingerprints.py build."),
 }
+LEAK_WITHHELD = {"L1", "L2"}   # denials whose call text is never repeated (it may hold the matched text)
 
 
 class Bad(Exception):
@@ -289,7 +341,8 @@ def norm(i):
 
 
 def git(*args, cwd=ROOT, timeout=20):
-    return subprocess.run(["git", "-C", cwd, *args], capture_output=True, text=True, timeout=timeout)
+    return subprocess.run(["git", "-C", cwd, *args], capture_output=True, encoding="utf-8", errors="replace",
+                          timeout=timeout)
 
 
 def credential_values():
@@ -315,7 +368,11 @@ def redact(s):
     return s
 
 
-def summary(name, args):
+def summary(name, args, rule=None):
+    """The call as logged and shown in a denial. Text that matches the library fingerprints or names a service
+    is never repeated there, nor is the call text of a leak denial (W-C00-14)."""
+    if rule in LEAK_WITHHELD:
+        return f"[withheld: a {rule} denial does not repeat the call's text]"
     if name == "Bash":
         s = str(args.get("command", ""))
     elif name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
@@ -324,6 +381,8 @@ def summary(name, args):
         keep = {k: v for k, v in args.items() if k not in ("content", "files", "prompt", "message", "body",
                                                              "new_string", "old_string", "script")}
         s = json.dumps(keep, ensure_ascii=False, sort_keys=True)
+    if withheld(s):
+        return "[withheld: the call's text matches the library fingerprints or names a service]"
     s = redact(s.replace("\n", " ⏎ "))
     return s if len(s) <= 300 else s[:297] + "..."
 
@@ -623,7 +682,8 @@ def guarded_roots():
             (os.path.join(HOME, ".claude"), "Claude Code's own configuration (~/.claude)"),
             (os.path.join(HOME, ".config", "git"), "git's user configuration (~/.config/git)"),
             ("/etc/gitconfig", "git's system configuration"),
-            (LOG_DIR, "the guard's decision log")]
+            (LOG_DIR, "the guard's decision log"),
+            (LEAK_STORE, "the leak check's fingerprint store (only tools/leak_fingerprints.py writes it)")]
 
 
 def guarded_zone(p, remove=False):
@@ -668,7 +728,8 @@ def literal_guarded(arg, remove=False):
     the lexical residual (WO, "Not protected"). Returns a label or None."""
     parts = [x for x in re.split(r"[/{},]", arg.replace("\\", "/")) if x and "$" not in x and "`" not in x]
     for x in parts:
-        if x in (".claude", ".git", "tools", "devos-guard", LOG_BASENAME):  # devos-guard = default log dir (m-1)
+        if x in (".claude", ".git", "tools", "devos-guard", LOG_BASENAME,  # devos-guard = default log dir (m-1)
+                 os.path.basename(LEAK_STORE.rstrip("/"))):
             return f"a guarded location named literally inside an unresolved path ({x} in {arg})"
     for k in range(len(parts) - 1):
         if parts[k] == ".config" and parts[k + 1] == "git":
@@ -872,6 +933,7 @@ def shell_checks(command, cwd, depth=0):
             raise Bad("G0", f"the command name {args[0]} is not a plain word (it uses a variable or a glob), so the "
                             "guard cannot tell which program bash would run")
         prog = os.path.basename(args[0])
+        CALL.append((prog, args))                # every command of the call, for L2 (a push stands alone)
         if prog == "trap" and depth < 8:   # trap runs its handler string later; check it as a command (S3)
             for a in args[1:]:
                 if not a.startswith("-"):
@@ -931,6 +993,7 @@ def find_checks(args, d):
                 if any(c in sub[0] for c in "$`"):
                     raise Bad("G0", f"find runs a computed command {sub[0]}")
                 prog = os.path.basename(sub[0])
+                CALL.append((prog, sub))
                 command_checks(prog, sub, d)
                 if prog in WRITE_COMMANDS | DEST_COMMANDS | IN_PLACE_COMMANDS:
                     for p in targets:
@@ -1035,6 +1098,8 @@ def command_checks(prog, args, d):
             raise Bad("B5", f"{prog} writes into {z} ({a})")
     if prog == "git":
         git_checks(args, d)
+    if prog in COPY_LIKE or prog == "mv":
+        library_copy_checks(prog, args, d)
     if prog in COPY_LIKE:
         for a in args[1:]:
             if a.startswith("-"):
@@ -1161,6 +1226,8 @@ def git_checks(args, d):
     for x in rest:
         if x.split("=", 1)[0] in GIT_SUB_OPT_DENY or (sub == "clone" and x in ("-u", "-c")):
             raise Bad("B11", f"git {sub} {x} sets configuration or runs another program")
+    if sub in ("clone", "fetch", "pull", "remote", "worktree"):
+        library_git_checks(sub, rest, e)
     where = "an unknown directory (written with a variable or not literally)" if e is None else e
     if sub == "push":
         if cfg:
@@ -1278,6 +1345,7 @@ def push_checks(rest, e):
             raise Bad("B1", f"git push {s} updates {dst}")
         if not dst.startswith("claude/") or dst.startswith("refs/"):
             raise Bad("B3", f"git push {s} updates '{dst or 'a detached HEAD'}', which is not a claude/ branch")
+    PUSHES.append((e, remote, refspecs))   # its commits are leak-checked once the whole call is read (L2, L1)
 
 
 # ---------------------------------------------------------------- tool rules
@@ -1298,8 +1366,8 @@ def file_checks(name, args):
         return ("T1", f"{name} is a read")
     z = write_guarded(p)   # the same guarded places the shell write-ban uses, so the two cannot drift (R-D008-2 N-4)
     if z:
-        rule = ("F1" if ("guard files" in z or "tools/" in z) else "F2" if ".git/" in z else
-                "F4" if "decision log" in z else "F3")
+        rule = ("F5" if "fingerprint store" in z else "F1" if ("guard files" in z or "tools/" in z) else
+                "F2" if ".git/" in z else "F4" if "decision log" in z else "F3")
         raise Bad(rule, f"{name} {p}: {z}")
     return ("T1", f"{name} outside the guarded paths")
 
@@ -1316,9 +1384,9 @@ def merge_checks(args):
     tool = os.path.join(ROOT, "tools", "merge_gate.py")
     try:
         r = subprocess.run([sys.executable, tool, "--pr", str(int(pr)), "--head", sha], cwd=ROOT,
-                           capture_output=True, text=True, timeout=300)
+                           capture_output=True, text=True, timeout=MERGE_GATE_TIMEOUT)
     except subprocess.TimeoutExpired:
-        raise Bad("M7", "the merge gate did not finish within 300 seconds; failing closed")
+        raise Bad("M7", f"the merge gate did not finish within {MERGE_GATE_TIMEOUT} seconds; failing closed")
     out = (r.stdout + r.stderr).strip()
     if r.returncode != 0:
         raise Bad("M7", "the merge gate said:\n" + out[-1500:])
@@ -1404,9 +1472,24 @@ def revision_has_barrier(rev):
     return git("cat-file", "-e", "FETCH_HEAD:.claude/settings.json").returncode == 0
 
 
+def _strings(v):
+    if isinstance(v, str):
+        yield v
+    elif isinstance(v, dict):
+        for x in v.values():
+            yield from _strings(x)
+    elif isinstance(v, (list, tuple)):
+        for x in v:
+            yield from _strings(x)
+
+
 def github_checks(tool, args):
     if tool in BLOCKED_GITHUB:
         raise Bad("M2", f"'{tool}' is not allowed for DevOS sessions")
+    # The library is read only through its one clone, which the leak check is tied to (W-C00-14): a GitHub tool
+    # that names it, a read or a search included, would bring its text into the session with no store behind it.
+    if any(LIBRARY_NAME.search(s) for s in _strings(args)):
+        raise Bad("L3", f"GitHub tool '{tool}' names the research library; it is read only through its clone")
     if tool in READ_ONLY_GITHUB or tool.startswith(READ_ONLY_GITHUB_PREFIXES):
         return ("M2", "a GitHub read")
     if tool in REPOLESS_GITHUB_ALLOWED and "repo" not in args and "owner" not in args:
@@ -1414,6 +1497,7 @@ def github_checks(tool, args):
     owner, repo = str(args.get("owner", "")).lower(), str(args.get("repo", "")).lower()
     if (owner, repo) not in WRITE_REPOS:
         raise Bad("M2", f"GitHub write tool '{tool}' targets {owner}/{repo}, which DevOS may not write")
+    leak_tool_checks(tool, args)     # before every other answer, the merge's included (W-C00-14)
     if tool in GITHUB_FILE_WRITES:
         b = str(args.get("branch") or "").strip()
         b = b[len("refs/heads/"):] if b.startswith("refs/heads/") else b
@@ -1426,6 +1510,367 @@ def github_checks(tool, args):
     if tool == "merge_pull_request":
         return merge_checks(args)
     return ("M2", "a write to batuhanozgun/devos")
+
+
+# ---------------------------------------------------------------- leak check (W-C00-14)
+# Plan 0.5 item 3, K-9 item 5 and 6.7: before a public write the added text is compared with fingerprints of the
+# private research library, and a long match stops the write (L1). A fingerprint is a salted 64-bit BLAKE2b hash of
+# a run of SHINGLE_WORDS normalised words: case folded, the Turkish dotted and dotless i and every diacritic folded,
+# words being runs of letters and digits, so punctuation, Markdown and line breaks do not matter.
+# tools/leak_fingerprints.py hashes every such run at the library clone's HEAD with a fresh random salt, drops the
+# runs that also occur in devos's origin/main tree, and writes the rest sorted to LEAK_STORE; the guard looks them up
+# by binary search in the mapped file. The store holds hashes, the salt and counts, never text. The same routes are
+# checked for the service names of tools/check_service_names.sh (OI-012, D-013); a line already on origin/main
+# does not count. Neither the matched text nor a fingerprint reaches the decision log, a denial or the repository:
+# the L details carry places and counts only, and summary() withholds any call text that matches.
+
+CALL, PUSHES = [], []        # the commands and the pushes of the Bash call being decided (L2, L1)
+GIT_READ_SUBS = {"status", "log", "show", "diff", "rev-parse", "rev-list", "ls-remote", "ls-files", "ls-tree",
+                 "cat-file", "describe", "show-ref", "for-each-ref", "merge-base", "diff-tree", "shortlog",
+                 "name-rev", "blame", "grep", "version", "help"}
+PUSH_COMPANIONS = PURE_READERS | {"cd", "pushd", "echo", "printf", "true", ":", "sleep"}
+CLONE_VALUE_OPTS = {"-o", "--origin", "-b", "--branch", "--depth", "--reference", "--reference-if-able", "--filter",
+                    "--shallow-since", "--shallow-exclude", "-j", "--jobs", "--bundle-uri", "--server-option",
+                    "--ref-format", "--separate-git-dir", "--template", "-c", "--config", "-u", "--upload-pack"}
+
+
+def leak_words(text):
+    t = unicodedata.normalize("NFKD", text.translate(TR_FOLD).casefold())
+    return re.findall(r"[^\W_]+", "".join(c for c in t if not unicodedata.combining(c)))
+
+
+def leak_hashes(words, salt):
+    """The fingerprint of every run of SHINGLE_WORDS words, in the order of the run's first word."""
+    n = SHINGLE_WORDS
+    return [int.from_bytes(hashlib.blake2b(" ".join(words[i:i + n]).encode(), digest_size=8, key=salt).digest(),
+                           "little") for i in range(len(words) - n + 1)]
+
+
+@lru_cache(maxsize=1)
+def read_store():
+    """(meta, salt, sorted fingerprints) of LEAK_STORE; None when it is absent; ValueError when it is unreadable."""
+    meta_p, fp_p = os.path.join(LEAK_STORE, "meta.json"), os.path.join(LEAK_STORE, "fingerprints.bin")
+    if not os.path.lexists(meta_p) and not os.path.lexists(fp_p):
+        return None
+    try:
+        with open(meta_p) as f:
+            meta = json.load(f)
+        size, salt = os.path.getsize(fp_p), bytes.fromhex(meta["salt"])
+        ok = (meta.get("version") == STORE_VERSION and meta.get("shingle_words") == SHINGLE_WORDS and
+              meta.get("byteorder") == sys.byteorder and size == 8 * int(meta["count"]) and len(salt) >= 16)
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        raise ValueError(f"the fingerprint store {LEAK_STORE} cannot be read ({type(exc).__name__})")
+    if not ok:
+        raise ValueError(f"the fingerprint store {LEAK_STORE} does not fit this guard (version, run length, byte "
+                         "order or size)")
+    if not size:
+        return meta, salt, ()
+    with open(fp_p, "rb") as f:
+        return meta, salt, memoryview(mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)).cast("Q")
+
+
+def library_head():
+    """The HEAD of the library clone; None when no clone exists; "" when something is there but is not a clone
+    whose HEAD can be read."""
+    if not os.path.lexists(LIBRARY_DIR):
+        return None
+    try:
+        r = git("rev-parse", "--show-toplevel", "HEAD", cwd=LIBRARY_DIR)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    out = r.stdout.split()
+    ok = r.returncode == 0 and len(out) == 2 and os.path.realpath(out[0]) == os.path.realpath(LIBRARY_DIR)
+    return out[1] if ok else ""
+
+
+def leak_state():
+    """The store public writes are checked against, or None when neither a library clone nor a store exists
+    (nothing to compare with). Fails closed (L1) when the store is unreadable, or missing or stale while the
+    clone exists. Stale: the clone's HEAD is not the one the store was built from."""
+    head = library_head()
+    try:
+        store = read_store()
+    except ValueError as exc:
+        raise Bad("L1", f"{exc}; every public write fails closed until python3 tools/leak_fingerprints.py build "
+                        "rebuilds it")
+    if store is None:
+        if head is None:
+            return None
+        raise Bad("L1", f"a library clone exists at {LIBRARY_DIR} but the fingerprint store {LEAK_STORE} is missing; "
+                        "every public write fails closed until python3 tools/leak_fingerprints.py build builds it")
+    meta = store[0]
+    if head is not None and (head != meta.get("library_head") or
+                             os.path.realpath(LIBRARY_DIR) != meta.get("library_dir")):
+        raise Bad("L1", f"the fingerprint store is stale: it was built from library HEAD "
+                        f"{str(meta.get('library_head'))[:12]}, the clone at {LIBRARY_DIR} is at "
+                        f"{head[:12] or 'an unreadable HEAD'}; every public write fails closed until python3 "
+                        "tools/leak_fingerprints.py build rebuilds it")
+    return store
+
+
+def service_terms(settings_text):
+    """The terms tools/check_service_names.sh derives from a settings file's deny list, by the same rules
+    (tools/test_tool_allowlist.sh checks that both give the same terms). They are never written anywhere."""
+    out = set()
+    for n in json.loads(settings_text)["permissions"]["deny"]:
+        n = n.replace("mcp__", "")
+        for part in n.replace("_-_", "_").split("_"):
+            if len(part) >= 4 and part.lower() not in SERVICE_GENERIC:
+                out.add(part)
+        out.add(n.replace("_", " "))
+    return sorted(out)
+
+
+@lru_cache(maxsize=1)
+def service_term_list():
+    """The terms, derived at run time from SERVICE_REV. DEVOS_SERVICE_NAMES_EXTRA (tests only) adds the terms of a
+    settings-shaped file of fake names."""
+    r = git("show", SERVICE_REV + ":.claude/settings.json")
+    if r.returncode == 0:
+        terms = service_terms(r.stdout)
+        if not terms:
+            raise ValueError("no service names were derived")
+    elif git("rev-parse", "--is-shallow-repository").stdout.strip() == "false" and \
+            git("cat-file", "-e", SERVICE_REV + "^{commit}").returncode != 0:
+        terms = []       # a complete repository without devos's history (a test fixture): no names to derive
+    else:
+        raise ValueError(f"the service names cannot be derived (git show {SERVICE_REV} failed)")
+    if os.environ.get("DEVOS_SERVICE_NAMES_EXTRA"):
+        with open(os.environ["DEVOS_SERVICE_NAMES_EXTRA"]) as f:
+            terms += service_terms(f.read())
+    return terms
+
+
+@lru_cache(maxsize=1)
+def service_pattern():
+    """Whole words in any case, as the script's git grep -i -E with \\b on both sides."""
+    terms = service_term_list()
+    return re.compile(r"\b(" + "|".join(re.escape(t) for t in terms) + r")\b" if terms else r"(?!)", re.I)
+
+
+def fingerprint_hits(text, store):
+    if not store:
+        return 0
+    _, salt, view = store
+    hits = 0
+    for h in set(leak_hashes(leak_words(text), salt)):
+        i = bisect.bisect_left(view, h)
+        hits += i < len(view) and view[i] == h
+    return hits
+
+
+def lines_on_main(repo, ref, lines):
+    """Those of lines that are already, verbatim, a whole line in ref's tree (text on origin/main)."""
+    if not ref or not lines or len(lines) > 200:
+        return set()
+    r = git("grep", "-h", "-I", "-F", "--no-color", *[x for l in lines for x in ("-e", l)], ref, "--",
+            cwd=repo, timeout=30)       # substring matches; only whole-line equality counts below
+    return set(r.stdout.splitlines()) & set(lines) if r.returncode == 0 else set()
+
+
+def service_hits(text, repo, ref):
+    pat = service_pattern()
+    lines = list(dict.fromkeys(l for l in text.splitlines() if pat.search(l)))
+    return len(set(lines) - lines_on_main(repo, ref, lines)) if lines else 0
+
+
+def withheld(text):
+    """True when text matches the library fingerprints or names a service, so it is not logged or shown."""
+    if not text:
+        return False
+    try:
+        store = read_store()
+    except ValueError:
+        store = None
+    try:
+        return bool(fingerprint_hits(text, store) or service_pattern().search(text))
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return False
+
+
+def leak_found(blocks, store, repo, ref):
+    """The places (labels) whose text matches, each with its counts; never the text."""
+    found = []
+    for label, text in blocks:
+        fp, sv = fingerprint_hits(text, store), service_hits(text, repo, ref)
+        if fp or sv:
+            what = [f"{fp} run(s) of {SHINGLE_WORDS} words matching the library" if fp else "",
+                    f"{sv} line(s) naming a service" if sv else ""]
+            found.append(("a place whose name is withheld" if withheld(label) else label) + ": " +
+                         " and ".join(w for w in what if w))
+    return found
+
+
+def leak_deny(what, found):
+    more = f"; and {len(found) - 6} more" if len(found) > 6 else ""
+    raise Bad("L1", f"{'the write' if withheld(what) else what} would publish text that matches the private "
+                    f"library or names a service: {'; '.join(found[:6])}{more} (the text itself is not shown)")
+
+
+def string_fields(v, path=""):
+    """(field path, string) for every string value in a tool input, nested lists, objects and JSON text included."""
+    if isinstance(v, str):
+        yield path or "(input)", v
+        if v[:1] in ("[", "{"):
+            try:
+                yield from string_fields(json.loads(v), path + "(json)")
+            except ValueError:
+                pass
+    elif isinstance(v, dict):
+        for k, x in v.items():
+            yield from string_fields(x, f"{path}.{k}" if path else str(k))
+    elif isinstance(v, list):
+        for i, x in enumerate(v):
+            yield from string_fields(x, f"{path}[{i}]")
+
+
+def leak_tool_checks(tool, args):
+    """L1 for a GitHub write to devos: every string field it carries."""
+    try:
+        store = leak_state()
+        found = leak_found([("field " + p, s) for p, s in string_fields(args)], store, ROOT, "refs/remotes/origin/main")
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        raise Bad("L1", f"the leak check could not run ({type(exc).__name__}); failing closed")
+    if found:
+        leak_deny(f"GitHub write '{tool}' to devos", found)
+
+
+def git_sub(args):
+    i = 1
+    while i < len(args):
+        if args[i] in ("-C", "-c"):
+            i += 2
+        elif args[i].startswith("-"):
+            i += 1
+        else:
+            return args[i]
+    return None
+
+
+def push_alone():
+    """L2: the push is the only command of its call that could create commits or move refs, so the commits the
+    leak check reads are the commits git pushes."""
+    if len(PUSHES) > 1:
+        raise Bad("L2", "the call runs more than one git push")
+    for prog, args in CALL:
+        sub = git_sub(args) if prog == "git" else None
+        if (prog == "git" and (sub is None or sub == "push" or sub in GIT_READ_SUBS)) or \
+                (prog != "git" and prog in PUSH_COMPANIONS):
+            continue
+        raise Bad("L2", f"the push shares its Bash call with {'git ' + sub if sub else repr(prog)}, which can create "
+                        "commits or move refs, or which the guard cannot rule out doing so")
+
+
+def pushed_blocks(e, shas, ref):
+    """(label, text) for every commit reachable from shas and not from ref: its message, its paths and the lines
+    its diff adds (a merge against its first parent). Returns (blocks, number of commits)."""
+    r = git("--no-replace-objects", "-c", "core.quotepath=false", "log", "--no-color", "--no-ext-diff",
+            "--no-textconv", "--no-renames", "--text", "--root", "--no-show-signature", "--diff-merges=first-parent",
+            "--src-prefix=a/", "--dst-prefix=b/", "-p", "--format=%x1e%H%x1f%B%x1f", *shas,
+            *(["--not", ref] if ref else []), "--", cwd=e, timeout=120)
+    if r.returncode != 0:
+        raise ValueError("git log of the pushed commits failed")
+    blocks, recs = [], r.stdout.split("\x1e")[1:]
+    for rec in recs:
+        sha, msg, patch = (rec.split("\x1f", 2) + ["", ""])[:3]
+        c = "commit " + sha.strip()[:12]
+        files, cur, hunk = {}, None, False
+        for line in patch.split("\n"):
+            if line.startswith("diff --git "):
+                cur, hunk = line[len("diff --git "):], False
+                files.setdefault(cur, [])
+            elif line.startswith("@@") and cur is not None:
+                hunk = True
+            elif hunk and line.startswith("+"):
+                files[cur].append(line[1:])
+        blocks += [(c + " message", msg), (c + " paths", "\n".join(files))]
+        blocks += [(f"{c} lines added to {p.rsplit(' b/', 1)[-1]}", "\n".join(a)) for p, a in files.items() if a]
+    return blocks, len(recs)
+
+
+def push_leak_checks():
+    """L1 for the one push of the call: the branch names and every commit it would publish. Returns the detail."""
+    e, remote, refspecs = PUSHES[0]
+    try:
+        store = leak_state()
+        ref = f"refs/remotes/{remote}/main"
+        if git("rev-parse", "-q", "--verify", ref + "^{commit}", cwd=e).returncode != 0:
+            ref = None                        # no origin/main here: every commit of the branch is read
+        shas = []
+        for s in refspecs:
+            r = git("rev-parse", "-q", "--verify", s.split(":", 1)[0] + "^{commit}", cwd=e)
+            if r.returncode == 0:
+                shas.append(r.stdout.strip())
+        blocks, n = pushed_blocks(e, shas, ref) if shas else ([], 0)
+        found = leak_found([("the pushed branch names", "\n".join(refspecs))] + blocks, store, e, ref)
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        raise Bad("L1", f"the leak check could not read the push ({type(exc).__name__}: {exc}); failing closed")
+    if found:
+        leak_deny(f"the push from {e}", found)
+    if not shas:
+        return "the pushed source names no commit here, so git will refuse it; the branch names were checked"
+    return (f"the push's {n} commit(s) beyond {ref or 'the root (no origin/main ref)'} carry no library match and no "
+            "service name" + ("" if store else " (no library clone and no store: service names only)"))
+
+
+def names_library(arg, base):
+    """True when a git argument names the research library: its name in a URL or path, or a path inside the clone."""
+    if LIBRARY_NAME.search(arg):
+        return True
+    v = arg.split("=", 1)[1] if arg.startswith("--") and "=" in arg else arg
+    v = v[len("file://"):] if v.startswith("file://") else v
+    p = target_path(base, v) if v and not v.startswith("-") else None
+    return bool(p) and within(p, LIBRARY_DIR)
+
+
+def library_git_checks(sub, rest, e):
+    """L3: the library is cloned only to LIBRARY_DIR; no other repository fetches it or names it as a remote, and
+    the clone is not checked out elsewhere as a worktree."""
+    if sub == "clone":
+        pos, i = [], 0
+        while i < len(rest):
+            if rest[i] in CLONE_VALUE_OPTS:
+                i += 2
+                continue
+            if not rest[i].startswith("-"):
+                pos.append(rest[i])
+            i += 1
+        dst_arg = pos[1] if len(pos) > 1 else None
+        if any(names_library(a, e) for a in rest if a != dst_arg):
+            dst = dst_arg or re.sub(r"(/\.git|\.git)?/*$", "", pos[0] if pos else "").rsplit("/", 1)[-1]
+            p = target_path(e, dst) if dst else None
+            if not p or os.path.realpath(p) != os.path.realpath(LIBRARY_DIR):
+                raise Bad("L3", f"git clone of the research library to {dst or 'an unknown place'}, not {LIBRARY_DIR}")
+        return
+    if e is not None and within(e, LIBRARY_DIR):
+        if sub == "worktree" and "add" in rest:
+            raise Bad("L3", "git worktree add in the library clone checks the library out in another place")
+        return
+    if any(names_library(a, e) for a in rest):
+        raise Bad("L3", f"git {sub} names the research library from {e or 'an unknown directory'}, outside its one "
+                        f"clone {LIBRARY_DIR}")
+    if sub in ("fetch", "pull") and e is not None:
+        r = git("config", "--get-regexp", r"^remote\..*\.url$", cwd=e)
+        if r.returncode == 0 and any(names_library(l.split(" ", 1)[-1], e) for l in r.stdout.splitlines()):
+            raise Bad("L3", f"git {sub} in {e}, whose remote is the research library: a second clone of it")
+
+
+def library_copy_checks(prog, args, d):
+    """L3: the clone itself (the library directory or its .git) is not copied, archived or moved elsewhere."""
+    plain = [a for a in args[1:] if not a.startswith("-")]
+    if prog in ("mv", "cp", "install", "ln"):
+        tdir = target_dirs(prog, args)
+        srcs = [a for a in plain if a not in tdir] if tdir else plain[:-1]
+    elif prog in ("rsync", "scp"):
+        srcs = plain[:-1]
+    else:
+        srcs = plain
+    lib = os.path.realpath(LIBRARY_DIR)
+    for a in srcs:
+        p = target_path(d, a)
+        if (p and (os.path.realpath(p) == lib or within(p, os.path.join(lib, ".git")))) or \
+                re.search(r"(^|/)agentic-os-search/*(\.git/*)?$", a, re.I):
+            raise Bad("L3", f"{prog} copies or moves the research library clone ({a}); it stays at {LIBRARY_DIR} only")
 
 
 def decide(data):
@@ -1479,7 +1924,11 @@ def decide(data):
         if name == "Bash":
             if args.get("dangerouslyDisableSandbox"):
                 raise Bad("B10", "dangerouslyDisableSandbox is set")
+            del CALL[:], PUSHES[:]
             shell_checks(str(args.get("command", "")), cwd)
+            if PUSHES:
+                push_alone()
+                return "allow", "L1", push_leak_checks()
             return "allow", "B0", "no shell ban matched"
         if name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
             rule, why = file_checks(name, args)
@@ -1510,7 +1959,7 @@ def log_decision(data, decision, rule, detail, text):
                "tool_use_id": data.get("tool_use_id"), "agent_id": data.get("agent_id"),
                "mode": data.get("permission_mode"), "effort": eff.get("level"), "cwd": data.get("cwd"),
                "tool": data.get("tool_name"), "decision": decision, "rule": rule,
-               "summary": summary(str(data.get("tool_name")), data.get("tool_input") or {}),
+               "summary": summary(str(data.get("tool_name")), data.get("tool_input") or {}, rule),
                "detail": redact(detail), "reason": text if decision == "deny" else ""}
         f.write((json.dumps(rec, ensure_ascii=False) + "\n").encode())
         f.close()
@@ -1523,7 +1972,7 @@ def deny_text(data, rule, detail):
     title, why, where, todo = RULES.get(rule, RULES["G0"])
     tool = str(data.get("tool_name"))
     return (f"DevOS guard: DENIED by rule {rule} ({title}).\n"
-            f"What was attempted: {tool}: {summary(tool, data.get('tool_input') or {})}\n"
+            f"What was attempted: {tool}: {summary(tool, data.get('tool_input') or {}, rule)}\n"
             f"What matched: {redact(detail)}\n"
             f"Why this rule exists: {why}\n"
             f"Where it is written: {where}; the rule file is .claude/hooks/tool_allowlist.py.\n"
@@ -1549,6 +1998,8 @@ def main():
             decision, rule, detail = decide(data)
         except Exception as exc:   # an internal error: fail closed, and say so (the test asserts there are none)
             decision, rule, detail = "deny", "G0", f"guard error {type(exc).__name__}: {exc}"
+    if withheld(detail):           # the L details are built without text; any other detail is checked (W-C00-14)
+        detail = "[withheld: the detail holds text that matches the library fingerprints or names a service]"
     ctx = data if isinstance(data, dict) else {}
     text = deny_text(ctx, rule, detail) if decision == "deny" else f"allowed by rule {rule}: {detail}"
     where = log_decision(ctx, decision, rule, detail, text)
