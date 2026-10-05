@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 resumed** after W-C00-05 and W-C00-12 were closed (D-010): first the checker acceptance of W-C00-01, 02 and 04 (N-051), then step 0, W-C00-06 (plan 0.6; summary 39). | 2026-10-05T18:59Z |
+| Stage | **C00 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): first the checker acceptance of W-C00-01, 02 and 04 (N-051), then step 0, W-C00-06 (plan 0.6). | 2026-10-05T20:27Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
-| Usage | `five_hour` `allowed` at 17:59Z (`get_session`), resets sched:2026-10-05T21:10Z (`resetsAt` 1791234600, converted with `date -u -d @`) (D-002: proceed). | 2026-10-05T17:58Z |
+| Usage | `five_hour` `allowed` at 20:23Z (`get_session`, working session), resets sched:2026-10-05T21:10Z (`resetsAt` 1791234600, converted with `date -u -d @`) (D-002: proceed). | 2026-10-05T20:23Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | Turkish plan package plus recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: çalışma oturumunu açman. <br>1. Kurulumun yeni düzeni canlıda (D-010): tek bir çalışma oturumu planı adım adım işletecek, işi rol tanımlı alt ajanlara dağıtacak; kurucunun eski oturum zinciri kaldırıldı. Bağımsız inceleme (R-TRANS-1) ikinci turda PASS verdi. <br>2. Yapman gereken (bir kez): claude.ai/code'da yeni bir oturum aç; ortam devos-kurulum, yalnız devos deposu, Accept edits, Opus 5.5. İlk mesaj olarak plan/Ek_F_Baslangic_Mesaji.md'deki /goal metnini olduğu gibi yapıştır. <br>3. Sonrası: yalnız senin kararların (o oturuma yazarsın) ve kullanım limiti sıfırlanınca bir "devam" mesajı. Konuşma oturumu bu devirle kapanıyor. <br>**Riskler:** <br>- Tek oturumun özetlemeyle uzun süre plandan kopmadan çalışacağı varsayım; ilk özetlemede gözlenecek. <br>- /goal'un uygulamadan yazılarak çalıştığı ilk kez görülecek; çalışmazsa çalışma oturumu sana yazar. | 2026-10-05T20:05Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T20:02Z |
+| summary_tr | Senden beklenen: hiçbir şey. <br>1. Çalışma oturumu açıldı ve açılış kontrolünü geçti (model Opus 5.5, Accept edits, koruma kancası çalışıyor). <br>2. Oturum planın tamamını okudu; C00 kaldığı yerden sürüyor: önce W-C00-01, 02 ve 04 bağımsız denetçiyle kabule gidiyor, sonra planın İngilizceye çevirisi (C00 adım 0). <br>3. Senden bir karar gerektiğinde bu oturuma ve "Batu'dan beklenenler" issue'suna yazılır. <br>**Risk:** Tek oturumun özetlemeden sonra plandan kopmadan sürdüğü henüz gözlenmedi; ilk özetlemede kaydedilecek. | 2026-10-05T20:27Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T20:25Z |
 
 ---
 
