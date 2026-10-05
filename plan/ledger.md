@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. Sana dönük Türkçe özet hazır ve denetimden geçti: `plan/Summary_for_Batu_TR.md` (genel resim, kararların, yapacakların). Bağlayıcı metin İngilizce plan. <br>2. ECC karşılaştırması kabul edildi (85 bileşen; 5 fikir benimsendi). Planın bağımsız incelemesinin ilk geçişi bitti; bulunan düzeltmeler C00'ın karar adımında işlenecek. <br>3. Planı görmeyen karşı tasarım planla karşılaştırılıyor. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T21:41Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:46Z |
+| summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim). <br>1. Planı görmeyen karşı tasarım planla karşılaştırıldı ve denetimden geçti. Karşı tasarım daha küçük bir başlangıç öneriyor: bazı kayıt türleri ve roller ertelenebilir. Bunlar C00'ın karar adımında (W-C00-10) karara bağlanacak. <br>2. Karar adımı başladı: plan incelemesinin, ECC karşılaştırmasının ve karşı tasarımın bütün bulguları tek listede toplanıyor; sonra her biri için karar verilecek, gerekirse plan değişecek. <br>3. Sana dönük Türkçe özet hazır: `plan/Summary_for_Batu_TR.md`. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T21:53Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T21:52Z |
 
 ---
 
@@ -37,11 +37,10 @@
 
 **Running:**
 - `W-C00-08` Independent plan review (plan C00 step 4): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
-- `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
+- `W-C00-10` Decide on the results (plan C00 step 7): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-03`: finished, waiting for acceptance
-- `W-C00-10`: depends on W-C00-09 (not accepted)
 - `W-C00-11`: depends on W-C00-03 (not accepted)
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
@@ -54,7 +53,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 8, blocked 2, cancelled 6, finished 1, running 2 | 11 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 9, blocked 1, cancelled 6, finished 1, running 2 | 12 |
 | `C01` | Platform verification | planned | no items | 6 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 3 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 3 |
@@ -79,8 +78,8 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-06` Translate the plan package (plan C00 step 0): accepted · open notes: N-003, N-004
   - `W-C00-07` ECC function comparison (plan C00 step 3): accepted
   - `W-C00-08` Independent plan review (plan C00 step 4): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-061
-  - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): running (session_01WKJi23FwAjFtiyD1DbQ2Rs)
-  - `W-C00-10` Decide on the results (plan C00 step 7): blocked: depends on W-C00-09 (not accepted) · open notes: N-060
+  - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): accepted
+  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072
   - `W-C00-11` Stage closure review: blocked: depends on W-C00-03 (not accepted) · open notes: N-051, N-056, N-059
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
   - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
@@ -101,8 +100,8 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-06` | Translate the plan package (plan C00 step 0) | accepted | todo (heavy) | EV-C00-006 (conventions, revisions 2 and 3); EV-C00-007 (proposals); EV-C00-008 (verdicts and dispositions); CHK-C00-007 to CHK-C00-019; CHK-C00-020 (final) | `plan/work/W-C00-06.md` |
 | `W-C00-07` | ECC function comparison (plan C00 step 3) | accepted | todo (heavy) | EV-C00-011; CHK-C00-021 (conditions); CHK-C00-024 (conditions met) | `plan/work/W-C00-07.md` |
 | `W-C00-08` | Independent plan review (plan C00 step 4) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-08.md` |
-| `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-09.md` |
-| `W-C00-10` | Decide on the results (plan C00 step 7) | blocked: depends on W-C00-09 (not accepted) | todo | — | `plan/work/W-C00-10.md` |
+| `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | accepted | todo (heavy) | EV-C00-009 (brief); EV-C00-010 (counter-design, independence declared low); EV-C00-012 (comparison with dispositions); CHK-C00-027 | `plan/work/W-C00-09.md` |
+| `W-C00-10` | Decide on the results (plan C00 step 7) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo | — | `plan/work/W-C00-10.md` |
 | `W-C00-11` | Stage closure review | blocked: depends on W-C00-03 (not accepted) | todo | — | `plan/work/W-C00-11.md` |
 | `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | cancelled | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | cancelled | — | — | `plan/work/W-C00-12.1.md` |
@@ -193,6 +192,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
 | `N-060` | `W-C00-10` | CHK-C00-021 | open | - **Rows it could reopen:** any row whose decision rests on a fact the study contradicts or adds to. First: the five adopt rows (no-progr... |
+| `N-072` | `W-C00-10` | CHK-C00-027 | open | **From W-C00-09's check** (CHK-C00-027 findings 2 and 9, 2026-10-05, L-145). (1) The counter-designer's role file (`.claude/agents/counte... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11; re-disposed 2026-10-05 by D-010, summary item 30; it replac... |
 | `N-056` | `W-C00-11` | R-FR02-2 | open | **Open blockers at stage closure** (R-FR02-2 m4, carried by run `session_017bQAUeV7o6pTvG1Pz3hRHx`; re-pointed 2026-10-05 by D-010 from t... |
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
