@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim); yakında bunun yerine daha eksiksiz bir karar gelecek. <br>1. Bir hata yaptım: bugün yazılan üç kayıtta hesabına bağlı servislerin adları yeniden açık depoya girdi. Kaydetmeden önce kontrol etmemiştim. Mevcut dosyalardan temizledim; git geçmişinde kalıyorlar. Bunu sana ayrıca karar olarak getireceğim. Artık her kayıttan önce kontrol ediyorum; koruma kancasına da ekleniyor. <br>2. C00'ın karar adımı sürüyor: 270 bulgu 56 konuda toplandı, her biri için karar verildi. Plan değişiklikleri ve açık depoya yazılanı kodla denetleyecek ara kontrol hazırlanıyor. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T22:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T22:31Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T22:45Z |
 
 ---
 
@@ -141,7 +141,9 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-008` | Sessions leave auto mode: a written rule file allows or denies every tool call with a detailed reason; every session the builder opens runs on Opus 5.5 at ultracode effort | batu | answered | `plan/decisions/D-008.md` |
 | `D-009` | Starting sessions under D-008: may one builder session, whose only job is to start runs and review sessions, run in auto mode? | batu | withdrawn | `plan/decisions/D-009.md` |
 | `D-010` | The installation runs in one working session that delegates to role-defined subagents and workflows; the old builder operating model is retired; one /goal for the whole installation | batu | answered | `plan/decisions/D-010.md` |
-| `D-011` | Library access for the working session: the platform attaches the research library only with a person's approval, which a session in Accept edits (D-008) cannot give | batu | open | `plan/decisions/D-011.md` |
+| `D-011` | Library access for the working session: the platform attaches the research library only with a person's approval, which a session in Accept edits (D-008) cannot give | batu | superseded | `plan/decisions/D-011.md` |
+| `D-013` | The names of services connected to Batu's account are in the public history of devos (OI-012, L-147): accept, rewrite the history, or recreate the repository | batu | open | `plan/decisions/D-013.md` |
+| `D-014` | Reading the research library directly before C04, and on what terms (supersedes D-011; absorbs the unposted draft D-012) | batu | open | `plan/decisions/D-014.md` |
 | `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | accepted | `plan/decisions/FR-02.md` |
 | `FR-03` | Frame review of F-088-2: the live part of gate 1c runs on main after the merge, under the reviewed hook, before acceptance | technical | withdrawn | `plan/decisions/FR-03.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | superseded | `plan/decisions/PC-01.md` |
