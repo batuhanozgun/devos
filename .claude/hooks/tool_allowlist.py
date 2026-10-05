@@ -24,7 +24,7 @@ Rule families (the IDs are the keys of RULES):
   L  leak check (W-C00-14; plan 0.5 item 3, K-9 item 5, 6.7): a push to devos (every commit it would publish)
      and every string field of a GitHub write to devos are compared with fingerprints of the private research
      library and with the service names of tools/check_service_names.sh; a push stands alone in its Bash call;
-     a clone of the library may exist in one place only.
+     a clone of the library may exist in one place only, and no GitHub tool is aimed at it.
 
 Threat model (plan/Installation_Working_Order.md): accidents and injected instructions, not a session that
 deliberately edits this file. A deliberate bypass stays visible in git and is a stated residual risk (D-003).
@@ -46,6 +46,7 @@ import re
 import shlex
 import subprocess
 import sys
+import time
 import unicodedata
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -63,6 +64,10 @@ DEVOS_REMOTE = re.compile(r"(https://github\.com/|git@github\.com:|ssh://git@git
                           r"https?://[^/\s]*127\.0\.0\.1:\d+/git/)batuhanozgun/devos(\.git)?/?", re.I)
 SHA40 = re.compile(r"[0-9a-f]{40}")
 MERGE_GATE_TIMEOUT = 300   # seconds; the hooks' timeout in .claude/settings.json must not be shorter (W-C00-14)
+# One time budget for every slow step of a call (git calls, the leak check, the merge gate): once it is spent the
+# call fails closed, well before the hooks' 600-second timeout would let it continue (W-C00-14). The environment
+# may only shorten it (tools/test_tool_allowlist.sh).
+CALL_BUDGET = min(400, int(os.environ.get("DEVOS_CALL_BUDGET") or 400))
 
 # Leak check (W-C00-14). The one place a clone of the private research library may be (the sibling of the devos
 # checkout, where the session clones it after add_repo), and the fingerprint store, outside every repository and
@@ -298,14 +303,19 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "tools/leak_fingerprints.py build."),
     "L2": ("a push stands alone in its Bash call", "The leak check reads the commits a push would publish when "
            "the call is decided. Another command in the same call that can create commits or move refs (commit, "
-           "merge, rebase, reset, fetch, a script, a shell) would change what is pushed after the check.",
+           "merge, rebase, reset, fetch, a script, a shell), or a wait (sleep) during which a background job could, "
+           "would change what is pushed after the check.",
            WO + "; W-C00-14", "Run the push as its own Bash call: git -C <literal path> push origin <claude/ "
            "branch>, alone or with cd, echo and readers such as tail."),
     "L3": ("the library clone in its one place", "The leak check compares public writes with fingerprints of "
            "one clone of the private research library, at " + LIBRARY_DIR + ", and fails closed while that clone "
-           "exists without a fresh store. A clone, copy or fetch of the library anywhere else would escape that.",
+           "exists without a fresh store. A clone, copy or fetch of the library anywhere else, or a GitHub tool "
+           "aimed at it (a read of it, or a search scoped to it or to its owner as a whole), would bring its text "
+           "into the session with no store behind it.",
            WO + "; W-C00-14", "Clone the library only to " + LIBRARY_DIR + ", read it there, and rebuild the "
-           "store with python3 tools/leak_fingerprints.py build."),
+           "store with python3 tools/leak_fingerprints.py build. A GitHub tool may name the library in its text (L1 "
+           "checks that text), but not aim at it: no owner or repo field naming it, and no search qualifier repo:, "
+           "user:, org: or owner: on it or on batuhanozgun; scope a search with repo:batuhanozgun/devos."),
 }
 LEAK_WITHHELD = {"L1", "L2"}   # denials whose call text is never repeated (it may hold the matched text)
 
@@ -340,9 +350,31 @@ def norm(i):
     return "session_" + i[4:] if i.startswith("cse_") else i
 
 
-def git(*args, cwd=ROOT, timeout=20):
-    return subprocess.run(["git", "-C", cwd, *args], capture_output=True, encoding="utf-8", errors="replace",
-                          timeout=timeout)
+class OverBudget(subprocess.SubprocessError):
+    pass
+
+
+DEADLINE = [None]   # the time.monotonic() by which the call's slow steps must be done (main(): CALL_BUDGET)
+
+
+def budget(limit):
+    """limit, cut to what is left of the call's time budget; OverBudget once the budget is spent."""
+    if DEADLINE[0] is None:
+        return limit
+    left = DEADLINE[0] - time.monotonic()
+    if left <= 0:
+        raise OverBudget(f"the call's time budget of {CALL_BUDGET} seconds is spent")
+    return min(limit, left)
+
+
+def git(*args, cwd=ROOT, timeout=20, raw=False, input=None):
+    """git in cwd, within its own limit and the call's budget; the output as UTF-8 text, or bytes when raw."""
+    try:
+        return subprocess.run(["git", "-C", cwd, *args], capture_output=True, input=input, timeout=budget(timeout),
+                              **({} if raw else {"encoding": "utf-8", "errors": "replace"}))
+    except subprocess.TimeoutExpired:
+        budget(timeout)      # OverBudget when the call's budget, not this step's own limit, ran out
+        raise
 
 
 def credential_values():
@@ -1384,9 +1416,10 @@ def merge_checks(args):
     tool = os.path.join(ROOT, "tools", "merge_gate.py")
     try:
         r = subprocess.run([sys.executable, tool, "--pr", str(int(pr)), "--head", sha], cwd=ROOT,
-                           capture_output=True, text=True, timeout=MERGE_GATE_TIMEOUT)
-    except subprocess.TimeoutExpired:
-        raise Bad("M7", f"the merge gate did not finish within {MERGE_GATE_TIMEOUT} seconds; failing closed")
+                           capture_output=True, text=True, timeout=budget(MERGE_GATE_TIMEOUT))
+    except (subprocess.TimeoutExpired, OverBudget):
+        raise Bad("M7", f"the merge gate did not finish within {MERGE_GATE_TIMEOUT} seconds or within what was left "
+                        f"of the call's {CALL_BUDGET}-second budget; failing closed")
     out = (r.stdout + r.stderr).strip()
     if r.returncode != 0:
         raise Bad("M7", "the merge gate said:\n" + out[-1500:])
@@ -1472,24 +1505,31 @@ def revision_has_barrier(rev):
     return git("cat-file", "-e", "FETCH_HEAD:.claude/settings.json").returncode == 0
 
 
-def _strings(v):
-    if isinstance(v, str):
-        yield v
-    elif isinstance(v, dict):
-        for x in v.values():
-            yield from _strings(x)
-    elif isinstance(v, (list, tuple)):
-        for x in v:
-            yield from _strings(x)
+# A search qualifier that scopes a GitHub search to the library, or to its owner as a whole (which includes it).
+# A negated qualifier (-repo:, -user:) excludes it and does not match.
+LIBRARY_QUALIFIER = re.compile(r'(?<![\w-])(repo:\s*"?[^\s"]*agentic-os-search|(user|org|owner):\s*"?batuhanozgun'
+                               r'(?![\w.-]))', re.I)
+
+
+def library_target(args):
+    """What aims a GitHub tool at the research library, or "": an owner or repo field naming it, or a search query
+    scoped to it or to its owner as a whole (W-C00-14, L3)."""
+    for k in ("owner", "repo"):
+        if LIBRARY_NAME.search(str(args.get(k) or "")):
+            return f"its {k} field"
+    return "its search query's qualifier" if LIBRARY_QUALIFIER.search(str(args.get("query") or "")) else ""
 
 
 def github_checks(tool, args):
     if tool in BLOCKED_GITHUB:
         raise Bad("M2", f"'{tool}' is not allowed for DevOS sessions")
     # The library is read only through its one clone, which the leak check is tied to (W-C00-14): a GitHub tool
-    # that names it, a read or a search included, would bring its text into the session with no store behind it.
-    if any(LIBRARY_NAME.search(s) for s in _strings(args)):
-        raise Bad("L3", f"GitHub tool '{tool}' names the research library; it is read only through its clone")
+    # aimed at it, a read or a search included, would bring its text into the session with no store behind it.
+    # Text that merely names it (a PR body, a comment) is not aimed at it; L1 checks that text.
+    t = library_target(args)
+    if t:
+        raise Bad("L3", f"GitHub tool '{tool}' is aimed at the research library ({t}); it is read only through "
+                        "its clone")
     if tool in READ_ONLY_GITHUB or tool.startswith(READ_ONLY_GITHUB_PREFIXES):
         return ("M2", "a GitHub read")
     if tool in REPOLESS_GITHUB_ALLOWED and "repo" not in args and "owner" not in args:
@@ -1528,7 +1568,9 @@ CALL, PUSHES = [], []        # the commands and the pushes of the Bash call bein
 GIT_READ_SUBS = {"status", "log", "show", "diff", "rev-parse", "rev-list", "ls-remote", "ls-files", "ls-tree",
                  "cat-file", "describe", "show-ref", "for-each-ref", "merge-base", "diff-tree", "shortlog",
                  "name-rev", "blame", "grep", "version", "help"}
-PUSH_COMPANIONS = PURE_READERS | {"cd", "pushd", "echo", "printf", "true", ":", "sleep"}
+PUSH_COMPANIONS = PURE_READERS | {"cd", "pushd", "echo", "printf", "true", ":"}   # no sleep: no waiting (L2)
+EMPTY_TREE = {40: "4b825dc642cb6eb9a060e54bf8d69288fbee4904",       # a root commit's first parent, by hash length
+              64: "6ef19b41225c5369f1c104d45d8d85efa9b057b53b14b4b9b939dd74decc5321"}
 CLONE_VALUE_OPTS = {"-o", "--origin", "-b", "--branch", "--depth", "--reference", "--reference-if-able", "--filter",
                     "--shallow-since", "--shallow-exclude", "-j", "--jobs", "--bundle-uri", "--server-option",
                     "--ref-format", "--separate-git-dir", "--template", "-c", "--config", "-u", "--upload-pack"}
@@ -1692,6 +1734,7 @@ def leak_found(blocks, store, repo, ref):
     """The places (labels) whose text matches, each with its counts; never the text."""
     found = []
     for label, text in blocks:
+        budget(0)                           # stop (OverBudget) once the call's time budget is spent
         fp, sv = fingerprint_hits(text, store), service_hits(text, repo, ref)
         if fp or sv:
             what = [f"{fp} run(s) of {SHINGLE_WORDS} words matching the library" if fp else "",
@@ -1730,7 +1773,7 @@ def leak_tool_checks(tool, args):
         store = leak_state()
         found = leak_found([("field " + p, s) for p, s in string_fields(args)], store, ROOT, "refs/remotes/origin/main")
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
-        raise Bad("L1", f"the leak check could not run ({type(exc).__name__}); failing closed")
+        raise Bad("L1", f"the leak check could not run ({type(exc).__name__}: {exc}); failing closed")
     if found:
         leak_deny(f"GitHub write '{tool}' to devos", found)
 
@@ -1763,29 +1806,53 @@ def push_alone():
 
 def pushed_blocks(e, shas, ref):
     """(label, text) for every commit reachable from shas and not from ref: its message, its paths and the lines
-    its diff adds (a merge against its first parent). Returns (blocks, number of commits)."""
-    r = git("--no-replace-objects", "-c", "core.quotepath=false", "log", "--no-color", "--no-ext-diff",
-            "--no-textconv", "--no-renames", "--text", "--root", "--no-show-signature", "--diff-merges=first-parent",
-            "--src-prefix=a/", "--dst-prefix=b/", "-p", "--format=%x1e%H%x1f%B%x1f", *shas,
-            *(["--not", ref] if ref else []), "--", cwd=e, timeout=120)
+    its diff against its first parent adds (a root commit against the empty tree). Each commit is read on its own,
+    so no byte of a message or a file can move a boundary: the list from rev-list, the messages from cat-file's
+    sized records, one diff-tree per commit split on newlines only. Every file is read as text (--text), so neither
+    binary bytes nor a .gitattributes entry such as binary or -diff can keep a file's added lines from the check.
+    Returns (blocks, number of commits)."""
+    opts = ("--no-replace-objects", "-c", "core.quotepath=false")
+    r = git(*opts, "rev-list", *shas, *(["--not", ref] if ref else []), "--", cwd=e, timeout=60)
     if r.returncode != 0:
-        raise ValueError("git log of the pushed commits failed")
-    blocks, recs = [], r.stdout.split("\x1e")[1:]
-    for rec in recs:
-        sha, msg, patch = (rec.split("\x1f", 2) + ["", ""])[:3]
-        c = "commit " + sha.strip()[:12]
+        raise ValueError("git rev-list of the pushed commits failed")
+    commits = r.stdout.split()
+    r = git(*opts, "cat-file", "--batch", cwd=e, timeout=60, raw=True,
+            input="".join(c + "\n" for c in commits).encode())
+    if r.returncode != 0:
+        raise ValueError("git cat-file of the pushed commits failed")
+    out, i, blocks = r.stdout, 0, []
+    for sha in commits:
+        j = out.find(b"\n", i)
+        head = out[i:j].split() if j >= 0 else []
+        if len(head) != 3 or head[0] != sha.encode() or head[1] != b"commit" or not head[2].isdigit():
+            raise ValueError(f"git cat-file did not return commit {sha[:12]}")
+        obj, i = out[j + 1:j + 1 + int(head[2])], j + 2 + int(head[2])
+        hdr, _, msg = obj.partition(b"\n\n")
+        hdr = [x.partition(b" ") for x in hdr.split(b"\n") if not x.startswith(b" ")]
+        parents = [v.decode() for k, _, v in hdr if k == b"parent"]
+        enc = next((v.decode("ascii", "replace") for k, _, v in hdr if k == b"encoding"), "utf-8")
+        try:
+            msg = msg.decode(enc, "replace")
+        except LookupError:
+            msg = msg.decode("utf-8", "replace")
+        d = git(*opts, "diff-tree", "-p", "--text", "--no-color", "--no-ext-diff", "--no-textconv", "--no-renames",
+                "--src-prefix=a/", "--dst-prefix=b/", parents[0] if parents else EMPTY_TREE.get(len(sha), ""), sha,
+                "--", cwd=e, timeout=60, raw=True)
+        if d.returncode != 0:
+            raise ValueError(f"git diff-tree of commit {sha[:12]} failed")
+        c = "commit " + sha[:12]
         files, cur, hunk = {}, None, False
-        for line in patch.split("\n"):
-            if line.startswith("diff --git "):
-                cur, hunk = line[len("diff --git "):], False
+        for line in d.stdout.split(b"\n"):
+            if line.startswith(b"diff --git "):
+                cur, hunk = line[len(b"diff --git "):].decode("utf-8", "replace"), False
                 files.setdefault(cur, [])
-            elif line.startswith("@@") and cur is not None:
+            elif line.startswith(b"@@") and cur is not None:
                 hunk = True
-            elif hunk and line.startswith("+"):
-                files[cur].append(line[1:])
+            elif hunk and line.startswith(b"+"):
+                files[cur].append(line[1:].decode("utf-8", "replace"))
         blocks += [(c + " message", msg), (c + " paths", "\n".join(files))]
         blocks += [(f"{c} lines added to {p.rsplit(' b/', 1)[-1]}", "\n".join(a)) for p, a in files.items() if a]
-    return blocks, len(recs)
+    return blocks, len(commits)
 
 
 def push_leak_checks():
@@ -1806,7 +1873,7 @@ def push_leak_checks():
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         raise Bad("L1", f"the leak check could not read the push ({type(exc).__name__}: {exc}); failing closed")
     if found:
-        leak_deny(f"the push from {e}", found)
+        leak_deny(f"the push from {e} ({n} commit(s) read)", found)
     if not shas:
         return "the pushed source names no commit here, so git will refuse it; the branch names were checked"
     return (f"the push's {n} commit(s) beyond {ref or 'the root (no origin/main ref)'} carry no library match and no "
@@ -1994,10 +2061,12 @@ def main():
     if data is None:
         decision, rule, detail = "deny", "G0", "the hook input is not JSON"
     else:
+        DEADLINE[0] = time.monotonic() + CALL_BUDGET   # the decision's slow steps share one budget (W-C00-14)
         try:
             decision, rule, detail = decide(data)
         except Exception as exc:   # an internal error: fail closed, and say so (the test asserts there are none)
             decision, rule, detail = "deny", "G0", f"guard error {type(exc).__name__}: {exc}"
+        DEADLINE[0] = None         # withholding and logging below keep their own short limits
     if withheld(detail):           # the L details are built without text; any other detail is checked (W-C00-14)
         detail = "[withheld: the detail holds text that matches the library fingerprints or names a service]"
     ctx = data if isinstance(data, dict) else {}

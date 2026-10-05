@@ -35,10 +35,13 @@ EOF
 python3 - <<'EOF' || fail=1
 import json, re
 s = json.load(open(".claude/settings.json"))
-gate = int(re.search(r"^MERGE_GATE_TIMEOUT = (\d+)", open(".claude/hooks/tool_allowlist.py").read(), re.M).group(1))
+src = open(".claude/hooks/tool_allowlist.py").read()
+gate = int(re.search(r"^MERGE_GATE_TIMEOUT = (\d+)", src, re.M).group(1))
+budget = int(re.search(r"^CALL_BUDGET = min\((\d+),", src, re.M).group(1))
 t = [h.get("timeout") for e in ("PreToolUse", "PermissionRequest") for h in s["hooks"][e][0]["hooks"]]
-ok = all(isinstance(x, int) and x > gate for x in t)
-print(("ok   " if ok else "BAD  ") + f"hook timeouts {t} s, above the merge gate's own {gate} s limit (W-C00-14)")
+ok = all(isinstance(x, int) and x > budget >= gate for x in t)
+print(("ok   " if ok else "BAD  ") + f"hook timeouts {t} s, above the call's {budget} s budget, which is at least the "
+      f"merge gate's own {gate} s limit (W-C00-14)")
 raise SystemExit(0 if ok else 1)
 EOF
 OUTS=$(mktemp)
@@ -734,6 +737,8 @@ m=re.search(r"DENIED by rule (\w+)|allowed by rule (\w+)", t)
 print(d.get("permissionDecision") or (d.get("decision") or {}).get("behavior") or "?", (m.group(1) or m.group(2)) if m else "-")' 2>/dev/null || echo "? -")
   if [ "$r" = "$1 $2" ]; then echo "ok   exp=$1 $2 $3"; else echo "BAD  exp=$1 $2 got=$r $3"; fail=1; fi; }
 js() { python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$1"; }
+# has <text> <label>: the last guard output holds text (a count or a place, never the planted text)
+has() { if tail -n 1 "$OUTS" | grep -qF -- "$1"; then echo "ok   $2"; else echo "BAD  $2: '$1' not in the output"; fail=1; fi; }
 lb() { lt "$1" "$2" "$3" "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":$(js "$4")},\"cwd\":\"$W\"}"; }
 ghw() { echo "{\"tool_name\":\"mcp__github__$1\",\"tool_input\":{$D,$2}}"; }
 # routes: PR body, comment, issue (title and body), merge message, file write, review
@@ -750,13 +755,42 @@ cm claude/t-svcm docs/f.md "Own words only." "W: move off $SVC"
 cm claude/t-syn docs/g.md "$SYN" "W: synthesis of SRC-FIX-0042"
 cm claude/t-shared docs/h.md "$SHARED." "W: text already on main"
 cm claude/t-svcmain docs/i.md "Legacy line: $SVC Ledgerline was named here before." "W: a line already on main"
+cm claude/t-rs docs/j.md "Own words only." "$(printf 'W\036 %s' "$SECRET")"
+cm claude/t-us docs/k.md "Own words only." "$(printf 'W\037 %s' "$SECRET")"
+# one commit: a binary file (sorted first) whose bytes hold 0x1f and then 0x1e with no 0x1f after it, the secret
+# in a text file, the service name in another
+git -C "$dv" checkout -q -B claude/t-bin refs/remotes/origin/main; mkdir -p "$dv/docs"
+printf '\211PNG\r\n\032\n\000\037data\036\000tail' > "$dv/docs/a.png"; printf 'Background. %s.\n' "$SECRET" > "$dv/docs/b.md"
+printf 'We used %s once.\n' "$SVC" > "$dv/docs/c.md"; git -C "$dv" add -A; gc -C "$dv" commit -qm "W: a figure and notes"
+# one commit: a .gitattributes that marks Markdown as binary, and the secret in a Markdown file
+git -C "$dv" checkout -q -B claude/t-attr refs/remotes/origin/main; mkdir -p "$dv/docs"
+printf '*.md binary\n' > "$dv/.gitattributes"; printf 'Background. %s.\n' "$SECRET" > "$dv/docs/p.md"
+git -C "$dv" add -A; gc -C "$dv" commit -qm "W: attributes and notes"
+# a merge that itself adds the secret (read against its first parent), over a clean side commit
+cm claude/t-side docs/m.md "Own words only." "W: side"; cm claude/t-merge docs/n.md "Own words only too." "W: main line"
+gc -C "$dv" merge -q --no-commit --no-ff claude/t-side >/dev/null 2>&1; printf '%s\n' "$SECRET" > "$dv/docs/o.md"
+git -C "$dv" add -A; gc -C "$dv" commit -qm "W: merge"
 lb deny  L1 "secret in a pushed commit's file"            "git -C $dv push origin claude/t-file"
 lb deny  L1 "secret in a commit message"                  "git -C $dv push origin claude/t-msg"
 lb deny  L1 "secret in an earlier commit of the range"    "git -C $dv push origin claude/t-mid"
+has "(2 commit(s) read)" "earlier commit: 2 commits read"
 lb deny  L1 "secret words in a pushed path"               "git -C $dv push origin claude/t-path"
 lb deny  L1 "secret rewrapped, recased, punctuated"       "git -C $dv push origin claude/t-wrap"
 lb deny  L1 "service name in a pushed commit's file"      "git -C $dv push origin claude/t-svcf"
 lb deny  L1 "service name in a commit message"            "git -C $dv push origin claude/t-svcm"
+lb deny  L1 "secret after a 0x1e byte in a commit message" "git -C $dv push origin claude/t-rs"
+has "(1 commit(s) read)" "0x1e message: 1 commit read";  has " message: " "0x1e message: read as the message"
+lb deny  L1 "secret after a 0x1f byte in a commit message" "git -C $dv push origin claude/t-us"
+has "(1 commit(s) read)" "0x1f message: 1 commit read";  has " message: " "0x1f message: read as the message"
+lb deny  L1 "binary file with 0x1e before a secret file and a service-name file" "git -C $dv push origin claude/t-bin"
+has "(1 commit(s) read)" "binary commit: 1 commit read"
+has "lines added to docs/b.md: " "binary commit: the secret file was read"
+has "lines added to docs/c.md: 1 line(s) naming a service" "binary commit: the service-name file was read"
+lb deny  L1 "secret in a file .gitattributes marks binary" "git -C $dv push origin claude/t-attr"
+has "lines added to docs/p.md: " "attributes: the file marked binary was read"
+lb deny  L1 "secret added by a merge commit itself"      "git -C $dv push origin claude/t-merge"
+has "(3 commit(s) read)" "merge: 3 commits read (both sides and the merge)"
+has "lines added to docs/o.md: " "merge: its own added file was read"
 lt deny  L1 "secret in a PR body"                         "$(pr "Summary. $SECRET.")"
 lt deny  L1 "secret in a comment"                         "$(co "As noted: $SECRET.")"
 lt deny  L1 "secret in an issue title"                    "$(is "$SECRET")"
@@ -777,7 +811,12 @@ lt allow M2 "synthesis in a comment"                      "$(co "$SYN")"
 lt allow M2 "synthesis in an issue title"                 "$(is "$SYN")"
 # L3: GitHub tools never read the library; it is read only through its clone
 lt deny  L3 "GitHub file read of the library"             '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search","path":"README.md"}}'
-lt deny  L3 "GitHub code search naming the library"       '{"tool_name":"mcp__github__search_code","tool_input":{"query":"repo:batuhanozgun/agentic-os-search ingest"}}'
+lt deny  L3 "GitHub code search scoped to the library"    '{"tool_name":"mcp__github__search_code","tool_input":{"query":"repo:batuhanozgun/agentic-os-search ingest"}}'
+lt deny  L3 "GitHub code search across the owner (user:)" '{"tool_name":"mcp__github__search_code","tool_input":{"query":"user:batuhanozgun ingest"}}'
+lt deny  L3 "GitHub issue search across the owner (ORG:)" '{"tool_name":"mcp__github__search_issues","tool_input":{"query":"ORG:BatuhanOzgun ledger"}}'
+lt allow M2 "GitHub code search restricted to devos"      '{"tool_name":"mcp__github__search_code","tool_input":{"query":"repo:batuhanozgun/devos agentic-os-search"}}'
+lt allow M2 "a PR body on devos naming the library"       "$(pr "Background: the research library agentic-os-search stays private; see SRC-FIX-0042.")"
+lt allow M2 "an issue comment on devos naming the library" "$(co "Read it in the agentic-os-search clone only.")"
 lt deny  L3 "GitHub commit list of the library"           '{"tool_name":"mcp__github__list_commits","tool_input":{"owner":"BatuhanOzgun","repo":"Agentic-OS-Search"}}'
 lt allow M2 "GitHub file read of devos"                   '{"tool_name":"mcp__github__get_file_contents","tool_input":{"owner":"batuhanozgun","repo":"devos","path":"README.md"}}'
 # L2: a push stands alone in its Bash call
@@ -785,6 +824,14 @@ lb deny  L2 "a push after git commit in the same call"    "git -C $dv commit --a
 lb deny  L2 "a push after a fetch in the same call"       "git -C $dv fetch origin && git -C $dv push origin claude/t-syn"
 lb deny  L2 "a push inside bash -c"                       "bash -c 'git -C $dv push origin claude/t-syn'"
 lb deny  L2 "two pushes in one call"                      "git -C $dv push origin claude/t-syn; git -C $dv push origin claude/t-shared"
+lb deny  L2 "a push after sleep"                          "sleep 1; git -C $dv push origin claude/t-syn"
+# one time budget per call: steps each well within their own limit (a git that waits a second before rev-list,
+# cat-file and diff-tree) add up past the budget (shortened to 2 seconds) and fail closed
+sb="$lk/slowbin"; mkdir -p "$sb"
+printf '#!/bin/sh\ncase " $* " in *" rev-list "*|*" cat-file "*|*" diff-tree "*) sleep 1;; esac\nexec %s "$@"\n' "$(command -v git)" > "$sb/git"; chmod +x "$sb/git"
+PATH="$sb:$PATH" DEVOS_CALL_BUDGET=2 lb deny L1 "slow steps past the call's time budget: synthesis push" "git -C $dv push origin claude/t-syn"
+has "time budget of 2 seconds is spent" "the denial names the spent time budget"
+lb allow L1 "the same push within the budget"             "git -C $dv push origin claude/t-syn"
 # fail closed: a missing store while the clone exists, a stale store; a store without a clone is still used
 DEVOS_LEAK_STORE="$lk/absent" lb deny L1 "missing store, clone present: synthesis push" "git -C $dv push origin claude/t-syn"
 DEVOS_LEAK_STORE="$lk/absent" lt deny L1 "missing store, clone present: synthesis PR body" "$(pr "$SYN")"
