@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: bir karar, D-011 (kütüphaneye erişim); yakında bunun yerine daha eksiksiz bir karar gelecek. <br>1. Bir hata yaptım: bugün yazılan üç kayıtta hesabına bağlı servislerin adları yeniden açık depoya girdi. Kaydetmeden önce kontrol etmemiştim. Mevcut dosyalardan temizledim; git geçmişinde kalıyorlar. Bunu sana ayrıca karar olarak getireceğim. Artık her kayıttan önce kontrol ediyorum; koruma kancasına da ekleniyor. <br>2. C00'ın karar adımı sürüyor: 270 bulgu 56 konuda toplandı, her biri için karar verildi. Plan değişiklikleri ve açık depoya yazılanı kodla denetleyecek ara kontrol hazırlanıyor. <br>**Cevap gelmezse:** kütüphane gerektirmeyen işler sürer; incelemenin kütüphane kısmı bekler, C00 kapanamaz. | 2026-10-05T22:33Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T22:31Z |
+| summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimde; açık depoya yazılanı kodla denetleyen ara kontrol yapıldı, denetimde. <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-05T23:01Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-05T23:04Z |
 
 ---
 
@@ -33,11 +33,12 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01)
+- none
 
 **Running:**
 - `W-C00-08` Independent plan review (plan C00 step 4): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 - `W-C00-10` Decide on the results (plan C00 step 7): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
+- `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-03`: finished, waiting for acceptance
@@ -54,7 +55,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 9, blocked 2, cancelled 6, finished 1, ready 1, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 9, blocked 2, cancelled 6, finished 1, running 3 | 12 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
@@ -84,7 +85,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-11` Stage closure review: blocked: depends on W-C00-03 (not accepted) · open notes: N-051, N-056, N-059
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
   - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
-  - `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): ready
+  - `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): running (session_01WKJi23FwAjFtiyD1DbQ2Rs)
   - `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): blocked: depends on W-C00-14 (not accepted)
 <!-- /generated -->
 
@@ -114,7 +115,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-12.5` | Tranche 1d: workflows, retirement, plan text | cancelled | — | — | `plan/work/W-C00-12.5.md` |
 | `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | cancelled | — | — | `plan/work/W-C00-12.6.md` |
 | `W-C00-13` | Turkish summary for Batu (plan 0.6 item 1) | accepted | — | plan/Summary_for_Batu_TR.md; CHK-C00-025 (conditions); CHK-C00-026 (conditions met, K1 and K2 in L-144) | `plan/work/W-C00-13.md` |
-| `W-C00-14` | Interim leak check in the guard for C00–C04 (W-C00-10 T-01) | ready | — | — | `plan/work/W-C00-14.md` |
+| `W-C00-14` | Interim leak check in the guard for C00–C04 (W-C00-10 T-01) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | — | — | `plan/work/W-C00-14.md` |
 | `W-C00-15` | No-mechanism baseline before C02 (W-C00-10 T-24) | blocked: depends on W-C00-14 (not accepted) | — | — | `plan/work/W-C00-15.md` |
 <!-- /generated -->
 
@@ -141,7 +142,9 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-008` | Sessions leave auto mode: a written rule file allows or denies every tool call with a detailed reason; every session the builder opens runs on Opus 5.5 at ultracode effort | batu | answered | `plan/decisions/D-008.md` |
 | `D-009` | Starting sessions under D-008: may one builder session, whose only job is to start runs and review sessions, run in auto mode? | batu | withdrawn | `plan/decisions/D-009.md` |
 | `D-010` | The installation runs in one working session that delegates to role-defined subagents and workflows; the old builder operating model is retired; one /goal for the whole installation | batu | answered | `plan/decisions/D-010.md` |
-| `D-011` | Library access for the working session: the platform attaches the research library only with a person's approval, which a session in Accept edits (D-008) cannot give | batu | open | `plan/decisions/D-011.md` |
+| `D-011` | Library access for the working session: the platform attaches the research library only with a person's approval, which a session in Accept edits (D-008) cannot give | batu | superseded | `plan/decisions/D-011.md` |
+| `D-013` | The names of services connected to Batu's account are in the public history of devos (OI-012, L-147): accept, rewrite the history, or recreate the repository | batu | open | `plan/decisions/D-013.md` |
+| `D-014` | Reading the research library directly before C04, and on what terms (supersedes D-011; absorbs the unposted draft D-012) | batu | open | `plan/decisions/D-014.md` |
 | `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | accepted | `plan/decisions/FR-02.md` |
 | `FR-03` | Frame review of F-088-2: the live part of gate 1c runs on main after the merge, under the reviewed hook, before acceptance | technical | withdrawn | `plan/decisions/FR-03.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | superseded | `plan/decisions/PC-01.md` |
