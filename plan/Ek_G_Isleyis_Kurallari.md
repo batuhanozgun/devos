@@ -78,7 +78,7 @@ Degradation is not reported as normal operation; it is made visible which guaran
 
 | Situation | Continues | Stops | Visibility |
 |---|---|---|---|
-| Semantic search is unavailable | Keyword and relation search, direct access by identifier | Discoveries that need semantic search are treated as incomplete | A "no semantic search" note in context packages |
+| Semantic search is unavailable | Keyword and relation search, direct access by identifier | Discoveries that need semantic search are treated as incomplete | A "no semantic search" note in subagent task definitions (in context packages once they are activated, Appendix B 3.9) |
 | Supabase cannot be reached | The session only tries to write its own local work to a branch as a candidate and to leave its closing note | Claim, state transition, external effect | The session closes; the next scheduled session starts the recovery when access returns |
 | The routine limit is used up | The work of open sessions | Starting new sessions | A limit record and a wait visible to Batu |
 | A routine's GitHub connection is lost (after 72 hours the routine turns itself off) | The other routines | That routine's sessions | The independent monitoring path checks the time of the last session and opens an issue for Batu; Batu renews the GitHub connection and turns the routine back on |
