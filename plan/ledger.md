@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). | 2026-10-06T06:29Z |
 | summary_tr | Senden beklenen: yok. <br>Bilgi: Açık deponun bütün geçmişini kütüphanene karşı bir kez taradım. Eşleşmelerin neredeyse tamamı 2 Ekim'de bana verdiğin LinkedIn analoji yazıların; senin metnin olduğu için açık depoda duruyor. Kütüphanenin araştırma metninden yalnız iki kısa ifade eski kayıtlarda kalmış; bugünkü dosyalarda yoklar. <br>Durum: Planın kütüphaneye karşı bağımsız incelemesi bitti; şimdi bulgularına karar veriyorum ve gerekenleri plana işliyorum. Sonra C00'ın tamamı denetlenip kapanacak. | 2026-10-06T07:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T08:48Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T09:18Z |
 
 ---
 
@@ -59,7 +59,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C04` | Knowledge, search and context | planned | no items | 7 |
 | `C05` | Common rules, roles and methods | planned | no items | 4 |
 | `C06` | Working order, audit and decision channel | planned | no items | 4 |
-| `C07` | First real loop: the cognitive gate | planned | no items | 3 |
+| `C07` | First real loop: the cognitive gate | planned | no items | 4 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 6 |
 | `C09` | Outage, backup, restore and reconnection | planned | no items | 4 |
 | `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 3 |
@@ -212,6 +212,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-041` | `C07` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): conversational agent builders as SOUL comp... |
 | `N-087` | `C07` | EV-C00-017 | open | **The no-mechanism baseline for the removal test** (plan 6.12 item 4; W-C00-15, 2026-10-06, L-155). `evidence/C00/EV-C00-017_baseline_res... |
 | `N-097` | `C07` | EV-C00-021 | open | T-07 and T-79: 1.2 item 2's bound and 10.3's entry on outcomes against reality outside the records; one rule for confirming a capability ... |
+| `N-101` | `C07` | CHK-C00-063 | open | C01's phase-A probe works one real SOUL development question and records its question, its result and its checker's verdict before C02 (C... |
 | `N-042` | `C08` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): deployment hosts. |
 | `N-044` | `C08` | 06#3a-g | open | **Pointer** to N-038 on `C09` (verbatim there): the recovery drill also restores the builder's state (06 section 3a row g names C08–C09). |
 | `N-069` | `C08` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
