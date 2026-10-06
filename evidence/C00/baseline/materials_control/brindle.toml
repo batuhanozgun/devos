@@ -1,10 +1,10 @@
 # SYNTHETIC TEST DATA: made up for a test. Brindle and every team, host, name, number and date in this file are fictional; no personal or business data.
-# Excerpt of /etc/brindle/brindle.toml on disp-1, 2026-09-30.
+# Excerpt of /etc/brindle/brindle.toml on disp-1, 2026-09-30. The dispatcher and the `brindle` command both read this file.
 
 [paths]
 run_store = "/srv/brindle/runs"
 dispatcher_db = "/srv/brindle/dispatcher.db"
-replay_fixtures = "tests/replay/fixtures"
+replay_fixtures = "tests/replay/fixtures"   # used only by `brindle replay promote`; relative to the root of the Brindle repository
 
 [dispatcher]
 host = "disp-1"

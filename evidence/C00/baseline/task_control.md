@@ -2,7 +2,7 @@
 
 # BR-212 · Retention job for the run store
 
-**Context.** Brindle is the AI-assisted development system that our platform team runs for four product teams. Its dispatcher starts agent sessions, and every session writes a run record into the run store. The run store's volume is 87% full, and the disk alert has fired every day for a week.
+**Context.** Brindle is the AI-assisted development system that our platform team runs for four product teams. Every session writes a run record into the run store. The run store's volume is 87% full, and the disk alert has fired every day for a week.
 
 **What to produce.** A design for a retention job that deletes run records so that the run store stays below 70% of its volume, without losing anything Brindle still needs. The design says:
 

@@ -7,7 +7,7 @@ Brindle is the AI-assisted development system that the platform team runs for fo
 ## Parts
 
 - **Dispatcher.** One process on the host `disp-1`. It keeps the queue of work items, starts agent sessions and checks the periodic triggers (`scheduler.md`). Its state is a local SQLite database, `/srv/brindle/dispatcher.db`; the main tables are `queue` (work items waiting or running) and `sessions` (one row per session).
-- **Agent sessions.** Each session works on one work item or does one periodic task, in a sandboxed container on `disp-1`. A session runs for at most 6 hours; the dispatcher stops it at that limit. About 12,000 sessions start in a month.
+- **Agent sessions.** Each session works on one work item or does one periodic task, in a sandboxed container on `disp-1`. A session runs for at most 6 hours; the dispatcher stops it at that limit. A session gets nothing from earlier sessions: its container sees the repositories it works on and its own run record, and nothing else of the run store. About 12,000 sessions start in a month.
 - **Run store.** `/srv/brindle/runs`, a volume of its own on `disp-1`. Every session writes one run record there (`run_records.md`).
 - **Usage database.** Token counts per session, used for invoices and for the monthly cost report (`operations.md`).
 - **Replay suite.** Tests the agent prompts against recorded sessions before a release (`replay_suite.md`).
@@ -28,4 +28,4 @@ Brindle started with the platform team in March 2026. The other three product te
 | `replay_suite.md` | the replay suite |
 | `scheduler.md` | periodic triggers |
 | `policy_notes.md` | the platform team's decisions |
-| `brindle.toml` | an excerpt of the dispatcher's configuration |
+| `brindle.toml` | an excerpt of the configuration of the dispatcher and the `brindle` command |
