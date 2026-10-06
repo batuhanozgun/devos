@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list accepted (W-C01-01, CHK-C01-006, L-169); the non-row items first, then rows 1 to 4 and 17 once Batu's probe setup is in place. | 2026-10-06T14:42Z |
+| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list accepted (W-C01-01, CHK-C01-006, L-169); the key inventory (W-C01-02) and row 4's documentation part (W-C01-09) accepted (L-170); the probe design, N-110 and the phase-A probe under way; then Batu's probe setup and rows 1 to 4 and 17. | 2026-10-06T15:10Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
-| Usage | `five_hour` `allowed` at 2026-10-06T14:11Z (`get_session`, working session), resets 2026-10-06T14:50Z (`resetsAt` 1791298200); `isUsingOverage` false. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T14:11Z |
+| Usage | `five_hour` `allowed` at 2026-10-06T15:06Z (`get_session`, working session), resets 2026-10-06T19:50Z (`resetsAt` 1791316200); `isUsingOverage` false. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T15:06Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). | 2026-10-06T14:42Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: C01'in (platform doğrulaması) iş listesi denetlendi ve kabul edildi: 30 iş, her biri kendi kabul koşuluyla. Sırada deneme ortamı gerektirmeyen işler var: anahtar envanteri, deneme tasarımı, denemelere özel koruma kuralı ve küçük bir ön deneme. Bunlar bitince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T14:42Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T14:40Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: C01'de (platform doğrulaması) iki iş denetlenip kabul edildi: anahtar envanteri (her anahtarın sahibi, yeri, yetkisi ve iptal yolu; hiçbir değer yazılmadan) ve alt ajanların nasıl bittiğine dair resmi belgelerin okunması. Deneme tasarımı, düşünme disiplini araçlarının takip işi ve küçük ön deneme sürüyor. Tasarım bitince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>Belgelerden öğrenilen: ortamlar silinemiyor, yalnız arşivleniyor; C01 sonunda kaldırma adımları buna göre yazılacak. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T15:10Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T15:08Z |
 
 ---
 
@@ -33,9 +33,7 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C01-02` Key inventory (N-105)
 - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps
-- `W-C01-09` Row 4, documentation part: how a subagent call completes, and what the hook input says (C01 #4)
 - `W-C01-25` Phase-A probe (PC-16)
 - `W-C01-28` N-110: follow-ups of D-016's carriers
 
@@ -44,7 +42,7 @@
 
 **Not ready, with the first unmet condition:**
 - `W-C01-04`: depends on W-C01-03 (not accepted)
-- `W-C01-05`: depends on W-C01-02 (not accepted)
+- `W-C01-05`: depends on W-C01-03 (not accepted)
 - `W-C01-06`: depends on W-C01-05 (not accepted)
 - `W-C01-07`: depends on W-C01-04 (not accepted)
 - `W-C01-08`: depends on W-C01-04 (not accepted)
@@ -66,7 +64,7 @@
 - `W-C01-26`: depends on W-C01-03 (not accepted)
 - `W-C01-27`: depends on W-C01-06 (not accepted)
 - `W-C01-29`: depends on W-C01-06 (not accepted)
-- `W-C01-30`: depends on W-C01-02 (not accepted)
+- `W-C01-30`: depends on W-C01-03 (not accepted)
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -79,10 +77,10 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 1, blocked 24, ready 5 | 13 |
-| `C02` | Data model, rule gate and identity chain | planned | no items | 6 |
+| `C01` | Platform verification | running | accepted 3, blocked 24, ready 3 | 14 |
+| `C02` | Data model, rule gate and identity chain | planned | no items | 7 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 8 |
-| `C04` | Knowledge, search and context | planned | no items | 10 |
+| `C04` | Knowledge, search and context | planned | no items | 11 |
 | `C05` | Common rules, roles and methods | planned | no items | 5 |
 | `C06` | Working order, audit and decision channel | planned | no items | 5 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
@@ -126,14 +124,14 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-14` | Interim leak check in the guard for C00–C04 (W-C00-10 T-01) | accepted | — | .claude/hooks/tool_allowlist.py (L1–L3); tools/leak_fingerprints.py; tools/test_tool_allowlist.sh; plan/Installation_Working_Order.md section 10; CHK-C00-033 (FAIL, fixed); CHK-C00-037 (PASS); merged in PR | `plan/work/W-C00-14.md` |
 | `W-C00-15` | No-mechanism baseline before C02 (W-C00-10 T-24) | accepted | — | EV-C00-016 (pre-registration, revisions 1 and 2); evidence/C00/baseline/ (texts, materials, criteria, checks, runs, scoring, check3_record.md); EV-C00-017 (results); CHK-C00-041 to CHK-C00-044; evidence/C00/baseline/audit/; step-10 check CHK-C00-045 (PASS-WITH-CONDITIONS, conditions met in EV-C00-017, L-156) | `plan/work/W-C00-15.md` |
 | `W-C01-01` | Stage work list | accepted | — | — | `plan/work/W-C01-01.md` |
-| `W-C01-02` | Key inventory (N-105) | ready | — | — | `plan/work/W-C01-02.md` |
+| `W-C01-02` | Key inventory (N-105) | accepted | — | — | `plan/work/W-C01-02.md` |
 | `W-C01-03` | Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps | ready | — | — | `plan/work/W-C01-03.md` |
 | `W-C01-04` | Probe-only guard rule | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-04.md` |
-| `W-C01-05` | Probe setup in place: Batu's C01 steps (Section 12 item 0) | blocked: depends on W-C01-02 (not accepted) | — | — | `plan/work/W-C01-05.md` |
+| `W-C01-05` | Probe setup in place: Batu's C01 steps (Section 12 item 0) | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-05.md` |
 | `W-C01-06` | Row 1: session duration and chunked work (C01 #1) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-06.md` |
 | `W-C01-07` | Row 2: connector barrier (C01 #2) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-07.md` |
 | `W-C01-08` | Row 3: environment token (C01 #3) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-08.md` |
-| `W-C01-09` | Row 4, documentation part: how a subagent call completes, and what the hook input says (C01 #4) | ready | — | — | `plan/work/W-C01-09.md` |
+| `W-C01-09` | Row 4, documentation part: how a subagent call completes, and what the hook input says (C01 #4) | accepted | — | — | `plan/work/W-C01-09.md` |
 | `W-C01-10` | Row 4, probe part: subagents in a session started by a routine (C01 #4) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-10.md` |
 | `W-C01-11` | Row 17: control surface across environments (C01 #17) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-11.md` |
 | `W-C01-12` | Row 5: daily routine limit (C01 #5) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-12.md` |
@@ -154,7 +152,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-27` | N-063: the counter-design rows decided from C01's observations | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-27.md` |
 | `W-C01-28` | N-110: follow-ups of D-016's carriers | ready | — | — | `plan/work/W-C01-28.md` |
 | `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
-| `W-C01-30` | Stage close review | blocked: depends on W-C01-02 (not accepted) | — | — | `plan/work/W-C01-30.md` |
+| `W-C01-30` | Stage close review | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-30.md` |
 <!-- /generated -->
 
 ---
@@ -230,12 +228,14 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-109` | `C01` | PC-18 | open | **Do the platform's session credentials act beyond the session?** (PC-18 place 5; CHK-C00-070 condition 2; 2026-10-06, L-163). C00's sixt... |
 | `N-110` | `C01` | CHK-C01-001 | open | **Follow-ups of D-016's carriers** (CHK-C01-001 condition and finding 6; CHK-C01-002 findings 7 to 9; 2026-10-06, L-168). (1) **Tools**, ... |
 | `N-122` | `C01` | CHK-C01-006 | open | **Recommendations of CHK-C01-006 for C01's last items** (findings 4, 5 and 10; 2026-10-06, L-169; not conditions). (1) **Row 4's version,... |
+| `N-124` | `C01` | CHK-C01-007 | open | **A probe token's revocation before C02** (CHK-C01-007 finding 8; 2026-10-06, L-170). Plan C01 row 3's fail path says "a token found outs... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
 | `N-064` | `C02` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-074` | `C02` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (strengt... |
 | `N-092` | `C02` | EV-C00-021 | open | T-36, T-37 and T-77: ECC-80's revision binding, ECC-149's flag-and-keep, and the due occurrences of every scheduled job and routine check... |
 | `N-112` | `C02` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
+| `N-125` | `C02` | CHK-C01-007 | open | **Batu's steps for the installation environment's token and the CI role's key** (CHK-C01-007 finding 13(a); 2026-10-06, L-170). `plan/key... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
 | `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
@@ -254,6 +254,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-103` | `C04` | CHK-C00-067 | open | **C00 task 4's C04 part: paths tried before and failed, in the old experiment repositories** (CHK-C00-067 condition 4(a), finding 9; 2026... |
 | `N-108` | `C04` | CHK-C00-069 | open | **The corrected identity test, on new data** (CHK-C00-069 condition 4; 2026-10-06, L-162). C00's fifth condition ("The builder wrote noth... |
 | `N-114` | `C04` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
+| `N-126` | `C04` | CHK-C01-007 | open | **Batu's step for the ingestion role's key** (CHK-C01-007 finding 13(b); 2026-10-06, L-170). `plan/key_inventory.md` row 25: plan Section... |
 | `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
 | `N-067` | `C05` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-077` | `C05` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-13 (methods... |
