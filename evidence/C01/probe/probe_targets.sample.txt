@@ -1,0 +1,41 @@
+# C01 probe target list — FORMAT REFERENCE ONLY (not the live file)
+#
+# The live file is `.claude/hooks/probe_c01_targets.txt` on `main`. It is the ONLY
+# place the guard's probe-only rule reads the IDs that rows 17 and N-109 may act on
+# (EV-C01-002, "The probe-only guard rule"; CHK-C01-011 condition 3, decision D).
+# W-C01-04 adds the empty file and its reader in the same checked change that adds
+# the rule. The executor fills it later, from probe-b's and the second probe-a
+# session's own reports, as ANOTHER checked change on `main`, BEFORE firing the
+# reaching run of probe-a. Neither a probe session nor the builder writing to a
+# probe branch can put an ID here: it reaches the guard only through the merge gate.
+#
+# Residual (decision D): the session IDs, and routine B's trigger ID if present,
+# are the probe sessions' own report, and an unguarded session (probe-b) wrote the
+# probe-b ones onto its branch before the executor copied them here. The
+# environment ID is the executor's own observation via list_environments in the
+# working session, not a probe-branch write.
+#
+# Format: one entry per non-comment, non-blank line, `kind=value`. Blank lines and
+# lines starting with `#` are ignored. `value` is a plain identifier, never a
+# secret. Each kind appears at most once; the kind names the side, so the guard
+# lets each act reach only its own target:
+#
+#   probe_b_session=<id>      the live probe-b session: row 17's send_message and
+#                             interrupt_session; N-109 reach (b)
+#   probe_a_session=<id>      the second live probe-a session: N-109 reach (a) only
+#   probe_b_trigger=<id>      routine B's trigger: row 17's update_trigger and
+#                             fire_trigger (absent if the ID was not visible)
+#   probe_b_environment=<id>  devos-probe-b's environment: row 17's create_session
+#                             and create_trigger
+#
+# Example (illustrative identifiers, NOT real):
+# probe_b_session=sess_PROBE_B_LIVE_RUN
+# probe_a_session=sess_PROBE_A_LIVE_RUN
+# probe_b_trigger=trig_ROUTINE_B
+# probe_b_environment=env_DEVOS_PROBE_B
+#
+# The guard denies every session/routine/environment tool in a probe session whose
+# target is not an exact entry of the right kind here (negative controls: an
+# owned_ids.txt entry, the builder environment, an ID that appears only on a probe
+# branch, and a probe_a_session ID used for a row-17 act are all denied in a probe
+# session — CHK-C01-010 finding 8 / CHK-C01-011 condition 3).
