@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): first the checker acceptance of W-C00-01, 02 and 04 (N-051), then step 0, W-C00-06 (plan 0.6). | 2026-10-05T20:27Z |
+| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): first N-104, D-016's carriers (PC-19), then its stage work list. | 2026-10-06T13:08Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
 | Usage | `five_hour` `allowed` at 2026-10-06T10:07Z (`get_session`, working session), resets 2026-10-06T14:50Z (`resetsAt` 1791298200); `isUsingOverage` false. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T10:07Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). | 2026-10-06T09:00Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: C00'ın kapanışında son adım. PC-18'e göre platformun her oturuma kendi kanalı için koyduğu anahtar, "hiçbir sır görünmüyor" koşulunda yalnız o oturumun ortamında ve oturumla sınırlı kaldıkça sayılmıyor; depoda, kayıtta ya da sohbette her zaman sayılıyor. Oturum dışına uzanıp uzanmadığı C01'de sınanacak; uzanıyorsa C00'ın bu koşuldaki kabulü geçersiz olur ve plan çerçeve incelemesine gider. <br>Ortam testi bu yoruma göre yeniden çalıştı: testin baktığı değişkenlerde senin hesapların ya da DevOS için verilmiş bir anahtar yok (test bütün değişkenlere bakamıyor). Bu oturumun anahtarının değeri aranan yerlerin hiçbirinde yok; önceki oturumlarınki aranamadı. Son denetçi kapanışı yargılıyor. | 2026-10-06T12:21Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T12:21Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: C00 (başlangıç ve planın bağımsız incelemesi) kabul edildi. Tek bir koşulu şarta bağlı: platformun her oturuma koyduğu kendi anahtarının oturum dışına uzanmadığı C01'de sınanacak; uzanıyorsa C00'ın o koşuldaki kabulü geçersiz olur ve plan çerçeve incelemesine gider. <br>Sırada C01 (platform doğrulaması): önce düşünme disiplinlerinin kalıcı kuralları, sonra C01'in iş listesi. C01'de senden iki deneme ortamı kurmanı isteyeceğim; zamanı gelince adım adım yazacağım. | 2026-10-06T13:08Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T13:07Z |
 
 ---
 
@@ -36,7 +36,7 @@
 - none
 
 **Running:**
-- `W-C00-11` Stage closure review: claimed by `nobody`
+- none
 
 **Not ready, with the first unmet condition:**
 - none
@@ -51,8 +51,8 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 14, cancelled 6, running 1 | 1 |
-| `C01` | Platform verification | planned | no items | 12 |
+| `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
+| `C01` | Platform verification | running | no items | 12 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 5 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 6 |
 | `C04` | Knowledge, search and context | planned | no items | 9 |
@@ -87,7 +87,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-08` | Independent plan review (plan C00 step 4) | accepted | todo (heavy) | CHK-C00-022, CHK-C00-023 (pass A); EV-C00-019 (pass B), with CHK-C00-046 to CHK-C00-048, CHK-C00-051, CHK-C00-053 to CHK-C00-056, with CHK-C00-052, CHK-C00-057, CHK-C00-058 on the redaction; dispositions at W-C00-10 round 2 (L-158) | `plan/work/W-C00-08.md` |
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | accepted | todo (heavy) | EV-C00-009 (brief); EV-C00-010 (counter-design, independence declared low); EV-C00-012 (comparison with dispositions); CHK-C00-027 | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | accepted | todo | EV-C00-013, EV-C00-014 (round 1); EV-C00-020, EV-C00-021 (round 2); PC-07 to PC-17; CHK-C00-059, CHK-C00-060, CHK-C00-062 to CHK-C00-066 (L-160) | `plan/work/W-C00-10.md` |
-| `W-C00-11` | Stage closure review | running | todo | CHK-C00-067 (closure verdict, PASS-WITH-CONDITIONS); EV-C00-022 (its conditions 1 and 2); CHK-C00-068 (the probe tool) (L-161); CHK-C00-069 (PASS-WITH-CONDITIONS); PC-18 (L-162); CHK-C00-070 (PASS-WITH-CONDITIONS); PC-18 revised; the value scan, CHK-C00-071 (L-163); CHK-C00-073 (PASS-WITH-CONDITIONS; L-164); the repeated probe and value scan, EV-C00-022 section 1c (L-165); CHK-C00-074 (PASS-WITH-CONDITIONS; L-166) | `plan/work/W-C00-11.md` |
+| `W-C00-11` | Stage closure review | accepted | todo | CHK-C00-067 (closure verdict, PASS-WITH-CONDITIONS); EV-C00-022 (its conditions 1 and 2); CHK-C00-068 (the probe tool) (L-161); CHK-C00-069 (PASS-WITH-CONDITIONS); PC-18 (L-162); CHK-C00-070 (PASS-WITH-CONDITIONS); PC-18 revised; the value scan, CHK-C00-071 (L-163); CHK-C00-073 (PASS-WITH-CONDITIONS; L-164); the repeated probe and value scan, EV-C00-022 section 1c (L-165); CHK-C00-074 (PASS-WITH-CONDITIONS; L-166); CHK-C00-075 (PASS; accepted, L-167) | `plan/work/W-C00-11.md` |
 | `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | cancelled | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | cancelled | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
@@ -159,7 +159,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 <!-- generated:open-notes -->
 | Note | On | Origin | Status | First line |
 |---|---|---|---|---|
-| `N-106` | `C00` | PC-18 | open | **The reading of the sixth condition, and its checks** (PC-18; CHK-C00-069 condition 1; CHK-C00-070 condition 1; 2026-10-06, L-162, L-163... |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
@@ -222,7 +221,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-100` | `C11` | EV-C00-021 | open | T-58: plan Section 13 checked against the ingested library. The direction is decided now. The topic's reason is in its row of EV-C00-021 ... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 26 (N-027, N-045, N-058, N-062, N-084, N-086, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 27 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
