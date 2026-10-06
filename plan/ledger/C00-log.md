@@ -1722,3 +1722,36 @@ The builder had summarised the dispatcher's own account without reading the tran
 - **Its conditions, met.** (1) PC-18: reason 3 rests its example on plan 2.1 (the key inventory's routine API trigger key and C03 test 3 at `333d1b2`) and dates 6.7's row as PC-09's; every other citation was checked against its first commit, and the later ones are dated (the control-surface row, PC-09 `b17899c`; R-C00-BOM-4, filed at `5b0b176`; the working order section 10, `dbb24b5`, carrying the list of 2026-10-01); the note under C00's Acceptance line now names plan 6.7's control-surface row beside the guard's reasons and the reviews; `consulted` no longer says that the verdicts are at `a29d1d5`. (2) N-109 and PC-18 place 5: a result that is neither red nor green is not green; then N-109 stays open and goes to a frame review before C02 builds DevOS's environments, which decides C00's acceptance on the sixth condition. (3) The scan's time (11:30:34Z) and three further limits (what is written after it unless it is run again at the closing head; a part of the token file's content written alone; credentials outside the guard's `CREDENTIAL_VARS` and the token file, such as the stores in `CREDENTIAL_PATHS`) are in N-106 and EV-C00-022 section 1b; the result is this session's credentials only, and the summary for Batu now says so. L-163's heading is read with that limit: the scan found none of this session's credential values.
 - **Guard:** `tools/guard_report.py` at 11:59Z: 58 denied, 7,091 allowed, 3 passed to the user, hash chain intact, last record #7152. New since L-163 (through #7056): #7114 (B5), CHK-C00-073's checker: a clone path held in a variable; it repeated the call with the path written literally. No effect.
 - **Record changes:** evidence/C00/checks/CHK-C00-073 · addition · the verdict verbatim; plan/decisions/PC-18.md, plan/DevOS_Kurulum_Plani.md (Section 9 C00 note) · correction · CHK-C00-073 conditions 1 and 2; plan/work/C01.md · correction · N-109's inconclusive case; plan/work/C00.md, evidence/C00/EV-C00-022 · annotate · the scan's limits; plan/work/W-C00-11.md · annotate · evidence; plan/ledger.md · correction · summary_tr
+
+### L-165 · 2026-10-06 · W-C00-11: PC-18 merged (PR #186); the environment-variable test repeated under it (CHK-C00-069 condition 2) and this session's credential values searched again at that head; the final closure check follows
+
+- **Disciplines (D1–D9):** D1: yes: the repeated probe's reading names what it cannot show (variables under other names; the confinement premise) instead of assuming them away. D2: yes: the result is the same as the first run's, and the record says so without counting it as more than it is: the same probe, read under the recorded reading. D3: yes: the value scan was run again at this head, as CHK-C00-073 condition 3 allows, so its time limit moves to 12:00:52Z. D4: yes: both tools ran at their reviewed blobs from the live tree, with every pre-run check their verdicts require; a fresh checker judges the result. D5: no. D6: no. D7: yes: the outputs are filed verbatim with their guard record numbers, so the run can be verified from the records. D8: yes: the merge, the sync, the blobs and a clean tree were checked before each run. D9: no.
+- **PR #186 merged** (`00eb04f06182ec0b48fb28daaf66c1f018d22e7f`): rounds 1 to 4 of W-C00-11 with PC-18 (its note under C00's Acceptance line in plan Section 9), N-102 to N-109, EV-C00-022 sections 1, 1b and 2, CHK-C00-067, 069, 070 and 073, L-161 to L-164. Batu is told in one line, in Turkish, as information: the platform's own key in each session does not count under C00's "no secret visible" condition only inside the session and only while it stays within the session, which C01 checks.
+- **CHK-C00-069 condition 2, met.** After the merge and `tools/sync_worktree.sh`: `/home/user/devos` at HEAD `00eb04f06182ec0b48fb28daaf66c1f018d22e7f`; `HEAD:tools/credential_class.py` = `2b1484450ff853ad6cb58f6596ae786899f99a53`; `git status --porcelain` empty (guard record #7161). `python3 -I tools/credential_class.py` ran at 12:00:33Z (guard record #7163), exit 0. Its whole output, verbatim:
+
+  ```
+  The guard's credential variables:
+    GH_TOKEN: set, length 14, class: the documented placeholder
+    GITHUB_TOKEN: set, length 14, class: the documented placeholder
+    CLOUDSDK_AUTH_ACCESS_TOKEN: set, length 14, class: the documented placeholder
+    CLAUDE_CODE_MESSAGING_TOKEN: set, length 32, class: other
+    CLAUDE_CODE_MESSAGING_SOCKET: set, length 22, class: an absolute path
+    CLAUDE_SESSION_INGRESS_TOKEN_FILE: set, length 50, class: an absolute path
+    SESSION_INGRESS_URL: set, length 25, class: a URL
+    ANTHROPIC_API_KEY: unset
+    ANTHROPIC_AUTH_TOKEN: unset
+    CLAUDE_CODE_OAUTH_TOKEN: unset
+  Other variables whose name looks like a credential's:
+    AWS_ACCESS_KEY_ID: set, length 14, class: the documented placeholder
+    AWS_SECRET_ACCESS_KEY: set, length 14, class: the documented placeholder
+    MAX_THINKING_TOKENS: set, length 5, class: other
+  GH_TOKEN and GITHUB_TOKEN equal: yes
+  ```
+
+  Read under PC-18: the GitHub, Google Cloud and AWS variables hold the documented placeholder, and the three Anthropic variables are unset, so no key issued for Batu's accounts or DevOS's resources is in the environment as far as the probe reaches; the messaging token and the token file are the platform's own session credentials, outside the sixth condition in the environment only while confined to the session (N-109). The probe's limits stand (a name heuristic; variables under other names not listed). EV-C00-022 section 1c; `evidence/C00/closure/C2_probe_output.txt`.
+- **The value scan at the same head** (CHK-C00-073 condition 3 (a)(i)). Pre-run checks as CHK-C00-072 requires (blob `fba2ab62f4a6c21a82b236996f18d84e1a7878e6`; clean tree; the mirror refreshed: main `00eb04f`, not shallow, no promisor, 162 branch refs, 185 pull-request head refs; the two override variables unset; 0 listing errors and 0 symlinks; guard record #7165). The same command as at 11:30:34Z ran at 12:00:52Z (guard record #7166), exit 0, DONE; it read 4,507 objects of the mirror, 4,501 of the live repository, 383 transcript files and the guard's log: **0 matches of this session's credential values in any place searched**. Whole output, verbatim: `evidence/C00/closure/C2_value_scan_output.txt`. Section 1b's could-not-check list stands, with its time limit moved to 12:00:52Z.
+- **N-106** gets a line: the test is repeated; the note closes when the final closure verdict is filed.
+- **Next:** a fresh checker that did no C00 work judges W-C00-11 (CHK-C00-069 condition 5: its conditions 1 to 4 at this head; with CHK-C00-073's conditions 1 to 3, as that verdict's finding 12 asks).
+- **Usage:** `get_session` at 12:02Z: `five_hour` `allowed`, resets 14:50Z, no overage (row in `plan/work/C00.md`).
+- **Guard:** `tools/guard_report.py` at 12:02Z: 58 denied, 7,114 allowed, 3 passed to the user, hash chain intact, last record #7175. New since L-164 (through #7152): none.
+- **Record changes:** evidence/C00/EV-C00-022 · annotate · section 1c; evidence/C00/closure/C2_probe_output.txt, C2_value_scan_output.txt · addition · the repeated runs; plan/work/C00.md · annotate · N-106, usage reading; plan/work/W-C00-11.md · annotate · evidence; plan/ledger.md · correction · summary_tr

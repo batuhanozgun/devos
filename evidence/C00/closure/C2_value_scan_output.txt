@@ -1,0 +1,25 @@
+Values searched for:
+  CLAUDE_CODE_MESSAGING_TOKEN: length 32
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: length 1013
+  (GH_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (GITHUB_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLOUDSDK_AUTH_ACCESS_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLAUDE_CODE_MESSAGING_SOCKET: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLAUDE_SESSION_INGRESS_TOKEN_FILE: not a candidate (placeholder, path, URL or shorter than 16))
+  (SESSION_INGRESS_URL: not a candidate (placeholder, path, URL or shorter than 16))
+  (ANTHROPIC_API_KEY: no value)
+  (ANTHROPIC_AUTH_TOKEN: no value)
+  (CLAUDE_CODE_OAUTH_TOKEN: no value)
+repository /tmp/claude-0/-home-user-devos/1ffeb509-6a85-5fdc-9f2f-cbf44d117c09/scratchpad/w18.git: 4507 objects read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 objects hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 objects hold it
+repository /home/user/devos: 4501 objects read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 objects hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 objects hold it
+directory /root/.claude/projects: 383 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+directory /tmp/devos-guard: 1 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+CREDENTIAL_VALUE_SCAN DONE
