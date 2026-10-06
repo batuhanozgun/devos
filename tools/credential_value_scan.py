@@ -11,13 +11,21 @@ it. This script checks that by value, without showing a value. Inside its own pr
 It then counts, for each value, the places that hold it:
   --repo PATH   every object in the object store of the git repository at PATH (blobs, commits with their messages,
                 trees, tags; reachable or not), read with `git cat-file --batch-all-objects --batch`;
-  --dir PATH    every regular file under PATH, read in chunks (for the session's transcripts, the chat, and the
-                guard's decision log).
+  --dir PATH    every regular file under PATH, read in chunks;
+  --session-transcripts   the same, under <home>/.claude/projects: the session's transcripts, which hold the chat,
+                every tool call and every subagent ($DEVOS_AUDIT_HOME, default the home directory, as
+                tools/subagent_audit.py finds them);
+  --guard-log   the same, under the guard's decision log ($DEVOS_GUARD_LOG_DIR, default /tmp/devos-guard, as
+                tools/guard_report.py reads it).
+The two built-in scopes are read, never written, as the other tools read them; their paths are derived here and are
+not given on the command line, which the guard's B5 denies for every non-reader command.
 Output: each value's label and length; each scope's size; for each value and scope, the number of objects or files
-that hold it, and for a match the object IDs or the file paths, never their content. No value, part of one or hash of
-one is printed. Encoded forms (base64, URL-encoding, escaped JSON) are not decoded: a value held only in such a form
-is not found. Exit 0 when every scope was read, 2 on an error.
-Usage: python3 -I tools/credential_value_scan.py [--repo PATH]... [--dir PATH]...
+that hold it, and for a match the object IDs or the file paths (a path that itself holds a value is withheld),
+never their content. No value, part of one or hash of one is printed. Encoded forms (base64, URL-encoding, escaped
+JSON) are not decoded: a value held only in such a form is not found; nor is a part of the token file's content
+written alone. Exit 0 when every scope was read and none was empty; 2 on an error, a missing or empty scope, or a
+scope that could not be read (then the last line is CREDENTIAL_VALUE_SCAN INCOMPLETE).
+Usage: python3 -I tools/credential_value_scan.py [--repo PATH]... [--dir PATH]... [--session-transcripts] [--guard-log]
 """
 import argparse
 import ast
@@ -97,10 +105,14 @@ def scan_repo(path, vals):
                 hits[label].append(parts[0].decode())
     if p.wait() != 0:
         raise ValueError("git cat-file failed")
+    if n == 0:
+        raise ValueError("no object read")
     return n, hits
 
 
 def scan_dir(path, vals):
+    if not os.path.isdir(path):
+        raise ValueError("not a directory")
     hits = {label: [] for label, _ in vals}
     keep = max([len(v) for _, v in vals] + [1]) - 1
     n = 0
@@ -121,8 +133,13 @@ def scan_dir(path, vals):
                         if v in buf:
                             found.add(label)
                     tail = buf[-keep:] if keep else b""
+            rel = os.path.relpath(fp, path)
+            raw = rel.encode("utf-8", "surrogateescape")
+            shown = "(a path that holds a value)" if any(v in raw for _, v in vals) else rel
             for label in found:
-                hits[label].append(os.path.relpath(fp, path))
+                hits[label].append(shown)
+    if n == 0:
+        raise ValueError("no file read")
     return n, hits
 
 
@@ -130,7 +147,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", action="append", default=[])
     ap.add_argument("--dir", action="append", default=[])
+    ap.add_argument("--session-transcripts", action="store_true")
+    ap.add_argument("--guard-log", action="store_true")
     a = ap.parse_args()
+    if a.session_transcripts:
+        home = os.environ.get("DEVOS_AUDIT_HOME") or os.path.expanduser("~")
+        a.dir.append(os.path.join(home, ".claude", "projects"))
+    if a.guard_log:
+        a.dir.append(os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard")
     try:
         vals, notes = values(dict(os.environ))
     except (OSError, SyntaxError, ValueError) as e:
