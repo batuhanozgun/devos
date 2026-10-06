@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list accepted (W-C01-01, CHK-C01-006, L-169); the key inventory (W-C01-02), row 4's documentation part (W-C01-09) and N-110 (W-C01-28, PC-20) accepted (L-170, L-171); the probe design and the phase-A probe under way; then Batu's probe setup and rows 1 to 4 and 17. | 2026-10-06T15:30Z |
+| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list accepted (W-C01-01, CHK-C01-006, L-169); the key inventory (W-C01-02), row 4's documentation part (W-C01-09), N-110 (W-C01-28, PC-20) and the phase-A probe (W-C01-25) accepted (L-170 to L-172); the probe design (W-C01-03) in its second round; then the probe-only guard rule, Batu's probe setup and rows 1 to 4 and 17. | 2026-10-06T16:35Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
 | Usage | `five_hour` `allowed` at 2026-10-06T15:06Z (`get_session`, working session), resets 2026-10-06T19:50Z (`resetsAt` 1791316200); `isUsingOverage` false. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T15:06Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
-| answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). | 2026-10-06T14:42Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: C01'de (platform doğrulaması) üç iş denetlenip kabul edildi: anahtar envanteri, alt ajanların nasıl bittiğine dair resmi belgelerin okunması ve düşünme disiplini araçlarının takip işi (artık her görevde dokuz soru bloğunun tam metni aranıyor; durma denetimi kayıtları da kontrol ediyor). Deneme tasarımı ve küçük ön deneme sürüyor. Tasarım bitince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>Belgelerden öğrenilen: ortamlar silinemiyor, yalnız arşivleniyor; C01 sonunda kaldırma adımları buna göre yazılacak. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T15:30Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T15:21Z |
+| answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). | 2026-10-06T16:35Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: C01'de (platform doğrulaması) dört iş kabul edildi: anahtar envanteri, alt ajan belgelerinin okunması, düşünme disiplini araçlarının takip işi ve küçük ön deneme. Ön deneme, SOUL'un kurduğu bir ajanın kullanıcının yargılayamadığı bir alanda iş yapmadan önce hangi yeterlik kanıtını vermesi gerektiğini çalıştı; kendi denetçisi altı ölçütün altısını da karşılanmış buldu ve sonucu C02'ye bir not olarak geçti. Deneme tasarımı ilk denetimde kaldı; ikinci turu yazılıyor. Tasarım geçince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>Belgelerden öğrenilen: ortamlar silinemiyor, yalnız arşivleniyor; test projesinin herkese açık anahtarını senin kopyalaman gerekecek (bağlayıcım yalnız canlı projeye erişiyor). Bunlar önce bir plan değişikliğiyle adımlarına eklenecek. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T16:35Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T16:30Z |
 
 ---
 
@@ -34,7 +34,6 @@
 <!-- generated:frontier -->
 **Ready (startable now):**
 - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps
-- `W-C01-25` Phase-A probe (PC-16)
 
 **Running:**
 - none
@@ -76,8 +75,8 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 4, blocked 24, ready 2 | 13 |
-| `C02` | Data model, rule gate and identity chain | planned | no items | 8 |
+| `C01` | Platform verification | running | accepted 5, blocked 24, ready 1 | 13 |
+| `C02` | Data model, rule gate and identity chain | planned | no items | 9 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 8 |
 | `C04` | Knowledge, search and context | planned | no items | 11 |
 | `C05` | Common rules, roles and methods | planned | no items | 5 |
@@ -146,7 +145,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-22` | Row 15: library transfer, moved to C04 (C01 #15) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-22.md` |
 | `W-C01-23` | Row 16: second model, the free tier's terms (C01 #16) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-23.md` |
 | `W-C01-24` | Row 18: platform-side readers (C01 #18) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-24.md` |
-| `W-C01-25` | Phase-A probe (PC-16) | ready | — | — | `plan/work/W-C01-25.md` |
+| `W-C01-25` | Phase-A probe (PC-16) | accepted | — | — | `plan/work/W-C01-25.md` |
 | `W-C01-26` | N-109: do the platform's session credentials act beyond the session? | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-26.md` |
 | `W-C01-27` | N-063: the counter-design rows decided from C01's observations | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-27.md` |
 | `W-C01-28` | N-110: follow-ups of D-016's carriers | accepted | — | — | `plan/work/W-C01-28.md` |
@@ -236,6 +235,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-112` | `C02` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
 | `N-125` | `C02` | CHK-C01-007 | open | **Batu's steps for the installation environment's token and the CI role's key** (CHK-C01-007 finding 13(a); 2026-10-06, L-170). `plan/key... |
 | `N-127` | `C02` | CHK-C01-009 | open | **Two planted cases owed to the discipline checks** (CHK-C01-009 finding 3; 2026-10-06, L-171). Two mutants of the PC-20 tools survive th... |
+| `N-128` | `C02` | EV-C01-003 | open | **The phase-A probe's result, for this work list** (W-C01-25; PC-16; `evidence/C01/phase_a/EV-C01-003_phase_a_probe.md`, 2026-10-06). The... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
 | `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
