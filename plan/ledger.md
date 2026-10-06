@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimden geçti ve ana dala girdi; denetçinin istediği iki küçük düzeltme yapılıyor. Açık depoya yazılanı kodla denetleyen ara kontrol kabul edildi ve devrede (D-014 (a) için gereken ilk güvence bu). <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-06T00:06Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:00Z |
+| summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimden geçti ve ana dala girdi; denetçinin istediği iki küçük düzeltme yapılıyor. Açık depoya yazılanı kodla denetleyen ara kontrol kabul edildi ve devrede (D-014 (a) için gereken ilk güvence bu). Mekanizmasız karşılaştırma denemesi (W-C00-15) başladı: önce görevler ve başarı ölçütleri yazılıp kaydediliyor, sonra çalıştırılacak; kütüphanesiz. <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-06T00:22Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:05Z |
 
 ---
 
@@ -33,11 +33,12 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24)
+- none
 
 **Running:**
 - `W-C00-08` Independent plan review (plan C00 step 4): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 - `W-C00-10` Decide on the results (plan C00 step 7): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
+- `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
 - `W-C00-03`: finished, waiting for acceptance
@@ -53,7 +54,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 10, blocked 1, cancelled 6, finished 1, ready 1, running 2 | 13 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 10, blocked 1, cancelled 6, finished 1, running 3 | 13 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
@@ -84,7 +85,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
   - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
   - `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): accepted
-  - `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): ready
+  - `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): running (session_01WKJi23FwAjFtiyD1DbQ2Rs)
 <!-- /generated -->
 
 ### Work index
@@ -114,7 +115,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-12.6` | Permission model by D-008: the guard decides every call with a written reason; sessions in Accept edits on Opus 5.5 at ultracode effort | cancelled | — | — | `plan/work/W-C00-12.6.md` |
 | `W-C00-13` | Turkish summary for Batu (plan 0.6 item 1) | accepted | — | plan/Summary_for_Batu_TR.md; CHK-C00-025 (conditions); CHK-C00-026 (conditions met, K1 and K2 in L-144) | `plan/work/W-C00-13.md` |
 | `W-C00-14` | Interim leak check in the guard for C00–C04 (W-C00-10 T-01) | accepted | — | .claude/hooks/tool_allowlist.py (L1–L3); tools/leak_fingerprints.py; tools/test_tool_allowlist.sh; plan/Installation_Working_Order.md section 10; CHK-C00-033 (FAIL, fixed); CHK-C00-037 (PASS); merged in PR | `plan/work/W-C00-14.md` |
-| `W-C00-15` | No-mechanism baseline before C02 (W-C00-10 T-24) | ready | — | — | `plan/work/W-C00-15.md` |
+| `W-C00-15` | No-mechanism baseline before C02 (W-C00-10 T-24) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | — | — | `plan/work/W-C00-15.md` |
 <!-- /generated -->
 
 ---
