@@ -109,7 +109,8 @@ correctly from the records alone.
 
 ## 7. Batu
 Communication with Batu follows devos/plan/Ek_E_Iletisim.md: Turkish, plain, short, one topic; only decisions that are his;
-each decision with the options, purpose, benefit, cost and your recommendation. Do not count silence as approval. Never have a key or password
+each question one sentence, with its options and your recommendation; the purpose, benefit, cost and the rest stay in the
+decision record, linked from the question, and reach him only if he asks. Do not count silence as approval. Never have a key or password
 written into the chat, and never ask for one in the chat.
 ```
 

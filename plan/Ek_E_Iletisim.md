@@ -23,7 +23,15 @@
 
 Only decisions that truly belong to Batu come to him: purpose, scope, budget, authority, acceptance, choices that affect his other work, and matters of preference. A question of technical correctness is not considered resolved by leaving it to Batu's approval.
 
-**Every decision comes in this form:**
+**One line instead of a question (from D-013, 6 October 2026).** A question whose recommended option asks nothing of Batu (no action, no money, no change to his accounts, data or other work), and none of whose other options he asked for, is not put to him, even when its subject concerns his accounts, data or other work: the builder decides it and tells him in one line, as information. Purpose, scope, the acceptance of results, and a conflict between one of his constraints and what the work requires (the last rule of this section) still come to him as questions, whatever the recommended option asks of him.
+
+**The question (D-015, Batu's direction of 6 October 2026).** Every question to Batu is one sentence, with its options and the recommendation in the same sentence or the next. During the installation it is posted on issue #6, the usual channel (`plan/Installation_Working_Order.md` section 8), in that short form, with a link to its decision record; an answer he types in the working session counts as well. The decision record holds the six parts below. Of them the question carries only what is asked, the options and the recommendation, each in short; the rest (why it is his, each option's purpose, benefit, cost and alternative, the reason for the recommendation, what he needs to know, and what happens if he does not answer) comes to him only if he asks. Where the plan says that a matter is presented to him with its gain or benefit, purpose or rationale, cost and alternative (plan 0.3 item 3, criterion 16, C07 measure 5), the question and its linked record together are that presentation.
+
+- One topic per question and per message, in plain Turkish (Section 1); Section 4 holds for the short form as for every message.
+- A correction (Sections 1.4 and 4.4) that bears on the question comes with it, in one short sentence in the form of Section 1.4; its detail goes into the record.
+- Steps he must carry out come after the question, numbered, each step short and written as Section 7 sets out.
+
+**Every decision record holds these six parts:**
 
 1. **What is being asked:** One sentence.
 2. **Why you are being asked:** Why this decision is his decision.
@@ -34,10 +42,10 @@ Only decisions that truly belong to Batu come to him: purpose, scope, budget, au
 
 **Rules:**
 
-- Batu is not made to choose between options that have not been explained.
+- Batu is not made to choose between options that have not been explained: the record linked from the question explains each one, and he is told more whenever he asks.
 - Batu's silence, or his not knowing a topic in its technical detail, is not counted as approval of an unexplained choice.
 - At most three clarifying questions are asked on one question; one if possible.
-- If a constraint Batu has set conflicts with what the work requires, this is not silently accepted and the need is not silently trimmed. The conflict is presented together with the quality option, its purpose, benefit and cost, and the best thing that can be done under the constraint. An expense is neither accepted on Batu's behalf, nor is a requirement reduced so that no expense arises.
+- If a constraint Batu has set conflicts with what the work requires, this is not silently accepted and the need is not silently trimmed. The conflict is asked as a question in the form above whose options include the quality option and the best thing that can be done under the constraint; the record gives the purpose, benefit and cost of each. An expense is neither accepted on Batu's behalf, nor is a requirement reduced so that no expense arises.
 
 ## 4. Accuracy and honesty
 
