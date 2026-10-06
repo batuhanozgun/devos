@@ -6,7 +6,7 @@
 
 **For Batu:**
 
-1. From the Claude app, open a new session in Claude Code. Choose `devos-kurulum` as the environment and **only** `devos` as the repository. Do not add `agentic-os-search`: in a session with more than one repository the guard hook may not be loaded. When the library is needed, the session adds it later, read-only.
+1. From the Claude app, open a new session in Claude Code. Choose `devos-kurulum` as the environment and **only** `devos` as the repository. Do not add `agentic-os-search`: in a session with more than one repository the guard hook may not be loaded. In Accept edits mode the platform does not let the session add the library (`agentic-os-search`); it is added only as your decision D-014 (a) sets out: first you turn on push e-mail notifications on the library, then you switch the session to Auto mode for a short while, in which it only adds the library, read-only, and you switch it back to Accept edits mode. This was done on 6 October 2026; if the library is lost from the session, the short Auto step is needed again.
 2. Permission mode: **Accept edits**. Model: **Opus 5.5**, ultracode on.
 3. Copy the whole text under the line below and paste it as the first message. The text is in English because the language inside DevOS is English; the session speaks Turkish with you.
 
@@ -16,7 +16,7 @@ At the opening, the session checks the model, the mode and the guard hook; if so
 
 **Batu için:**
 
-1. Claude uygulamasından Claude Code'da yeni bir oturum aç. Ortam olarak `devos-kurulum`'u, depo olarak **yalnız** `devos`'u seç. `agentic-os-search`'ü ekleme: birden çok depolu oturumda koruma kancası yüklenmeyebilir. Kütüphane gerektiğinde oturum onu sonradan, salt okunur olarak ekler.
+1. Claude uygulamasından Claude Code'da yeni bir oturum aç. Ortam olarak `devos-kurulum`'u, depo olarak **yalnız** `devos`'u seç. `agentic-os-search`'ü ekleme: birden çok depolu oturumda koruma kancası yüklenmeyebilir. Accept edits modunda platform, oturumun kütüphaneyi (`agentic-os-search`) eklemesine izin vermez; kütüphane yalnız D-014 kararındaki (a) seçeneğine göre eklenir: önce kütüphanede push e-postalarını açarsın, sonra oturumu kısa bir süre Auto moduna alırsın; oturum bu sürede yalnız kütüphaneyi salt okunur olarak ekler ve sen oturumu yeniden Accept edits moduna alırsın. Bu 6 Ekim 2026'da yapıldı; kütüphane oturumdan kaybolursa kısa Auto adımı yeniden gerekir.
 2. İzin modu: **Accept edits**. Model: **Opus 5.5**, ultracode açık.
 3. Aşağıdaki çizginin altındaki metnin tamamını kopyalayıp ilk mesaj olarak yapıştır. Metin İngilizce, çünkü DevOS'un içindeki dil İngilizce; oturum seninle Türkçe konuşur.
 
