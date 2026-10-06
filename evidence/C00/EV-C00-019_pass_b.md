@@ -64,3 +64,7 @@ Section 2 says the critic's condition 2 (item CR-C2) was met by route (a), with 
 **No check needed.** The concept studies of area 10: B2-F8 (f) found plan 0.7 unchanged. Area 10's two studies on reopening, cancellation and compensation were read by B7.
 
 **Process.** This addendum is made before W-C00-08 is accepted; W-C00-08 is accepted after it and EV-C00-021 (that record's section 6). The old experiment repositories stay for C04, as section 4 says.
+
+## Addendum 2026-10-06: the coverage critic's level (CHK-C00-065 finding 7; CHK-C00-069 finding 7; L-161, L-162)
+
+Section 1 says that the critic was told not to read the builder's records, the working order among them, and does not say whether it kept that rule. Its verdict (`evidence/C00/checks/CHK-C00-051.md`, line 119) cites `plan/Installation_Working_Order.md` by line, so it read the working order, and its stated level is narrowed: it was not blind to the working order. The citation concerns the leak check's 8-word length, and the critic was a coverage critic, not a plan lens. Section 1 is left as written; this addendum is what the record now says.

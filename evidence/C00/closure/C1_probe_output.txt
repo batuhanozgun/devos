@@ -1,0 +1,16 @@
+The guard's credential variables:
+  GH_TOKEN: set, length 14, class: the documented placeholder
+  GITHUB_TOKEN: set, length 14, class: the documented placeholder
+  CLOUDSDK_AUTH_ACCESS_TOKEN: set, length 14, class: the documented placeholder
+  CLAUDE_CODE_MESSAGING_TOKEN: set, length 32, class: other
+  CLAUDE_CODE_MESSAGING_SOCKET: set, length 22, class: an absolute path
+  CLAUDE_SESSION_INGRESS_TOKEN_FILE: set, length 50, class: an absolute path
+  SESSION_INGRESS_URL: set, length 25, class: a URL
+  ANTHROPIC_API_KEY: unset
+  ANTHROPIC_AUTH_TOKEN: unset
+  CLAUDE_CODE_OAUTH_TOKEN: unset
+Other variables whose name looks like a credential's:
+  AWS_ACCESS_KEY_ID: set, length 14, class: the documented placeholder
+  AWS_SECRET_ACCESS_KEY: set, length 14, class: the documented placeholder
+  MAX_THINKING_TOKENS: set, length 5, class: other
+GH_TOKEN and GITHUB_TOKEN equal: yes
