@@ -15,6 +15,10 @@ else bad "HEAD is not at origin/main (head $(git rev-parse --short HEAD), origin
 
 [ -z "$(git status --porcelain)" ] && ok "working tree clean" || bad "uncommitted changes: $(git status --porcelain | head -5 | tr '\n' ' ')"
 
+rd=$(python3 -B tools/records.py render --check 2>&1); rdc=$?
+printf '%s\n' "$rd" | sed 's/^/      /'
+[ $rdc -eq 0 ] && ok "records.py render --check: views current, log entries carry the nine answers (D-016)" || bad "records.py render --check: exit $rdc (its lines above say why)"
+
 gr=$(python3 tools/guard_report.py 2>&1); grc=$?
 printf '%s\n' "$gr" | sed -n '1,5p' | sed 's/^/      /'
 [ $grc -eq 0 ] && ok "guard_report: decision log read" || bad "guard_report: no decision log for this session"

@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 # Synthetic test data (plan Section 8 item 13; criterion 20): the fixtures and inputs in this file are made up for
 # the test and hold no personal or business data. Not made up, because the formats under test name them: the tool
-# names and the field names of Claude Code's subagent transcripts and meta files and of the guard's decision log.
+# names and the field names of Claude Code's subagent transcripts and meta files and of the guard's decision log,
+# and the discipline block of plan/Installation_Working_Order.md section 9 (BLOCK), which every task must carry.
 """test_subagent_audit.py: planted cases for tools/subagent_audit.py (W-C00-15; CHK-C00-041 C4).
 
 The fixture is a fake home directory with transcripts and meta files under .claude/projects/x/y/subagents/ (an
 Agent-tool subagent's) and under its workflows/<run-id>/ (a workflow agent's, whose meta has no toolUseId), and a
 fake guard-log directory, both in a temporary directory that the tool is pointed at through DEVOS_AUDIT_HOME and
 DEVOS_GUARD_LOG_DIR. Every tool result, prompt, thinking block and non-path argument holds a marker string that no
-output may contain. The disciplines cases (D-016) plant tasks with and without its marker and reports with and
-without a complete block. Prints one line per case and SUBAGENT_AUDIT_TEST PASS only if every case behaves as written.
+output may contain. The disciplines cases (D-016) plant tasks with and without the whole discipline block and
+reports with and without a complete block; the tool reads the block from this checkout's working order, which must
+hold BLOCK as written here. N-110's cases (b) to (e) (25 to 28) kill CHK-C01-001's mutants S14, S12, S1 and S3;
+cases 29 to 33 judge the whole-block task check (CHK-C01-001 finding 6), on a copy of the tool beside a fixture
+working order where a case needs another file. Prints one line per case and SUBAGENT_AUDIT_TEST PASS only if every case behaves as
+written.
 """
 import json
 import os
@@ -18,6 +23,8 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from shutil import copy as copy_file
+from textwrap import fill, indent
 
 sys.dont_write_bytecode = True
 TOOL = Path(__file__).resolve().parent / "subagent_audit.py"
@@ -43,16 +50,19 @@ class Fixture:
         self.n = 0
 
     def agent(self, agent, calls, guard=None, final=FINAL, after=(), extra=(), log="session_fx1.jsonl", folder="",
-              meta=None, prompt=f"Prompt text {MARKER}", result=f"file content {MARKER}"):
+              meta=None, prompt=f"Prompt text {MARKER}", result=f"file content {MARKER}",
+              earlier="An earlier text, not the final message.", later=None):
         """calls, then the final message, then after: (tool, input) pairs; guard: (event, tool, logged path)
         records, by default one PreToolUse per call; extra: further records. folder: where under subagents/ the
         transcript and meta go (a workflow agent's: workflows/<run-id>); meta: the meta file's object, by default an
         Agent-tool subagent's with its toolUseId. prompt: the first user event's content (a string or a list of
-        blocks); result: every tool result's content."""
+        blocks); result: every tool result's content; earlier: the assistant text after the prompt; later: if
+        given, a user text message after that one (a string content, not a tool result)."""
         where = self.sub / folder
         where.mkdir(parents=True, exist_ok=True)
-        ev = [{"type": "user", "message": {"role": "user", "content": prompt}},
-              self.text("An earlier text, not the final message.")]
+        ev = [{"type": "user", "message": {"role": "user", "content": prompt}}, self.text(earlier)]
+        if later is not None:
+            ev.append({"type": "user", "message": {"role": "user", "content": later}})
         for i, (tool, inp) in enumerate(list(calls) + list(after)):
             if i == len(calls):
                 ev += [self.text(f"thinking {MARKER}", "thinking"), self.text(final)]
@@ -80,8 +90,8 @@ class Fixture:
     def text(t, kind="text"):
         return {"type": "assistant", "message": {"role": "assistant", "content": [{"type": kind, kind: t}]}}
 
-    def run(self, *args):
-        r = subprocess.run([sys.executable, str(TOOL), *args], capture_output=True,
+    def run(self, *args, tool=TOOL):
+        r = subprocess.run([sys.executable, str(tool), *args], capture_output=True,
                            env={**os.environ, "DEVOS_AUDIT_HOME": str(self.home), "DEVOS_GUARD_LOG_DIR": str(self.logs)})
         out = r.stdout.decode("utf-8") + r.stderr.decode("utf-8")
         OUTPUTS.append(out)
@@ -95,7 +105,26 @@ GOOD = [("Glob", {"path": WS + "/materials", "pattern": "**/*.md"}),
         ("ToolSearch", {"query": MARKER})]
 
 
-TASK = f"Task {MARKER}.\n\n**Thinking disciplines (mandatory; D-016).** Evaluate D1 to D9 {MARKER}."
+BLOCK = ('**Thinking disciplines (mandatory; D-016).** Before your main work, read '
+         '/home/user/devos/plan/Ek_D_Dusunme_Protokolleri.md section 2, item "3. Thinking disciplines — trigger '
+         'questions" (the nine trigger questions D1 to D9), and evaluate all nine for this task. Answer each "no", '
+         '"yes" or "uncertain"; a question that does not apply is "no". For "yes" or "uncertain", read that '
+         "discipline's full text in section 3 of the same file and apply it to your work. Evaluate again after any "
+         'material change of plan or evidence. Your final message must contain a block headed "## Disciplines '
+         '(D1–D9)" with nine lines, one per question: "Dn: no" or "Dn: yes|uncertain: <what you did because of it, '
+         'in one sentence>". Put it right after the front matter or header your output form requires (for a '
+         'verdict, after the closing "---" and before "## Findings"). A final message without this block is not '
+         'accepted.')   # plan/Installation_Working_Order.md section 9, "Discipline block", without its "> "
+TASK = f"Task {MARKER}.\n\n{BLOCK}\n\nMore of the task {MARKER}."
+CHANGED = [("first", "Before your main work, read", "When you have time, read"),   # one sentence of BLOCK changed
+           ("middle", "Evaluate again after any material change of plan or evidence.", "Evaluate again if you wish."),
+           ("last", "A final message without this block is not accepted.", "A final message is accepted.")]
+FX_BLOCK = "**Thinking disciplines (mandatory; D-016).** Fixture block, wrapped over three quoted lines."
+FX_ORDER = "# Fixture working order\n\n## 8. Before\n\n**Discipline block** (in section 8, not 9).\n\n> Not it.\n\n" \
+           "## 9. Record formats\n\n```\n## Findings (a template line, not a heading)\n```\n\n{}\n\n" \
+           "## 10. After\n\n> A later quotation, not the block.\n"
+FX_NINE = "**Discipline block** (fixture). Every task carries this text,\nverbatim:\n\n" \
+          "> **Thinking disciplines (mandatory; D-016).** Fixture block,\n>   wrapped over\n> three quoted lines."
 ANSWERS = [f"D1: yes: {MARKER}.", "D2: no", f"D3: uncertain: {MARKER}", "D4: no.", f"- D5: yes: {MARKER}", "D6: no;",
            "* D7: no", f"D8: yes: {MARKER}", "D9: no"]
 CARRIES, LACKS = "task: carries the D-016 questions", "task: does NOT carry the D-016 questions"
@@ -108,11 +137,11 @@ def report(answers):
         f"\n\n## Findings\n\nNone ({MARKER})."
 
 
-def disc_case(fx, label, agent, rc_want, lines_want, **kw):
+def disc_case(fx, label, agent, rc_want, lines_want, tool=TOOL, **kw):
     """One disciplines case: the agent gets one call, the task TASK and the report report(ANSWERS) unless kw says
-    otherwise; its output must be exactly lines_want."""
+    otherwise; the output of tool (by default this checkout's) must be exactly lines_want."""
     fx.agent(agent, GOOD[:1], **{"prompt": TASK, "final": report(ANSWERS), **kw})
-    rc, out, both = fx.run("disciplines", agent)
+    rc, out, both = fx.run("disciplines", agent, tool=tool)
     DISC_OUT.append(both)
     case(label, rc == rc_want and out.splitlines() == lines_want, both)
 
@@ -232,15 +261,15 @@ def main():
         case("(16) an Agent-tool subagent's meta without toolUseId is still a reading error (exit 2)",
              rc == 2 and not out and "no readable toolUseId in " in both, both)
 
-        # disciplines (D-016; N-104): the task's marker and the report's block, as fixed lines only.
-        disc_case(fx, "(17) a task with the marker and a report with nine answers: DISCIPLINES OK, exit 0",
+        # disciplines (D-016; N-104; N-110): the task's block and the report's block, as fixed lines only.
+        disc_case(fx, "(17) a task with the whole block and a report with nine answers: DISCIPLINES OK, exit 0",
                   "afxgdisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"])
         disc_case(fx, "(17b) the same, the task given as a list of text blocks", "afxhdisc", 0,
                   [CARRIES, "report: nine answers", "DISCIPLINES OK"],
                   prompt=[{"type": "text", "text": f"Part one {MARKER}."}, {"type": "text", "text": TASK}])
-        disc_case(fx, "(18) a task without the marker: DISCIPLINES MISSING, exit 1", "afxidisc", 1,
+        disc_case(fx, "(18) a task without the block: DISCIPLINES MISSING, exit 1", "afxidisc", 1,
                   [LACKS, "report: nine answers", "DISCIPLINES MISSING"], prompt=f"Prompt text {MARKER}")
-        disc_case(fx, "(18b) the marker in a later tool result, not in the task, does not count", "afxjdisc", 1,
+        disc_case(fx, "(18b) the block in a later tool result, not in the task, does not count", "afxjdisc", 1,
                   [LACKS, "report: nine answers", "DISCIPLINES MISSING"], prompt=f"Prompt text {MARKER}",
                   result=f"file content {MARKER}\n{TASK}")
         disc_case(fx, "(19) a report without the block", "afxkdisc", 1,
@@ -258,9 +287,61 @@ def main():
         rc, out, both = fx.run("disciplines", "afx9unknown")
         case("(23) disciplines for an unknown agent ID is a reading error (exit 2)",
              rc == 2 and not out and "0 transcripts of agent afx9unknown" in both, both)
+
+        # N-110 (b) to (e): the cases that kill CHK-C01-001's mutants S14, S12, S1 and S3.
+        disc_case(fx, '(25) N-110 (b): a report line "D6: maybe: <text>" fails', "afxodisc", 1,
+                  [CARRIES, "report: missing or incomplete (line 6 of the block is not a D6 answer)",
+                   "DISCIPLINES MISSING"], final=report(ANSWERS[:5] + [f"D6: maybe: {MARKER}."] + ANSWERS[6:]))
+        disc_case(fx, '(26) N-110 (c): a report line "D2: no, <text>" fails', "afxpdisc", 1,
+                  [CARRIES, "report: missing or incomplete (line 2 of the block is not a D2 answer)",
+                   "DISCIPLINES MISSING"], final=report(ANSWERS[:1] + [f"D2: no, {MARKER}."] + ANSWERS[2:]))
+        disc_case(fx, "(27) N-110 (d): a task without the block, then a later user text message (not a tool result) "
+                  "that has it: the task does not carry it", "afxqdisc", 1,
+                  [LACKS, "report: nine answers", "DISCIPLINES MISSING"], prompt=f"Prompt text {MARKER}", later=TASK)
+        disc_case(fx, "(28) N-110 (e): an earlier assistant text with the block, a last one without it: missing",
+                  "afxrdisc", 1, [CARRIES, 'report: missing or incomplete (no "## Disciplines (D1–D9)" heading)',
+                                  "DISCIPLINES MISSING"], earlier=report(ANSWERS), final=FINAL)
+
+        # The whole-block task check (CHK-C01-001 finding 6; N-110).
+        disc_case(fx, "(29) the lead-in kept, a placeholder for the body: the task does not carry the block",
+                  "afxsdisc", 1, [LACKS, "report: nine answers", "DISCIPLINES MISSING"],
+                  prompt=f"Task {MARKER}.\n\n**Thinking disciplines (mandatory; D-016).** {{discipline_block}}\n")
+        for n, (where, old, new) in enumerate(CHANGED):
+            disc_case(fx, f"(30{'abc'[n]}) the {where} sentence of the block changed: the task does not carry it",
+                      f"afxt{n}disc", 1, [LACKS, "report: nine answers", "DISCIPLINES MISSING"],
+                      prompt=TASK.replace(old, new) if old in BLOCK else TASK)   # TASK itself would pass: BAD
+        wrapped = indent(fill(BLOCK, width=56, break_long_words=False, break_on_hyphens=False), "        ")
+        disc_case(fx, "(31) the block wrapped differently and indented, as in a workflow's task: it carries it",
+                  "afxudisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"],
+                  prompt=f"Task {MARKER}.\n\n{wrapped}\n" if wrapped.count("\n") > 8 else f"Task {MARKER}.")
+        wo = Path(tmp) / "wo"
+        (wo / "tools").mkdir(parents=True)
+        (wo / "plan").mkdir()
+        copy = Path(copy_file(TOOL, wo / "tools" / "subagent_audit.py"))
+        (wo / "plan" / "Installation_Working_Order.md").write_text(FX_ORDER.format(FX_NINE), encoding="utf-8")
+        disc_case(fx, "(32a) the block is read from the working order beside the tool, at run time: a fixture "
+                  "block quoted over three lines, after a wrapped paragraph, is what a task must carry",
+                  "afxvdisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"], tool=copy,
+                  prompt=f"Task {MARKER}.\n{FX_BLOCK}")
+        disc_case(fx, "(32b) beside that fixture working order, a task with this checkout's block does not carry it",
+                  "afxwdisc", 1, [LACKS, "report: nine answers", "DISCIPLINES MISSING"], tool=copy)
+        rs = []
+        for body in (None, "Section 9 without the block.", "**Discipline block** (fixture).\n\n>\n> \n",
+                     "**Discipline block** (fixture).\n\nA paragraph, not a quotation.\n\n> Too late."):
+            order = wo / "plan" / "Installation_Working_Order.md"
+            order.unlink(missing_ok=True)
+            if body is not None:
+                order.write_text(FX_ORDER.format(body), encoding="utf-8")
+            rs.append(fx.run("disciplines", "afxgdisc", tool=copy))
+        case("(33) it fails closed (exit 2, nothing on stdout, a message naming the file) when the working order "
+             "cannot be read, or its section 9 holds no block: only section 8 has one, the quotation is empty, or "
+             "no quotation follows the paragraph",
+             all(r[0] == 2 and not r[1] and os.path.realpath(order) in r[2] for r in rs)
+             and "cannot read the discipline block's file" in rs[0][2]
+             and all("no discipline block in" in r[2] for r in rs[1:]), "".join(r[2] for r in rs))
         case("(24) disciplines prints three fixed lines and no prompt or report text",
-             len(DISC_OUT) == 8 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
-                                        and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
+             len(DISC_OUT) == 19 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
+                                         and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
              "\n".join(DISC_OUT))
 
         case("(11) no output contains the planted content of a tool result, prompt, thinking block or argument",

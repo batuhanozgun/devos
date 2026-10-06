@@ -14,7 +14,10 @@ here is a home. Readiness is three-valued: an unresolved reference makes an item
 Disciplines (D-016 item 2): every log entry `### L-<n>` with n >= 159 in plan/ledger/*-log.md needs a line
 starting "- **Disciplines (D1–D9)" that holds the nine answers D1 to D9 in order, each "Dn: no" (then ".", ";"
 or nothing), "Dn: yes: <text>" or "Dn: uncertain: <text>". An entry runs to the next heading of level 1 to 3
-(the log interleaves finding sections); if it has several such lines, each must hold the nine answers. The check
+(the log interleaves finding sections); if it has several such lines, each must hold the nine answers. The log is
+append-only, so an entry that lacks them is corrected by a later entry (a higher number, in any log) with a line
+starting "- **Disciplines of L-<n> (D1–D9):**" that holds the nine answers in the same form; that line is not the
+correcting entry's own line, which it needs as well (N-110; CHK-C01-002 finding 8). The check
 sees presence and form only; whether an answer is right is the checkers' to sample. Both modes of `render` print
 one line per failing entry, `DISCIPLINES: L-<n>: <what is wrong>`, with nothing of the entry's text.
 `render --check` then prints `DISCIPLINES OK` or `DISCIPLINES FAIL` with the count of entries checked, then the
@@ -164,6 +167,7 @@ def qualification(item, decisions, changes):
 
 DISC_FROM = 159                          # the first log entry under D-016 (plan/decisions/D-016.md)
 DISC_LINE = "- **Disciplines (D1–D9)"
+DISC_FIX = re.compile(r"- \*\*Disciplines of L-(\d+) \(D1–D9\):\*\*")   # a later entry's correction (N-110)
 
 
 def answers_problem(text):
@@ -190,8 +194,9 @@ def answers_problem(text):
 
 
 def discipline_problems(root=ROOT):
-    """([(entry number, what is wrong)], number of entries checked) for the log entries from L-159 on."""
-    entries = []                         # [number, [the text after DISC_LINE of each discipline line]]
+    """([(entry number, what is wrong)], number of entries checked) for the log entries from L-159 on; an entry
+    that a later entry's correction line answers is not wrong."""
+    entries, fixed = [], set()           # [number, [the text after DISC_LINE of each discipline line]]
     for p in sorted((root / "plan/ledger").glob("*-log.md")):
         cur = None
         for line in p.read_text().splitlines():
@@ -202,11 +207,14 @@ def discipline_problems(root=ROOT):
                     entries.append(cur)
             elif cur is not None and line.startswith(DISC_LINE):
                 cur[1].append(line[len(DISC_LINE):])
+            elif cur is not None and (f := DISC_FIX.match(line)):
+                if int(f.group(1)) < cur[0] and answers_problem(line[f.end():]) is None:
+                    fixed.add(int(f.group(1)))
     out = []
     for num, lines in entries:
         why = next((w for w in map(answers_problem, lines) if w), None) if lines else \
             f"no line starting '{DISC_LINE}'"
-        if why:
+        if why and num not in fixed:
             out.append((num, why))
     return out, len(entries)
 
