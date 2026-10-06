@@ -20,12 +20,12 @@
 |---|---|---|
 | Stage | **C00 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): first the checker acceptance of W-C00-01, 02 and 04 (N-051), then step 0, W-C00-06 (plan 0.6). | 2026-10-05T20:27Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
-| Usage | `five_hour` `allowed` at 2026-10-06T05:49Z (`get_session`, working session), resets 2026-10-06T09:50Z (`resetsAt` 1791280200, converted with `date -u -d @`); `isUsingOverage` false. The weekly `allowed_warning` read at 01:32Z is no longer shown (readings at 04:56Z, 05:14Z, 05:35Z and 05:49Z); assumption: the platform shows the most constraining window, so the weekly warning has cleared. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T05:49Z |
+| Usage | `five_hour` `allowed` at 2026-10-06T06:38Z (`get_session`, working session), resets 2026-10-06T09:50Z (`resetsAt` 1791280200); `isUsingOverage` false. The weekly `allowed_warning` read at 01:32Z is no longer shown (assumption: the platform shows the most constraining window). D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T06:38Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
-| answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). | 2026-10-06T06:11Z |
-| summary_tr | Senden beklenen: yok. (Kütüphane deposunda e-posta bildirimini açmadıysan, fırsat bulunca aç; iş beklemiyor.) <br>D-013: sorunun senin kararın olmadığını söyledin; haklısın. Kararı ben verdim: eski sürümler olduğu gibi kalıyor. Önerdiğim yol senden hiçbir şey istemiyorsa artık sormuyorum, yalnız bilgi veriyorum. <br>Durum: mekanizmasız karşılaştırma denemesi denetlendi ve kabul edildi (W-C00-15). Kütüphane bağlı. Planın bağımsız incelemesinin kütüphane kısmı ve depo geçmişinin kütüphaneye karşı taranması sürüyor. | 2026-10-06T06:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T06:36Z |
+| answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). | 2026-10-06T06:29Z |
+| summary_tr | Senden beklenen: yok. <br>Soruların biçimi plana yazıldı: her soru tek cümle, issue'da; senden hiçbir şey istemeyen bir konu soru olarak gelmez, tek satır bilgi olarak gelir (PC-14). <br>Durum: kütüphane bağlı; e-postaları açtığını söyledin. ChatGPT kütüphaneye bir sonraki yazdığında e-posta gelmezse bana söylemen yeterli. Planın bağımsız incelemesinin kütüphane kısmı ve depo geçmişinin kütüphaneye karşı taranması sürüyor. | 2026-10-06T06:50Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T06:47Z |
 
 ---
 
@@ -52,11 +52,11 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 13 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 12 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
-| `C04` | Knowledge, search and context | planned | no items | 5 |
+| `C04` | Knowledge, search and context | planned | no items | 6 |
 | `C05` | Common rules, roles and methods | planned | no items | 3 |
 | `C06` | Working order, audit and decision channel | planned | no items | 3 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 2 |
@@ -78,7 +78,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C00-07` ECC function comparison (plan C00 step 3): accepted
   - `W-C00-08` Independent plan review (plan C00 step 4): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-061
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): accepted
-  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072, N-089
+  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072
   - `W-C00-11` Stage closure review: blocked: depends on W-C00-08 (not accepted) · open notes: N-051, N-056, N-059
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
   - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
@@ -194,6 +194,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
 | `N-066` | `C04` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-076` | `C04` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (as for ... |
+| `N-090` | `C04` | L-157 | open | **The fingerprint layer matches common code** (2026-10-06, L-157; guard record #4610). The interim leak check (W-C00-14) denied a push be... |
 | `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
 | `N-067` | `C05` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-077` | `C05` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-13 (methods... |
@@ -220,13 +221,12 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
 | `N-060` | `W-C00-10` | CHK-C00-021 | open | - **Rows it could reopen:** any row whose decision rests on a fact the study contradicts or adds to. First: the five adopt rows (no-progr... |
 | `N-072` | `W-C00-10` | CHK-C00-027 | open | **From W-C00-09's check** (CHK-C00-027 findings 2 and 9, 2026-10-05, L-145). (1) The counter-designer's role file (`.claude/agents/counte... |
-| `N-089` | `W-C00-10` | D-015 | open | **The form of questions to Batu** (D-015, his direction of 2026-10-06, L-155). A plan change to Appendix E section 3 (and wherever the pl... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11; re-disposed 2026-10-05 by D-010, summary item 30; it replac... |
 | `N-056` | `W-C00-11` | R-FR02-2 | open | **Open blockers at stage closure** (R-FR02-2 m4, carried by run `session_017bQAUeV7o6pTvG1Pz3hRHx`; re-pointed 2026-10-05 by D-010 from t... |
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 13 (N-058, N-062, N-037, N-001, N-002, N-005, N-083, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 14 (N-058, N-062, N-037, N-001, N-002, N-005, N-083, N-089, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
