@@ -11,14 +11,14 @@ Besides work items, the dispatcher starts **periodic sessions** for recurring ta
 | `dep-update` | month (`2026-10`) | 1st, 04:00 UTC | opens one pull request per repository that updates its dependencies |
 | `cost-report` | month | 2nd, 07:00 UTC | emails the month's cost report to the budget owner |
 | `licence-scan` | quarter (`2026-Q4`) | first Monday of the quarter, 05:00 UTC | opens an issue for every dependency whose licence changed |
-| `access-review` | quarter | first working day of the quarter, 08:00 UTC | sends each team lead the list of accounts to re-confirm |
+| `access-review` | quarter | first working day of the quarter, 08:00 UTC | sends each team lead the list of accounts with access to the team's repositories, to re-confirm |
 
 ## How a trigger starts a session
 
 Every 15 minutes the dispatcher checks each trigger. A trigger whose "due from" time in the current period has passed starts a periodic session, unless the period's work is already done.
 
-**Is the period's work done?** The dispatcher looks through the session headers for one whose `trigger` is this trigger's key and whose `period` is the current period. If it finds one, the period's work is done or under way, and nothing starts; otherwise it starts the session.
+**Is the period's work done?** At each check the dispatcher reads the session header of every record in the run store, looking for one whose `trigger` is this trigger's key and whose `period` is the current period. If it finds one, the period's work is done or under way, and nothing starts; if it finds none (a header it cannot read counts as none), it starts the session.
 
-A periodic session that fails is therefore not started again in the same period by itself; the on-call engineer starts it again with `brindle periodic retry <trigger-key>`.
+A periodic session that fails or is killed is therefore not started again in the same period by itself; the on-call engineer starts it again with `brindle periodic retry <trigger-key>`, which starts a new periodic session for the current period at once, skipping the check above, and needs nothing but the trigger key.
 
-Periodic sessions are few, about a dozen a month, and their run records are like any other (`kind` is `periodic`).
+Periodic sessions are few, about a dozen a month. They take their data from the repositories, except `cost-report`, which takes it from the usage database, and their run records are like any other (`kind` is `periodic`).

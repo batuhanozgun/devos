@@ -6,10 +6,10 @@ The replay suite checks that changes to Brindle's agent prompts and tools do not
 
 ## Golden sessions
 
-When a reviewer marks a session as a good reference, they run `brindle replay promote <session-id>`. This copies the session's transcript (its run record) into the Brindle repository as `tests/replay/fixtures/<session-id>.jsonl`. Reviewers promote sessions while reviewing them, within two days of the session's end. There are 61 fixtures (2026-09-30).
+When a reviewer marks a session as a good reference, they run `brindle replay promote <session-id>`. This copies the session's transcript (its run record) from the run store into the Brindle repository and commits it there as `tests/replay/fixtures/<session-id>.jsonl`. Reviewers are the engineers who review a session's pull request; they read its run record and promote it while reviewing, within two days of the session's end, and `promote` refuses a session that ended more than two days ago. There are 61 fixtures (2026-09-30).
 
 ## Running
 
-`brindle replay run` replays every fixture. The suite reads only the fixture files; it does not read the run store. A fixture that fails to load fails the suite.
+`brindle replay run` replays every fixture. The suite reads only the fixture files; it does not read the run store. A fixture that fails to load fails the suite; it is then fixed by hand or removed, and never copied again from the run store.
 
 A Brindle release needs the suite to pass.

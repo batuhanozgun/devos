@@ -4,15 +4,15 @@
 
 ## On-call
 
-One engineer is on call each week. When a session fails, the on-call engineer reads its run record to find out why. The on-call guide asks for the run records of the last 7 days to be available; in the last six months no one has needed an older one.
+One engineer is on call each week. When a session fails or is killed, the on-call engineer reads its whole run record, session header included, to find out why. The on-call guide requires the run records of the last 7 days to be available, counted by the run store's date directories (today's and the six before it); that is its only rule on run records, and anything needed for longer goes into the incident notes, not the run store. In the last six months, September included, no one has needed an older one.
 
 ## Usage and billing
 
-When a session ends, the dispatcher copies the token counts from the end line of its run record into the usage database. Invoices to the product teams and the monthly cost report are built from the usage database only.
+When a session ends, the dispatcher reads the token counts from the end line of its run record, once, and copies them into the usage database; if that database cannot be reached, the dispatcher keeps the counts in `dispatcher.db` until the copy succeeds. Invoices to the product teams and the monthly cost report are built from the usage database only, and usage data are never rebuilt from run records.
 
 ## Backups
 
-The dispatcher database and the usage database are backed up every night. The run store is not backed up.
+The dispatcher database and the usage database are backed up every night, and each has a standby copy on another host that follows every change, so a restore loses nothing; nothing in either database is ever rebuilt from run records. The run store is not backed up.
 
 ## Releases
 
