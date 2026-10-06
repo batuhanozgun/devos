@@ -6,7 +6,7 @@
 
 | Field | Value |
 |---|---|
-| Source commit | devos `main` `6a3aa557f6dd677844d98600641ba5df52c78fb7` (PR #191), at which the probe ran; the research library `agentic-os-search` at `941f027d3a15497b90e60d752303c0463a9feab5`, read only, with a clean tree (the runs' D8 lines) |
+| Source commit | devos `main` as the runs read it in `/home/user/devos`, which moved forward during the probe (its reflog, against the agents' transcript times): `411391577842932e3ab4e8ff25892fa06b69b250` (PR #189) for runs 1 to 3 and run 4 until 15:08:35Z; `2399915a48be6d2679cb7297198d7cfbf2e7824b` (PR #190) for the rest of run 4, run 5 and run 6 until 15:21:46Z (run 6's own D8 line names it); `6a3aa557f6dd677844d98600641ba5df52c78fb7` (PR #191) for the rest of run 6 and the probe checker. The files the runs opened (the plan, Ek B, Ek D, `plan/work/W-C01-25.md`, `plan/decisions/PC-16.md`) and `.claude/agents/` are identical at the three commits except plan line 13 (the PC-10 note gains "PC-20, N-110"), with no line shift (CHK-C01-012 finding 6); the research library `agentic-os-search` at `941f027d3a15497b90e60d752303c0463a9feab5`, read only, with a clean tree (the runs' D8 lines) |
 | Deployment configuration | The working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` ran workflow `wf_90fe70e6-98b`, whose script is `tasks.js`. Runs 1 to 4 used the role definition `researcher`, runs 5 and 6 `producer`, the probe checker `checker` (`.claude/agents/` at `6a3aa55`; each `model: inherit`, so the session's model). Each run started with a fresh context and saw only its task text, into which the earlier outputs it needed were pasted verbatim |
 | Criterion version | Plan Section 9, C01, "Phase-A probe" (question, run, criteria (a) to (f), budget, checker, use) and W-C01-25's acceptance block, both at `6a3aa55`; the criteria stood in the plan before the run |
 | Input | The task texts in `tasks.js` (a shared rules block and one template per role); SOUL's purpose (plan Section 1.1) and the library at `941f027d`; outside pages that runs 3 and 4 read on 2026-10-06 |
@@ -63,7 +63,7 @@ The later runs kept the question as discovered and corrected one premise in its 
 | 6 | "**Continuer**, a fresh subagent" | `a42a1dfa45ab1dc73` | `continue` call, lines 102-115, with run 5's output only | `raw/06_continuation.md` |
 | — | "the **probe checker** of the phase-A probe" | `a53b94908b2dced5f` | `probe-checker` call, lines 117-162, with runs 1 to 6 | `raw/07_probe_checker_verdict.md` |
 
-Every task begins with the shared blocks `DB` (the discipline instruction, line 13) and `COMMON` (context and rules, lines 15-26). The outputs pasted into later tasks are the outputs as returned, before the cleaning of section 8. Runs 2 to 4 ran in parallel.
+Every task begins with the shared blocks `DB` (the discipline instruction, line 13) and `COMMON` (context and rules, lines 15-26). The outputs pasted into later tasks are the outputs as returned, before the cleaning of section 8. Runs 2 and 3 ran in parallel (14:50:37Z to about 15:00:20Z); run 4 started when run 2 ended (15:00:20Z).
 
 **Budget.** Six counted runs of the twelve allowed; the probe checker's run is not counted (plan C01, "Budget"). The budget was not spent, so nothing here is partial on that ground.
 
@@ -111,10 +111,11 @@ Entered as N-128 on `plan/work/C02.md` by the executor, with this text:
 1. **EvalRun** (built here, EkB 3.15 and the activation table): it has no grader identity or version. If C05's exams use a model grader for some items (not yet known), criterion 33's method comparison cannot show that both methods were graded alike, and a change of grader cannot trigger a retest. This list decides whether the grader's identity and version enter EvalRun's fields here or at C05.
 2. **Review, Verdict, Acceptance** (built here, EkB 3.11): the continuation's draft would carry a qualification on this chain at C05 (its option A+). Two questions are asked again when these families are built, though neither is needed for this stage's own tests: should `Review.basis_refs` be typed by kind (subject or instrument), and does `Verdict.result` need `not_applicable`? Leaving both out now means a migration at C05 if A+ is kept.
 3. **Not prerequisites of this stage** (K-1 item 3): the record shape for a qualification is owned by C05, where Competence is activated; C05's comparison set must be balanced and kept apart from development cases (A1); D-1's reading of criterion 33 is an interpretation whose match with Batu's meaning is open (research B, "Open"), and if he meant a hidden exam per agent at run time, D-7 changes and the conflict goes to him with options.
-
 Owner: the executor. Deadline: this stage's work list.
 
 ## 8. Cleaning for the public repository
+
+**Who cleaned.** A producer, agent `a4a297ad28b197fda` (task "W-C01-25: file the phase-A probe record", from about 15:34Z), wrote this record and cleaned the outputs; it is not a probe run and does not count against the budget. The executor then entered N-128 and, after CHK-C01-012, corrected the source commits and the order of runs 2 to 4 (its condition) and the points of its finding 12.
 
 **Why.** The outputs cite the library by full path, and the library holds those same paths in its own indexes; some outputs also repeated short runs of library wording. The guard's leak check (`tools/leak_fingerprints.py scan`) matched 64 lines of the seven outputs; the workflow script matched none. The probe checker's finding 8 named six phrases over the probe's own four-word limit. The probe's rules let the outputs carry DevOS's synthesis and source identifiers only (plan Section 0.5).
 
@@ -157,7 +158,7 @@ A key `lib:<code>/<stem>` names one file of the research library `agentic-os-sea
 | `i-have-adhd` | `research/studies/i-have-adhd/` | root: `META` |
 | `carbon-layer-mQfTdNVCOB0` | `research/studies/the-carbon-layer/`, video folder `mQfTdNVCOB0-*` | root: `META`; notes: `12-VERIFICATION`, `14-MATH` |
 
-The outputs' own legends map to these codes: EXP4, EXP5 and EXP6 to `EXP-004`, `EXP-005` and `EXP-006`; CS to `composite-standing`; ACT to `actors-ground`; GS to `gstack`; SP to `superpowers`; AP to `anthropic-playbook`; MAP to `multi-agent-patterns` (in research A, its file `SOUL-DEVELOPMENT`); CL to `carbon-layer-mQfTdNVCOB0`; and, in the continuation, MS01 to `lib:EXP-004/MS01-SOUL` and GS-RQ to `lib:gstack/review-qa`. Short references the outputs wrote by stem alone (DQ01 L63, MS01 L54, S01 L37, KEY L122) resolve through the same table.
+The outputs' own legends map to these codes: EXP4, EXP5 and EXP6 to `EXP-004`, `EXP-005` and `EXP-006`; CS to `composite-standing`; ACT to `actors-ground`; GS to `gstack`; SP to `superpowers`; AP to `anthropic-playbook`; MAP to `multi-agent-patterns` (in research A, its file `SOUL-DEVELOPMENT`); CL to `carbon-layer-mQfTdNVCOB0`; and, in the continuation, MS01 to `lib:EXP-004/MS01-SOUL` and GS-RQ to `lib:gstack/review-qa`. Short references the outputs wrote by stem alone (DQ01 L63, S01 L37, KEY L122) resolve through the same table; a bare "MS01" matches five files in EXP-004's artifacts folder, and in the outputs it means `lib:EXP-004/MS01-SOUL` (research A contrasts it with MS01-COVERAGE, and the continuation's legend defines it), an ambiguity of the originals that the cleaning did not create (CHK-C01-012 finding 8).
 
 **How it was checked.**
 - `python3 -B tools/leak_fingerprints.py scan` over the seven cleaned files, `tasks.js` and this record: 0 lines matched (64 before, on the outputs).
