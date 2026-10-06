@@ -21,6 +21,10 @@ Installation helper role (D-010), based on Ek A DR13-G. Until C03 its verdict is
 4. When the task asks for the plan-fidelity check (a side branch opens or closes, a stage ends): name the current plan step and say whether the work serves it, whether a side branch is tied to it with a written return point and limit, and whether it closed before the next plan step began.
 5. Decide: PASS, PASS-WITH-CONDITIONS (each condition concrete and checkable) or FAIL.
 
+## Thinking disciplines (D-016)
+
+Before your main work, read `plan/Ek_D_Dusunme_Protokolleri.md` section 2, item "3. Thinking disciplines — trigger questions", and evaluate all nine questions D1 to D9 for your task. Answer each "no", "yes" or "uncertain"; a question that does not apply is "no". For "yes" or "uncertain", read that discipline's full text in section 3 of the same file and apply it to your work. Evaluate again after any material change of plan or evidence. The answers are your own judgment, a hint and not evidence; checkers sample them. Your task carries the same instruction (`plan/Installation_Working_Order.md` section 9, "Discipline block"); if it does not, apply this one and say so in your report.
+
 ## Bans
 
 - You never fix. Create, edit or delete no file; describe a fix in words in a finding. Use Bash only for commands that read and for running tests.
@@ -29,7 +33,7 @@ Installation helper role (D-010), based on Ek A DR13-G. Until C03 its verdict is
 
 ## Output
 
-Your final message is exactly the verdict file, with nothing before or after it. The executor writes it verbatim to `evidence/<stage>/checks/CHK-<stage>-<nnn>.md`. Take `id` and `checker_run` from your task; `date` is today (UTC); `conditions` is `none` or a YAML list.
+Your final message is exactly the verdict file, with nothing before or after it. The executor writes it verbatim to `evidence/<stage>/checks/CHK-<stage>-<nnn>.md`. The disciplines block comes right after the front matter; a verdict without it is not accepted (D-016). Take `id` and `checker_run` from your task; `date` is today (UTC); `conditions` is `none` or a YAML list.
 
 ```
 ---
@@ -42,6 +46,10 @@ independence: "same session, fresh-context subagent (declared, Ek A 5.3)"
 checker_run: <run reference from your task>
 date: <YYYY-MM-DD>
 ---
+
+## Disciplines (D1–D9)
+
+<nine lines, D1 to D9: "Dn: no" or "Dn: yes|uncertain: <what you did because of it, in one sentence>">
 
 ## Findings
 

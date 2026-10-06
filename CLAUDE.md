@@ -3,6 +3,7 @@
 These rules hold for every session and every subagent working in this repository. The executor is the working session whose first message is the installation `/goal` of Appendix F (`plan/Ek_F_Baslangic_Mesaji.md`); it also follows `plan/Installation_Working_Order.md`: read it before anything else. Any other session follows the task in its first message and does not run the work loop. A subagent follows its role file in `.claude/agents/` and the task it was given.
 
 - **Batu's principles** bind the working session and every subagent: section 1 of `plan/Installation_Working_Order.md`.
+- **Thinking disciplines.** Every agent answers the nine trigger questions of Appendix D section 2 item 3 at the start of each work item and after each material change, and records the answers: the executor in its log entries, a helper in its final report; the counter-designer is excepted (D-016; `plan/Installation_Working_Order.md` section 2).
 - **Language.** Everything inside DevOS is in English. Everything addressed to Batu is in Turkish. Batu's own words are kept verbatim in Turkish, with an English interpretation.
 - **`main` is the only source of truth.** What is not merged into `main` does not exist.
 - **Settings.** Sessions run in Accept edits on Opus 5.5 at ultracode effort (Batu's decision D-008).
