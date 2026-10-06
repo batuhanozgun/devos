@@ -3,12 +3,24 @@
 
 Run from the repository root.
 
-  records.py render [--check]          write (or compare) the generated blocks of plan/ledger.md and DURUM.md
+  records.py render [--check]          write (or compare) the generated blocks of plan/ledger.md and DURUM.md,
+                                       and check the log's discipline lines (D-016)
   records.py durum                     print the generated DURUM.md to stdout
 
 Homes: work items and stages in plan/work/<ID>.md; decisions in plan/decisions/<ID>.md; the current
 state in plan/ledger.md section 1. Everything this script writes is generated from those homes; nothing
 here is a home. Readiness is three-valued: an unresolved reference makes an item not ready.
+
+Disciplines (D-016 item 2): every log entry `### L-<n>` with n >= 159 in plan/ledger/*-log.md needs a line
+starting "- **Disciplines (D1–D9)" that holds the nine answers D1 to D9 in order, each "Dn: no" (then ".", ";"
+or nothing), "Dn: yes: <text>" or "Dn: uncertain: <text>". An entry runs to the next heading of level 1 to 3
+(the log interleaves finding sections); if it has several such lines, each must hold the nine answers. The check
+sees presence and form only; whether an answer is right is the checkers' to sample. Both modes of `render` print
+one line per failing entry, `DISCIPLINES: L-<n>: <what is wrong>`, with nothing of the entry's text.
+`render --check` then prints `DISCIPLINES OK` or `DISCIPLINES FAIL` with the count of entries checked, then the
+comparison: `RENDER DIFFERS: <files>`, or, when the views match, `RENDER OK` only if the discipline check passed
+too and `RENDER VIEWS MATCH; not OK, because the discipline check failed` if it did not. It exits 0 only when
+both pass. `render` (writing) prints a warning after the failing entries' lines and renders anyway.
 """
 import argparse
 import re
@@ -146,6 +158,57 @@ def qualification(item, decisions, changes):
                     re.search(r"·\s*(correction|supersession|retirement)\b", seg):
                 return "stale", f"assumed {a} changed in L-{num:03d}"
     return "current", ""
+
+
+# ---------------------------------------------------------------- disciplines (D-016)
+
+DISC_FROM = 159                          # the first log entry under D-016 (plan/decisions/D-016.md)
+DISC_LINE = "- **Disciplines (D1–D9)"
+
+
+def answers_problem(text):
+    """None when text holds the answers D1 to D9 in order, each 'no' (then '.', ';' or nothing), 'yes: <text>'
+    or 'uncertain: <text>'; else what is wrong, in fixed words. An answer runs to the next answer's label, so a
+    label quoted inside an answer fails the line rather than passing it."""
+    labels, pos = [], 0
+    for n in range(1, 10):
+        m = re.compile(rf"(?<![\w-])D{n}:").search(text, pos)
+        if m is None:
+            return f"D{n} out of order" if re.search(rf"(?<![\w-])D{n}:", text) else f"D{n} missing"
+        labels.append(m)
+        pos = m.end()
+    for n, m in enumerate(labels, 1):
+        ans = text[m.end():labels[n].start() if n < 9 else len(text)].strip()
+        if re.fullmatch(r"no[.;]?", ans):
+            continue
+        a = re.fullmatch(r"(yes|uncertain):(.*)", ans)
+        if a is None:
+            return f"D{n} is not 'no', 'yes: <text>' or 'uncertain: <text>'"
+        if not re.search(r"\w", a.group(2)):
+            return f"D{n}: '{a.group(1)}' without text"
+    return None
+
+
+def discipline_problems(root=ROOT):
+    """([(entry number, what is wrong)], number of entries checked) for the log entries from L-159 on."""
+    entries = []                         # [number, [the text after DISC_LINE of each discipline line]]
+    for p in sorted((root / "plan/ledger").glob("*-log.md")):
+        cur = None
+        for line in p.read_text().splitlines():
+            if re.match(r"#{1,3} ", line):
+                h = re.match(r"### L-(\d+)", line)
+                cur = [int(h.group(1)), []] if h and int(h.group(1)) >= DISC_FROM else None
+                if cur:
+                    entries.append(cur)
+            elif cur is not None and line.startswith(DISC_LINE):
+                cur[1].append(line[len(DISC_LINE):])
+    out = []
+    for num, lines in entries:
+        why = next((w for w in map(answers_problem, lines) if w), None) if lines else \
+            f"no line starting '{DISC_LINE}'"
+        if why:
+            out.append((num, why))
+    return out, len(entries)
 
 
 # ---------------------------------------------------------------- readiness (03 section 3)
@@ -556,7 +619,12 @@ def main(argv=None):
         if a.cmd == "render":
             new = render_ledger(text if a.check else stamp_rendered(text), items, decisions, changes)
             d_new = durum(new, items, decisions, changes)
+            probs, checked = discipline_problems()
+            for num, why in probs:
+                print(f"DISCIPLINES: L-{num:03d}: {why}")
             if a.check:
+                print(f"DISCIPLINES {'FAIL' if probs else 'OK'}: {checked - len(probs)} of {checked} log entries "
+                      f"from L-{DISC_FROM} on carry the nine answers")
                 bad = []
                 if new != text:
                     bad.append("plan/ledger.md")
@@ -565,11 +633,17 @@ def main(argv=None):
                 if bad:
                     print("RENDER DIFFERS: " + ", ".join(bad))
                     return 1
+                if probs:
+                    print("RENDER VIEWS MATCH; not OK, because the discipline check failed")
+                    return 1
                 print("RENDER OK")
                 return 0
             LEDGER.write_text(new)
             DURUM.write_text(d_new)
             print("rendered plan/ledger.md and DURUM.md")
+            if probs:
+                print(f"warning: {len(probs)} log entries from L-{DISC_FROM} on lack the nine discipline answers "
+                      "(D-016); rendered anyway")
             sa = state_rows(new).get("summary_tr", ("", ""))[1].strip()
             try:
                 age = datetime.now(timezone.utc) - datetime.strptime(sa, "%Y-%m-%dT%H:%MZ").replace(tzinfo=timezone.utc)

@@ -20,6 +20,10 @@ Installation helper role (D-010), based on Ek A DR16. C05 replaces it or hands i
 3. For each finding keep apart what the source states, your interpretation and your own inference. Look for counter-evidence. Give dates and versions: an older finding about platform behaviour may need checking again.
 4. Stop when the question is answered or when you can show the limit. "It does not change the decision" and "the candidate is irrelevant" are valid results.
 
+## Thinking disciplines (D-016)
+
+Before your main work, read `plan/Ek_D_Dusunme_Protokolleri.md` section 2, item "3. Thinking disciplines — trigger questions", and evaluate all nine questions D1 to D9 for your task. Answer each "no", "yes" or "uncertain"; a question that does not apply is "no". For "yes" or "uncertain", read that discipline's full text in section 3 of the same file and apply it to your work. Evaluate again after any material change of plan or evidence. The answers are your own judgment, a hint and not evidence; checkers sample them. Your task carries the same instruction (`plan/Installation_Working_Order.md` section 9, "Discipline block"); if it does not, apply this one and say so in your report.
+
 ## Bans
 
 - Read only: write no file. Use Bash only for commands that read (for example `git log`, `git show`, `ls`).
@@ -37,4 +41,5 @@ Your final message:
 - **Counter-evidence and alternatives.**
 - **Open:** remaining uncertainty and what you did not read.
 - **For the decision:** what the findings change, or that they change nothing.
+- **Disciplines (D1–D9):** a block headed `## Disciplines (D1–D9)` with nine lines, one per question: `Dn: no` or `Dn: yes|uncertain: <what you did because of it, in one sentence>`. A final message without it is not accepted.
 - **Guard denials:** each with its rule, or "none".

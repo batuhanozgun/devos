@@ -24,11 +24,21 @@ reader or a tools/ script name these locations; this is that script. It reads an
                                 run by itself), the guard records that break the rules, and AUDIT VALID or
                                 AUDIT VOID: <reasons>
   calls <agent-id>              the per-call lines only, without the rules
+  disciplines <agent-id>        D-016's two presence checks (N-104): whether the task the agent was given (the text
+                                of the transcript's first user event) carries the marker "**Thinking disciplines
+                                (mandatory; D-016).**", and whether its report (the text `last` prints) holds a
+                                "## Disciplines (D1–D9)" heading whose next nine non-blank lines answer D1 to D9 in
+                                order, each "Dn: no" (then ".", ";" or nothing), "Dn: yes: <text>" or "Dn: uncertain:
+                                <text>", a list marker "- " or "* " allowed before it; then DISCIPLINES OK, or
+                                DISCIPLINES MISSING when either fails. Whether an answer is right is not judged here;
+                                that is the checkers' to sample (D-016 item 3).
 
 audit and calls print tool names, path arguments (Read file_path; Glob path and pattern; Grep path and glob) and the
 input key names of any other tool; never file content, tool output or prompt text. Strings are printed JSON-quoted,
-so that no argument can forge an output line. Exit codes: 0 done (audit: valid), 1 audit void, 2 usage or reading
-error. Locations: $DEVOS_AUDIT_HOME (default: the home directory), $DEVOS_GUARD_LOG_DIR (default /tmp/devos-guard).
+so that no argument can forge an output line. disciplines prints three fixed lines (its reasons name only answer
+numbers and counts), never prompt or report text. Exit codes: 0 done (audit: valid; disciplines: both present), 1
+audit void or disciplines missing, 2 usage or reading error. Locations: $DEVOS_AUDIT_HOME (default: the home
+directory), $DEVOS_GUARD_LOG_DIR (default /tmp/devos-guard).
 """
 import glob
 import hashlib
@@ -42,7 +52,10 @@ ALLOWED = ("Read", "Glob", "Grep", "TodoWrite", "ToolSearch")   # TodoWrite and 
 PATH_KEYS = {"Read": ("file_path",), "Glob": ("path", "pattern"), "Grep": ("path", "glob")}
 NEEDED = {"file_path", "path"}       # absent: Read has no file; Glob or Grep searches the session's working directory
 PATTERNS = {"pattern", "glob"}       # relative to the call's path unless they start with /
-USAGE = "usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace>"
+TASK_MARKER = "**Thinking disciplines (mandatory; D-016).**"   # the executor's task paragraph that asks the questions
+DISC_HEAD = "## Disciplines (D1–D9)"
+USAGE = "usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace> | " \
+        "disciplines <agent-id>"
 
 
 class Error(Exception):
@@ -153,17 +166,63 @@ def judge_record(r, ws):
     return None
 
 
-def last(agent):
-    _, events = jsonl(transcript(agent)[0])
+def texts(m):
+    """The text of a message: a string content as it stands, else its text blocks joined by newlines."""
+    c = m.get("content") if isinstance(m, dict) else None
+    if isinstance(c, str):
+        return c
+    return "\n".join(b["text"] for b in c if isinstance(b, dict) and b.get("type") == "text"
+                     and isinstance(b.get("text"), str)) if isinstance(c, list) else ""
+
+
+def last_text(events):
+    """The text of the last assistant event that has text, or None."""
     for e in reversed(events):
         m = e.get("message")
         if e.get("type") == "assistant" and isinstance(m, dict) and isinstance(m.get("content"), list):
-            texts = [b["text"] for b in m["content"]
-                     if isinstance(b, dict) and b.get("type") == "text" and isinstance(b.get("text"), str)]
-            if any(t.strip() for t in texts):
-                print("\n".join(texts))
-                return 0
-    raise Error(f"agent {agent} has no assistant event with text")
+            t = texts(m)
+            if t.strip():
+                return t
+    return None
+
+
+def last(agent):
+    t = last_text(jsonl(transcript(agent)[0])[1])
+    if t is None:
+        raise Error(f"agent {agent} has no assistant event with text")
+    print(t)
+    return 0
+
+
+def block_problem(text):
+    """None when text holds the disciplines block (see disciplines in the docstring); else what is wrong, in fixed
+    words that quote nothing of the text."""
+    lines = text.splitlines()
+    head = [i for i, line in enumerate(lines) if line.strip() == DISC_HEAD]
+    if not head:
+        return f'no "{DISC_HEAD}" heading'
+    rest = [line.strip() for line in lines[head[0] + 1:] if line.strip()]
+    for n in range(1, 10):
+        if n > len(rest) or rest[n - 1].startswith("#"):
+            return f"{n - 1} answer lines, nine needed"
+        m = re.fullmatch(rf"(?:[-*] )?D{n}:\s*(?:no[.;]?|(yes|uncertain):(.*))", rest[n - 1])
+        if m is None:
+            return f"line {n} of the block is not a D{n} answer"
+        if m.group(1) and not re.search(r"\w", m.group(2)):
+            return f'D{n}: "{m.group(1)}" without text'
+    return None
+
+
+def disciplines(agent):
+    _, events = jsonl(transcript(agent)[0])
+    first = next((e.get("message") for e in events if e.get("type") == "user"), None)
+    task = TASK_MARKER in texts(first)
+    t = last_text(events)
+    why = "no assistant text" if t is None else block_problem(t)
+    print("task: carries the D-016 questions" if task else "task: does NOT carry the D-016 questions")
+    print("report: nine answers" if why is None else f"report: missing or incomplete ({why})")
+    print("DISCIPLINES OK" if task and why is None else "DISCIPLINES MISSING")
+    return 0 if task and why is None else 1
 
 
 def calls(agent):
@@ -230,6 +289,8 @@ def main(argv):
             return calls(argv[1])
         if len(argv) == 3 and argv[0] == "audit":
             return audit(argv[1], argv[2])
+        if len(argv) == 2 and argv[0] == "disciplines":
+            return disciplines(argv[1])
         print(USAGE, file=sys.stderr)
     except Error as e:
         print(f"subagent_audit: {e}", file=sys.stderr)
