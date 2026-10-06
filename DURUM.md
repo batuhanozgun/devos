@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 6 Ekim 2026, 13:37 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 14:34 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
@@ -15,4 +15,4 @@
 **Şu an**
 
 Senden beklenen: yok. 
-Durum: C00'ın kapanış denetimi koşullu geçti. Açık kalan tek konu: platformun her oturuma kendi kanalı için koyduğu anahtar, C00'ın "ortam değişkeninde sır görünmüyor" koşuluna giriyor mu. Bunu planın değişiklik yoluyla yazdım; yeni bir denetçi yargılıyor. Sonra C00 kapanıyor ve C01 başlıyor.
+Durum: C00'ın kapanışı sürüyor. Platformun her oturuma koyduğu anahtarın değeri depoda, sohbet kayıtlarında ve koruma günlüğünde arandı; hiçbir yerde yok. Bu anahtarla ilgili plan değişikliği (PC-18) denetçinin istediği gibi düzeltildi; yeni bir denetçi yargılıyor. Sonra C00 kapanıyor ve C01 başlıyor.
