@@ -19,6 +19,6 @@ Every 15 minutes the dispatcher checks each trigger. A trigger whose "due from" 
 
 **Is the period's work done?** At each check the dispatcher reads the session header of every record in the run store, in every date directory, however old, looking for one whose `trigger` is this trigger's key and whose `period` is the current period. If it finds one, the period's work is done or under way, and nothing starts; if it finds none, it starts the session. By design, these headers are the only record of a period's work: a header it cannot read, or a session that failed before writing one, counts as none, so a new session starts, as intended.
 
-Once the check finds a period's work done or under way, nothing starts that period's session again by itself: if it fails or is killed, the on-call engineer starts it again with `brindle periodic retry <trigger-key>`, which starts a new periodic session for the current period at once, skipping the check above, and needs nothing but the trigger key.
+Each check that finds a period's work done or under way starts nothing, even if that period's session has since failed or been killed: the on-call engineer then starts it again with `brindle periodic retry <trigger-key>`, which starts a new periodic session for the current period at once, skipping the check above, and needs nothing but the trigger key.
 
 Periodic sessions are few, about a dozen a month. They take their data from the repositories, except `cost-report`, which takes it from the usage database, and their run records are like any other (`kind` is `periodic`).
