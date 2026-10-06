@@ -20,12 +20,12 @@
 |---|---|---|
 | Stage | **C00 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): first the checker acceptance of W-C00-01, 02 and 04 (N-051), then step 0, W-C00-06 (plan 0.6). | 2026-10-05T20:27Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
-| Usage | `five_hour` `allowed` at 23:51Z (`get_session`, working session), resets sched:2026-10-06T02:10Z (`resetsAt` 1791252600, converted with `date -u -d @`) (D-002: proceed). | 2026-10-05T23:51Z |
+| Usage | `five_hour` `allowed` at 2026-10-06T00:15Z (`get_session`, working session), resets sched:2026-10-06T02:10Z (`resetsAt` 1791252600, converted with `date -u -d @`) (D-002: proceed). Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T00:15Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
 | summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimden geçti ve ana dala girdi; denetçinin istediği iki küçük düzeltme yapılıyor. Açık depoya yazılanı kodla denetleyen ara kontrol kabul edildi ve devrede (D-014 (a) için gereken ilk güvence bu). Mekanizmasız karşılaştırma denemesi (W-C00-15) başladı: önce görevler ve başarı ölçütleri yazılıp kaydediliyor, sonra çalıştırılacak; kütüphanesiz. <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-06T00:22Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:05Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:16Z |
 
 ---
 
@@ -54,7 +54,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 10, blocked 1, cancelled 6, finished 1, running 3 | 13 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 10, blocked 1, cancelled 6, finished 1, running 3 | 12 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
@@ -70,10 +70,10 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-062
+- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-084
   - `W-C00-01` Read the plan package: accepted
   - `W-C00-02` Preparation verification (plan C00 step 1): accepted
-  - `W-C00-03` Gap and contradiction list: finished, not accepted · open notes: N-002
+  - `W-C00-03` Gap and contradiction list: finished, not accepted
   - `W-C00-04` Premise inventory (plan C00 step 6): accepted
   - `W-C00-05` Builder operating model (PC-04): cancelled
   - `W-C00-06` Translate the plan package (plan C00 step 0): accepted · open notes: N-003, N-004
@@ -171,7 +171,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 |---|---|---|---|---|
 | `N-027` | `C00` | OI-003 | open | **Item:** Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are us... |
 | `N-045` | `C00` | OI-004 | open | **Pointer** to N-029 on `C01` (verbatim there): the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11. |
-| `N-062` | `C00` | CHK-C00-025 | open | **For Batu's next batch: D-003's coverage of OI-012** (from W-C00-13's check, 2026-10-05, L-144). D-003's `reopen_if` (L-045, 2026-10-03)... |
+| `N-084` | `C00` | EV-C00-003 | open | **What follows D-014's answer** (W-C00-03's final version, 2026-10-06; EV-C00-014 addendum 2). Owner: the executor. |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
@@ -210,7 +210,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-081` | `C10` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-50 (a... |
 | `N-043` | `C11` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): model hubs. |
 | `N-082` | `C11` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-49 (c... |
-| `N-002` | `W-C00-03` | OI-002 | open | **Item:** Safeguard 2 of plan Section 0.5 (independent monitoring of machine-account commits in the library) is probably not in place. |
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
@@ -222,7 +221,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 10 (N-058, N-037, N-001, N-005, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 12 (N-058, N-062, N-037, N-001, N-002, N-005, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-015). Findings: FND-001 in `plan/ledger/C00-log.md`.
