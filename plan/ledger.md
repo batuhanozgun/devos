@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). | 2026-10-06T06:11Z |
 | summary_tr | Senden beklenen: yok. (Kütüphane deposunda e-posta bildirimini açmadıysan, fırsat bulunca aç; iş beklemiyor.) <br>D-013: sorunun senin kararın olmadığını söyledin; haklısın. Kararı ben verdim: eski sürümler olduğu gibi kalıyor. Önerdiğim yol senden hiçbir şey istemiyorsa artık sormuyorum, yalnız bilgi veriyorum. <br>Durum: mekanizmasız karşılaştırma denemesi denetlendi ve kabul edildi (W-C00-15). Kütüphane bağlı. Planın bağımsız incelemesinin kütüphane kısmı ve depo geçmişinin kütüphaneye karşı taranması sürüyor. | 2026-10-06T06:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T06:18Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T06:36Z |
 
 ---
 
@@ -158,6 +158,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-11` | Editorial and consistency changes with no intended change of meaning: section citations in the checker verdict form, statements brought to the state after the translation, a legend for the acceptance marks, attribution notes after labelled passages, editorial fixes across the plan package, a terms section, and the platform-side readers of the session in the effect channel inventory | technical | answered | `plan/decisions/PC-11.md` |
 | `PC-12` | Criterion 20 gets a mechanism, a stage and acceptance conditions (test data is synthetic and labelled, reviewed in C08 and C11); Section 0.5's access list is reconciled with option (a) of Section 5.5 (the machine account on Batu's other repositories) | technical | answered | `plan/decisions/PC-12.md` |
 | `PC-13` | C00's acceptance block gets the condition PC-10 added to the plan; the platform-side readers of Section 6.7 get a label for every platform statement and a C01 row that reads the platform documentation (C01 #18); the follow-up points of CHK-C00-038 and CHK-C00-037 | technical | answered | `plan/decisions/PC-13.md` |
+| `PC-14` | Questions to Batu in one sentence, with the details in the linked decision record (D-015); the stage work list copies the binding English conditions (N-086 item 1); D-014 = (a) recorded in Sections 0.5 and 12, and Appendix F step 1 on library access corrected (N-084, T-05); a question whose recommended option asks nothing of Batu becomes one line of information (from D-013, N-089); the Turkish summary follows | technical | answered | `plan/decisions/PC-14.md` |
 <!-- /generated -->
 
 ---
