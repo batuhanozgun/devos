@@ -11,8 +11,8 @@ Every agent session writes one **run record**: the session's transcript, as JSON
 ## Format
 
 - **Line 1, the session header:** `session_id`, `kind` (`work` or `periodic`), `work_item` (empty for periodic sessions), `trigger` and `period` (set for periodic sessions, empty otherwise), `model`, `started_at`.
-- **Lines 2 to n-1:** one line per tool call: the tool, its input and its output (an output longer than 1 MiB is cut at 1 MiB).
-- **Line n, the end line:** `ended_at`, `status` (`done`, `failed` or `killed`) and the token counts. For a session stopped at the 6-hour limit, the dispatcher writes the end line, with the token counts that the session reported to it while running.
+- **Lines 2 to n-1:** one line per tool call: the tool, its input and its output.
+- **Line n, the end line:** `ended_at`, `status` (`done`, `failed` or `killed`) and the token counts. For a session that stops without writing it (stopped at the 6-hour limit or with the dispatcher, or crashed), the dispatcher writes the end line, as `killed` or `failed`, with the token counts that the session reported to it while running.
 
 The dispatcher's `sessions` table, which the dispatcher fills itself as it starts and ends sessions, keeps only the session ID, the work item, the status and the start and end times; it holds none of the other header fields (`kind`, `trigger`, `period`, `model`).
 

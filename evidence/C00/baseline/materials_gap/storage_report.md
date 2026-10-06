@@ -5,7 +5,7 @@
 Prepared by the on-call engineer for work item BR-212.
 
 - **Volume:** `/srv/brindle/runs` is its own volume of 1,024 GiB. It holds only run records.
-- **Used on 2026-09-30 at 06:00 UTC:** 891 GiB (87%). The disk alert fires at 85% and has fired every day since 2026-09-24.
+- **Used on 2026-09-30 at 06:00 UTC:** 891 GiB (87%).
 - **History:** the run store moved to this volume on 2026-03-02; the oldest record is from that day. No record has been deleted since.
 
 ## Space used, by month of session start
@@ -23,7 +23,7 @@ Prepared by the on-call engineer for work item BR-212.
 
 ## Daily volume
 
-Over the last 28 days, new records added 14.0 GiB a day on average: 17 to 19 GiB on working days, 4 to 6 GiB on weekend days. The daily volume has been flat since all four teams were on Brindle at the start of September. The platform team plans with about 15 GiB a day for the rest of the year.
+Over the last 28 days, new records added 14.0 GiB a day on average. The platform team plans with about 15 GiB a day for the rest of the year.
 
 ## Growing the volume
 
