@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list and the non-row items W-C01-02, W-C01-09, W-C01-25 and W-C01-28 accepted (L-169 to L-172); the probe design (W-C01-03) stopped at its second FAIL (CHK-C01-013) and waits for the frame review FR-04 (L-173); then the probe-only guard rule, Batu's probe setup and rows 1 to 4 and 17. | 2026-10-06T17:25Z |
+| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running** in the working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (opened 2026-10-05, L-136): its work list and the non-row items W-C01-02, W-C01-09, W-C01-25 and W-C01-28 accepted (L-169 to L-172); the probe design (W-C01-03) stopped at its second FAIL (L-173); its frame review FR-04 accepted (L-174, L-175) and its third attempt under that frame next; then the probe-only guard rule, Batu's probe setup and rows 1 to 4 and 17. | 2026-10-06T18:06Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
 | Usage | `five_hour` `allowed` at 2026-10-06T17:01Z (`get_session`, working session), resets 2026-10-06T19:50Z (`resetsAt` 1791316200); `isUsingOverage` false. D-002: proceed; read again before each heavy batch. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-06T17:01Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). | 2026-10-06T16:35Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: C01'de (platform doğrulaması) dört iş ve iş listesi kabul edildi: anahtar envanteri, alt ajan belgeleri, disiplin araçlarının takip işi ve küçük ön deneme. Deneme tasarımı ikinci denetimde de kaldı; kural gereği üçüncü denemeden önce bir çerçeve incelemesi yapıyorum. Denetçinin gösterdiği ortak kök şu: bütün çalıştırma sırası, senin bir kez yapıştıracağın tek bir talimata sabitlenmiş, sonradan düzeltilemiyor. İnceleme, her çalıştırmanın talimatını ana daldaki denetlenmiş bir dosyadan okumasını tartacak. <br>Tasarım geçince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T17:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T17:21Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: C01'de (platform doğrulaması) iş listesi ve dört iş kabul edildi. Deneme tasarımı iki kez denetimden kalınca kural gereği bir çerçeve incelemesi yaptım (FR-04) ve denetimden geçti. Yeni çerçeve: rutinlerin talimatı kısa ve sabit; her çalıştırma ne yapacağını ana daldaki denetlenmiş bir dosyadan okuyor; çalıştırmalar zamanlayıcıyla başlıyor; sıra plandaki gibi, önce 1–4. ve 17. satırlar. Planı değiştirmiyor, senin adımlarını artırmıyor. Tasarımın üçüncü turu bu çerçeveyle yazılıyor. <br>Tasarım geçince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T18:06Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T18:05Z |
 
 ---
 
@@ -77,7 +77,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
 | `C01` | Platform verification | running | accepted 5, blocked 24, ready 1 | 14 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 9 |
-| `C03` | Trust boundaries and effect channels | planned | no items | 8 |
+| `C03` | Trust boundaries and effect channels | planned | no items | 9 |
 | `C04` | Knowledge, search and context | planned | no items | 11 |
 | `C05` | Common rules, roles and methods | planned | no items | 5 |
 | `C06` | Working order, audit and decision channel | planned | no items | 5 |
@@ -183,6 +183,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `D-016` | The thinking disciplines D1 to D9 in the installation: all nine trigger questions answered by every agent at the start of each work item, the answers recorded and their presence checked; the content is the agent's judgment, sampled by checkers | technical | answered | `plan/decisions/D-016.md` |
 | `FR-02` | Frame review: why an operational step (D-006) and a technical permission (D-007) reached Batu as decisions, and the routing fix | technical | accepted | `plan/decisions/FR-02.md` |
 | `FR-03` | Frame review of F-088-2: the live part of gate 1c runs on main after the merge, under the reviewed hook, before acceptance | technical | withdrawn | `plan/decisions/FR-03.md` |
+| `FR-04` | Frame review: the C01 probe design (W-C01-03) after its second FAIL; the run orchestration moves from one fixed sequence in the routine prompt to a stable prompt that reads a checked control file on main, with scheduled starts | technical | accepted | `plan/decisions/FR-04.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | superseded | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |
@@ -245,6 +246,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-107` | `C03` | PC-18 | open | **The platform's own session credentials in test 3 and the effect channel inventory** (PC-18 place 3; CHK-C00-069 condition 1; CHK-C00-07... |
 | `N-113` | `C03` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
 | `N-123` | `C03` | CHK-C01-006 | open | **The audit environment's routine and row 4's version comparison** (CHK-C01-006 finding 10; 2026-10-06, L-169). N-111 (on `plan/work/C05.... |
+| `N-130` | `C03` | CHK-C01-015 | open | **GitHub triggers as a route between environments** (CHK-C01-015 finding 11; FR-04; 2026-10-06, L-174). A routine can be started by a Git... |
 | `N-034` | `C04` | OI-011#18 | open | (18) a bounded scan of the connector catalogue as an outside-in discovery method (Batu's suggestion; it complements need-first selection)... |
 | `N-035` | `C04` | OI-011#19 | open | (19) the hook's blanket block of catalogue tools. The search tools (`SearchMcpRegistry`, `SearchPlugins`, `SearchSkills`) are read-only, ... |
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
