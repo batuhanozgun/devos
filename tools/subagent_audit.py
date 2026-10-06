@@ -3,17 +3,23 @@
 
 Claude Code keeps each subagent's transcript at <home>/.claude/projects/*/*/subagents/agent-<id>.jsonl, one JSON
 event per line (an assistant event holds one content block: text, thinking or tool_use), with a sibling
-agent-<id>.meta.json whose toolUseId names the Agent call that started it. The guard (.claude/hooks/tool_allowlist.py)
-appends to <log dir>/<session>.jsonl one PreToolUse record per tool call, with the subagent's agent_id, the tool and,
-for Read, Glob and Grep, the logged path (its summary: Read's file_path, Glob's or Grep's path, empty when none).
-PermissionRequest records come in addition and are not counted. Rule B5 lets only a reader or a tools/ script name
-these locations; this is that script. It reads and never writes.
+agent-<id>.meta.json whose toolUseId names the Agent call that started it. An agent started by a workflow keeps the
+same two files one level deeper, at .../subagents/workflows/<run-id>/agent-<id>.jsonl, and its meta names no
+toolUseId (observed on 2026-10-06), so its start cannot be matched to a guard record by tool-use ID. Every
+command looks in both places and needs exactly one transcript. The guard (.claude/hooks/tool_allowlist.py)
+appends to <log dir>/<session>.jsonl one PreToolUse record per tool call, a workflow agent's included, with the
+subagent's agent_id, the tool and, for Read, Glob and Grep, the logged path (its summary: Read's file_path, Glob's or
+Grep's path, empty when none). PermissionRequest records come in addition and are not counted. Rule B5 lets only a
+reader or a tools/ script name these locations; this is that script. It reads and never writes.
 
   last <agent-id>               the text of the agent's last assistant event that has text, as stored, followed by
                                 one newline (how checker verdicts are filed verbatim)
   audit <agent-id> <workspace>  the isolation audit of evidence/C00/EV-C00-016_baseline_preregistration.md section 7:
-                                the transcript's path and SHA-256, the meta toolUseId, each call with its path
-                                arguments judged inside or outside the workspace, the call counts of the transcript
+                                the transcript's path, SHA-256 and kind (Agent-tool subagent, or workflow agent with
+                                its run ID), the meta toolUseId (for a workflow agent whose meta names none, a line
+                                saying so: its starting call cannot be found in the guard log as an Agent call's can;
+                                that does not void the run), each call with its path arguments judged inside or
+                                outside the workspace, the call counts of the transcript
                                 and the guard log (a difference is recorded; as section 7 says, it does not void a
                                 run by itself), the guard records that break the rules, and AUDIT VALID or
                                 AUDIT VOID: <reasons>
@@ -67,13 +73,16 @@ def jsonl(path):
 
 
 def transcript(agent):
+    """(path, run): the agent's one transcript, and its workflow run's ID (None for an Agent-tool subagent)."""
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", agent):
         raise Error(f"not an agent ID: {q(agent)}")
     home = os.environ.get("DEVOS_AUDIT_HOME") or os.path.expanduser("~")
-    found = glob.glob(os.path.join(glob.escape(home), ".claude", "projects", "*", "*", "subagents",
-                                   f"agent-{agent}.jsonl"))
+    sub, name = os.path.join(glob.escape(home), ".claude", "projects", "*", "*", "subagents"), f"agent-{agent}.jsonl"
+    found = [(p, None) for p in glob.glob(os.path.join(sub, name))] + \
+            [(p, os.path.basename(os.path.dirname(p))) for p in glob.glob(os.path.join(sub, "workflows", "*", name))]
     if len(found) != 1:
-        raise Error(f"{len(found)} transcripts of agent {agent} under {home}/.claude/projects (one is needed)")
+        raise Error(f"{len(found)} transcripts of agent {agent} under {home}/.claude/projects, in subagents/ or "
+                    "subagents/workflows/<run-id>/ (one is needed)")
     return found[0]
 
 
@@ -145,7 +154,7 @@ def judge_record(r, ws):
 
 
 def last(agent):
-    _, events = jsonl(transcript(agent))
+    _, events = jsonl(transcript(agent)[0])
     for e in reversed(events):
         m = e.get("message")
         if e.get("type") == "assistant" and isinstance(m, dict) and isinstance(m.get("content"), list):
@@ -158,7 +167,7 @@ def last(agent):
 
 
 def calls(agent):
-    _, events = jsonl(transcript(agent))
+    _, events = jsonl(transcript(agent)[0])
     for i, (name, inp, _) in enumerate(tool_calls(events), 1):
         print(call_line(i, name, inp))
     return 0
@@ -168,14 +177,16 @@ def audit(agent, workspace):
     if not os.path.isabs(workspace):
         raise Error(f"the workspace must be an absolute path: {q(workspace)}")
     ws = os.path.normpath(workspace)
-    path = transcript(agent)
+    path, run = transcript(agent)
     data, events = jsonl(path)
+    meta_path = path[:-len(".jsonl")] + ".meta.json"
     try:
-        with open(path[:-len(".jsonl")] + ".meta.json", "rb") as f:
+        with open(meta_path, "rb") as f:
             meta = json.loads(f.read())
-        tool_use_id = meta["toolUseId"]
-    except (OSError, ValueError, TypeError, KeyError):
-        raise Error(f"no readable toolUseId in {path[:-len('.jsonl')]}.meta.json")
+    except (OSError, ValueError):
+        meta = None
+    if not isinstance(meta, dict) or (run is None and "toolUseId" not in meta):   # a workflow agent's may lack it
+        raise Error(f"no readable {'meta' if run else 'toolUseId'} in {meta_path}")
     log_dir = os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard"
     logs = sorted(glob.glob(os.path.join(glob.escape(log_dir), "*.jsonl")))
     if not logs:
@@ -183,7 +194,11 @@ def audit(agent, workspace):
     records = [r for name in logs for r in jsonl(name)[1] if r.get("agent_id") == agent]
 
     out, void = [f"transcript: {path}", f"sha256: {hashlib.sha256(data).hexdigest()}",
-                 f"toolUseId: {q(tool_use_id)}", f"workspace: {json.dumps(ws, ensure_ascii=False)}"], []
+                 "kind: " + (f"workflow agent (run {q(run)})" if run else "Agent-tool subagent"),
+                 f"toolUseId: {q(meta['toolUseId'])}" if "toolUseId" in meta else
+                 "toolUseId: none (the meta of this workflow agent names no starting call, so its start cannot be "
+                 "found in the guard log by tool-use ID as an Agent call's can; recorded, not void by itself)",
+                 f"workspace: {json.dumps(ws, ensure_ascii=False)}"], []
     cs = tool_calls(events)
     for i, (name, inp, cwd) in enumerate(cs, 1):
         why = judge(name, inp, ws, cwd)

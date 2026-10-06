@@ -212,6 +212,25 @@ def check(tmp):
     case("the store was neither read (an unreadable one did not stop history) nor written",
          before == {f.name: (f.read_bytes(), f.stat().st_mtime_ns) for f in store.iterdir()}, sorted(before))
 
+    # No bytecode (CHK-C00-049 finding 3): a fixture checkout holding copies of the tool and the guard and no
+    # __pycache__; the tool runs without -B and without PYTHONDONTWRITEBYTECODE, so only the tool's own setting
+    # keeps Python from caching the guard it imports.
+    co = Repo(tmp / "checkout").d
+    (co / "tools").mkdir()
+    (co / ".claude" / "hooks").mkdir(parents=True)
+    (co / "tools" / TOOL.name).write_bytes(TOOL.read_bytes())
+    (co / ".claude" / "hooks" / "tool_allowlist.py").write_bytes(
+        (TOOL.parent.parent / ".claude" / "hooks" / "tool_allowlist.py").read_bytes())
+    # Written unusually on purpose: the usual idioms here matched 8-word runs of the library's code (L1, N-090).
+    child_env = dict(os.environ, **env)
+    child_env.pop("PYTHONDONTWRITEBYTECODE", None)
+    p = subprocess.run([sys.executable, str(co / "tools" / TOOL.name), "history", "--devos", str(dv.d)],
+                       cwd=tempfile.gettempdir(), env=child_env, text=True, capture_output=True)
+    outputs += [p.stdout, p.stderr]
+    pyc = sorted(str(f.relative_to(co)) for f in co.rglob("*") if f.name == "__pycache__" or f.suffix == ".pyc")
+    case("no bytecode: history run from a fixture checkout, without -B, leaves no __pycache__ and no .pyc in it",
+         p.returncode == 0 and not p.stderr and not pyc, f"{p.returncode} {p.stderr} {pyc}")
+
     words = {w.lower() for t in TEXTS + [SVC, SVC2] for w in re.findall(r"[^\W_]{7,}", t)}
     leaked = sorted(w for w in words if any(w in o.lower() for o in outputs))
     case(f"no fixture text and no service name in any output ({len(words)} distinct words of 7+ letters checked)",
