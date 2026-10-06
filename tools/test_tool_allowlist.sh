@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Synthetic test data (plan Section 8 item 13; criterion 20): the fixtures, examples and probe inputs in this file
+# are made up for the test and hold no personal or business data. Not made up, because the rules under test name
+# them: the names of DevOS's own repositories and of their GitHub owner, DevOS's own file paths, two environment
+# IDs of the Claude account DevOS runs in, and tool names of the platform. The two MCP server IDs in UUID form in
+# the first deny tests have no recorded origin; the C08 review checks them.
 # Unit test for .claude/hooks/tool_allowlist.py (the guard, plan/Installation_Working_Order.md; D-008), run
 # through the same wrapper command as .claude/settings.json (negative and positive controls; plan Section 8; T-H4).
 # Every call must get an explicit decision: allow, deny, or pass (only AskUserQuestion and ExitPlanMode, which
@@ -832,6 +837,13 @@ printf '#!/bin/sh\ncase " $* " in *" rev-list "*|*" cat-file "*|*" diff-tree "*)
 PATH="$sb:$PATH" DEVOS_CALL_BUDGET=2 lb deny L1 "slow steps past the call's time budget: synthesis push" "git -C $dv push origin claude/t-syn"
 has "time budget of 2 seconds is spent" "the denial names the spent time budget"
 lb allow L1 "the same push within the budget"             "git -C $dv push origin claude/t-syn"
+# the service-name search of origin/main (a git grep that holds the lines) runs past its own 30-second limit, well
+# within the call's budget: the write fails closed, and the denial says the search timed out instead of reading
+# like a match with its detail withheld (CHK-C00-037 finding 7)
+sg="$lk/slowgrep"; mkdir -p "$sg"
+printf '#!/bin/sh\ncase " $* " in *" grep "*) exec sleep 35;; esac\nexec %s "$@"\n' "$(command -v git)" > "$sg/git"; chmod +x "$sg/git"
+PATH="$sg:$PATH" lt deny L1 "service-name search past its own time limit: PR body" "$(pr "Uses $SVC.")"
+has "timed out; its command holds those lines" "the timeout denial names the timeout, without the lines"
 # fail closed: a missing store while the clone exists, a stale store; a store without a clone is still used
 DEVOS_LEAK_STORE="$lk/absent" lb deny L1 "missing store, clone present: synthesis push" "git -C $dv push origin claude/t-syn"
 DEVOS_LEAK_STORE="$lk/absent" lt deny L1 "missing store, clone present: synthesis PR body" "$(pr "$SYN")"

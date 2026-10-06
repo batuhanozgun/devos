@@ -1705,8 +1705,12 @@ def lines_on_main(repo, ref, lines):
     """Those of lines that are already, verbatim, a whole line in ref's tree (text on origin/main)."""
     if not ref or not lines or len(lines) > 200:
         return set()
-    r = git("grep", "-h", "-I", "-F", "--no-color", *[x for l in lines for x in ("-e", l)], ref, "--",
-            cwd=repo, timeout=30)       # substring matches; only whole-line equality counts below
+    try:
+        r = git("grep", "-h", "-I", "-F", "--no-color", *[x for l in lines for x in ("-e", l)], ref, "--",
+                cwd=repo, timeout=30)   # substring matches; only whole-line equality counts below
+    except subprocess.TimeoutExpired:   # its command holds the lines: fail closed with a text-free reason
+        raise TimeoutError("the search of the main branch for the lines that name a service timed out; its "
+                           "command holds those lines, so it is not shown") from None
     return set(r.stdout.splitlines()) & set(lines) if r.returncode == 0 else set()
 
 
