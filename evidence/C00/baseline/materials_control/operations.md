@@ -4,11 +4,11 @@
 
 ## On-call
 
-One engineer is on call each week. When a session fails or is killed, the on-call engineer reads its whole run record, session header included, to find out why. The on-call guide requires the run records of the last 7 days to be available, counted by the run store's date directories (today's and the six before it); that is its only rule on run records, and anything needed for longer goes into the incident notes, not the run store. In the last six months, September included, no one has needed an older one.
+One engineer is on call each week. When a session fails or is killed, the on-call engineer reads its whole run record, session header included, to find out why; on call, records of sessions that ended `done` are not read. The on-call guide requires the run records of the last 7 days to be available, counted by the run store's date directories: today's (UTC) and the six before it, so a session that ran across midnight counts by the day it started. That is its only rule on run records, and anything needed for longer goes into the incident notes, not the run store. In the last six months, September included, no on-call engineer has needed an older one.
 
 ## Usage and billing
 
-When a session ends, the dispatcher reads the token counts from the end line of its run record, once, and copies them into the usage database; if that database cannot be reached, the dispatcher keeps the counts in `dispatcher.db` until the copy succeeds. Invoices to the product teams and the monthly cost report are built from the usage database only, and usage data are never rebuilt from run records.
+When a session ends, the dispatcher reads the token counts from the end line of its run record, once, as soon as the end line is written, and copies them into the usage database; if that database cannot be reached, the dispatcher keeps the counts in `dispatcher.db` until the copy succeeds. If the dispatcher itself stops, its sessions stop with it; systemd restarts it at once, and before anything else it writes their end lines and copies their counts. Invoices to the product teams and the monthly cost report are built from the usage database only, and usage data are never rebuilt from run records.
 
 ## Backups
 
@@ -25,10 +25,6 @@ Maintenance jobs run as systemd timers on `disp-1`, as the user `brindle`, and l
 | Job | When | What it does |
 |---|---|---|
 | `queue-vacuum` | daily, 02:30 UTC | compacts the dispatcher database |
-| `cert-check` | daily, 07:00 UTC | warns the on-call engineer about TLS certificates that expire within 21 days |
+| `cert-check` | daily, 07:00 UTC | warns on-call of TLS certificates expiring within 21 days |
 
 A job that deletes data must have a `--dry-run` mode, which prints what it would delete, and must run in dry-run mode for at least one day before it is enabled (`policy_notes.md`, 2026-04-14).
-
-## Alerts
-
-Disk alerts for every volume of `disp-1` go to the on-call engineer.
