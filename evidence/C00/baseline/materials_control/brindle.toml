@@ -1,0 +1,18 @@
+# SYNTHETIC TEST DATA: made up for a test. Brindle and every team, host, name, number and date in this file are fictional; no personal or business data.
+# Excerpt of /etc/brindle/brindle.toml on disp-1, 2026-09-30.
+
+[paths]
+run_store = "/srv/brindle/runs"
+dispatcher_db = "/srv/brindle/dispatcher.db"
+replay_fixtures = "tests/replay/fixtures"
+
+[dispatcher]
+host = "disp-1"
+max_session_hours = 6
+trigger_check_minutes = 15
+
+[usage]
+db_host = "usage-db.internal"
+
+[alerts]
+disk_alert_percent = 85
