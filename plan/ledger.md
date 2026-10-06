@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `5978009744` (2026-10-04T08:13Z, `batuhanozgun`): D-006 and D-007 declined as not his, recorded in `plan/decisions/D-006.md` and `D-007.md`; D-002's night preference removed (his conversation-session text of about 08:00Z, `briefs/w-c00-12/BATU_CUSTOMER_ROLE_TR.md`), recorded in `plan/decisions/D-002.md` | 2026-10-04T08:33Z |
-| summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimden geçti ve ana dala girdi; denetçinin istediği iki küçük düzeltme yapılıyor. Açık depoya yazılanı kodla denetleyen ara kontrol kabul edildi ve devrede (D-014 (a) için gereken ilk güvence bu). Mekanizmasız karşılaştırma denemesi (W-C00-15) başladı: önce görevler ve başarı ölçütleri yazılıp kaydediliyor, sonra çalıştırılacak; kütüphanesiz. Boşluk listesinin son hali yazıldı ve denetlendi (her boşluğun kararı belli; 17'nin 9'u kapandı). <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-06T00:29Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:29Z |
+| summary_tr | Senden beklenen: iki karar, D-014 ve D-013 (D-011'in yerine geçtiler; D-011'e cevap gerekmez). Ayrıntı ve adımlar "Batu'dan beklenenler" issue'sunda. <br>1. D-014: Kütüphaneni C04'ten önce okuyayım mı? Önerim (a): üç koşulla şimdi oku. Koşullar: kütüphanede push e-postalarını açman, bir kez kısa bir Auto penceresi, C04'e kadar yalnız birebir kopya kontrolünü kabul etmen. <br>2. D-013: Hesabına bağlı servislerin adları açık deponun eski kayıtlarında kalıyor; bir kısmını bugün ben yeniden yazmıştım, güncel dosyalardan temizledim. Önerim (a): kabul. <br>3. C00'ın karar adımı sürüyor: plan değişiklikleri denetimden geçti ve ana dala girdi; denetçinin istediği iki küçük düzeltme de yapıldı ve denetlendi. Açık depoya yazılanı kodla denetleyen ara kontrol kabul edildi ve devrede (D-014 (a) için gereken ilk güvence bu). Mekanizmasız karşılaştırma denemesi (W-C00-15) başladı: önce görevler ve başarı ölçütleri yazılıp kaydediliyor, sonra çalıştırılacak; kütüphanesiz. Boşluk listesinin son hali kabul edildi (her boşluğun kararı belli; 17'nin 9'u kapandı). Karşılaştırma denemesinde görev metni ve malzemeler, çalıştırmadan önceki kontrollere göre düzeltiliyor. <br>**D-014'e cevap gelmezse:** kütüphane bağlanmaz; incelemenin ve karşılaştırma denemesinin kütüphane kısmı bekler, C00 kapanamaz; diğer işler sürer. **D-013'e cevap gelmezse:** hiçbir iş beklemez. | 2026-10-06T00:45Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T00:43Z |
 
 ---
 
@@ -41,8 +41,7 @@
 - `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
 
 **Not ready, with the first unmet condition:**
-- `W-C00-03`: finished, waiting for acceptance
-- `W-C00-11`: depends on W-C00-03 (not accepted)
+- `W-C00-11`: depends on W-C00-08 (not accepted)
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -54,7 +53,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 10, blocked 1, cancelled 6, finished 1, running 3 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 11, blocked 1, cancelled 6, running 3 | 12 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
@@ -62,7 +61,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C05` | Common rules, roles and methods | planned | no items | 3 |
 | `C06` | Working order, audit and decision channel | planned | no items | 3 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 1 |
-| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 4 |
+| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 5 |
 | `C09` | Outage, backup, restore and reconnection | planned | no items | 3 |
 | `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 2 |
 | `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 2 |
@@ -70,18 +69,18 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-084
+- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-084, N-086
   - `W-C00-01` Read the plan package: accepted
   - `W-C00-02` Preparation verification (plan C00 step 1): accepted
-  - `W-C00-03` Gap and contradiction list: finished, not accepted
+  - `W-C00-03` Gap and contradiction list: accepted
   - `W-C00-04` Premise inventory (plan C00 step 6): accepted
   - `W-C00-05` Builder operating model (PC-04): cancelled
   - `W-C00-06` Translate the plan package (plan C00 step 0): accepted · open notes: N-003, N-004
   - `W-C00-07` ECC function comparison (plan C00 step 3): accepted
   - `W-C00-08` Independent plan review (plan C00 step 4): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-061
   - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): accepted
-  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072, N-083
-  - `W-C00-11` Stage closure review: blocked: depends on W-C00-03 (not accepted) · open notes: N-051, N-056, N-059
+  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072
+  - `W-C00-11` Stage closure review: blocked: depends on W-C00-08 (not accepted) · open notes: N-051, N-056, N-059
   - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
   - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
   - `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): accepted
@@ -97,7 +96,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 |---|---|---|---|---|---|
 | `W-C00-01` | Read the plan package | accepted | done | L-136 (the current plan package text, at 1c16dd7); L-001 (only the text at 6186e5d) | `plan/work/W-C00-01.md` |
 | `W-C00-02` | Preparation verification (plan C00 step 1) | accepted | done | EV-C00-002, L-010 | `plan/work/W-C00-02.md` |
-| `W-C00-03` | Gap and contradiction list | finished, not accepted | doing (v1 done) | EV-C00-003 (first version; final version 2026-10-06); EV-C00-014 addendum 2; CHK-C00-039 (one condition, C1, fixed; its confirmation pending) | `plan/work/W-C00-03.md` |
+| `W-C00-03` | Gap and contradiction list | accepted | doing (v1 done) | EV-C00-003 (first version; final version 2026-10-06); EV-C00-014 addendum 2; CHK-C00-039 (one condition, C1); CHK-C00-040 finding 15 (C1 met) | `plan/work/W-C00-03.md` |
 | `W-C00-04` | Premise inventory (plan C00 step 6) | accepted | done (v1) | EV-C00-004 (revised 2026-10-05, L-139); CHK-C00-004 (conditions); CHK-C00-006 (conditions met) | `plan/work/W-C00-04.md` |
 | `W-C00-05` | Builder operating model (PC-04) | cancelled | done by the producer's own judgement (L-033), not independently accepted; superseded in substance by W-C00-12 (principle 11, `briefs/w-c00-12/BATU_TERMINAL_GOALS_TR.md`) | L-015 to L-033; EV-C00-005 (T-A2r, T-E2) | `plan/work/W-C00-05.md` |
 | `W-C00-06` | Translate the plan package (plan C00 step 0) | accepted | todo (heavy) | EV-C00-006 (conventions, revisions 2 and 3); EV-C00-007 (proposals); EV-C00-008 (verdicts and dispositions); CHK-C00-007 to CHK-C00-019; CHK-C00-020 (final) | `plan/work/W-C00-06.md` |
@@ -105,7 +104,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-08` | Independent plan review (plan C00 step 4) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-08.md` |
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | accepted | todo (heavy) | EV-C00-009 (brief); EV-C00-010 (counter-design, independence declared low); EV-C00-012 (comparison with dispositions); CHK-C00-027 | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo | — | `plan/work/W-C00-10.md` |
-| `W-C00-11` | Stage closure review | blocked: depends on W-C00-03 (not accepted) | todo | — | `plan/work/W-C00-11.md` |
+| `W-C00-11` | Stage closure review | blocked: depends on W-C00-08 (not accepted) | todo | — | `plan/work/W-C00-11.md` |
 | `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | cancelled | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | cancelled | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
@@ -173,6 +172,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-027` | `C00` | OI-003 | open | **Item:** Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are us... |
 | `N-045` | `C00` | OI-004 | open | **Pointer** to N-029 on `C01` (verbatim there): the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11. |
 | `N-084` | `C00` | EV-C00-003 | open | **What follows D-014's answer** (W-C00-03's final version, 2026-10-06; EV-C00-014 addendum 2). Owner: the executor. |
+| `N-086` | `C00` | CHK-C00-040 | open | **For the next checked change of the working order** (CHK-C00-040 findings 6 and 10, 2026-10-06, L-153). (1) Section 4, "Stage work list"... |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-030` | `C01` | OI-005 | open | **Item:** Which credential the session's git proxy uses (machine account or Claude GitHub App installation) is unknown. This decides whet... |
@@ -204,6 +204,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-044` | `C08` | 06#3a-g | open | **Pointer** to N-038 on `C09` (verbatim there): the recovery drill also restores the builder's state (06 section 3a row g names C08–C09). |
 | `N-069` | `C08` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-079` | `C08` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-46 (t... |
+| `N-085` | `C08` | CHK-C00-040 | open | **Real identifiers in the guard's test fixtures** (CHK-C00-040 C1, 2026-10-06, L-153; plan Section 8 item 13, criterion 20). The syntheti... |
 | `N-038` | `C09` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-070` | `C09` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-080` | `C09` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-48 (t... |
@@ -216,13 +217,12 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
 | `N-060` | `W-C00-10` | CHK-C00-021 | open | - **Rows it could reopen:** any row whose decision rests on a fact the study contradicts or adds to. First: the five adopt rows (no-progr... |
 | `N-072` | `W-C00-10` | CHK-C00-027 | open | **From W-C00-09's check** (CHK-C00-027 findings 2 and 9, 2026-10-05, L-145). (1) The counter-designer's role file (`.claude/agents/counte... |
-| `N-083` | `W-C00-10` | CHK-C00-038 | open | **Follow-up to round 1** (CHK-C00-038 and CHK-C00-037, 2026-10-06, L-150). One plan change with a fresh check carries: **K1** (deadline: ... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11; re-disposed 2026-10-05 by D-010, summary item 30; it replac... |
 | `N-056` | `W-C00-11` | R-FR02-2 | open | **Open blockers at stage closure** (R-FR02-2 m4, carried by run `session_017bQAUeV7o6pTvG1Pz3hRHx`; re-pointed 2026-10-05 by D-010 from t... |
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 12 (N-058, N-062, N-037, N-001, N-002, N-005, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 13 (N-058, N-062, N-037, N-001, N-002, N-005, N-083, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
