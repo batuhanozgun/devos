@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). | 2026-10-06T09:00Z |
 | summary_tr | Senden beklenen: yok. <br>Durum: C00 kabul edildi; C01 (platform doğrulaması) başladı. İlk adımı, düşünme disiplinlerinin kalıcı kuralları, denetlenip ana dala girdi: artık her ajan dokuz soruyu cevaplıyor ve araçlar cevapların varlığını denetliyor. Sırada C01'in iş listesi var. C01'de senden iki deneme ortamı kurmanı isteyeceğim; zamanı gelince adım adım yazacağım. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T13:10Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T13:35Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T14:08Z |
 
 ---
 
@@ -52,16 +52,16 @@
 - `W-C01-12`: depends on W-C01-05 (not accepted)
 - `W-C01-13`: depends on W-C01-03 (not accepted)
 - `W-C01-14`: depends on W-C01-05 (not accepted)
-- `W-C01-15`: depends on W-C01-01 (not accepted)
+- `W-C01-15`: depends on W-C01-04 (not accepted)
 - `W-C01-16`: depends on W-C01-04 (not accepted)
-- `W-C01-17`: depends on W-C01-01 (not accepted)
-- `W-C01-18`: depends on W-C01-01 (not accepted)
+- `W-C01-17`: depends on W-C01-06 (not accepted)
+- `W-C01-18`: depends on W-C01-06 (not accepted)
 - `W-C01-19`: depends on W-C01-04 (not accepted)
 - `W-C01-20`: depends on W-C01-05 (not accepted)
-- `W-C01-21`: depends on W-C01-01 (not accepted)
-- `W-C01-22`: depends on W-C01-01 (not accepted)
-- `W-C01-23`: depends on W-C01-01 (not accepted)
-- `W-C01-24`: depends on W-C01-01 (not accepted)
+- `W-C01-21`: depends on W-C01-06 (not accepted)
+- `W-C01-22`: depends on W-C01-06 (not accepted)
+- `W-C01-23`: depends on W-C01-06 (not accepted)
+- `W-C01-24`: depends on W-C01-06 (not accepted)
 - `W-C01-25`: depends on W-C01-01 (not accepted)
 - `W-C01-26`: depends on W-C01-03 (not accepted)
 - `W-C01-27`: depends on W-C01-06 (not accepted)
@@ -84,7 +84,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C02` | Data model, rule gate and identity chain | planned | no items | 5 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 6 |
 | `C04` | Knowledge, search and context | planned | no items | 9 |
-| `C05` | Common rules, roles and methods | planned | no items | 4 |
+| `C05` | Common rules, roles and methods | planned | no items | 5 |
 | `C06` | Working order, audit and decision channel | planned | no items | 4 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 4 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 6 |
@@ -110,21 +110,21 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C01-12` Row 5: daily routine limit (C01 #5): blocked: depends on W-C01-05 (not accepted)
   - `W-C01-13` Row 6: notification (C01 #6): blocked: depends on W-C01-03 (not accepted)
   - `W-C01-14` Row 7: embedding model, the session part (C01 #7): blocked: depends on W-C01-05 (not accepted)
-  - `W-C01-15` Row 8: release chain (C01 #8): blocked: depends on W-C01-01 (not accepted)
+  - `W-C01-15` Row 8: release chain (C01 #8): blocked: depends on W-C01-04 (not accepted)
   - `W-C01-16` Row 9: single- and multi-repository sessions; the guard hook (C01 #9): blocked: depends on W-C01-04 (not accepted)
-  - `W-C01-17` Row 10: usage observation (C01 #10): blocked: depends on W-C01-01 (not accepted)
-  - `W-C01-18` Row 11: identity (C01 #11): blocked: depends on W-C01-01 (not accepted)
+  - `W-C01-17` Row 10: usage observation (C01 #10): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-18` Row 11: identity (C01 #11): blocked: depends on W-C01-06 (not accepted)
   - `W-C01-19` Row 12: repository access limit; the git credential (C01 #12): blocked: depends on W-C01-04 (not accepted)
   - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): blocked: depends on W-C01-05 (not accepted)
-  - `W-C01-21` Row 14: dynamic workflows and Projects (C01 #14): blocked: depends on W-C01-01 (not accepted)
-  - `W-C01-22` Row 15: library transfer, moved to C04 (C01 #15): blocked: depends on W-C01-01 (not accepted)
-  - `W-C01-23` Row 16: second model, the free tier's terms (C01 #16): blocked: depends on W-C01-01 (not accepted)
-  - `W-C01-24` Row 18: platform-side readers (C01 #18): blocked: depends on W-C01-01 (not accepted)
+  - `W-C01-21` Row 14: dynamic workflows and Projects (C01 #14): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-22` Row 15: library transfer, moved to C04 (C01 #15): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-23` Row 16: second model, the free tier's terms (C01 #16): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-24` Row 18: platform-side readers (C01 #18): blocked: depends on W-C01-06 (not accepted)
   - `W-C01-25` Phase-A probe (PC-16): blocked: depends on W-C01-01 (not accepted)
   - `W-C01-26` N-109: do the platform's session credentials act beyond the session?: blocked: depends on W-C01-03 (not accepted)
   - `W-C01-27` N-063: the counter-design rows decided from C01's observations: blocked: depends on W-C01-06 (not accepted)
   - `W-C01-28` N-110: follow-ups of D-016's carriers: blocked: depends on W-C01-01 (not accepted)
-  - `W-C01-29` Probe setup removed when C01 ends: blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-29` C01's combined scenario; probe setup removed when C01 ends: blocked: depends on W-C01-06 (not accepted)
   - `W-C01-30` Stage close review: blocked: depends on W-C01-01 (not accepted)
 <!-- /generated -->
 
@@ -170,21 +170,21 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-12` | Row 5: daily routine limit (C01 #5) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-12.md` |
 | `W-C01-13` | Row 6: notification (C01 #6) | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-13.md` |
 | `W-C01-14` | Row 7: embedding model, the session part (C01 #7) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-14.md` |
-| `W-C01-15` | Row 8: release chain (C01 #8) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-15.md` |
+| `W-C01-15` | Row 8: release chain (C01 #8) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-15.md` |
 | `W-C01-16` | Row 9: single- and multi-repository sessions; the guard hook (C01 #9) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-16.md` |
-| `W-C01-17` | Row 10: usage observation (C01 #10) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-17.md` |
-| `W-C01-18` | Row 11: identity (C01 #11) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-18.md` |
+| `W-C01-17` | Row 10: usage observation (C01 #10) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-17.md` |
+| `W-C01-18` | Row 11: identity (C01 #11) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-18.md` |
 | `W-C01-19` | Row 12: repository access limit; the git credential (C01 #12) | blocked: depends on W-C01-04 (not accepted) | — | — | `plan/work/W-C01-19.md` |
 | `W-C01-20` | Row 13: plugin and skill inventory (C01 #13) | blocked: depends on W-C01-05 (not accepted) | — | — | `plan/work/W-C01-20.md` |
-| `W-C01-21` | Row 14: dynamic workflows and Projects (C01 #14) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-21.md` |
-| `W-C01-22` | Row 15: library transfer, moved to C04 (C01 #15) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-22.md` |
-| `W-C01-23` | Row 16: second model, the free tier's terms (C01 #16) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-23.md` |
-| `W-C01-24` | Row 18: platform-side readers (C01 #18) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-24.md` |
+| `W-C01-21` | Row 14: dynamic workflows and Projects (C01 #14) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-21.md` |
+| `W-C01-22` | Row 15: library transfer, moved to C04 (C01 #15) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-22.md` |
+| `W-C01-23` | Row 16: second model, the free tier's terms (C01 #16) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-23.md` |
+| `W-C01-24` | Row 18: platform-side readers (C01 #18) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-24.md` |
 | `W-C01-25` | Phase-A probe (PC-16) | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-25.md` |
 | `W-C01-26` | N-109: do the platform's session credentials act beyond the session? | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-26.md` |
 | `W-C01-27` | N-063: the counter-design rows decided from C01's observations | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-27.md` |
 | `W-C01-28` | N-110: follow-ups of D-016's carriers | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-28.md` |
-| `W-C01-29` | Probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
+| `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
 | `W-C01-30` | Stage close review | blocked: depends on W-C01-01 (not accepted) | — | — | `plan/work/W-C01-30.md` |
 <!-- /generated -->
 
@@ -284,6 +284,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-067` | `C05` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-077` | `C05` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-13 (methods... |
 | `N-095` | `C05` | EV-C00-021 | open | T-71, T-72, T-73, T-74, T-75, T-76, T-25, T-40, T-66, T-70, T-58, T-36 and T-37: exam design (a baseline arm, the grading method and a pr... |
+| `N-111` | `C05` | CHK-C01-004 | open | **Row 4 is observed again whenever the Claude Code version changes** (plan C01 row 4, PC-15; CHK-C01-003 condition 2(a); CHK-C01-004 cond... |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
 | `N-068` | `C06` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-078` | `C06` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-37 (t... |
