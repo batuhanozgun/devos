@@ -200,3 +200,16 @@
 - I judged the named items by reading their `SKILL.md` files: the DevOS-capability skills in full or by their main sections, and the stack skills by frontmatter description and size. The undecided stack rows do not depend on their detailed content, because the decision is deferred to the SOUL work item that would use them.
 - The installer behaviour comes from reading `scripts/lib/install-manifests.js`, not from running it.
 - That the cloud container is Linux comes from this session's environment; whether it holds for every DevOS environment is a C01 observation.
+
+## Annotation 2026-10-06: statements qualified by the library's ECC study (EV-C00-021, T-83; L-159)
+
+W-C00-10 round 2 decided this (`evidence/C00/EV-C00-021_w10_round2_dispositions.md`, row T-83 and section 2). It is a record change, not a revision. No row decision changes, and no text above is rewritten, so the row names `ECC-<line>` keep their lines. The study was compared with this record under N-060 (`evidence/C00/pass_b/N-060_ecc_study.md`; items N60-1 to N60-30 in `evidence/C00/EV-C00-020_w10_round2_register.md`).
+
+The study describes ECC at an earlier revision (2.2.1) under another repository path, and its relation to `ef648e0` is unchecked (N60-1). So each statement below is from the study, not re-read at `ef648e0`. Each decision stands on its other reasons. No re-read at `ef648e0` is made: no decision and no later stage depends on these statements.
+
+- **ECC-62 and ECC-74** (`baseline:hooks`, the hook runtime as a whole; `capability:security`; both disable). Their basis reads "cannot authoritatively tell" subagents apart within one session (K-9 item 2(d)), not "cannot tell". The study reports subagent fields in the hook input, but the same process reports them about itself, so the point stands (N60-10). Whether the hook input identifies a subagent and its role, and whether that is authoritative, is checked against the dated documentation in C01 row 4 (PC-15, with T-61).
+- **ECC-134** (`skill:unified-memory`, disable). Its reason is a second, unreviewed store of hand-over context outside the rule gate, besides the MCP and runtime conflicts the row names. It is not "two authoritative copies": the study finds that store deliberately not authoritative (N60-17).
+- **ECC-99** (`agent:planner`, disable). The study contradicts the remark that the `/plan` command uses the planner: at the study's revision `/plan` plans inline and calls the agent only on request (N60-22).
+- **ECC-72** (ECC self-management and miscellaneous, disable). The study contradicts the description of `dev-team` as personas in one session: it dispatches four parallel, analysis-only subagents fed one shared summary. It still adds no independence (N60-23).
+- **Part E2's paragraph on how a component installs.** "Nothing filters by skill" is too broad as a general statement: the study also notes per-skill components and checks that can narrow what is installed. No decision depends on it (N60-29).
+- **Scope limit** (the totals, and "could not assess: none"; N60-30). ECC parts outside the install manifest (a session runtime, a review workflow, a provider package) have no row and were not assessed.

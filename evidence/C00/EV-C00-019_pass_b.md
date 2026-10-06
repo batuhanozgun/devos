@@ -40,3 +40,27 @@ Method notes: two subagents probed which words matched by importing the guard's 
 - **W-C00-10 round 2:** every finding and condition of CHK-C00-046 to CHK-C00-048, CHK-C00-051, CHK-C00-053 to CHK-C00-056 and every point of the N-060 output gets a disposition (a plan change, new work, a stage note, Batu, or no change with the reason), as round 1 did (EV-C00-014).
 - **W-C00-08** is accepted after those dispositions exist (its acceptance: "each gets a disposition").
 - **C04:** the same question for the old experiment repositories, added to the C00 record, as plan C00 task 4 says.
+
+## Addendum 2026-10-06: CR-C2 by route (b) for the remainders (EV-C00-021, T-58; L-159)
+
+W-C00-10 round 2 decided this (`evidence/C00/EV-C00-021_w10_round2_dispositions.md`, row T-58; with CHK-C00-059 condition 4 and CHK-C00-060 condition 6). The register items are in `evidence/C00/EV-C00-020_w10_round2_register.md`.
+
+Section 2 says the critic's condition 2 (item CR-C2) was met by route (a), with its items 1 to 9 read. That overstates. Route (a) is a read of areas 1 to 5 of the critic's section A against the plan sections of its section B. The follow-up lenses B4 to B7 read areas 1, 2, 4, 6, 7 and 9, and the plan sections they named. They read areas 3, 5, 8 and 10 only in part, and no lens named four plan places of section B. So route (a) holds only in part. Route (b) applies to the remainders. Each remainder below is not checked. Its row names the stage before which it is checked and how it stays readable once the machine account's library access ends. Section 2 is left as written; this addendum is what the record now says.
+
+| Remainder (register item) | Why it is not checked | Checked against | Before | Readable after the access ends |
+|---|---|---|---|---|
+| Area 3: the archived guides, members of the archive's ZIP file (CR-FA3) | B4 and B5 did not open the ZIP under their rules; B5 read the Academy note only | Appendix A's role contracts and its sections 3.3–3.4, 5 and 8; K-4 | C05 | C04's ingested copy; task 1 ingests the archive's members |
+| Area 5: the Foundation's environment findings and information sub-packages (CR-FA5) | Not opened; B6 read the syntheses | 6.6; K-6; K-8 items 1–2; Section 5's environment premises | C04 closes | C04's ingested copy |
+| Area 8: six earlier reviews (CR-FA8) | Seen by banner only | The plan sections of register row CR-FA8 | C06 | C04's ingested copy |
+| Area 10: the maintenance inventories (CR-FA10) | Not read | C04's ingestion scope and 6.6 (with T-66) | C04 task 1 | Checked while direct access holds |
+| Area 10: the writing guide (CR-FA10) | Not read | Appendix E beyond its section 3 | C06 | C04's ingested copy |
+| Plan 5.5 (CR-FB12) | No lens named it | The ingested library | C06 | C04's ingested copy |
+| Plan 5.7 items 4–5: the storage budget and the restore drill (CR-FB4) | No lens checked them; B6 and B7 checked items 1 to 3 | The ingested library | C04 task 6, where the backup size and budget are calculated | C04's ingested copy |
+| Appendix E beyond its section 3 (CR-FB12) | B4 and B5 named its section 3 only | The ingested library, with the writing guide | C06 | C04's ingested copy |
+| Plan Section 13 (CR-FB12) | No lens named it | The ingested library | C11 | C04's ingested copy |
+
+**How they stay readable.** The machine account's library access is removed in C04, after ingestion (plan 0.5; Section 12 item 2). The maintenance inventories are checked before C04 task 1, while direct access holds. Every other remainder is checked against C04's ingested copy. The C04 note has task 1 ingest every file these checks read, the archive's members included, and the ingestion's verification confirms them before the access is removed. Appendix D's sources take the same route (T-70). The stage notes carry the checks: N-094 (C04), N-095 (C05), N-096 (C06) and N-100 (C11).
+
+**No check needed.** The concept studies of area 10: B2-F8 (f) found plan 0.7 unchanged. Area 10's two studies on reopening, cancellation and compensation were read by B7.
+
+**Process.** This addendum is made before W-C00-08 is accepted; W-C00-08 is accepted after it and EV-C00-021 (that record's section 6). The old experiment repositories stay for C04, as section 4 says.

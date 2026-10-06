@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). | 2026-10-06T06:29Z |
 | summary_tr | Senden beklenen: yok. <br>Bilgi: Açık deponun bütün geçmişini kütüphanene karşı bir kez taradım. Eşleşmelerin neredeyse tamamı 2 Ekim'de bana verdiğin LinkedIn analoji yazıların; senin metnin olduğu için açık depoda duruyor. Kütüphanenin araştırma metninden yalnız iki kısa ifade eski kayıtlarda kalmış; bugünkü dosyalarda yoklar. <br>Durum: Planın kütüphaneye karşı bağımsız incelemesi bitti; şimdi bulgularına karar veriyorum ve gerekenleri plana işliyorum. Sonra C00'ın tamamı denetlenip kapanacak. | 2026-10-06T07:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T07:17Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T08:48Z |
 
 ---
 
@@ -53,17 +53,17 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 11 |
-| `C01` | Platform verification | planned | no items | 7 |
-| `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
-| `C03` | Trust boundaries and effect channels | planned | no items | 4 |
-| `C04` | Knowledge, search and context | planned | no items | 6 |
-| `C05` | Common rules, roles and methods | planned | no items | 3 |
-| `C06` | Working order, audit and decision channel | planned | no items | 3 |
-| `C07` | First real loop: the cognitive gate | planned | no items | 2 |
-| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 5 |
-| `C09` | Outage, backup, restore and reconnection | planned | no items | 3 |
+| `C01` | Platform verification | planned | no items | 8 |
+| `C02` | Data model, rule gate and identity chain | planned | no items | 5 |
+| `C03` | Trust boundaries and effect channels | planned | no items | 5 |
+| `C04` | Knowledge, search and context | planned | no items | 7 |
+| `C05` | Common rules, roles and methods | planned | no items | 4 |
+| `C06` | Working order, audit and decision channel | planned | no items | 4 |
+| `C07` | First real loop: the cognitive gate | planned | no items | 3 |
+| `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 6 |
+| `C09` | Outage, backup, restore and reconnection | planned | no items | 4 |
 | `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 3 |
-| `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 2 |
+| `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 3 |
 | `C12` | Hand-over | planned | no items | 0 |
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
@@ -159,6 +159,9 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-12` | Criterion 20 gets a mechanism, a stage and acceptance conditions (test data is synthetic and labelled, reviewed in C08 and C11); Section 0.5's access list is reconciled with option (a) of Section 5.5 (the machine account on Batu's other repositories) | technical | answered | `plan/decisions/PC-12.md` |
 | `PC-13` | C00's acceptance block gets the condition PC-10 added to the plan; the platform-side readers of Section 6.7 get a label for every platform statement and a C01 row that reads the platform documentation (C01 #18); the follow-up points of CHK-C00-038 and CHK-C00-037 | technical | answered | `plan/decisions/PC-13.md` |
 | `PC-14` | Questions to Batu in one sentence, with the details in the linked decision record (D-015); the stage work list copies the binding English conditions (N-086 item 1); D-014 = (a) recorded in Sections 0.5 and 12, and Appendix F step 1 on library access corrected (N-084, T-05); a question whose recommended option asks nothing of Batu becomes one line of information (from D-013, N-089); the Turkish summary follows | technical | answered | `plan/decisions/PC-14.md` |
+| `PC-15` | The installation's exit rule for C00 step 7 and the loop limit of its own review-and-revision cycles, in the working order and cited from Section 9; C01 row 4 also reads and probes how a subagent call completes and what the hook input says about a subagent (W-C00-10 round 2: T-60, T-61, T-83) | technical | answered | `plan/decisions/PC-15.md` |
+| `PC-16` | The stage order shown against C07's measures, with a bounded phase-A probe as a C01 task; "could not check" kept apart from "clean" and "fail"; a recorded defect in a decision's basis reopens it; applied migrations compared with main from C02; review records name what the reviewer shared and missing coverage; informed_of and relations carry how they were made and what they show (W-C00-10 round 2: T-62, T-63, T-64, T-65, T-20, T-34, T-68) | technical | answered | `plan/decisions/PC-16.md` |
+| `PC-17` | Appendix D made faithful to its source: the D1, D2, D4 and D5 trigger questions widened back to the source's scope; re-evaluation also at a new constraint and before the first step of a new kind of action; each loss of the condensed texts written back into its Dn or accounted in the section 1 table, with rows for the orientation checkpoint and the trigger-list rules; D1 says what follows a failed from-scratch test (W-C00-10 round 2: T-70, T-64) | technical | answered | `plan/decisions/PC-17.md` |
 <!-- /generated -->
 
 ---
@@ -180,41 +183,51 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-048` | `C01` | relay-2026-10-03 | open | **Barrier premise in multi-repository sessions** (same relay as N-047). The cited settings documentation says a session with several repo... |
 | `N-063` | `C01` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-073` | `C01` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-02 (whether... |
+| `N-091` | `C01` | EV-C00-021 | open | T-49: each stage file lists Batu's steps from C01. The direction is decided now. The topic's reason is in its row of EV-C00-021 section 1... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
 | `N-064` | `C02` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-074` | `C02` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (strengt... |
+| `N-092` | `C02` | EV-C00-021 | open | T-36, T-37 and T-77: ECC-80's revision binding, ECC-149's flag-and-keep, and the due occurrences of every scheduled job and routine check... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
 | `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-075` | `C03` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (as for ... |
+| `N-093` | `C03` | EV-C00-021 | open | T-81 and T-37: the audit verdict binds to the reviewed high-impact content, and the checks run on the PR combined with `main`; ECC-63's w... |
 | `N-034` | `C04` | OI-011#18 | open | (18) a bounded scan of the connector catalogue as an outside-in discovery method (Batu's suggestion; it complements need-first selection)... |
 | `N-035` | `C04` | OI-011#19 | open | (19) the hook's blanket block of catalogue tools. The search tools (`SearchMcpRegistry`, `SearchPlugins`, `SearchSkills`) are read-only, ... |
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
 | `N-066` | `C04` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-076` | `C04` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (as for ... |
 | `N-090` | `C04` | L-157 | open | **The fingerprint layer matches common code** (2026-10-06, L-157; guard record #4610). The interim leak check (W-C00-14) denied a push be... |
+| `N-094` | `C04` | EV-C00-021 | open | T-35, T-66, T-67, T-68, T-69, T-70 and T-58: source standing and study maturity in the catalogue; benchmark classes and a navigation arm;... |
 | `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
 | `N-067` | `C05` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-077` | `C05` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-13 (methods... |
+| `N-095` | `C05` | EV-C00-021 | open | T-71, T-72, T-73, T-74, T-75, T-76, T-25, T-40, T-66, T-70, T-58, T-36 and T-37: exam design (a baseline arm, the grading method and a pr... |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
 | `N-068` | `C06` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-078` | `C06` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-37 (t... |
+| `N-096` | `C06` | EV-C00-021 | open | T-30, T-34, T-61, T-78, T-58, T-36 and T-37: claim-generation-bound branches and merges; "seen" apart from "sent"; three subagent-complet... |
 | `N-041` | `C07` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): conversational agent builders as SOUL comp... |
 | `N-087` | `C07` | EV-C00-017 | open | **The no-mechanism baseline for the removal test** (plan 6.12 item 4; W-C00-15, 2026-10-06, L-155). `evidence/C00/EV-C00-017_baseline_res... |
+| `N-097` | `C07` | EV-C00-021 | open | T-07 and T-79: 1.2 item 2's bound and 10.3's entry on outcomes against reality outside the records; one rule for confirming a capability ... |
 | `N-042` | `C08` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): deployment hosts. |
 | `N-044` | `C08` | 06#3a-g | open | **Pointer** to N-038 on `C09` (verbatim there): the recovery drill also restores the builder's state (06 section 3a row g names C08–C09). |
 | `N-069` | `C08` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-079` | `C08` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-46 (t... |
 | `N-085` | `C08` | CHK-C00-040 | open | **Real identifiers in the guard's test fixtures** (CHK-C00-040 C1, 2026-10-06, L-153; plan Section 8 item 13, criterion 20). The syntheti... |
+| `N-098` | `C08` | EV-C00-021 | open | T-46 and T-80: the equivalence each portability test protects, a real workflow, host-enforced controls and gateway proof (C11's places to... |
 | `N-038` | `C09` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-070` | `C09` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-080` | `C09` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-48 (t... |
+| `N-099` | `C09` | EV-C00-021 | open | T-65 and T-82: export marked only after read-back; freshness by content identity; restore lists derived from the inventories. The directi... |
 | `N-071` | `C10` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-081` | `C10` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-50 (a... |
 | `N-088` | `C10` | EV-C00-017 | open | **The no-mechanism baseline for the removal test** (plan 6.12 item 4; W-C00-15, 2026-10-06, L-155). `evidence/C00/EV-C00-017_baseline_res... |
 | `N-043` | `C11` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): model hubs. |
 | `N-082` | `C11` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-49 (c... |
+| `N-100` | `C11` | EV-C00-021 | open | T-58: plan Section 13 checked against the ingested library. The direction is decided now. The topic's reason is in its row of EV-C00-021 ... |
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
 | `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
