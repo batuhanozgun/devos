@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 6 Ekim 2026, 19:30 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 20:21 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
@@ -15,6 +15,6 @@
 **Şu an**
 
 Senden beklenen: yok. 
-Durum: C01'de (platform doğrulaması) dört iş kabul edildi: anahtar envanteri, alt ajan belgelerinin okunması, düşünme disiplini araçlarının takip işi ve küçük ön deneme. Ön deneme, SOUL'un kurduğu bir ajanın kullanıcının yargılayamadığı bir alanda iş yapmadan önce hangi yeterlik kanıtını vermesi gerektiğini çalıştı; kendi denetçisi altı ölçütün altısını da karşılanmış buldu ve sonucu C02'ye bir not olarak geçti. Deneme tasarımı ilk denetimde kaldı; ikinci turu yazılıyor. Tasarım geçince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. 
-Belgelerden öğrenilen: ortamlar silinemiyor, yalnız arşivleniyor; test projesinin herkese açık anahtarını senin kopyalaman gerekecek (bağlayıcım yalnız canlı projeye erişiyor). Bunlar önce bir plan değişikliğiyle adımlarına eklenecek. 
+Durum: C01'de (platform doğrulaması) dört iş ve iş listesi kabul edildi: anahtar envanteri, alt ajan belgeleri, disiplin araçlarının takip işi ve küçük ön deneme. Deneme tasarımı ikinci denetimde de kaldı; kural gereği üçüncü denemeden önce bir çerçeve incelemesi yapıyorum. Denetçinin gösterdiği ortak kök şu: bütün çalıştırma sırası, senin bir kez yapıştıracağın tek bir talimata sabitlenmiş, sonradan düzeltilemiyor. İnceleme, her çalıştırmanın talimatını ana daldaki denetlenmiş bir dosyadan okumasını tartacak. 
+Tasarım geçince senden iki deneme ortamı kurmanı isteyeceğim; adımları issue #6'ya tek seferde, adım adım yazacağım. 
 C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı.
