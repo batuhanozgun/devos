@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Synthetic test data (plan Section 8 item 13; criterion 20): the fixtures and inputs in this file are made up for
+# the test and hold no personal or business data. Not made up, because the rules under test name them: the name of
+# DevOS's repository devos and of its GitHub owner, and DevOS's own file paths (the gate's class-high paths).
 """test_merge_gate.py: planted cases for tools/merge_gate.py and guard rule M7 (D-010; PC-06; R-TRANS-1).
 
 The fixture is a scratch repository whose origin is a local bare repository; it carries copies of this working
