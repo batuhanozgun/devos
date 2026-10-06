@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). | 2026-10-06T06:29Z |
-| summary_tr | Senden beklenen: yok. <br>Soruların biçimi plana yazıldı: her soru tek cümle, issue'da; senden hiçbir şey istemeyen bir konu soru olarak gelmez, tek satır bilgi olarak gelir (PC-14). <br>Durum: kütüphane bağlı; e-postaları açtığını söyledin. ChatGPT kütüphaneye bir sonraki yazdığında e-posta gelmezse bana söylemen yeterli. Planın bağımsız incelemesinin kütüphane kısmı ve depo geçmişinin kütüphaneye karşı taranması sürüyor. | 2026-10-06T06:50Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T06:47Z |
+| summary_tr | Senden beklenen: yok. <br>Bilgi: Açık deponun bütün geçmişini kütüphanene karşı bir kez taradım. Eşleşmelerin neredeyse tamamı 2 Ekim'de bana verdiğin LinkedIn analoji yazıların; senin metnin olduğu için açık depoda duruyor. Kütüphanenin araştırma metninden yalnız iki kısa ifade eski kayıtlarda kalmış; bugünkü dosyalarda yoklar. <br>Durum: Planın kütüphaneye karşı bağımsız incelemesi bitti; şimdi bulgularına karar veriyorum ve gerekenleri plana işliyorum. Sonra C00'ın tamamı denetlenip kapanacak. | 2026-10-06T07:25Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T07:17Z |
 
 ---
 
@@ -52,7 +52,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 12 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 11 |
 | `C01` | Platform verification | planned | no items | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 4 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 4 |
@@ -68,7 +68,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-084, N-086
+- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-086
   - `W-C00-01` Read the plan package: accepted
   - `W-C00-02` Preparation verification (plan C00 step 1): accepted
   - `W-C00-03` Gap and contradiction list: accepted
@@ -100,7 +100,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-05` | Builder operating model (PC-04) | cancelled | done by the producer's own judgement (L-033), not independently accepted; superseded in substance by W-C00-12 (principle 11, `briefs/w-c00-12/BATU_TERMINAL_GOALS_TR.md`) | L-015 to L-033; EV-C00-005 (T-A2r, T-E2) | `plan/work/W-C00-05.md` |
 | `W-C00-06` | Translate the plan package (plan C00 step 0) | accepted | todo (heavy) | EV-C00-006 (conventions, revisions 2 and 3); EV-C00-007 (proposals); EV-C00-008 (verdicts and dispositions); CHK-C00-007 to CHK-C00-019; CHK-C00-020 (final) | `plan/work/W-C00-06.md` |
 | `W-C00-07` | ECC function comparison (plan C00 step 3) | accepted | todo (heavy) | EV-C00-011; CHK-C00-021 (conditions); CHK-C00-024 (conditions met) | `plan/work/W-C00-07.md` |
-| `W-C00-08` | Independent plan review (plan C00 step 4) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | — | `plan/work/W-C00-08.md` |
+| `W-C00-08` | Independent plan review (plan C00 step 4) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | CHK-C00-022, CHK-C00-023 (pass A); EV-C00-019 (pass B), with CHK-C00-046 to CHK-C00-048, CHK-C00-051, CHK-C00-053 to CHK-C00-056, with CHK-C00-052, CHK-C00-057, CHK-C00-058 on the redaction; dispositions at W-C00-10 round 2 (L-158) | `plan/work/W-C00-08.md` |
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | accepted | todo (heavy) | EV-C00-009 (brief); EV-C00-010 (counter-design, independence declared low); EV-C00-012 (comparison with dispositions); CHK-C00-027 | `plan/work/W-C00-09.md` |
 | `W-C00-10` | Decide on the results (plan C00 step 7) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo | — | `plan/work/W-C00-10.md` |
 | `W-C00-11` | Stage closure review | blocked: depends on W-C00-08 (not accepted) | todo | — | `plan/work/W-C00-11.md` |
@@ -172,7 +172,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 |---|---|---|---|---|
 | `N-027` | `C00` | OI-003 | open | **Item:** Environment variables named `GH_TOKEN` and `GITHUB_TOKEN` exist in the builder session (EV-C00-001, row 8). Whether they are us... |
 | `N-045` | `C00` | OI-004 | open | **Pointer** to N-029 on `C01` (verbatim there): the commit identity is checked first in C00 step 1 (B3 check), then in C01 row 11. |
-| `N-084` | `C00` | EV-C00-003 | open | **What follows D-014's answer** (W-C00-03's final version, 2026-10-06; EV-C00-014 addendum 2). Owner: the executor. |
 | `N-086` | `C00` | CHK-C00-040 | open | **For the next checked change of the working order** (CHK-C00-040 findings 6 and 10, 2026-10-06, L-153). (1) Section 4, "Stage work list"... |
 | `N-028` | `C01` | OI-001 | open | **Item:** It is untested whether the session enforces `access: "read"` for `agentic-os-search`, either through the git proxy or through t... |
 | `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
@@ -226,7 +225,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 14 (N-058, N-062, N-037, N-001, N-002, N-005, N-083, N-089, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 15 (N-058, N-062, N-084, N-037, N-001, N-002, N-005, N-083, N-089, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.

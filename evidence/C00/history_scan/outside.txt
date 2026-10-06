@@ -1,0 +1,35 @@
+OUTSIDE: 103 commit(s) reachable from remote branches and pull-request heads but not from origin/main; 54 tip(s) to scan
+commit 2f9751a5ad19751afdb8a12aa74df59d381e99c6
+  .claude/agents/researcher.md: line(s) 11 (4 run(s))
+commit 2fdd4b7cf6a604172273cb1d38a56a67fa2a380b
+  tools/test_tool_allowlist.sh: line(s) 780 (5 run(s))
+commit 510a1a67df34f7f11add891be1c7512b20faa699
+  tools/test_1c.py: line(s) 142, 143 (6 run(s))
+commit 92332c8fae28661779f47340f6da34a302a1e32e
+  plan/decisions/FR-02.md: line(s) 12 (3 run(s))
+commit 98b2090300fdc64a3e25d205d6280ef931957c24
+  tools/test_1c.py: line(s) 11 (2 run(s))
+commit a1f421bd2315a577cc90ac669d0820f3393b4b77
+  plan/decisions/FR-01.md: line(s) 11 (12 run(s))
+commit ac374a133da2859fd5f86de58d51474d7743b7f3
+  evidence/C00/reviews/R-W12-2.md: line(s) 151 (4 run(s))
+commit c40af71a7991ecc5261dd99d580241431333e3f3
+  tools/check_records.py: line(s) 1596 (1 run(s))
+  tools/guard_report.py: line(s) 17 (1 run(s))
+  tools/sync_worktree.sh: line(s) 10 (1 run(s))
+  tools/test_tool_allowlist.sh: line(s) 78, 687, 734 (7 run(s))
+commit c6cca7026e4f111318776c75c832595568fdb4fc
+  .claude/hooks/tool_allowlist.py: line(s) 160 (1 run(s))
+commit ce600a31d062fc2b51f3057e51a9b2b5bf60c747
+  service names: 1 line(s)
+commit db06c2632edc2f92dc9e7bad12ee651b27e0bb1b
+  evidence/C00/tests/1c_gate.md: line(s) 58 (1 run(s))
+commit db6d2038ee2cab0ffd837d85611dbabbce1b4924
+  tools/test_tool_allowlist.sh: line(s) 138 (5 run(s))
+commit fb0ed2de4b96b91c923fa9949efbb6d8525da318
+  plan/builder/design/02_memory.md: line(s) 147 (7 run(s))
+  plan/builder/design/04_roles.md: line(s) 152, 153 (3 run(s))
+  plan/builder/design/05_continuity.md: line(s) 142 (6 run(s))
+commit fbb027b3d09ba97dd82fc9e0f7b9bdd900b7ed15
+  service names: 3 line(s)
+SUMMARY OUTSIDE: 103 commit(s) outside main; 12 with library matches; 2 with service-name matches
