@@ -6,7 +6,7 @@
 
 | Field | Value |
 |---|---|
-| Source commit | `main` `41139157842932e3ab4e8ff25892fa06b69b250` (PR #189, the C01 work list), at which W-C01-09's acceptance condition was in force |
+| Source commit | `main` `411391577842932e3ab4e8ff25892fa06b69b250` (PR #189, the C01 work list), at which W-C01-09's acceptance condition was in force |
 | Deployment configuration | The working session `session_01WKJi23FwAjFtiyD1DbQ2Rs` (cloud, `get_session` `external_metadata.container_cc_version` 2.1.289 at 14:11Z). The documentation's changelog names 2.1.291 (6 October 2026) as its newest release; the pages describe the current release, not this session's version |
 | Criterion version | W-C01-09's acceptance block at `4113915`; plan C01 row 4 at the same commit (unchanged since `c843988`) |
 | Input | The three questions above, given to a researcher subagent with the row's text, K-9 item 2 (d) and the acceptance block |
@@ -14,7 +14,7 @@
 | Raw evidence ID | The researcher's report: agent `a42e1b2b6506713b8`, working session above, 2026-10-06 (a run of about seven minutes; its fetches carry server times from about 14:45Z), taken with `tools/subagent_audit.py last` and checked with `tools/subagent_audit.py disciplines` (DISCIPLINES OK). Filed at `evidence/C01/raw/W-C01-09_researcher_report.md`, with one edit stated at its head: the full page addresses are given as page names under the documentation's base address, because the full addresses match the research library's fingerprints and the guard's leak check denies them |
 | Independence level | Same session, fresh-context researcher subagent (declared, Ek A 5.3); a reading of documentation, judged by a fresh-context checker (W-C01-09's acceptance) |
 
-**The documentation read.** The official Claude Code documentation, on the site `code.claude.com`, path `docs/en/`. Pages: `sub-agents` (S1), `hooks` (S2), `tools-reference` (S3), `workflows` (S4), `headless` (S5), `claude-code-on-the-web` (S6), `routines` (S7), `env-vars` (S8), `glossary` (S9), `changelog` (S10), `whats-new/2026-w27` (S11) and `permission-modes` (S12). The older addresses of S1 and S2 on the earlier documentation site redirect (HTTP 301) to these. **Page dates:** no content page carries a date of its own ("undated"); the changelog is dated per entry (newest: 2.1.291, 6 October 2026), and the weekly digest S11 covers 29 June to 3 July 2026. **Date of reading:** 2026-10-06. Quotes come from each page's raw text; the researcher found that the fetch tool's summary had misstated three points and re-read them from the raw text (its report, "Counter-evidence"). No secondary source was used.
+**The documentation read.** The official Claude Code documentation, on the site `code.claude.com`, path `docs/en/`. Pages: `sub-agents` (S1), `hooks` (S2), `tools-reference` (S3), `workflows` (S4), `headless` (S5), `claude-code-on-the-web` (S6), `routines` (S7), `env-vars` (S8), `glossary` (S9), `changelog` (S10), `whats-new/2026-w27` (S11) and `permission-modes` (S12). The older addresses of S1 and S2 on the earlier documentation site redirect (HTTP 301) to these. **Page dates:** no content page carries a date of its own ("undated"); the changelog is dated per entry (newest: 2.1.291, 6 October 2026), and the weekly digest S11 covers 29 June to 3 July 2026. **Date of reading:** 2026-10-06. Quotes come from each page's raw text; the researcher found that the fetch tool's summary had misstated points and re-read them from the raw text (its report counts three and names two under "Counter-evidence"). No secondary source was used.
 
 ## 1. How a subagent call completes
 
@@ -61,6 +61,6 @@
 
 ## 5. Limits of this reading
 
-- The researcher used the fetch tool and then read the same official pages' raw text with read-only `curl` (about 30 requests), beyond the task's "about 25 fetches", because the fetch tool's summary had misstated three points; the guard allowed every call and denied none.
+- The researcher used the fetch tool and then read the same official pages' raw text with read-only `curl` (about 30 requests), beyond the task's "about 25 fetches", because the fetch tool's summary had misstated points; the guard allowed every call and denied none.
 - Not read: the agent view, cross-session messaging and the Agent SDK reference in full.
 - The pages are undated; a later reading (N-111, at a version change) reads them again.
