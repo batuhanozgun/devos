@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). | 2026-10-06T09:00Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: C00 (başlangıç ve planın bağımsız incelemesi) kabul edildi. Tek bir koşulu şarta bağlı: platformun her oturuma koyduğu kendi anahtarının oturum dışına uzanmadığı C01'de sınanacak; uzanıyorsa C00'ın o koşuldaki kabulü geçersiz olur ve plan çerçeve incelemesine gider. <br>Sırada C01 (platform doğrulaması): önce düşünme disiplinlerinin kalıcı kuralları, sonra C01'in iş listesi. C01'de senden iki deneme ortamı kurmanı isteyeceğim; zamanı gelince adım adım yazacağım. | 2026-10-06T13:08Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T13:08Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: C00 kabul edildi; C01 (platform doğrulaması) başladı. İlk adımı, düşünme disiplinlerinin kalıcı kuralları, denetlenip ana dala girdi: artık her ajan dokuz soruyu cevaplıyor ve araçlar cevapların varlığını denetliyor. Sırada C01'in iş listesi var. C01'de senden iki deneme ortamı kurmanı isteyeceğim; zamanı gelince adım adım yazacağım. <br>C00'ın "sır görünmüyor" koşulu, platform anahtarının oturum dışına uzanmadığı C01'de gösterilene kadar şarta bağlı. | 2026-10-06T13:10Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T13:09Z |
 
 ---
 
@@ -169,9 +169,9 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-073` | `C01` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-02 (whether... |
 | `N-091` | `C01` | EV-C00-021 | open | T-49: each stage file lists Batu's steps from C01. The direction is decided now. The topic's reason is in its row of EV-C00-021 section 1... |
 | `N-102` | `C01` | N-086 | open | **C01 #18 and the D-008 cost text** (carried from N-086 item (2) on `plan/work/C00.md` by CHK-C00-067 condition 3; N-086 came from CHK-C0... |
-| `N-104` | `C01` | D-016 | open | **D-016's permanent carriers** (CHK-C00-067 condition 4(b), finding 9; `plan/decisions/D-016.md` item 4; 2026-10-06, L-161). One change, ... |
 | `N-105` | `C01` | CHK-C00-067 | open | **The key inventory** (plan Section 12, "Key inventory": "The builder keeps a single inventory in C00"; CHK-C00-067 condition 4(c), findi... |
 | `N-109` | `C01` | PC-18 | open | **Do the platform's session credentials act beyond the session?** (PC-18 place 5; CHK-C00-070 condition 2; 2026-10-06, L-163). C00's sixt... |
+| `N-110` | `C01` | CHK-C01-001 | open | **Follow-ups of D-016's carriers** (CHK-C01-001 condition and finding 6; CHK-C01-002 findings 7 to 9; 2026-10-06, L-168). (1) **Tools**, ... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
 | `N-064` | `C02` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
@@ -222,7 +222,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-100` | `C11` | EV-C00-021 | open | T-58: plan Section 13 checked against the ingested library. The direction is decided now. The topic's reason is in its row of EV-C00-021 ... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 27 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 28 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-104, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
