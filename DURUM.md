@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 6 Ekim 2026, 12:18 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 6 Ekim 2026, 12:20 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C00 (Başlangıç, işlev karşılaştırması ve planın bağımsız incelemesi).
 
@@ -15,5 +15,6 @@
 **Şu an**
 
 Senden beklenen: yok. 
-Bilgi: Açık deponun bütün geçmişini kütüphanene karşı bir kez taradım. Eşleşmelerin neredeyse tamamı 2 Ekim'de bana verdiğin LinkedIn analoji yazıların; senin metnin olduğu için açık depoda duruyor. Kütüphanenin araştırma metninden yalnız iki kısa ifade eski kayıtlarda kalmış; bugünkü dosyalarda yoklar. 
-Durum: Planın kütüphaneye karşı bağımsız incelemesi bitti; şimdi bulgularına karar veriyorum ve gerekenleri plana işliyorum. Sonra C00'ın tamamı denetlenip kapanacak.
+Durum: Planın kütüphaneye karşı incelemesinin bulgularına karar verildi; bunlardan çıkan üç plan değişikliği yazıldı ve dört bağımsız denetçide. Sonra C00 kapanış denetimine gidecek. 
+Düşünme disiplinleri: dediğin gibi, her ajan dokuz soruyu her iş kaleminin başında cevaplayacak ve kayda yazacak (D-016). 
+Dalların otomatik silinmesi ayarını açtın; bir sonraki birleştirmede kontrol edip sana söyleyeceğim.

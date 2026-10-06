@@ -4,7 +4,8 @@
 # names and the field names of Claude Code's subagent transcripts and meta files and of the guard's decision log.
 """test_subagent_audit.py: planted cases for tools/subagent_audit.py (W-C00-15; CHK-C00-041 C4).
 
-The fixture is a fake home directory with transcripts and meta files under .claude/projects/x/y/subagents/ and a
+The fixture is a fake home directory with transcripts and meta files under .claude/projects/x/y/subagents/ (an
+Agent-tool subagent's) and under its workflows/<run-id>/ (a workflow agent's, whose meta has no toolUseId), and a
 fake guard-log directory, both in a temporary directory that the tool is pointed at through DEVOS_AUDIT_HOME and
 DEVOS_GUARD_LOG_DIR. Every tool result, prompt, thinking block and non-path argument holds a marker string that no
 output may contain. Prints one line per case and SUBAGENT_AUDIT_TEST PASS only if every case behaves as written.
@@ -21,6 +22,8 @@ TOOL = Path(__file__).resolve().parent / "subagent_audit.py"
 MARKER = "PLANTED-FIXTURE-CONTENT-q7Zx"
 WS = "/fx/scratch/bl/rfx01"
 FINAL = "---\nid: CHK-FX-001\nverdict: PASS\n---\n\nFindings: none (fixture).\nTürkçe satır: ğüşiöç"
+WF_META = {"agentType": "checker", "description": "fixture", "workflowPhase": "Review", "spawnDepth": 1,
+           "requestShape": "foreground", "requestNonInteractive": True}   # a workflow agent's meta: no toolUseId
 RESULTS, OUTPUTS = [], []
 
 
@@ -37,9 +40,14 @@ class Fixture:
         self.logs.mkdir()
         self.n = 0
 
-    def agent(self, agent, calls, guard=None, final=FINAL, after=(), extra=(), log="session_fx1.jsonl"):
+    def agent(self, agent, calls, guard=None, final=FINAL, after=(), extra=(), log="session_fx1.jsonl", folder="",
+              meta=None):
         """calls, then the final message, then after: (tool, input) pairs; guard: (event, tool, logged path)
-        records, by default one PreToolUse per call; extra: further records."""
+        records, by default one PreToolUse per call; extra: further records. folder: where under subagents/ the
+        transcript and meta go (a workflow agent's: workflows/<run-id>); meta: the meta file's object, by default an
+        Agent-tool subagent's with its toolUseId."""
+        where = self.sub / folder
+        where.mkdir(parents=True, exist_ok=True)
         ev = [{"type": "user", "message": {"role": "user", "content": f"Prompt text {MARKER}"}},
               self.text("An earlier text, not the final message.")]
         for i, (tool, inp) in enumerate(list(calls) + list(after)):
@@ -52,8 +60,8 @@ class Fixture:
                 {"type": "tool_result", "tool_use_id": tid, "content": f"file content {MARKER}"}]}})
         if not after:
             ev += [self.text(f"thinking {MARKER}", "thinking"), self.text(final)]
-        (self.sub / f"agent-{agent}.jsonl").write_text("".join(json.dumps(e) + "\n" for e in ev), encoding="utf-8")
-        (self.sub / f"agent-{agent}.meta.json").write_text(json.dumps(
+        (where / f"agent-{agent}.jsonl").write_text("".join(json.dumps(e) + "\n" for e in ev), encoding="utf-8")
+        (where / f"agent-{agent}.meta.json").write_text(json.dumps(meta if meta is not None else
             {"agentType": "general-purpose", "description": "fixture", "toolUseId": f"toolu_fx_launch_{agent}"}))
         if guard is None:
             guard = [("PreToolUse", t, i.get("file_path", i.get("path", "")) if t in ("Read", "Glob", "Grep")
@@ -84,8 +92,8 @@ GOOD = [("Glob", {"path": WS + "/materials", "pattern": "**/*.md"}),
         ("ToolSearch", {"query": MARKER})]
 
 
-def void_case(fx, label, agent, calls, expect, guard=None, log="session_fx2.jsonl"):
-    fx.agent(agent, calls, guard=guard, log=log)
+def void_case(fx, label, agent, calls, expect, guard=None, log="session_fx2.jsonl", folder="", meta=None):
+    fx.agent(agent, calls, guard=guard, log=log, folder=folder, meta=meta)
     rc, out, both = fx.run("audit", agent, WS)
     lines = out.splitlines()
     case(label, rc == 1 and lines and lines[-1].startswith("AUDIT VOID: ") and expect in out
@@ -105,7 +113,8 @@ def main():
 
         rc, out, both = fx.run("audit", "afx0valid", WS)
         lines = out.splitlines()
-        want = [f"transcript: {fx.sub / 'agent-afx0valid.jsonl'}", "toolUseId: toolu_fx_launch_afx0valid",
+        want = [f"transcript: {fx.sub / 'agent-afx0valid.jsonl'}", "kind: Agent-tool subagent",
+                "toolUseId: toolu_fx_launch_afx0valid",
                 "tool calls in the transcript: 6", "guard-log PreToolUse records for afx0valid: 6 (agree)",
                 "guard records breaking the rules: none"]
         case("(2) audit of a valid run: all six calls inside, counts agree, AUDIT VALID, exit 0",
@@ -153,6 +162,50 @@ def main():
         case("(10) an unknown agent ID, a missing workspace and a relative workspace exit 2",
              rc == 2 and rc2 == 2 and rc3 == 2 and rc4 == 2 and "0 transcripts of agent afx9unknown" in both,
              both + both2 + both3 + both4)
+
+        # A workflow agent: transcript and meta under subagents/workflows/<run-id>/, a meta without toolUseId.
+        fx.agent("afxawf", GOOD, folder="workflows/wf_fx01", meta=WF_META)
+        rc, out, both = fx.run("last", "afxawf")
+        rc2, out2, both2 = fx.run("calls", "afxawf")
+        rc3, out3, both3 = fx.run("audit", "afxawf", WS)
+        lines = out3.splitlines()
+        want = [f"transcript: {fx.sub / 'workflows' / 'wf_fx01' / 'agent-afxawf.jsonl'}",
+                "kind: workflow agent (run wf_fx01)", "tool calls in the transcript: 5",
+                "guard-log PreToolUse records for afxawf: 5 (agree)", "guard records breaking the rules: none"]
+        case("(12) a workflow agent's transcript is found by last, calls and audit; audit names its kind and run, "
+             "says that its meta names no starting call instead of failing, and is valid",
+             rc == 0 and out == FINAL + "\n" and rc2 == 0 and [x + ": inside" for x in out2.splitlines()] == lines[5:10]
+             and rc3 == 0 and lines[-1] == "AUDIT VALID" and all(w in lines for w in want)
+             and lines[1].startswith("sha256: ") and lines[3].startswith("toolUseId: none (")
+             and sum(x.endswith(": inside") for x in lines) == 5, both + both2 + both3)
+        void_case(fx, "(13) a workflow agent's Read outside the workspace voids, as any agent's", "afxbwf",
+                  GOOD[:2] + [("Read", {"file_path": "/fx/scratch/bl/criteria.md"})],
+                  'OUTSIDE (file_path resolves to "/fx/scratch/bl/criteria.md")', folder="workflows/wf_fx02",
+                  meta=WF_META)
+
+        fx.agent("afxctwo", GOOD[:1], folder="workflows/wf_fx01", meta=WF_META)   # in two workflow runs
+        fx.agent("afxctwo", GOOD[:1], folder="workflows/wf_fx03", meta=WF_META)
+        fx.agent("afxdtwo", GOOD[:1])                                              # in each layout once
+        fx.agent("afxdtwo", GOOD[:1], folder="workflows/wf_fx01", meta=WF_META)
+        rs = [fx.run(cmd, a, *([WS] if cmd == "audit" else [])) for a in ("afxctwo", "afxdtwo")
+              for cmd in ("last", "calls", "audit")]
+        case("(14) two transcripts of one agent (in two workflow runs, or one in each layout) exit 2 for last, calls "
+             "and audit", all(r[0] == 2 and not r[1] and "2 transcripts of agent" in r[2] for r in rs),
+             "".join(r[2] for r in rs))
+
+        fx.agent("afxenone", GOOD[:1], folder="workflows", meta=WF_META)            # no run folder
+        fx.agent("afxenone", GOOD[:1], folder="workflows/wf_fx01/deeper", meta=WF_META)   # one level too deep
+        fx.agent("afxenone", GOOD[:1], folder="other/wf_fx01", meta=WF_META)        # not under workflows/
+        rs = [fx.run(cmd, "afxenone", *([WS] if cmd == "audit" else [])) for cmd in ("last", "calls", "audit")]
+        case("(15) no transcript in either layout (files directly under workflows/, one level below a run folder or "
+             "outside workflows/ are not one) exit 2 for last, calls and audit",
+             all(r[0] == 2 and not r[1] and "0 transcripts of agent afxenone" in r[2] for r in rs),
+             "".join(r[2] for r in rs))
+
+        fx.agent("afxfnoid", GOOD[:1], meta=WF_META)
+        rc, out, both = fx.run("audit", "afxfnoid", WS)
+        case("(16) an Agent-tool subagent's meta without toolUseId is still a reading error (exit 2)",
+             rc == 2 and not out and "no readable toolUseId in " in both, both)
 
         case("(11) no output contains the planted content of a tool result, prompt, thinking block or argument",
              len(OUTPUTS) > 10 and not any(MARKER in o for o in OUTPUTS), "\n".join(o for o in OUTPUTS if MARKER in o))

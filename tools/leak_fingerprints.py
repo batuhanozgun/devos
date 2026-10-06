@@ -20,8 +20,9 @@ history The one-time history scan (N-084; plan 0.5 note, 6.7). Fingerprints the 
         service or holds a matching run is printed as withheld. Exit 0 when the scan completed, 2 on an error.
 
 Normalisation, hashing and the service-name derivation are the guard's own functions, imported from the guard
-file of this checkout, so the store and the check cannot drift apart. The guard protects LEAK_STORE from writes
-(B5, F5); this script is the only writer.
+file of this checkout, so the store and the check cannot drift apart. The import writes no bytecode
+(sys.dont_write_bytecode), so no command leaves a .claude/hooks/__pycache__ in the checkout. The guard protects
+LEAK_STORE from writes (B5, F5); this script is the only writer.
 Usage: python3 tools/leak_fingerprints.py build [--devos PATH] | status | scan FILE... |
        history [--devos PATH] [--rev REV]
 """
@@ -37,6 +38,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
+sys.dont_write_bytecode = True      # importing the guard must leave no .claude/hooks/__pycache__ (CHK-C00-049)
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GIT_OPTS = ("--no-replace-objects", "-c", "core.quotepath=false")   # as the guard reads a push (pushed_blocks)
 GIT_TIMEOUT = 300           # seconds, for each git call of history
