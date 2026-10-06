@@ -35,3 +35,9 @@ A safe summary; no library content. Prepared by the builder (`same_session`). Me
 ## Frame signal
 
 Three premises (P-04, P-11, P-19) are questionable for the same reason (their rows' verdict; the first version said "fail" here, which no row says). The plan places authority boundaries where it controls the credential, which is the database. It assumes that GitHub-side boundaries follow from the repository list, but the session can change that list itself. This is a squeeze signal in the sense of plan 6.12: the right response is to question the frame ("which credential does each channel actually use, and who can change it?"), not to add rules. The effect-channel inventory (0.3 item 13) is the place to answer it, channel by channel, with enforcement layer and verification status (ledger rule 5).
+
+## Addendum 2026-10-06: P-02 and the earlier switch away from Claude Code cloud (EV-C00-021, T-59; L-159)
+
+W-C00-10 round 2 decided this (`evidence/C00/EV-C00-021_w10_round2_dispositions.md`, row T-59: no plan change). Pass B's lens B3 (CHK-C00-048; register item B3-F5 in `evidence/C00/EV-C00-020_w10_round2_register.md`) confirms the return to Claude Code cloud. It finds one source gap: the library states no reason for the 28 September switch away from it (D027).
+
+So the reason for that switch is unknown, and the round trip away from Claude Code cloud and back is not counted as examined. P-02 rests on 5.1's comparison (Batu's decision) and on C01's observations (#1, #13), not on that reason. No plan text depends on the unknown reason. P-02's row is kept as written; this addendum qualifies it. The closure review reads this addendum (N-059 on `plan/work/W-C00-11.md`).

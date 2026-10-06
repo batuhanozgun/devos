@@ -135,14 +135,15 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.4 Relation — typed relation
 
-**Fields:** `id`, `type`, `from_ref` (+revision), `to_ref` (+revision), `scope`, `hard` (whether it affects readiness), `group_id` and `group_mode` (ALL / ANY), `validity` (current / stale / retracted), `use` (which use it is valid for).
+**Fields:** `id`, `type`, `from_ref` (+revision), `to_ref` (+revision), `scope`, `hard` (whether it affects readiness), `group_id` and `group_mode` (ALL / ANY), `validity` (current / stale / retracted), `use` (which use it is valid for), `method` (how the relation was made: `mechanical`, from links, heading paths or status files; `model_extracted`; or `recorded`, by a function call in DevOS's own work; PC-16), `epistemic_status` (as plan 6.6: `observation` / `user_decision` / `inference` / `hypothesis` / `proposal`; PC-16).
 
-**Relation types (initial list):** `depends_on` (hard dependency), `supports`, `challenges`, `derived_from` (source derivation), `supersedes`, `uses` (contribution use), `part_of` (composite product), `reviews`, `blocks_effect`, `about` (descriptive), `informed_of` (Batu has been told the content of `from_ref`, with when and through which channel; used by the user model, 3.16; PC-08).
+**Relation types (initial list):** `depends_on` (hard dependency), `supports`, `challenges`, `derived_from` (source derivation), `supersedes`, `uses` (contribution use), `part_of` (composite product), `reviews`, `blocks_effect`, `about` (descriptive), `informed_of` (the content of `from_ref` has been sent to Batu; used by the user model, 3.16; PC-08). Each `informed_of` relation carries its own `sent_at`, `channel` and `delivery_observation_ref` (the Observation, 3.12, that shows he saw it); without that Observation it records "sent", never "seen". These fields are built when `informed_of` is first needed (C06; section 3, "Activation") (PC-16).
 
 **Rules:**
 - In hard dependencies a cycle is rejected; in descriptive relations a cycle is allowed.
 - An exact repeat of the same relation produces no new record and no new event.
 - When a supporting source goes stale, what it supports is not automatically counted as false; the sufficiency of the support falls back into re-evaluation.
+- A relation with `method = model_extracted` cannot have `epistemic_status = observation` (PC-16).
 
 ### 3.5 Assignment — claim
 
@@ -221,15 +222,17 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.11 Review, Verdict, Acceptance — review, verdict, acceptance
 
-**Review fields:** `id`, `kind` (review / sample), `target_ref` (+revision or snapshot), `claim`, `criterion` (+version), `use`, `basis_refs` (the full set of source, decision and policy revisions the verdict rests on), `reviewer_declared_session`, `reviewer_role_class` (from the token), `independence_level` (same_session / fresh_context_subagent / same_model_other_session / other_view / other_model_family / batu_expert; the six levels of plan 8 item 7), `view_ref`.
+**Review fields:** `id`, `kind` (review / sample), `target_ref` (+revision or snapshot), `claim`, `criterion` (+version), `use`, `basis_refs` (the full set of source, decision and policy revisions the verdict rests on), `reviewer_declared_session`, `reviewer_role_class` (from the token), `independence_level` (same_session / fresh_context_subagent / same_model_other_session / other_view / other_model_family / batu_expert; the six levels of plan 8 item 7), `view_ref`, `shared_with_producer` (what the reviewer shared with the producer: the criterion, the sources, the framing; plan 8 item 7; PC-16).
 
-**Verdict fields:** `id`, `review_ref`, `result` (pass / fail / conditional), `evidence_refs`, `objections`, `limits`.
+**Verdict fields:** `id`, `review_ref`, `result` (pass / fail / conditional / indeterminate; PC-16), `evidence_refs`, `objections`, `limits`.
 
 **Acceptance fields:** `id`, `target_ref`, `accepted_use`, `scope`, `current_evidence`, `residual_decisions`, `owner_authority`.
 
 **Rules:**
 - The reviewing session cannot be the session that produced the reviewed product or proposed the change.
 - The independence level is kept in the record; the acceptance claim is limited to this level.
+- A review planned at an independence level that did not run (for example a pass by the second model family) is recorded as missing coverage at that level, in the `limits` of the verdict that did run, never as agreement (plan 8 item 7; PC-16).
+- `indeterminate` is the result of a reviewer who cannot decide (missing evidence; a degraded mode of Appendix G G7). It accepts nothing, and the review stays open; the squeeze signal (3.26) does not count it as a failure (plan 8 item 14; PC-16).
 - The user's approval of a preference does not count as evidence of a technical fact.
 - Binding verdicts and acceptance are written only with the `devos_denetim` role; `devos_calisma` cannot approve what it produced itself.
 - When `basis_refs`, `criterion` or `use` changes, the verdict goes stale and a new acceptance is needed; the old verdict is not automatically carried over to another use of the same product.
@@ -286,7 +289,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 **Rules:**
 - Decisions of the `high_impact` and `batu` classes cannot move to the `open` state until the result of the alternatives research (the compared options, or `single_viable_path_reason`, or `alternatives_state = open_exploration`), the criteria, evidence, assumptions, `premises` (premise inventory), reversibility and the reopening conditions have been entered (format gate). A decision opened with `alternatives_state = open_exploration` cannot be answered or accepted until the compared options or `single_viable_path_reason` are entered (plan K-3 item 2; PC-08).
 - The answer to a `batu`-class decision can come only from Batu's identity: B3 = (a) was chosen, so the answer is processed only after the decision channel's intake has verified that it came from Batu's GitHub account (plan 6.9). Option (b)'s `devos_batu` role is removed (PC-08).
-- When a new decision is opened, related earlier decisions are queried and linked to the record; an earlier decision is reopened only with new material information or a changed goal.
+- When a new decision is opened, related earlier decisions are queried and linked to the record; an earlier decision is reopened only with new material information or a changed goal. A recorded defect in the earlier decision's basis is new material information: a reasonable alternative it never considered (absent from its `alternatives_considered`), one of its `premises` shown false, or a failed from-scratch test on the same evidence (Appendix D, D1). Re-arguing the same evidence in the same frame is not (plan K-3 item 3; PC-16).
 - `class` follows rules, not the agent's choice (PC-08). A decision is `batu` when it concerns a matter that belongs to Batu (purpose, scope, cost, his accounts and his other work; plan K-11 item 7), and at least `high_impact` when it concerns the schema, the rules, roles or methods, security, a cost or an irreversible effect. Where the database can decide, it enforces it: a decision that opens or widens a Mission cannot be below `batu`, and from Constraint's activation (C05, section 3) neither can one that changes a Constraint; a decision tied to a work item of `impact_class = high` cannot be `routine`. A set share of the decisions labelled `routine` falls to the sample review (3.11).
 
 ### 3.18 EffortPolicy — effort policy
@@ -346,7 +349,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 **MechanismAssumption fields:** `id`, `mechanism_ref`, `compensates_for` (what the model cannot do on its own), `last_tested_at`, `test_result`, `retest_triggers` (model or platform change).
 
 **Rules:**
-- A `FrameReview` work item is opened by itself when (a) a second correction proposal (`Learning.class = proposal`) is linked (`about`, 3.4) to the same failure-class record (`Learning.class = failure_class`), or (b) the same work item fails a second time. A failure is a `fail` verdict on its output, a revoked claim, or a claim that expired or was released with a recorded abandonment (the release, or the session's structured hand-over (3.24), records that the attempt is given up, with the reason). A claim released with a hand-over that continues the work, and a finished result awaiting review, are not failures: work carried across sessions by hand-over opens no review (Appendix C N20). In case (b) the work item is not claimed again until the FrameReview is open. The signal sees only these records: a squeeze recorded under different failure-class records, or not recorded, does not trigger it (plan U-7; PC-08).
+- A `FrameReview` work item is opened by itself when (a) a second correction proposal (`Learning.class = proposal`) is linked (`about`, 3.4) to the same failure-class record (`Learning.class = failure_class`), or (b) the same work item fails a second time. A failure is a `fail` verdict on its output, a revoked claim, or a claim that expired or was released with a recorded abandonment (the release, or the session's structured hand-over (3.24), records that the attempt is given up, with the reason). A claim released with a hand-over that continues the work, a finished result awaiting review, and an `indeterminate` verdict (3.11; PC-16) are not failures: work carried across sessions by hand-over opens no review (Appendix C N20). In case (b) the work item is not claimed again until the FrameReview is open. The signal sees only these records: a squeeze recorded under different failure-class records, or not recorded, does not trigger it (plan U-7; PC-08).
 - **Seal** (plan 6.12 item 3; PC-08): for `trigger = major_design`, the FrameReview is opened when the design work is admitted, and the counter-design is commissioned then, from the purpose, the constraints and the criteria only (`commissioned_at` before any design revision exists). Until `design_submitted_at` is set, the database returns `counter_design_ref` only to the claim of the counter-design work item and to the audit environment. Inside one session, which holds every claim it opens, the seal rests on declaration and is labelled as such (plan K-9 item 2 (d)). The decision cannot be accepted until every difference in `comparison` is closed with its reason.
 - The `Decision` record of a major design decision cannot be opened without carrying `premises`.
 
@@ -381,9 +384,10 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 | User and policy | `record_constraint`, `revise_constraint`, `update_user_model`, `set_effort_policy`, `record_dead_end`; `grant`, `revoke_grant` deferred with Grant (3.6) | Effort reduction only with audit approval, for the item or by a standing policy; constraint change with a decision record |
 | Discipline and frame | `record_protocol_audit`, `open_frame_review`, `record_mechanism_assumption`; `record_premises` deferred with Premise (3.26) | Without a required discipline, work does not advance; premises mandatory in major design (`Decision.premises`); a counter-design is sealed until the design is submitted |
 | Backup | `mark_exported` (only `devos_backup`) | No other write |
+| Deployment | `deployment_drift(expected)` (the migration job and `devos_ci`; from C04 also inside `session_brief`) | `expected` is the set of migrations and function versions at a `main` commit; the result lists every difference from what the database records as applied and deployed; "no difference" only when the comparison ran in full, otherwise "could not check" (plan 6.2, 8 item 14; PC-16) |
 | Recovery | `begin_recovery`, `advance_recovery_stage` | The order is not skipped; epoch increment |
 
-**Activation** (PC-08): each function is built with its family (section 3). Exceptions: `session_brief(role)` and `register_session` in C04, `record_handoff`, `record_launch` and `reconcile_launch` in C06; `answer_decision` with answer identity in C06; `mark_exported` in C02, for C03's test (8).
+**Activation** (PC-08): each function is built with its family (section 3). Exceptions: `session_brief(role)` and `register_session` in C04, `record_handoff`, `record_launch` and `reconcile_launch` in C06; `answer_decision` with answer identity in C06; `mark_exported` in C02, for C03's test (8); `deployment_drift` in C02, with the migration path (plan C02 task 0): in C02 and C03 the migration job runs it after every apply and the checks of every later pull request run it, and from C04 `session_brief(role)` also runs it at every session opening and stops the affected work (PC-16).
 
 ---
 
