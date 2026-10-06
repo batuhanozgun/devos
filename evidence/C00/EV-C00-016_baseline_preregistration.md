@@ -82,7 +82,7 @@
 
 **Decision.** The executor applies criteria section 6 to the items of lists (2) and (3) and records the matching item, if any. A check in which the hint checker made any tool call is void and is repeated by a new subagent.
 
-**Loop.** If a hint is found, the text is rewritten to remove what the matching item quotes, identically in both files, and a **new** hint checker checks the new text. At most 3 checks (2 rewrites). If the third still finds a hint, this form is dropped: a new form is written by the recipe (section 10), and the revised pre-registration is merged before any run. If the two texts ever stop being byte-identical, each is checked by its own hint checker.
+**Loop.** If a hint is found, the text is rewritten to remove what the matching item quotes, identically in both files (written by a producer subagent acting as task designer that runs nothing and starts no subagent, never by the executor; the guard log's `agent_id` on every Write or Edit to these files shows it, and the result record names the subagent (CHK-C00-041 C3, added 2026-10-06 before any rewrite or revision was written)), and a **new** hint checker checks the new text. At most 3 checks (2 rewrites). If the third still finds a hint, this form is dropped: a new form is written by the recipe (section 10), and the revised pre-registration is merged before any run. If the two texts ever stop being byte-identical, each is checked by its own hint checker.
 
 ## 6. Materials check (before any run)
 
@@ -92,7 +92,7 @@
 
 **Prompt (exact).** "The folder `{{WORKSPACE}}/materials` holds a system's documentation. (1) List every component, process or person that reads run records or any part of them, under any name the documents use, with what each reads and when; cite the file and the sentence. (2) List every point where the documents leave unclear whether, or when, something reads run records or needs them kept. Use only the Read, Glob and Grep tools, only on files inside `{{WORKSPACE}}`, with absolute paths (for Glob and Grep, set `path` to `{{WORKSPACE}}/materials`); at most 30 tool calls; do not write files. Return the two lists as your final message."
 
-**Decision and loop.** The pass rules are criteria section 7. On a failure, the materials are revised (identically in both sets, except the one line of criteria section 1), the criteria's citations are updated, and two new subagents check again; at most 2 revisions, then the form is dropped as in section 5. Both checkers are audited as runners are (section 7).
+**Decision and loop.** The pass rules are criteria section 7. On a failure, the materials are revised (written by a producer subagent acting as task designer that runs nothing and starts no subagent, never by the executor; the guard log's `agent_id` on every Write or Edit to these files shows it, and the result record names the subagent (CHK-C00-041 C3, added 2026-10-06 before any rewrite or revision was written); identically in both sets, except the one line of criteria section 1), the criteria's citations are updated, and two new subagents check again; at most 2 revisions, then the form is dropped as in section 5. Both checkers are audited as runners are (section 7).
 
 **Order.** The hint and materials checks may run before or after the pre-registration merges. The runs use only files that are on `main` and have passed both checks.
 
@@ -168,6 +168,8 @@ Both are read with readers (the Read tool, `grep`): the guard denies an interpre
 **Contamination.** Once this is merged, the form and its gap are public, and any later DevOS session can read them. BR-212 is retired as a blind task: it is not used in any exam of C05, C07 or C10.
 
 **The class.** Hidden second use of the artefact being changed. A work item asks to change, limit or remove an artefact for a stated purpose that includes not losing or breaking what the system still needs. A second use of the artefact, documented only in a material about another component, depends on it in a way the change breaks. No value of the obvious parameter meets both, so the frame must change. The fix is cheap once the second use is seen.
+
+**Who writes a new form.** A new form that replaces BR-212 in this baseline (sections 5 and 6) is written by a producer subagent acting as task designer that runs nothing and starts no subagent, never by the executor; the guard log's `agent_id` on every Write or Edit to these files shows it, and the result record names the subagent (CHK-C00-041 C3, added 2026-10-06 before any rewrite or revision was written).
 
 **Recipe for a parallel form.** Written by the exam environment and kept there, not in public `devos`, until it has run (plan 7.3):
 1. A new fictional system, with new names and vocabulary, in DevOS's domain (the operation or design of an AI-assisted development system). Not Brindle; no real product or service.
