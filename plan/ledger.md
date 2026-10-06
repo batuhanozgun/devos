@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. Issue #6 was answered on 2026-10-02T06:27Z (D-002, D-003). | 2026-10-03T19:50Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). | 2026-10-06T09:00Z |
-| summary_tr | Senden beklenen: yok. <br>Durum: Planın kütüphaneye karşı incelemesinin bulgularına karar verildi; bunlardan çıkan üç plan değişikliği yazıldı ve dört bağımsız denetçide. Sonra C00 kapanış denetimine gidecek. <br>Düşünme disiplinleri: dediğin gibi, her ajan dokuz soruyu her iş kaleminin başında cevaplayacak ve kayda yazacak (D-016). <br>Dalların otomatik silinmesi ayarını açtın; bir sonraki birleştirmede kontrol edip sana söyleyeceğim. | 2026-10-06T09:05Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T09:20Z |
+| summary_tr | Senden beklenen: yok. <br>Durum: Planın bağımsız incelemesi ve bulgularına verilen kararlar kabul edildi; bunlardan çıkan üç plan değişikliği denetlenip ana dala girdi. Sırada C00'ın kapanış denetimi var; sonra C01 başlıyor. <br>Dalların otomatik silinmesi çalışıyor: birleştirilen dal silindi, eskiler yerinde. | 2026-10-06T09:45Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-06T09:26Z |
 
 ---
 
@@ -33,14 +33,13 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- none
+- `W-C00-11` Stage closure review
 
 **Running:**
-- `W-C00-08` Independent plan review (plan C00 step 4): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
-- `W-C00-10` Decide on the results (plan C00 step 7): claimed by `session_01WKJi23FwAjFtiyD1DbQ2Rs`
+- none
 
 **Not ready, with the first unmet condition:**
-- `W-C00-11`: depends on W-C00-08 (not accepted)
+- none
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -52,7 +51,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
-| `C00` | Start, function comparison and independent review of the plan | running | accepted 12, blocked 1, cancelled 6, running 2 | 11 |
+| `C00` | Start, function comparison and independent review of the plan | running | accepted 14, cancelled 6, ready 1 | 9 |
 | `C01` | Platform verification | planned | no items | 8 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 5 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 5 |
@@ -68,22 +67,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C00` Start, function comparison and independent review of the plan: running · open notes: N-027, N-045, N-086
-  - `W-C00-01` Read the plan package: accepted
-  - `W-C00-02` Preparation verification (plan C00 step 1): accepted
-  - `W-C00-03` Gap and contradiction list: accepted
-  - `W-C00-04` Premise inventory (plan C00 step 6): accepted
-  - `W-C00-05` Builder operating model (PC-04): cancelled
-  - `W-C00-06` Translate the plan package (plan C00 step 0): accepted · open notes: N-003, N-004
-  - `W-C00-07` ECC function comparison (plan C00 step 3): accepted
-  - `W-C00-08` Independent plan review (plan C00 step 4): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-061
-  - `W-C00-09` Independent counter-design of DevOS (plan C00 step 5): accepted
-  - `W-C00-10` Decide on the results (plan C00 step 7): running (session_01WKJi23FwAjFtiyD1DbQ2Rs) · open notes: N-060, N-072
-  - `W-C00-11` Stage closure review: blocked: depends on W-C00-08 (not accepted) · open notes: N-051, N-056, N-059
-  - `W-C00-12` Holistic redesign of the builder's operating model (before any heavy C00 item): cancelled · 6 children (accepted 2, cancelled 4)
-  - `W-C00-13` Turkish summary for Batu (plan 0.6 item 1): accepted
-  - `W-C00-14` Interim leak check in the guard for C00–C04 (W-C00-10 T-01): accepted
-  - `W-C00-15` No-mechanism baseline before C02 (W-C00-10 T-24): accepted
+- no claimed item; no active branch
 <!-- /generated -->
 
 ### Work index
@@ -100,10 +84,10 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C00-05` | Builder operating model (PC-04) | cancelled | done by the producer's own judgement (L-033), not independently accepted; superseded in substance by W-C00-12 (principle 11, `briefs/w-c00-12/BATU_TERMINAL_GOALS_TR.md`) | L-015 to L-033; EV-C00-005 (T-A2r, T-E2) | `plan/work/W-C00-05.md` |
 | `W-C00-06` | Translate the plan package (plan C00 step 0) | accepted | todo (heavy) | EV-C00-006 (conventions, revisions 2 and 3); EV-C00-007 (proposals); EV-C00-008 (verdicts and dispositions); CHK-C00-007 to CHK-C00-019; CHK-C00-020 (final) | `plan/work/W-C00-06.md` |
 | `W-C00-07` | ECC function comparison (plan C00 step 3) | accepted | todo (heavy) | EV-C00-011; CHK-C00-021 (conditions); CHK-C00-024 (conditions met) | `plan/work/W-C00-07.md` |
-| `W-C00-08` | Independent plan review (plan C00 step 4) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo (heavy) | CHK-C00-022, CHK-C00-023 (pass A); EV-C00-019 (pass B), with CHK-C00-046 to CHK-C00-048, CHK-C00-051, CHK-C00-053 to CHK-C00-056, with CHK-C00-052, CHK-C00-057, CHK-C00-058 on the redaction; dispositions at W-C00-10 round 2 (L-158) | `plan/work/W-C00-08.md` |
+| `W-C00-08` | Independent plan review (plan C00 step 4) | accepted | todo (heavy) | CHK-C00-022, CHK-C00-023 (pass A); EV-C00-019 (pass B), with CHK-C00-046 to CHK-C00-048, CHK-C00-051, CHK-C00-053 to CHK-C00-056, with CHK-C00-052, CHK-C00-057, CHK-C00-058 on the redaction; dispositions at W-C00-10 round 2 (L-158) | `plan/work/W-C00-08.md` |
 | `W-C00-09` | Independent counter-design of DevOS (plan C00 step 5) | accepted | todo (heavy) | EV-C00-009 (brief); EV-C00-010 (counter-design, independence declared low); EV-C00-012 (comparison with dispositions); CHK-C00-027 | `plan/work/W-C00-09.md` |
-| `W-C00-10` | Decide on the results (plan C00 step 7) | running (session_01WKJi23FwAjFtiyD1DbQ2Rs) | todo | — | `plan/work/W-C00-10.md` |
-| `W-C00-11` | Stage closure review | blocked: depends on W-C00-08 (not accepted) | todo | — | `plan/work/W-C00-11.md` |
+| `W-C00-10` | Decide on the results (plan C00 step 7) | accepted | todo | EV-C00-013, EV-C00-014 (round 1); EV-C00-020, EV-C00-021 (round 2); PC-07 to PC-17; CHK-C00-059, CHK-C00-060, CHK-C00-062 to CHK-C00-066 (L-160) | `plan/work/W-C00-10.md` |
+| `W-C00-11` | Stage closure review | ready | todo | — | `plan/work/W-C00-11.md` |
 | `W-C00-12` | Holistic redesign of the builder's operating model (before any heavy C00 item) | cancelled | doing: R-W12-1 FAIL (L-041); revision 3 with test register and tranche plan (L-042); narrow re-review R-W12-2 PASS-WITH-CONDITIONS (L-043); dispositions and C1–C6 text fixes done, conditions judged per part; H-PRB and P-W12-3 deferred after a classifier refusal (L-044); tranche 1a done (L-045); 1b-i next | L-036 to L-045; `plan/builder/w-c00-12/`; P-W12-1, P-W12-2, T-C1; R-W12-1, R-W12-2 | `plan/work/W-C00-12.md` |
 | `W-C00-12.1` | Tranche 1a: probes | cancelled | — | — | `plan/work/W-C00-12.1.md` |
 | `W-C00-12.2` | Tranche 1b-i: records and render | accepted | — | — | `plan/work/W-C00-12.2.md` |
@@ -232,15 +216,13 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-100` | `C11` | EV-C00-021 | open | T-58: plan Section 13 checked against the ingested library. The direction is decided now. The topic's reason is in its row of EV-C00-021 ... |
 | `N-003` | `W-C00-06` | OI-011#10 | open | (10) names that say what a thing is, in all three scopes (installation, DevOS, SOUL), probably as plan section 0.7 like 0.6; |
 | `N-004` | `W-C00-06` | OI-011#12 | open | (12) the boundary between DevOS's design files (`plan/`) and the builder's own rules. |
-| `N-061` | `W-C00-08` | CHK-C00-022 | open | **Pass A done; pass B waits** (2026-10-05, L-143). Pass A (L-142) ran in two lenses on the binding English text at `8349242`, each a fres... |
-| `N-060` | `W-C00-10` | CHK-C00-021 | open | - **Rows it could reopen:** any row whose decision rests on a fact the study contradicts or adds to. First: the five adopt rows (no-progr... |
 | `N-072` | `W-C00-10` | CHK-C00-027 | open | **From W-C00-09's check** (CHK-C00-027 findings 2 and 9, 2026-10-05, L-145). (1) The counter-designer's role file (`.claude/agents/counte... |
 | `N-051` | `W-C00-11` | R-W12-3#F-11 | open | **How W-C00-01 to W-C00-04 reach acceptance before this item** (R-W12-3 F-11; re-disposed 2026-10-05 by D-010, summary item 30; it replac... |
 | `N-056` | `W-C00-11` | R-FR02-2 | open | **Open blockers at stage closure** (R-FR02-2 m4, carried by run `session_017bQAUeV7o6pTvG1Pz3hRHx`; re-pointed 2026-10-05 by D-010 from t... |
 | `N-059` | `W-C00-11` | CHK-C00-003 | open | **For the closure review** (from the acceptance verdicts of N-051, 2026-10-05). CHK-C00-003 (W-C00-02) findings F-5 to F-7: W-C00-02's ac... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 15 (N-058, N-062, N-084, N-037, N-001, N-002, N-005, N-083, N-089, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 17 (N-058, N-062, N-084, N-037, N-001, N-002, N-005, N-061, N-060, N-083, N-089, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
