@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-018` (Barındırıcının resmi doğrulama yoluna başvurmak, DevOS'un gerekli savunma amaçlı öz-doğrulaması otomatik incelemeyle işaretlenmek yerine tanınsın diye). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 9 Ekim 2026, 23:16 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 9 Ekim 2026, 23:21 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
