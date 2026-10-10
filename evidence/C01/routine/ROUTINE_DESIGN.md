@@ -63,7 +63,7 @@ The run's bans are items 1 to 5. `CONTROL.md` section 1 adds working rules under
 
 The run reads one variable by name, `DEVOS_ENVIRONMENT`, and records `match` when it reads `devos-kurulum`, `absent`, or `different` (the value is then not written). It rests on three things and nothing else: the documented fact F8 that an environment's variables reach that environment's sessions; Batu's step that adds this one line to `devos-kurulum` and to no other environment; and the routine's environment field, which he sets in the same form. No undocumented variable, and no view the session may have of its environment's name, is used.
 
-Limits: the value is not a secret and not an authority (anyone using the environment can read it, F8); it shows which environment the session read its variables from, under the claim of section 2; that no other environment carries the same line rests on Batu's step, not on an observation. This is a step for Batu (section "Batu's step", steps 1 to 9): `devos-kurulum` is not known to carry a variable that names it (the key inventory, row 7, cites the planning chat's statement that the builder environment was created with no variables). The line is harmless to the working session, which runs in the same environment and does not use it. Batu removes it when he deletes the routine (PC-22; section "Batu's step", steps 24 to 31).
+Limits: the value is not a secret and not an authority (anyone using the environment can read it, F8); it shows which environment the session read its variables from, under the claim of section 2; that no other environment carries the same line rests on Batu's step, not on an observation. This is a step for Batu (section "Batu's step", steps 1 to 9): `devos-kurulum` is not known to carry a variable that names it (the key inventory, row 7, cites the planning chat's statement that the builder environment was created with no variables). The line is harmless to the working session, which runs in the same environment and does not use it. Batu removes it when he deletes the routine (PC-22; section "Batu's step", steps 25 to 37).
 
 ## 5. How a run reads its steps
 
@@ -145,7 +145,7 @@ No active trial across environments; no token, key or secret, and no step that n
 
 ## Batu's step (Turkish, for issue #6)
 
-*Revised for CHK-C01-025 C1 to C3: one action per step; the variable is added through the documented path ("Configure your environment" on the cloud-environments page) before the routine is created, and removed after it is deleted; a screen position the documentation does not give is described as what to look for.*
+*Revised for CHK-C01-025 C1 to C3 and CHK-C01-028 K1 to K3: one action per step; the variable is added through the documented path ("Configure your environment" on the cloud-environments page) before the routine is created, and removed after it is deleted; a screen position the documentation does not give is described as what to look for.*
 
 C01'in tek deneme rutinini kurmanı rica ediyorum. Rutin, Claude'un her sabah belirli bir saatte kendi kendine başlattığı kısa bir çalışmadır; yalnızca `devos` deposunda kendi kayıt dalına yazar (depo: kodun durduğu GitHub klasörü; dal: o deponun ayrı bir kopya hattı). Hiçbir anahtar, şifre ya da token gerekmez; hiçbir yere böyle bir şey yazma. Adımları bilgisayarda, tarayıcıdan yap. Bir ekran burada yazdığından farklı görünürse o adımda dur ve bu konuya (#6) ekranın görüntüsünü ekle; tahminle devam etme.
 
@@ -161,11 +161,11 @@ C01'in tek deneme rutinini kurmanı rica ediyorum. Rutin, Claude'un her sabah be
    Görmen gereken: satırın yanında bir ayar simgesi belirir.
 5. O ayar simgesine tıkla.
    Görmen gereken: `devos-kurulum`'un ayar penceresi açılır.
-6. "Environment variables" kutusunu bul ve en alttaki boş satıra tıkla.
-   Görmen gereken: imleç kutunun en alt satırında yanıp söner.
+6. "Environment variables" kutusunun en altına tıklayıp yeni, boş bir satır aç.
+   Görmen gereken: imleç kutunun en altındaki boş satırda yanıp söner.
 7. Şunu yaz: `DEVOS_ENVIRONMENT=devos-kurulum`
    Görmen gereken: kutunun son satırı tam olarak `DEVOS_ENVIRONMENT=devos-kurulum`. Kutuda başka satırlar varsa onlara dokunma; pencerede başka hiçbir şeyi değiştirme. Bu satır gizli değildir; rutinin hangi ortamda çalıştığını kendi kaydında gösterebilmesi içindir.
-8. Pencerenin kaydet düğmesine (**Save**) tıkla.
+8. Pencerenin **Save changes** düğmesine tıkla.
    Görmen gereken: pencere kapanır.
 9. Sayfayı kapatma; B bölümüne geç.
    Görmen gereken: hata mesajı yok.
@@ -201,25 +201,38 @@ C01'in tek deneme rutinini kurmanı rica ediyorum. Rutin, Claude'un her sabah be
 23. **Create** düğmesine tıkla.
     Görmen gereken: rutin listede görünür ve bir sonraki çalışma zamanı yazar. **Run now**'a basman gerekmez.
 
-Sonra bu konuya (#6) "rutin kuruldu" yaz. Ertesi sabahtan başlayarak oturum listende her gün yeni bir oturum belirir (oturum: Claude'un bir çalışma penceresi); ona dokunman gerekmez. İlk çalışmanın kaydını ben kontrol ederim.
+24. Bu konuya (#6) "rutin kuruldu" yaz.
+    Görmen gereken: yorumun konuda görünür.
+
+Ertesi sabahtan başlayarak oturum listende her gün yeni bir oturum belirir (oturum: Claude'un bir çalışma penceresi); ona dokunman gerekmez. İlk çalışmanın kaydını ben kontrol ederim.
 
 **C. Daha sonra, ben bu konuda "denemeler bitti" dediğimde**
 
-24. claude.ai/code/routines adresini aç.
+25. claude.ai/code/routines adresini aç.
     Görmen gereken: rutinlerin listesi; içinde `devos-c01-rutin`.
-25. `devos-c01-rutin`'e tıkla.
+26. `devos-c01-rutin`'e tıkla.
     Görmen gereken: rutinin sayfası açılır.
-26. Adının yanındaki menüyü aç.
+27. Adının yanındaki menüyü aç.
     Görmen gereken: menüde **Delete** vardır.
-27. **Delete**'i seç ve onayla.
-    Görmen gereken: rutin listeden kalkar.
-28. A bölümündeki 1. ile 5. adımları yeniden yaparak `devos-kurulum`'un ayar penceresini aç.
-    Görmen gereken: ayar penceresi açılır.
-29. "Environment variables" kutusunda `DEVOS_ENVIRONMENT=devos-kurulum` satırını sil; başka satıra dokunma.
+28. **Delete**'i seç.
+    Görmen gereken: rutin listeden kalkar ya da bir onay sorusu çıkar.
+29. Bir onay sorusu çıktıysa onayla; çıkmadıysa bu adımı atla.
+    Görmen gereken: rutin listede artık yok.
+30. claude.ai/code adresini aç.
+    Görmen gereken: Claude Code'un ana sayfası açılır.
+31. Mesaj kutusunun yakınında ortamı gösteren bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri açılır.
+32. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi; içinde `devos-kurulum`.
+33. İmleci `devos-kurulum`'un üzerine getir.
+    Görmen gereken: satırın yanında bir ayar simgesi belirir.
+34. O ayar simgesine tıkla.
+    Görmen gereken: `devos-kurulum`'un ayar penceresi açılır.
+35. "Environment variables" kutusunda `DEVOS_ENVIRONMENT=devos-kurulum` satırını sil; başka satıra dokunma.
     Görmen gereken: bu satır kutuda artık yok.
-30. **Save**'e tıkla.
+36. **Save changes** düğmesine tıkla.
     Görmen gereken: pencere kapanır.
-31. Bu konuya "rutin ve satır silindi" yaz.
+37. Bu konuya "rutin ve satır silindi" yaz.
     Görmen gereken: yorumun konuda görünür.
 
 Talimat metni (13. adım için):
