@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-019` (Platformun her oturuma koyduğu kendi kimlik bilgilerinin oturumla sınırlı kaldığının DevOS tarafından denenmeyip platform belgesine dayanmasını, D-003'ün kalan riskinin parçası olarak C03'teki yeniden değerlendirmeye kadar kabul etmek (N-109)). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 11 Ekim 2026, 01:02 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 01:04 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
-**Sıradaki işler:** başlatılabilir: `W-C01-03`. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** başlatılabilir: `W-C01-03`, `W-C01-31`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 04:10 (Türkiye saati) tarihinde yenileniyor.
 

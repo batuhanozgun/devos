@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). | 2026-10-10T22:05Z |
 | summary_tr | Senden beklenen: tek karar — **D-019**: platformun her oturuma koyduğu kendi kimlik bilgilerinin oturumla sınırlı kaldığına, kendimiz denemeden, platform belgesine dayanarak C03'e kadar güvenmeyi kabul ediyor musun? Önerim evet; acelesi yok, yalnız C02'deki ortam kurulumunu bekletiyor. <br>Durum: Güvenlik kapsamının çerçeve incelemesi (FR-05) ve C01'in plan metnindeki karşılığı (PC-21) bağımsız denetimlerden geçti. C01 artık platformu kendisi denemiyor; ortamlar arası ayrımı platform belgesinden ve DevOS'un kendi ayarlarından kuruyor, belgenin söylemediği olgular için planın kendi "başarısız olursa" yolunu tasarım olarak alıyor. Sıradaki iş C01'in iş listesini buna göre yeniden düzenlemek. C02'den önce sana bir karar daha gelecek: ortamlar arasındaki ayrım için hesap düzeyinde bir seçenek isteyip istemediğin. <br>Kullanım normal düzeyde. | 2026-10-10T22:05Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:02Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:04Z |
 
 ---
 
@@ -34,6 +34,7 @@
 <!-- generated:frontier -->
 **Ready (startable now):**
 - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps
+- `W-C01-31` Re-plan of C01's work list under FR-05 and PC-21
 
 **Running:**
 - none
@@ -75,7 +76,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 5, blocked 24, ready 1 | 14 |
+| `C01` | Platform verification | running | accepted 5, blocked 24, ready 2 | 14 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 10 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 10 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
@@ -151,6 +152,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-28` | N-110: follow-ups of D-016's carriers | accepted | — | — | `plan/work/W-C01-28.md` |
 | `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
 | `W-C01-30` | Stage close review | blocked: depends on W-C01-03 (not accepted) | — | — | `plan/work/W-C01-30.md` |
+| `W-C01-31` | Re-plan of C01's work list under FR-05 and PC-21 | ready | — | — | `plan/work/W-C01-31.md` |
 <!-- /generated -->
 
 ---
