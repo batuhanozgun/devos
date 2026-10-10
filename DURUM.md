@@ -1,8 +1,8 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
+**Senden beklenen:** Şu kararlar senin: `D-019` (Platformun her oturuma koyduğu kendi kimlik bilgilerinin oturumla sınırlı kaldığının DevOS tarafından denenmeyip platform belgesine dayanmasını, D-003'ün kalan riskinin parçası olarak C03'teki yeniden değerlendirmeye kadar kabul etmek (N-109)). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 11 Ekim 2026, 00:40 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 01:02 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
@@ -14,7 +14,6 @@
 
 **Şu an**
 
-Senden beklenen: şu an bir karar yok. 
-Durum: Senin yönlendirdiğin güvenlik kapsamı çerçeve incelemesi (FR-05) iki bağımsız denetimden geçti. Sonuç: C01, platformun ortamlar arası ayrımını kendisi denemeye çalışmayacak; bunu platformun resmî belgesinden ve DevOS'un kendi ayarlarını okuyarak kuracak, iddiayı da "belgeyle güvence altında, bağımsız denenmedi" diye sınırlı kaydedecek. Belgenin açıkça söylemediği üç olgu için o olguya dayanmayan bir tasarım yolu seçilecek. Koruma kancası ve sızıntı kontrolünün zorunlu çekirdeği (senin D-008 ve K6 kararların) kalıyor ama büyümüyor. Senin kararlarından hiçbiri değişmedi. 
-Sırada: C01'in plan metnini buna göre satır satır değiştirmek (PC-21). Ardından sana tek bir basit adım düşecek: sıradan bir routine oluşturmak; adımları o zaman yazacağım. 
+Senden beklenen: tek karar — **D-019**: platformun her oturuma koyduğu kendi kimlik bilgilerinin oturumla sınırlı kaldığına, kendimiz denemeden, platform belgesine dayanarak C03'e kadar güvenmeyi kabul ediyor musun? Önerim evet; acelesi yok, yalnız C02'deki ortam kurulumunu bekletiyor. 
+Durum: Güvenlik kapsamının çerçeve incelemesi (FR-05) ve C01'in plan metnindeki karşılığı (PC-21) bağımsız denetimlerden geçti. C01 artık platformu kendisi denemiyor; ortamlar arası ayrımı platform belgesinden ve DevOS'un kendi ayarlarından kuruyor, belgenin söylemediği olgular için planın kendi "başarısız olursa" yolunu tasarım olarak alıyor. Sıradaki iş C01'in iş listesini buna göre yeniden düzenlemek. C02'den önce sana bir karar daha gelecek: ortamlar arasındaki ayrım için hesap düzeyinde bir seçenek isteyip istemediğin. 
 Kullanım normal düzeyde.
