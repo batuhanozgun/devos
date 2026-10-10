@@ -63,7 +63,7 @@ The run's bans are items 1 to 5. `CONTROL.md` section 1 adds working rules under
 
 The run reads one variable by name, `DEVOS_ENVIRONMENT`, and records `match` when it reads `devos-kurulum`, `absent`, or `different` (the value is then not written). It rests on three things and nothing else: the documented fact F8 that an environment's variables reach that environment's sessions; Batu's step that adds this one line to `devos-kurulum` and to no other environment; and the routine's environment field, which he sets in the same form. No undocumented variable, and no view the session may have of its environment's name, is used.
 
-Limits: the value is not a secret and not an authority (anyone using the environment can read it, F8); it shows which environment the session read its variables from, under the claim of section 2; that no other environment carries the same line rests on Batu's step, not on an observation. This is a step for Batu (section "Batu's step", steps 7 to 9): `devos-kurulum` is not known to carry a variable that names it (the key inventory, row 7, cites the planning chat's statement that the builder environment was created with no variables). The line is harmless to the working session, which runs in the same environment and does not use it. It stays until `devos-kurulum` closes (C12).
+Limits: the value is not a secret and not an authority (anyone using the environment can read it, F8); it shows which environment the session read its variables from, under the claim of section 2; that no other environment carries the same line rests on Batu's step, not on an observation. This is a step for Batu (section "Batu's step", steps 1 to 9): `devos-kurulum` is not known to carry a variable that names it (the key inventory, row 7, cites the planning chat's statement that the builder environment was created with no variables). The line is harmless to the working session, which runs in the same environment and does not use it. Batu removes it when he deletes the routine (PC-22; section "Batu's step", steps 24 to 31).
 
 ## 5. How a run reads its steps
 
@@ -76,7 +76,7 @@ Limits: the value is not a secret and not an authority (anyone using the environ
 ## 6. How runs start, and how many
 
 - **Start.** One schedule trigger, set once by Batu when he creates the routine: daily at 05:07 his local time (a few minutes past the hour, F3; early morning, outside his busy hours, plan 6.4). The builder causes no run, and Batu presses nothing after creation. The first run is the first 05:07 after creation. A single Run now press cannot serve row 1, which needs two runs in a row, so the schedule is the start chosen.
-- **Batu's steps it implies.** At creation: name, prompt, model, repository, environment, the variable of section 4, the schedule, removing every connector, Create; then one line on issue #6. When the executor says the probes are done: delete the routine. Nothing else (section "Batu's step").
+- **Batu's steps it implies.** At creation: name, prompt, model, repository, environment, the variable of section 4, the schedule, removing every connector, Create; then one line on issue #6. When the executor says the probes are done: delete the routine, then remove the variable (PC-22). Nothing else (section "Batu's step").
 - **Runs.** At most one a day. Working runs: R1a and R1b on consecutive days (rows 1, 2 and 4, with W-C01-33's record); P1, P2 and P3 once checked changes open them; R4V only if the version changes; CS1 and CS2 only if W-C01-29 opens them. That is five to seven working runs, plus one idle run on every other day the routine exists; over C01, one run a day from creation to deletion, about 8 to 15 in all (an estimate; the branches give the real count).
 - **Against the limit.** Plan 6.4 assumes 15 runs a day, shared with Batu's own routines; this routine takes at most one of them. The routines page (F7, read 2026-10-10) states hourly limits and no daily figure; one run a day is far inside each. Row 5 reads the account's real value (W-C01-12). If it shows a limit at which one run a day and Batu's own routines would not fit, the executor asks Batu, as his decision (working order section 8), to pause the routine with its on/off switch (F12); that would be one more step.
 - **Idle usage bound.** An idle run makes no install and no subagent call, writes one stamp, and makes at most 12 tool calls. No step starts other runs, and no run retries itself; nothing uses the limit up on purpose.
@@ -145,43 +145,84 @@ No active trial across environments; no token, key or secret, and no step that n
 
 ## Batu's step (Turkish, for issue #6)
 
-C01'in tek deneme rutinini kurmanızı rica ediyorum. Rutin, Claude'un her sabah belirli bir saatte kendi kendine başlattığı kısa bir çalışmadır; yalnızca `devos` deposunda kendi kayıt dalına yazar (depo: kodun durduğu GitHub klasörü; dal: o deponun ayrı bir kopya hattı). Hiçbir anahtar, şifre ya da token gerekmez; hiçbir yere böyle bir şey yazmayın. Adımları bilgisayarda, tarayıcıdan yapın.
+*Revised for CHK-C01-025 C1 to C3: one action per step; the variable is added through the documented path ("Configure your environment" on the cloud-environments page) before the routine is created, and removed after it is deleted; a screen position the documentation does not give is described as what to look for.*
 
-1. claude.ai/code/routines adresini açın ve **New routine** düğmesine tıklayın.
-   Görmeniz gereken: yeni rutin formu açılır.
-2. Ad alanına `devos-c01-rutin` yazın.
-   Görmeniz gereken: ad alanında bu ad.
-3. Talimat kutusuna (Instructions) bu adımların altındaki "Talimat metni"ni, İngilizce olarak ve hiç değiştirmeden yapıştırın.
-   Görmeniz gereken: metin kutuda; ilk satırı "You are a C01 probe run of DevOS" ile başlar.
-4. Talimat kutusundaki model seçiciden **Opus 5.5**'i seçin.
-   Görmeniz gereken: seçicide Opus 5.5 yazar.
-5. Depo bölümüne yalnızca `batuhanozgun/devos`'u ekleyin; başka depo eklemeyin.
-   Görmeniz gereken: listede tek depo var: `batuhanozgun/devos`.
-6. Talimat kutusunun altında, ortam adını gösteren bulut simgesine tıklayın ve listeden `devos-kurulum`'u seçin (ortam: Claude oturumlarının çalıştığı ayar paketi; bunu kurulumun başında siz oluşturmuştunuz).
-   Görmeniz gereken: bulut simgesinde `devos-kurulum` yazar.
-7. Aynı listede imleci `devos-kurulum`'un üzerine getirin ve sağda beliren ayar (dişli) simgesine tıklayın.
-   Görmeniz gereken: ortamın ayar penceresi ("Edit environment") açılır.
-8. "Environment variables" kutusunun en altına yeni bir satır olarak `DEVOS_ENVIRONMENT=devos-kurulum` yazın; kutuda başka satır varsa ona dokunmayın, pencerede başka hiçbir şeyi değiştirmeyin (bu satır gizli değildir; rutinin hangi ortamda çalıştığını kendi kaydında gösterebilmesi içindir).
-   Görmeniz gereken: kutunun son satırı `DEVOS_ENVIRONMENT=devos-kurulum`.
-9. **Save changes** düğmesine tıklayın.
-   Görmeniz gereken: pencere kapanır, rutin formuna dönersiniz.
-10. "Select a trigger" bölümünde **Schedule**'ı seçin, sıklığı **Daily** yapın ve saati 05:07 olarak girin (tetikleyici: rutinin ne zaman başlayacağı; saat sizin saatinizledir). **API** ve **GitHub event** seçeneklerini eklemeyin; API seçeneği bir anahtar üretir.
-    Görmeniz gereken: her gün 05:07'de çalışacak tek bir zamanlama.
-11. Formun en altındaki **Connectors** bölümünde listelenen her bağlayıcıyı kaldırın (bağlayıcı: Claude'un hesabınıza bağlı başka hizmetlere erişmesini sağlayan bağlantı).
-    Görmeniz gereken: Connectors bölümünde hiçbir bağlayıcı kalmaz.
-12. **Create** düğmesine tıklayın.
-    Görmeniz gereken: rutin listede görünür ve bir sonraki çalışma zamanı yazar. **Run now**'a basmanız gerekmez.
-13. Bu konuya (#6) "rutin kuruldu" yazın.
-    Görmeniz gereken: yorumunuz konuda görünür. Ertesi sabahtan başlayarak oturum listenizde her gün yeni bir oturum belirir (oturum: Claude'un bir çalışma penceresi); ona dokunmanız gerekmez. İlk çalışmanın kaydını ben kontrol ederim.
+C01'in tek deneme rutinini kurmanı rica ediyorum. Rutin, Claude'un her sabah belirli bir saatte kendi kendine başlattığı kısa bir çalışmadır; yalnızca `devos` deposunda kendi kayıt dalına yazar (depo: kodun durduğu GitHub klasörü; dal: o deponun ayrı bir kopya hattı). Hiçbir anahtar, şifre ya da token gerekmez; hiçbir yere böyle bir şey yazma. Adımları bilgisayarda, tarayıcıdan yap. Bir ekran burada yazdığından farklı görünürse o adımda dur ve bu konuya (#6) ekranın görüntüsünü ekle; tahminle devam etme.
 
-Daha sonra, ben bu konuda "denemeler bitti" dediğimde:
+**A. Ortama tek bir satır eklemek** (ortam: Claude oturumlarının çalıştığı ayar paketi; `devos-kurulum`'u kurulumun başında sen oluşturmuştun)
 
-14. claude.ai/code/routines'te `devos-c01-rutin`'e tıklayın, adının yanındaki menüyü açın ve **Delete**'i seçin.
-    Görmeniz gereken: rutin listeden kalkar.
+1. claude.ai/code adresini aç.
+   Görmen gereken: Claude Code'un ana sayfası açılır.
+2. Mesaj kutusunun yakınında ortamı gösteren bulut simgesini bul ve ona tıkla. Bulamazsan dur ve ekran görüntüsü ekle.
+   Görmen gereken: ortam seçenekleri açılır.
+3. **Cloud**'u seç.
+   Görmen gereken: bulut ortamlarının listesi görünür; içinde `devos-kurulum` vardır.
+4. İmleci `devos-kurulum`'un üzerine getir.
+   Görmen gereken: satırın yanında bir ayar simgesi belirir.
+5. O ayar simgesine tıkla.
+   Görmen gereken: `devos-kurulum`'un ayar penceresi açılır.
+6. "Environment variables" kutusunu bul ve en alttaki boş satıra tıkla.
+   Görmen gereken: imleç kutunun en alt satırında yanıp söner.
+7. Şunu yaz: `DEVOS_ENVIRONMENT=devos-kurulum`
+   Görmen gereken: kutunun son satırı tam olarak `DEVOS_ENVIRONMENT=devos-kurulum`. Kutuda başka satırlar varsa onlara dokunma; pencerede başka hiçbir şeyi değiştirme. Bu satır gizli değildir; rutinin hangi ortamda çalıştığını kendi kaydında gösterebilmesi içindir.
+8. Pencerenin kaydet düğmesine (**Save**) tıkla.
+   Görmen gereken: pencere kapanır.
+9. Sayfayı kapatma; B bölümüne geç.
+   Görmen gereken: hata mesajı yok.
 
-Bir ekran burada yazdığından farklı görünürse o adımda durun ve bu konuya ekranın görüntüsünü ekleyin; tahminle devam etmeyin.
+**B. Rutini oluşturmak**
 
-Talimat metni (3. adım için):
+10. claude.ai/code/routines adresini aç.
+    Görmen gereken: rutinlerin listesi (ya da boş bir liste) açılır.
+11. **New routine** düğmesine tıkla.
+    Görmen gereken: yeni rutin formu açılır.
+12. Ad alanına `devos-c01-rutin` yaz.
+    Görmen gereken: ad alanında bu ad.
+13. Talimat kutusuna (Instructions) bu adımların altındaki "Talimat metni"ni, İngilizce olarak ve hiç değiştirmeden yapıştır.
+    Görmen gereken: metin kutuda; ilk satırı "You are a C01 probe run of DevOS" ile başlar.
+14. Formdaki model seçiciyi aç.
+    Görmen gereken: modellerin listesi açılır.
+15. **Opus 5.5**'i seç.
+    Görmen gereken: seçicide Opus 5.5 yazar.
+16. Depo bölümüne `batuhanozgun/devos`'u ekle; başka depo ekleme.
+    Görmen gereken: listede tek depo var: `batuhanozgun/devos`.
+17. Formda ortamı (environment) seçen yeri bul ve aç; bulamazsan dur ve ekran görüntüsü ekle.
+    Görmen gereken: ortamların listesi açılır.
+18. Listeden `devos-kurulum`'u seç.
+    Görmen gereken: formda ortam olarak `devos-kurulum` yazar.
+19. Tetikleyici bölümünde (trigger: rutinin ne zaman başlayacağı) **Schedule**'ı seç. **API** ve **GitHub event**'i seçme; API seçeneği bir anahtar üretir.
+    Görmen gereken: zamanlama ayarları görünür.
+20. Sıklığı **Daily** yap.
+    Görmen gereken: sıklık "Daily".
+21. Saati 05:07 olarak gir (saat senin saatinle).
+    Görmen gereken: her gün 05:07'de çalışacak tek bir zamanlama.
+22. **Connectors** bölümünde listelenen her bağlayıcıyı tek tek kaldır (bağlayıcı: Claude'un hesabına bağlı başka hizmetlere erişmesini sağlayan bağlantı).
+    Görmen gereken: Connectors bölümünde hiçbir bağlayıcı kalmaz.
+23. **Create** düğmesine tıkla.
+    Görmen gereken: rutin listede görünür ve bir sonraki çalışma zamanı yazar. **Run now**'a basman gerekmez.
+
+Sonra bu konuya (#6) "rutin kuruldu" yaz. Ertesi sabahtan başlayarak oturum listende her gün yeni bir oturum belirir (oturum: Claude'un bir çalışma penceresi); ona dokunman gerekmez. İlk çalışmanın kaydını ben kontrol ederim.
+
+**C. Daha sonra, ben bu konuda "denemeler bitti" dediğimde**
+
+24. claude.ai/code/routines adresini aç.
+    Görmen gereken: rutinlerin listesi; içinde `devos-c01-rutin`.
+25. `devos-c01-rutin`'e tıkla.
+    Görmen gereken: rutinin sayfası açılır.
+26. Adının yanındaki menüyü aç.
+    Görmen gereken: menüde **Delete** vardır.
+27. **Delete**'i seç ve onayla.
+    Görmen gereken: rutin listeden kalkar.
+28. A bölümündeki 1. ile 5. adımları yeniden yaparak `devos-kurulum`'un ayar penceresini aç.
+    Görmen gereken: ayar penceresi açılır.
+29. "Environment variables" kutusunda `DEVOS_ENVIRONMENT=devos-kurulum` satırını sil; başka satıra dokunma.
+    Görmen gereken: bu satır kutuda artık yok.
+30. **Save**'e tıkla.
+    Görmen gereken: pencere kapanır.
+31. Bu konuya "rutin ve satır silindi" yaz.
+    Görmen gereken: yorumun konuda görünür.
+
+Talimat metni (13. adım için):
 
 ```
 You are a C01 probe run of DevOS, set up to run in the cloud environment devos-kurulum with the one repository batuhanozgun/devos. Your work is observation with synthetic inputs only.

@@ -98,7 +98,7 @@ Row 17's own text already notes that "the mode of routine sessions is not known"
 
 ## 4. The recorded claim (PC-21 item 9)
 
-Each bullet of section 1 is recorded as: **"guaranteed by platform (documented in Sn, read 2026-10-10); not independently tested"**, where Sn is the page named at the end of that bullet. For example: "`/schedule` is not available inside a cloud session: guaranteed by platform (documented in S3, read 2026-10-10); not independently tested."
+*[Revised by the executor for CHK-C01-027 C2.]* Each bullet of section 1, and each documentation fact cited with an Sn in section 5(a)'s "Design notes" (S6, S2) and section 5(b)'s "Documentation for the carry" (S12, S13: the effort resolution order, the medium default on Opus 5.5, ultracode being a setting), is recorded as: **"guaranteed by platform (documented in Sn, read 2026-10-10); not independently tested"**, where Sn is the page named at the end of that bullet. For example: "`/schedule` is not available inside a cloud session: guaranteed by platform (documented in S3, read 2026-10-10); not independently tested."
 
 A capability stated in section 1, such as `RemoteTrigger` creating routines, is recorded in the same form. There it means the documentation states the platform offers it, and the design treats it as possible. It is not a positive observation (D-017 item 3).
 
@@ -116,7 +116,7 @@ Qualifiers, each confirmed on 2026-10-10:
 
 The documentation states no limit by environment for any part of the account's control surface. It scopes routines and reachable sessions to the account, and it does not state which of these controls a cloud session has (section 2, items 1 to 6). Row 17's fail path therefore applies as the design:
 - Separation of authority between environments rests on the guard hook alone. The guard is a check inside the session, and FR-05 B does not count that as an authority boundary.
-- The binding enforcement stays where DevOS controls it: the tokens, the database's role rules and GitHub's rules (FR-05 A.4).
+- *[Revised by the executor for CHK-C01-027 C1.]* What DevOS will control is not yet in place and is not counted as separating environments here: (i) the environment tokens and the database's role rules are C02's design, shown only by DevOS's own negative tests in C02 and C03 (FR-05 A.1), not enforcement in place now; (ii) GitHub's rule of `main` does not count as a layer against sessions while it is unsettled who can change it (PC-21 item 6; row 12, W-C01-39); (iii) none of these layers is recorded as separating authority between environments over the account's control surface: under row 17's fail path that separation rests on the guard hook alone.
 - FR-05 is the frame review the fail path requires before C02.
 
 For the 6.7 row "The Claude account's control surface":
