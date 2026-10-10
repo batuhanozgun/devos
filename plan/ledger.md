@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). | 2026-10-10T22:05Z |
 | summary_tr | Senden beklenen: tek karar — **D-019**: platformun her oturuma koyduğu kendi kimlik bilgilerinin oturumla sınırlı kaldığına, kendimiz denemeden, platform belgesine dayanarak C03'e kadar güvenmeyi kabul ediyor musun? Önerim evet; acelesi yok, yalnız C02'deki ortam kurulumunu bekletiyor. <br>Durum: Güvenlik kapsamının çerçeve incelemesi (FR-05) ve C01'in plan metnindeki karşılığı (PC-21) bağımsız denetimlerden geçti. C01 artık platformu kendisi denemiyor; ortamlar arası ayrımı platform belgesinden ve DevOS'un kendi ayarlarından kuruyor, belgenin söylemediği olgular için planın kendi "başarısız olursa" yolunu tasarım olarak alıyor. Sıradaki iş C01'in iş listesini buna göre yeniden düzenlemek. C02'den önce sana bir karar daha gelecek: ortamlar arasındaki ayrım için hesap düzeyinde bir seçenek isteyip istemediğin. <br>Kullanım normal düzeyde. | 2026-10-10T22:05Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:08Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:18Z |
 
 ---
 
@@ -124,16 +124,16 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C01-29` C01's combined scenario; probe setup removed when C01 ends: blocked: depends on W-C01-06 (not accepted)
   - `W-C01-30` Stage close review: blocked: depends on W-C01-32 (not accepted)
   - `W-C01-31` Re-plan of C01's work list under FR-05 and PC-21: running (session_01XyxvJd3RayQk4HCrjurbVH)
-  - `W-C01-32` Routine design: the one ordinary routine of PC-21 item 1, its runs and Batus step: blocked: depends on W-C01-31 (not accepted)
-  - `W-C01-33` Routine in place: Batus step (Section 12 item 0 as PC-21 changes it): blocked: depends on W-C01-32 (not accepted)
+  - `W-C01-32` Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step: blocked: depends on W-C01-31 (not accepted)
+  - `W-C01-33` Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it): blocked: depends on W-C01-32 (not accepted)
   - `W-C01-34` Row 2: connector barrier under PC-21 item 3: blocked: depends on W-C01-33 (not accepted)
   - `W-C01-35` Row 3: environment token under PC-21 item 4: blocked: depends on W-C01-31 (not accepted)
   - `W-C01-36` Row 17: control surface across environments under PC-21 item 7: blocked: depends on W-C01-31 (not accepted)
   - `W-C01-37` Row 9: single- and multi-repository sessions under PC-21 item 5: blocked: depends on W-C01-33 (not accepted)
-  - `W-C01-38` The guard fails closed: DevOSs own tests, before C02 opens DevOSs environments (PC-21 item 5): blocked: depends on W-C01-31 (not accepted)
+  - `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): blocked: depends on W-C01-31 (not accepted)
   - `W-C01-39` Row 12: repository access limit and the git credential under PC-21 item 6: blocked: depends on W-C01-06 (not accepted)
   - `W-C01-40` N-109 under PC-21 item 8: its disposition through D-019: blocked: depends on W-C01-31 (not accepted)
-  - `W-C01-41` Row 17s account-change option: Batus decision before C02 opens DevOSs environments (PC-21 item 7): blocked: depends on W-C01-36 (not accepted)
+  - `W-C01-41` Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7): blocked: depends on W-C01-36 (not accepted)
 <!-- /generated -->
 
 ### Work index
@@ -195,16 +195,16 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
 | `W-C01-30` | Stage close review | blocked: depends on W-C01-32 (not accepted) | — | — | `plan/work/W-C01-30.md` |
 | `W-C01-31` | Re-plan of C01's work list under FR-05 and PC-21 | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-31.md` |
-| `W-C01-32` | Routine design: the one ordinary routine of PC-21 item 1, its runs and Batus step | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-32.md` |
-| `W-C01-33` | Routine in place: Batus step (Section 12 item 0 as PC-21 changes it) | blocked: depends on W-C01-32 (not accepted) | — | — | `plan/work/W-C01-33.md` |
+| `W-C01-32` | Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-32.md` |
+| `W-C01-33` | Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it) | blocked: depends on W-C01-32 (not accepted) | — | — | `plan/work/W-C01-33.md` |
 | `W-C01-34` | Row 2: connector barrier under PC-21 item 3 | blocked: depends on W-C01-33 (not accepted) | — | — | `plan/work/W-C01-34.md` |
 | `W-C01-35` | Row 3: environment token under PC-21 item 4 | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-35.md` |
 | `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-36.md` |
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | blocked: depends on W-C01-33 (not accepted) | — | — | `plan/work/W-C01-37.md` |
-| `W-C01-38` | The guard fails closed: DevOSs own tests, before C02 opens DevOSs environments (PC-21 item 5) | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-38.md` |
+| `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-38.md` |
 | `W-C01-39` | Row 12: repository access limit and the git credential under PC-21 item 6 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-39.md` |
 | `W-C01-40` | N-109 under PC-21 item 8: its disposition through D-019 | blocked: depends on W-C01-31 (not accepted) | — | — | `plan/work/W-C01-40.md` |
-| `W-C01-41` | Row 17s account-change option: Batus decision before C02 opens DevOSs environments (PC-21 item 7) | blocked: depends on W-C01-36 (not accepted) | — | — | `plan/work/W-C01-41.md` |
+| `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | blocked: depends on W-C01-36 (not accepted) | — | — | `plan/work/W-C01-41.md` |
 <!-- /generated -->
 
 ---
