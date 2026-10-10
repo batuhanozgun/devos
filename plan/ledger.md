@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). | 2026-10-10T22:05Z |
 | summary_tr | Senden beklenen: tek karar — **D-019** (issue #6'da): platformun her oturuma koyduğu kendi erişim anahtarlarının oturumla sınırlı kaldığına, kendimiz denemeden, platform belgesine dayanarak C03'e kadar güvenmeyi kabul ediyor musun? Önerim evet; acelesi yok, yalnız C02'deki ortam kurulumunu bekletiyor. <br>Durum: Güvenlik kapsamı çerçeve incelemesi (FR-05) ve C01'in plan metni (PC-21) tamamlandı; C01'in iş listesi buna göre yeniden düzenlendi (eski deneme düzeninin 9 kalemi iptal, 10 yeni kalem) ve bağımsız denetimden geçti. Şimdi senin oluşturacağın tek sıradan routine'in tasarımını hazırlıyorum; adımlarını issue #6'da Türkçe ve adım adım bulacaksın. Belgeden kurulan satırlar da (3 ve 17) paralel ilerliyor. C02'den önce bir kararın daha gelecek: ortamlar arası ayrım için hesap düzeyinde bir seçenek isteyip istemediğin. <br>Kullanım normal düzeyde. | 2026-10-10T22:28Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:25Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-10T22:59Z |
 
 ---
 
@@ -33,13 +33,12 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C01-32` Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step
-- `W-C01-35` Row 3: environment token under PC-21 item 4
-- `W-C01-36` Row 17: control surface across environments under PC-21 item 7
 - `W-C01-40` N-109 under PC-21 item 8: its disposition through D-019
 
 **Running:**
-- none
+- `W-C01-32` Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step: claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
+- `W-C01-35` Row 3: environment token under PC-21 item 4: claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
+- `W-C01-36` Row 17: control surface across environments under PC-21 item 7: claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
 
 **Not ready, with the first unmet condition:**
 - `W-C01-06`: depends on W-C01-33 (not accepted)
@@ -76,7 +75,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 6, blocked 22, cancelled 9, ready 4 | 14 |
+| `C01` | Platform verification | running | accepted 6, blocked 22, cancelled 9, ready 1, running 3 | 14 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 10 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 10 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
@@ -91,7 +90,48 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- no claimed item; no active branch
+- `C01` Platform verification: running · open notes: N-028, N-029, N-030, N-047, N-048, N-063, N-073, N-091, N-102, N-105, N-109, N-122, N-124, N-129
+  - `W-C01-01` Stage work list: accepted
+  - `W-C01-02` Key inventory (N-105): accepted
+  - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps: cancelled
+  - `W-C01-04` Probe-only guard rule: cancelled
+  - `W-C01-05` Probe setup in place: Batu's C01 steps (Section 12 item 0): cancelled
+  - `W-C01-06` Row 1: session duration and chunked work (C01 #1): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-07` Row 2: connector barrier (C01 #2): cancelled
+  - `W-C01-08` Row 3: environment token (C01 #3): cancelled
+  - `W-C01-09` Row 4, documentation part: how a subagent call completes, and what the hook input says (C01 #4): accepted
+  - `W-C01-10` Row 4, probe part: subagents in a session started by a routine (C01 #4): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-11` Row 17: control surface across environments (C01 #17): cancelled
+  - `W-C01-12` Row 5: daily routine limit (C01 #5): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-13` Row 6: notification (C01 #6): blocked: depends on W-C01-32 (not accepted)
+  - `W-C01-14` Row 7: embedding model, the session part (C01 #7): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-15` Row 8: release chain (C01 #8): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-16` Row 9: single- and multi-repository sessions; the guard hook (C01 #9): cancelled
+  - `W-C01-17` Row 10: usage observation (C01 #10): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-18` Row 11: identity (C01 #11): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-19` Row 12: repository access limit; the git credential (C01 #12): cancelled
+  - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-21` Row 14: dynamic workflows and Projects (C01 #14): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-22` Row 15: library transfer, moved to C04 (C01 #15): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-23` Row 16: second model, the free tier's terms (C01 #16): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-24` Row 18: platform-side readers (C01 #18): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-25` Phase-A probe (PC-16): accepted
+  - `W-C01-26` N-109: do the platform's session credentials act beyond the session?: cancelled
+  - `W-C01-27` N-063: the counter-design rows decided from C01's observations: blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-28` N-110: follow-ups of D-016's carriers: accepted
+  - `W-C01-29` C01's combined scenario; probe setup removed when C01 ends: blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-30` Stage close review: blocked: depends on W-C01-32 (not accepted)
+  - `W-C01-31` Re-plan of C01's work list under FR-05 and PC-21: accepted
+  - `W-C01-32` Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step: running (session_01XyxvJd3RayQk4HCrjurbVH)
+  - `W-C01-33` Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it): blocked: depends on W-C01-32 (not accepted)
+  - `W-C01-34` Row 2: connector barrier under PC-21 item 3: blocked: depends on W-C01-33 (not accepted)
+  - `W-C01-35` Row 3: environment token under PC-21 item 4: running (session_01XyxvJd3RayQk4HCrjurbVH)
+  - `W-C01-36` Row 17: control surface across environments under PC-21 item 7: running (session_01XyxvJd3RayQk4HCrjurbVH)
+  - `W-C01-37` Row 9: single- and multi-repository sessions under PC-21 item 5: blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-39` Row 12: repository access limit and the git credential under PC-21 item 6: blocked: depends on W-C01-06 (not accepted)
+  - `W-C01-40` N-109 under PC-21 item 8: its disposition through D-019: ready
+  - `W-C01-41` Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7): blocked: depends on W-C01-36 (not accepted)
 <!-- /generated -->
 
 ### Work index
@@ -153,11 +193,11 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-29.md` |
 | `W-C01-30` | Stage close review | blocked: depends on W-C01-32 (not accepted) | — | — | `plan/work/W-C01-30.md` |
 | `W-C01-31` | Re-plan of C01's work list under FR-05 and PC-21 | accepted | — | — | `plan/work/W-C01-31.md` |
-| `W-C01-32` | Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step | ready | — | — | `plan/work/W-C01-32.md` |
+| `W-C01-32` | Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-32.md` |
 | `W-C01-33` | Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it) | blocked: depends on W-C01-32 (not accepted) | — | — | `plan/work/W-C01-33.md` |
 | `W-C01-34` | Row 2: connector barrier under PC-21 item 3 | blocked: depends on W-C01-33 (not accepted) | — | — | `plan/work/W-C01-34.md` |
-| `W-C01-35` | Row 3: environment token under PC-21 item 4 | ready | — | — | `plan/work/W-C01-35.md` |
-| `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | ready | — | — | `plan/work/W-C01-36.md` |
+| `W-C01-35` | Row 3: environment token under PC-21 item 4 | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-35.md` |
+| `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-36.md` |
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-37.md` |
 | `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-38.md` |
 | `W-C01-39` | Row 12: repository access limit and the git credential under PC-21 item 6 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-39.md` |
@@ -221,6 +261,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-19` | D-016's permanent carriers: the working order says how every agent answers the nine thinking-discipline questions, how their presence is checked, and that the stage close samples them; the log and verdict formats carry the block; the stage work list reads the stage's open notes; the role files and CLAUDE.md carry the rule; two tool checks (N-104) | technical | answered | `plan/decisions/PC-19.md` |
 | `PC-20` | N-110, the follow-ups of D-016's carriers: what follows a DISCIPLINES MISSING result; the remedy for a log entry without the Disciplines line that reaches main (a correction entry, which render --check counts, and the stop check runs render --check); helpers' reports live only in the container's transcripts; the task check compares the whole discipline block; planted cases for the six surviving mutants | technical | answered | `plan/decisions/PC-20.md` |
 | `PC-21` | C01 under FR-05: no active trial across environments; one ordinary routine stands in for the probe setup; rows 2, 3, 9, 12 and 17 are established from the platform's documentation and DevOS's own configuration, with each fact the documentation does not state met by the row's own fail path taken as the design; N-109's open part goes to Batu (D-019); Batu's C01 steps shrink to one routine | technical | accepted | `plan/decisions/PC-21.md` |
+| `PC-22` | Section 12 item 0: one non-secret environment variable added to Batu's C01 step, so that the routine's runs show their environment from a documented fact | technical | proposed | `plan/decisions/PC-22.md` |
 <!-- /generated -->
 
 ---
