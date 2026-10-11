@@ -1,8 +1,8 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
+**Senden beklenen:** Şu kararlar senin: `D-029` (Hesabının claude.ai'den her DevOS oturumuna eşitlediği 24 beceriyi (12'sinin metni DevOS kurallarının izin vermediği şeyler istiyor) claude.ai'nin beceri ayarlarından kapatmak (claude.ai sohbetlerinden de kalkarlar) ya da tutmak (DevOS oturumlarının listesinde kalırlar, yüklenmeleri engellenir)). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 12 Ekim 2026, 00:14 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 12 Ekim 2026, 00:28 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
