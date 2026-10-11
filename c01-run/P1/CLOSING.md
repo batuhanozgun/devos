@@ -33,7 +33,10 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 8. Denials:
    - Guard denials: none. The report's last record before this file shows 0 denied and 40 allowed (B0 27, L1 5, T1 8).
    - Other denials: none.
-9. Result: done
+9. Result. It is on its own line below so that rule 2.2's test can match it at the start of the line:
+
+Result: done
+
 10. Disciplines (the run's own report; a hint, not evidence):
    - D1 uncertain: the sentences were embedded without the e5 model's recommended prefix, on 4 CPUs with no GPU, so M1's similarities and both candidates' timings may differ under another setup.
    - D2 no.
