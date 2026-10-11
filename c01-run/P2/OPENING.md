@@ -16,3 +16,14 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 7. Hook events at start: none (no hook output reached the session at its start).
 
 Gates: environment `match`; the only repository is `batuhanozgun/devos`; no `other-server-*`. All pass.
+
+## Part B (after task K; written 2026-10-11T13:57Z)
+
+1. Agent types the Agent tool offers (11): checker `repository`; counter-designer `repository`; prober `repository`; producer `repository`; researcher `repository`; claude `built-in`; claude-code-guide `built-in`; Explore `built-in`; general-purpose `built-in`; Plan `built-in`; statusline-setup `built-in`. `.claude/agents/` holds exactly the five marked `repository`.
+2. Skills the session offers (42):
+   - `repository` (1): synthetic-word-tally.
+   - `built-in` (17): session-start-hook, dataviz, artifact-design, artifact-diagramming, artifact-capabilities, update-config, keybindings-help, code-review, simplify, fewer-permission-prompts, loop, claude-api, workflow-authoring, run, plugin-authoring, init, security-review.
+   - `other` (24): `other-skill-1` to `other-skill-24`, all under one plugin prefix.
+   - Plugins, as far as names show them: `other-plugin-1` (the shared prefix of the 24 `other` skills; 24 skills). Counted, not named, under rule 1.4's "when in doubt, count".
+3. Hooks in `.claude/settings.json` at `aeb5fd0` (no local change in the starting checkout): PreToolUse, matcher `.*` (1 hook); PermissionRequest, matcher `.*` (1 hook); PostToolUse, matcher `mcp__claude-code-remote__create_session|mcp__claude-code-remote__create_trigger` (1 hook); SessionStart, matcher `compact` (1 hook).
+4. Background option: yes. The Agent tool's description says subagents run in the background by default and offers a `run_in_background` parameter (false for foreground).
