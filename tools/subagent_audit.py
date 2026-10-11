@@ -25,7 +25,11 @@ reader or a tools/ script name these locations; this is that script. It reads an
                                 AUDIT VOID: <reasons>
   calls <agent-id>              the per-call lines only, without the rules
   disciplines <agent-id>        D-016's two presence checks (N-104; N-110): whether the task the agent was given (the
-                                text of the transcript's first user event) carries the whole discipline block of
+                                agent's opening: each user event before its first assistant event, one of which
+                                must hold the block; a workflow harness may put a message of its own, relaying the
+                                user's request, before the task in that opening, observed 2026-10-11, W-C01-43; a
+                                user message after the first assistant event, or a tool result, does not count)
+                                carries the whole discipline block of
                                 plan/Installation_Working_Order.md section 9 (the quotation after its paragraph
                                 "**Discipline block**"), compared after normalising whitespace, so that a task that
                                 keeps the lead-in with a placeholder body fails (CHK-C01-001 finding 6); the block is
@@ -251,11 +255,22 @@ def task_block():
     return block
 
 
+def opening(events):
+    """The messages of the agent's opening: every user event before its first assistant event (W-C01-43). A workflow
+    harness may put a message of its own before the task there; a tool result is not text (texts reads text only)."""
+    out = []
+    for e in events:
+        if e.get("type") == "assistant":
+            break
+        if e.get("type") == "user":
+            out.append(e.get("message"))
+    return out
+
+
 def disciplines(agent):
     block = task_block()
     _, events = jsonl(transcript(agent)[0])
-    first = next((e.get("message") for e in events if e.get("type") == "user"), None)
-    task = block in " ".join(texts(first).split())
+    task = any(block in " ".join(texts(m).split()) for m in opening(events))
     t = last_text(events)
     why = "no assistant text" if t is None else block_problem(t)
     print("task: carries the D-016 questions" if task else "task: does NOT carry the D-016 questions")
