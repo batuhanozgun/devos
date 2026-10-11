@@ -55,8 +55,8 @@ class Fixture:
         """calls, then the final message, then after: (tool, input) pairs; guard: (event, tool, logged path)
         records, by default one PreToolUse per call; extra: further records. folder: where under subagents/ the
         transcript and meta go (a workflow agent's: workflows/<run-id>); meta: the meta file's object, by default an
-        Agent-tool subagent's with its toolUseId. prompt: the first user event's content (a string or a list of
-        blocks); result: every tool result's content; earlier: the assistant text after the prompt; later: if
+        Agent-tool subagent's with its toolUseId. prompt: the content of the user event that holds the task, the
+        first user event unless opening is given (a string or a list of blocks); result: every tool result's content; earlier: the assistant text after the prompt; later: if
         given, a user text message after that one (a string content, not a tool result); opening: user text
         messages put before the prompt, with no assistant event between (a workflow harness's relay, W-C01-43)."""
         where = self.sub / folder
@@ -351,8 +351,13 @@ def main():
         disc_case(fx, "(36) the block only in an opening message before the prompt: the opening carries it",
                   "afxzdisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"], opening=[TASK],
                   prompt=f"Prompt {MARKER}")
+        half = BLOCK.index("Evaluate again")   # N-141 (W-C01-44): the whole block must be in one message
+        disc_case(fx, "(37) the block split across a relay message and the task, both in the opening: no one message "
+                  "carries it, so the task does not carry it", "afxadisc", 1,
+                  [LACKS, "report: nine answers", "DISCIPLINES MISSING"],
+                  opening=[f"{relay}\n{BLOCK[:half]}"], prompt=f"{BLOCK[half:]}\n\nTask {MARKER}.")
         case("(24) disciplines prints three fixed lines and no prompt or report text",
-             len(DISC_OUT) == 22 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
+             len(DISC_OUT) == 23 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
              "\n".join(DISC_OUT))
 

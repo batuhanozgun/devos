@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). | 2026-10-11T06:03Z |
 | summary_tr | Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. <br>(a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. <br>Rutinin ilk çalışması yarın sabah 05:07'de; kaydını ben kontrol edeceğim. Şu an senden beklenen bir şey yok. <br>Kullanım normal düzeyde. | 2026-10-11T07:20Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T07:22Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T07:28Z |
 
 ---
 
@@ -34,7 +34,6 @@
 <!-- generated:frontier -->
 **Ready (startable now):**
 - `W-C01-33` Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it)
-- `W-C01-44` N-141: a planted case for the per-message block test, and the fixture docstring aligned
 
 **Running:**
 - none
@@ -72,7 +71,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 13, blocked 20, cancelled 9, ready 2 | 14 |
+| `C01` | Platform verification | running | accepted 14, blocked 20, cancelled 9, ready 1 | 13 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 11 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 11 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
@@ -161,7 +160,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | accepted | — | — | `plan/work/W-C01-41.md` |
 | `W-C01-42` | Keeping DevOS's three environments apart inside one account under D-020 (a): a structure sized by need | accepted | — | — | `plan/work/W-C01-42.md` |
 | `W-C01-43` | The disciplines check reads a workflow agent's task past the harness's relay of the user's request | accepted | — | — | `plan/work/W-C01-43.md` |
-| `W-C01-44` | N-141: a planted case for the per-message block test, and the fixture docstring aligned | ready | — | — | `plan/work/W-C01-44.md` |
+| `W-C01-44` | N-141: a planted case for the per-message block test, and the fixture docstring aligned | accepted | — | — | `plan/work/W-C01-44.md` |
 <!-- /generated -->
 
 ---
@@ -243,7 +242,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-091` | `C01` | EV-C00-021 | open | T-49: each stage file lists Batu's steps from C01. The direction is decided now. The topic's reason is in its row of EV-C00-021 section 1... |
 | `N-102` | `C01` | N-086 | open | **C01 #18 and the D-008 cost text** (carried from N-086 item (2) on `plan/work/C00.md` by CHK-C00-067 condition 3; N-086 came from CHK-C0... |
 | `N-105` | `C01` | CHK-C00-067 | open | **The key inventory** (plan Section 12, "Key inventory": "The builder keeps a single inventory in C00"; CHK-C00-067 condition 4(c), findi... |
-| `N-141` | `C01` | CHK-C01-033 | open | **A planted case for the per-message block test** (CHK-C01-033 finding 4; 2026-10-11, L-188). `tools/subagent_audit.py disciplines` requi... |
 | `N-122` | `C01` | CHK-C01-006 | open | **Recommendations of CHK-C01-006 for C01's last items** (findings 4, 5 and 10; 2026-10-06, L-169; not conditions). (1) **Row 4's version,... |
 | `N-124` | `C01` | CHK-C01-007 | open | **A probe token's revocation before C02** (CHK-C01-007 finding 8; 2026-10-06, L-170). Plan C01 row 3's fail path says "a token found outs... |
 | `N-129` | `C01` | L-173 | open | **The form of a "no" answer** (2026-10-06, L-173; PC-20). Two helpers in a row (agents `aad82641009d6300f` and `a7f263717d66fe06b`, W-C01... |
@@ -324,7 +322,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-140` | `C12` | W-C01-42 | open | **The session-tools server deny at its target** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S9; 2026-10-11). |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 30 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-104, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 31 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-104, N-141, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
