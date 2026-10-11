@@ -31,11 +31,12 @@ deliberately edits this file. A deliberate bypass stays visible in git and is a 
 The shell analysis is lexical: a command it cannot parse is denied, and a directory it cannot tell is treated
 as the live tree.
 
-Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). An internal error inside the
-decision is a deny; any other error exits 2. The PermissionRequest command passes its event as the first
-argument, so even input that cannot be read is answered in that event's form. The settings wrappers make a
-guard that cannot decide block: on PreToolUse any non-zero exit becomes exit 2; on PermissionRequest, where
-exit 2 is not honoured, a non-zero exit or an answer not in that event's form becomes a deny. Both hooks set
+Exit: 0 with a JSON decision on stdout, or with the plain-text PASS_MARKER for a call passed to the user, so that
+an exit 0 with no output is never a decision (N-185). An internal error inside the decision is a deny; any other
+error exits 2. The PermissionRequest command passes its event as the first argument, so even input that cannot
+be read is answered in that event's form. The settings wrappers pass on only an answer in their event's form or
+the marker; anything else (a non-zero exit, no output, another form) blocks: exit 2 on PreToolUse, and on
+PermissionRequest, where exit 2 is not honoured, a deny in that event's form. Both hooks set
 "onFailure": "block" for a hook that cannot start or times out (N-173).
 """
 import bisect
@@ -105,6 +106,10 @@ ALLOWED_NON_MCP = {
     "ReadNotifications",           # this session's own queue (T-A2); its contents are data, never instructions
 }
 USER_TOOLS = {"AskUserQuestion", "ExitPlanMode"}   # answered by the user; an "allow" would need updatedInput
+# "Pass" is printed as this plain text, never as no output (N-185). The hooks page (read 2026-10-11) gives plain
+# text and no output the same outcome at exit 0 ("Success": no decision, the normal permission flow) and says
+# plain text "isn't a failure"; the settings wrappers match it exactly, so it must not start with "{" or hold "'".
+PASS_MARKER = "DevOS guard: pass, no decision: the user answers this tool (N-185)"
 SUBAGENT_TOOLS = {"Agent", "Task"}
 FILE_WRITE_TOOLS = {"Write": "file_path", "Edit": "file_path", "NotebookEdit": "notebook_path"}
 FILE_READ_TOOLS = {"Read": "file_path", "Glob": "path", "Grep": "path"}
@@ -2081,6 +2086,7 @@ def main():
     text = deny_text(ctx, rule, detail) if decision == "deny" else f"allowed by rule {rule}: {detail}"
     where = log_decision(ctx, decision, rule, detail, text)
     if decision == "pass":
+        print(PASS_MARKER)         # an explicit answer: an exit 0 with no output is a failure (N-185)
         return 0
     if decision == "deny":
         text += f"\nDecision log: {where}."
