@@ -20,12 +20,12 @@
 |---|---|---|
 | Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition was provisional on N-109 until 2026-10-11, and now rests, for the platform's own session credentials, on D-019 (a), a residual Batu accepted until C03: W-C01-40, L-186); **C01 running**, now in the working session `session_01XyxvJd3RayQk4HCrjurbVH` (opened 2026-10-10, L-178; before it `session_01Cr4b8p5UA5dLmtrTdA243S`, L-176 to L-177, and `session_01WKJi23FwAjFtiyD1DbQ2Rs`, L-136 to L-175, which the host's automatic content review moved to a fallback model). Accepted so far: the work list and the non-row items W-C01-01, W-C01-02, W-C01-09, W-C01-25 and W-C01-28 (L-169 to L-172); FR-04, the probe design's frame review (L-174, L-175); D-017, the host's automatic review as a standing environment constraint and the adjusted verification method (L-176). FR-05, the frame review of the security scope that Batu directed, accepted on CHK-C01-019 and CHK-C01-020 (L-179): C01 establishes platform separation from the platform's documentation and DevOS's own configuration, with no active trial across environments; facts the documentation does not state are met by design paths that do not depend on them. PC-21, the C01 plan text under FR-05, accepted on CHK-C01-021 and CHK-C01-022 (L-180): one ordinary routine stands in for the probe setup; rows 2, 3, 9, 12 and 17 are established from the documentation and DevOS's own configuration, each undocumented fact met by the row's own fail path. D-019 (Batu's) was opened (answered (a) on 2026-10-11, L-185). C01's work list re-planned under them (W-C01-31, L-182): nine items cancelled, W-C01-32 to W-C01-41 added. W-C01-32 (the routine's design), W-C01-35 (row 3) and W-C01-36 (row 17) accepted (L-183). Batu answered on 2026-10-11 (L-185): D-019 (a); D-020 (a), all three environments in his account, with his direction to find a suitable structure for it, admitted as W-C01-42; the routine is in place by his word. W-C01-40 (N-109 closed as a residual Batu accepted) and W-C01-41 accepted on CHK-C01-032 (L-186). W-C01-43 (the disciplines check reads a workflow agent's whole opening) merged (L-188, L-189). W-C01-42 accepted on CHK-C01-036 (L-191): the structure that keeps the three environments apart inside one account (EV-C01-004; notes N-136 to N-140). W-C01-44 (N-141) accepted (L-193). **Now (L-201):** both working runs of the C01 routine are done: R1a (08:08Z, by the schedule) and R1b (09:13Z, by Batu's Run now press, D-021 (a)); `CONTROL.md` version 3 is on `main`, and the next run (2026-10-12 about 08:07Z) is idle unless a checked change opens a step. Accepted today: W-C01-33 (L-196), W-C01-34, row 2 (L-198), FR-06 and PC-23 (L-200). W-C01-06 (row 1) accepted on CHK-C01-047 and CHK-C01-048 (L-202). W-C01-10 (row 4) accepted on CHK-C01-049 and CHK-C01-050, with PC-24 (L-203): a background subagent call returns before the subagent has finished, so K-7 items 3-4 and Section 6.5 items 5-6 now take a subagent's end from the platform's end status. `CONTROL.md` version 4 is on `main` (L-204): it opens P1 (row 7), then P2 and P3 (row 13). P1 ran on Batu's Run now press (D-022 (a)) from 13:37:51Z to 13:44:44Z on version 6 and closed `done`; version 7 (CHK-C01-064) merged after it, between runs (L-210). P2 ran on Batu's press (D-027 (a); L-211) and closed at 13:58:51Z; its `Result:` line was not counted by rule 2.2, so version 8 of `CONTROL.md` fixes the count (CHK-C01-067, CHK-C01-068) and merges before P3 (L-214, L-217). P3 follows on his second press, once the executor says so on issue #6. Batu answered row 6 (W-C01-13): the GitHub app notified him of #222 on his phone. Eight record items are with their checker (L-208); version 5 is merged (L-206). **Hand-over for a new session:** the live tree is cloned shallow, so the leak check fails closed on every public write until it is deepened; run `git fetch --unshallow origin` in the live tree before the first push or GitHub write (L-177). | 2026-10-11T08:24Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
-| Usage | `five_hour` `allowed` at 2026-10-11T08:53Z (`get_session`, this working session), resets 2026-10-11T11:30Z (`resetsAt` 1791718200); `isUsingOverage` false. D-002: proceed while `allowed`. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-11T08:53Z |
+| Usage | `five_hour` `allowed` at 2026-10-11T15:22Z (`get_session`, this working session), resets 2026-10-11T16:30Z (`resetsAt` 1791736200); `isUsingOverage` false. D-002: proceed while `allowed`. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-11T15:22Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T13:37:20Z (comment `6109603950`). | 2026-10-11T13:48Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). | 2026-10-11T14:18Z |
-| summary_tr | Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 ve P2 bitti. 6. satır kabul edildi; 7. satır denetimden geçti, birleşmeyi bekliyor. <br>P2'nin kapanış satırını kontrol dosyası saymıyordu; küçük bir düzeltme denetlendi ve birleşti. #6'ya "P3 hazır" yazınca bir kez daha **Run now**'a bas. <br>Kullanım normal düzeyde. | 2026-10-11T14:18Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T14:52Z |
+| summary_tr | P1, P2 ve P3 bitti. 6., 7. ve 8. satırlar kabul edildi. <br>11. satır (kimlik): benim commit'lerim artık makine hesabıyla atılıyor; rutinin çalışmaları da sıradaki kontrol dosyası sürümünde aynı ayara geçecek. B3 (a) olarak kalıyor; senden bir şey istemiyor. <br>Rutine şimdilik basma; sıradaki **Run now** için #6'ya "CS1 hazır" yazacağım. Kullanım normal düzeyde. | 2026-10-11T15:25Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T15:22Z |
 
 ---
 
@@ -35,13 +35,13 @@
 **Ready (startable now):**
 - `W-C01-12` Row 5: daily routine limit (C01 #5)
 - `W-C01-17` Row 10: usage observation (C01 #10)
-- `W-C01-18` Row 11: identity (C01 #11)
 
 **Running:**
 - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
 - `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): claimed by `nobody`
 
 **Not ready, with the first unmet condition:**
+- `W-C01-18`: finished, waiting for acceptance
 - `W-C01-27`: depends on W-C01-12 (not accepted)
 - `W-C01-29`: depends on W-C01-12 (not accepted)
 - `W-C01-30`: depends on W-C01-12 (not accepted)
@@ -57,12 +57,12 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 27, blocked 3, cancelled 9, ready 3, running 2 | 16 |
+| `C01` | Platform verification | running | accepted 27, blocked 3, cancelled 9, finished 1, ready 2, running 2 | 16 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 13 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 16 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
-| `C05` | Common rules, roles and methods | planned | no items | 10 |
-| `C06` | Working order, audit and decision channel | planned | no items | 11 |
+| `C05` | Common rules, roles and methods | planned | no items | 11 |
+| `C06` | Working order, audit and decision channel | planned | no items | 12 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 9 |
 | `C09` | Outage, backup, restore and reconnection | planned | no items | 7 |
@@ -72,7 +72,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C01` Platform verification: running · open notes: N-029, N-047, N-063, N-073, N-091, N-105, N-167, N-170, N-173, N-184, N-148, N-145, N-144, N-122, N-124, N-129
+- `C01` Platform verification: running · open notes: N-047, N-063, N-073, N-091, N-105, N-156, N-167, N-170, N-173, N-184, N-148, N-145, N-144, N-122, N-124, N-129
   - `W-C01-01` Stage work list: accepted
   - `W-C01-02` Key inventory (N-105): accepted
   - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps: cancelled
@@ -90,7 +90,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C01-15` Row 8: release chain (C01 #8): accepted
   - `W-C01-16` Row 9: single- and multi-repository sessions; the guard hook (C01 #9): cancelled
   - `W-C01-17` Row 10: usage observation (C01 #10): ready
-  - `W-C01-18` Row 11: identity (C01 #11): ready
+  - `W-C01-18` Row 11: identity (C01 #11): finished, not accepted
   - `W-C01-19` Row 12: repository access limit; the git credential (C01 #12): cancelled
   - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): running (session_01XyxvJd3RayQk4HCrjurbVH)
   - `W-C01-21` Row 14: dynamic workflows and Projects (C01 #14): accepted
@@ -164,7 +164,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-15` | Row 8: release chain (C01 #8) | accepted | — | — | `plan/work/W-C01-15.md` |
 | `W-C01-16` | Row 9: single- and multi-repository sessions; the guard hook (C01 #9) | cancelled | — | — | `plan/work/W-C01-16.md` |
 | `W-C01-17` | Row 10: usage observation (C01 #10) | ready | — | — | `plan/work/W-C01-17.md` |
-| `W-C01-18` | Row 11: identity (C01 #11) | ready | — | — | `plan/work/W-C01-18.md` |
+| `W-C01-18` | Row 11: identity (C01 #11) | finished, not accepted | — | — | `plan/work/W-C01-18.md` |
 | `W-C01-19` | Row 12: repository access limit; the git credential (C01 #12) | cancelled | — | — | `plan/work/W-C01-19.md` |
 | `W-C01-20` | Row 13: plugin and skill inventory (C01 #13) | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-20.md` |
 | `W-C01-21` | Row 14: dynamic workflows and Projects (C01 #14) | accepted | — | — | `plan/work/W-C01-21.md` |
@@ -258,6 +258,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-23` | The thinking disciplines catch an avoidable wait (FR-06): a wait is an evaluation moment; D3 weighs a sooner way at the same quality; the stop carries a Wait line, checked; plan 6.12's premise inventory covers a parameter that sets when work can next start | technical | accepted | `plan/decisions/PC-23.md` |
 | `PC-24` | C01 row 4 (W-C01-10, R1b): a subagent call can return before the subagent has finished; K-7 items 3–4 and Section 6.5 items 5–6 take a subagent's end from the platform's end status, not from the call's return or the arrival of its report | technical | accepted | `plan/decisions/PC-24.md` |
 | `PC-25` | C01 row 8 (W-C01-15): the platform does not limit a routine's pushes to `claude/` branches; 5.6 names the layers that do (the guard hook; GitHub's rules), and Section 12 lists the auto-merge setting step for C03 test 5 | technical | proposed | `plan/decisions/PC-25.md` |
+| `PC-27` | C01 row 11 (W-C01-18): the system's commits appear under the machine account only in part (its history, the routine's runs and earlier merges made in sessions are under the platform's account `claude`; a session that sets its clone's identity to the machine account with signing off makes its commits appear under it as author and committer, the builder's choice from 2026-10-11T14:20Z, in the working order's step 5 on `main` from `9025ecc`); on the forward reading the success condition is not met at `88c8d79`; the fail path's switch of B3 is held while the routine's later runs take the same identity and a fresh record of row 11 is judged, and goes to Batu as his decision if the row is still not met when the fresh record that reads the routine's next run is judged, and before C01's stage close; B3 stays (a) meanwhile | technical | proposed | `plan/decisions/PC-27.md` |
 | `PC-28` | C01 row 14 (W-C01-21): dynamic workflows run in the cloud working session; whether Projects is enabled on the account could not be checked from a session, so the fail path applies to Projects: it is not used | technical | proposed | `plan/decisions/PC-28.md` |
 | `PC-30` | C01 row 18 (W-C01-24): the 6.7 row "Platform-side readers of the session's content" takes the platform's documentation read on 2026-10-11, keeps the routine sessions' self-reported auto mode apart from it, and lists what the documentation does not state as a residual | technical | proposed | `plan/decisions/PC-30.md` |
 | `PC-32` | C01 row 12 (W-C01-39), under PC-21 item 6: each fact the documentation does not state takes the row's fail path as the design, recorded in plan 6.7, 7.3 and Section 13; the rule of `main` is not counted as a layer against sessions until it is settled that neither the machine account nor the Claude GitHub App can change or bypass it | technical | proposed | `plan/decisions/PC-32.md` |
@@ -273,12 +274,12 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 <!-- generated:open-notes -->
 | Note | On | Origin | Status | First line |
 |---|---|---|---|---|
-| `N-029` | `C01` | OI-004 | open | **Item:** The session's local git commit identity is `Claude <noreply@anthropic.com>`, not the machine account (EV-C00-001, row 8). Plan ... |
 | `N-047` | `C01` | relay-2026-10-03 | open | **Effort level of created sessions** (from Batu's conversation session `session_016Hi3ZYgAf2amYNGc43a3tr`, relayed by `session_01WcVuDQhD... |
 | `N-063` | `C01` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-073` | `C01` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-02 (whether... |
 | `N-091` | `C01` | EV-C00-021 | open | T-49: each stage file lists Batu's steps from C01. The direction is decided now. The topic's reason is in its row of EV-C00-021 section 1... |
 | `N-105` | `C01` | CHK-C00-067 | open | **The key inventory** (plan Section 12, "Key inventory": "The builder keeps a single inventory in C00"; CHK-C00-067 condition 4(c), findi... |
+| `N-156` | `C01` | EV-C01-011 | open | **The system's commits carry the platform's git identity, not the machine account's** (EV-C01-011 point 1; W-C01-18; PC-27; 2026-10-11). ... |
 | `N-167` | `C01` | W-C01-24 | open | **The classifier in C01's routine runs, and the D-008 cost text** (C01 row 18's fail path; EV-C01-015 points 4 and 6 (c); PC-30; W-C01-24... |
 | `N-170` | `C01` | EV-C01-016 | open | **Plan line 729's mark, answered by row 9** (W-C01-37; `evidence/C01/EV-C01-016_W-C01-37_row9_hooks_one_repository.md`, "Plan line 729's ... |
 | `N-173` | `C01` | EV-C01-017 | open | **The guard does not yet fail closed in two cases: W-C01-38 point 2's correction** (EV-C01-017 point 1 (c) and point 2; W-C01-38; 2026-10... |
@@ -341,6 +342,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-138` | `C05` | W-C01-42 | open | **Exams under D-020 (a)** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S1 to S3, X4 and section 7; 2026-10-... |
 | `N-142` | `C05` | FR-06 | open | **Exam cases for an avoidable wait and for haste** (FR-06; PC-23; 2026-10-11). The hidden exam gets paired cases, scored on behaviour (Ap... |
 | `N-147` | `C05` | PC-24 | open | **DevOS's `CLAUDE.md` and a subagent's end** (PC-24; W-C01-10, EV-C01-008; 2026-10-11). Appendix D section 2 (the draft `CLAUDE.md`, its ... |
+| `N-182` | `C05` | W-C01-18 | open | **The commit identity of DevOS's own sessions and routines** (W-C01-18; `evidence/C01/EV-C01-011_W-C01-18_row11_identity.md` point 4; PC-... |
 | `N-180` | `C05` | W-C01-14 | open | **Two instructions of a routine session disagree on naming the model in what it pushes** (W-C01-14; `evidence/C01/EV-C01-020_W-C01-14_row... |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
 | `N-068` | `C06` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
@@ -349,6 +351,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-115` | `C06` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
 | `N-135` | `C06` | FR-05 | open | **From FR-05 (2026-10-10, L-179).** (1) More of DevOS's control state lives in web settings outside git (environments, routines, GitHub s... |
 | `N-139` | `C06` | W-C01-42 | open | **Routines and the configuration record under D-020 (a)** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S4 a... |
+| `N-157` | `C06` | EV-C01-011 | open | **The numeric id facts for the intake path of Batu's answers** (plan 6.9: "the facts about the numeric id are read in C01, row 11"; EV-C0... |
 | `N-159` | `C06` | W-C01-21 | open | **A dynamic workflow in a session started by a routine** (W-C01-21; `evidence/C01/EV-C01-012_W-C01-21_row14_workflows_projects.md` Point ... |
 | `N-168` | `C06` | W-C01-24 | open | **The classifier in DevOS's routine sessions** (C01 row 18's fail path; EV-C01-015 point 6 (c); PC-30; 2026-10-11). Sessions started by a... |
 | `N-169` | `C06` | W-C01-24 | open | **Routine sessions run in auto mode; D-008 asks for Accept edits** (EV-C01-015, "Noticed outside the row's question" item 1; 2026-10-11).... |
@@ -387,7 +390,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-140` | `C12` | W-C01-42 | open | **The session-tools server deny at its target** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S9; 2026-10-11). |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 37 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-030, N-048, N-102, N-104, N-149, N-143, N-141, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 38 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-102, N-104, N-149, N-143, N-141, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
