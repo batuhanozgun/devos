@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z: D-027 (a), pressed for P2 (L-211). | 2026-10-11T13:56Z |
 | summary_tr | Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı denetimde). 6. satır kabul edildi: #222 bildirimi telefonuna geldi. <br>P2 16:58'de bitti. P3'ün doğru başlaması için kontrol dosyasında küçük bir düzeltme denetimde; bitince #6'ya "P3 hazır" yazacağım, o zaman bir kez daha **Run now**'a bas. Ondan önce basma. <br>Kullanım normal düzeyde. | 2026-10-11T14:12Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T14:12Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T14:28Z |
 
 ---
 
@@ -36,11 +36,11 @@
 - `W-C01-12` Row 5: daily routine limit (C01 #5)
 - `W-C01-17` Row 10: usage observation (C01 #10)
 - `W-C01-18` Row 11: identity (C01 #11)
-- `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5)
 
 **Running:**
 - `W-C01-14` Row 7: embedding model, the session part (C01 #7): claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
 - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
+- `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): claimed by `nobody`
 
 **Not ready, with the first unmet condition:**
 - `W-C01-15`: finished, waiting for acceptance
@@ -65,7 +65,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 19, blocked 3, cancelled 9, finished 7, ready 4, running 2 | 16 |
+| `C01` | Platform verification | running | accepted 19, blocked 3, cancelled 9, finished 7, ready 3, running 3 | 16 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 12 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 16 |
 | `C04` | Knowledge, search and context | planned | no items | 13 |
@@ -118,7 +118,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C01-35` Row 3: environment token under PC-21 item 4: accepted
   - `W-C01-36` Row 17: control surface across environments under PC-21 item 7: accepted
   - `W-C01-37` Row 9: single- and multi-repository sessions under PC-21 item 5: finished, not accepted
-  - `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): ready
+  - `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): running
   - `W-C01-39` Row 12: repository access limit and the git credential under PC-21 item 6: finished, not accepted
   - `W-C01-40` N-109 under PC-21 item 8: its disposition through D-019: accepted
   - `W-C01-41` Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7): accepted
@@ -192,7 +192,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-35` | Row 3: environment token under PC-21 item 4 | accepted | — | — | `plan/work/W-C01-35.md` |
 | `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | accepted | — | — | `plan/work/W-C01-36.md` |
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | finished, not accepted | — | — | `plan/work/W-C01-37.md` |
-| `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | ready | — | — | `plan/work/W-C01-38.md` |
+| `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | running | — | — | `plan/work/W-C01-38.md` |
 | `W-C01-39` | Row 12: repository access limit and the git credential under PC-21 item 6 | finished, not accepted | — | — | `plan/work/W-C01-39.md` |
 | `W-C01-40` | N-109 under PC-21 item 8: its disposition through D-019 | accepted | — | — | `plan/work/W-C01-40.md` |
 | `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | accepted | — | — | `plan/work/W-C01-41.md` |
