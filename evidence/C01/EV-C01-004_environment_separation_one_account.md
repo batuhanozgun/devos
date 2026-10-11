@@ -26,12 +26,12 @@ claim: "design from the plan and the documentation; not independently tested"
 | Field | Value |
 |---|---|
 | Source commit | `main` `e7717e8a8f164417fb077bfbbf5f7ae0a04766a9` (PR #206), at which W-C01-42's acceptance condition is in force. The plan files were read at `9340146`, a descendant whose later commits touch no cited passage except D-019 (a) and N-109's closure (R4). |
-| Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud, Opus 5.5; Claude Code 2.1.296 as `get_session` reports the session's container. The documentation's changelog names 2.1.296 (9 October 2026) as its newest release. |
+| Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud, Opus 5.5; Claude Code 2.1.296 as `get_session` reports the session's container (read 2026-10-11 at about 06:03Z, guard record #960). The documentation's changelog names 2.1.296 (9 October 2026) as its newest release. |
 | Criterion version | W-C01-42's acceptance block as merged at `c7c02c2` (L-185), in force at `e7717e8` and unchanged since. |
 | Input | W-C01-42 and Batu's answer to D-020, given to a workflow of three readers (plan needs; documented per-environment settings; established practice), two independent designs (A: remove the need; B: documented settings first) and one producer, with the sources in the front matter. |
 | Actual observation | Sections 1 to 8: a design, not an observation of the platform. Documentation facts are quoted with their reading dates. |
-| Raw evidence ID | Workflow run `wf_f172f804-e71` (2026-10-11, started about 06:04Z). Filed: the platform-settings reader's report, `evidence/C01/raw/W-C01-42_platform_settings.md` (its stated start of reading, 05:59Z, is earlier than its first page read in the guard log, 06:05:35Z; CHK-C01-034 finding 5(d)), and the practice reader's report, `evidence/C01/raw/W-C01-42_practice.md`. The plan-needs report and designs A and B stay in the session's transcripts (the run's journal); section 9 records how they were compared. |
-| Independence level | Same session, fresh-context subagents (declared, Ek A 5.3); judged by CHK-C01-034 and CHK-C01-035, and their conditions confirmed by a further check. |
+| Raw evidence ID | Workflow run `wf_f172f804-e71` (2026-10-11, started 06:05Z, guard record #973). Filed: the platform-settings reader's report, `evidence/C01/raw/W-C01-42_platform_settings.md` (its stated start of reading, 05:59Z, is earlier than its first page read in the guard log, 06:05:35Z; CHK-C01-034 finding 5(d)), and the practice reader's report, `evidence/C01/raw/W-C01-42_practice.md`. The plan-needs report and designs A and B stay in the session's transcripts (the run's journal); section 9 records how they were compared. |
+| Independence level | Same session, fresh-context subagents (declared, Ek A 5.3); judged by CHK-C01-034 and CHK-C01-035, and their conditions confirmed by CHK-C01-036 (PASS). |
 
 **Revised after review (2026-10-11, L-190).** CHK-C01-034 and CHK-C01-035 judged the first version at `bb6450c`. This version adds the envelope above; moves X2 to section 5 (it served exam integrity, not separation); limits X3's method (no recurring step for Batu) and names the detection gap if it is narrowed; reduces S6 to a pointer to the plan; makes S7's provenance condition an option for C03 rather than part of the structure; states the database layer's own dependence on S7 and row 12; marks S9's confirmation and S10's failing closed as still to be shown; corrects three documentation statements; and gives section 8's plan changes their carrier.
 
@@ -60,7 +60,7 @@ claim: "design from the plan and the documentation; not independently tested"
 | Working → audit | Binding verdict, acceptance, version activation, rule change: P:640; B:36; P:708; criterion 30 | S5, S8 (N01, N03, N04); R1 |
 | Working → audit | The configuration the audit runs from changes only after the audit approves it and it merges: P:712; P:618 | S7, S4(a), S10 (edit block); R1 |
 | Audit → working | Producing products; approving what it has repaired; fixing a problem it finds in the same action: P:641; P:709; B:37; N28 | S8 (N28; B:37); S7's option for C03 |
-| Working → exam | Reaching answer keys or exam records: "The tested role cannot reach the answer key by any path" (P:812); P:708; B:273; N08 | S1, S5, S8; S6 limits where content can go |
+| Working → exam | Reaching answer keys or exam records: "The tested role cannot reach the answer key by any path" (P:812); P:708; B:273; N08 | S1, S5, S8; the plan's network setting (S6) limits some routes, with documented exceptions |
 | Working → exam | Knowing that a task is an exam: B:273; P:812 | S2 |
 | Working → exam | Writing EvalRun or Competence: B:273 | S8 |
 | Exam → working, audit | Producing products, writing verdicts: P:642; B:38 | S8; S7's option for C03 |
@@ -103,7 +103,7 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 - **Need.** "The tested role cannot reach the answer key by any path. Answer keys are kept where only the exam environment's credential reaches them" (P:812); P:708; N08.
   - This is 7.3's own alternative (P:812), taken by PC-21 item 6 (P:969) and N-134(3).
   - It removes the dependence on row 12 and on the shared GitHub identity ("On GitHub every environment acts as the same machine account", P:812).
-  - In the practice reader's survey, withholding the answers is one of the two measures that prevent rather than detect; the others it lists are detection or integrity (its findings and counter-evidence; web sources read 2026-10-11).
+  - In the practice reader's survey, withholding the answers is one of the two measures that prevent rather than detect; it classes items 3, 4, 5 and 7 as detection or integrity (its findings and counter-evidence; web sources read 2026-10-11).
 - **Layer.** The database: role class from the token, and the rule gate. It holds outside DevOS's files and changes only through a migration, a high-impact path the audit approves before it merges (P:710; P:723; P:631 applies it on merge). That approval rests in turn on S7's rule on `main`, which counts as a layer against sessions only once row 12 settles who can change it (W-C01-39).
 - **Built.** C02 builds EvalRun's access rule (B:78); C05 builds the exam schema and sets (task 4).
 
@@ -169,7 +169,7 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 - **Open for C02.** Whether the database can take the token from that header is a Supabase fact not read here. If it cannot, row 3's first branch applies: an Edge Function gate (P:946).
 - **Built.** C02: N-131 decides the form before task 3, and Batu's step comes at task 7.
 
-**S6. Network level per environment: as the plan already sets it** (P:652; 6.7's network row, P:733). Not new here and not a separation between pairs: it limits where audit and exam content can be sent, and it is set when C02 creates each environment. If C02 relies on a change taking effect in running sessions: [doc: cloud-environments, "Access levels", read 2026-10-11; not independently tested] a change reaches running sessions "within about a minute", for Anthropic-hosted environments and for requests that go through the session's network allowlist.
+**S6. Network level per environment: as the plan already sets it** (P:652; 6.7's network row, P:733). Not new here and not a separation between pairs: it limits where audit and exam content can be sent, and it is set when C02 creates each environment. If C02 relies on a change taking effect in running sessions: [doc: cloud-environments, "Network access" and "Access levels", read 2026-10-11; not independently tested] GitHub (through its own proxy), connectors, a secret's hosts and the Anthropic API stay reachable at every level; a change reaches running sessions "within about a minute", for Anthropic-hosted environments and for requests that go through the session's network allowlist.
 
 **S7. GitHub's rule on `main`, with the required check that reads the audit verdict through `devos_ci`** (P:557; B:40; T-81).
 - **What it does.**
@@ -269,7 +269,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
   - A secret applies in every session in its environment "whoever started it" (EV2:155). So every database and GitHub separation in section 1 holds for a pair only as far as R1 holds. That is row 3's own condition, "while no session can read or set another environment's token or settings" (P:946).
 - **R2. Environment settings.**
   - The documented ways to edit them are Batu's environment selector and the Desktop app (EV3:71). Whether a session route exists is not stated.
-  - Detection gap if X3 is narrowed or not built (section 3): a change to an environment's settings or to a routine made through R1 would then show only through X1 (a session that matches no expected run), not through a configuration record.
+  - Detection gap if X3 is narrowed or not built (section 3): a change to an environment's settings or to a routine made through R1 would show, if at all, only through X1 (a session that matches no expected run, or a self-observed deviation), not through a configuration record; a change by a session that matches an expected run and shows no deviation would not show.
   - Whether one environment's sessions can read another's settings is not stated either (EV2:95).
   - Under S5, the settings hold nothing readable that grants authority.
 - **R3. Account-wide shared items.** These are the GitHub identity and the GitHub App installation (P:812; EV3:107), the connectors, the account skills and the usage limits (D-020 option (a)). S4 keeps them free of anything one environment may hold and another may not. It does not separate them.
@@ -278,7 +278,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
   - It keeps the bridge's kept tools and D-003's right to edit its own guard.
   - S8 line 1 keeps its token out of the audit's binding rights and out of exam records.
   - The rest is D-003's residual, not D-020's.
-- **Unchanged by this design.** Separations inside one session rest on declaration (P:708). The platform-side readers stay as the 6.7 row states them (P:731). An exam session writing exam material to a `devos` branch has no named prevention layer under any account arrangement: S1's "write only through `devos_api`" rests on declaration, since every environment pushes as the same machine account (P:812); C05's T-42 decides that layer (CHK-C01-035 finding 8).
+- **Unchanged by this design.** Separations inside one session rest on declaration (P:708). The platform-side readers stay as the 6.7 row states them (P:731). An exam session writing exam material to a `devos` branch has no named prevention layer under any account arrangement: S1's "write only through `devos_api`" rests on declaration, since every environment pushes as the same machine account (P:812); C05's T-42 decides that layer (CHK-C01-035 finding 8). Likewise, a commit pushed by the audit or exam environment under the shared GitHub identity has no layer in this structure beyond S8, since N28 binds only the same transaction; C03's T-81 and test 5 decide it, with S7's option (CHK-C01-036 finding 7).
 - **What (a) changes compared with separate accounts.** R1 and R3, and R4's reach, would otherwise have been kept apart by account. That is itself an inference from documented account scope, not a stated guarantee (D-020 P3). S1 to S8 are the same either way.
 
 ## 5. Left out as more than the need
@@ -290,7 +290,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 - **A start credential issued per run.** It needs a new component. The start text is already data, used only as a work ID (P:668).
 - **A setup script that writes user settings.** Whether a user settings file written by a setup script is read in a cloud session is not stated (section 6 item 10); the settings page's "not read" concerns the user's own local files, which "stay on your machine" [doc: settings, "Settings in cloud sessions", read 2026-10-11; not independently tested]. The need is met without it.
 - **`deniedMcpServers`, `isolatePeerMachines`, `disableRemoteControl`.** They are redundant once the server and `SendMessage` are denied. Whether a repository-level `deniedMcpServers` reaches the session is not stated.
-- **A network level of None fixed now for the exam environment.** S6 sets the narrowest level the work needs. Fixing None before C05 knows the exam's needs could refuse legitimate work, and it adds no separation between pairs.
+- **A network level of None fixed now for the exam environment.** The plan's network setting (S6) applies. Fixing None before C05 knows the exam's needs could refuse legitimate work, and it adds no separation between pairs.
 - **Archiving idle environments as a standing measure.** It would also block Batu's legitimate starts. Archiving stays a response (section 3).
 - **Canary markers in exam material.** They catch verbatim copies only. S1 keeps the keys out of every repository, and X4 reuses T-75's search.
 - **Salted commitments of answer keys; insert-only or write-once stores.** These protect the exam's own integrity (U-8, C05) or the history, not separation between environments. An event per transition already exists (P:623).
@@ -303,9 +303,9 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 ## 6. What the documentation does not state, and the path that does not depend on it
 
 1. **No limit by environment is stated** on what a session can do to the account's other sessions, routines or settings (EV3:78).
-   - Path: R1, accepted. S9 removes the tools from DevOS sessions, and X1 and X3 detect.
+   - Path: R1, accepted. S9 removes the tools from DevOS sessions, and X1 and X3 detect (X3 within section 3's limits).
 2. **Whether one environment's sessions can read or set another's variables, secrets or settings** (EV2:95).
-   - Path: S5. A secret's value cannot be viewed after saving (documented), and variables hold nothing secret, so reading them grants nothing. Setting them is R1 and R2, and X3 detects a change.
+   - Path: S5. A secret's value cannot be viewed after saving (documented), and variables hold nothing secret, so reading them grants nothing. Setting them is R1 and R2, and X3 detects a change (within section 3's limits; the gap under R2 otherwise).
 3. **Whether a repository-file deny of the session-tools server applies in an Anthropic-hosted, single-repository session.**
    - Path: it is confirmed by a session listing its own tools (C02; X1 at every registration). If the tools still appear, the guard's default deny (as today) stays the layer, and the record says so under PC-21 item 9.
 4. **The server's full tool list, and whether its tools stop at an environment boundary** (EV3 section 2).
@@ -319,7 +319,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 8. **Whether a session's git operations, as distinct from API requests, are limited to its attached repositories.**
    - Path: S1. Nothing exam-secret is in any repository.
 9. **Whether a running session can change its own environment or a routine's environment** (EV3 section 2 item 6).
-   - Path: R1. X1 records each registration's role class from its token, and X3 records each routine's environment.
+   - Path: R1. X1 records each registration's role class from its token, and X3 records each routine's environment (within section 3's limits).
 10. **Whether a user settings file written by a setup script is read.**
     - Path: not used (section 5).
 
