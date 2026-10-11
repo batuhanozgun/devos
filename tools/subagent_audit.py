@@ -12,8 +12,27 @@ subagent's agent_id, the tool and, for Read, Glob and Grep, the logged path (its
 Grep's path, empty when none). PermissionRequest records come in addition and are not counted. Rule B5 lets only a
 reader or a tools/ script name these locations; this is that script. It reads and never writes.
 
-  last <agent-id>               the text of the agent's last assistant event that has text, as stored, followed by
-                                one newline (how checker verdicts are filed verbatim)
+The end (PC-24; N-149). A subagent's own transcript holds no reliable end mark: it has no end or result record, its
+meta has no status, the final event's stop_reason is mostly empty (observed 2026-10-11, version 2.1.296), and its
+last text block can be followed by a tool call of the same response. The platform's end status is recorded
+elsewhere: for an Agent-tool subagent in its session's transcript (<session>.jsonl beside the <session>/ folder that
+holds subagents/): a background call's completion notification (a user event whose origin kind is
+"task-notification", or a queued_command attachment of that mode, its text starting <task-notification> with
+<task-id> the agent ID and <status>, read before its <summary> or <result>), or a foreground call's own result (the
+tool result of the meta's toolUseId, whose toolUseResult status is not "async_launched"); the last of these decides;
+for a workflow agent, a "result" record with its agentId in the run's journal.jsonl. So last, disciplines and audit
+first need status "completed" (a workflow agent: a non-null result); else they print nothing on stdout, NOT
+FINISHED with the reason on stderr, and exit 3. Observed in this form: the background notification and the
+journal; the foreground result's form is inferred from the launch's toolUseResult and the documented status.
+
+  last <agent-id>               the agent's report, as stored, followed by one newline (how checker verdicts are
+                                filed verbatim): the message of its first SubagentHandback call (the hand-back
+                                call) with a non-blank message whose result does not say success false (the
+                                platform delivers one report and refuses later calls, and plain text after it is
+                                not delivered); else the input of its last StructuredOutput call (a workflow agent
+                                given a schema): its "text" string if non-empty, else the input as JSON; else the
+                                text of its last assistant event that has text (read in the installed Claude Code's
+                                code on 2026-10-11; a hand-back is not yet observed in a transcript)
   audit <agent-id> <workspace>  the isolation audit of evidence/C00/EV-C00-016_baseline_preregistration.md section 7:
                                 the transcript's path, SHA-256 and kind (Agent-tool subagent, or workflow agent with
                                 its run ID), the meta toolUseId (for a workflow agent whose meta names none, a line
@@ -45,9 +64,10 @@ reader or a tools/ script name these locations; this is that script. It reads an
 audit and calls print tool names, path arguments (Read file_path; Glob path and pattern; Grep path and glob) and the
 input key names of any other tool; never file content, tool output or prompt text. Strings are printed JSON-quoted,
 so that no argument can forge an output line. disciplines prints three fixed lines (its reasons name only answer
-numbers and counts), never prompt or report text. Exit codes: 0 done (audit: valid; disciplines: both present), 1
-audit void or disciplines missing, 2 usage or reading error. Locations: $DEVOS_AUDIT_HOME (default: the home
-directory), $DEVOS_GUARD_LOG_DIR (default /tmp/devos-guard).
+numbers and counts), never prompt or report text. calls lists a transcript as it stands, finished or not. Exit codes:
+0 done (audit: valid; disciplines: both present), 1 audit void or disciplines missing, 2 usage or reading error, 3
+not finished. Locations: $DEVOS_AUDIT_HOME (default: the home directory), $DEVOS_GUARD_LOG_DIR (default
+/tmp/devos-guard).
 """
 import glob
 import hashlib
@@ -69,6 +89,10 @@ USAGE = "usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <ag
 
 
 class Error(Exception):
+    pass
+
+
+class NotFinished(Exception):
     pass
 
 
@@ -185,8 +209,105 @@ def texts(m):
                      and isinstance(b.get("text"), str)) if isinstance(c, list) else ""
 
 
+def tolerant(path, needles):
+    """The JSON objects of the lines of path that hold one of the needles (bytes); a line that does not parse (one
+    being appended) is skipped. None when path cannot be read."""
+    try:
+        with open(path, "rb") as f:
+            data = f.read()
+    except OSError:
+        return None
+    out = []
+    for raw in data.splitlines():
+        if any(n in raw for n in needles):
+            try:
+                e = json.loads(raw)
+            except ValueError:
+                continue
+            if isinstance(e, dict):
+                out.append(e)
+    return out
+
+
+def note_status(text, agent):
+    """The <status> of a task notification about agent, read before its <summary> or <result>; None if text is no
+    notification about agent."""
+    if not isinstance(text, str) or not text.lstrip().startswith("<task-notification>"):
+        return None
+    head = re.split(r"<(?:summary|result)>", text, maxsplit=1)[0]
+    tid, status = re.search(r"<task-id>([^<]*)</task-id>", head), re.search(r"<status>([^<]*)</status>", head)
+    return (status.group(1).strip() if status else "") if tid and tid.group(1).strip() == agent else None
+
+
+def end_problem(path, run, agent):
+    """None when the platform's end status says the agent has finished; else why not (see "The end" above)."""
+    if run is not None:
+        journal = os.path.join(os.path.dirname(path), "journal.jsonl")
+        recs = tolerant(journal, [agent.encode()])
+        if recs is None:
+            raise Error(f"cannot read the workflow run's journal {journal}")
+        if any(r.get("type") == "result" and r.get("agentId") == agent and r.get("result") is not None for r in recs):
+            return None
+        return f"no result for agent {agent} in its workflow run's journal {journal}"
+    session = os.path.dirname(os.path.dirname(path)) + ".jsonl"
+    try:
+        with open(path[:-len(".jsonl")] + ".meta.json", "rb") as f:
+            tid = json.loads(f.read()).get("toolUseId")
+    except (OSError, ValueError, AttributeError):
+        tid = None
+    tid = tid if isinstance(tid, str) and tid else None
+    recs = tolerant(session, [agent.encode()] + ([tid.encode()] if tid else []))
+    if recs is None:
+        raise Error(f"cannot read the session's transcript {session}, where the end status is recorded")
+    status = None
+    for e in recs:
+        m, a, r = e.get("message"), e.get("attachment"), e.get("toolUseResult")
+        s = None
+        if e.get("type") == "user" and isinstance(e.get("origin"), dict) and \
+                e["origin"].get("kind") == "task-notification" and isinstance(m, dict):
+            s = note_status(m.get("content"), agent)
+        elif e.get("type") == "attachment" and isinstance(a, dict) and a.get("type") == "queued_command" and \
+                a.get("commandMode") == "task-notification":
+            s = note_status(a.get("prompt"), agent)
+        elif e.get("type") == "user" and tid and isinstance(r, dict) and r.get("status") != "async_launched" and \
+                isinstance(m, dict) and isinstance(m.get("content"), list) and any(
+                    isinstance(b, dict) and b.get("type") == "tool_result" and b.get("tool_use_id") == tid
+                    for b in m["content"]):
+            s = str(r.get("status"))
+        status = s if s is not None else status
+    if status is None:
+        return f"no end status for agent {agent} yet in its session's transcript {session}"
+    return None if status == "completed" else f"the end status of agent {agent} is {q(status)}, not completed"
+
+
+def finished(path, run, agent):
+    why = end_problem(path, run, agent)
+    if why:
+        raise NotFinished(why)
+
+
 def last_text(events):
-    """The text of the last assistant event that has text, or None."""
+    """The agent's report (see last in the docstring): a hand-back, a structured output or the last text, or None."""
+    failed = {b.get("tool_use_id") for e in events if e.get("type") == "user" and isinstance(e.get("toolUseResult"),
+              dict) and e["toolUseResult"].get("success") is False and isinstance(e.get("message"), dict)
+              and isinstance(e["message"].get("content"), list)
+              for b in e["message"]["content"] if isinstance(b, dict) and b.get("type") == "tool_result"}
+    hand, out = [], []
+    for e in events:
+        m = e.get("message")
+        if e.get("type") == "assistant" and isinstance(m, dict) and isinstance(m.get("content"), list):
+            for b in m["content"]:
+                inp = b.get("input") if isinstance(b, dict) and b.get("type") == "tool_use" else None
+                if isinstance(inp, dict) and b.get("name") == "SubagentHandback" and b.get("id") not in failed \
+                        and isinstance(inp.get("message"), str) and inp["message"].strip():
+                    hand.append(inp["message"])
+                elif isinstance(inp, dict) and b.get("name") == "StructuredOutput":
+                    out.append(inp)
+    if hand:
+        return hand[0]
+    if out:
+        t = out[-1].get("text")
+        return t if isinstance(t, str) and t else json.dumps(out[-1], ensure_ascii=False, indent=2)
     for e in reversed(events):
         m = e.get("message")
         if e.get("type") == "assistant" and isinstance(m, dict) and isinstance(m.get("content"), list):
@@ -197,7 +318,9 @@ def last_text(events):
 
 
 def last(agent):
-    t = last_text(jsonl(transcript(agent)[0])[1])
+    path, run = transcript(agent)
+    finished(path, run, agent)
+    t = last_text(jsonl(path)[1])
     if t is None:
         raise Error(f"agent {agent} has no assistant event with text")
     print(t)
@@ -269,7 +392,9 @@ def opening(events):
 
 def disciplines(agent):
     block = task_block()
-    _, events = jsonl(transcript(agent)[0])
+    path, run = transcript(agent)
+    finished(path, run, agent)
+    _, events = jsonl(path)
     task = any(block in " ".join(texts(m).split()) for m in opening(events))
     t = last_text(events)
     why = "no assistant text" if t is None else block_problem(t)
@@ -300,6 +425,7 @@ def audit(agent, workspace):
         meta = None
     if not isinstance(meta, dict) or (run is None and "toolUseId" not in meta):   # a workflow agent's may lack it
         raise Error(f"no readable {'meta' if run else 'toolUseId'} in {meta_path}")
+    finished(path, run, agent)
     log_dir = os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard"
     logs = sorted(glob.glob(os.path.join(glob.escape(log_dir), "*.jsonl")))
     if not logs:
@@ -346,6 +472,9 @@ def main(argv):
         if len(argv) == 2 and argv[0] == "disciplines":
             return disciplines(argv[1])
         print(USAGE, file=sys.stderr)
+    except NotFinished as e:
+        print(f"subagent_audit: NOT FINISHED: {e}", file=sys.stderr)
+        return 3
     except Error as e:
         print(f"subagent_audit: {e}", file=sys.stderr)
     return 2
