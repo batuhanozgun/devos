@@ -725,4 +725,4 @@ Log entries of stage C01 (`plan/Installation_Working_Order.md` section 9). Entri
 - **D-028 (Batu's; opened).** One Run now press tonight so that P4 starts about 14 hours before its schedule (2026-10-12, about 08:07Z, 11:07 his time); recommendation (a); if he does not press, the schedule starts P4 and nothing else is lost. Offered on issue #6 with its Turkish steps.
 - **Wait:** ends: P4's run, by Batu's press (D-028 (a)) or by the schedule at about 08:07Z on 2026-10-12; sooner: the press, already offered; whose call: Batu. Meanwhile W-C01-45's accepting check runs, and W-C01-17 (row 10) waits for a quiet window.
 - **Guard:** no new denial by the executor since L-241. The last record #10084 (about 17:54Z, the report that read it).
-- **Record changes:** plan/decisions/D-028.md · addition · opened; plan/ledger.md · correction · summary_tr; plan/ledger/C01-log.md · addition · L-242; DURUM.md, plan/ledger.md · generated
+- **Record changes:** plan/decisions/D-028.md · addition · opened; plan/ledger.md · correction · summary_tr and Waiting for Batu (D-028 open); plan/ledger/C01-log.md · addition · L-242; DURUM.md, plan/ledger.md · generated
