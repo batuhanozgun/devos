@@ -2,18 +2,18 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 11 Ekim 2026, 18:08 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 18:22 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
 **Sıradaki işler:** `W-C01-20`, `W-C01-38` sürüyor; başlatılabilir: `W-C01-12`, `W-C01-17`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
-**Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 14:30 (Türkiye saati) tarihinde yenileniyor.
+**Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 19:30 (Türkiye saati) tarihinde yenileniyor.
 
 **Çalışma oturumu:** Kurulumu tek bir çalışma oturumu yürütüyor. Kullanım limiti dolarsa, limit sıfırlandıktan sonra o oturuma yazacağın "devam" mesajı işi kaldığı yerden sürdürür.
 
 **Şu an**
 
-Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 ve P2 bitti. 6. satır kabul edildi; 7. satır denetimden geçti, birleşmeyi bekliyor. 
-P2'nin kapanış satırını kontrol dosyası saymıyordu; küçük bir düzeltme denetlendi ve birleşti. #6'ya "P3 hazır" yazınca bir kez daha **Run now**'a bas. 
-Kullanım normal düzeyde.
+P1, P2 ve P3 bitti. 6., 7. ve 8. satırlar kabul edildi. 
+11. satır (kimlik): benim commit'lerim artık makine hesabıyla atılıyor; rutinin çalışmaları da sıradaki kontrol dosyası sürümünde aynı ayara geçecek. B3 (a) olarak kalıyor; senden bir şey istemiyor. 
+Rutine şimdilik basma; sıradaki **Run now** için #6'ya "CS1 hazır" yazacağım. Kullanım normal düzeyde.

@@ -245,7 +245,7 @@ Not every one of the executor's own commits since the choice is under it either.
 - The question is not sent to Batu now. W-C01-18 stays unaccepted.
 - The builder completes the change the forward reading needs. (a) The working order's section 4 step 5 binds the setting; it is on `main` from `9025ecc`. (b) The C01 routine's later runs (its combined-scenario runs CS1 and CS2, after P3) set the same identity in their scratch clone, through a later version of `evidence/C01/routine/CONTROL.md` merged between runs once P3 has closed.
 - A fresh record of row 11 then reads every commit path (the executor's commits, merges made in sessions, the routine's next run), and a fresh checker judges it.
-- If that record finds the row met, the question is never asked (PC-27, `reopen_if`). If the row is still not met when W-C01-18 is due to close, and in any case before C01's stage close, the question goes to Batu as his decision. It goes with the observation: variant 3 makes the commits appear under the machine account under (a); variant 3 is the builder's choice; and B3's option (b) would not change the commits' identity (an inference).
+- If that record finds the row met, the question is never asked (PC-27, `reopen_if`). If the row is still not met when the fresh record that reads the routine's next run is judged, and in any case before C01's stage close, the question goes to Batu as his decision. It goes with the observation: variant 3 makes the commits appear under the machine account under (a); variant 3 is the builder's choice; and B3's option (b) would not change the commits' identity (an inference).
 
 This record drafts no decision for him.
 
