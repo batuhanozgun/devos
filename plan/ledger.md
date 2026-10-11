@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). Issue #6 comment `6109982927` (2026-10-11T14:20:30Z) and working session 14:40:50Z: pressed for P3's first attempt (L-221). Working session 14:48:46Z: pressed for P3's second attempt (L-226). Issue #6 comment `6110352256` (2026-10-11T15:01:37Z) and working session 15:02:19Z: row 5's reading, no routine line, and a question whether he must run the routine again, answered there: not now (L-226). | 2026-10-11T15:30Z |
 | summary_tr | P1, P2 ve P3 bitti. 5., 6., 7., 8. ve 10. satırlar kabul edildi; 13. satırın kaydı kabul edildi (satır karşılanmadı, planlanan yolla ilerliyor). Guard işi kabul edildi. <br>10. satır: bir oturum, kullanım payının ne kadarını harcadığını göremiyor; bu oranı yalnız sen kullanım sayfanda görüyorsun. Planın öngördüğü yol uygulandı: kapasite tahminle hesaplanacak, belirsizliği kayda geçecek (PC-36). Senden bir şey istemiyor. <br>Düzeltme: ECC eklentisinin kancaları yalnız bu oturumda bir şey yapmıyor. Depo ayarının işe yarayıp yaramadığı, oturum yeniden başlayınca görülecek. Yaramazsa eklentiyi hesap ayarlarından kapatmayı sana ayrıca soracağım. <br>Haftalık kullanım uyarı düzeyinde: 17 Ekim 20:00'ye kadar yalnız hafif işler sürüyor (D-002). <br>**Senden beklenen (D-028):** P4 hazır; rutinin sayfasında bir kez **Run now**'a basar mısın? Basmazsan yarın 11:07'de kendiliğinden çalışır. | 2026-10-11T18:48Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T18:48Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T19:04Z |
 
 ---
 
@@ -33,7 +33,6 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C01-27` N-063: the counter-design rows decided from C01's observations
 - `W-C01-46` P4: row 13's two unchecked parts observed in a routine session (PC-35 routing item 3)
 
 **Running:**
@@ -41,6 +40,7 @@
 
 **Not ready, with the first unmet condition:**
 - `W-C01-18`: finished, waiting for acceptance
+- `W-C01-27`: finished, waiting for acceptance
 - `W-C01-29`: depends on W-C01-46 (not accepted)
 - `W-C01-30`: depends on W-C01-18 (not accepted)
 - `W-C01-45`: finished, waiting for acceptance
@@ -56,12 +56,12 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 31, blocked 2, cancelled 9, finished 2, ready 2 | 17 |
+| `C01` | Platform verification | running | accepted 31, blocked 2, cancelled 9, finished 3, ready 1 | 17 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 13 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 17 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
 | `C05` | Common rules, roles and methods | planned | no items | 11 |
-| `C06` | Working order, audit and decision channel | planned | no items | 13 |
+| `C06` | Working order, audit and decision channel | planned | no items | 14 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 9 |
 | `C09` | Outage, backup, restore and reconnection | planned | no items | 7 |
@@ -128,7 +128,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-24` | Row 18: platform-side readers (C01 #18) | accepted | — | — | `plan/work/W-C01-24.md` |
 | `W-C01-25` | Phase-A probe (PC-16) | accepted | — | — | `plan/work/W-C01-25.md` |
 | `W-C01-26` | N-109: do the platform's session credentials act beyond the session? | cancelled | — | — | `plan/work/W-C01-26.md` |
-| `W-C01-27` | N-063: the counter-design rows decided from C01's observations | ready | — | — | `plan/work/W-C01-27.md` |
+| `W-C01-27` | N-063: the counter-design rows decided from C01's observations | finished, not accepted | — | — | `plan/work/W-C01-27.md` |
 | `W-C01-28` | N-110: follow-ups of D-016's carriers | accepted | — | — | `plan/work/W-C01-28.md` |
 | `W-C01-29` | C01's combined scenario; probe setup removed when C01 ends | blocked: depends on W-C01-46 (not accepted) | — | — | `plan/work/W-C01-29.md` |
 | `W-C01-30` | Stage close review | blocked: depends on W-C01-18 (not accepted) | — | — | `plan/work/W-C01-30.md` |
@@ -224,6 +224,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-34` | C01 row 5 (W-C01-12): the documentation states no daily routine cap since 2026-09-30, only hourly start limits and the shared five-hour and weekly usage; plan 6.4's budget table and every plan place that rests on "15 runs a day" are updated, with the account's own value from Batu's reading | technical | accepted | `plan/decisions/PC-34.md` |
 | `PC-35` | C01 row 13 (W-C01-20): in sessions started by a routine a repository skill loads and triggers the same way in every try, so methods need not stay in plain files; one account-level plugin's 24 skills reached each of the five working runs of the six sessions the routine started, and two parts could not be checked (hooks from other sources; account-level items that did not reach), so the success condition is not met and the fail path's first branch applies; in the installation's working session the account's plugins are synced in and ECC's hooks act outside the guard, which C00 had disabled for DevOS's sessions; the builder first keeps from the repository what it does not provide out of DevOS's sessions (the guard's Skill and Agent allow lists, the repository's settings for ECC, records of hooks the repository does not provide) and has one more routine run observe the two parts; turning a plugin off at account level goes to Batu as his decision only if a DevOS session still loads a plugin's hooks after that, and in any case before C01's stage close if that cannot be observed by then; plan 5.9's mark answered | technical | accepted | `plan/decisions/PC-35.md` |
 | `PC-36` | C01 row 10 (W-C01-17): a session cannot observe its share of the usage allowance or Batu's share; capacity is worked out by estimate and the uncertainty is recorded, in K-7 item 9, 6.4, U-5, C11 and Appendix G | technical | accepted | `plan/decisions/PC-36.md` |
+| `PC-37` | N-063 UK (W-C01-27): the 2,000 Actions minutes of plan 5.7 item 4 take a dated reading of GitHub's documentation in place of their [Assumption] mark; C04 task 6 still reads them again | technical | proposed | `plan/decisions/PC-37.md` |
 <!-- /generated -->
 
 ---
@@ -320,6 +321,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-169` | `C06` | W-C01-24 | open | **Routine sessions run in auto mode; D-008 asks for Accept edits** (EV-C01-015, "Noticed outside the row's question" item 1; 2026-10-11).... |
 | `N-178` | `C06` | W-C01-13 | open | Plan C01 row 6 says: "the second channel has no sending mechanism before C06, so that part moves to C06 and is observed there before the ... |
 | `N-190` | `C06` | W-C01-12 | open | **Whether a run started by the API trigger counts against the routine limits, as the account shows it** (C01 row 5's part that could not ... |
+| `N-193` | `C06` | W-C01-27 | open | Owner: the executor. Deadline: as given for each row above. |
 | `N-041` | `C07` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): conversational agent builders as SOUL comp... |
 | `N-087` | `C07` | EV-C00-017 | open | **The no-mechanism baseline for the removal test** (plan 6.12 item 4; W-C00-15, 2026-10-06, L-155). `evidence/C00/EV-C00-017_baseline_res... |
 | `N-097` | `C07` | EV-C00-021 | open | T-07 and T-79: 1.2 item 2's bound and 10.3's entry on outcomes against reality outside the records; one rule for confirming a capability ... |
