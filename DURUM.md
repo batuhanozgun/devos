@@ -16,6 +16,6 @@
 
 Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. 
 (a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. 
-Rutinin iki çalışması da bugün yapıldı ve başarıyla bitti: ilki 11:08'de, ikincisi senin Run now'a basmanla 12:13'te (**D-021** kayda geçti). Şimdi bu iki çalışmanın kayıtlarından C01'in 1. ve 4. satırlarını çıkarıyorum. 
+Rutinin iki çalışması da bugün yapıldı ve başarıyla bitti: ilki 11:08'de, ikincisi senin Run now'a basmanla 12:13'te (**D-021** kayda geçti). Bu kayıtlardan C01'in 1. satırı (oturum süresi ve devir) iki denetçiyle kabul edildi. 4. satırda (alt ajanlar) bir eksik bulundu: arka planda başlatılan bir alt ajan, işini bitirmeden geri dönüyor; planın ilgili iki maddesi buna göre düzeltilecek (teknik, senin kararın değil). 
 Düşünme kurallarının beklemeyi yakalaması için yapılan düzeltme (FR-06) kabul edildi ve yürürlükte. Şu an senden beklenen bir şey yok. 
 Kullanım normal düzeyde.
