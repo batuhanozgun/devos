@@ -17,3 +17,17 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 7. Hook events: none (no hook output reached the session at its start).
 
 Gates: environment `match`; the only repository is `batuhanozgun/devos`; no `other-server-*`. All three met; the step starts.
+
+## Part B (after task K; written 2026-10-11T14:52:14Z)
+
+1. Agent types the Agent tool offers (11):
+   - `repository` (name in `.claude/agents/`): checker, counter-designer, prober, producer, researcher.
+   - `built-in`: claude, claude-code-guide, Explore, general-purpose, Plan, statusline-setup.
+   - `other`: none.
+2. Skills the session offers (43):
+   - `repository` (in `.claude/skills/`): synthetic-word-tally.
+   - `built-in` (no plugin prefix, not in `.claude/skills/`): session-start-hook (labelled `startup-hook-skill`; it sits in the user-level skills folder, where the cloud platform puts it), dataviz, artifact-design, artifact-diagramming, artifact-capabilities, update-config, keybindings-help, code-review, simplify, fewer-permission-prompts, loop, claude-api, workflow-authoring, run, plugin-authoring, init, security-review (17).
+   - `other`: `other-plugin-1` with 24 skills, shown under one plugin prefix (rule 1.4: counted, not named, since several of its skill names name outside services).
+   - Plugins as far as names show them: `other-plugin-1` (24 skills). The user-level skills and plugins folders each also hold one entry named `synced`, not opened.
+3. Hooks in `.claude/settings.json` at the `main` commit read (`aabb9c9`): `PreToolUse`, matcher `.*` (the guard, `tool_allowlist.py`); `PermissionRequest`, matcher `.*` (the guard); `PostToolUse`, matcher `mcp__claude-code-remote__create_session|mcp__claude-code-remote__create_trigger` (`record_owned_id.py`); `SessionStart`, matcher `compact` (`reread_after_compact.py`). The same file sets `permissions.defaultMode` to `acceptEdits`, while the session's own instructions say auto mode is active.
+4. Background option in the Agent tool's own description: yes. It says subagents run in the background by default and offers a `run_in_background` parameter (false for foreground).
