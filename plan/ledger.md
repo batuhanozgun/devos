@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). | 2026-10-11T14:18Z |
 | summary_tr | P1, P2 ve P3 bitti. 6., 7. ve 8. satırlar kabul edildi. <br>11. satır (kimlik): benim commit'lerim artık makine hesabıyla atılıyor; rutinin çalışmaları da sıradaki kontrol dosyası sürümünde aynı ayara geçecek. B3 (a) olarak kalıyor; senden bir şey istemiyor. <br>Rutine şimdilik basma; sıradaki **Run now** için #6'ya "CS1 hazır" yazacağım. Kullanım normal düzeyde. | 2026-10-11T15:25Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T15:22Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T15:53Z |
 
 ---
 
@@ -57,9 +57,9 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 27, blocked 3, cancelled 9, finished 1, ready 2, running 2 | 16 |
+| `C01` | Platform verification | running | accepted 27, blocked 3, cancelled 9, finished 1, ready 2, running 2 | 17 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 13 |
-| `C03` | Trust boundaries and effect channels | planned | no items | 16 |
+| `C03` | Trust boundaries and effect channels | planned | no items | 17 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
 | `C05` | Common rules, roles and methods | planned | no items | 11 |
 | `C06` | Working order, audit and decision channel | planned | no items | 12 |
@@ -72,7 +72,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 
 **Vertical: the active branch expanded; siblings one line; the rest collapsed.**
 
-- `C01` Platform verification: running · open notes: N-047, N-063, N-073, N-091, N-105, N-156, N-167, N-170, N-173, N-184, N-148, N-145, N-144, N-122, N-124, N-129
+- `C01` Platform verification: running · open notes: N-047, N-063, N-073, N-091, N-105, N-156, N-167, N-170, N-186, N-173, N-184, N-148, N-145, N-144, N-122, N-124, N-129
   - `W-C01-01` Stage work list: accepted
   - `W-C01-02` Key inventory (N-105): accepted
   - `W-C01-03` Probe design: the setup P1 to P3, each probe, N-109's check and Batu's steps: cancelled
@@ -263,6 +263,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-30` | C01 row 18 (W-C01-24): the 6.7 row "Platform-side readers of the session's content" takes the platform's documentation read on 2026-10-11, keeps the routine sessions' self-reported auto mode apart from it, and lists what the documentation does not state as a residual | technical | proposed | `plan/decisions/PC-30.md` |
 | `PC-32` | C01 row 12 (W-C01-39), under PC-21 item 6: each fact the documentation does not state takes the row's fail path as the design, recorded in plan 6.7, 7.3 and Section 13; the rule of `main` is not counted as a layer against sessions until it is settled that neither the machine account nor the Claude GitHub App can change or bypass it | technical | proposed | `plan/decisions/PC-32.md` |
 | `PC-33` | Appendix E section 8: "which of them is reliable is tested in C01" now names C06, where plan C01 row 6 moves the second channel | technical | accepted | `plan/decisions/PC-33.md` |
+| `PC-35` | C01 row 13 (W-C01-20): in sessions started by a routine a repository skill loads and triggers the same way in every try, so methods need not stay in plain files; one account-level plugin's 24 skills reach every routine session, and two parts could not be checked (hooks from other sources; account-level items that did not reach), so the success condition is not met and the fail path's first branch applies; in the installation's working session the account's plugins are synced in and ECC's hooks act outside the guard, which C00 had disabled for DevOS's sessions; the builder first keeps from the repository what it does not provide out of DevOS's sessions (the guard's Skill and Agent allow lists, the repository's settings for ECC, records of hooks the repository does not provide) and has one more routine run observe the two parts; turning a plugin off at account level goes to Batu as his decision only if a DevOS session still loads a plugin's hooks after that, and in any case before C01's stage close if that cannot be observed by then; plan 5.9's mark answered | technical | proposed | `plan/decisions/PC-35.md` |
 <!-- /generated -->
 
 ---
@@ -282,6 +283,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-156` | `C01` | EV-C01-011 | open | **The system's commits carry the platform's git identity, not the machine account's** (EV-C01-011 point 1; W-C01-18; PC-27; 2026-10-11). ... |
 | `N-167` | `C01` | W-C01-24 | open | **The classifier in C01's routine runs, and the D-008 cost text** (C01 row 18's fail path; EV-C01-015 points 4 and 6 (c); PC-30; W-C01-24... |
 | `N-170` | `C01` | EV-C01-016 | open | **Plan line 729's mark, answered by row 9** (W-C01-37; `evidence/C01/EV-C01-016_W-C01-37_row9_hooks_one_repository.md`, "Plan line 729's ... |
+| `N-186` | `C01` | W-C01-20 | open | **Plan 5.9's mark, answered by row 13** (W-C01-20; `evidence/C01/EV-C01-021_W-C01-20_row13_plugins_skills.md`, Item 4; 2026-10-11). Plan ... |
 | `N-173` | `C01` | EV-C01-017 | open | **The guard does not yet fail closed in two cases: W-C01-38 point 2's correction** (EV-C01-017 point 1 (c) and point 2; W-C01-38; 2026-10... |
 | `N-184` | `C01` | CHK-C01-069 | open | **What `tools/subagent_audit.py` does not model after N-149** (CHK-C01-069 C1; CHK-C01-070 C2; L-216; 2026-10-11). (a) A report handed ba... |
 | `N-148` | `C01` | EV-C01-008 | open | **R4V's rule cannot hold after R1b** (EV-C01-008 sections 2.6 and 6; W-C01-10; 2026-10-11). R4V's rule in `evidence/C01/routine/CONTROL.m... |
@@ -319,6 +321,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-171` | `C03` | EV-C01-016 | open | **Test 6's store-absent case and a session without a library clone** (W-C01-37; `evidence/C01/EV-C01-016_W-C01-37_row9_hooks_one_reposito... |
 | `N-175` | `C03` | W-C01-39 | open | **The rule of `main` as a layer against sessions, before test 5** (W-C01-39; `evidence/C01/EV-C01-018_W-C01-39_row12_repository_access.md... |
 | `N-177` | `C03` | W-C01-39 | open | **The guard's read layer for repositories outside DevOS, before test 3** (W-C01-39; `evidence/C01/EV-C01-018_W-C01-39_row12_repository_ac... |
+| `N-187` | `C03` | W-C01-20 | open | **Skills that the repository does not provide reach DevOS's sessions, and skills trigger from their description** (W-C01-20; `evidence/C0... |
 | `N-034` | `C04` | OI-011#18 | open | (18) a bounded scan of the connector catalogue as an outside-in discovery method (Batu's suggestion; it complements need-first selection)... |
 | `N-035` | `C04` | OI-011#19 | open | (19) the hook's blanket block of catalogue tools. The search tools (`SearchMcpRegistry`, `SearchPlugins`, `SearchSkills`) are read-only, ... |
 | `N-036` | `C04` | OI-011#21 | open | (21) the structure that makes knowledge visible, for context activation (principle 12). The library's own structure is a pyramid, propose... |
