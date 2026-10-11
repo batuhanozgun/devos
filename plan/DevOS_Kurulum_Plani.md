@@ -373,7 +373,7 @@ For each capability: which need it meets, by which mechanism it is met, the cond
 
 ### K-7 Flow without Batu
 
-**Need:** For requests and answers between roles to flow without Batu carrying messages; for work to continue while the computer is off; for contributions to be actually used; for all of this to be done under the limit of 15 routine runs a day and without compromising on quality.
+**Need:** For requests and answers between roles to flow without Batu carrying messages; for work to continue while the computer is off; for contributions to be actually used; for all of this to be done within the platform's routine and usage limits (Section 6.4) and without compromising on quality.
 
 **Premise audit:** The arrangement in plan version 2.0 rested on the premise "every role is a separate session, and every hand-over requires the system to wake itself up again". This premise had been carried over unquestioned from the process design of P4 and P5, and it ran into the routine limit. A role is a responsibility and a package; a session is a place where work is done. Two kinds of independence are distinguished: **thinking independence** (clean context, a different view of the information, different instructions) can be provided by subagents; **authority independence** (not being able to approve one's own change, not being able to see exam answers, not being able to change the control rules) requires a separate identity that the database can verify. Details: `Uyandirma_ve_Kapasite_Arastirmasi.md`.
 
@@ -389,7 +389,7 @@ For each capability: which need it meets, by which mechanism it is met, the cond
 8. **Deadlock detection:** The chain of work items waiting for one another is scanned regularly.
 9. **Usage tracking:** Routine runs, session durations and the usage share are recorded; if capacity is not enough, speed drops, not quality, and this becomes visible to Batu.
 
-**Conditions:** Routines **[Verified: code.claude.com/docs/en/routines and the Anthropic announcement, September 2026]**: 15 runs a day on Max; one-off scheduled runs do not count towards the limit but cannot be created from inside a cloud session; all connectors on the account are added by default; if the GitHub connection is broken for more than 72 hours, the routine disables itself; research preview. How long a cloud session can run while processing a queue **[Awaiting verification: C01]**.
+**Conditions:** Routines **[Verified: code.claude.com/docs/en/routines, read 11 October 2026; EV-C01-022a]**: no daily run cap is stated since 30 September 2026 (15 a day on Max in the Anthropic announcement of 14 April 2026); starting runs has hourly limits, one-off runs counting against the same hourly limit as other scheduled runs; runs draw on the subscription's usage like interactive sessions (Section 6.4). Routines **[Verified: code.claude.com/docs/en/routines and the Anthropic announcement, September 2026]**: one-off scheduled runs cannot be created from inside a cloud session; all connectors on the account are added by default; if the GitHub connection is broken for more than 72 hours, the routine disables itself; research preview. How long a cloud session can run while processing a queue **[Awaiting verification: C01]**.
 
 **On failure:** If sessions run shorter than expected, an extra working session is opened from the reserve routine budget. If capacity is still not enough, the options come to Batu with their costs (U-5).
 
@@ -486,12 +486,12 @@ For each component: first the need, then the alternatives assessed before the ch
 
 ### 5.2 Wake-up mechanism and working order
 
-**Need:** Starting a session when no session is open; hand-overs between roles flowing without Batu; enough capacity under the limit of 15 routine runs a day **[Verified: code.claude.com/docs/en/routines, September 2026 (Section 4 K-7, Conditions); the account's own value: C01 #5]**.
+**Need:** Starting a session when no session is open; hand-overs between roles flowing without Batu; enough capacity within the platform's routine limits and the subscription's usage limits **[Verified: code.claude.com/docs/en/routines, read 11 October 2026 (Section 4 K-7, Conditions); the account's own value: C01 #5, Section 6.4]**.
 
 | Option | Assessment |
 |---|---|
 | **Routines only to start sessions + roles as subagents inside the session** | Makes do with a few sessions a day; separation of authority is kept by separate environments. **Chosen** |
-| A routine trigger for every hand-over (the arrangement in 2.0) | Does not fit into 15 runs a day; it rested on a wrong premise |
+| A routine trigger for every hand-over (the arrangement in 2.0) | It rested on a wrong premise (K-7, Premise audit). When it was rejected it also did not fit into the 15 runs a day documented then; since 30 September 2026 the documentation states no daily cap, and each hand-over would start a session of its own, which draws on the shared usage and counts against the hourly limits (Section 6.4) |
 | Claude Code Projects (September 2026, beta) | Coordinator + worker sessions; "200 new threads per day across your projects", each thread a full session **[Verified: code.claude.com/docs/en/claude-projects, read 11 October 2026; not tried on the account]**. Because it uses a single environment, it does not provide separation of authority; it takes all the connectors in the account; it may not yet be enabled on Batu's account. **Not used** (C01 #14, 11 October 2026; PC-28): the documentation names the sidebar at claude.ai/code and the desktop app's Code tab as the sign that Projects is enabled on the account, and no session record read in C01 showed it, so C01 could not check it, and the row's fail path applies |
 | Claude Code dynamic workflows (May 2026) | Manages many parallel subagents inside a session with a script; a candidate for large scanning jobs. It runs in a cloud session: the working session, opened from the app, ran eight on 10 and 11 October 2026 (C01 #14; EV-C01-012). In a session started by a routine it is offered but has not been observed to run (note N-159 on `plan/work/C06.md`) |
 | Extra worker with GitHub Actions | Minute limit in a private repository; in a public repository the job logs are public. Not used for now |
@@ -655,7 +655,7 @@ devos/
 
 ### 6.4 Routines
 
-- Routines only start sessions. Starting budget (within the limit of 15 runs a day; changes, with a reason, according to the session-duration measurement in C01):
+- Routines only start sessions. Starting budget (DevOS's own figures; they change, with a reason, according to the session-duration measurement in C01 and the usage observation in C01 #10; the platform's limits are in the next item):
 
 | Environment | Daily runs | Schedule |
 |---|---|---|
@@ -664,6 +664,7 @@ devos/
 | Exam | 1 | At night, only when an exam is needed |
 | Reserve | Up to 8 | An extra working session if sessions stay short; urgent decision or recovery |
 
+- The platform's limits on routine runs **[Verified: code.claude.com/docs/en/routines and its API reference, read 11 October 2026; EV-C01-022a]**: no daily run cap is stated since 30 September 2026 (the Anthropic announcement of 14 April 2026 gave 15 routines a day on Max, the figure this table was first fitted to). Each way of starting a run has an hourly limit: scheduled runs, one-off runs included, 100 an hour per account; Run now, API fires and re-arming a one-off routine together, 30 an hour per routine; Run now and re-arming, 100 an hour per account; API fires, 100 an hour per account, counted separately from Run now. Whether these hours are rolling or clock hours is not stated. Every run also draws on the subscription's five-hour and weekly usage, which Batu's own use of Claude and Claude Code shares; with extra usage off (criterion 25), a run at that limit is rejected until the usage window resets (U-5). The account's own value (C01 #5; EV-C01-022): no routine-run or daily-allowance line on his usage page or his routines page, read by Batu on 11 October 2026 (issue #6, comment 6110352256: "Bir sınır göremedim, dediğin her yere baktım.", "I could not see a limit; I looked everywhere you said."); the next five-hour and weekly reset times were not asked for and are not in the text of his answer (the screenshot attached to it was not read).
 - Batu creates the routines in the Claude interface, with the information the builder prepares (name, environment, repository, starting instruction, schedule), and removes all connectors from each of them. The API trigger is added only for the reserve budget.
 - The trigger text is passed to the session as untrusted data; the starting instruction uses it only as a work ID and reads the actual information from the database. **[Verified: routines documentation]**
 - Every session registers itself at opening (environment, routine, start). For emergency triggers, the intent, the returned session ID and the result are recorded; if the response is lost, the session's existence is checked first; no blind retry is made.
@@ -1240,7 +1241,7 @@ When the time comes, the builder writes out each of them step by step. Secret in
 | Risk | Possible effect | Mitigation |
 |---|---|---|
 | Routines are in research preview; their format and limits may change | Flow without Batu breaks | The trigger is in a single function; work records are in Supabase; a scheduled reserve run; the changelog is followed by maintenance work |
-| The daily routine limit (15 on Max) | Work volume is limited | Routines only start sessions; roles inside the session; reserve budget; the real value in C01 |
+| The routine limits: hourly start limits, and no daily cap stated since 30 September 2026 (15 a day on Max before; Section 6.4) | Work volume is limited | Routines only start sessions; roles inside the session; reserve budget; the account's value read in C01 (C01 #5) |
 | Max usage limits | Speed drops | U-5; capacity report; options to Batu |
 | Claude app notifications may be unreliable | Decisions are delayed | The GitHub app is the primary channel |
 | Supabase plan limits | Scope narrows | B1; the C04 measurement; a decision before the scope is narrowed |
