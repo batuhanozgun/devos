@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 11 Ekim 2026, 18:54 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 18:57 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
@@ -14,6 +14,6 @@
 
 **Şu an**
 
-P1, P2 ve P3 bitti. 5., 6., 7. ve 8. satırlar kabul edildi. 5. satır: senin sayfalarında da belgelerde de günlük rutin sınırı yok; plandaki "günde 15 çalışma" ifadesi güncellendi. 
-11. satır (kimlik): benim commit'lerim artık makine hesabıyla atılıyor; rutinin çalışmaları da sıradaki kontrol dosyası sürümünde aynı ayara geçecek. B3 (a) olarak kalıyor; senden bir şey istemiyor. 
-Rutine şimdilik basma; sıradaki **Run now** için #6'ya "CS1 hazır" yazacağım. Kullanım normal düzeyde.
+P1, P2 ve P3 bitti. 5., 6., 7. ve 8. satırlar kabul edildi; guard değişikliği birleşti ve çalışıyor. 
+13. satır: hesabındaki ECC eklentisinin kancaları (her adımda kendiliğinden çalışan küçük programlar) benim kurulum oturumumda da çalışıyor. Önce DevOS'un kendi ayarlarıyla onu yalnız DevOS oturumlarında kapatacağım; senden şimdilik bir şey istemiyor. İşe yaramazsa hesap ayarlarından kapatmayı ayrıca soracağım. 
+Rutine şimdilik basma; sıradaki **Run now** için #6'ya yazacağım.
