@@ -85,7 +85,7 @@ Degradation is not reported as normal operation; it is made visible which guaran
 | GitHub Actions minutes are used up | Sessions | Backup and ingestion jobs | The independent monitoring path checks the time of the last backup and ingestion; options go to Batu with their cost |
 | Session duration shorter than expected | Chunked work and structured hand-over | — | Usage report; an additional working session from the reserve budget |
 | Silent failure (checks green, work heading in the wrong direction) | Everything | — | Weekly sample audit; if found, a system review and a failure class record |
-| The Claude usage allowance is used up | — | All sessions | A recorded wait; when the allowance renews, the next scheduled session continues. This limit is shared with Batu's own Claude usage; its effect is visible in the usage report |
+| The Claude usage allowance is used up | — | All sessions | A recorded wait; when the allowance renews, the next scheduled session continues. This limit is shared with Batu's own Claude usage; its effect is estimated in the usage report, because a session cannot observe it (plan U-5; C01 #10) |
 | GitHub cannot be reached | Discovery and candidate work on the database | Release and PRs | Pending operations are recovered in window 2 or 3 |
 | The second model is unavailable | Everything | Second opinion | A "second opinion could not be obtained" note on the decisions concerned |
 
@@ -100,7 +100,7 @@ Degradation is not reported as normal operation; it is made visible which guaran
 1. Capacity is not reduced to a single number; discovery latency, production quality, review cost, source access, the release queue and the recovery load affect one another.
 2. Work classes have separate acceptance profiles: a short direct query, deep research, review of a large composite product, long production, a high-impact release, recovery.
 3. The priority order does not starve normal work by always letting recovery dominate.
-   - 3a. **Routine budget:** Routine runs are distributed according to the table in plan Section 6.4, within the platform's limits stated there; session duration measurement and usage observation change the budget, with reasons. If the routine budget or the usage allowance is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu. Usage is recorded per stage (plan U-5; PC-10).
+   - 3a. **Routine budget:** Routine runs are distributed according to the table in plan Section 6.4, within the platform's limits stated there; session duration measurement and the capacity estimate (plan U-5; C01 #10) change the budget, with reasons. If the routine budget or the usage allowance is going to be exceeded, the working order itself is questioned first (plan 6.12); then the options come to Batu. Usage is recorded per stage (plan U-5; PC-10).
    - 3b. **Loop limits:** Every work loop has an upper limit, an effort budget and "no progress" detection; a triggered loop stops and is recorded.
 4. **What is measured:** Mechanical (claim conflicts, the stale rebase rate, request turnaround latency, query incompleteness, time spent uncertain in release, rejection of the old authority after recovery) and work value (discovery of material gaps, the rate of unnecessary prerequisites, research contributions consumed, holistic product defects, technical load carried to Batu, regression in method transfer). These are not added up into a single score. Thresholds are written down before measuring.
 
