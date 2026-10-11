@@ -3,7 +3,11 @@
   "effortLevel": "xhigh",
   "ultracode": true,
   "env": {
-    "CLAUDE_CODE_EFFORT_LEVEL": "xhigh"
+    "CLAUDE_CODE_EFFORT_LEVEL": "xhigh",
+    "ECC_HOOKS_ENABLED": "false"
+  },
+  "enabledPlugins": {
+    "ecc@synced": false
   },
   "permissions": {
     "defaultMode": "acceptEdits"
