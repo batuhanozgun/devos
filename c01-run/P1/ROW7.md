@@ -23,3 +23,17 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 - the cosine similarity of the three parallel pairs and of the three unrelated pairs.
 
 ## Item 3: candidates
+
+Each candidate ran in one foreground Bash call with the timeout set to 600000 ms. The progress-bar lines were filtered out of the shown output.
+
+### M1: `intfloat/multilingual-e5-small` at `614241f622f53c4eeff9890bdc4f31cfecc418b3`
+
+- Call: 2026-10-11T13:42:14Z to 2026-10-11T13:42:35Z (21 s); exit 0; did not move to the background.
+- Download and load: 18.9 s.
+- Embedding of the 12 sentences: 0.05 s.
+- Dimension: 384.
+- Peak memory: 1012 MB.
+- Parallel pairs: TR1–EN1 0.8860, TR2–EN2 0.9182, TR3–EN3 0.8993.
+- Unrelated pairs: TR4–EN4 0.7727, TR5–EN5 0.7192, TR6–EN6 0.7585.
+- Other output: one hub warning that the requests are unauthenticated. No token was set or asked for.
+- Result: `fits`.
