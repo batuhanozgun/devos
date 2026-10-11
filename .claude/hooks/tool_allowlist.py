@@ -10,7 +10,8 @@ or denied, and why, can be audited afterwards; tools/guard_report.py prints a se
 
 Rule families (the IDs are the keys of RULES):
   T  tools: non-MCP tools are an allow list; subagents run in-process only; Workflow only without an
-     isolation option; AskUserQuestion and ExitPlanMode are passed to the user, who answers them by design.
+     isolation option; AskUserQuestion and ExitPlanMode are passed to the user, who answers them by design; the
+     Skill tool, the Agent tool and a workflow's agentType only for what the repository provides (T4, PC-35).
   M  MCP: only the listed servers; GitHub writes only to batuhanozgun/devos and never onto main; no
      auto-merge; no approving reviews; a merge names the full head SHA and, for a class-high head, needs a
      covering checker verdict (the merge gate, `tools/merge_gate.py`).
@@ -111,6 +112,13 @@ USER_TOOLS = {"AskUserQuestion", "ExitPlanMode"}   # answered by the user; an "a
 # plain text "isn't a failure"; the settings wrappers match it exactly, so it must not start with "{" or hold "'".
 PASS_MARKER = "DevOS guard: pass, no decision: the user answers this tool (N-185)"
 SUBAGENT_TOOLS = {"Agent", "Task"}
+# T4 (PC-35 "Routing" item 1; W-C01-45): besides the repository's own (.claude/agents/), the built-in subagent types
+# the subagents page names (code.claude.com/docs/en/sub-agents, "Built-in subagents", read 2026-10-11; not
+# independently tested) that load CLAUDE.md. Explore and Plan are left out: by that page they skip CLAUDE.md, which
+# binds every subagent here. By the same page, an Agent call that names no type gets general-purpose.
+BUILTIN_AGENT_TYPES = ("general-purpose", "claude", "claude-code-guide", "statusline-setup")
+AGENT_TYPE_WORD = re.compile(r"agent_?type", re.I)   # every mention in a workflow script must be readable (T4)
+AGENT_TYPE_LITERAL = re.compile(r"agentType[\"'`]?\s*:\s*([\"'`])([\w.:@/-]+)\1(?=\s*[,}])")
 FILE_WRITE_TOOLS = {"Write": "file_path", "Edit": "file_path", "NotebookEdit": "notebook_path"}
 FILE_READ_TOOLS = {"Read": "file_path", "Glob": "path", "Grep": "path"}
 
@@ -201,6 +209,16 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
     "T3": ("workflows in-process only", "A workflow agent with an isolation option runs in another worktree or "
            "environment, outside this guard's view.", WO + "; D-008",
            "Write the workflow without any isolation option."),
+    "T4": ("skills and agent types the repository provides", "A skill or a subagent type brings its own text into the "
+           "session as instructions. Only the repository's own (a directory under .claude/skills/, an agent defined "
+           "in .claude/agents/) and the built-in agent types named here are admitted; a plugin's skill or agent type, "
+           "one enabled at account level included, is not reviewed for DevOS and is kept out of its sessions.",
+           WO + "; PC-35; W-C01-45",
+           "Use a skill under .claude/skills/ by its exact directory name, or an agent type defined in "
+           ".claude/agents/ (by file or declared name) or one of the built-in types " + ", ".join(BUILTIN_AGENT_TYPES) +
+           "; in a workflow script write agentType only as a key with one quoted name of those (agentType: "
+           "'checker'), or leave it out, and do not write the word elsewhere in the script. A new skill or agent "
+           "type is added only by a reviewed change to the repository."),
     "M1": ("MCP server allow list", "Only the GitHub tools, the session tools and the read-only database "
            "connector are allowed. Account connectors (mail, calendar, files and others, some under opaque IDs) "
            "are never used by DevOS.", "CLAUDE.md; " + WO + "; D-003",
@@ -1023,7 +1041,7 @@ def find_checks(args, d):
     while j < len(rest):
         if rest[j] in ("-exec", "-execdir", "-ok", "-okdir"):
             k, sub = j + 1, []
-            while k < len(rest) and rest[k] not in (";", "+", "\;"):
+            while k < len(rest) and rest[k] not in (";", "+", "\\;"):
                 sub.append(rest[k])
                 k += 1
             sub, bare = strip_wrappers(sub)
@@ -1952,6 +1970,37 @@ def library_copy_checks(prog, args, d):
             raise Bad("L3", f"{prog} copies or moves the research library clone ({a}); it stays at {LIBRARY_DIR} only")
 
 
+def repo_skills():
+    """T4: the skills the guard's own checkout provides, the directory names under its .claude/skills/."""
+    d = os.path.join(ROOT, ".claude", "skills")
+    try:
+        return {n for n in os.listdir(d) if os.path.isdir(os.path.join(d, n))}
+    except OSError:
+        return set()
+
+
+def agent_type_check(where, t):
+    """T4: t is an agent type defined in the checkout's .claude/agents/ (file name or declared name) or built in."""
+    d, names = os.path.join(ROOT, ".claude", "agents"), set(BUILTIN_AGENT_TYPES)
+    try:
+        files = [f for f in os.listdir(d) if f.endswith(".md")]
+    except OSError:
+        files = []
+    for f in files:
+        names.add(f[:-3])
+        try:
+            with open(os.path.join(d, f), errors="replace") as fh:
+                m = re.match(r"---\n(.*?)\n---", fh.read(), re.S)
+        except OSError:
+            continue
+        n = m and re.search(r"^name:\s*[\"']?([^\"'\n#]+?)[\"']?\s*$", m.group(1), re.M)
+        if n:
+            names.add(n.group(1))
+    if t not in names:
+        raise Bad("T4", f"{where} names the agent type '{t}', which .claude/agents/ does not define and the guard does "
+                        "not name as built in (a plugin's agent type, for example)")
+
+
 def decide(data):
     """(decision, rule, detail): decision is allow, deny or pass (left to the user)."""
     if not isinstance(data, dict):
@@ -1983,7 +2032,17 @@ def decide(data):
         if name in SUBAGENT_TOOLS:
             if args.get("isolation") is not None:
                 raise Bad("T2", f"{name} with isolation '{args.get('isolation')}'")
-            return "allow", "T2", "an in-process subagent"
+            t = args.get("subagent_type", "general-purpose")   # no type: general-purpose (BUILTIN_AGENT_TYPES)
+            if not isinstance(t, str):
+                raise Bad("T4", f"{name} with a subagent_type that is not one name")
+            agent_type_check(name, t)
+            return "allow", "T2", f"an in-process subagent of the type '{t}' (T4)"
+        if name == "Skill":
+            s = args.get("skill")
+            if not isinstance(s, str) or s not in repo_skills():
+                raise Bad("T4", f"the skill '{s}' is not a directory under .claude/skills/ of the guard's checkout (a "
+                                "plugin's or a built-in skill, for example)")
+            return "allow", "T4", f"the repository's skill '{s}'"
         if name == "Workflow":
             text = str(args.get("script") or "")
             sp = str(args.get("scriptPath") or "")
@@ -1999,7 +2058,15 @@ def decide(data):
                 raise Bad("T3", "the workflow script names isolation, or a quoted 'worktree' or 'remote' value")
             if re.search(r"\[\s*[\"'`][^\]]*\]\s*:", text):
                 raise Bad("T3", "the workflow script builds an object key at run time, which the guard cannot read")
-            return "allow", "T3", "an in-process workflow"
+            types = []
+            for k in AGENT_TYPE_WORD.finditer(text):
+                m = AGENT_TYPE_LITERAL.match(text, k.start())
+                if not m:
+                    raise Bad("T4", f"the workflow script writes {text[k.start():k.start() + 40]!r}, not agentType "
+                                    "with one quoted name, so the guard cannot read which agent type it runs")
+                agent_type_check("the workflow script", m.group(2))
+                types.append(m.group(2))
+            return "allow", "T3", "an in-process workflow" + (f" (T4: {', '.join(sorted(set(types)))})" if types else "")
         if name == "Bash":
             if args.get("dangerouslyDisableSandbox"):
                 raise Bad("B10", "dangerouslyDisableSandbox is set")
