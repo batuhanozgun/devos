@@ -256,3 +256,10 @@ Log entries of stage C01 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Helpers' reports** (working order section 4 step 4): `tools/subagent_audit.py disciplines` gives DISCIPLINES OK for CHK-C01-034's, CHK-C01-035's and CHK-C01-036's checkers; their verdicts are filed verbatim.
 - **Guard:** guard report at 07:20Z: 23 denied, 1569 allowed, 1 passed to the user, hash chain intact, last record #1593; no new denial since L-190.
 - **Record changes:** evidence/C01/EV-C01-004_environment_separation_one_account.md · correction · CHK-C01-036's wording points; evidence/C01/checks/CHK-C01-036.md · addition · verdict verbatim; plan/work/W-C01-42.md · correction · accepted; plan/work/W-C01-43.md · correction · state line; plan/ledger/C01-log.md · addition · L-191; plan/ledger.md · correction · Stage, summary_tr; DURUM.md · generated
+
+### L-192 · 2026-10-11 · W-C01-44 admitted from N-141 while C01 waits for the routine's first run
+
+- **Disciplines (D1–D9):** D1: no. D2: no. D3: yes: every row item waits for the routine's first run (expected 2026-10-12 about 02:07Z), so the one open C01 obligation that does not depend on it, N-141, is taken now rather than left to C01's close. D4: yes: the case is written to fail a version of the tool that joins messages, and a fresh-context checker judges it. D5: no. D6: no. D7: yes: the item and this entry close the note's loop in the records. D8: yes: `main` was at `4901c45`. D9: no.
+- **What happened.** W-C01-42 merged (PR #210, `4901c45`). The startable frontier holds only W-C01-33, which waits for the routine's first run. W-C01-44 is admitted from N-141 (CHK-C01-033 finding 4), with its acceptance merged before its work.
+- **Guard:** no new denial by the guard since L-191. A plugin hook outside the guard (the ECC plugin's shell analysis) refused one long command for its own work budget; the same steps were then made as shorter calls.
+- **Record changes:** plan/work/W-C01-44.md · addition · admitted; plan/work/W-C01-30.md · correction · depends on W-C01-44; plan/work/C01.md · correction · work-list row; plan/ledger/C01-log.md · addition · L-192; DURUM.md, plan/ledger.md · generated
