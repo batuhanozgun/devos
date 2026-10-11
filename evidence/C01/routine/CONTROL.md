@@ -12,7 +12,7 @@ Version 2 (W-C01-33, 2026-10-11; version 1: W-C01-32, 2026-10-10). Version 2 add
 6. Times are UTC, from `date -u +%Y-%m-%dT%H:%M:%SZ`.
 7. Every file written starts with the line `C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).`
 8. Push after each record named below, so that what is done is on the branch if the session stops.
-9. A shallow starting checkout. Before the first push, run `git rev-parse --is-shallow-repository` in the starting checkout. If it prints `true`, run `git fetch --unshallow origin main` there, as a call of its own, and record in the stamp that it was done. It creates no commit and changes no file or `HEAD`; the guard's leak check needs the history it adds (revision `3cd686a`) and fails closed without it (R1a, decision #16). Nothing else is done in the starting checkout.
+9. A shallow starting checkout. Before the first push, run `git rev-parse --is-shallow-repository` in the starting checkout. If it prints `true`, run `git fetch --unshallow origin main` there, as a call of its own, and record in the stamp that it was done. It changes the starting checkout's local repository (its history) and creates no commit, and changes no branch, `HEAD` or working tree; the guard's leak check needs the history it adds (revision `3cd686a`) and fails closed without it (R1a, decision #16). Nothing else is changed in the starting checkout. This rule holds for an idle run too, before it pushes `IDLE.md`.
 
 ## 2. Choosing the step
 
