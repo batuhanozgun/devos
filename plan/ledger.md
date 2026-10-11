@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). | 2026-10-11T06:03Z |
 | summary_tr | Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. <br>(a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. <br>Rutinin ilk çalışması bugün 11:08'de yapıldı ve başarıyla bitti; ikincisi yarın 11:07'de. Şu an senden beklenen bir şey yok. <br>Kullanım normal düzeyde. | 2026-10-11T08:24Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T08:49Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T08:57Z |
 
 ---
 
@@ -35,7 +35,6 @@
 **Ready (startable now):**
 - `W-C01-06` Row 1: session duration and chunked work (C01 #1)
 - `W-C01-10` Row 4, probe part: subagents in a session started by a routine (C01 #4)
-- `W-C01-34` Row 2: connector barrier under PC-21 item 3
 
 **Running:**
 - none
@@ -55,6 +54,7 @@
 - `W-C01-27`: depends on W-C01-06 (not accepted)
 - `W-C01-29`: depends on W-C01-06 (not accepted)
 - `W-C01-30`: depends on W-C01-06 (not accepted)
+- `W-C01-34`: finished, waiting for acceptance
 - `W-C01-37`: depends on W-C01-06 (not accepted)
 - `W-C01-38`: depends on W-C01-06 (not accepted)
 - `W-C01-39`: depends on W-C01-06 (not accepted)
@@ -70,7 +70,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 15, blocked 17, cancelled 9, ready 3 | 14 |
+| `C01` | Platform verification | running | accepted 15, blocked 17, cancelled 9, finished 1, ready 2 | 14 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 11 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 11 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
@@ -149,7 +149,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-31` | Re-plan of C01's work list under FR-05 and PC-21 | accepted | — | — | `plan/work/W-C01-31.md` |
 | `W-C01-32` | Routine design: the one ordinary routine of PC-21 item 1, its runs and Batu's step | accepted | — | — | `plan/work/W-C01-32.md` |
 | `W-C01-33` | Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it) | accepted | — | — | `plan/work/W-C01-33.md` |
-| `W-C01-34` | Row 2: connector barrier under PC-21 item 3 | ready | — | — | `plan/work/W-C01-34.md` |
+| `W-C01-34` | Row 2: connector barrier under PC-21 item 3 | finished, not accepted | — | — | `plan/work/W-C01-34.md` |
 | `W-C01-35` | Row 3: environment token under PC-21 item 4 | accepted | — | — | `plan/work/W-C01-35.md` |
 | `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | accepted | — | — | `plan/work/W-C01-36.md` |
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-37.md` |
