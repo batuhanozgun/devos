@@ -22,3 +22,22 @@ lark: 3
 wren: 2
 finch: 1
 ```
+
+## Item 3
+
+- `.claude/skills/` in the starting checkout holds one entry, `synthetic-word-tally`.
+- Invoked by its name through the Skill tool for task K2 (argument: the word list W2): yes. The launch was marked a re-invocation (its text already loaded during task K) and gave the same base directory and text.
+- `K2.md` in full:
+
+```
+C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
+
+probe-skill: ran
+oak: 2
+elm: 1
+```
+
+## Item 4
+
+- Part B lists the skill: yes, marked `repository` (`OPENING.md` part B item 2).
+- Its description as the session's skill list shows it: "synthetic-word-tally: Use when asked to tally a synthetic word list."
