@@ -100,7 +100,7 @@
 
 - **Question and candidate** (EV-C00-012:169; 5.2). What token type does the routine's API trigger use, and do API-triggered runs count against "the 15 runs"?
 - **What C01 observed.** From the documentation (EV-C01-022 section 2.2; EV-C01-022a): an API fire counts against the routine's 30 an hour, a count it shares with Run now and one-off re-arms, and against the account's 100 API fires an hour, counted separately from Run now. There is no daily cap. Adding an API trigger issues a token, so C01's routine has none (EV-C01-022 section 2.2, citing ROUTINE_DESIGN.md:17).
-- **Disposition.** The *documentation part* is settled by **PC-34**: the premise of "15 runs a day" is gone, and 6.4 lists the hourly limits. The *account part* (what the account shows for an API-started run) is **undecided**. It is carried to C06 by **N-190**, before the reserve budget's API trigger is relied on.
+- **Disposition.** The *documentation part* is settled by **PC-34**: the premise of "15 runs a day" is gone, and 6.4 lists the hourly limits. The *account part* (what the account shows for an API-started run) is **undecided**. It is carried to C06 by **N-190**, before the reserve budget's API trigger is relied on. The *token-type part* (which token the routine's API trigger issues and uses) is **undecided**: C01 made no dated reading of it, and ROUTINE_DESIGN.md:17's "it would issue a token" is a design note, not a reading. It is carried to C06 by **N-193**, before C06 enters the reserve budget's API trigger key (CHK-C01-098 condition C1).
 
 ### U6: GitHub access from a session
 
@@ -180,7 +180,7 @@ Nothing now. B4 becomes his decision only if C02 shows that U1 fails and a fallb
 | U2 | Partly decided; rest undecided | EV-C01-007, -016, -008, -001 | N-193 (C06) |
 | U3 | Reachability decided; mechanism undecided | EV-C01-002 | N-131 (C02) |
 | U4 | Session part decided; Actions part undecided | EV-C01-020 | N-179 (C04) |
-| U5 | Documentation part settled; account part undecided | EV-C01-022, -022a | PC-34; N-190 (C06) |
+| U5 | Documentation part settled; account part and token type undecided | EV-C01-022, -022a | PC-34; N-190 (C06); N-193 (C06) |
 | U6 | Settled; auto-merge undecided | EV-C01-009, -019, -018 | PC-25, PC-32; N-150 (C03) |
 | U7 | Undecided | EV-C01-019 | N-193 (C06) |
 | UK | Read (section 3); one mark answered | this record, section 3 | PC-37 (proposed) |

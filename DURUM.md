@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-028` (C01 rutininin sıradaki çalışmasını (P4; 13. satırın denetlenemeyen iki kısmı, W-C01-46), yarın 11:07'yi beklemeden bugün, rutinin sayfasında bir kez Run now'a basarak başlatmak). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 11 Ekim 2026, 22:04 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 22:12 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
