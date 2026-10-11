@@ -1,12 +1,12 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Şu kararlar senin: `D-022` (C01 rutininin bir sonraki çalışmasını (P1, 7. satır), yarınki zamanını beklemeden bugün, rutinin sayfasında bir kez Run now'a basarak başlatmak). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
+**Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 11 Ekim 2026, 16:29 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 17:12 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
-**Sıradaki işler:** `W-C01-13`, `W-C01-14`, `W-C01-20` sürüyor; başlatılabilir: `W-C01-12`, `W-C01-17`, `W-C01-18`, `W-C01-38`. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** `W-C01-14`, `W-C01-20` sürüyor; başlatılabilir: `W-C01-12`, `W-C01-17`, `W-C01-18`, `W-C01-38`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 14:30 (Türkiye saati) tarihinde yenileniyor.
 
@@ -14,8 +14,6 @@
 
 **Şu an**
 
-Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. 
-(a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. 
-Rutinin iki çalışması da bugün yapıldı ve başarıyla bitti: ilki 11:08'de, ikincisi senin Run now'a basmanla 12:13'te (**D-021** kayda geçti). C01'in 1. ve 4. satırları kabul edildi (4. satırdaki eksik için plan düzeltildi, PC-24). Rutinin sıradaki adımı (P1) hazır: istersen bugün bir kez **Run now**'a basarak başlatabilirsin (**D-022**, önerim bu). Ayrıca #222 için GitHub bildirimi gelip gelmediğini #6'ya yazman gerekiyor (6. satır). 
-Düşünme kurallarının beklemeyi yakalaması için yapılan düzeltme (FR-06) kabul edildi ve yürürlükte. Şu an senden beklenen bir şey yok. 
+Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı denetimde). 6. satır kabul edildi: #222 bildirimi telefonuna geldi. 
+P2 16:58'de bitti. P3'ün doğru başlaması için kontrol dosyasında küçük bir düzeltme denetimde; bitince #6'ya "P3 hazır" yazacağım, o zaman bir kez daha **Run now**'a bas. Ondan önce basma. 
 Kullanım normal düzeyde.
