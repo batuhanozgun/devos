@@ -14,6 +14,6 @@
 
 **Şu an**
 
-Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı denetimde). 6. satır kabul edildi: #222 bildirimi telefonuna geldi. 
-P2 16:58'de bitti. P3'ün doğru başlaması için kontrol dosyasında küçük bir düzeltme denetimde; bitince #6'ya "P3 hazır" yazacağım, o zaman bir kez daha **Run now**'a bas. Ondan önce basma. 
+Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 ve P2 bitti. 6. satır kabul edildi; 7. satır denetimden geçti, birleşmeyi bekliyor. 
+P2'nin kapanış satırını kontrol dosyası saymıyordu; küçük bir düzeltme denetlendi ve birleşti. #6'ya "P3 hazır" yazınca bir kez daha **Run now**'a bas. 
 Kullanım normal düzeyde.
