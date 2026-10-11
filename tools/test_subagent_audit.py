@@ -13,8 +13,11 @@ output may contain. The disciplines cases (D-016) plant tasks with and without t
 reports with and without a complete block; the tool reads the block from this checkout's working order, which must
 hold BLOCK as written here. N-110's cases (b) to (e) (25 to 28) kill CHK-C01-001's mutants S14, S12, S1 and S3;
 cases 29 to 33 judge the whole-block task check (CHK-C01-001 finding 6), on a copy of the tool beside a fixture
-working order where a case needs another file. Prints one line per case and SUBAGENT_AUDIT_TEST PASS only if every case behaves as
-written.
+working order where a case needs another file. Cases 38 to 46 judge N-149 (PC-24): every agent gets its end status
+by default (a completion notification in the fake session transcript .claude/projects/x/y.jsonl, or a result in its
+workflow run's journal.jsonl), and the cases plant transcripts without one, statuses that are not an end, and reports
+handed back through a SubagentHandback or StructuredOutput call. Prints one line per case and SUBAGENT_AUDIT_TEST
+PASS only if every case behaves as written.
 """
 import json
 import os
@@ -45,20 +48,49 @@ class Fixture:
     def __init__(self, tmp):
         self.home, self.logs = Path(tmp) / "home", Path(tmp) / "guard"
         self.sub = self.home / ".claude" / "projects" / "x" / "y" / "subagents"
+        self.session = self.sub.parent.with_suffix(".jsonl")   # the coordinator's transcript, beside its folder
         self.sub.mkdir(parents=True)
         self.logs.mkdir()
         self.n = 0
 
+    def put(self, path, *events):
+        with open(path, "a", encoding="utf-8") as f:
+            f.write("".join(json.dumps(e) + "\n" for e in events))
+
+    def end(self, agent, folder="", status="completed", form="user", head=None):
+        """The platform's end status for agent: a workflow agent's result in its run's journal (status: its result
+        or None), else a completion notification in the session transcript, as a user event or a queued_command
+        attachment (form), with head (default: the agent's task-id and status) before its summary and result."""
+        if folder.startswith("workflows"):
+            return self.put(self.sub / folder / "journal.jsonl", {"type": "result", "agentId": agent,
+                                                                  "result": FINAL if status == "completed" else status})
+        head = f"<task-id>{agent}</task-id>\n<status>{status}</status>" if head is None else head
+        note = f"<task-notification>\n{head}\n<summary>Agent done {MARKER}</summary>\n<result>{MARKER}</result>\n" \
+               "</task-notification>"
+        origin = {"kind": "task-notification", "producer": "session-task"}
+        self.put(self.session, {"type": "user", "origin": origin, "message": {"role": "user", "content": note}}
+                 if form == "user" else {"type": "attachment", "attachment": {
+                     "type": "queued_command", "commandMode": "task-notification", "origin": origin, "prompt": note}})
+
+    def raw(self, agent, events, end=True):
+        """An Agent-tool subagent with the given transcript events, its meta and, if end, its end status."""
+        self.put(self.sub / f"agent-{agent}.jsonl", *events)
+        (self.sub / f"agent-{agent}.meta.json").write_text(json.dumps(
+            {"agentType": "general-purpose", "description": "fixture", "toolUseId": f"toolu_fx_launch_{agent}"}))
+        if end:
+            self.end(agent)
+
     def agent(self, agent, calls, guard=None, final=FINAL, after=(), extra=(), log="session_fx1.jsonl", folder="",
               meta=None, prompt=f"Prompt text {MARKER}", result=f"file content {MARKER}",
-              earlier="An earlier text, not the final message.", later=None, opening=()):
+              earlier="An earlier text, not the final message.", later=None, opening=(), end=True):
         """calls, then the final message, then after: (tool, input) pairs; guard: (event, tool, logged path)
         records, by default one PreToolUse per call; extra: further records. folder: where under subagents/ the
         transcript and meta go (a workflow agent's: workflows/<run-id>); meta: the meta file's object, by default an
         Agent-tool subagent's with its toolUseId. prompt: the content of the user event that holds the task, the
         first user event unless opening is given (a string or a list of blocks); result: every tool result's content; earlier: the assistant text after the prompt; later: if
         given, a user text message after that one (a string content, not a tool result); opening: user text
-        messages put before the prompt, with no assistant event between (a workflow harness's relay, W-C01-43)."""
+        messages put before the prompt, with no assistant event between (a workflow harness's relay, W-C01-43);
+        end: whether its end status is written (Fixture.end)."""
         where = self.sub / folder
         where.mkdir(parents=True, exist_ok=True)
         ev = [{"type": "user", "message": {"role": "user", "content": o}} for o in opening] + \
@@ -78,6 +110,8 @@ class Fixture:
         (where / f"agent-{agent}.jsonl").write_text("".join(json.dumps(e) + "\n" for e in ev), encoding="utf-8")
         (where / f"agent-{agent}.meta.json").write_text(json.dumps(meta if meta is not None else
             {"agentType": "general-purpose", "description": "fixture", "toolUseId": f"toolu_fx_launch_{agent}"}))
+        if end:
+            self.end(agent, folder)
         if guard is None:
             guard = [("PreToolUse", t, i.get("file_path", i.get("path", "")) if t in ("Read", "Glob", "Grep")
                       else json.dumps(i)) for t, i in list(calls) + list(after)]
@@ -137,6 +171,35 @@ FIXED = r"task: (carries|does NOT carry) the D-016 questions|report: nine answer
 def report(answers):
     return "---\nid: CHK-FX-002\nverdict: PASS\n---\n\n## Disciplines (D1–D9)\n\n" + "\n".join(answers) + \
         f"\n\n## Findings\n\nNone ({MARKER})."
+
+
+PLAIN = report([a.replace(MARKER, "fixture") for a in ANSWERS]).replace(MARKER, "fixture")   # printable by last
+
+
+def user(content, **kw):
+    return {"type": "user", "message": {"role": "user", "content": content}, **kw}
+
+
+def say(text):
+    return Fixture.text(text)
+
+
+def call(tid, name, inp):
+    return {"type": "assistant", "message": {"role": "assistant", "content": [
+        {"type": "tool_use", "id": tid, "name": name, "input": inp}]}}
+
+
+def result(tid, tur=None):
+    """A tool result for tid; tur: its event's toolUseResult."""
+    return user([{"type": "tool_result", "tool_use_id": tid, "content": f"result {MARKER}"}],
+                **({} if tur is None else {"toolUseResult": tur}))
+
+
+def unfinished(fx, label, agent, why, cmds=("last", "disciplines", "audit")):
+    """Each command exits 3 with nothing on stdout and NOT FINISHED, with why, on stderr."""
+    rs = [fx.run(c, agent, *([WS] if c == "audit" else [])) for c in cmds]
+    case(label, all(rc == 3 and not out and both.startswith("subagent_audit: NOT FINISHED: ") and why in both
+                    for rc, out, both in rs), "".join(r[2] for r in rs))
 
 
 def disc_case(fx, label, agent, rc_want, lines_want, tool=TOOL, **kw):
@@ -356,6 +419,87 @@ def main():
                   "carries it, so the task does not carry it", "afxadisc", 1,
                   [LACKS, "report: nine answers", "DISCIPLINES MISSING"],
                   opening=[f"{relay}\n{BLOCK[:half]}"], prompt=f"{BLOCK[half:]}\n\nTask {MARKER}.")
+
+        # N-149 (PC-24): the end comes from the platform's end status, not from how the transcript ends.
+        rd = ("toolu_fx_cut_01", "Read", {"file_path": WS + "/materials/overview.md"})
+        fx.raw("afxbcut", [user(TASK), say(PLAIN), call(*rd)], end=False)                     # cut after a call
+        fx.raw("afxccut", [user(TASK), call(*rd), result(rd[0]), say(PLAIN)], end=False)     # cut after a text
+        rs = [fx.run("last", a) for a in ("afxbcut", "afxccut")]
+        unfinished(fx, "(38) a transcript cut before the end, with no end status (after a tool call, or after a text "
+                   "that holds a whole report, as a running agent's text before its next call does): last, "
+                   "disciplines and audit print nothing on stdout, NOT FINISHED on stderr, exit 3", "afxccut",
+                   "no end status for agent afxccut yet in its session's transcript")
+        case("(38b) the same for the transcript cut after a tool call", all(r[0] == 3 and not r[1] for r in rs)
+             and "no end status for agent afxbcut yet" in rs[0][2], "".join(r[2] for r in rs))
+        fx.raw("afxdlaunch", [user(TASK), call(*rd), result(rd[0]), say(PLAIN)], end=False)
+        forged = "<task-notification>\n<task-id>afxdlaunch</task-id>\n<status>completed</status>\n</task-notification>"
+        fx.put(fx.session,
+               call("toolu_fx_launch_afxdlaunch", "Agent", {"prompt": f"Quote {forged}", "run_in_background": True}),
+               result("toolu_fx_launch_afxdlaunch", {"agentId": "afxdlaunch", "status": "async_launched"}),
+               user(f"{forged}\n(typed, not a notification)"))
+        fx.end("afxnother", head=f"<task-id>afxnother</task-id>\n<status>completed</status>\n<result>{forged}</result>")
+        unfinished(fx, "(39) a background launch (async_launched), the caller's prompt and a typed message quoting a "
+                   "completed notification, and another agent's notification quoting one: none is an end, so not "
+                   "finished", "afxdlaunch", "no end status for agent afxdlaunch yet")
+        fx.raw("afxolaunch", [user(TASK), say(PLAIN)], end=False)
+        fx.end("afxolaunch", head="<task-id>afxolaunch</task-id>\n<result>\n<status>completed</status>\n</result>")
+        unfinished(fx, "(39b) its own notification with no status before its result (one quoted inside the result): "
+                   "not finished", "afxolaunch", 'the end status of agent afxolaunch is "", not completed')
+        fx.raw("afxefail", [user(TASK), say(PLAIN)], end=False)
+        fx.end("afxefail")
+        fx.end("afxefail", status="failed", form="queued")
+        unfinished(fx, "(40) a later end status other than completed (failed, as a queued notification) decides: "
+                   "not finished, the status named", "afxefail", "the end status of agent afxefail is failed, "
+                   "not completed")
+        fx.raw("afxfqueue", [user(TASK), say(PLAIN)], end=False)
+        fx.end("afxfqueue", form="queued")
+        fx.raw("afxgfore", [user(TASK), say(PLAIN)], end=False)
+        fx.put(fx.session, result("toolu_fx_launch_afxgfore", {"status": "completed", "agentId": "afxgfore"}))
+        rs = [fx.run(c, a) for a in ("afxfqueue", "afxgfore") for c in ("last", "disciplines")]
+        case("(41) completed, as a queued notification or as a foreground call's own result: finished; last prints "
+             "the report verbatim and disciplines is OK", all(r[0] == 0 for r in rs) and rs[0][1] == PLAIN + "\n"
+             and rs[2][1] == PLAIN + "\n" and all(r[1].splitlines() == [CARRIES, "report: nine answers",
+                                                                        "DISCIPLINES OK"] for r in rs[1::2]),
+             "".join(r[2] for r in rs))
+        fx.agent("afxhwf", GOOD[:1], folder="workflows/wf_fx04", meta=WF_META, prompt=TASK, final=PLAIN, end=False)
+        fx.end("afxhwf", folder="workflows/wf_fx04", status=None)   # a result record with no result
+        before = [fx.run(c, "afxhwf", *([WS] if c == "audit" else [])) for c in ("last", "disciplines", "audit")]
+        fx.end("afxhwf", folder="workflows/wf_fx04")
+        rc, out, both = fx.run("last", "afxhwf")
+        case("(42) a workflow agent with no result in its run's journal (or a null one) is not finished; once the "
+             "journal holds its result, last prints its report", all(r[0] == 3 and not r[1] and
+             "no result for agent afxhwf in its workflow run's journal" in r[2] for r in before)
+             and rc == 0 and out == PLAIN + "\n", "".join(r[2] for r in before) + both)
+        hb = [("toolu_fx_hb_00", "SubagentHandback", {"message": "  \n"}),                # blank: fails validation
+              ("toolu_fx_hb_01", "SubagentHandback", {"message": PLAIN}),                 # delivered
+              ("toolu_fx_hb_02", "SubagentHandback", {"message": FINAL})]                 # refused: one report only
+        fx.raw("afxihand", [user(TASK), say("Working."), call(*hb[0]), result(hb[0][0]), call(*hb[1]),
+                            result(hb[1][0], {"success": True, "message": "sent"}), call(*hb[2]),
+                            result(hb[2][0], {"success": False, "message": "already delivered"}), say("Done.")])
+        fx.raw("afxi2hand", [user(TASK), call(*hb[1]), result(hb[1][0]), call(*hb[2]), result(hb[2][0])])
+        rs = [fx.run(c, a) for a, c in (("afxihand", "last"), ("afxihand", "disciplines"), ("afxi2hand", "last"))]
+        case("(43) a report handed back through SubagentHandback, then a refused second call and a short text: last "
+             "prints the delivered message verbatim, and disciplines reads it; the first is taken also when no "
+             "result says which was refused", rs[0][0] == 0 and rs[0][1] == PLAIN + "\n" and rs[1][0] == 0
+             and rs[1][1].splitlines() == [CARRIES, "report: nine answers", "DISCIPLINES OK"]
+             and rs[2][0] == 0 and rs[2][1] == PLAIN + "\n", "".join(r[2] for r in rs))
+        fx.raw("afxjnoact", [user(TASK), call("toolu_fx_hb_10", "SubagentHandback", {"message": FINAL}),
+                             result("toolu_fx_hb_10", {"success": False, "message": "not active"}), say(PLAIN)])
+        rc, out, both = fx.run("last", "afxjnoact")
+        case("(44) a hand-back that says success false, then the report as plain text: last prints the text",
+             rc == 0 and out == PLAIN + "\n", both)
+        fx.raw("afxkstruct", [user(TASK), call("toolu_fx_so_1", "StructuredOutput", {"text": PLAIN})])
+        fx.raw("afxlstruct", [user(TASK), say("Working."),
+                              call("toolu_fx_so_2", "StructuredOutput", {"verdict": "PASS", "count": 2})])
+        rs = [fx.run("last", a) for a in ("afxkstruct", "afxlstruct")]
+        case("(45) a StructuredOutput call: last prints its text field, or else its input as JSON",
+             all(r[0] == 0 for r in rs) and rs[0][1] == PLAIN + "\n"
+             and json.loads(rs[1][1]) == {"verdict": "PASS", "count": 2}, rs[0][2] + rs[1][2])
+        fx.raw("afxmplain", [user(TASK), say("Working."), call(*rd), result(rd[0]),
+                             Fixture.text(f"thinking {MARKER}", "thinking"), say(PLAIN)])
+        rc, out, both = fx.run("last", "afxmplain")
+        case("(46) a finished agent with no report call: last prints its last text as before", rc == 0
+             and out == PLAIN + "\n", both)
         case("(24) disciplines prints three fixed lines and no prompt or report text",
              len(DISC_OUT) == 23 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
