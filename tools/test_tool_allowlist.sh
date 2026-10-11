@@ -9,6 +9,7 @@
 # Every call must get an explicit decision: allow, deny, or pass (only AskUserQuestion and ExitPlanMode, which
 # the user answers). No output may say "ask". A guard that cannot run must block: exit 2 on PreToolUse, and on
 # PermissionRequest, where exit 2 is not honoured, a deny in that event's form; both hooks set onFailure (N-173).
+# "Pass" is the guard's plain-text PASS_MARKER, so an exit 0 with no output is a failure, not a pass (N-185).
 # Usage: tools/test_tool_allowlist.sh [hook-path]   (run from the repository root of a devos clone)
 hook="${1:-.claude/hooks/tool_allowlist.py}"
 fail=0
@@ -23,6 +24,7 @@ pcmd=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["h
 pmatcher=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PermissionRequest"][0]["matcher"])')
 cmd="${cmd//\$CLAUDE_PROJECT_DIR\/.claude\/hooks\/tool_allowlist.py/$hook}"
 pcmd="${pcmd//\$CLAUDE_PROJECT_DIR\/.claude\/hooks\/tool_allowlist.py/$hook}"
+PASS=$(python3 -c 'import re,sys;print(re.search(r"^PASS_MARKER = \"(.*)\"$", open(sys.argv[1]).read(), re.M).group(1))' "$hook")
 for n in mcp__x__y Artifact SendMessage ListAgents EnterWorktree ReadMcpResourceTool Bash Workflow SomeFutureTool; do
   for m in "$matcher" "$pmatcher"; do
     python3 -c "import re,sys; sys.exit(0 if re.fullmatch(sys.argv[1], sys.argv[2]) else 1)" "$m" "$n" && echo "ok   matcher $m covers $n" || { echo "BAD  matcher $m misses $n"; fail=1; }
@@ -72,7 +74,7 @@ decide() {
   out=$(printf '%s' "$1" | CLAUDE_PROJECT_DIR="$PWD" sh -c "$c" 2>/dev/null); rc=$?
   printf '%s\n' "$out" >> "$OUTS"
   [ $rc -eq 2 ] && { echo block; return; }
-  [ -z "$out" ] && { echo pass; return; }
+  [ $rc -eq 0 ] && [ "$out" = "$PASS" ] && { echo pass; return; }
   printf '%s' "$out" | python3 -c 'import json,sys
 d=json.load(sys.stdin)["hookSpecificOutput"]
 if sys.argv[1] == "perm":
@@ -935,13 +937,13 @@ rm -rf "$pl"
 # --- (b) no output anywhere says "ask"; (c) every denial carries rule, attempt, reason, place and alternative
 grep -q '"ask"' "$OUTS" && { echo "BAD  an output answered ask"; fail=1; } || echo "ok   no output answered ask"
 grep -q 'guard error' "$OUTS" && { echo "BAD  a decision came from an internal guard error:"; grep -o 'guard error[^"]*' "$OUTS" | sort | uniq -c | head; fail=1; } || echo "ok   no decision came from an internal guard error"
-python3 - "$OUTS" <<'EOF' || fail=1
+python3 - "$OUTS" "$PASS" <<'EOF' || fail=1
 import json, sys
 bad = 0
 n = 0
 for line in open(sys.argv[1]):
     line = line.strip()
-    if not line:
+    if not line or line == sys.argv[2]:
         continue
     d = json.loads(line)["hookSpecificOutput"]
     text = d.get("permissionDecisionReason") or (d.get("decision") or {}).get("message") or ""
@@ -984,11 +986,11 @@ r=$(printf '{}' | CLAUDE_PROJECT_DIR="$PWD" env PATH=/nonexistent /bin/sh -c "$c
 # pf <exp> <label> <shell> <input> <command> [VAR=value]: exp is deny, allow or pass, in the PermissionRequest form
 pf() { local out rc r
   out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" env ${6:+"$6"} "$3" -c "$5" 2>/dev/null); rc=$?
-  if [ -z "$out" ]; then r=pass; else r=$(printf '%s' "$out" | python3 -c 'import json,sys
+  if [ "$out" = "$PASS" ]; then r=pass; else r=$(printf '%s' "$out" | python3 -c 'import json,sys
 d=json.load(sys.stdin)["hookSpecificOutput"]
 ok = d.get("hookEventName") == "PermissionRequest" and "permissionDecision" not in d
 print(((d.get("decision") or {}).get("behavior") if ok else None) or "?")' 2>/dev/null || echo "?"); fi
-  local f="in the PermissionRequest form"; [ "$1" = pass ] && f="(no output)"
+  local f="in the PermissionRequest form"; [ "$1" = pass ] && f="(the pass marker)"
   if [ "$r" = "$1" ] && [ $rc -eq 0 ]; then echo "ok   perm $2 ($(basename "$3")): $1 $f, exit 0"
   else echo "BAD  perm $2 ($(basename "$3")): expected $1 with exit 0, got $r with exit $rc"; fail=1; fi; }
 printf 'import sys\nsys.exit(2)\n' > "$tmp/exit2.py"
@@ -1010,6 +1012,68 @@ done
 printf 'garbage' | CLAUDE_PROJECT_DIR="$PWD" sh -c "$pcmd" 2>/dev/null | grep -q 'DENIED by rule G0' \
   && echo "ok   perm unreadable input: the guard itself denies in the PermissionRequest form (rule G0), not the wrapper" \
   || { echo "BAD  perm unreadable input: not the guard's own G0 denial"; fail=1; }
+# --- N-185: an exit 0 with no output is not a decision. The guard prints PASS_MARKER for "pass"; both commands pass
+# on only an answer in their event's form or that marker, so an empty or truncated guard file is denied in each
+# event's form (PreToolUse: exit 2, the command's reason on stderr). The marker rests on the hooks page
+# (code.claude.com/docs/en/hooks, read 2026-10-11; not independently tested on the platform): its table under
+# "Exit code output" gives "Plain text, or nothing" at exit 0 one outcome, "Success" (no decision fields: the normal
+# permission flow), and "Block the action when a hook fails" says that plain-text stdout "isn't a failure".
+# qf <exp> <label> <shell> <input> <command>: the PreToolUse command's answer: block, allow, deny or pass
+qf() { local out rc r err; err=$(mktemp)
+  out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" "$3" -c "$5" 2>"$err"); rc=$?
+  if [ $rc -eq 2 ]; then grep -q 'DevOS guard: DENIED, failing closed' "$err" && r=block || r="block without the command's reason"
+  elif [ $rc -eq 0 ] && [ "$out" = "$PASS" ]; then r=pass
+  elif [ $rc -eq 0 ]; then r=$(printf '%s' "$out" | python3 -c 'import json,sys
+d=json.load(sys.stdin)["hookSpecificOutput"]
+ok = d.get("hookEventName") == "PreToolUse" and "decision" not in d
+print((d.get("permissionDecision") if ok else None) or "?")' 2>/dev/null || echo "?")
+  else r="exit $rc"; fi; rm -f "$err"
+  if [ "$r" = "$1" ]; then echo "ok   pre $2 ($(basename "$3")): $1"; else echo "BAD  pre $2 ($(basename "$3")): expected $1, got $r"; fail=1; fi; }
+python3 - "$hook" <<'EOF' || fail=1
+import json, re, sys
+s = json.load(open(".claude/settings.json"))
+m = re.search(r'^PASS_MARKER = "(.*)"$', open(sys.argv[1]).read(), re.M)
+bad = 0
+for e in ("PreToolUse", "PermissionRequest"):
+    c = s["hooks"][e][0]["hooks"][0]["command"]
+    ok = bool(m) and m.group(1)[:1] not in ("", "{") and f"|'0:{m.group(1)}')" in c and "'0:')" not in c
+    bad += not ok
+    print(("ok   " if ok else "BAD  ") + f"{e}: the command passes on the guard's own plain-text pass marker, and no "
+          "case takes an exit 0 with no output as a decision (N-185)")
+raise SystemExit(1 if bad else 0)
+EOF
+for u in AskUserQuestion ExitPlanMode; do
+  o=$(printf '{"tool_name":"%s","tool_input":{}}' "$u" | python3 "$hook" 2>/dev/null); r=$?
+  [ $r -eq 0 ] && [ "$o" = "$PASS" ] && echo "ok   the guard alone answers $u with the pass marker, exit 0" || { echo "BAD  the guard alone answers $u with exit $r and '${o:0:40}'"; fail=1; }
+done
+: > "$tmp/empty.py"
+cutl=$(awk -v h=$(( $(wc -l < "$hook") / 2 )) 'NR > h && /^def / {print NR; exit}' "$hook")
+head -n $((cutl - 1)) "$hook" > "$tmp/cut_at_def.py"; head -c $(( $(wc -c < "$hook") / 2 )) "$hook" > "$tmp/cut_mid_line.py"
+for f in empty cut_at_def; do
+  o=$(printf '%s' "$pin" | python3 "$tmp/$f.py" 2>/dev/null); r=$?
+  [ $r -eq 0 ] && [ -z "$o" ] && echo "ok   control: $f.py run alone exits 0 with no output (N-185's case)" || { echo "BAD  control: $f.py run alone gives exit $r and '${o:0:40}'"; fail=1; }
+done
+printf 'print(%s)\n' "'{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"allow\"}}}'" > "$tmp/prform.py"
+printf 'print(%s)\n' "'some other plain text'" > "$tmp/text.py"
+rd='{"tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}'
+for sh in /bin/sh "$(command -v bash)"; do
+  for f in empty cut_at_def cut_mid_line; do
+    qf block "$f.py as the guard file" "$sh" "$rd" "${cmd//$hook/$tmp/$f.py}"
+    pf deny "$f.py as the guard file" "$sh" "{\"hook_event_name\":\"PermissionRequest\",${rd#\{}" "${pcmd//$hook/$tmp/$f.py}"
+  done
+  qf block "an allow in the PermissionRequest form" "$sh" "$rd" "${cmd//$hook/$tmp/prform.py}"
+  qf block "plain text that is not the marker" "$sh" "$rd" "${cmd//$hook/$tmp/text.py}"
+  pf deny "plain text that is not the marker" "$sh" "$pin" "${pcmd//$hook/$tmp/text.py}"
+  # positive controls: what the user answers still reaches the user; ordinary calls are still allowed
+  qf pass "AskUserQuestion, passed to the user" "$sh" '{"tool_name":"AskUserQuestion","tool_input":{"questions":[]}}' "$cmd"
+  qf pass "ExitPlanMode, passed to the user" "$sh" '{"tool_name":"ExitPlanMode","tool_input":{}}' "$cmd"
+  pf pass "ExitPlanMode, passed to the user" "$sh" '{"hook_event_name":"PermissionRequest","tool_name":"ExitPlanMode","tool_input":{}}' "$pcmd"
+  for a in "Read|$rd" "Grep|{\"tool_name\":\"Grep\",\"tool_input\":{\"pattern\":\"x\",\"path\":\"$W\"}}" "git status in Bash|{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"git status\"},\"cwd\":\"$W\"}"; do
+    qf allow "${a%%|*}" "$sh" "${a#*|}" "$cmd"
+    pf allow "${a%%|*}" "$sh" "{\"hook_event_name\":\"PermissionRequest\",${a#*|\{}" "$pcmd"
+  done
+  qf deny "a call the guard denies" "$sh" '{"tool_name":"mcp__SomeConnector__x"}' "$cmd"
+done
 rm -rf "$tmp"
 # --- PostToolUse recorder: appends own IDs, never blocks
 rd=$(mktemp -d); cp .claude/hooks/record_owned_id.py "$rd/"; printf 'x\n' > "$rd/owned_ids.txt"
