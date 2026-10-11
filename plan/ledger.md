@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T13:37:20Z (comment `6109603950`). | 2026-10-11T13:48Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z: D-027 (a), pressed for P2 (L-211). | 2026-10-11T13:56Z |
-| summary_tr | Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı yazılıyor). 6. satır: #222 bildirimi telefonuna geldi; kaydı denetimde. <br>P2 senin basmanla 16:54'te başladı. P2 bitince #6'ya "P3 hazır" yazacağım; o zaman bir kez daha **Run now**'a bas. Ondan önce basma. <br>Kullanım normal düzeyde. | 2026-10-11T13:56Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T13:57Z |
+| summary_tr | Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı denetimde). 6. satır kabul edildi: #222 bildirimi telefonuna geldi. <br>P2 16:58'de bitti. P3'ün doğru başlaması için kontrol dosyasında küçük bir düzeltme denetimde; bitince #6'ya "P3 hazır" yazacağım, o zaman bir kez daha **Run now**'a bas. Ondan önce basma. <br>Kullanım normal düzeyde. | 2026-10-11T14:12Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T14:10Z |
 
 ---
 
@@ -50,7 +50,6 @@
 - `W-C01-20` Row 13: plugin and skill inventory (C01 #13): claimed by `session_01XyxvJd3RayQk4HCrjurbVH`
 
 **Not ready, with the first unmet condition:**
-- `W-C01-13`: finished, waiting for acceptance
 - `W-C01-27`: depends on W-C01-12 (not accepted)
 - `W-C01-29`: depends on W-C01-12 (not accepted)
 - `W-C01-30`: depends on W-C01-12 (not accepted)
@@ -66,7 +65,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 18, blocked 3, cancelled 9, finished 1, ready 11, running 2 | 17 |
+| `C01` | Platform verification | running | accepted 19, blocked 3, cancelled 9, ready 11, running 2 | 17 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 11 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 11 |
 | `C04` | Knowledge, search and context | planned | no items | 13 |
@@ -74,7 +73,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C06` | Working order, audit and decision channel | planned | no items | 8 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 7 |
-| `C09` | Outage, backup, restore and reconnection | planned | no items | 5 |
+| `C09` | Outage, backup, restore and reconnection | planned | no items | 6 |
 | `C10` | Learning, purpose audit, process limit and assumption inventory | planned | no items | 4 |
 | `C11` | Integrated testing, unattended operation, capacity and provider independence | planned | no items | 4 |
 | `C12` | Hand-over | planned | no items | 2 |
@@ -94,7 +93,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
   - `W-C01-10` Row 4, probe part: subagents in a session started by a routine (C01 #4): accepted
   - `W-C01-11` Row 17: control surface across environments (C01 #17): cancelled
   - `W-C01-12` Row 5: daily routine limit (C01 #5): ready
-  - `W-C01-13` Row 6: notification (C01 #6): finished, not accepted
+  - `W-C01-13` Row 6: notification (C01 #6): accepted
   - `W-C01-14` Row 7: embedding model, the session part (C01 #7): running (session_01XyxvJd3RayQk4HCrjurbVH)
   - `W-C01-15` Row 8: release chain (C01 #8): ready
   - `W-C01-16` Row 9: single- and multi-repository sessions; the guard hook (C01 #9): cancelled
@@ -168,7 +167,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-10` | Row 4, probe part: subagents in a session started by a routine (C01 #4) | accepted | — | — | `plan/work/W-C01-10.md` |
 | `W-C01-11` | Row 17: control surface across environments (C01 #17) | cancelled | — | — | `plan/work/W-C01-11.md` |
 | `W-C01-12` | Row 5: daily routine limit (C01 #5) | ready | — | — | `plan/work/W-C01-12.md` |
-| `W-C01-13` | Row 6: notification (C01 #6) | finished, not accepted | — | — | `plan/work/W-C01-13.md` |
+| `W-C01-13` | Row 6: notification (C01 #6) | accepted | — | — | `plan/work/W-C01-13.md` |
 | `W-C01-14` | Row 7: embedding model, the session part (C01 #7) | running (session_01XyxvJd3RayQk4HCrjurbVH) | — | — | `plan/work/W-C01-14.md` |
 | `W-C01-15` | Row 8: release chain (C01 #8) | ready | — | — | `plan/work/W-C01-15.md` |
 | `W-C01-16` | Row 9: single- and multi-repository sessions; the guard hook (C01 #9) | cancelled | — | — | `plan/work/W-C01-16.md` |
@@ -266,7 +265,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-22` | Section 12 item 0: one non-secret environment variable added to Batu's C01 step, so that the routine's runs show their environment from a documented fact | technical | accepted | `plan/decisions/PC-22.md` |
 | `PC-23` | The thinking disciplines catch an avoidable wait (FR-06): a wait is an evaluation moment; D3 weighs a sooner way at the same quality; the stop carries a Wait line, checked; plan 6.12's premise inventory covers a parameter that sets when work can next start | technical | accepted | `plan/decisions/PC-23.md` |
 | `PC-24` | C01 row 4 (W-C01-10, R1b): a subagent call can return before the subagent has finished; K-7 items 3–4 and Section 6.5 items 5–6 take a subagent's end from the platform's end status, not from the call's return or the arrival of its report | technical | accepted | `plan/decisions/PC-24.md` |
-| `PC-33` | Appendix E section 8: "which of them is reliable is tested in C01" now names C06, where plan C01 row 6 moves the second channel | technical | proposed | `plan/decisions/PC-33.md` |
+| `PC-33` | Appendix E section 8: "which of them is reliable is tested in C01" now names C06, where plan C01 row 6 moves the second channel | technical | accepted | `plan/decisions/PC-33.md` |
 <!-- /generated -->
 
 ---
@@ -364,6 +363,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-080` | `C09` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-48 (t... |
 | `N-099` | `C09` | EV-C00-021 | open | T-65 and T-82: export marked only after read-back; freshness by content identity; restore lists derived from the inventories. The directi... |
 | `N-118` | `C09` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
+| `N-183` | `C09` | CHK-C01-065 | open | **Under whose identity the monitoring path's issue reaches Batu** (EV-C01-019 section 3; CHK-C01-065 finding 11; W-C01-13; 2026-10-11). R... |
 | `N-071` | `C10` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-081` | `C10` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-50 (a... |
 | `N-088` | `C10` | EV-C00-017 | open | **The no-mechanism baseline for the removal test** (plan 6.12 item 4; W-C00-15, 2026-10-06, L-155). `evidence/C00/EV-C00-017_baseline_res... |
