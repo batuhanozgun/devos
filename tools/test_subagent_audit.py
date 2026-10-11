@@ -51,16 +51,18 @@ class Fixture:
 
     def agent(self, agent, calls, guard=None, final=FINAL, after=(), extra=(), log="session_fx1.jsonl", folder="",
               meta=None, prompt=f"Prompt text {MARKER}", result=f"file content {MARKER}",
-              earlier="An earlier text, not the final message.", later=None):
+              earlier="An earlier text, not the final message.", later=None, opening=()):
         """calls, then the final message, then after: (tool, input) pairs; guard: (event, tool, logged path)
         records, by default one PreToolUse per call; extra: further records. folder: where under subagents/ the
         transcript and meta go (a workflow agent's: workflows/<run-id>); meta: the meta file's object, by default an
         Agent-tool subagent's with its toolUseId. prompt: the first user event's content (a string or a list of
         blocks); result: every tool result's content; earlier: the assistant text after the prompt; later: if
-        given, a user text message after that one (a string content, not a tool result)."""
+        given, a user text message after that one (a string content, not a tool result); opening: user text
+        messages put before the prompt, with no assistant event between (a workflow harness's relay, W-C01-43)."""
         where = self.sub / folder
         where.mkdir(parents=True, exist_ok=True)
-        ev = [{"type": "user", "message": {"role": "user", "content": prompt}}, self.text(earlier)]
+        ev = [{"type": "user", "message": {"role": "user", "content": o}} for o in opening] + \
+            [{"type": "user", "message": {"role": "user", "content": prompt}}, self.text(earlier)]
         if later is not None:
             ev.append({"type": "user", "message": {"role": "user", "content": later}})
         for i, (tool, inp) in enumerate(list(calls) + list(after)):
@@ -339,8 +341,18 @@ def main():
              all(r[0] == 2 and not r[1] and os.path.realpath(order) in r[2] for r in rs)
              and "cannot read the discipline block's file" in rs[0][2]
              and all("no discipline block in" in r[2] for r in rs[1:]), "".join(r[2] for r in rs))
+        # W-C01-43: a workflow harness's relay before the task, in the same opening.
+        relay = f"[Workflow harness \u2014 user request] The harness relays the user request {MARKER}:\n  A request."
+        disc_case(fx, "(34) a harness relay, then the task with the whole block, before the first assistant event: "
+                  "the task carries it", "afxxdisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"],
+                  opening=[relay])
+        disc_case(fx, "(35) a harness relay, then a task without the block: the task does not carry it", "afxydisc", 1,
+                  [LACKS, "report: nine answers", "DISCIPLINES MISSING"], opening=[relay], prompt=f"Prompt {MARKER}")
+        disc_case(fx, "(36) the block only in an opening message before the prompt: the opening carries it",
+                  "afxzdisc", 0, [CARRIES, "report: nine answers", "DISCIPLINES OK"], opening=[TASK],
+                  prompt=f"Prompt {MARKER}")
         case("(24) disciplines prints three fixed lines and no prompt or report text",
-             len(DISC_OUT) == 19 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
+             len(DISC_OUT) == 22 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
              "\n".join(DISC_OUT))
 
