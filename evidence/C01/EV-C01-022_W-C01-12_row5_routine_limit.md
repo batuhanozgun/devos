@@ -138,3 +138,16 @@ The question (comment `6110301769`, in Turkish; read by the executor) asked him 
 - A stamp cannot tell Run now from the schedule. The start of each run rests on Batu's word, on S against the schedule time and on the decision records (section 4). For P3's second attempt it rests on S, the text at its start and his word at 14:48:46Z (L-226).
 - An idle run's `IDLE.md` has no limit-message item (`CONTROL.md` rule 2.4). This record reports that gap and does not change it: it is a change of the control file, which only a checked change between runs can make.
 - The branch list is as of 2026-10-11T15:01:00Z.
+
+## Addendum (2026-10-11, listing at 19:35:09Z): runs after the listing of 15:01:00Z (N-191)
+
+**Source.** `git ls-remote origin 'refs/heads/claude/probe-c01-*'` at 2026-10-11T19:35:09Z, run by a fresh-context producer subagent of the executor's working session in a scratch clone at `main` `4581c0d`. It lists seven branches: the six of section 4, at the same heads, and one more.
+
+| Run | Branch | S | End | How it started | Result | Closing record item 7 |
+|---|---|---|---|---|---|---|
+| P4 | `claude/probe-c01-p4-20261011T1914Z` at `b44f88145c24afe3d2608d4bcfd3fccf2c0ff1c7` (stamp `75850b5`, closing `b44f881`) | 19:14:17Z (P4 STAMP.md:6) | 19:22:07Z (P4 CLOSING.md:5) | Run now (D-028 (a)): Batu's words in the working session, received at about 19:21Z, "Run'a bastım çalışıyor oturum." ("I pressed Run; the session is running."; L-251). S matches no schedule time. The stamp reads "a scheduled task, shown as an automated firing of a configured prompt" (P4 STAMP.md:10) | `done` (P4 CLOSING.md:25) | "none" (P4 CLOSING.md:23) |
+
+- **Count.** One run after the listing of 15:01:00Z, on 2026-10-11. No scheduled run has fallen due since: the next is 2026-10-12 at about 08:07Z.
+- **Correction of section 4's total.** 2026-10-11 has seven runs, not six: one started by the schedule (R1a) and six by Run now (R1b, P1, P2, P3's two attempts, P4). P4 is the only start between 14:48:43Z and 19:35:09Z, so the most starts in any 60-minute span stay at three. None used the limit up: P4's closing record saw no usage or routine limit message, and its start produced a session that wrote its stamp.
+- **Batu's run list.** He has not read the routine's run list for this count, so the platform's own count is not set beside the branch count (N-191; section 5, second row).
+- **Still open.** N-191 stays open: every later run, scheduled or not, is counted in a further dated addendum until the routine is deleted (W-C01-29).
