@@ -27,10 +27,11 @@ today=$(date -u +%Y-%m-%d)
 d=$(TZ=UTC git log -1 --format=%cd --date=format-local:%Y-%m-%d origin/main -- DURUM.md 2>/dev/null)
 [ "$d" = "$today" ] && ok "DURUM.md updated today ($today, UTC) on main" || bad "DURUM.md last changed on main ${d:-never}, not today ($today, UTC)"
 
-# PC-23: the newest log entry (highest L-number in plan/ledger/*-log.md) carries a "- **Wait:** " line.
+# PC-23: the newest log entry (highest L-number in plan/ledger/*-log.md; it ends at the next heading of level 1 to 3,
+# as records.py reads it) carries a "- **Wait:** " line.
 ln=$(grep -h '^### L-[0-9]' plan/ledger/*-log.md 2>/dev/null | sed 's/^### L-\([0-9]*\).*/\1/' | sort -n | tail -1)
 lf=$(grep -l "^### L-${ln} " plan/ledger/*-log.md 2>/dev/null | head -1)
-if [ -n "$ln" ] && [ -n "$lf" ] && awk -v h="### L-${ln} " 'index($0,h)==1{f=1;next} f&&/^### /{exit} f' "$lf" | grep -q '^- \*\*Wait:\*\* '
+if [ -n "$ln" ] && [ -n "$lf" ] && awk -v h="### L-${ln} " 'index($0,h)==1{f=1;next} f&&/^(#|##|###) /{exit} f' "$lf" | grep -q '^- \*\*Wait:\*\* '
 then ok "newest log entry L-$ln carries its Wait line (working order section 7; PC-23)"
 else bad "newest log entry L-${ln:-?} has no '- **Wait:** ' line (working order section 7; PC-23)"; fi
 
