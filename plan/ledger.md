@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T15:01:37Z (comment `6110352256`, row 5's reading, not a decision; L-226). | 2026-10-11T15:30Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). Issue #6 comment `6109982927` (2026-10-11T14:20:30Z) and working session 14:40:50Z: pressed for P3's first attempt (L-221). Working session 14:48:46Z: pressed for P3's second attempt (L-226). Issue #6 comment `6110352256` (2026-10-11T15:01:37Z) and working session 15:02:19Z: row 5's reading, no routine line, and a question whether he must run the routine again, answered there: not now (L-226). | 2026-10-11T15:30Z |
-| summary_tr | P1, P2 ve P3 bitti. 5., 6., 7. ve 8. satırlar kabul edildi. 13. satırın kaydı da kabul edildi; satırın kendisi karşılanmadı, planlanan yolla ilerliyor. Guard'daki iki düzeltme birleşti ve çalışıyor. <br>13. satır: hesabındaki ECC eklentisinin kancaları (her adımda kendiliğinden çalışan küçük programlar) benim kurulum oturumumda da çalışıyor. Önce DevOS'un kendi ayarlarıyla onu yalnız DevOS oturumlarında kapatacağım; senden şimdilik bir şey istemiyor. İşe yaramazsa hesap ayarlarından kapatmayı ayrıca soracağım. <br>Rutine şimdilik basma; sıradaki **Run now** için #6'ya yazacağım. | 2026-10-11T16:37Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T17:05Z |
+| summary_tr | P1, P2 ve P3 bitti. 5., 6., 7. ve 8. satırlar kabul edildi. 13. satırın kaydı da kabul edildi; satırın kendisi karşılanmadı, planlanan yolla ilerliyor. Guard'daki iki düzeltme birleşti, çalışıyor; guard işi de kabul edildi. <br>13. satır: hesabındaki ECC eklentisinin kancaları (her adımda kendiliğinden çalışan küçük programlar) benim kurulum oturumumda da çalışıyor. Önce DevOS'un kendi ayarlarıyla onu yalnız DevOS oturumlarında kapatacağım; senden şimdilik bir şey istemiyor. İşe yaramazsa hesap ayarlarından kapatmayı ayrıca soracağım. <br>Rutine şimdilik basma; sıradaki **Run now** için #6'ya yazacağım. | 2026-10-11T17:02Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T17:30Z |
 
 ---
 
@@ -38,7 +38,7 @@
 - `W-C01-46` P4: row 13's two unchecked parts observed in a routine session (PC-35 routing item 3)
 
 **Running:**
-- `W-C01-38` The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5): claimed by `nobody`
+- none
 
 **Not ready, with the first unmet condition:**
 - `W-C01-18`: finished, waiting for acceptance
@@ -57,7 +57,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 29, blocked 3, cancelled 9, finished 1, ready 3, running 1 | 18 |
+| `C01` | Platform verification | running | accepted 30, blocked 3, cancelled 9, finished 1, ready 3 | 17 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 13 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 17 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
@@ -140,7 +140,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-35` | Row 3: environment token under PC-21 item 4 | accepted | — | — | `plan/work/W-C01-35.md` |
 | `W-C01-36` | Row 17: control surface across environments under PC-21 item 7 | accepted | — | — | `plan/work/W-C01-36.md` |
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | accepted | — | — | `plan/work/W-C01-37.md` |
-| `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | running | — | — | `plan/work/W-C01-38.md` |
+| `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | accepted | — | — | `plan/work/W-C01-38.md` |
 | `W-C01-39` | Row 12: repository access limit and the git credential under PC-21 item 6 | accepted | — | — | `plan/work/W-C01-39.md` |
 | `W-C01-40` | N-109 under PC-21 item 8: its disposition through D-019 | accepted | — | — | `plan/work/W-C01-40.md` |
 | `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | accepted | — | — | `plan/work/W-C01-41.md` |
@@ -242,8 +242,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-156` | `C01` | EV-C01-011 | open | **The system's commits carry the platform's git identity, not the machine account's** (EV-C01-011 point 1; W-C01-18; PC-27; 2026-10-11). ... |
 | `N-167` | `C01` | W-C01-24 | open | **The classifier in C01's routine runs, and the D-008 cost text** (C01 row 18's fail path; EV-C01-015 points 4 and 6 (c); PC-30; W-C01-24... |
 | `N-170` | `C01` | EV-C01-016 | open | **Plan line 729's mark, answered by row 9** (W-C01-37; `evidence/C01/EV-C01-016_W-C01-37_row9_hooks_one_repository.md`, "Plan line 729's ... |
-| `N-173` | `C01` | EV-C01-017 | open | **The guard does not yet fail closed in two cases: W-C01-38 point 2's correction** (EV-C01-017 point 1 (c) and point 2; W-C01-38; 2026-10... |
-| `N-185` | `C01` | W-C01-38 | open | **An empty or truncated guard file reads as "pass"** (W-C01-38's guard change, its producer's report; L-222; 2026-10-11). `.claude/hooks/... |
 | `N-184` | `C01` | CHK-C01-069 | open | **What `tools/subagent_audit.py` does not model after N-149** (CHK-C01-069 C1; CHK-C01-070 C2; L-216; 2026-10-11). (a) A report handed ba... |
 | `N-148` | `C01` | EV-C01-008 | open | **R4V's rule cannot hold after R1b** (EV-C01-008 sections 2.6 and 6; W-C01-10; 2026-10-11). R4V's rule in `evidence/C01/routine/CONTROL.m... |
 | `N-145` | `C01` | EV-C01-007 | open | **K-7's marker on how long a cloud session can run** (EV-C01-007; 2026-10-11, L-202). Plan K-7's conditions still read "How long a cloud ... |
@@ -252,6 +250,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-124` | `C01` | CHK-C01-007 | open | **A probe token's revocation before C02** (CHK-C01-007 finding 8; 2026-10-06, L-170). Plan C01 row 3's fail path says "a token found outs... |
 | `N-129` | `C01` | L-173 | open | **The form of a "no" answer** (2026-10-06, L-173; PC-20). Two helpers in a row (agents `aad82641009d6300f` and `a7f263717d66fe06b`, W-C01... |
 | `N-191` | `C01` | W-C01-12 | open | **EV-C01-022's dated addendum: the routine's runs after the branch listing of 2026-10-11T15:01:00Z** (C01 row 5; W-C01-12; L-226; 2026-10... |
+| `N-192` | `C01` | CHK-C01-086 | open | **`tools/test_credential_class.py` fails in this environment** (CHK-C01-086 finding 11; CHK-C01-088 finding 14; L-236; 2026-10-11). `pyth... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
 | `N-064` | `C02` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
@@ -354,7 +353,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-140` | `C12` | W-C01-42 | open | **The session-tools server deny at its target** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S9; 2026-10-11). |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 39 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-102, N-104, N-186, N-149, N-143, N-141, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 41 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-102, N-104, N-186, N-173, N-185, N-149, N-143, N-141, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.

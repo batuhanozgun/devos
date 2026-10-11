@@ -317,3 +317,227 @@ PC-21 item 5 calls the three properties "a property of DevOS's own code", "shown
 - **Not accepted here.** W-C01-38 is not accepted by this addendum. A fresh-context checker judges it against the unchanged block at a fixed head (CHK-C01-062 C3).
 - **N-185 stands in the way.** On this record's reading, the item cannot be accepted while N-185 is open: point 1 (c) is not met for that case, and point 2's fail path applies to it. The checker judges this reading.
 - **No plan change and nothing for Batu.** No change to `plan/DevOS_Kurulum_Plani.md` follows. No decision is Batu's: the guard is the builder's technical matter (D-003; D-008).
+
+## Addendum 2 (2026-10-11): N-185 corrected, merged and tested on `main`
+
+**What this is.** Addendum 1 (A1 to A9) found point 1 (c) and point 2 not met for one case only: N-185, an empty or truncated guard file, which gives no decision on either hook (A5). N-185's correction is now merged. DevOS's own guard test has been run again on `main` with no control skipped, and the working session has reported its guard live after the sync. This addendum records those, the break tests a checker ran against the corrected guard, the documentation facts the correction rests on, and the residual it leaves. It then reads the block's points 1 to 3 and its last paragraph against the record as it now stands. The sections above, Addendum 1 included, stay as written; where this addendum differs from them, it is the later reading. As above, it names no rule, no rule ID and no fixture content, and quotes neither a denial nor the marker's text. It cites lines by number only, at the blobs in B7: `test:` is `tools/test_tool_allowlist.sh`, `settings:` is `.claude/settings.json`, `guard:` is `.claude/hooks/tool_allowlist.py`.
+
+### B1. The correction, its verdicts and its merge
+
+- **The change** is one commit, `3ff0460`, on `main` `083d1ec` (branch `claude/c01-n185-guard-pass-marker`; N-185's dated line on `plan/work/C01.md`):
+  - The guard answers "pass", for the two tools that put a question to the user, with a plain-text marker instead of nothing (guard:109-112, 2089). Allow and deny keep their JSON in the event's form. So no path of the guard exits 0 with no output, and an error anywhere exits 2 (CHK-C01-085 finding 2; CHK-C01-086 finding 4).
+  - Both guard hook commands are wrappers of shell builtins that pass on only an answer in their event's form or that marker (settings:18, 31). On anything else, an exit 0 with no output included, the `PreToolUse` command exits 2 with its reason on standard error, and the `PermissionRequest` command prints a deny in its event's form with exit 0. Both hooks keep `"onFailure": "block"` and their 600-second timeout (settings:19-20, 32-33; CHK-C01-086 finding 3).
+  - The test gains a section (test:1015-1077):
+    - It checks that both commands carry the guard's marker, and that the guard alone answers the two user tools with it.
+    - Its controls show that an empty file and a copy cut before a definition each exit 0 with no output when run alone: N-185's case.
+    - Under `/bin/sh` and bash, it has an empty guard file and two truncated copies denied in each event's form. It also has an allow in the other event's form, and plain text that is not the marker, denied.
+    - Its positive controls show that the two user tools still get the marker, ordinary calls are allowed, and a call the guard denies is still denied.
+    - That is 44 new `ok` lines (CHK-C01-085 finding 1).
+  - No guard rule changed (CHK-C01-086 finding 4). For five inputs, allow and deny output is byte-identical to the previous guard's (CHK-C01-085 finding 2).
+  - Working order section 10's guard-hook item gains one sentence on the marker (`plan/Installation_Working_Order.md`:152).
+- **The verdicts.** Both checkers are fresh-context subagents of the same session (declared, Ek A 5.3), at `3ff0460`:
+  - CHK-C01-085 (behaviour, tests and lock-out safety): PASS-WITH-CONDITIONS.
+  - CHK-C01-086 (documentation and texts): PASS-WITH-CONDITIONS.
+  - Their one condition, the same in both, was a false sentence in N-185's dated line. It is met in `plan/work/C01.md` at `747441c`, and the executor's four checks at that head are in L-233.
+  - From `3ff0460` to `747441c`, the diff touches only the two verdict files, the log, `plan/work/C01.md`, and the generated `DURUM.md` and `plan/ledger.md`. It touches none of the three guard files and not the working order (this addendum's producer, `git diff --stat`).
+- **The merge.** It went through the merge gate as pull request #238, merge commit `e9fc0a41fcde2cbb58c0db19eb12fd1b6c81cef3` (2026-10-11T16:33:28Z).
+  - Its parents are `083d1ec` and `747441c`, and its tree is `747441c`'s (an empty `git diff`).
+  - The guard allowed the merge call through its merge-gate check (decision record #8916, 16:33:26Z).
+- **The guard files are the ones judged.** The three guard files are byte-identical at `3ff0460`, `747441c`, `e9fc0a4` and `ec4429a` (B7).
+- **The deadline.** C02 has not opened DevOS's environments: `plan/work/C02.md` reads `execution: planned`.
+
+### B2. The tests run again on `main` (L-234)
+
+| | The run of record |
+|---|---|
+| Commit | `main` `e9fc0a41fcde2cbb58c0db19eb12fd1b6c81cef3` |
+| Where | a fresh clone of `main`, with `main` checked out and the clone root as the working directory |
+| By | the executor (L-234) |
+| Time | 16:34:01Z to 16:36:27Z |
+| Exit status | 0 |
+| Final line, verbatim | `ALLOWLIST_TEST PASS` |
+| `ok` / `BAD` / `info` lines | 772 / 0 / 0 |
+| Skipped controls | none |
+| Standard error | 26 lines: 13 copies of the known `SyntaxWarning`, now at guard line 1026, each with its source line |
+
+- **Checked against the run's saved output.** This addendum's producer read the run's saved standard output, standard error and time file in the session's scratchpad on 2026-10-11 between 16:38Z and 16:44Z.
+  - Standard output has 773 lines: 772 `ok`, 0 `BAD`, 0 `info`, no line naming a skipped control, and the final line above.
+  - The time file holds the start and end times above and `exit 0`.
+  - Standard error has 26 lines.
+  - The clone was at `e9fc0a4` on `main`, with nothing changed (`git status`).
+- **N-185's case in the run.** These lines are all `ok`:
+  - the 12 lines for an empty guard file and the two truncated copies, under both events and both shells;
+  - the 6 lines for an answer in the other event's form and for plain text;
+  - the 2 controls showing that two of those files, run alone, exit 0 with no output.
+- **Against earlier runs.** 728 + 44 = 772. CHK-C01-085 (finding 1) and CHK-C01-086 (finding 5) report the same 772 `ok` and 0 `BAD`, with nothing skipped, at `3ff0460`, with the same three blobs. Apart from the new section, only three earlier lines changed, in wording or count (CHK-C01-085 finding 1).
+
+### B3. The working session's report after the sync (L-234)
+
+This is N-173 (e)'s step for the session that syncs a guard change (A3).
+
+- **The sync.** `tools/sync_worktree.sh` ran from 16:33:34Z to 16:33:35Z ("SYNC OK: e9fc0a4 = origin/main").
+- **Before the sync,** the last decision record was #8919 (16:33:34Z, the sync's own call).
+- **After the sync,** the first was #8920 (16:33:37Z, allowed), then #8921 (16:33:37Z, allowed).
+- **Checked against the decision log.** This addendum's producer read records #8917 to #8923 in the session's decision log on 2026-10-11 between 16:38Z and 16:44Z.
+  - The times and decisions of #8919 to #8921 match L-234. #8920 is the working session's own call; #8921 is a subagent's.
+  - #8922 (16:33:48Z, a deny) and #8923 (16:33:50Z, an allow) are further decisions after the sync.
+  - L-234 calls #8918 (16:33:31Z) "the report before it". The log has #8918 as a subagent's call, and the working session's own previous record is #8917, at the same second. Nothing here turns on it.
+- **The live tree.** The working session's three guard files are byte-identical to those at `e9fc0a4` (`cmp`, 2026-10-11, just before 16:43:47Z).
+- **What this shows:** in the working session after the sync, the settings load, and the guard, with its marker, is live.
+- **What it does not show:**
+  - That the platform reads the marker as no decision. Neither user tool has been called in the working session since the sync: the decision log has no record for either after 16:33:35Z (this producer's search, between 16:38Z and 16:44Z).
+  - That the platform applies `onFailure` (A4).
+
+### B4. The break tests: the guard denies when it fails
+
+CHK-C01-085 (finding 4) broke the guard beyond the test's own set.
+- **The broken guard files:**
+  - an empty file;
+  - byte cuts at a quarter, a half and three quarters;
+  - cuts before the first top-level definition past a quarter, a half and three quarters;
+  - a guard that prints a stray line before its answer;
+  - a guard that prints only a newline.
+- **The runs.** Each file was put into both live hook commands. Each was run on an ordinary call and on a user tool, under both events and both shells: 9 files × 8 = 72 runs.
+  - Every one was denied.
+  - On `PreToolUse`, that was exit 2 with the command's reason on standard error.
+  - On `PermissionRequest`, it was exit 0 with the command's deny in that event's form.
+- **The contrast.** Run alone, six of the files exit 0 with no output: the empty file, the half cut, the three definition cuts and the newline guard. The quarter and three-quarter cuts exit 1.
+  - Under the commands as they were before the change, the same six give exit 0 with no output on both events: N-185 reproduced.
+  - The stray-line guard gives plain text on `PreToolUse`.
+- **The test's sensitivity.** The suite was run against a copy of the corrected guard with only the marker's print removed. It ends `ALLOWLIST_TEST FAIL`, and its N-185 lines turn `BAD`.
+- **CHK-C01-086** (finding 5) ran its own combinations of the old and new commands with an empty, an old and a new guard.
+  - With the new commands, an empty guard is blocked on `PreToolUse` and denied on `PermissionRequest`.
+  - So, on both hooks, are the marker followed by an extra line and the marker with exit 1.
+- **The level.** These are a checker's runs: a fresh-context subagent of the same session (declared, Ek A 5.3), at `3ff0460`, whose three guard files are those of `e9fc0a4`.
+  - They are not part of DevOS's own test, and this addendum did not repeat them.
+  - DevOS's own test covers the empty file and two cuts, on both events and both shells (B2).
+  - The stray-line and newline-only cases are covered by the checker's runs only. CHK-C01-085 suggested two test controls for them, which L-233 takes to W-C01-45's guard change.
+
+### B5. Facts taken from the documentation (PC-21 item 9)
+
+The source is the Claude Code hooks page, https://code.claude.com/docs/en/hooks.
+- CHK-C01-086 (finding 2) fetched it on 2026-10-11 at 16:21:59Z: 4159 lines, SHA-256 `3a1f944503d05a61fdc0fac62add9ba3d877ccb03dd4ef9c3c79881c973938ef`.
+- This addendum's producer read the quoted lines in that fetched copy on 2026-10-11 between 16:38Z and 16:44Z. It did not fetch the page again.
+- Line numbers refer to that copy.
+
+The facts:
+- **Plain text at exit 0 is no decision.**
+  - The table under "Exit code output" gives "Plain text, or nothing" at exit 0 the outcome "Success" (hooks.md:790, 794).
+  - "Exit code 0 with no output means the hook has no decision to report, so the tool call continues through the normal permission flow" (hooks.md:227).
+  - Output "that doesn't start with `{`" is plain text (hooks.md:815).
+  - Neither guard event is among the events with their own rules (hooks.md:796-802).
+  - Guaranteed by platform (documented in https://code.claude.com/docs/en/hooks, read 2026-10-11); not independently tested.
+- **`onFailure`.**
+  - "Plain-text stdout from a command hook isn't a failure" (hooks.md:922).
+  - With `"block"`, "a failure does what exit code 2 does on that event, except on `PermissionRequest`, where it denies the request" (hooks.md:924).
+  - On `PreToolUse`, exit 2 "Blocks the tool call" (hooks.md:937).
+  - On `PermissionRequest`, "Exit code 2 isn't honored for this event and the permission flow proceeds unchanged. Deny through the `decision` object instead" (hooks.md:938).
+  - Guaranteed by platform (documented in https://code.claude.com/docs/en/hooks, read 2026-10-11); not independently tested.
+- **The claim no test observes.** The platform reads the marker as no decision, so the two user tools still reach the user.
+  - It rests on the page above; B3 does not observe it.
+  - If the page is wrong, only those two tools are affected (CHK-C01-085 findings 3 and 8).
+  - The marker is not JSON, so the platform cannot read it as an allow. A misreading could stop a user tool, but never let a call through. It does not bear on the three properties.
+- **Qualifiers:**
+  - Plain text at exit 0 is "Success" with no decision fields. It is no decision, not an allow, and the normal permission flow runs.
+  - It is not an `onFailure` failure either. That is why the hook commands deny an empty answer, rather than the setting.
+  - `onFailure` requires Claude Code v2.1.295 or later. The page does not say what an older version does with it (A4).
+  - PC-21 item 9's qualifiers stand as listed in A4.
+
+### B6. The named residual: any stray output line now fails closed
+
+CHK-C01-085 (finding 6) names it.
+- **What it is.** Anything that prints to standard output, other than the guard's own answer, now has every call blocked or denied.
+  - This covers a print when the interpreter starts, from a site or user customization file or a path file.
+  - It also covers a future stray print in the guard.
+  - Before the change, such output gave no decision, and the call went on to the normal flow.
+- **Why it is a residual, not a gap.** It fails closed, not open, so it does not count against property (c). It is a risk of locking out the working session (working order section 10).
+- **Its likelihood.** The checker found nothing in this container that produces such output. A session would have to write into the interpreter's site directories to cause it. The lock-out would be local to the container, not merged into `main`.
+- **Two smaller points** (the same finding):
+  - **A pre-existing vector.** With the interpreter set to turn warnings into errors, the `SyntaxWarning` at guard line 1026 becomes an error, and every call is blocked, before and after the change alike. That setting is not set here. L-233 takes the fix to W-C01-45's guard change.
+  - **Form breadth.** The `PreToolUse` command's form check accepts any text that ends as its answer does. The checker judges this form-level only, and not a realistic output.
+
+### B7. Evidence envelope for this addendum (plan Section 8 item 9)
+
+| Field | Value |
+|---|---|
+| Source commit | `main` `e9fc0a41fcde2cbb58c0db19eb12fd1b6c81cef3` (PR #238). Blobs: `.claude/settings.json` `b7033747bf9d788251b208bd4ee274b0677cdb98`, `.claude/hooks/tool_allowlist.py` `1f3a8f0868d586d2216ae6b36ea2d717715ebcd4`, `tools/test_tool_allowlist.sh` `cffd6ddd916fe12364365548ed4875613b8a5fe3`. They are byte-identical at `3ff0460` (CHK-C01-085, CHK-C01-086), `747441c`, `e9fc0a4` and `ec4429a` (`git ls-tree`). The working session's live files are the same (B3) |
+| Deployment configuration | The guard is run as a plain process, outside the platform. The test reads both guard hook commands and matchers from `.claude/settings.json`, with their `onFailure` and timeouts (test:20-26, 43-67). It runs the commands under `/bin/sh` (dash), and the `PermissionRequest` faults and N-185's section under bash as well (test:999, 1059). The run was made in a fresh clone of `main`, in the Linux container of the working session `session_01XyxvJd3RayQk4HCrjurbVH`. The container has Python 3.13.16, bash 5.2.21 and git 2.43.0 (read by this addendum's producer). The inputs are the test's own synthetic fixtures. How the platform applies the settings is covered in B3 and B5 |
+| Criterion version | W-C01-38's acceptance block, unchanged since `44cef4e` (W-C01-31, 2026-10-10). `plan/work/W-C01-38.md` is blob `10bf47b31770f289d9b9225110183fcf9ded1070` from `a177d28` to `ec4429a`. Its SHA-256, from `<!-- acceptance -->` to `<!-- /acceptance -->` inclusive, each line with its newline, is `d3c6f62ba810dddb0a05f8cec52c757ef600dcc4b27f513b2f763434e57af4f7`. That holds at `44cef4e`, `a9f62f5`, `3ff0460`, `e9fc0a4` and `ec4429a`, as CHK-C01-086 (finding 9) gives it. A6's `595b3ea…` is the same text without its final newline. It is read with plan C01 row 9 (plan line 953 at `ec4429a`), the PC-21 note's items 5 and 9 (lines 969 and 973), plan Section 8 items 7, 9 and 14 (lines 836, 838 and 843), and D-017 items 2 and 3 |
+| Input | `bash tools/test_tool_allowlist.sh`, run by the executor from 16:34:01Z to 16:36:27Z (B2). CHK-C01-085's 72 break runs (B4). Decision records #8917 to #8923 (B3). The hooks page as fetched by CHK-C01-086 (B5) |
+| Actual observation | The test: 772 `ok`, 0 `BAD`, 0 `info`, no control skipped, `ALLOWLIST_TEST PASS`, exit 0. The guard after the sync: live (#8920 and #8921 allowed). The break runs: all 72 denied |
+| Raw evidence ID | SHA-256 of the run's standard output `50d85fe5c6ef161751e6d1b0e63d1aae75f28ede299ea42ad9005f6e51930028` (773 lines) and of its standard error `d18e9bb6a144b8a212735a14e52d7c41124470158efadd3bee767376db254ff5` (26 lines). This addendum's producer computed them from the files saved in the scratchpad of session `session_01XyxvJd3RayQk4HCrjurbVH`. The files are kept only there, not in the repository (point 3). The break runs' output is in the same scratchpad, as CHK-C01-085 lists it. The decision records are in the session's hash-chained decision log. A re-run gives the same counts, not the same bytes, because the output carries temporary paths |
+| Independence level | The run is the same session's own test (plan Section 8 item 7): DevOS's deterministic unit test, run by the executor in a fresh clone. The break tests and the documentation reading come from two fresh-context checker subagents of the same session (CHK-C01-085, CHK-C01-086; declared, Ek A 5.3). This addendum was written by a fresh-context producer subagent of the same session, which re-counted the run's saved output and read the decision log and the fetched page. It shares the test, the page and the checkers' framing, and adds no break test or test run of its own. It is judged by a later fresh-context checker (declared, Ek A 5.3; PC-06) |
+
+### B8. The block, point by point, against the record as it now stands
+
+**Point 1 (a). It denies a tool not on its list: met, as in A7.**
+- N-185's change touches no rule (B1).
+- The run of record passes with 0 `BAD`, so A7's lines hold at `e9fc0a4`. The matchers are now at test:28-32 (18 `ok`), and the made-up name at test:135.
+- The positive control holds as well: ordinary calls are allowed, here and in N-185's section.
+
+**Point 1 (b). It never answers "ask": met, as in A7.**
+- The test's search of every guard output for `"ask"` passes (test:938).
+- The guard's answers are now allow, deny and the plain-text marker. The marker is no decision (B5), not an "ask".
+- A search of the guard for `"ask"` finds nothing.
+- Both commands write only a deny of their own.
+
+**Point 1 (c). It denies when it fails or runs past its own time limit.** It is met for every case this record found failing, N-185 included. Under reading R2, the platform's part rests on documentation only, for the checker.
+
+| Case | Shown by | Result |
+|---|---|---|
+| Every case in A7's table except N-185 | The run of record passes with 0 `BAD` on the same lines (B2) | as in A7 |
+| An empty or truncated guard file (N-185) | DevOS's own test denies an empty file and two truncated copies in each event's form, under both shells (test:1049-1066; 12 `ok`). Two controls show that two of these files exit 0 with no output when run alone. Plain text that is not the marker, and an answer in the other event's form, are denied too (6 `ok`). A checker's 72 break runs, on 9 broken files, were all denied (B4) | met (before: not met, A5) |
+| A guard hook reaches its platform timeout, or its shell cannot start (reading R2) | Unchanged from A7. The test shows the setting on both hooks (test:55-67, test:53-65 at `a9f62f5`). The platform's part is documented only (A4) | as in A7: DevOS's code is shown; the platform's part is not counted as observed (D-017 item 3); under R1 it lies outside the property. The checker judges this |
+
+**Point 1, the record of the run: met.** The run of record is recorded with its commit (`e9fc0a4`) and its counts: 772 `ok`, 0 `BAD`, no control skipped (B2, B7).
+
+**Point 1's result: met under reading R1.** Under reading R2, the platform's part at the timeout rests on documentation alone (A7). The checker judges the reading.
+
+**Point 2. The fail path, then the tests run again: met.**
+- **For N-173's cases:** as in A7.
+- **For N-185:**
+  - The guard was corrected through the merge gate, with two fresh-context verdicts whose one condition is met (B1).
+  - This happened before C02 opens DevOS's environments.
+  - The tests were run again on `main`, with no control skipped (B2).
+  - The working session's guard is live after the sync (B3).
+- **For the checker.** The verdicts are at `3ff0460`. The merged head, `747441c`, adds to it only the verdict files, the log, `plan/work/C01.md` and the generated files. The condition was confirmed at that head by the executor's checks (L-233), not by a further verdict. The guard files merged are those the verdicts judged (B1).
+
+**Point 3. No rule detail beyond the three properties and the counts: met.** The checker judges this.
+- This addendum names no rule, no rule ID and no fixture content. It quotes no denial text, and not the marker's text.
+- It cites test, settings and guard lines by number only.
+- It copies only the run's final line and its counts.
+- It describes the change and the break tests only as far as property (c) needs: what the guard prints for "pass", what the commands pass on and what they deny, and which kinds of broken guard file were denied.
+
+**The last paragraph.**
+- **The evidence envelope:** met (B7 here; A6 and the first envelope for the earlier runs).
+- **PC-21 item 9's claim:** met. Every documentation fact carries its source, its reading date, "not independently tested" and the qualifiers (B5; A4; "Facts taken from the documentation" above). The checker judges this.
+- **A fresh-context checker at a fixed head, with its independence level:** not yet. W-C01-38's acceptance waits on that verdict (CHK-C01-062 C3).
+
+### B9. What this addendum cannot show, and the result
+
+- **The platform's side.** That the platform reads the marker as no decision, and that 2.1.296 applies `onFailure`, rest on documentation (B5, A4). No call to either user tool has been made since the sync (B3).
+- **The break tests** are a checker's runs, not repeated here (B4).
+- **Freshness.** The result is tied to the three blobs in B7.
+  - W-C01-45's guard change will change them (L-233). It needs a new run before C02 opens DevOS's environments (N-174 on `plan/work/C02.md`).
+  - C03 test 3 tests the guard again (PC-21 item 5).
+- **The warning.** The `SyntaxWarning` is unchanged apart from its line number, now guard line 1026. It changes no decision here.
+
+| Point | Result | Where |
+|---|---|---|
+| 1 (a). The tests show that it denies a tool not on its list | met | B8 |
+| 1 (b). It never answers "ask" | met | B8 |
+| 1 (c). It denies when it fails or runs past its own time limit | met for every case the record found failing, N-185 included, by DevOS's own test, with a checker's 72 break runs. Under reading R2, the platform's part at the timeout rests on documentation only (D-017 item 3), for the checker | B2, B4, B8 |
+| 1. The run is recorded with its commit and its pass and fail counts | met: `e9fc0a4`, 772 `ok`, 0 `BAD`, no control skipped | B2, B7 |
+| 2. Corrected through the merge gate before C02 opens DevOS's environments, and the tests run again | met, for N-173's cases (A7) and for N-185 (PR #238, `e9fc0a4`; CHK-C01-085, CHK-C01-086; the re-run; the report after the sync) | B1 to B3 |
+| 3. No rule detail beyond the three properties and the counts | met, for the checker to judge | B8 |
+| Last paragraph: envelope, PC-21 item 9's claim, a fresh-context verdict | envelope and claim met; the verdict is still to come | B5, B7 |
+
+- **Not accepted here.** This addendum does not accept W-C01-38. A fresh-context checker judges it against the unchanged block at a fixed head (CHK-C01-062 C3).
+- **For the checker:**
+  1. the reading of "its own time limit", R1 or R2 (A7);
+  2. whether DevOS's own test, with the checker's break runs, shows N-185's case;
+  3. point 3;
+  4. the claims in B5 and A4;
+  5. whether the verdicts at `3ff0460`, with their condition confirmed by the executor at `747441c`, are point 2's fresh-context verdict for the change as merged;
+  6. whether B6's residual lies outside property (c).
+- **No plan change and nothing for Batu.** No change to `plan/DevOS_Kurulum_Plani.md` follows. No decision is Batu's (D-003; D-008).
