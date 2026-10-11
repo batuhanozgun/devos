@@ -1,12 +1,12 @@
 # DevOS kurulum durumu
 
-**Senden beklenen:** Şu kararlar senin: `D-027` (C01 rutininin sıradaki iki çalışmasını (P2, sonra P3; 13. satır), zamanlarını beklemeden bugün, her biri için rutinin sayfasında bir kez Run now'a basarak başlatmak). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
+**Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 11 Ekim 2026, 16:49 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 17:10 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
-**Sıradaki işler:** `W-C01-13`, `W-C01-14`, `W-C01-20` sürüyor; başlatılabilir: `W-C01-12`, `W-C01-15`, `W-C01-17`, `W-C01-18`, `W-C01-21`, `W-C01-22`, `W-C01-23`, `W-C01-24`, `W-C01-37`, `W-C01-38`, `W-C01-39`. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** `W-C01-14`, `W-C01-20` sürüyor; başlatılabilir: `W-C01-12`, `W-C01-15`, `W-C01-17`, `W-C01-18`, `W-C01-21`, `W-C01-22`, `W-C01-23`, `W-C01-24`, `W-C01-37`, `W-C01-38`, `W-C01-39`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 14:30 (Türkiye saati) tarihinde yenileniyor.
 
@@ -14,6 +14,6 @@
 
 **Şu an**
 
-Cevapların kayda geçti: **D-022** (a). Run now'a basmanla rutinin P1 adımı 16:37'de başladı ve 16:44'te başarıyla bitti: embedding modelleri rutinin oturumunda kuruldu ve ikisi de çalıştı (C01'in 7. satırı; kaydı yazılıyor). 6. satır: #222 için GitHub bildirimi telefonuna geldi; bunun da kaydı yazılıyor. 
-Sıradaki adım P2 (13. satır). İstersen bugün bir kez daha **Run now**'a basarak başlatabilirsin (**D-027**, önerim bu); P2 bitince P3 için bir kez daha basman gerekecek, ben #6'ya yazınca. Basmazsan P2 yarın 11:07'de kendiliğinden çalışır. 
+Cevapların kayda geçti: **D-022** (a) ve **D-027** (a). P1 16:44'te başarıyla bitti; embedding modelleri rutinin oturumunda çalıştı (7. satır; kaydı denetimde). 6. satır kabul edildi: #222 bildirimi telefonuna geldi. 
+P2 16:58'de bitti. P3'ün doğru başlaması için kontrol dosyasında küçük bir düzeltme denetimde; bitince #6'ya "P3 hazır" yazacağım, o zaman bir kez daha **Run now**'a bas. Ondan önce basma. 
 Kullanım normal düzeyde.
