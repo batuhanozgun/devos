@@ -21,6 +21,20 @@ claim: "design from the plan and the documentation; not independently tested"
 
 **Reading.** The plan files were read at a checkout of `9340146`, a descendant of `main_at`. Its later commits touch none of the passages cited here except one: D-019 (a) is applied and N-109 is closed as a residual Batu accepted. R4 reflects that.
 
+## Evidence envelope (plan Section 8 item 9)
+
+| Field | Value |
+|---|---|
+| Source commit | `main` `e7717e8a8f164417fb077bfbbf5f7ae0a04766a9` (PR #206), at which W-C01-42's acceptance condition is in force. The plan files were read at `9340146`, a descendant whose later commits touch no cited passage except D-019 (a) and N-109's closure (R4). |
+| Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud, Opus 5.5; Claude Code 2.1.296 as `get_session` reports the session's container. The documentation's changelog names 2.1.296 (9 October 2026) as its newest release. |
+| Criterion version | W-C01-42's acceptance block as merged at `c7c02c2` (L-185), in force at `e7717e8` and unchanged since. |
+| Input | W-C01-42 and Batu's answer to D-020, given to a workflow of three readers (plan needs; documented per-environment settings; established practice), two independent designs (A: remove the need; B: documented settings first) and one producer, with the sources in the front matter. |
+| Actual observation | Sections 1 to 8: a design, not an observation of the platform. Documentation facts are quoted with their reading dates. |
+| Raw evidence ID | Workflow run `wf_f172f804-e71` (2026-10-11, started about 06:04Z). Filed: the platform-settings reader's report, `evidence/C01/raw/W-C01-42_platform_settings.md` (its stated start of reading, 05:59Z, is earlier than its first page read in the guard log, 06:05:35Z; CHK-C01-034 finding 5(d)), and the practice reader's report, `evidence/C01/raw/W-C01-42_practice.md`. The plan-needs report and designs A and B stay in the session's transcripts (the run's journal); section 9 records how they were compared. |
+| Independence level | Same session, fresh-context subagents (declared, Ek A 5.3); judged by CHK-C01-034 and CHK-C01-035, and their conditions confirmed by a further check. |
+
+**Revised after review (2026-10-11, L-190).** CHK-C01-034 and CHK-C01-035 judged the first version at `bb6450c`. This version adds the envelope above; moves X2 to section 5 (it served exam integrity, not separation); limits X3's method (no recurring step for Batu) and names the detection gap if it is narrowed; reduces S6 to a pointer to the plan; makes S7's provenance condition an option for C03 rather than part of the structure; states the database layer's own dependence on S7 and row 12; marks S9's confirmation and S10's failing closed as still to be shown; corrects three documentation statements; and gives section 8's plan changes their carrier.
+
 **Abbreviations.** P = `plan/DevOS_Kurulum_Plani.md`; A = `plan/Ek_A_Rol_Sozlesmeleri.md`; B = `plan/Ek_B_Veri_Modeli.md`; C = `plan/Ek_C_Testler.md`; EV2 = `evidence/C01/EV-C01-002_row3_environment_token.md`; EV3 = `evidence/C01/EV-C01-003_row17_control_surface.md`. A number after a colon is a line number at `main_at`. A mark "[doc: …; not independently tested]" records a documentation fact with PC-21 item 9's claim: guaranteed by platform (documented in the named page, read on the date given); not independently tested. PC-21 item 9's qualifiers (P:972) apply to every such fact:
 - per environment, only the variables, secrets and network setting are separate;
 - the GitHub identity and the account's connectors are shared across the account;
@@ -45,11 +59,11 @@ claim: "design from the plan and the documentation; not independently tested"
 |---|---|---|
 | Working → audit | Binding verdict, acceptance, version activation, rule change: P:640; B:36; P:708; criterion 30 | S5, S8 (N01, N03, N04); R1 |
 | Working → audit | The configuration the audit runs from changes only after the audit approves it and it merges: P:712; P:618 | S7, S4(a), S10 (edit block); R1 |
-| Audit → working | Producing products; approving what it has repaired; fixing a problem it finds in the same action: P:641; P:709; B:37; N28 | S8 (N28; B:37); S7's provenance condition |
+| Audit → working | Producing products; approving what it has repaired; fixing a problem it finds in the same action: P:641; P:709; B:37; N28 | S8 (N28; B:37); S7's option for C03 |
 | Working → exam | Reaching answer keys or exam records: "The tested role cannot reach the answer key by any path" (P:812); P:708; B:273; N08 | S1, S5, S8; S6 limits where content can go |
 | Working → exam | Knowing that a task is an exam: B:273; P:812 | S2 |
 | Working → exam | Writing EvalRun or Competence: B:273 | S8 |
-| Exam → working, audit | Producing products, writing verdicts: P:642; B:38 | S8; S7's provenance condition |
+| Exam → working, audit | Producing products, writing verdicts: P:642; B:38 | S8; S7's option for C03 |
 | Audit → exam | Seeing exam answers or reading exam records: P:641; B:37; N08 | S1, S3, S5, S8 |
 | Audit → exam | Preparing its own exam: "the audit environment cannot prepare its own exam" (P:813); A:375 | S3, S8 |
 | Audit → exam | Knowing that its own exam is one: P:813 read with B:273 and criterion 30 | S2 |
@@ -89,8 +103,8 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 - **Need.** "The tested role cannot reach the answer key by any path. Answer keys are kept where only the exam environment's credential reaches them" (P:812); P:708; N08.
   - This is 7.3's own alternative (P:812), taken by PC-21 item 6 (P:969) and N-134(3).
   - It removes the dependence on row 12 and on the shared GitHub identity ("On GitHub every environment acts as the same machine account", P:812).
-  - In the practice reader's survey, withholding the answers is the one measure that prevents rather than detects (web sources read 2026-10-11).
-- **Layer.** The database: role class from the token, and the rule gate. It holds outside DevOS's files and changes only through a migration the audit approves and merges (P:631; P:712).
+  - In the practice reader's survey, withholding the answers is one of the two measures that prevent rather than detect; the others it lists are detection or integrity (its findings and counter-evidence; web sources read 2026-10-11).
+- **Layer.** The database: role class from the token, and the rule gate. It holds outside DevOS's files and changes only through a migration, a high-impact path the audit approves before it merges (P:710; P:723; P:631 applies it on merge). That approval rests in turn on S7's rule on `main`, which counts as a layer against sessions only once row 12 settles who can change it (W-C01-39).
 - **Built.** C02 builds EvalRun's access rule (B:78); C05 builds the exam schema and sets (task 4).
 
 **S2. That a task is an exam is readable only with `devos_sinav`.**
@@ -155,26 +169,16 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 - **Open for C02.** Whether the database can take the token from that header is a Supabase fact not read here. If it cannot, row 3's first branch applies: an Edge Function gate (P:946).
 - **Built.** C02: N-131 decides the form before task 3, and Batu's step comes at task 7.
 
-**S6. Network level per environment.**
-- **What it does.**
-  - The working environment gets what its research needs (P:652).
-  - The audit and exam environments get the narrowest level their work needs. It is set when C02 creates them and revisited when C05 sets up the exam routine.
-- **Need.** It limits where audit and exam content can be sent. It is not a separation between pairs.
-- **Documentation.** [doc: cloud-environments, "Access levels" and network secrets, read 2026-10-11; EV2 F4, read 2026-10-10; not independently tested]:
-  - a secret's hosts stay reachable at every level;
-  - GitHub goes through its own proxy;
-  - running sessions follow a change "within about a minute".
-- **Layer.** The platform's per-environment setting, held by Batu. It holds outside DevOS's files and is documented.
-- **Built.** C02 task 7; C05.
+**S6. Network level per environment: as the plan already sets it** (P:652; 6.7's network row, P:733). Not new here and not a separation between pairs: it limits where audit and exam content can be sent, and it is set when C02 creates each environment. If C02 relies on a change taking effect in running sessions: [doc: cloud-environments, "Access levels", read 2026-10-11; not independently tested] a change reaches running sessions "within about a minute", for Anthropic-hosted environments and for requests that go through the session's network allowlist.
 
 **S7. GitHub's rule on `main`, with the required check that reads the audit verdict through `devos_ci`** (P:557; B:40; T-81).
 - **What it does.**
   - It stays as planned.
-  - One condition is proposed for C03: the check also refuses a pull request whose merge needs an audit verdict if it contains a commit that no working-environment contribution record names.
+  - Not part of this structure, an open option for C03's T-81 work: the check could also refuse a pull request whose merge needs an audit verdict if it contains a commit that no working-environment contribution record names. It is the same under any account arrangement, so D-020 (a) does not need it, and it has upkeep of its own (CHK-C01-035 finding 4).
 - **Need.**
   - The working environment cannot merge a change that needs the audit's verdict without it.
   - The configuration every environment runs from (`.claude/**`, P:712) changes only that way.
-  - The added condition serves "Cannot: … approving what it has repaired" (P:641). Every environment acts on GitHub as the same machine account (P:812), and N28 binds only the same transaction.
+  - The option would serve "Cannot: … approving what it has repaired" (P:641): every environment acts on GitHub as the same machine account (P:812), and N28 binds only the same transaction.
 - **Layer.** GitHub's settings, held by Batu, plus the database. It holds outside DevOS's files, but it counts as a layer against sessions only once row 12 settles who can change the rule (P:969 item 6; W-C01-39). It is the same under any account arrangement.
 - **Built.** C03: Batu adds the required checks (P:1221), and test 5 runs with T-81.
 
@@ -188,7 +192,7 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 2. An effect is refused when the caller's environment token gives a different role class from the one recorded on the claim (B:150; B:155). The claim token is the one DevOS credential a session can read (K-9 item 2(b), P:423), so this keeps a claim from carrying anything across environments.
 3. A claim is refused to a session that has no registration of the same role class (SessionRecord, B:331; P:669). This ties every effect to a registration that X1 reconciles.
 - **Need.** Every database row of section 1.
-- **Layer.** The database. It holds outside DevOS's files and changes only through a migration the audit approves and merges (P:631). Status: designed. It is shown only by C02's and C03's own tests (EV3:119 (i)).
+- **Layer.** The database. It holds outside DevOS's files and changes only through a migration the audit approves before it merges (P:710; P:723; P:631), with S1's caveat on S7 and row 12. Status: designed. It is shown only by C02's and C03's own tests (EV3:119 (i)).
 - **Built.** C02 task 4, with these tests:
   - N04 and N08 also run with the `devos_kurulum` token;
   - N17 covers a claim used with another role class's token;
@@ -218,9 +222,9 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
     - `ListAgents` lists the agents `SendMessage` can reach.
   - settings-reference, `crossSessionInbound`: it can be set in any file; "A project or local value applies only when it's stricter"; `refuse` means "Claude Code drops the message".
   - settings, "When edits take effect": edits to `permissions` reach the running session.
-- **Inference, confirmed by self-observation.**
+- **Inference, to be confirmed by self-observation (C02).**
   - The page places the server deny in server-managed settings or the runner's user file. That a repository file carries it in an Anthropic-hosted, single-repository session joins that page with S4(a)'s statement.
-  - The confirmation is a session listing its own tools (D-017 item 2(a)). X1 makes that record at every registration.
+  - The confirmation is a session listing its own tools (D-017 item 2(a)), made at C02 after the change; X1 then makes that record at every registration.
 - **Layer.** Inside the session: Claude Code's permission engine reading a file DevOS can change. It is DevOS's own, not an authority boundary (FR-05 B), and part of R1.
   - It adds no guard rule family. `SendMessage` and `ListAgents` are already off the guard's allow list, and the guard already limits the session tools.
   - S9 moves these effects into the documented permission layer. There they are documented to hold in every mode and do not depend on the guard's code.
@@ -229,7 +233,7 @@ Design: the table below lists the only flows. Nothing flows through sessions, ro
 **S10. The guard as it is, and the in-session edit block.**
 - **What it does.**
   - The guard runs in every DevOS session, since all run from `devos`'s `main`.
-  - It fails closed (W-C01-38, before C02 opens the environments).
+  - That it fails closed is still to be shown by DevOS's own tests (W-C01-38) before C02 opens the environments.
   - It carries the bridge's kept tools under its existing session-tool rules.
   - A hook blocks in-session edits of `.claude/**` (P:618).
   - No new rule family is added (FR-05 B). The phase-B form (N-134(1), C05) adds no session-tool rule.
@@ -244,12 +248,11 @@ Each item below makes a breach visible after the fact. None of them is preventio
   - Every session registers its environment (role class from its token), its routine and its start (P:669). S8 line 3 makes the registration a condition of every claim.
   - T-77 (N-092 on C02) compares each routine's expected runs with the registered sessions, per environment. A registration in a DevOS environment is flagged when it matches no expected run of that environment's routine and no session Batu opened for DevOS work.
   - Each registration also records what the session observes about itself: how many repositories it has, whether the repository's hooks are active (P:968), and whether any session-tools, routine, messaging or connector tool is present. A deviation is flagged.
-- **X2. Recorded exam reads** (detection). Answer keys and grading notes are read only through a `devos_api` function that requires an active claim on an exam work item and records the read. A read outside exam work becomes visible.
 - **X3. Configuration record** (detection). N-135(1)'s periodic read-only record of the web-side configuration holds:
   - per environment: its network level, its secrets' names and hosts (never values), and its variables' names;
   - per routine: its environment, repository, connectors and triggers.
 
-  It is compared with the expected configuration kept in `devos`. It is made by a method that does not need the tools S9 removes; C06 chooses the method.
+  It is compared with the expected configuration kept in `devos`. It is made by a method that does not need the tools S9 removes, and its method may not be a recurring step for Batu (criterion 21, P:223: "No carrying messages and no maintenance"): for example, a record made when an environment or routine is created and again when Batu himself changes one, or a path S9 does not remove. C06 chooses the method. If C06 finds none, X3 is narrowed to what such a path can read, or is not built, and the detection gap in section 4 (under R2) applies.
 - **X4. T-75 again before scoring** (detection). T-75's check, that each item is new against everything the examined role can reach, runs again before each scoring, not only when the item is prepared. An item that fails is retired, and its result is not counted.
 - **What follows a detection.**
   - Batu revokes the environment's token with `revoke_env_token`, which raises the authority epoch (B:46).
@@ -266,6 +269,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
   - A secret applies in every session in its environment "whoever started it" (EV2:155). So every database and GitHub separation in section 1 holds for a pair only as far as R1 holds. That is row 3's own condition, "while no session can read or set another environment's token or settings" (P:946).
 - **R2. Environment settings.**
   - The documented ways to edit them are Batu's environment selector and the Desktop app (EV3:71). Whether a session route exists is not stated.
+  - Detection gap if X3 is narrowed or not built (section 3): a change to an environment's settings or to a routine made through R1 would then show only through X1 (a session that matches no expected run), not through a configuration record.
   - Whether one environment's sessions can read another's settings is not stated either (EV2:95).
   - Under S5, the settings hold nothing readable that grants authority.
 - **R3. Account-wide shared items.** These are the GitHub identity and the GitHub App installation (P:812; EV3:107), the connectors, the account skills and the usage limits (D-020 option (a)). S4 keeps them free of anything one environment may hold and another may not. It does not separate them.
@@ -274,7 +278,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
   - It keeps the bridge's kept tools and D-003's right to edit its own guard.
   - S8 line 1 keeps its token out of the audit's binding rights and out of exam records.
   - The rest is D-003's residual, not D-020's.
-- **Unchanged by this design.** Separations inside one session rest on declaration (P:708). The platform-side readers stay as the 6.7 row states them (P:731).
+- **Unchanged by this design.** Separations inside one session rest on declaration (P:708). The platform-side readers stay as the 6.7 row states them (P:731). An exam session writing exam material to a `devos` branch has no named prevention layer under any account arrangement: S1's "write only through `devos_api`" rests on declaration, since every environment pushes as the same machine account (P:812); C05's T-42 decides that layer (CHK-C01-035 finding 8).
 - **What (a) changes compared with separate accounts.** R1 and R3, and R4's reach, would otherwise have been kept apart by account. That is itself an inference from documented account scope, not a stated guarantee (D-020 P3). S1 to S8 are the same either way.
 
 ## 5. Left out as more than the need
@@ -284,13 +288,14 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 - **Any trial across environments.** Excluded by FR-05 A, D-017 and W-C01-42 item 5.
 - **Accepting audit or exam writes only inside each routine's expected run windows.** It narrows only the timing and would refuse legitimate runs. X1 already shows runs outside the expected ones.
 - **A start credential issued per run.** It needs a new component. The start text is already data, used only as a work ID (P:668).
-- **A setup script that writes user settings.** User settings are "not read" in cloud sessions [doc: settings, "Settings in cloud sessions", read 2026-10-11; not independently tested].
+- **A setup script that writes user settings.** Whether a user settings file written by a setup script is read in a cloud session is not stated (section 6 item 10); the settings page's "not read" concerns the user's own local files, which "stay on your machine" [doc: settings, "Settings in cloud sessions", read 2026-10-11; not independently tested]. The need is met without it.
 - **`deniedMcpServers`, `isolatePeerMachines`, `disableRemoteControl`.** They are redundant once the server and `SendMessage` are denied. Whether a repository-level `deniedMcpServers` reaches the session is not stated.
 - **A network level of None fixed now for the exam environment.** S6 sets the narrowest level the work needs. Fixing None before C05 knows the exam's needs could refuse legitimate work, and it adds no separation between pairs.
 - **Archiving idle environments as a standing measure.** It would also block Batu's legitimate starts. Archiving stays a response (section 3).
 - **Canary markers in exam material.** They catch verbatim copies only. S1 keeps the keys out of every repository, and X4 reuses T-75's search.
-- **Salted commitments of answer keys; insert-only or write-once stores.** These protect the exam's own integrity (U-8, C05) or the history, not separation between environments. An event per transition already exists (P:623), and X2 makes reads visible.
+- **Salted commitments of answer keys; insert-only or write-once stores.** These protect the exam's own integrity (U-8, C05) or the history, not separation between environments. An event per transition already exists (P:623).
 - **Encrypting exam files.** Nothing exam-secret is in git.
+- **Recorded exam reads (X2 in the first version).** Answer keys read only through a `devos_api` function that requires a claim on exam work and records the read. Under S1 and S5 only a session holding `devos_sinav` reaches the exam schema, so it would mostly see the exam environment's own reads: exam integrity, not separation between environments (CHK-C01-034 C2; CHK-C01-035 finding 5). C05 may weigh it with U-8.
 - **Database-side scoring.** It does not cover the sessions that prepare exams, and it adds a function per item type.
 - **A GitHub identity per environment.** It costs money and involves Batu's accounts. 7.3 keeps it only if both of its routes fail (P:812), and authority never comes from the GitHub identity (P:707).
 - **An outside proctor, statistical methods for reusing held-out sets, fixed rotation.** These are not separation needs, or they cost money. Pass-or-fail feedback to the tested role is already met by `competence_summary` (B:273).
@@ -325,7 +330,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
   - S5 as the token form (N-131 decides; row 3's first branch as its fallback).
   - S8's three lines and their tests, in task 4.
   - S9's bridge, through the rule-change route with a checker verdict. First, the installation's own uses of session tools are listed. After the change, a session confirms it by listing its own tools, recorded with PC-21 item 9's claim.
-  - Batu's step text for task 7: S5, S6 and S4(d), (e).
+  - Batu's step text for task 7: S5 and S4(d), (e); the network level as the plan sets it (S6).
   - X1 within T-77.
 - **C03 (note N-137).**
   - Deadline: C03's work list, before tests 3 and 5 are written.
@@ -336,23 +341,25 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
     - counterpart: each environment's own routine starts its session.
   - N-130 is closed with S4(c), recorded from the routine configuration.
   - N08 covers S2 and the exam records with the audit token and the `devos_kurulum` token.
-  - Test 5 weighs S7's provenance condition with T-81.
-  - D-003's re-assessment takes R1 to R5 with D-019 and with X1 to X3's records.
+  - Test 5 may weigh S7's option with T-81; it is not part of this structure.
+  - D-003's re-assessment takes R1 to R5 with D-019 and with X1's and X3's records.
 - **C05 (note N-138).**
   - Deadline: C05's start, before task 4 builds the exam setup. The connector point is due before the first exam set is written.
-  - S1, S2 (its form), S3 with T-40 and T-42, X2 and X4.
+  - S1, S2 (its form), S3 with T-40 and T-42, and X4; T-42 also decides the layer for exam material written to a `devos` branch (section 4).
   - The read-only Supabase connector (K-9 item 9, P:430) reads outside `devos_api`. Before the first exam set exists, either its read of the exam schema is closed, or it is removed from the account (Batu's step). C05 chooses after reading Supabase's documentation, which was not read here.
   - The phase-B guard (N-134(1)) adds no session-tool rule.
 - **C06 (note N-139).**
   - Deadline: before Batu creates the routines.
   - Each routine: its own environment, `devos` only, connectors removed, and S4(c)'s triggers.
-  - N-135(1)'s record carries X3's fields and its comparison, by a method that does not need the tools S9 removes.
+  - N-135(1)'s record carries X3's fields and its comparison, by a method that does not need the tools S9 removes and is not a recurring step for Batu; if none exists, X3 is narrowed or not built (section 3).
 - **C12 (note N-140).**
   - Deadline: when `devos-kurulum` closes, or earlier once no DevOS session needs the bridge's kept tools.
   - S9's server-level target replaces the bridge, confirmed by self-observation. If a phase-B need for own-session reading remains, the per-tool form stays, with its reason recorded.
 - **Unchanged C01 items.** W-C01-38 (the guard fails closed) and W-C01-39 (row 12) stay as planned. S7 counts as a layer only once W-C01-39 settles row 12.
 
 ## 8. Plan text that would need a plan change (named, not changed)
+
+Each is made through a plan-change record (plan Section 14) before the stage that builds its mechanism relies on it, by the executor, under that stage's note (N-136 to N-139). Item 3 is already owed (PC-21 item 6; N-134(3)); item 9 only if C03 adopts S7's option; item 10 folds into T-77's own change to B 3.24 (N-092).
 
 1. 6.3, "How is the token generated?" (P:648), and Section 12 item 1 (P:1221): the token is added as a network secret with the host and header C02 gives, not "pastes the token only into the settings field". This applies once C02 adopts S5; `plan/key_inventory.md` rows 18 to 20 follow as records.
 2. The 6.3 environment table (P:639) and B:35: `devos_kurulum`'s "Cannot" (S8 line 1).
@@ -362,7 +369,7 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 6. 6.4 (P:667): no GitHub trigger on any routine; DevOS's environments are used only by DevOS's sessions; no DevOS environment is a project's environment or the CLI default (S4 (c), (d)).
 7. The 6.7 row "The Claude account's control surface" (P:730): add S9's layer and its bridge, with the guard as the second layer, and state D-020's residual.
 8. C03 test 3 (P:1008): it names only the working environment as the actor.
-9. 5.6 (P:557) and C03 test 5: S7's provenance condition, if C03 adopts it.
+9. 5.6 (P:557) and C03 test 5: S7's option, only if C03 adopts it.
 10. B 3.24 (B:331) and PC-21 item 5 (P:968): X1's self-observation fields.
 11. Appendix C N04, N08 and N17: S8's test extensions.
 12. K-9 item 9 (P:430) and the 6.7 row on interactive sessions (P:729): the read-only Supabase connector and the exam schema, in the form C05 chooses.
@@ -374,14 +381,14 @@ Batu accepted these with D-020. They are re-assessed with D-003 at C03, and they
 3. **Exam fact.** A is taken. It keeps the fact out of Work and covers the opener's role class in events, where B only widens the hidden field. A's optional "not needed" reading is dropped, because B:273 already says "cannot see".
 4. **Exam preparation and review.** Same substance. A's statement is taken, because it also places U-8's second grading in the exam environment.
 5. **Attachments and account-wide items.** A is taken (skills, project memory, Projects), with B's CLI-default point added.
-6. **Network level.** B is taken (the narrowest level the work needs). A's fixed None for the exam environment could refuse legitimate work and adds no separation between pairs.
-7. **GitHub rule on `main`.** A's layer statement is taken, plus B's provenance condition. The shared GitHub identity leaves N28 covering only the same transaction, so the condition is carried to C03 with T-81.
+6. **Network level.** B is taken (the narrowest level the work needs). A's fixed None for the exam environment could refuse legitimate work and adds no separation between pairs. After review, S6 is a pointer to the plan's own setting (CHK-C01-035 finding 3).
+7. **GitHub rule on `main`.** A's layer statement is taken, plus B's provenance condition. The shared GitHub identity leaves N28 covering only the same transaction, so the condition is carried to C03 with T-81. After review, it is an option for C03, not part of this structure (CHK-C01-035 finding 4).
 8. **Database configuration lines.** A is taken (`devos_kurulum`'s "Cannot", the role-class match on claims, registration before a claim). B has none.
 9. **Control-surface deny.** B is taken (a per-tool bridge, then the server-level target). A's immediate server-level deny would remove the installation's own-session reading, which its opening check and usage readings need.
 10. **Coverage of every mode.** B is taken. It cites that deny rules hold in every permission mode, which matters because routine sessions' mode is unknown; A does not state it.
 11. **The guard.** The two agree: no new rule family, and the phase-B form adds no session-tool rule.
 12. **Registration detection.** Both are combined: A's registration before a claim, and B's self-observed tools and repositories, which extend P:968.
-13. **Exam-read detection.** B's X2 is taken (reads through a claimed exam work item, recorded). A has none.
+13. **Exam-read detection.** B's X2 was taken (reads through a claimed exam work item, recorded). A has none. After review it is left out (section 5; CHK-C01-034 C2).
 14. **Configuration record.** B's comparison with an expected configuration kept in `devos` is taken, plus A's point that the record must not need the removed tools.
 15. **T-75 again.** A is taken (before each scoring, with the result not counted). B repeats it after each run.
 16. **Response after a detection.** A is taken (revoke the token, which raises the epoch; archive). B has none.
