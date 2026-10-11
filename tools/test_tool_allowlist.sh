@@ -165,6 +165,43 @@ t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {mode
 t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Create a scratch git worktree under /tmp and run the tests there\", {label:\"t\"})"}}'
 wf=$(mktemp -d); printf 'export const meta = {name:"x",description:"x"}\nawait agent("read", {label:"a"})\n' > "$wf/ok.js"
 t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"ok.js\"},\"cwd\":\"$wf\"}"
+# --- W-C01-45 (PC-35 "Routing" item 1): skills and agent types only from the repository (T4). The planted
+# negatives use a made-up plugin namespace; each has a counterpart the executor uses, which stays allowed.
+sk=$(ls .claude/skills 2>/dev/null | head -1)
+if [ -n "$sk" ]; then
+  t allow "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"$sk\"}}"
+  t deny  "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"example-plugin:$sk\"}}"
+  t deny  "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"/$sk\"}}"
+else
+  echo "info no skill under .claude/skills/: the repository-skill allow control is SKIPPED"
+fi
+t deny '{"tool_name":"Skill","tool_input":{"skill":"example-plugin:tally"}}'
+t deny '{"tool_name":"Skill","tool_input":{"skill":"init"}}'
+t deny '{"tool_name":"Skill","tool_input":{"skill":"../agents"}}'
+t deny '{"tool_name":"Skill","tool_input":{}}'
+for a in producer checker researcher prober counter-designer general-purpose; do
+  t allow "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
+done
+t allow '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x"}}'
+t allow '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"checker"}}'
+t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:reviewer"}}'
+t deny '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:checker"}}'
+t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"Explore"}}'
+t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":""}}'
+t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":["checker"]}}'
+t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Judge the head\", {label: \"c\", phase: \"Judge\", agentType: '"'checker'"'})"}}'
+t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Write it\", {label: \"p\", agentType: '"'producer'"' })\nawait agent(\"Judge\", {\"agentType\": \"checker\",\n label: \"c\"})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {label: \"a\", agentType: '"'example-plugin:reviewer'"'})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: '"'checker'"'})\nawait agent(\"y\", {agentType: '"'example-plugin:reviewer'"'})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"const t = \"checker\"\nawait agent(\"x\", {agentType: t})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: `${t}`})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: \"check\" + \"er\"})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"const agentType = \"x\"\nawait agent(\"y\", {agentType})"}}'
+t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {subagent_type: \"checker\"})"}}'
+printf 'await agent("x", {label: "a", agentType: '"'"'example-plugin:reviewer'"'"'})\n' > "$wf/plugin.js"
+printf 'await agent("x", {label: "a", agentType: '"'"'checker'"'"'})\n' > "$wf/checker.js"
+t deny  "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"plugin.js\"},\"cwd\":\"$wf\"}"
+t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"checker.js\"},\"cwd\":\"$wf\"}"
 rm -rf "$wf"
 # --- D-008: GitHub (M3 to M7)
 t deny "{\"tool_name\":\"mcp__github__create_or_update_file\",\"tool_input\":{$D,\"path\":\"x\",\"branch\":\"main\"}}"
@@ -980,6 +1017,11 @@ for h in "$tmp/syntax.py" "$tmp/imp.py" "$tmp/missing.py"; do
 done
 r=$(printf '{}' | CLAUDE_PROJECT_DIR="$PWD" env PATH=/nonexistent /bin/sh -c "$cmd" 2>/dev/null; echo $?)
 [ "$r" = "2" ] && echo "ok   wrapper blocks when python3 is missing" || { echo "BAD  python3 missing not blocked ($r)"; fail=1; }
+# warnings as errors must not block every call (CHK-C01-085 finding 6: the "\;" SyntaxWarning, W-C01-45)
+e=$(python3 -W error -c 'import sys
+with open(sys.argv[1]) as f: compile(f.read(), sys.argv[1], "exec")' "$hook" 2>&1) && [ -z "$e" ] && echo "ok   the guard compiles with warnings as errors, nothing on stderr" || { echo "BAD  the guard does not compile cleanly with warnings as errors: ${e:0:100}"; fail=1; }
+r=$(printf '{"tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}' | CLAUDE_PROJECT_DIR="$PWD" PYTHONWARNINGS=error sh -c "$cmd" 2>/dev/null | python3 -c 'import json,sys;print(json.load(sys.stdin)["hookSpecificOutput"]["permissionDecision"])' 2>/dev/null)
+[ "$r" = allow ] && echo "ok   a Read is allowed under PYTHONWARNINGS=error" || { echo "BAD  under PYTHONWARNINGS=error a Read got '$r'"; fail=1; }
 # --- PermissionRequest wrapper (N-173; CHK-C01-062 C2): exit 2 is not honoured on that event, so a guard that cannot
 # decide must give a deny in that event's form. Expected: that deny with exit 0, which N-173 (c) accepts and which
 # does not rely on onFailure. Faults go only into copies under $tmp; run under sh and under bash (the hooks' shell).
@@ -1055,8 +1097,21 @@ for f in empty cut_at_def; do
 done
 printf 'print(%s)\n' "'{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"allow\"}}}'" > "$tmp/prform.py"
 printf 'print(%s)\n' "'some other plain text'" > "$tmp/text.py"
+# CHK-C01-085's two controls: a stray line before a valid answer, and only a newline; each beside the same valid
+# answer alone, which passes, so that the block comes from the stray output and not from the answer
+vpre="'{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"allow\", \"permissionDecisionReason\": \"x\"}}'"
+vperm="'{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"allow\"}}}'"
+printf 'print(%s)\n' "$vpre" > "$tmp/valid_pre.py"; printf 'print("stray line")\nprint(%s)\n' "$vpre" > "$tmp/stray_pre.py"
+printf 'print(%s)\n' "$vperm" > "$tmp/valid_perm.py"; printf 'print("stray line")\nprint(%s)\n' "$vperm" > "$tmp/stray_perm.py"
+printf 'print()\n' > "$tmp/newline.py"
 rd='{"tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}'
 for sh in /bin/sh "$(command -v bash)"; do
+  qf allow "a valid answer alone" "$sh" "$rd" "${cmd//$hook/$tmp/valid_pre.py}"
+  qf block "a stray line before a valid answer" "$sh" "$rd" "${cmd//$hook/$tmp/stray_pre.py}"
+  qf block "only a newline" "$sh" "$rd" "${cmd//$hook/$tmp/newline.py}"
+  pf allow "a valid answer alone" "$sh" "$pin" "${pcmd//$hook/$tmp/valid_perm.py}"
+  pf deny "a stray line before a valid answer" "$sh" "$pin" "${pcmd//$hook/$tmp/stray_perm.py}"
+  pf deny "only a newline" "$sh" "$pin" "${pcmd//$hook/$tmp/newline.py}"
   for f in empty cut_at_def cut_mid_line; do
     qf block "$f.py as the guard file" "$sh" "$rd" "${cmd//$hook/$tmp/$f.py}"
     pf deny "$f.py as the guard file" "$sh" "{\"hook_event_name\":\"PermissionRequest\",${rd#\{}" "${pcmd//$hook/$tmp/$f.py}"
