@@ -7,7 +7,8 @@
 # Unit test for .claude/hooks/tool_allowlist.py (the guard, plan/Installation_Working_Order.md; D-008), run
 # through the same wrapper command as .claude/settings.json (negative and positive controls; plan Section 8; T-H4).
 # Every call must get an explicit decision: allow, deny, or pass (only AskUserQuestion and ExitPlanMode, which
-# the user answers). No output may say "ask". A guard that cannot run must block (exit 2).
+# the user answers). No output may say "ask". A guard that cannot run must block: exit 2 on PreToolUse, and on
+# PermissionRequest, where exit 2 is not honoured, a deny in that event's form; both hooks set onFailure (N-173).
 # Usage: tools/test_tool_allowlist.sh [hook-path]   (run from the repository root of a devos clone)
 hook="${1:-.claude/hooks/tool_allowlist.py}"
 fail=0
@@ -49,8 +50,22 @@ print(("ok   " if ok else "BAD  ") + f"hook timeouts {t} s, above the call's {bu
       f"merge gate's own {gate} s limit (W-C00-14)")
 raise SystemExit(0 if ok else 1)
 EOF
+python3 - <<'EOF' || fail=1
+import json
+s = json.load(open(".claude/settings.json"))
+bad = 0
+for e in ("PreToolUse", "PermissionRequest"):
+    hs = [h for m in s["hooks"][e] for h in m["hooks"]]
+    ok = bool(hs) and all(h.get("type") == "command" and h.get("onFailure") == "block"
+                          and not h.get("async") and not h.get("asyncRewake") for h in hs)
+    bad += not ok
+    print(("ok   " if ok else "BAD  ") + f'{e}: every guard hook is a command hook, not async, with onFailure "block": '
+          "one that cannot start, fails or times out blocks or denies (N-173)")
+raise SystemExit(1 if bad else 0)
+EOF
 OUTS=$(mktemp)
-# decision of one call: allow | deny | pass | block (exit 2) | ? ; the PermissionRequest form when $2 is "perm"
+# decision of one call: allow | deny | pass | block (exit 2) | ? ; the PermissionRequest command and form when $2
+# is "perm"; an answer counts only in its own event's form (hookEventName and decision field, N-173)
 decide() {
   local c="$cmd"; [ "$2" = perm ] && c="$pcmd"
   local out rc
@@ -60,7 +75,12 @@ decide() {
   [ -z "$out" ] && { echo pass; return; }
   printf '%s' "$out" | python3 -c 'import json,sys
 d=json.load(sys.stdin)["hookSpecificOutput"]
-print(d.get("permissionDecision") or (d.get("decision") or {}).get("behavior") or "?")' 2>/dev/null || echo "?"
+if sys.argv[1] == "perm":
+    ok = d.get("hookEventName") == "PermissionRequest" and "permissionDecision" not in d
+    print(((d.get("decision") or {}).get("behavior") if ok else None) or "?")
+else:
+    ok = d.get("hookEventName") == "PreToolUse" and "decision" not in d
+    print((d.get("permissionDecision") if ok else None) or "?")' "${2:-pre}" 2>/dev/null || echo "?"
 }
 t() { r=$(decide "$2"); if [ "$r" = "$1" ]; then echo "ok   exp=$1 $2"; else echo "BAD  exp=$1 got=$r $2"; fail=1; fi; }
 p() { r=$(decide "$2" perm); if [ "$r" = "$1" ]; then echo "ok   perm exp=$1 $2"; else echo "BAD  perm exp=$1 got=$r $2"; fail=1; fi; }
@@ -958,6 +978,38 @@ for h in "$tmp/syntax.py" "$tmp/imp.py" "$tmp/missing.py"; do
 done
 r=$(printf '{}' | CLAUDE_PROJECT_DIR="$PWD" env PATH=/nonexistent /bin/sh -c "$cmd" 2>/dev/null; echo $?)
 [ "$r" = "2" ] && echo "ok   wrapper blocks when python3 is missing" || { echo "BAD  python3 missing not blocked ($r)"; fail=1; }
+# --- PermissionRequest wrapper (N-173; CHK-C01-062 C2): exit 2 is not honoured on that event, so a guard that cannot
+# decide must give a deny in that event's form. Expected: that deny with exit 0, which N-173 (c) accepts and which
+# does not rely on onFailure. Faults go only into copies under $tmp; run under sh and under bash (the hooks' shell).
+# pf <exp> <label> <shell> <input> <command> [VAR=value]: exp is deny, allow or pass, in the PermissionRequest form
+pf() { local out rc r
+  out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" env ${6:+"$6"} "$3" -c "$5" 2>/dev/null); rc=$?
+  if [ -z "$out" ]; then r=pass; else r=$(printf '%s' "$out" | python3 -c 'import json,sys
+d=json.load(sys.stdin)["hookSpecificOutput"]
+ok = d.get("hookEventName") == "PermissionRequest" and "permissionDecision" not in d
+print(((d.get("decision") or {}).get("behavior") if ok else None) or "?")' 2>/dev/null || echo "?"); fi
+  local f="in the PermissionRequest form"; [ "$1" = pass ] && f="(no output)"
+  if [ "$r" = "$1" ] && [ $rc -eq 0 ]; then echo "ok   perm $2 ($(basename "$3")): $1 $f, exit 0"
+  else echo "BAD  perm $2 ($(basename "$3")): expected $1 with exit 0, got $r with exit $rc"; fail=1; fi; }
+printf 'import sys\nsys.exit(2)\n' > "$tmp/exit2.py"
+printf 'print(%s)\n' "'{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"allow\", \"permissionDecisionReason\": \"x\"}}'" > "$tmp/ptuform.py"
+pin='{"hook_event_name":"PermissionRequest","tool_name":"mcp__SomeConnector__x"}'
+for sh in /bin/sh "$(command -v bash)"; do
+  pf deny "syntax error in the guard" "$sh" "$pin" "${pcmd//$hook/$tmp/syntax.py}"
+  pf deny "failing import in the guard" "$sh" "$pin" "${pcmd//$hook/$tmp/imp.py}"
+  pf deny "missing guard file (python3 exits 2)" "$sh" "$pin" "${pcmd//$hook/$tmp/missing.py}"
+  pf deny "no python3" "$sh" "$pin" "$pcmd" PATH=/nonexistent
+  pf deny "unreadable input" "$sh" 'garbage' "$pcmd"
+  pf deny "the guard's own exit 2, no output" "$sh" "$pin" "${pcmd//$hook/$tmp/exit2.py}"
+  pf deny "an allow in the PreToolUse form" "$sh" "$pin" "${pcmd//$hook/$tmp/ptuform.py}"
+  # positive controls: the wrapper keeps the guard's own decisions
+  pf allow "an allowed request" "$sh" '{"hook_event_name":"PermissionRequest","tool_name":"Read","tool_input":{"file_path":"/tmp/x"}}' "$pcmd"
+  pf deny "a request the guard denies" "$sh" "$pin" "$pcmd"
+  pf pass "AskUserQuestion, passed to the user" "$sh" '{"hook_event_name":"PermissionRequest","tool_name":"AskUserQuestion","tool_input":{}}' "$pcmd"
+done
+printf 'garbage' | CLAUDE_PROJECT_DIR="$PWD" sh -c "$pcmd" 2>/dev/null | grep -q 'DENIED by rule G0' \
+  && echo "ok   perm unreadable input: the guard itself denies in the PermissionRequest form (rule G0), not the wrapper" \
+  || { echo "BAD  perm unreadable input: not the guard's own G0 denial"; fail=1; }
 rm -rf "$tmp"
 # --- PostToolUse recorder: appends own IDs, never blocks
 rd=$(mktemp -d); cp .claude/hooks/record_owned_id.py "$rd/"; printf 'x\n' > "$rd/owned_ids.txt"
