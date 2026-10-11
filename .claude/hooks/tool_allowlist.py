@@ -31,9 +31,12 @@ deliberately edits this file. A deliberate bypass stays visible in git and is a 
 The shell analysis is lexical: a command it cannot parse is denied, and a directory it cannot tell is treated
 as the live tree.
 
-Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). An internal error on
-PreToolUse exits 2, so the call is blocked; on PermissionRequest it prints a deny decision. The settings
-wrapper maps any other non-zero exit to 2, so a guard that cannot run also blocks.
+Exit: 0 with a JSON decision on stdout (nothing for a call passed to the user). An internal error inside the
+decision is a deny; any other error exits 2. The PermissionRequest command passes its event as the first
+argument, so even input that cannot be read is answered in that event's form. The settings wrappers make a
+guard that cannot decide block: on PreToolUse any non-zero exit becomes exit 2; on PermissionRequest, where
+exit 2 is not honoured, a non-zero exit or an answer not in that event's form becomes a deny. Both hooks set
+"onFailure": "block" for a hook that cannot start or times out (N-173).
 """
 import bisect
 import fcntl
@@ -2060,8 +2063,9 @@ def main():
         data = json.loads(raw)
     except ValueError:
         data = None
-    if isinstance(data, dict) and data.get("hook_event_name") == "PermissionRequest":
-        event = "PermissionRequest"
+    if sys.argv[1:] == ["PermissionRequest"] or (isinstance(data, dict)
+                                                 and data.get("hook_event_name") == "PermissionRequest"):
+        event = "PermissionRequest"    # the command names its event, for input that cannot be read (N-173)
     if data is None:
         decision, rule, detail = "deny", "G0", "the hook input is not JSON"
     else:

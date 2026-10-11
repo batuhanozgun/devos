@@ -16,7 +16,8 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"; rc=$?; [ $rc -eq 0 ] || exit 2",
-            "timeout": 600
+            "timeout": 600,
+            "onFailure": "block"
           }
         ]
       }
@@ -27,8 +28,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\"",
-            "timeout": 600
+            "command": "out=$(python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py\" PermissionRequest); rc=$?; case \"$rc:$out\" in '0:') ;; '0:{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"'*'}}}') printf '%s\\n' \"$out\" ;; *) printf '%s\\n' '{\"hookSpecificOutput\": {\"hookEventName\": \"PermissionRequest\", \"decision\": {\"behavior\": \"deny\", \"message\": \"DevOS guard: DENIED, failing closed: the guard could not decide this permission request (it did not run, it failed, or its answer was not a PermissionRequest decision). What to do instead: do not pursue the effect another way; record the denial and report the guard fault (plan/Installation_Working_Order.md section 10).\"}}}' ;; esac",
+            "timeout": 600,
+            "onFailure": "block"
           }
         ]
       }
