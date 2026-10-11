@@ -18,14 +18,14 @@
 
 | Item | State | As of |
 |---|---|---|
-| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition provisional on N-109); **C01 running**, now in the working session `session_01XyxvJd3RayQk4HCrjurbVH` (opened 2026-10-10, L-178; before it `session_01Cr4b8p5UA5dLmtrTdA243S`, L-176 to L-177, and `session_01WKJi23FwAjFtiyD1DbQ2Rs`, L-136 to L-175, which the host's automatic content review moved to a fallback model). Accepted so far: the work list and the non-row items W-C01-01, W-C01-02, W-C01-09, W-C01-25 and W-C01-28 (L-169 to L-172); FR-04, the probe design's frame review (L-174, L-175); D-017, the host's automatic review as a standing environment constraint and the adjusted verification method (L-176). FR-05, the frame review of the security scope that Batu directed, accepted on CHK-C01-019 and CHK-C01-020 (L-179): C01 establishes platform separation from the platform's documentation and DevOS's own configuration, with no active trial across environments; facts the documentation does not state are met by design paths that do not depend on them. PC-21, the C01 plan text under FR-05, accepted on CHK-C01-021 and CHK-C01-022 (L-180): one ordinary routine stands in for the probe setup; rows 2, 3, 9, 12 and 17 are established from the documentation and DevOS's own configuration, each undocumented fact met by the row's own fail path. D-019 (Batu's) is open. C01's work list re-planned under them (W-C01-31, L-182): nine items cancelled, W-C01-32 to W-C01-41 added. W-C01-32 (the routine's design), W-C01-35 (row 3) and W-C01-36 (row 17) accepted (L-183). Batu answered on 2026-10-11 (L-185): D-019 (a); D-020 (a), all three environments in his account, with his direction to find a suitable structure for it, admitted as W-C01-42; the routine is in place by his word. **Now:** W-C01-42 (the structure, before C02) and W-C01-40 and W-C01-41 (their checks); W-C01-33 waits for the routine's first run, expected 2026-10-12 about 02:07Z; every row item waits for rows 1, 2 and 4, which need the routine's runs. **Hand-over for a new session:** the live tree is cloned shallow, so the leak check fails closed on every public write until it is deepened; run `git fetch --unshallow origin` in the live tree before the first push or GitHub write (L-177). | 2026-10-11T06:03Z |
+| Stage | **C00 accepted** on CHK-C00-075 (L-167; its sixth condition was provisional on N-109 until 2026-10-11, and now rests, for the platform's own session credentials, on D-019 (a), a residual Batu accepted until C03: W-C01-40, L-186); **C01 running**, now in the working session `session_01XyxvJd3RayQk4HCrjurbVH` (opened 2026-10-10, L-178; before it `session_01Cr4b8p5UA5dLmtrTdA243S`, L-176 to L-177, and `session_01WKJi23FwAjFtiyD1DbQ2Rs`, L-136 to L-175, which the host's automatic content review moved to a fallback model). Accepted so far: the work list and the non-row items W-C01-01, W-C01-02, W-C01-09, W-C01-25 and W-C01-28 (L-169 to L-172); FR-04, the probe design's frame review (L-174, L-175); D-017, the host's automatic review as a standing environment constraint and the adjusted verification method (L-176). FR-05, the frame review of the security scope that Batu directed, accepted on CHK-C01-019 and CHK-C01-020 (L-179): C01 establishes platform separation from the platform's documentation and DevOS's own configuration, with no active trial across environments; facts the documentation does not state are met by design paths that do not depend on them. PC-21, the C01 plan text under FR-05, accepted on CHK-C01-021 and CHK-C01-022 (L-180): one ordinary routine stands in for the probe setup; rows 2, 3, 9, 12 and 17 are established from the documentation and DevOS's own configuration, each undocumented fact met by the row's own fail path. D-019 (Batu's) was opened (answered (a) on 2026-10-11, L-185). C01's work list re-planned under them (W-C01-31, L-182): nine items cancelled, W-C01-32 to W-C01-41 added. W-C01-32 (the routine's design), W-C01-35 (row 3) and W-C01-36 (row 17) accepted (L-183). Batu answered on 2026-10-11 (L-185): D-019 (a); D-020 (a), all three environments in his account, with his direction to find a suitable structure for it, admitted as W-C01-42; the routine is in place by his word. W-C01-40 (N-109 closed as a residual Batu accepted) and W-C01-41 accepted on CHK-C01-032 (L-186). **Now:** W-C01-42 (the structure, before C02); W-C01-33 waits for the routine's first run, expected 2026-10-12 about 02:07Z; every row item waits for rows 1, 2 and 4, which need the routine's runs. **Hand-over for a new session:** the live tree is cloned shallow, so the leak check fails closed on every public write until it is deepened; run `git fetch --unshallow origin` in the live tree before the first push or GitHub write (L-177). | 2026-10-11T06:19Z |
 | Next action | Generated: the startable frontier in section 2 (`plan/Installation_Working_Order.md` section 4). It is not written by hand. | 2026-10-05T18:59Z |
 | Usage | `five_hour` `allowed` at 2026-10-11T06:03Z (`get_session`, this working session), resets 2026-10-11T06:30Z (`resetsAt` 1791700200); `isUsingOverage` false. D-002: proceed while `allowed`. Readings per stage: the "Usage" section of `plan/work/<stage>.md`. | 2026-10-11T06:03Z |
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open: D-019 and D-020 were answered on 2026-10-11 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T05:49:08Z (comment `6105974865`). | 2026-10-11T06:03Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). | 2026-10-11T06:03Z |
 | summary_tr | Cevapların kayda geçti: **D-019** (a); **D-020** (a), yani DevOS'un üç ortamı da senin hesabında, ek ücret yok; rutin kuruldu. <br>Şimdi: senin istediğin gibi, (a) için ortamları tek hesap içinde birbirinden ayıracak hafif bir yapı tasarlıyorum (W-C01-42): yalnız ayar ve tasarımla, deneme yapmadan. <br>Rutinin ilk çalışması yarın sabah 05:07'de; kaydını ben kontrol edeceğim. Şu an senden beklenen bir şey yok. <br>Kullanım normal düzeyde. | 2026-10-11T06:03Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T06:03Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T06:20Z |
 
 ---
 
@@ -34,7 +34,6 @@
 <!-- generated:frontier -->
 **Ready (startable now):**
 - `W-C01-33` Routine in place: Batu's step (Section 12 item 0 as PC-21 changes it)
-- `W-C01-40` N-109 under PC-21 item 8: its disposition through D-019
 - `W-C01-42` Keeping DevOS's three environments apart inside one account under D-020 (a): a structure sized by need
 
 **Running:**
@@ -61,7 +60,6 @@
 - `W-C01-37`: depends on W-C01-06 (not accepted)
 - `W-C01-38`: depends on W-C01-06 (not accepted)
 - `W-C01-39`: depends on W-C01-06 (not accepted)
-- `W-C01-41`: finished, waiting for acceptance
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -74,7 +72,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 9, blocked 20, cancelled 9, finished 1, ready 3 | 14 |
+| `C01` | Platform verification | running | accepted 11, blocked 20, cancelled 9, ready 2 | 13 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 10 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 10 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
@@ -159,8 +157,8 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-37` | Row 9: single- and multi-repository sessions under PC-21 item 5 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-37.md` |
 | `W-C01-38` | The guard fails closed: DevOS's own tests, before C02 opens DevOS's environments (PC-21 item 5) | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-38.md` |
 | `W-C01-39` | Row 12: repository access limit and the git credential under PC-21 item 6 | blocked: depends on W-C01-06 (not accepted) | — | — | `plan/work/W-C01-39.md` |
-| `W-C01-40` | N-109 under PC-21 item 8: its disposition through D-019 | ready | — | — | `plan/work/W-C01-40.md` |
-| `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | finished, not accepted | — | — | `plan/work/W-C01-41.md` |
+| `W-C01-40` | N-109 under PC-21 item 8: its disposition through D-019 | accepted | — | — | `plan/work/W-C01-40.md` |
+| `W-C01-41` | Row 17's account-change option: Batu's decision before C02 opens DevOS's environments (PC-21 item 7) | accepted | — | — | `plan/work/W-C01-41.md` |
 | `W-C01-42` | Keeping DevOS's three environments apart inside one account under D-020 (a): a structure sized by need | ready | — | — | `plan/work/W-C01-42.md` |
 <!-- /generated -->
 
@@ -243,7 +241,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-091` | `C01` | EV-C00-021 | open | T-49: each stage file lists Batu's steps from C01. The direction is decided now. The topic's reason is in its row of EV-C00-021 section 1... |
 | `N-102` | `C01` | N-086 | open | **C01 #18 and the D-008 cost text** (carried from N-086 item (2) on `plan/work/C00.md` by CHK-C00-067 condition 3; N-086 came from CHK-C0... |
 | `N-105` | `C01` | CHK-C00-067 | open | **The key inventory** (plan Section 12, "Key inventory": "The builder keeps a single inventory in C00"; CHK-C00-067 condition 4(c), findi... |
-| `N-109` | `C01` | PC-18 | open | **Do the platform's session credentials act beyond the session?** (PC-18 place 5; CHK-C00-070 condition 2; 2026-10-06, L-163). C00's sixt... |
 | `N-122` | `C01` | CHK-C01-006 | open | **Recommendations of CHK-C01-006 for C01's last items** (findings 4, 5 and 10; 2026-10-06, L-169; not conditions). (1) **Row 4's version,... |
 | `N-124` | `C01` | CHK-C01-007 | open | **A probe token's revocation before C02** (CHK-C01-007 finding 8; 2026-10-06, L-170). Plan C01 row 3's fail path says "a token found outs... |
 | `N-129` | `C01` | L-173 | open | **The form of a "no" answer** (2026-10-06, L-173; PC-20). Two helpers in a row (agents `aad82641009d6300f` and `a7f263717d66fe06b`, W-C01... |
@@ -319,7 +316,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-121` | `C12` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 29 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-104, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 30 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-104, N-109, N-110, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
