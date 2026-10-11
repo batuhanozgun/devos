@@ -78,6 +78,8 @@ Limits: the value is not a secret and not an authority (anyone using the environ
 
 **[Changed 2026-10-11, N-167; `CONTROL.md` version 6]** The routine's sessions run in auto mode by their own record (R1a and R1b `OPENING.md` part A item 4), where the platform's permission classifier reviews calls as a second gate after the guard (EV-C01-015). Rule 1.5 now treats its denials as it treats the guard's: recorded with their text and label, never pursued another way, the step closed `partial` if it cannot go on. A classifier denial in P1 is part of row 7's observation.
 
+**[Changed 2026-10-11, CHK-C01-055 C1; `CONTROL.md` version 7]** In P1, the fallback install is only for an install that ran and failed; after a denied install call nothing else is installed and the step closes `partial`; a denied model run is recorded as `denied`, not as `does not fit`. A denial is part of row 7's observation.
+
 ## 6. How runs start, and how many
 
 - **Start.** One schedule trigger, set once by Batu when he creates the routine: daily at 05:07 his local time (a few minutes past the hour, F3; early morning, outside his busy hours, plan 6.4). The builder causes no run, and Batu presses nothing after creation. The first run is the first 05:07 after creation. A single Run now press cannot serve row 1, which needs two runs in a row, so the schedule is the start chosen.
