@@ -41,7 +41,7 @@ Met; the pause is an indirect observation.
 | Compaction | "None occurred" (R1a/CLOSING.md:22) | "None occurred" (R1b/CLOSING.md:25) |
 | Usage or routine limit message | "None." (R1a/CLOSING.md:51) | "None." (R1b/CLOSING.md:56) |
 
-Neither session shows a sign of a pause: the boot ID did not change within either run, and no gap comes near 5 minutes. The two runs have different boot IDs, so each ran on a freshly booted machine. R1b therefore had nothing from R1a except what R1a had pushed.
+Neither session shows a sign of a pause: the boot ID did not change within either run, and no gap comes near 5 minutes. The two runs have different boot IDs, so each ran on a freshly booted machine. That R1b had nothing from R1a except what R1a had pushed rests on stronger signs: R1b's starting checkout was shallow again and needed rule 1.9's fetch (R1b/STAMP.md:13), which shows a fresh clone, and its session ID is new, which shows a new context.
 
 ## Point 3. The second session continued correctly from the first's structured hand-over
 
@@ -65,7 +65,8 @@ Met.
 
 Recorded for both runs:
 - **At start:** "Hook events: none (no hook output reached the session at its start)." (R1a/OPENING.md:26; R1b/OPENING.md:26).
-- **Resume or compaction:** neither occurred in either run (Point 2). No resume was recorded. A pause and resume would show as a gap, and there was none. So no SessionStart event for a resume or a compaction was due.
+- **Compaction:** none in either run (R1a/CLOSING.md, R1b/CLOSING.md section 3).
+- **Resume:** not shown either way at one point. R1b ended its turn at 09:19:09Z to wait, and the background prober's hand-back message woke it as a new turn at 09:19:24Z (R1b/ROW4.md:20). Whether the platform treated that boundary as a resume is not shown. The boot ID was unchanged across it, and the in-process task notification arrived after the wake, which points to the same process. No hook output was recorded there, and no repository hook was due: the only SessionStart matcher is `compact` (`.claude/settings.json`, blob `ce7d09d`). Elsewhere no turn ended to wait, and no gap came near a pause.
 - **What this shows for D18 and U2: little.** The repository configures one SessionStart hook, with matcher `compact` (`.claude/settings.json`, blob `ce7d09d`, the same at `5d0cc58` and `fdaf4e5`; R1a/OPENING.md:41). So no repository hook was due at a fresh start. "None" at start is what the configuration predicts; it does not show whether SessionStart fires in a routine session at start, resume or compaction. That part of D18 and U2 is not observed here; W-C01-27 decides on it.
 - **What the runs do show** (for W-C01-37 and W-C01-27): the PreToolUse hook, which is the guard, ran on the runs' tool calls. Its decision log exists in each session, and it allowed or denied calls without passing any to a user ("0 passed to the user", R1a/OPENING.md:9; R1b/OPENING.md:9).
 - A hook that fires without output would not be seen by the session.
@@ -87,7 +88,9 @@ Recorded for both runs:
 - **Only this synthetic work.** The durations are those of this synthetic work. Each session ended because its step was done: R1a by design after two items, R1b at the end of the queue and its row 4 part. Neither ended at a limit. The runs show that a routine session runs at least 6 min 38 s without a sign of a pause or a limit. They do not show the longest a session can run, or how long one runs on real work. Plan K-7's "How long a cloud session can run while processing a queue **[Awaiting verification: C01]**" (plan line 392) is not settled by row 1.
 - **The pause is indirect.** A changed boot ID would show a rebuilt machine; a gap is only consistent with a pause (`CONTROL.md` 3.4 item 2). Neither session sat idle for more than about 1.5 minutes. That is below the "few minutes" after which the documentation says an idle machine pauses (below), so no pause was to be expected. The runs do not show what happens to a session that waits or works for a long time.
 - **Times not covered.** The first boot ID was taken 64 s after S in R1a and 99 s after S in R1b. Nothing after the closing record's push is recorded.
-- **Self-timed.** The durations and boot IDs are the sessions' own records, and the commit dates come from the same clocks. Nothing outside the sessions timed them.
+- **Self-timed.** The durations and boot IDs are the sessions' own records, and the commit dates come from the same clocks. Nothing outside the sessions timed them. R1b's first `OPENING.md` (`ac7afaf`, committed 09:15:05Z) carried estimated times, later than its own commit date; R1b corrected them to measured times with a shell `sed -i` (`44af4bc`; its own note on rule 1.1). Row 1's durations do not rest on those lines; git's commit dates corroborate them.
+- **Claude Code version: could not check.** (a) Cause: a run has no `get_session` tool, and the `claude` command line was denied (#22, rule B7; R1b/OPENING.md:20), so both runs record the version `not visible`. (b) What stands in for it: the working session's `get_session` reading, 2.1.296, taken in the same environment `devos-kurulum` at about 06:03Z (EV-C01-004) and at 08:53Z (L-202); it is not the runs' own version. (c) So this row's result is tied to the run date, 2026-10-11, and to `devos-kurulum`, not to a version (plan Section 8 item 9). (d) The Result's "no part is could not check" covers the row's parts, not this envelope field.
+- **Hand-over or queue file.** The item the hand-over names, Q3, is also the first open item in `QUEUE.md`, so "took the named item" cannot show that the hand-over was needed. What shows that R1b read and used the hand-over is R1b/CONTINUITY.md:9-15: the done items with their commits, and R1a's three open questions.
 - **Small sample.** One pair of runs, with one queue of four trivial items.
 - **Start route.** R1b's start route rests on Batu's word and on S; the session cannot see it.
 - **Hand-over fields.** The hand-over is shown sufficient for this queue, where the procedure is in the control file. Plan 6.5 item 11 also lists "the expected sub-result" and "the return point". `CONTROL.md` step R1a item 4 does not ask for them, and R1a's hand-over does not carry them as such; here, its "Next item" and "Next responsibility" serve as the return point. Row 1 names no field list.
@@ -117,7 +120,7 @@ Row 1's success condition is met, part by part:
 | The next session continues correctly through a structured hand-over (two runs in a row; the second takes the item the hand-over names; no done item redone) | met | Points 1 and 3 |
 | Hook events at start, resume or compaction (the item's own record, not the row's) | recorded: none at start; no resume or compaction occurred | Point 4 |
 
-No part is "could not check", and the fail path does not apply. The limits above stand with the result; in particular, the longest duration of a session is not measured. Under N-063, SessionStart at a resume or a compaction stays unobserved; that is for W-C01-27.
+No part of the row is "could not check" (the envelope's Claude Code version is, above), and the fail path does not apply. The limits above stand with the result; in particular, the longest duration of a session is not measured. Under N-063, SessionStart at a resume or a compaction stays unobserved; that is for W-C01-27.
 
 ## Plan 6.4's starting budget (a recommendation; the executor decides, through plan Section 14)
 
