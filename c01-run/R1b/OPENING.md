@@ -2,7 +2,7 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 
 # Opening record: R1b
 
-## Part A (2026-10-11T09:14:10Z to 09:15:30Z)
+## Part A (2026-10-11T09:14:10Z to 09:14:42Z, the times measured in it)
 
 1. Guard, as `python3 tools/guard_report.py` printed it at 09:14:10Z, after the stamp push:
    - This session's decision log exists (`session_014hehG4ta6ADXdHPSDCSTs1.jsonl`); hash chain intact.
@@ -27,7 +27,7 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 
 Gates: environment `match`; the only repository is `batuhanozgun/devos` (remote of the starting checkout and the session's repository scope; the checkout count itself was denied, see item 3); no `other-server-*`. All three pass.
 
-## Part B (2026-10-11T09:15:30Z)
+## Part B (2026-10-11T09:14:42Z, measured with the listing of `.claude/agents/`)
 
 1. Agent types the Agent tool offers:
    - `repository`: checker, counter-designer, prober, producer, researcher.
