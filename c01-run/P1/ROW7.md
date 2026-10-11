@@ -37,3 +37,17 @@ Each candidate ran in one foreground Bash call with the timeout set to 600000 ms
 - Unrelated pairs: TR4–EN4 0.7727, TR5–EN5 0.7192, TR6–EN6 0.7585.
 - Other output: one hub warning that the requests are unauthenticated. No token was set or asked for.
 - Result: `fits`.
+
+### M2: `BAAI/bge-m3` at `5617a9f61b028005a4858fdac845db406aefb181`
+
+- Call: 2026-10-11T13:42:57Z to 2026-10-11T13:43:40Z (43 s); exit 0; did not move to the background.
+- Download and load: 33.2 s.
+- Embedding of the 12 sentences: 4.41 s.
+- Dimension: 1024.
+- Peak memory: 3009 MB.
+- Parallel pairs: TR1–EN1 0.8235, TR2–EN2 0.9499, TR3–EN3 0.8991.
+- Unrelated pairs: TR4–EN4 0.4824, TR5–EN5 0.4399, TR6–EN6 0.4736.
+- Other output: the same unauthenticated-hub warning.
+- Result: `fits`.
+
+No command moved to the background, so none had to be stopped. The similarities are recorded, not judged.
