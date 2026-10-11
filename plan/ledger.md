@@ -25,7 +25,7 @@
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). | 2026-10-11T06:03Z |
 | summary_tr | Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. <br>(a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. <br>Rutinin saatini 11:07'ye aldın; ilk çalışma bugün 11:07'de, kaydını ben kontrol edeceğim. Şu an senden beklenen bir şey yok. <br>Kullanım normal düzeyde. | 2026-10-11T07:20Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T07:53Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-11T08:30Z |
 
 ---
 
@@ -75,7 +75,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | `C02` | Data model, rule gate and identity chain | planned | no items | 11 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 11 |
 | `C04` | Knowledge, search and context | planned | no items | 12 |
-| `C05` | Common rules, roles and methods | planned | no items | 7 |
+| `C05` | Common rules, roles and methods | planned | no items | 8 |
 | `C06` | Working order, audit and decision channel | planned | no items | 7 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
 | `C08` | Model access layer, release, whole product and the SOUL repository | planned | no items | 7 |
@@ -199,6 +199,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `FR-03` | Frame review of F-088-2: the live part of gate 1c runs on main after the merge, under the reviewed hook, before acceptance | technical | withdrawn | `plan/decisions/FR-03.md` |
 | `FR-04` | Frame review: the C01 probe design (W-C01-03) after its second FAIL; the run orchestration moves from one fixed sequence in the routine prompt to a stable prompt that reads a checked control file on main, with scheduled starts | technical | accepted | `plan/decisions/FR-04.md` |
 | `FR-05` | Frame review of the security scope, by need (Batu's direction, L-178): C01 establishes platform separation from the platform's official documentation and DevOS's own configuration, not by active trials across environments, and a fact the documentation does not state is met by a design path that does not depend on it; the installation guard and the leak check keep their required core and grow no further; their phase-B form is sized by need at the stage that builds it | technical | accepted | `plan/decisions/FR-05.md` |
+| `FR-06` | Frame review of the thinking disciplines after an avoidable wait (Batu's question, 2026-10-11): a wait becomes an evaluation moment, time is weighed as a cost at the same quality, and a parameter that sets when work can next start carries the time it adds and its reason's source | technical | proposed | `plan/decisions/FR-06.md` |
 | `PC-01` | Installation rhythm: each stage under a `/goal` target with three stop conditions | batu | superseded | `plan/decisions/PC-01.md` |
 | `PC-02` | Branch management | batu | answered | `plan/decisions/PC-02.md` |
 | `PC-03` | Continuity: merge into `main` before every stop | technical | answered | `plan/decisions/PC-03.md` |
@@ -221,6 +222,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-20` | N-110, the follow-ups of D-016's carriers: what follows a DISCIPLINES MISSING result; the remedy for a log entry without the Disciplines line that reaches main (a correction entry, which render --check counts, and the stop check runs render --check); helpers' reports live only in the container's transcripts; the task check compares the whole discipline block; planted cases for the six surviving mutants | technical | answered | `plan/decisions/PC-20.md` |
 | `PC-21` | C01 under FR-05: no active trial across environments; one ordinary routine stands in for the probe setup; rows 2, 3, 9, 12 and 17 are established from the platform's documentation and DevOS's own configuration, with each fact the documentation does not state met by the row's own fail path taken as the design; N-109's open part goes to Batu (D-019); Batu's C01 steps shrink to one routine | technical | accepted | `plan/decisions/PC-21.md` |
 | `PC-22` | Section 12 item 0: one non-secret environment variable added to Batu's C01 step, so that the routine's runs show their environment from a documented fact | technical | accepted | `plan/decisions/PC-22.md` |
+| `PC-23` | The thinking disciplines catch an avoidable wait (FR-06): a wait is an evaluation moment; D3 weighs a sooner way at the same quality; the stop carries a Wait line, checked; plan 6.12's premise inventory covers a parameter that sets when work can next start | technical | proposed | `plan/decisions/PC-23.md` |
 <!-- /generated -->
 
 ---
@@ -286,6 +288,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-111` | `C05` | CHK-C01-004 | open | **Row 4 is observed again whenever the Claude Code version changes** (plan C01 row 4, PC-15; CHK-C01-003 condition 2(a); CHK-C01-004 cond... |
 | `N-134` | `C05` | FR-05 | open | **From FR-05 (2026-10-10, L-179).** (1) The phase-B guard's form (K-9 item 4, a [Proposal]) is sized by need: platform configuration firs... |
 | `N-138` | `C05` | W-C01-42 | open | **Exams under D-020 (a)** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S1 to S3, X4 and section 7; 2026-10-... |
+| `N-142` | `C05` | FR-06 | open | **Exam cases for an avoidable wait and for haste** (FR-06; PC-23; 2026-10-11). The hidden exam gets paired cases, scored on behaviour (Ap... |
 | `N-040` | `C06` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): workflow engines and observability; voice ... |
 | `N-068` | `C06` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
 | `N-078` | `C06` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31, T-37 (t... |

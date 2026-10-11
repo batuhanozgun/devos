@@ -13,7 +13,7 @@ The nine protocols were written for ChatGPT and matured in this project by learn
 | Source feature | Its counterpart in DevOS |
 |---|---|
 | Re-reading `AGENT.md` from the repository in every new conversation | Claude Code loads `CLAUDE.md` on its own; the role package and the state brief come from the database |
-| Evaluating the nine questions in every turn; "load if yes or uncertain, skip only on a sure no"; the related work not starting if a needed text cannot be read | **Kept.** The trigger questions are in `CLAUDE.md`; the full texts are under `.claude/protocols/`. The trigger questions keep the source's scope (PC-17). The evaluation is made at the start of every new request, work item or turn, after every material change, at a new constraint, and before the first step of a new kind of action (an external effect, a merge, a persistent or irreversible write); it cannot be skipped as an "unimportant step". It is recorded less often than it is made (the next row; Appendix B 3.25) |
+| Evaluating the nine questions in every turn; "load if yes or uncertain, skip only on a sure no"; the related work not starting if a needed text cannot be read | **Kept.** The trigger questions are in `CLAUDE.md`; the full texts are under `.claude/protocols/`. The trigger questions keep the source's scope (PC-17). The evaluation is made at the start of every new request, work item or turn, after every material change, at a new constraint, before the first step of a new kind of action (an external effect, a merge, a persistent or irreversible write), and before entering a wait or ending work whose next step waits on a schedule, a person or an outside event (PC-23); it cannot be skipped as an "unimportant step". It is recorded less often than it is made (the next row; Appendix B 3.25) |
 | Showing the routing table to the user at the start of every answer | **Not shown to the user.** It would be a needless burden on Batu (Appendix E). The table's function, auditability, is kept: the result of all nine questions (loaded or skipped, and why), the discipline version, the work item and what triggered the record (its start, or a material change of plan or evidence) are written to the database at the start of each work item and after each material change, not every turn (`ProtocolAudit`, Appendix B 3.25, from C05; the agent's own report, PC-08); the audit environment and the maintenance jobs read these records |
 | Reconstructing the project state from the `STATE`, `INDEX`, `HANDOFF` files (R07, R08) | The live state is in Supabase; `session_brief` and the closing records carry it |
 | Maintaining the candidate research library inside the repository (R09) | The library is read as read-only; DevOS's new research enters its own knowledge records with candidate status |
@@ -65,9 +65,11 @@ The text below is the initial draft of `devos/CLAUDE.md`. At C05 the builder com
 
 ## 3. Thinking disciplines — trigger questions
 At the start of every new request, work item or turn, after every material change of plan or evidence (new information,
-a changed plan; a tool result only when it changes the plan or the evidence), at a new constraint, and before the first step
-of a new kind of action (an external effect, a merge, a persistent or irreversible write), evaluate ALL nine questions before
-the work or that step goes on. Do not count a step as "unimportant" and skip the evaluation. If the answer is "yes" or "uncertain", read the
+a changed plan; a tool result only when it changes the plan or the evidence), at a new constraint, before the first step
+of a new kind of action (an external effect, a merge, a persistent or irreversible write), and before entering a wait or
+ending work whose next step waits on a schedule, a person or an outside event, evaluate ALL nine questions before the work
+or that step goes on. At a wait, also name when it ends and by what, what would end it sooner at the same quality, and
+whose call that is. Do not count a step as "unimportant" and skip the evaluation. If the answer is "yes" or "uncertain", read the
 relevant file (.claude/protocols/Dn.md) in full and apply it; skip only on a "no" you are sure of. If you cannot read a needed
 file, do not reconstruct it from memory; stop the affected work. Record the nine results with devos_api.record_protocol_audit
 at the start of each work item and after each material change of plan or evidence, never after every tool result or turn; the
@@ -186,7 +188,7 @@ Each is the content of the file `.claude/protocols/Dn.md`. Each is a condensatio
 
 **Application:**
 1. First settle the question "why is this work being done, and what state should exist at the end?".
-2. Separate the method from the goal: Does the proposed method really reach the goal, or does it only produce an intermediate output? Is there a simpler or more reliable way? A method that has not been explicitly set as a constraint is not equivalent to the goal.
+2. Separate the method from the goal: Does the proposed method really reach the goal, or does it only produce an intermediate output? Is there a simpler, more reliable or sooner way at the same quality? A parameter that sets when the next condition can be met (a schedule, a limit, a hand-off) is part of the method: state the time it adds and weigh it like any other method choice. A method that has not been explicitly set as a constraint is not equivalent to the goal.
 3. Check for drift: Is the most recently discussed topic, a sub-problem that produces a lot of data, an easily measured surface or an interesting side branch taking the place of the main goal? Counter-test: "If I saw today's direction independently of the starting point, would I still choose it to reach the goal?"
 4. Keep a legitimate change of direction apart from a silent change of goal: New evidence or an explicit decision can change the goal; but the change must be visible and justified.
 5. **Stage authority:** "The next logical work" and "the next authorised work" are not the same. If the current delivery is ready and the work under consideration is a new stage, the delivery is made first; the new stage is opened with authorisation. A missing stop condition is not leave to go on: derive from the request the smallest deliverable that meets it and the condition for returning it (the work's `return_to`, Appendix B 3.3), and when that is met, deliver; do not open the adjoining stage on your own. This holds in particular under a long-running goal and in a session started by a routine.
