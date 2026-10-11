@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 11 Ekim 2026, 11:30 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 11 Ekim 2026, 11:52 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C01 (Platform doğrulaması).
 
-**Sıradaki işler:** başlatılabilir: `W-C01-33`. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** başlatılabilir: `W-C01-06`, `W-C01-10`, `W-C01-34`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "izinli" düzeyinde (beş saatlik pencere); pencere 11 Ekim 2026, 14:30 (Türkiye saati) tarihinde yenileniyor.
 
@@ -16,5 +16,5 @@
 
 Cevapların kayda geçti: **D-019** (a), **D-020** (a); rutin kuruldu. 
 (a) için istediğin yapı hazır ve kabul edildi: DevOS'un üç ortamı tek hesapta, sınav cevapları yalnız sınav ortamının erişebildiği veritabanında, ortam anahtarları oturumların göremediği "gizli ağ bilgisi" olarak, oturumlar arası araçlar DevOS oturumlarından ayar dosyasıyla kaldırılmış. Koruma kancasına yeni kural yok, platformda deneme yok, senden düzenli bir bakım işi yok. Kalan risk (hepsi tek hesapta) senin kabulünle kayıtta; C03'te yeniden bakılacak. 
-Rutinin saatini 11:07'ye aldın; ilk çalışma bugün 11:07'de, kaydını ben kontrol edeceğim. Şu an senden beklenen bir şey yok. 
+Rutinin ilk çalışması bugün 11:08'de yapıldı ve başarıyla bitti; ikincisi yarın 11:07'de. Şu an senden beklenen bir şey yok. 
 Kullanım normal düzeyde.
