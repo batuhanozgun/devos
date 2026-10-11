@@ -1,6 +1,6 @@
 # C01 routine control file
 
-Version 3 (N-143, 2026-10-11; version 2: W-C01-33, 2026-10-11; version 1: W-C01-32, 2026-10-10). Version 3 makes `IDLE.md` an idle run's stamp and closing record in one (rule 2.4: what rules 1.2, 1.5 and 1.9 record), raises its bound of tool calls from 12 to 20 and says what it does at the bound, and makes R4V's rule read the Claude Code version from part A item 4 (rules 2.2 and the note under table 4); N-143, CHK-C01-045, CHK-C01-043 finding 4; version 2 added rule 1.9 and the session ID's source in rule 1.2, after the first run (R1a; EV-C01-005); nothing else changes. Every run of the C01 routine `devos-c01-rutin` reads this file once, at its start, from the checkout the run started with (`main`), and acts only on it and on its own branch. The file changes only by a checked change merged into `main` between runs; a run takes no instruction from `main`, or from anything else, while it runs. The stored prompt's bans hold over everything here. Every input in section 6 is synthetic: made up for this test, with no personal or business data and nothing from any other repository (plan Section 8 item 13). The design and its reasons are in `ROUTINE_DESIGN.md`; a run does not need it.
+Version 4 (W-C01-14, W-C01-20 and N-148, 2026-10-11; version 3: N-143, 2026-10-11; version 2: W-C01-33, 2026-10-11; version 1: W-C01-32, 2026-10-10). Version 4 opens P1, P2 and P3 and sets R4V's Open to `no`, dropping R4V's rule (table 4 and the note under it, rules 2.2 and 2.3; N-148); has rule 2.2 read only the `Result:` line of another run's `CLOSING.md`; adds the scratch clone, the branch and rule 1.9's test and fetch, when not yet done, to the calls an idle run always makes (rule 2.4; CHK-C01-046 finding 2); lets part A item 4 take the Claude Code version from the session's own transcript; rewrites P1's item 1 (the install: one foreground call with the tool's longest timeout, a CPU-only torch wheel and one fallback, waiting for it to finish, and a record in `ROW7.md` of its time and of any GPU device), has item 2's script carry rule 1.7's line as a comment, and gives item 3's runs the same timeout, stopping one that moved to the background before the next; and moves the items of P2 and P3 that follow task K to `AFTER_K.md`, which they read after task K (this paragraph, the P2 and P3 text, table 4's Serves column and 6.5). Version 3 made `IDLE.md` an idle run's stamp and closing record in one (rule 2.4: what rules 1.2, 1.5 and 1.9 record), raised its bound of tool calls from 12 to 20 and said what it does at the bound, and made R4V's rule read the Claude Code version from part A item 4 (N-143, CHK-C01-045, CHK-C01-043 finding 4); version 2 added rule 1.9 and the session ID's source in rule 1.2, after the first run (R1a; EV-C01-005); nothing else changes. Every run of the C01 routine `devos-c01-rutin` reads this file once, at its start, from the checkout the run started with (`main`), and acts only on it (with, in P2 and P3, `AFTER_K.md` beside it, which their step text names) and on its own branch. These two files change only by a checked change merged into `main` between runs; a run takes no instruction from `main`, or from anything else, while it runs. The stored prompt's bans hold over everything here. Every input in section 6 is synthetic: made up for this test, with no personal or business data and nothing from any other repository (plan Section 8 item 13). The design and its reasons are in `ROUTINE_DESIGN.md`; a run does not need it.
 
 ## 1. Rules for every run
 
@@ -17,9 +17,9 @@ Version 3 (N-143, 2026-10-11; version 2: W-C01-33, 2026-10-11; version 1: W-C01-
 ## 2. Choosing the step
 
 1. Note the start time S. Fetch the remote branches `claude/probe-c01-*` (this routine's records; nothing else).
-2. A step is **closed** when one of its branches holds `c01-run/<step>/CLOSING.md` with `Result: done` or `Result: partial`. R4V is closed for a Claude Code version V when R1b or R4V is closed on a branch whose `OPENING.md` part A item 4 names V.
-3. Take the first step of table 4, in table order, that is open (Open `yes`; for R4V, its rule holds), is not closed, and whose prerequisites are closed.
-4. If there is none, this is an **idle run**: on branch `claude/probe-c01-idle-<S as YYYYMMDDTHHMMZ>` from `main`, write `c01-run/IDLE.md`, push, and end. `IDLE.md` is the idle run's stamp and closing record in one: the session ID (and, under rule 1.2, that it came from the decision log's file name), S, `no open step`, whether rule 1.9's fetch was done, and each guard denial with its number and rule (rule 1.5), or `none`. An idle run does nothing else: no opening record, no subagent, no install, and at most 20 tool calls before the calls that write, commit and push `IDLE.md`. Those are always made: a run that reaches the bound first writes `IDLE.md` at once with what it has, adds `bound reached`, commits, pushes, and ends.
+2. A step is **closed** when one of its branches holds `c01-run/<step>/CLOSING.md` with `Result: done` or `Result: partial`. To test this, read only that `Result:` line (for example `git -C /tmp/c01-run/clone grep '^Result:' <remote branch> -- c01-run/<step>/CLOSING.md`), and nothing else on another run's branch unless your step text says so.
+3. Take the first step of table 4, in table order, that is open (Open `yes`), is not closed, and whose prerequisites are closed.
+4. If there is none, this is an **idle run**: on branch `claude/probe-c01-idle-<S as YYYYMMDDTHHMMZ>` from `main`, write `c01-run/IDLE.md`, push, and end. `IDLE.md` is the idle run's stamp and closing record in one: the session ID (and, under rule 1.2, that it came from the decision log's file name), S, `no open step`, whether rule 1.9's fetch was done, and each guard denial with its number and rule (rule 1.5), or `none`. An idle run does nothing else: no opening record, no subagent, no install, and at most 20 tool calls before the calls that make the scratch clone and the branch, if not yet made, make rule 1.9's test and fetch, if not yet done, and write, commit and push `IDLE.md`. Those are always made, past the bound if need be: a run that reaches the bound first makes them at once, writing in `IDLE.md` what it has and `bound reached`, and ends.
 5. Otherwise create branch `claude/probe-c01-<step in lower case>-<S as YYYYMMDDTHHMMZ>` from `main`, or, where the From column names a step, from the head of that step's latest closed branch. Write `c01-run/<step>/STAMP.md` (3.1) and push it at once: this is the run's claim.
 6. Fetch again. If another branch of the same step started earlier, has no `CLOSING.md`, and started less than 3 hours before S, this run is a duplicate: add `Duplicate of <that branch>` to its stamp, push, and end. An earlier branch of the step without `CLOSING.md` that started 3 hours or more before S is an unfinished attempt: name it in the stamp and go on.
 7. A closed step is repeated only when a checked change adds it again under a new ID.
@@ -35,7 +35,7 @@ Session ID (`CLAUDE_CODE_REMOTE_SESSION_ID`); S; the step; the attempt (first, o
 1. Guard: the summary that `python3 tools/guard_report.py` prints after the stamp push, so that the push is counted in it (whether this session's decision log exists, allowed calls by rule, denials, last record number). If it shows no decision log, write only `Guard: not live` here, write `CLOSING.md` with `Result: not started (guard not live)`, push, and end.
 2. Environment: `DEVOS_ENVIRONMENT`, read by name, recorded as `match` (it reads `devos-kurulum`), `absent`, or `different` (its value is not written).
 3. Repositories: the starting checkout's remote, as owner/name; the number of other git checkouts beside it (no names).
-4. Session: model, permission mode, effort level (and whether ultracode is shown) and Claude Code version from `get_session` (this session), or as the session otherwise sees them, or `not visible` (N-047).
+4. Session: model, permission mode, effort level (and whether ultracode is shown) and Claude Code version from `get_session` (this session), or as the session otherwise sees them, or `not visible` (N-047). If `get_session` is not in the tool list, take the Claude Code version from the `"version"` field of this session's own transcript records: one call of the file-search tool (Grep) on `~/.claude/projects`, pattern `"version":"[0-9][^"]*"`, showing only the matched text; record each distinct version it shows and that it came from there, or `not visible`. This way was seen in the working session, not yet in a run.
 5. Tools: the names of the built-in tools; the MCP servers by rule 1.4, each with its number of tools.
 6. The boot ID (`/proc/sys/kernel/random/boot_id`) and the time.
 7. Hook events: any hook output that reached the session at its start, or `none`.
@@ -68,14 +68,14 @@ Gates: environment `match`; the only repository is `batuhanozgun/devos`; no `oth
 |---|---|---|---|---|
 | R1a | yes | — | — | Row 1, first run (W-C01-06); like every working run, also W-C01-33 and rows 2, 5, 8, 9 and 13's list |
 | R1b | yes | R1a | R1a | Row 1, second run; row 4 (W-C01-10) |
-| R4V | rule | R1b | — | Row 4 again when the Claude Code version changes |
-| P1 | no | — | — | Row 7, session part (W-C01-14) |
-| P2 | no | — | — | Row 13, first try of each kind (W-C01-20) |
-| P3 | no | P2 | — | Row 13, second try of each kind |
+| R4V | no | R1b | — | Row 4 again when the Claude Code version changes |
+| P1 | yes | — | — | Row 7, session part (W-C01-14) |
+| P2 | yes | — | — | Row 13, first run (W-C01-20) |
+| P3 | yes | P2 | — | Row 13, second run |
 | CS1 | no | — | — | C01's combined scenario, first run (only if W-C01-29 keeps it) |
 | CS2 | no | CS1 | CS1 | C01's combined scenario, second run |
 
-R4V's rule: the Claude Code version this run sees before it chooses its step (as part A item 4 would record it, taken only from what the session shows it, with no command run for it) differs from the one in part A item 4 of the `OPENING.md` of the latest closed R1b or R4V run; if either is `not visible`, the rule does not hold. Open `no` becomes `yes` only by a checked change: P1 once W-C01-06, W-C01-34, W-C01-10, W-C01-35 and W-C01-36 are accepted; P2 also once W-C01-20's probe skill is merged; CS1 when W-C01-29 opens it.
+Open `no` becomes `yes` only by a checked change: R4V when the working session's `get_session` shows a Claude Code version other than 2.1.296 (N-148); CS1 when W-C01-29 opens it.
 
 ## 5. Step texts
 
@@ -109,18 +109,18 @@ Write the package (6.2) to `c01-run/R4V/PACKAGE.md` right after part B; then 5.1
 
 ### P1: row 7, session part
 
-1. Install the runtime with `pip install sentence-transformers`; record the versions installed and the time it took (not counted against the limit).
-2. Write `c01-run/P1/embed.py`: for one model at a pinned revision, it downloads and loads the model, embeds the twelve sentences of 6.4, and prints the seconds for download and load, the seconds for embedding, the vector dimension, the process's peak memory, and the cosine similarity of the three parallel pairs and of the three unrelated pairs of 6.4.
-3. For each candidate of 6.4, in order, run it in one foreground command with a 600-second timeout. Record in `c01-run/P1/ROW7.md` the candidate, its pinned revision, the printed values, and `fits` (the command finished within 600 seconds) or `does not fit` (it timed out, was moved to the background, or failed, with its first error line). The similarities are recorded, not judged.
+1. Install the runtime in one foreground shell call, not in the background, with the tool's timeout set to 600000 ms, its longest (by default a command moves to the background after 2 minutes):
+   `date -u +%Y-%m-%dT%H:%M:%SZ; python3 -m pip install --index-url https://download.pytorch.org/whl/cpu torch && python3 -m pip install sentence-transformers && echo INSTALL OK; date -u +%Y-%m-%dT%H:%M:%SZ`
+   The CPU-only torch wheel keeps the download small. If `INSTALL OK` is missing, record the first error line and run, once and the same way, `date -u +%Y-%m-%dT%H:%M:%SZ; python3 -m pip install sentence-transformers && echo INSTALL OK; date -u +%Y-%m-%dT%H:%M:%SZ`. If a call returns before its install has finished (it moved to the background), wait for its completion before item 2. Record in `c01-run/P1/ROW7.md` which command ran, whether it moved to the background, the versions installed, the time it took from the printed times (not counted against the limit), and whether the machine shows a GPU device (`ls /dev/nvidia*`).
+2. Write `c01-run/P1/embed.py`: for one model at a pinned revision, it downloads and loads the model, embeds the twelve sentences of 6.4, and prints the seconds for download and load, the seconds for embedding, the vector dimension, the process's peak memory, and the cosine similarity of the three parallel pairs and of the three unrelated pairs of 6.4. Its first line is rule 1.7's line as a Python comment (`# ` before it).
+3. For each candidate of 6.4, in order, run it in one foreground shell call, not in the background, with the tool's timeout set to 600000 ms (600 seconds). Record in `c01-run/P1/ROW7.md` the candidate, its pinned revision, the printed values, and `fits` (the command finished within 600 seconds) or `does not fit` (it timed out, was moved to the background, or failed, with its first error line). A command that moved to the background is stopped before the next one. The similarities are recorded, not judged.
 4. Closing record.
 
-### P2 and P3: row 13, one try of each kind
+### P2 and P3: row 13
 
-1. Before part B and before anything else in the step, do task K (6.5) as ordinary work. Read nothing more under `.claude/skills/` or `evidence/C01/` before it is done. Then record in `c01-run/<step>/ROW13.md` whether you invoked a skill while doing it (rule 1.4), and the first line of `K.md`.
-2. Part B.
-3. List `.claude/skills/` in the starting checkout and invoke the one skill there, by its name, for task K2 (6.5). Record whether it was invoked, and the first line of `K2.md`.
-4. Record whether part B lists that skill, and its description as listed.
-5. Closing record.
+1. Task K (6.5) is the step's first item, before part B and before anything else in the step: do it as ordinary work and push `K.md`. Until `K.md` is pushed, read no file of this repository other than this one, and list none of its directories; rule 2.2's `Result:` lines and running `tools/guard_report.py` for part A are not such reads.
+2. Then read `evidence/C01/routine/AFTER_K.md` in the starting checkout, once, and do what it says.
+3. Closing record.
 
 ### CS1 and CS2: combined scenario
 
@@ -175,7 +175,6 @@ Sentences (TR1 to TR6 Turkish, EN1 to EN6 English). Parallel pairs: TR1–EN1, T
 - TR6: "Fırından yeni çıkmış ekmeğin kokusu sokağa yayıldı."
 - EN6: "Two trains left the station at the same minute."
 
-### 6.5 Row 13 tasks (P2, P3)
+### 6.5 Row 13 task (P2, P3)
 
 - K: "Tally the synthetic word list W1: lark, wren, lark, finch, wren, lark. Write the tally to `c01-run/<step>/K.md`."
-- K2: "Tally the synthetic word list W2: oak, elm, oak. Write the tally to `c01-run/<step>/K2.md`."
