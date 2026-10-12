@@ -13,6 +13,7 @@ sources:
   - "plan/work/W-C02-08.md, W-C02-09.md (points 2 to 8) and W-C02-10.md (points 2, 3 and 5) at 11feac5; plan/work/C02.md notes N-244 to N-258, N-256 in full. Read 2026-10-12."
   - "W-C02-07's test files, unmerged, read only for what they assume, in the executor's scratch clone (scratchpad/c04/tests/C02/W-C02-07/): T-W07-5B_authorization_matrix.md and T-W07-N28_verifier_does_not_repair.md in full; README.md section 8 (lines 355 to 377); the interface and token lines of T-W07-N09, T-W07-F04, T-W07-F05, T-W07-F06 and T-W07-6RG; the 'Phase C' lines of T-W07-N01, T-W07-5D and T-W07-T31; TABLES.md G18. Read 2026-10-12."
   - "plan/Ek_D_Dusunme_Protokolleri.md section 2 item 3 and section 3 (D1 to D8), for this producer's discipline answers (reported in its final message, not here)."
+  - "Added 2026-10-12 for sections 1.7, 2.7 and 3.3's argument and PC-46 (a second fresh-context producer of the same session): B:200, B:258, B:259, B:266, B:268, B:284 to B:286, B:312 to B:316, B:389 to B:404; C:26, C:91 to C:95 (F07), C:118, C:120, C:145; P:330, P:641, P:710, P:763; plan/Installation_Working_Order.md sections 4 and 6; plan/ledger.md rule 3; EV2 DM-29 and DM-41; EV3 sections 4.1 to 4.3; plan/work/W-C02-10.md in full; plan/decisions/PC-44.md and PC-45.md; W-C02-07's unmerged T-W07-N03 and T-W07-N28 in full, T-W07-5B lines 20 to 124, README section 8.1, and the lines of T-W07-F07, T-W07-RT, T-W07-6TK and T-W07-N04 that name operation_state or set_effort_policy, read only for what they assume. Read 2026-10-12."
 claim: "design from the plan, the accepted C02 design records and the unmerged test files' stated assumptions; nothing built, run or observed on a platform; not independently tested; a producer's proposal for a fresh checker to judge"
 ---
 
@@ -94,6 +95,89 @@ W-C02-09 writes each of the ten functions' role lists as 1.2 gives them (B:48: "
 
 Each through a change judged by a fresh checker, before the dependent work: (a) C03's statement of checks needs readiness or relation reads from `ci` (`ready_works`, `affected_entities`, `explain_paths`); (b) C03's design of the audit environment needs a relation that the review functions do not write themselves (`relate`'s `den` cell); (c) C05's exam form (N-138) changes how exam tasks are opened (the `sin` cells); (d) W-C02-09's build gives `review_finding` a transition that is no review.
 
+### 1.7 Four open points of section 4 (items 1, 4, 5 and 6), decided
+
+*Added 2026-10-12, by a second fresh-context producer of the same session (declared, Ek A 5.3), at the executor's task; read with PC-46.* Labels as above. Each rule here is a check after the role gate (1.1) unless it says "at the gate". Further sources read for this section, at `11feac5`: B:312 to B:316, B:389 to B:404, P:763, C:91 and C:94 (F07), C:120 (N03); EV2 DM-29; W-C02-07's unmerged T-W07-N03 (in full), T-W07-F07 line 10, T-W07-RT line 42, T-W07-6TK line 20 and T-W07-N04 line 41, read only for what they assume.
+
+#### 1.7.1 Changing a work item another environment opened (section 4, item 1)
+
+**What the families record (Doc).** Work has no field naming the class that opened it (B:120); that class is on the work item's creation event (B 3.13: `role_class` "from the caller's token, never declared"). The installation's work items sit under the installation's Mission (B:138, PC-44 place 4). An exam task is recorded as one only by the exam link, which "lives only" in EvalRun, readable only with `sin` (B:284; B:286: "in the `Work` record, the fact that the task is an exam is kept in a field the working environment cannot see"; N08, C:125; §4.1's row for "the fact that a task is an exam": `sin` only). A claim's class is on its Assignment (B 3.5; EV3 §4.3, S8 line 2). A relation the ledger transfer wrote has a creation event of type `transferred` (B:268).
+
+**The lines of B section 2 that bear (Doc).** B:35: `kur` writes "the installation's own records (work items and claims on them, …)". B:36: `cal` "Opening work other than missions"; no "Cannot" line of B:36 names other environments' work. B:37: `den` writes no work item. B:38: `sin` "Opening exam tasks as ordinary work". Principle 8: "Separation-of-authority rules are defined at the environment level." EV2 DM-29 (b): letting `cal` revoke "would let any working session take another's claim"; ending another's claim is `revoke_claim`, `den` only.
+
+**Alternatives weighed.**
+- **(A) The opening class only** (section 4 item 1's candidate: a work item changes only with the class whose token opened it, read from its creation event). Not chosen. Exam tasks are opened with `sin` (B:38), so `cal` would be refused on exactly the exam tasks, and the refusal would answer for a working session the question B:286 and N08 hide from it: `den` opens no work, and the installation's items are known by their Mission, so a refused item outside the installation is an exam task.
+- **(B) Any permitted class on any work item.** Not chosen. `sin` would change working items (B:38 limits it to exam tasks), `kur` working items (B:35, "own"), `cal` the installation's, and a working session could revise or cancel a work item the audit environment holds a claim on, ending that claim's effects (F08's re-check at the effect, B:258): the revocation DM-29 gives `den` alone.
+- **(C, chosen) Ownership read from what the families record (Rule O), and the claim's class (Rule C).**
+
+**Rule O (ownership).** Checked in `revise_work`, `mark_stale`, `cancel_work` and `reopen_for_review`, in `relate` and `retract_relation` when the relation's `from_ref` is a work item, and in `retract_relation` for every relation:
+- `kur`: only work items under the installation's Mission (B:35; B:138).
+- `sin`: only work items its exam link names (B:38; B:284).
+- `cal`: any work item not under the installation's Mission. The check reads nothing about exams, so an exam task is changed exactly as an ordinary work item, with the same answers and reasons (B:286; N08).
+- `den` (only `reopen_for_review` passes its gate): any work item. It takes the item into its own candidate review set and changes nothing else (B:135; G5 item 1).
+- A relation whose creation event is `transferred` is retracted only with `kur` (B:35; B:268).
+- Refused otherwise, recorded as DM-19 says; the reason names the rule, never the item's opener.
+
+**Rule C (another class's claim).** Checked after Rule O in `revise_work` and `cancel_work`, and in `relate` and `retract_relation` for a hard relation whose `from_ref` is a work item: refused while an active claim of a role class other than the caller's is on that work item. It is not checked in `mark_stale` or `reopen_for_review`, which keep the work, its claim and its output (B:134, B:135): a running claimant must learn that its input changed. A claim of the caller's own class does not stop the call, so B:136's case (a work item cancelled while claimed, its late result kept as candidate evidence) stays inside one environment, where principle 8 draws no line between sessions.
+
+**The cases the task names.**
+- **`cal` and the audit environment's work.** `den` opens no work in C02 (§4.1's row 2); the review work items its sessions claim from C03 (EV2 section 3 row 2.9) are opened by a design C03 makes. Under Rule C, `cal` can neither revise, nor cancel, nor add or retract a hard dependency of a work item while `den` holds its claim. Before `den` claims it, `cal` may cancel a review work item outside the installation. That delays an acceptance and never grants one: acceptance needs `den`'s verdict (B:133; B:244), and a sample is a Review row, which `cal` cannot write or change (§4.1's reviews row).
+- **`cal` and the exam environment's work.** `cal` changes an exam task as any ordinary work item, so no answer tells it the task is an exam. On the plan's form the subject claims its exam task in the working environment (B:286: "opened in the working environment as ordinary `Work`"), so Rule C does not refuse `cal` there either.
+- **An exam subject cancelling its own exam task.** Allowed, as on any ordinary work item: the work item's `execution` becomes `cancelled`, with its event under `devos_calisma`. EvalRun and the exam records are untouched (B:286: written only with `sin`); the exam reads the cancellation through its link. A revision by the subject is a new revision, which the link's "+revision" (B:284) tells apart from the one `sin` opened.
+- **`sin` on other work.** Refused on every work item its exam link does not name.
+- **`kur`'s own items.** Only `kur` revises, marks stale, cancels or changes the relations of the installation's work items, and `kur` only those (`den`'s `reopen_for_review` excepted, which changes nothing else). After the hand-over the installation writes them through these functions with `kur` (B:35; B:138).
+
+**What is inference.** Rule C in full (that revising, cancelling or adding a hard dependency across classes is DM-29's revocation by another name); that `den`'s `reopen_for_review` reaches every work item; that the exam reads and scores a cancellation or revision by its subject; that `cal` is refused the installation's items, which rests on B:35's "own" and not on a "Cannot" line of B:36. **Doc:** Rule O's `kur` and `sin` limits (B:35, B:38) and the reason it reads no exam link for `cal` (B:286; N08; §4.1).
+
+**Tests this asks for** (for W-C02-07's designer; IDs and form are the designer's). Rule O: each function with each class's token on a work item of each kind (opened with `cal`, under the installation's Mission, an exam task opened with `sin`), ✔ or ✘ as above; for `cal`, the answers on an exam task equal those on a `cal`-opened item (the exam fact not leaked). Rule C: with a `den` claim on a `cal`-opened item, `cal`'s `revise_work`, `cancel_work` and hard `relate` refused and `mark_stale` accepted; with another working session's claim, `cal`'s `cancel_work` accepted and the late result kept as a candidate (B:136). Breaks: Rule O reading the exam link for `cal` (the leak case turns red); Rule C removed (the `den`-claim cases turn red). These are not T-W07-5B's role-gate cases.
+
+#### 1.7.2 `operation_state` (section 4, item 4)
+
+**Decision: a separate read function, named now:** `devos_api.operation_state(operation_id uuid)`, carrying the read marker (DM-36). It returns the Operation's `status`, whether any of its observations is `applied` (`ever_applied`), and the latest observation's `observed_effect` (`current_effect`). It returns no payload and nothing B 3.12 does not hold. The build may add fields of B 3.12 with its reason; it does not rename it.
+
+| Function | `cal` | `den` | `sin` | `kur` | `ci` | `bak` |
+|---|---|---|---|---|---|---|
+| `operation_state(operation_id)` | ✔ | ✔ | ✔ | ✔ | ✘ | ✘ |
+
+**Why a separate function (Doc, then Inf).** F07's positive is "The current-state question gives the right answer", and its class rule keeps "applied in the past", "current now" and "accepted" apart (C:91, C:94). No function of B section 4 answers it as a read: `prepare_operation`'s repeat answers "from the existing record and the real state" (B:259), but it takes a claim token and the full intent and runs the effect's checks, so a reader would need a claim and could be refused by them; `record_attempt` and `record_observation` write. DM-36 requires a read to change nothing. **Inf:** that the three fields are those F07 needs; "accepted" is the work item's and Acceptance's, not this read's.
+
+**Why named now, unlike R10r, R12 and R13 (1.4).** Its family and fields are fixed (B 3.12: Operation's `status`; Observation's `observed_effect`, appended, F07); the tests already assume the name (W-C02-07 README section 8.1, its "Reads the tests need" line); and no later design bears on its form (C08 runs F07 again on the same tables, C:95). The argument is README section 8.1's `operation_id uuid`; T-W07-F07's line 10 writes `operation uuid` and is aligned by the test designer before a first result (README section 8).
+
+**The row's sources.** Doc: §4.1's note, "B:36 to B:38 refuse the environments, among reads, only the exam records", and B:35 refuses `kur` among reads only exam records and RejectedAttempt; Operation and Observation are neither. `ci`: not among B:40's reads (as §4.1's `competence_summary` row; EV3 §5.2). `bak`: B:41, "only the `mark_exported` function". Uses: `cal` and `kur` read the effects they intend (§4.1's row of "external-effect intents and their observations": `cal` ✔, `kur` its own); `den` reads them to review work with an effect and for recovery's stages (B:37: "advancing recovery stages"); `sin` reads an exam task's effect. **Inf:** `den`'s and `sin`'s uses; that no after-gate limit applies (none applies to §4.1's other reads).
+
+#### 1.7.3 The ledger transfer's fourteen functions (section 4, item 5)
+
+The row, in §4.1's terms, from B:397 (PC-44 place 10):
+
+| Operation (B section 4) | `cal` | `den` | `sin` | `kur` | `ci` | `bak` |
+|---|---|---|---|---|---|---|
+| Ledger transfer (B:397; PC-44 place 10): `begin_transfer_run`, `transfer_mission`, `transfer_work`, `transfer_relation`, `transfer_decision`, `transfer_review`, `transfer_acceptance`, `transfer_need`, `transfer_finding`, `transfer_artifact`, `transfer_event`, `end_transfer_run`, `record_handover`, `record_ledger_entry` | ✘ | ✘ | ✘ | ✔ until the `ledger_handed_over` event; after it only `transfer_review`, `transfer_acceptance` and `transfer_artifact` for a verdict file, until the C03 migration removes them, and `record_ledger_entry` for `ledger_entry` events, until C12 | ✘ | ✘ |
+
+**Reading.** At the gate the row is `kur` only, for all fourteen. What follows "✔" is a check after the gate, read from the `ledger_handed_over` event (state, not role), as 1.1 reads §4.1's qualifiers; so are `transfer_mission`'s condition ("opens a Mission only on an answered `batu` decision", B:397; DM-23) and `transfer_review`'s refusal of kind `sample` (2.2, condition 2).
+
+**Refusals, each with its line (Doc).** Every class but `kur`: B:397, "Only `devos_kurulum`"; B:35's "Can" names the ledger transfer, no other class's does. Besides: `cal` on `transfer_review` and `transfer_acceptance`, B:36 "Cannot: Binding verdicts, acceptance"; `den` on the same two, EV3 §4.2 ("Writing them as `devos_denetim` would make an installation self-check look like an audit verdict (criterion 30), and is refused"), and on `transfer_artifact`, B:37 "Cannot: Writing products and candidates"; `sin` on `transfer_artifact` and `transfer_review`, B:38 "Cannot: Writing products, writing verdicts"; `ci` on `transfer_review` and `transfer_decision`, B:40 "Cannot: Writing verdicts or decisions", its one write being its checks' results (EV3 §5.2); `bak`, B:41 "Every other write". **Inf:** none in the cells; that the hand-over's limits are not role cells.
+
+**For T-W07-5B.** One row (its key the designer's), six cells for each of the fourteen; until it exists the fourteen give `5B-unmapped-*`. Its `kur` ✔ cells are run before any `ledger_handed_over` event exists in the test's transaction **[Inf]**; the refusals after the hand-over are the transfer's tests (N18; W-C02-14), not the role gate's.
+
+#### 1.7.4 `set_effort_policy` (section 4, item 6)
+
+**Sources (Doc).** B:312: `work_ref` is "empty for a standing policy"; `expert_assessment_ref` "cannot be empty for any work item"; `approved_by_role_class` (`devos_denetim`). B:314: "A reduction needs the audit environment's approval: its own approval for the item, or a standing policy that the audit environment approved in advance for a class of work …; a work item of that class uses the policy without a new approval"; "A standing policy is written and retired only with `devos_denetim`". P:763: "Every work item is opened with high effort depth. A reduction is made with a reason and with the approval of the audit environment". B:402, `set_effort_policy`'s key check: "Effort reduction only with audit approval, for the item or by a standing policy". Where B section 4 limits a whole function to one class it says so: `revoke_claim` "only `devos_denetim`" (B:390), `ingest_source` "(only `devos_ingest`)" (B:393), the Review group "Only `devos_denetim`" (B:396), the ledger transfer "Only `devos_kurulum`" (B:397), `mark_exported` "(only `devos_backup`)" (B:404). For `set_effort_policy` it limits only the reduction. B:35 refuses `kur` "effort-reduction approval"; §4.1's row "Effort-reduction approval; standing effort policies": `den` only; N03 (C:120).
+
+**Decision.** One function with three kinds of write.
+- **At the gate:** `cal` ✔, `den` ✔, `sin` ✔, `kur` ✔; `ci` ✘ (B:40: no write but its checks' results, EV3 §5.2); `bak` ✘ (B:41).
+- **(a) A work item's own policy at the default** (level high with every step, B:312; P:763), **or within an active standing policy for its declared class** (B:314: "uses the policy without a new approval"): the classes that may change that work item under 1.7.1's Rule O, that is `cal`, `sin` (its exam tasks) and `kur` (the installation's work items). `den` is refused this kind: its right is the approval, (b), and B:37 lists no other policy write.
+- **(b) A reduction for one item** (a lower level, or a step dropped where no standing policy allows it), with its reason: `den` only, on any work item; `approved_by_role_class` is taken from the token, and a declared approval counts for nothing (B principle 8). Refused to `cal` (N03: "the working environment's own approval of a reduction is rejected"), `kur` (B:35) and `sin` (B:38 lists no approval).
+- **(c) Writing or retiring a standing policy:** `den` only (B:314).
+- In every kind, the expert assessment and the non-removable steps bind the writer, `den` included (B:314; N03). The transferred items' policies are written by the transfer (`transfer_work`; B:316), not here.
+
+**Is T-W07-5B's mapping right?** Not as a role list. Its R08 maps the whole function to §4.1's row "Effort-reduction approval; standing effort policies", a row of operations (b) and (c). The function also carries (a), so `5B-R08-set_effort_policy-cal`, `-sin` and `-kur` expect a role refusal where the gate must admit those classes. That contradicts B:312 and B:314 (every item carries a policy, and an item uses a standing policy "without a new approval") and T-W07-N03's own positives with the working token (`N03-pos-default`, `N03-pos-standing-use`). R08's cells are right for (b) and (c), as checks after the gate: T-W07-N03 already tests them with the working and `kur` tokens (`N03-neg-own-approval`, `-kurulum`, `N03-neg-standing-calisma`, `-kurulum`, `N03-neg-retire-by-calisma`). For the test designer, before a first result (README section 8): a gate row for `set_effort_policy` (`cal`, `den`, `sin`, `kur` ✔; `ci`, `bak` ✘), with R08 kept as the operation row T-W07-N03 tests. Three other places cite R08 for this function: T-W07-RT's `RT-cal-n4`, T-W07-N04's `N04-k-set_effort_policy` and T-W07-6TK's list of functions that "refuse `devos_calisma` by its role list". They hold only if their call is a reduction or a standing policy refused after the gate. Their arguments were not read here. The test is not changed here.
+
+**Alternatives weighed.** (i) `den` only at the gate, with each item's default policy written by `admit_work` in the same call (R08's mapping would then be right). Not chosen: B section 4 gives the policy its own function and `admit_work` the key check "Scope and revision; link to the mission revision" (B:389), and an item's use of a standing policy (B:314) is a write on the item's side, which a `den`-only function could not take. (ii) Two functions, one for approvals: B section 4 names one, and the token already tells the approver (B:312's `approved_by_role_class`; principle 8). **Inf:** reading B:402's "only" for the reduction alone; `den`'s refusal of kind (a); `den`'s reduction on any work item.
+
+#### 1.7.5 What reopens 1.7
+
+Each through a change judged by a fresh checker, before the dependent work: (a) C03's design of review work items (who opens them; whether `cal` may cancel one not yet claimed); (b) C05's exam form (N-138), if `sin` holds claims on exam tasks or exam tasks leave the working environment's reach; (c) W-C02-09's build splitting `set_effort_policy` or giving `operation_state` another form, before the tests' first results; (d) C08's or C09's need for other operation reads.
+
 ## 2. Gap 2: DM-41 and the database's own sample Reviews
 
 ### 2.1 The conflict, and its cause
@@ -165,6 +249,14 @@ These are for W-C02-07's test designer to write. They are not written here, and 
 
 The sampling function in `devos_private`, not executable by any application role, called only from the gated and labelled writes; its marker; the refusal of kind `sample` in `open_review` and `transfer_review` (the latter built in W-C02-09, EV-C02-005 S5); the Review table's check; DM-41's trigger with conditions 1 to 4, the rule about taking and the fail-closed rule. Its record names the marker's form and shows the catalogue's grants on the sampling function.
 
+### 2.7 The ledger transfer's row (1.7.3) and the sample path
+
+*Added 2026-10-12, with 1.7.*
+
+- **Who calls the sampling function.** Condition 2's "the functions that accept a format-gated or routine-labelled write" means every function that accepts a record of one of DM-08's streams, whether or not the record passed a gate. That includes four of the transfer's functions, whose records skip the gate but are in a stream. `transfer_decision`: B:308, "such decisions count in the sample stream of `high_impact` and `batu` decisions". `transfer_work`, for the item's EffortPolicy: B:316, "EffortPolicy is a sample stream". `transfer_finding`: B:200, Finding "is one of the sample's streams". `transfer_need`: PC-44 place 3's reason, `why_needed` is "the note's own text, which the Need sample stream sees". So a sample a transferred record draws is the database's own, exempt as 2.2's last bullet says, and its creation event carries `kur`'s class (B:266; DM-31). **Doc** for decisions and effort policies; **Inf** for findings and needs (B states their streams, not the transferred records' place in them).
+- **After the hand-over** these four refuse (B:397), so the transfer's samples end with it; the installation's later records draw theirs through the ordinary functions.
+- **`transfer_review`** refuses kind `sample` after the gate (condition 2). Its copies are Review records under DM-41 in full (they have a reviewer); section 4 item 8 stands.
+
 ## 3. What changes elsewhere
 
 ### 3.1 Made with this record
@@ -176,6 +268,8 @@ The sampling function in `devos_private`, not executable by any application role
 ### 3.2 Plan text, for the executor to change through plan Section 14 (a plan-change record)
 
 **Such places exist: two, both from Gap 2. Gap 1 needs none:** its cells rest on B section 2 and B section 4 as they stand, and no plan line names other classes for these functions.
+
+*Added 2026-10-12:* both places are carried by `plan/decisions/PC-46.md`, with their old texts quoted from `11feac5`, and applied word for word in `plan/Ek_B_Veri_Modeli.md` and `plan/Ek_C_Testler.md` at this record's head. A search of the plan and its appendices for "repair", "same transaction", "same action", "review record" and "sample" found no other text that sections 1.7, 2 or 2.7 make untrue; PC-46's "Places checked, unchanged" lists the places read and why each stays.
 
 **Place 1. Appendix B 3.11, rules, line 246 at `11feac5`.**
 - Old: "- The verifier does not repair in the same action: a new revision of the target product cannot be written in the same transaction as a `Review` record."
@@ -196,11 +290,45 @@ The sampling function in `devos_private`, not executable by any application role
 - New: "   - ✘ N28: a new revision of a review's target in the same transaction as the Review record is refused, and so is one in the transaction that takes a `sample` Review or writes its verdict; the `sample` Review the database itself opens for the record revision that draws it is not such a record (`evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 2); ✔ the repair opened as a separate work item is accepted, and so is a sampled record with its `sample` Review in one transaction (B 3.11)."
 - Why it does not loosen **[Inf]**. Under its plain words the block's own point 3 (the database creates the sample) and point 5 cannot both be met. The change settles that conflict, adds a negative (the taking) and three planted negatives (2.5), and excludes only the row no verifier wrote.
 
+**Made, and the argument for a checker** (*added 2026-10-12*). The New text above is in `plan/work/W-C02-10.md` at line 38, word for word. Ledger rule 3 says an acceptance condition is "never loosened". W-C02-10 has no result yet. The table takes each case the bullet can meet, in the old wording and the new.
+
+| Case | Old wording | New wording |
+|---|---|---|
+| 1. A Review of kind `review` (through `open_review`) and a new revision of its target in one transaction, either order: the verifier's repair (T-W07-N28's N28-a, N28-b) | ✘ | ✘, unchanged |
+| 2. A ledger transfer's copy (`transfer_review`) and a new revision of its target in one transaction | ✘ | ✘: a copy is not "the `sample` Review the database itself opens" |
+| 3. A Verdict on a Review of kind `review`, with a new revision of its target, in a later transaction than the Review | Not named: the words name the Review record. Required through point 7 (T-W07-N28's N28-S-verdict; DM-41) | The same in the bullet. Still required through point 7, and now also by B 3.11's own words (PC-46 place 1), which name the Verdict |
+| 4. A Review of kind `sample` from any writer but the database's sampling path (a client asking for kind `sample`; the owner's direct insert), with a new revision of its target | ✘ | ✘: not "the database itself opens". The client path is also ✘ by point 3's fourth bullet |
+| 5. The database's own sample, opened in the drawing call for the revision whose accepted write drew it | ✘ in plain words, while point 3's first bullet requires it ✔: the block could not be met | ✔: the exemption. The new ✔ clause requires it |
+| 6. A further revision of the sampled target in the same transaction, after the sample opened, before any verifier acts | ✘ in plain words, but only when the hidden draw (DM-08) fell on the earlier write | ✔: a revision no review record names (T-W07-N28's N28-pos) |
+| 7. Taking a sample (setting its reviewer fields, if the build takes it that way) with a new revision of its target | Not named: the words name the transaction that writes the Review record, and taking an existing row is an update | ✘: added |
+| 8. A Verdict on a `sample` Review with a new revision of its target | Not named in the bullet (DM-41 covers it) | ✘: named |
+| 9. The repair opened as a separate work item | ✔ | ✔, unchanged |
+
+*Why the old block could not be met.* Point 3's first ✔ has the database itself create the sample "for format-gated records it accepts", and B:266 makes it "a record the database makes by rule within that call". A build that meets point 3 meets case 5, and so fails point 5's ✘ in its plain words. A build that meets point 5 refuses every drawn write, and so fails point 3. The only builds that met both moved the sample out of the call (2.4, B1 to B4). Those go against B:266 and carry the costs 2.4 states. A condition that no build following the plan can meet is a defect of the condition. Ledger rule 3 allows it to be corrected on a block with no result, provided nothing else is let through.
+
+*Why the difference is the exemption and nothing more.* The new wording admits two cases the old refused: 5 and 6.
+- Both arise only while the sample row has no reviewer and no verdict and was written by the database for the drawn revision. In neither does a verifier act in the transaction.
+- Case 6 is no further exemption. It is N28-pos's rule (a revision that no review record names). Read with point 3, the old wording made that rule depend on whether the hidden draw fell on an earlier write.
+- Every case in which a verifier writes or takes a review record stays refused (1, 2, 4, 8) or is newly refused (7). Case 3 stands as it stood.
+- The exemption's bounds are in its words: "the database itself opens" (case 4 refused; 2.2 condition 2), "for the record revision that draws it" (condition 3), and "takes it or writes its verdict" (condition 4's end).
+- The new ✔ clause is a requirement the old block lacked. A build that refuses its own samples now fails point 5, where before it failed only point 3.
+- What the build cannot establish of these bounds, it refuses (2.2's fail-closed rule; point 7: "'could not check' is never a pass").
+
+*What else in the block, and why nothing more changes.* Point 3's fourth bullet ("A `sample` Review written with any environment token, the working environment's included, is refused") is kept. Read with its first bullet ("the database itself creates") and its source (B 3.11: "created by the database, never by an agent"), it refuses a sample a caller writes. The database's sample is made "by rule within that call" (B:266), with `origin = rule`: it is no caller's write, although its event carries the caller's role class (DM-31). On that reading, point 3's bullets and point 5's new bullet can all be met. **[Inf]** If a checker reads the fourth bullet as covering the database's own sample, point 3 conflicts with itself, apart from N28, and the same correction is needed there, with the same argument: what stays refused is a sample written by any writer but the database. Point 7 requires T-W07-N28 to pass. Its clause table quotes Appendix C N28, which PC-46 place 2 changes, so the test gains the new clauses and 2.5's cases before its first result (README section 8; 3.4). The block's words need no change for that. Points 1, 2, 4, 6, 8 and 9, point 5's other bullets, "Who judges" and "Not covered" do not name the review record and are unchanged.
+
+*Appendix C N28 (PC-46 place 2)* is judged by the same table, with "the review record" in place of "the Review record". PC-46 place 1 widens B 3.11's own words to DM-41's reading (every target, and the Verdict), which loosens nothing.
+
+*What this rests on.* The following are documented: B:266's "within that call" and point 3's first bullet; and that no verifier acts while the sample has no reviewer and no verdict (B:232's reviewer fields; B:247, "queued for the audit environment"). That the producer gains nothing from the exemption is inference (2.3, last bullet). This is the producer's argument, not a verdict. The change's checker judges it (section 4, item 9).
+
 ### 3.4 W-C02-07's tests (the executor's, before any result; README section 8)
 
 T-W07-5B gains the ten rows of 1.2 and R15's function (1.4). Its "Could not check" item on the ten functions and its `w07_fn_cfg` key `R15` change accordingly. T-W07-N01's, T-W07-5D's and T-W07-T31's "Phase C" lines, and the first bullet of T-W07-N28's "Not covered", cite section 2 in place of the assumption. The cases of 2.5 are added. Nothing here changes a test file.
 
+*Added 2026-10-12, from 1.7 and PC-46:* T-W07-5B also gains the rows of 1.7.2 (`operation_state`), 1.7.3 (the ledger transfer's fourteen functions) and 1.7.4 (`set_effort_policy` at the gate, with R08 kept as the operation row T-W07-N03 tests), and RT-cal-n4, N04-k-set_effort_policy and T-W07-6TK's list are checked against 1.7.4. T-W07-F07's line 10 takes README section 8.1's argument name. Rules O and C (1.7.1) need cases of their own, outside the role gate. T-W07-N28's clause table takes PC-46 place 2's text.
+
 ## 4. What stays open
+
+*Added 2026-10-12:* items 1, 4, 5 and 6 are decided in section 1.7 (1.7.1, 1.7.2, 1.7.3 and 1.7.4), and the plan text of section 3.2 is carried by PC-46; the text below is as first written.
 
 1. **Which work items a permitted class may change.** The rows admit `cal` to `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `relate` and `retract_relation` without qualifier. Neither §4.1 nor this record decides whether a working session may cancel, revise or retract the relations of a work item that the audit environment, the exam environment or the installation opened, or an exam subject cancel its own exam task. Principle 8 puts separation at the environment level, and EV3 §15 has no line for it. This is a material question, reported and not decided: the executor decides it before W-C02-09 builds these functions (one candidate: the opening class, as S8 line 2 binds a claim to its class), judged by a fresh checker.
 2. **`review_finding`'s other transitions.** If W-C02-09's build gives it a transition that is no review (the writer's `withdrawn`), that transition needs its own row, or another function, before it is built (1.3; 1.6 (d)).
