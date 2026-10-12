@@ -882,10 +882,11 @@ jobs:
           raise SystemExit(1 if failed else 0)
           PY
       - id: tokens_revoke
-        name: "(8) revoke every synthetic token issued: once the head check said yes, in every case"
+        name: "(8) revoke every synthetic token issued: once step tokens ran after the head check's yes, in every case"
         # Only after a yes from the head check, as every other step that holds the secret (T-W03-08 (e); EV-C02-007
-        # section 14); then in every case, so that tokens issued before a failure or a cancellation are revoked.
-        if: ${{ always() && steps.head.outputs.head == 'yes' }}
+        # section 14), and only if step tokens ran, whatever its outcome (not skipped; section 14.9); then in every case,
+        # so that tokens issued before a failure or a cancellation are revoked.
+        if: ${{ always() && steps.head.outputs.head == 'yes' && steps.tokens.outcome != 'skipped' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -2610,19 +2611,42 @@ jobs:
               except (urllib.error.URLError, OSError, ValueError) as exc:
                   gaps.append(f"{place}: could not be read ({type(exc).__name__})")
 
-          # 3. The logs of migrate.yml's earlier runs (the 100 most recent; this run's own log is not complete yet).
+          # 3. The logs of migrate.yml's earlier runs (this run's own log is not complete yet). Every page of the run list
+          # is read, up to LOG_PAGES pages of 100 runs; a longer list is "could not check". Each run's log is counted once:
+          # an archive may hold each job's whole log as a top-level file and also each step's log in a folder per job
+          # (EV-C02-007 section 14.6), so only its top-level files are counted when it has any, and its files in folders
+          # only when it has none. Per run read, the layout used is printed, with the number of files of each kind.
           place = "logs of migrate.yml's earlier runs"
+          LOG_PAGES = 4
           try:
-              listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100"))
-              runs = [r for r in listing.get("workflow_runs", []) if str(r.get("id")) != this_run]
-              total = max(int(listing.get("total_count", 0)) - (1 if this_run else 0), len(runs))
+              runs, seen, listed, page, more = [], set(), 0, 0, True
+              while more and page < LOG_PAGES:
+                  page += 1
+                  listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100&page={page}"))
+                  batch = listing.get("workflow_runs") or []
+                  listed = max(listed, int(listing.get("total_count", 0)))
+                  for r in batch:
+                      if str(r.get("id")) not in seen:
+                          seen.add(str(r.get("id")))
+                          if str(r.get("id")) != this_run:
+                              runs.append(r)
+                  more = len(batch) == 100 and not (listed and len(seen) >= listed)
+              if more:
+                  gaps.append(f"logs: the run list is longer than {LOG_PAGES} pages of 100; the runs past them were not read")
+              total = max(listed - (1 if this_run else 0), len(runs))
               read = 0
               for run in runs:
                   try:
                       z = zipfile.ZipFile(io.BytesIO(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/logs")))
-                      for name in z.namelist():
+                      files = [i.filename for i in z.infolist() if not i.is_dir()]
+                      top = [n for n in files if "/" not in n]
+                      nested = [n for n in files if "/" in n]
+                      for name in top or nested:
                           count(place, z.read(name))
                       read += 1
+                      print(f"logs: run {run['id']}: counted its "
+                            f"{'top-level files' if top else 'files in folders' if nested else 'archive, which holds no file'}"
+                            f" ({len(top)} top-level, {len(nested)} in folders)")
                   except (urllib.error.URLError, OSError, zipfile.BadZipFile, KeyError):
                       pass
               count(place, b"")
@@ -3316,19 +3340,42 @@ jobs:
               except (urllib.error.URLError, OSError, ValueError) as exc:
                   gaps.append(f"{place}: could not be read ({type(exc).__name__})")
 
-          # 3. The logs of migrate.yml's earlier runs (the 100 most recent; this run's own log is not complete yet).
+          # 3. The logs of migrate.yml's earlier runs (this run's own log is not complete yet). Every page of the run list
+          # is read, up to LOG_PAGES pages of 100 runs; a longer list is "could not check". Each run's log is counted once:
+          # an archive may hold each job's whole log as a top-level file and also each step's log in a folder per job
+          # (EV-C02-007 section 14.6), so only its top-level files are counted when it has any, and its files in folders
+          # only when it has none. Per run read, the layout used is printed, with the number of files of each kind.
           place = "logs of migrate.yml's earlier runs"
+          LOG_PAGES = 4
           try:
-              listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100"))
-              runs = [r for r in listing.get("workflow_runs", []) if str(r.get("id")) != this_run]
-              total = max(int(listing.get("total_count", 0)) - (1 if this_run else 0), len(runs))
+              runs, seen, listed, page, more = [], set(), 0, 0, True
+              while more and page < LOG_PAGES:
+                  page += 1
+                  listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100&page={page}"))
+                  batch = listing.get("workflow_runs") or []
+                  listed = max(listed, int(listing.get("total_count", 0)))
+                  for r in batch:
+                      if str(r.get("id")) not in seen:
+                          seen.add(str(r.get("id")))
+                          if str(r.get("id")) != this_run:
+                              runs.append(r)
+                  more = len(batch) == 100 and not (listed and len(seen) >= listed)
+              if more:
+                  gaps.append(f"logs: the run list is longer than {LOG_PAGES} pages of 100; the runs past them were not read")
+              total = max(listed - (1 if this_run else 0), len(runs))
               read = 0
               for run in runs:
                   try:
                       z = zipfile.ZipFile(io.BytesIO(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/logs")))
-                      for name in z.namelist():
+                      files = [i.filename for i in z.infolist() if not i.is_dir()]
+                      top = [n for n in files if "/" not in n]
+                      nested = [n for n in files if "/" in n]
+                      for name in top or nested:
                           count(place, z.read(name))
                       read += 1
+                      print(f"logs: run {run['id']}: counted its "
+                            f"{'top-level files' if top else 'files in folders' if nested else 'archive, which holds no file'}"
+                            f" ({len(top)} top-level, {len(nested)} in folders)")
                   except (urllib.error.URLError, OSError, zipfile.BadZipFile, KeyError):
                       pass
               count(place, b"")
