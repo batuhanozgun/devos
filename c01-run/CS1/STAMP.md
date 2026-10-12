@@ -14,3 +14,4 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 - Branch: `claude/probe-c01-cs1-20261012T0604Z`, from `origin/main` at `14ec14c`.
 - Step choice (rule 2.3): R1a, R1b, P1, P2, P3 and P4 each closed by a fetched branch (rule 2.2 count 1); R4V Open `no`; CS1 open, not closed, no prerequisites.
 - Boot ID at 2026-10-12T06:05:18Z: `352eb2d1-e9b0-4b57-ab1a-da42252e0ec8`.
+- First commit: batuhanozgun-devos <335658439+batuhanozgun-devos@users.noreply.github.com> / batuhanozgun-devos <335658439+batuhanozgun-devos@users.noreply.github.com>; signature headers: 0
