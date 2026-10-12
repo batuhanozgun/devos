@@ -1,0 +1,44 @@
+# T-W07-DM19B · A burst of calls without a verified token adds no rows beyond one counted row per function, reason code and hour
+
+Synthetic test data (plan Section 8 item 13): synthetic tokens of `devos-test` (issued, and one revoked, in part A's rolled-back transaction; in part B, issued and revoked by the migration job's step). The malformed and unknown forms are made at run time from an issued token: cut in half, and its last character replaced by another of the same class. A review and verdict are made up for `accept`. No token value is written in any file, printed or stored.
+
+**Serves.** W-C02-09 point 3. EV-C02-002 DM-19 and section 6: "a burst of calls without a verified token adds no rows beyond one counted row per function, reason code and hour, and a revoked token is counted, not recorded one by one". EV-C02-003 §15, row "Calls with no verified token from outside": "A test W-C02-07 writes: a burst of such calls adds no rows beyond the count". EV-C02-004 X-04 and X-05.
+**Command.** Part A, in `devos-test`: the migration job's test step runs `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm19b_burst_count.sql` as `postgres`, and passes only on the notice `W07_DM19B_BURST_COUNT PASS`. Part B: the job's runner, inside its `devos-test` step, runs `python3 -I tests/C02/W-C02-07/bin/dm19b_burst_count.py`. It gets these variables from the job, never printed: `W07_DATA_API_URL`, `W07_PUBLISHABLE_KEY`, `W07_TOKEN_CALISMA`, `W07_TOKEN_DENETIM` and `W07_TOKEN_REVOKED`. It ends on `T-W07-DM19B PASS|FAIL|COULD NOT CHECK (...)` with exit 0, 1 or 3. That the job runs it is an interface on W-C02-03's job (the executor's decision 3). Break (part A): `python3 -I tests/C02/W-C02-07/harness/run_breaks.py --patch tests/C02/W-C02-07/breaks/B-DM19B-1_row_per_call.sql --pg-bin <PostgreSQL 17 bin>`.
+**Time added to W-C02-13's run.** None scheduled. Part B makes 251 HTTP calls (seconds to a minute). A burst across an hour's end may add a second counted row, so the bound is computed from the burst's start and end.
+**Interface assumed.** Group B's call convention, as T-W07-F04 states it. For this test:
+- `devos_private.rejected_attempt` (`function_name`, `role_class`, `reason_code`, `counted_hour`, `count`), with the reason codes `missing`, `empty`, `malformed`, `unknown` and `revoked` (EV-C02-003 §15; as Group D's T-W07-6TK);
+- `devos_api.token_role_class()` (a read) and `devos_api.accept(verdict_ref, accepted_use)`;
+- `devos_private.revoke_env_token(token text)`;
+- part B: Data API calls by `POST /rest/v1/rpc/<fn>` with `Content-Profile: devos_api`, and `devos_api.read_rejected_attempts(since timestamptz)` for `devos_denetim` (EV-C02-003 §4.1, row "Reading RejectedAttempt"; the function's name is assumed).
+
+## Cases
+- **DM19B-<fn>-<form>**, for each function (`token_role_class`, `accept`) and token form (`missing`, `empty`, `malformed`, `unknown`, `revoked`): N = 20 calls (part A). All of them are refused, none raises, the counted rows for (function, form, `none`) grow by at most the hours spanned (1, or 2 across an hour's end), their total grows by exactly 20, and no per-call row appears.
+- **DM19B-percall** (contrast): 3 calls of `accept` with a verified `devos_calisma` token add exactly 3 rows with that role class. A verified caller is recorded one by one.
+- **DM19B-pos**: `token_role_class()` with the verified token is accepted, answers `devos_calisma`, and writes no record.
+- **DM19B-B-<form>** (part B): N = 50 calls of `token_role_class` over the Data API per form, counted through `read_rejected_attempts` before and after, with the same bound. **DM19B-B-pos**: the verified token's call answers `devos_calisma`.
+
+## Form C0
+| Field | Content |
+|---|---|
+| **ID and claim** | T-W07-DM19B. An outside caller without a verified token cannot grow the database by calling. Each burst adds at most one row per function, reason code and hour, whose count rises by one per call. A revoked token is counted like the others, not given a role class. |
+| **Failure class rule** | **[Designer's addition: a design rule with no Appendix C entry]** A refused unverified call that writes a row of its own: per call, per token form, per revoked token, or with a role class. |
+| **Examples** | **[Designer's addition]** The original, EV-C02-003 §15's "burst": DM19B-token_role_class-missing. Other manifestations: every other form and the state-changing `accept` (DM19B-accept-*); the revoked token (DM19B-*-revoked); the Data API's own transaction per call (DM19B-B-*). |
+| **Negative control** | The bound in every DM19B-<fn>-<form> case: rows grow by at most the hours spanned, the total by exactly N, per-call rows not at all. |
+| **Positive control** | DM19B-pos, which differs from the bursts only in the token's being verified. DM19B-percall shows that the bound does not hide verified callers' refusals. |
+| **Break attempt** | **B-DM19B-1** (`breaks/B-DM19B-1_row_per_call.sql`) removes the bound: every in-place increase of a counted row also inserts a row of its own, so rows grow with calls. Must turn red: **all ten DM19B-<fn>-<form> cases**; DM19B-percall and DM19B-pos stay green. Part B has no break of its own; its rule's break is part A's (README 5.2, "Executables against the harness"). |
+| **Stage and environment** | C02. Part A: `devos-test`, the migration job's test step (`sql-set-role`, header simulated). Part B: `devos-test` over the Data API with synthetic tokens (`data-api-synthetic`, README 5.1 (b)). The break runs on the throwaway database. |
+| **Independence level** | Written by the test designer, a fresh-context subagent of type `test-designer` (W-C02-07 phase B, Group B; agent ID in W-C02-07's "Record", point 1). Run by the migration job (parts A and B), by W-C02-09's producer at its head, and by W-C02-13's prober with the break. Assessed by a fresh-context checker that wrote none of the tests, from the raw output. Shared: model lineage, the design records and Appendices B and C. |
+| **Evidence layer** | Structural. Part B adds the behavioural fact that the Data API's per-call transactions keep the bound. Neither shows the platform's own request logs or rate limits. |
+| **Evidence envelope** | README 4's fields. Values fixed before the run: N = 20 (part A) and N = 50 (part B); the five forms; the bound (hours spanned); the break's ten red cases. Part B prints statuses and counts only. |
+
+## Could not check
+- Part A gives COULD NOT CHECK when an object of the interface is absent (DM19B-pre).
+- Part B gives COULD NOT CHECK (exit 3) when the job gives no endpoint, key or tokens, when `read_rejected_attempts` cannot be read, or when the endpoint cannot be reached. Until W-C02-03's runner gives these variables, part B is COULD NOT CHECK, and the claim over HTTP rests on part A and on W-C02-12.
+- Before the build exists both parts give COULD NOT CHECK (self-check: part B without its variables gives exit 3).
+
+## Self-check (not a result; README 10)
+2026-10-12, through the harness on PostgreSQL 16.15 in the session's container (not the projects' 17, so every line says counts: no), run as an unprivileged user in a user namespace. (1) With no migrations, the file gives COULD NOT CHECK and the break is could not check. (2) With a scratch stub of the interface above (outside the repository, not delivered), the unpatched run passes; B-DM19B-1 turns red exactly the ten DM19B-<fn>-<form> cases, with the file ending in FAIL; the restore passes. Part B's program, run without its variables, ends COULD NOT CHECK with exit 3. The stub is the test designer's reading of the design, not the build: a pass on it is no evidence about the build. Three faults in the test's own helpers were found and fixed this way before any result existed: the planter on a table whose columns all have defaults, the reading of a ref list, and the refusal test on a result without an ok key.
+
+## Not covered
+- `header_unreadable` (a header that cannot be read): Group D's T-W07-6TK.
+- The counted row's export after its hour (C09).

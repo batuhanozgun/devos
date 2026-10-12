@@ -1,0 +1,37 @@
+{
+  "_label": "SYNTHETIC W-C02-07: pattern file of T-W07-7SCAN (tests/C02/W-C02-07/T-W07-7SCAN_test_file_scan.md). It holds patterns only, no token, key or password. The token patterns are those of shared/token_format.md section 3, which holds if the two differ. The guard patterns are copied from .claude/hooks/tool_allowlist.py at main db2ebd9 (REDACT, lines 416 to 418; CREDENTIAL_VARS, lines 149 to 151); the scan re-reads the guard file at run time and gives COULD NOT CHECK if they differ.",
+  "version": 1,
+  "token_patterns": {
+    "env_token_exact": "dvenv1_[A-Za-z0-9_-]{43}",
+    "claim_token_exact": "dvclm1_[A-Za-z0-9_-]{43}",
+    "env_token_find": "(?i:dvenv1_)[A-Za-z0-9_-]{16,}",
+    "claim_token_find": "(?i:dvclm1_)[A-Za-z0-9_-]{16,}"
+  },
+  "guard_redact": [
+    "gh[pousr]_[A-Za-z0-9]{20,}",
+    "github_pat_[A-Za-z0-9_]{20,}",
+    "sk-[A-Za-z0-9_\\-]{20,}",
+    "(?i)bearer\\s+[A-Za-z0-9._\\-]{12,}",
+    "(?i)(token|secret|password|passwd|api[_-]?key)(\\s*[=:]\\s*)\\S+"
+  ],
+  "guard_credential_vars": ["GH_TOKEN", "GITHUB_TOKEN", "CLOUDSDK_AUTH_ACCESS_TOKEN", "CLAUDE_CODE_MESSAGING_TOKEN",
+                            "CLAUDE_CODE_MESSAGING_SOCKET", "CLAUDE_SESSION_INGRESS_TOKEN_FILE", "SESSION_INGRESS_URL",
+                            "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDE_CODE_OAUTH_TOKEN"],
+  "extra_value_patterns": {
+    "_why": "Point 7 asks for no key or password value; README section 4 (a) lists these shapes for raw output. Each hit is classified by classify_rule below.",
+    "connection_string_with_password": "(?i)\\b[a-z][a-z0-9+.-]*://[^\\s/:@]+:[^\\s/@]+@",
+    "jwt_like": "\\beyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}",
+    "supabase_key_like": "\\bsb_(?:secret|publishable)_[A-Za-z0-9_-]{16,}",
+    "long_hex": "\\b[0-9a-fA-F]{40,}\\b",
+    "long_base64": "(?<![A-Za-z0-9+/])[A-Za-z0-9+/]{40,}={0,2}(?![A-Za-z0-9+/])"
+  },
+  "classify_rule": {
+    "_fixed_before_the_run": "W-C02-07 phase B, Group D, 2026-10-12. A hit is a VALUE (a finding) or a NAME (reported, not a finding), by these rules only, in this order.",
+    "1": "Every hit of a token finder pattern, of guard_redact patterns 1 to 4, of jwt_like, of supabase_key_like or of connection_string_with_password is a VALUE.",
+    "2": "A hit of guard_redact pattern 5 is judged on its value part (the text after '=' or ':'), with these characters stripped from both ends: quotes, backticks, commas, semicolons, full stops, brackets and braces. It is a NAME if the stripped value part is empty; or starts with '$', '<', '{', '[', '%', '(' or '`'; or is one of the words in name_words, in any case; or is shorter than 16 characters; or holds no digit. Otherwise it is a VALUE.",
+    "3": "A hit of long_hex is a NAME if it is a run of one repeated character, if it lies in a git object ID context ('commit ', 'sha ', '@', 'blob ' or 'at ' within the 8 characters before it), or if it holds no digit or no letter. Otherwise it is a VALUE. A hit of long_base64 that is not also a long_hex hit is a NAME if it is a run of one repeated character, or if it lacks a digit, a capital letter or a small letter. Otherwise it is a VALUE.",
+    "4": "A CREDENTIAL_VARS expansion ($NAME or ${NAME}) is a NAME: it names a variable and holds no value. It is reported with its path and line, since a test must not expand one.",
+    "name_words": ["none", "null", "true", "false", "yes", "no", "required", "missing", "empty", "malformed", "unknown",
+                   "revoked", "header_unreadable", "redacted", "[redacted]", "hidden", "withheld", "synthetic"]
+  }
+}

@@ -1,0 +1,109 @@
+# T-W07-N04 · No environment but the audit environment can give a binding verdict or acceptance, whatever it declares
+
+Synthetic test data (plan Section 8 item 13): three synthetic tokens (working, audit, installation) are issued at run time in the rolled-back transaction. A review row and a work row are planted as owner, with text `w07_fixture SYNTHETIC W-C02-07`. The fake role names (`devos_denetim`) and the fake session ID (`w07_fixture_fake_session SYNTHETIC W-C02-07`) are made up.
+
+**Serves.** W-C02-10 point 5, first bullet: "✘ N04's C02 part, all its negatives … and the same with the `devos_kurulum` token (N-136; EV-C01-004 S8 line 1), except a right W-C02-05's record keeps for it before C03, until that right's stated end. ✔ N04's positive: the audit environment's record is accepted." Also W-C02-07 point 2's N04 line, and C02 Acceptance "✘ An operation with another session's claim, and with a fake session ID, is rejected" for verdicts (R2 section 5 (b): "N04 covers it only for verdicts").
+
+Design and plan text relied on:
+- Appendix C N04 (C:121) as PC-43 place 9 writes it;
+- Appendix B 3.11 (B:237) and section 4's Review row (PC-43 place 13);
+- EV-C02-003 §4.2 (S8 line 1, the transfer's copies) and §4.5;
+- B principle 8 (declared names carry no authority);
+- the executor's decision 5 for part T.
+
+**Command.** (statement timeout 120 s, README 5.1 (a)) `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n04_self_approval.sql`, in `devos-test` by the job's test step as `postgres`, and on the throwaway database by the harness.
+**Time added to W-C02-13's run.** None: it waits on no schedule or limit.
+**Interface assumed.** As `T-W07-IDC`. Beyond it:
+- `devos_api.record_verdict` and `devos_api.accept` exist (B section 4);
+- the review fixture's table is `devos_private.reviews` and the work fixture's is `devos_private.works` (`w07_cfg`);
+- the full positives fill an argument whose name matches `review` with the planted review's key, and one whose name matches `target` or `work` with the planted work's key. Every other required argument gets a neutral value by type.
+
+If the audit environment's call on those arguments is not accepted, `N04-p3` and `N04-p4` give COULD NOT CHECK, never PASS. The arguments are then revised before the first result (README section 8).
+
+## Cases
+
+- **(C02) the working token.**
+  - `N04-a1`: `record_verdict` with the working token, neutral arguments: refused as a role refusal under `devos_calisma`, nothing changed.
+  - `N04-b1`: `accept`, the same.
+  - `N04-a2` and `N04-b2`: the same two calls on the planted review and target, the arguments of the positives.
+- **A fake role name with the same token, at each place a caller controls.** Each is refused under `devos_calisma`, never under the name declared.
+  - `N04-c1`: the headers `x-devos-role`, `x-devos-role-class` and `role` set to `devos_denetim`.
+  - `N04-c2`: the settings `request.jwt.claims` and `request.jwt.claim.role` naming `devos_denetim`.
+  - `N04-c3-<function>`: an argument whose name holds `role`, set to `devos_denetim`, if the function has one.
+  - `N04-c4`: acting as a database role named `devos_denetim`, if the build creates one.
+- **A fake session ID with the same token.**
+  - `N04-e1-<function>`: an argument whose name holds `session`, set to a fake ID, with a fake `x-devos-session-id` header, if the function has such an argument.
+  - `N04-e2`: `accept` with fake session and role headers.
+- **(C02) the installation token outside the ledger transfer's path.**
+  - `N04-k1` and `N04-k1b`: `record_verdict`, neutral and on the planted review.
+  - `N04-k2`: `accept`.
+  - `N04-k6`: `record_verdict` with fake role and session headers.
+  - `N04-k-<function>`: every approval or binding act a rule counts as the audit environment's that exists in `devos_api`, each refused under `devos_kurulum`. These are `open_review`, `set_effort_policy`, `activate_release`, `begin_recovery`, `advance_recovery_stage`, and any function whose name starts with `approve` or holds `approval`.
+- **Positive.**
+  - `N04-p1` and `N04-p2`: the audit token passes both functions' role gate.
+  - `N04-p3`: on the planted review, the audit environment's `record_verdict` is accepted, with an event under `devos_denetim`.
+  - `N04-p4`: on the planted target, its `accept` is accepted, with an event under `devos_denetim`.
+  - Each differs from `N04-a2`, `N04-b2` and `N04-k1b` in the token only.
+- **Part T (W-C02-14; the executor's decision 5).** The ledger transfer's copy of an installation checker verdict is written under `devos_kurulum`, through the transfer's own path, and counts nowhere a rule needs the audit environment's. It is not a case of this file's result. The file prints `T-W07-N04 PART T (W-C02-14) COULD NOT CHECK (...)` on its own line, and W-C02-14 counts it. The interface W-C02-06's design must fix for it:
+  - (a) the transfer's function and its role list, `devos_kurulum` only;
+  - (b) that the Review, Verdict and Acceptance rows it writes carry `role_class = devos_kurulum` and independence `fresh_context_subagent`;
+  - (c) which rules need the audit environment's verdict, so that the test can show each counts the copy as none;
+  - (d) a call of the transfer's function with any other token is refused.
+
+  The cases T1 to T4 follow (a) to (d). They are written against `devos_kurulum`'s rule as EV-C02-003 §4.2 and PC-43 places 5 and 13 give it. They are revised once W-C02-06's design is accepted, before any result is seen.
+
+## Form C0
+
+| Field | Content |
+|---|---|
+| **ID and claim** | T-W07-N04. Appendix C's claim: "The ban on approving one's own output is at environment level". |
+| **Failure class rule** | **[Designer's addition: Appendix C's C2 rows give none (R2 section 5 (c)).]** Any binding verdict, acceptance or audit-counted approval that is written with a token other than the audit environment's. This includes a token that declares the audit environment's name or another session by any field the caller controls, and the installation token outside the transfer's path. |
+| **Examples** | **[Designer's addition, as above.]** (1) The original finding (C:121): the working token writes a verdict or an acceptance (`N04-a1`, `N04-b1`). (2) Another manifestation: the same token declares itself the audit environment (`N04-c1` to `N04-c4`) or another session (`N04-e*`). (3) Another: the installation token writes a verdict directly, outside the transfer (`N04-k1`, `N04-k2`; EV-C02-003 §4.2: "a verdict written directly with the `devos_kurulum` token, outside the transfer, which any installation session could write"). |
+| **Negative control** | Every `N04-a*`, `-b*`, `-c*`, `-e*` and `-k*` case: refused as a role refusal under the token's own class, recorded once per call, no event, no table changed. |
+| **Positive control** | `N04-p1` to `N04-p4`: the audit environment's record is accepted (C:121's positive). |
+| **Break attempt** | **[Designer's addition, as above.]** Each patch is applied by the harness on the throwaway database (README 5.2).<br>**B-5B-1** (`breaks/B-5B-1_verdict_admits_working.sql`). Removed: the working class's exclusion from `record_verdict`'s role list. Red: `N04-a1`, `N04-a2`, `N04-c1`, `N04-c2`, `N04-e1-record_verdict` and `5B-R07-record_verdict-cal`. `N04-c3-record_verdict` and `N04-c4` also turn red where they exist.<br>**B-N04-1** (`breaks/B-N04-1_kurulum_accepts.sql`). Removed: S8 line 1 for `accept`, which now admits `devos_kurulum`. Red: `N04-k2` and `5B-R07-accept-kur`. |
+| **Stage and environment** | C02, in `devos-test` (the job's test step) and on the throwaway database, with synthetic tokens. The real-token run of the same cases is W-C02-12 points 4 to 6 (`T-W07-RT`, cases `RT-n04-*`): N04 with the working and `devos_kurulum` tokens, and N04's positive with the audit environment's real token. |
+| **Independence level** | As `T-W07-IDC`: written by the test designer (fresh-context `test-designer` subagent, phase B, Group D; agent ID in W-C02-07's Record); run by the job, W-C02-10's producer and W-C02-13's prober; judged by a fresh-context checker. Shared: model lineage, the design records and the README. |
+| **Evidence layer** | Structural, at the database (`sql-set-role`). It does not show the separation in `devos` with real tokens (`T-W07-RT`), C05's version activation, or C10's method changes. |
+| **Evidence envelope** | README section 4.<br>Fixed before the run: every case `ok`. On the stand-in, the file had 18 cases: 2 + 2 working, 2 fake role, 1 + 1 fake session, 4 + 2 installation (with `open_review` and `set_effort_policy` present), and 4 positives. A function with role or session arguments, or a database role `devos_denetim`, adds its case. The red cases of each break are as above. Part T's line is CNC until W-C02-06's design is accepted.<br>`transport`: `sql-set-role` or `throwaway`. `observations_ref` and `raw_evidence_ref` as `T-W07-IDC`. |
+
+## Clause table
+
+Appendix C N04, C:121 as PC-43 place 9 writes it.
+
+| Clause (verbatim) | Case IDs | Or: moved to |
+|---|---|---|
+| "The ban on approving one's own output is at environment level" (claim) | the whole test | |
+| "A binding verdict or an acceptance with the working environment's token is rejected (C02)" | `N04-a1`, `N04-a2`, `N04-b1`, `N04-b2` | |
+| "and so is a version activation from C05, in the form C05 gives release activation (Appendix B 3.14)" | | C05 (Appendix C's stage column; C02 builds no release activation) |
+| "**a fake role name and a fake session ID with the same token** are also rejected" | `N04-c1` to `N04-c4`, `N04-e1-*`, `N04-e2`, `N04-k6` | |
+| "with the installation environment's token (`devos_kurulum`), a verdict or an acceptance written other than through the ledger transfer's path" | `N04-k1`, `N04-k1b`, `N04-k2`, `N04-k6` | |
+| "and any approval that a rule counts as the audit environment's, is rejected too (C02; EV-C02-003 section 4.2)" | `N04-k-<function>`; with `T-W07-5B` rows R07, R08, R10r and R15 for `kur` | |
+| "The audit environment's record is accepted" | `N04-p1` to `N04-p4` | |
+| "the ledger transfer's copy of an installation checker verdict is written under role class `devos_kurulum` and counts nowhere a rule needs the audit environment's (C02, until C03 …)" | part T (T1 to T4), reported on its own line | W-C02-14 (point 13; the executor's decision 5): needs W-C02-06's design |
+| Stage "C02, C05, C10" | C02: this test | C05 and C10: theirs (W-C02-07 point 2) |
+| N-136's extension: N04 with the `devos_kurulum` token | `N04-k*` | |
+
+## Format gate
+
+Not a format-gate test.
+
+## Could not check
+
+- Before the build, or if `record_verdict` or `accept` is absent (`N04-pre`).
+- `N04-p3` and `N04-p4`, when the fixture cannot be planted or the audit call on it is not accepted. The arguments are then revised.
+- Part T, until W-C02-06's design is accepted.
+
+## Self-check (not a result)
+
+On 2026-10-12, on PostgreSQL 16.15, with the scratch stand-in:
+- without the build: COULD NOT CHECK;
+- with the stand-in: PASS (18/18), and part T's line printed;
+- B-5B-1 and B-N04-1 turned exactly their listed cases red.
+
+## Not covered
+
+- Version activation (C05) and C10's method changes.
+- A fake declared session ID on a claim-bearing operation that is not a verdict (`T-W07-5C`, Group A).
+- Real tokens (`T-W07-RT`).
+- Whether a declared field is stored as declared and marked so (B principle 8): the test shows only that it changes no outcome.

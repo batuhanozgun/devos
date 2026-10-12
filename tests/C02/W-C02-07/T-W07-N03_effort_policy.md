@@ -1,0 +1,68 @@
+# T-W07-N03 · The effort floor cannot be emptied, and a reduction needs the audit environment's approval
+
+Synthetic test data (plan Section 8 item 13): every policy, work item, class (`w07_fixture_class.*`), Mission and decision is made up, labelled `SYNTHETIC W-C02-07` or `w07_fixture`, and rolled back. Tokens are issued at run time and never written down (README section 6).
+
+**Serves.** W-C02-10 points 2, 5 ("N03's negative controls and its positive controls, all of them as Appendix C states them") and 7. C02 Acceptance lines on the format gates and complete records, and "✘ With each environment's real token, an operation that requires another environment's authority is rejected" (here with `devos-test`'s synthetic tokens; the real tokens are W-C02-12's). Appendix C N03 (`Ek_C:120`). Design: B 3.18 (PC-08); EV-C02-003 §4.1 (row "Effort-reduction approval; standing effort policies": `devos_denetim` only), §4.2 (`devos_kurulum` cannot approve an effort reduction), §15 (row "Approving … an effort reduction or a standing policy with the working or `devos_kurulum` token": N03); EV-C02-002 DM-09 (EffortPolicy a family), DM-08 (the `effort_policy` stream). Split with Group D (GROUPS section 2): this test owns the policy logic; `T-W07-5B` owns the matrix's role lists.
+**Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n03_effort_policy.sql` (the migration job's `devos-test` step, as `postgres`; README 5.1 (a)); the break harness with the patches below.
+**Time added to W-C02-13's run.** None: it waits on no schedule or limit.
+**Interface assumed** (README section 8):
+- `devos_api.set_effort_policy(jsonb)` writes an item's policy (`work_ref`), a standing policy (`work_ref` absent, `work_class`), and retires a policy (`{"id": …, "status": "retired"}`); a revision is a call with the policy's `id`. Keys: B 3.18's fields. `level` is ordered `high` > `medium` > `low`. Step names: `verification`, `alternatives_research`, `external_source_research`.
+- The approval is the caller's role class: a reduction is approved when the call carries a `devos_denetim` token, and `approved_by_role_class` records it from the token; a declared approval in the arguments counts for nothing (B principle 8).
+- **Reading of B 3.18's parenthesis** ("verification, alternatives research, external source research for high-impact work"): verification and alternatives research are required on every item; external source research on items of `impact_class = high` and on standing policies. The removed-step cases use high items, so they hold under either reading; `N03-neg-over-step` relies on this reading (a routine item may omit the step unless its standing policy keeps it). If the build reads all three as required everywhere, `N03-neg-over-step` still refuses, but `B-N03-5`'s red list loses it, and the patch is revised before a first result.
+- Refusals returned or raised; a step refusal names the step or `non_removable_steps`; the expert gate names `expert_assessment…`. Calls run as `anon` with the header `x-devos-env-token` holding a token from `devos_private.issue_env_token(text)` (EV-C02-003 §1.6, §6.3). Owner-level reads of `devos_private.effort_policy` (`id`, `status`, `level`, `non_removable_steps`, `approved_by_role_class`).
+- Work items through `devos_api.admit_work(jsonb)` (`impact_class` `routine` or `high`) under a Mission opened with the `devos_kurulum` token on a `batu` decision answered at owner level. Sample streams: `devos_private.sample_stream` (`stream`, `block_size`, `block_seen`, `block_position`), stream `effort_policy`; sample reviews: rows of `devos_private.review` with `kind = sample`, naming the target's `id`, one field holding `devos_denetim`.
+
+## Cases
+- `N03-pos-default`: working token, a high item, level `high`, every step and an expert assessment → accepted.
+- `N03-neg-expert-empty`, `N03-neg-expert-absent`: no expert assessment → refused naming it; no row.
+- `N03-neg-step-verification`, `-alternatives_research`, `-external_source_research`: a high item's policy without that step → refused; no row.
+- `N03-neg-step-with-audit-token`: the audit token, a reduction without `verification` → refused (the floor binds every approver).
+- `N03-neg-own-approval`: working token, a reduction (`medium`, with a reason) and no standing policy → refused.
+- `N03-neg-own-approval-declared`: the same with `approved_by_role_class: devos_denetim`, `approved_by` and `approval: true` declared → refused.
+- `N03-neg-own-approval-kurulum`: the same reduction with the `devos_kurulum` token → refused (S8 line 1).
+- `N03-pos-audit-reduction`: the same reduction with the audit token → accepted; `approved_by_role_class` = `devos_denetim` where the column exists.
+- `N03-neg-standing-calisma`, `N03-neg-standing-kurulum`: a standing policy with those tokens → refused.
+- `N03-pos-standing-audit`: the standing policy S1 (`medium`, every step) with the audit token → accepted.
+- `N03-pos-standing-use`: working token, a routine item citing S1 at its level and steps → accepted.
+- `N03-neg-over-level`: the item cites S1 at `low` → refused. `N03-neg-over-step`: the item cites S1 without `external_source_research`, which S1 keeps → refused.
+- `N03-pos-over-with-approval`: the `low` item citing S1, with the audit token → accepted ("unless it has its own approval").
+- `N03-neg-retire-by-calisma`: the working token retires S1 → refused; S1 stays `active`.
+- `N03-neg-retired`: a second standing policy S2 retired with the audit token; an item citing S2 → refused.
+- `N03-fbm1`, `N03-fbm2`: one complete block each of policies filled but meaningless → accepted, one sample per block.
+
+## Form C0
+| Field | Content |
+|---|---|
+| **ID and claim** | `T-W07-N03`: non-removable effort steps and the expert assessment cannot be emptied; a reduction needs the audit environment's approval, its own for the item or a standing policy it approved for the item's class. |
+| **Failure class rule** | **[Designer's addition: C2 rows give none.]** Any write by which an item's effort falls below the floor (a removed step, an empty assessment) or below its approved level without an approval only the audit environment's token can give: a self-approval, a declared approval, a standing policy written or retired by the working environment, a retired or exceeded policy. |
+| **Examples** | **[Designer's addition.]** Original finding (C:120's first negative): a policy with the expert assessment or a step removed (`N03-neg-expert-*`, `N03-neg-step-*`). Other manifestations: the working environment's own approval (`N03-neg-own-approval`, `-declared`), the same with `devos_kurulum` (`-kurulum`); a standing policy written by them (`N03-neg-standing-*`); a retired policy cited (`N03-neg-retired`); a reduction beyond the policy (`N03-neg-over-level`, `-over-step`). |
+| **Negative control** | Every `N03-neg-*` case: refused, no `effort_policy` row added (`N03-neg-retire-by-calisma`: the policy's status unchanged). |
+| **Positive control** | `N03-pos-audit-reduction` differs from `N03-neg-own-approval` only in the token; `N03-pos-standing-use` from `N03-neg-over-level` only in the level; `N03-pos-over-with-approval` from `N03-neg-over-level` only in the token; `N03-pos-default` from `N03-neg-step-*` only in the steps. |
+| **Break attempt** | **[Designer's addition.]** (1) `breaks/B-N03-1_steps_gate.sql`, the floor of steps (the required steps are added back before the build's function): red `N03-neg-step-verification`, `-alternatives_research`, `-external_source_research`, `N03-neg-step-with-audit-token`. (2) `breaks/B-N03-2_expert_assessment_gate.sql`: red `N03-neg-expert-empty`, `-absent`. (3) `breaks/B-N03-3_approval_by_audit_only.sql` (every call without a standing policy runs with a `devos_denetim` token): red `N03-neg-own-approval`, `-declared`, `-kurulum`, `N03-neg-standing-calisma`, `-kurulum`, `N03-neg-retire-by-calisma`. (4) `breaks/B-N03-4_retired_policy.sql`: red `N03-neg-retired`. (5) `breaks/B-N03-5_reduction_beyond_policy.sql` (the standing policy is shown the item's own level and steps): red `N03-neg-over-level`, `N03-neg-over-step`. |
+| **Stage and environment** | C02. `devos-test` (migration job step) and the throwaway database; synthetic tokens (`sql-set-role`); the same separation with real tokens is W-C02-12's (Group D's `T-W07-RT`). |
+| **Independence level** | Written by the test designer, a fresh-context subagent of type `test-designer` (W-C02-07 phase B, Group C); its agent ID and type are in W-C02-07's "Record" (point 1). Run by the migration job, by W-C02-10's producer at its head, and by W-C02-13's prober with the breaks. Judged by a fresh-context checker that wrote none of the tests. Shared: model lineage and the design records (plan Section 8 item 7). |
+| **Evidence layer** | Structural. It does not show that an assessment is sound, that an item belongs to its policy's class (declared, sampled; B 3.18), nor the real tokens' derivation. |
+| **Evidence envelope** | README section 4. Fixed before the run: each case's outcome above. Observation: the job's run (URL, run ID, step), the result rows and the final notice or exception; raw evidence ID: the unedited output under `evidence/C02/raw/` after the hygiene checks; transport `sql-set-role` or `throwaway`. |
+
+## Clause table (Appendix C N03)
+| Clause (verbatim) | Case ID(s) | Or: moved to |
+|---|---|---|
+| "Non-removable effort steps and the expert assessment cannot be emptied; a reduction needs the audit environment's approval" (claim) | all cases | — |
+| "A policy from which the expert assessment, verification, alternatives research or external source step has been removed is rejected" | `N03-neg-expert-*`, `N03-neg-step-verification`, `-alternatives_research`, `-external_source_research`, `N03-neg-step-with-audit-token` | — |
+| "the working environment's own approval of a reduction is rejected" | `N03-neg-own-approval`, `N03-neg-own-approval-declared` | — |
+| "and so are a standing policy written with the working environment's token" | `N03-neg-standing-calisma` (and `-kurulum`, EV-C02-003 §15) | — |
+| "and a reduction that cites a retired standing policy" | `N03-neg-retired` | — |
+| "an item that cites an active standing policy but reduces effort more than the policy allows (a lower level than the policy's, or without a step the policy keeps) is rejected" | `N03-neg-over-level`, `N03-neg-over-step` | — |
+| "unless it has its own approval from the audit environment" | `N03-pos-over-with-approval` | — |
+| "A justified reduction with the audit environment's approval is accepted" | `N03-pos-audit-reduction` | — |
+| "and so is an item that uses a standing policy the audit environment approved for its class" | `N03-pos-standing-audit`, `N03-pos-standing-use` | — |
+| Break | `B-N03-1` to `B-N03-5` | — |
+
+## Format gate (point 4)
+Kind 1 (`N03-fbm1`): `expert_assessment_ref` = `n/a`. Kind 2 (`N03-fbm2`): an assessment unrelated to the item. The list field holds the right step names in both (its values are an enumeration the database checks; its meaningless form is a correct list on a meaningless policy). Each complete block of ten lands one as a `sample` Review queued for `devos_denetim`.
+
+## Could not check
+COULD NOT CHECK when an object is absent (`N03-pre`), a fixture cannot be made (`N03-standing` when no standing policy can be written, `N03-neg-retired` when S2 cannot be written or retired), or the stream cannot be aligned. Never PASS.
+
+## Not covered
+Whether an item truly belongs to a standing policy's class (sample review); the content of an assessment; the matrix's other role classes (`T-W07-5B`); real tokens (`T-W07-RT`); `devos`.

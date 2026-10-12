@@ -1,0 +1,64 @@
+# T-W07-F06 · Every state-changing function writes its event in the same transaction, with role_class from the token; a read function changes nothing but RejectedAttempt
+
+Synthetic test data (plan Section 8 item 13): work items, a review and verdict, a finding and relations, all made up inside a rolled-back transaction (text `w07_fixture SYNTHETIC W-C02-07`, scope `synthetic.w07fixture`, declared session id `w07_fixture_declared_session`); synthetic tokens of every role class, issued in the transaction and kept only in PL/pgSQL variables.
+
+**Serves.** W-C02-09 point 5 ("Each state-changing function writes its event in the same transaction, with `role_class` taken from the caller's token, never declared; an exact repeat writes no new event and raises no error. ✘ An error raised mid-transaction leaves no half state and no orphan event") and point 8 ("F06 (its list of functions extracted from `devos_api` automatically)"). Appendix C F06 (Ek_C:79-86, as PC-42 place 37 words its examples). Appendix B principle 2 and 3.13. EV-C02-002 DM-31 (`origin`; `owner` for the owner-only functions) and DM-36 (the `devos:read` marker; EV-C02-004 X-14).
+**Command.** In `devos-test`: the migration job's test step runs `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_f06_state_change_event.sql` as `postgres`, and passes only on the notice `W07_F06_STATE_CHANGE_EVENT PASS`. Statement timeout 300 s. Break: `python3 -I tests/C02/W-C02-07/harness/run_breaks.py --patch tests/C02/W-C02-07/breaks/B-F06-1_relate_without_event.sql --pg-bin <PostgreSQL 17 bin>`.
+**Time added to W-C02-13's run.** None: it waits on no schedule or limit.
+**Interface assumed.** Group B's call convention, as T-W07-F04 states it. For this test:
+- `devos_private.event` with `id`, `role_class`, `origin`, `tx_id` (`txid_current()` of the writing transaction, B 3.13), `aggregate_type`, `event_type`;
+- `devos_private.rejected_attempt` with `id`;
+- `devos_private.issue_env_token(role_class text)` and `revoke_env_token(token text)`;
+- the read marker: a catalogue comment beginning `devos:read` (DM-36).
+
+The test calls a function accepted only from a **recipe**: the role class whose token it uses and its arguments. Recipes are written for `relate`, `accept`, `review_finding`, `affected_entities` and `explain_paths`, with the parameters T-W07-F04, T-W07-DM19, T-W07-N09 and T-W07-REL assume. The test designer adds a recipe for every other C02 function from W-C02-09's signatures before the first result (README 8).
+
+## Cases (generated from the catalogue at run time)
+- **F06-list**: the extracted list. It holds every `devos_api` function, and `issue_env_token` and `revoke_env_token`, with the count of functions marked `devos:read`.
+- **F06-refused:<f>**, for each state-changing `devos_api` function: called with no token (every parameter null), the call is refused, no table but `rejected_attempt` changes, and no event is written. This needs no recipe, so a function a later migration adds is covered by itself. For `deployment_drift` the case is `ok` with a note: it admits the migration login before the token check (B:45), and under `set role` the session user stays `postgres` (README 5.1 (a)). Its Data API case belongs to W-C02-03's tests and T-W07-5B.
+- **F06-read-refused:<f>**, for each marked function: the no-token call changes no table but `rejected_attempt` and writes no event.
+- **F06-read-accepted:<f>**, for each marked function: a call accepted with the first role class's token that is accepted changes no table but `rejected_attempt` and writes no event. A function with required parameters and no recipe gives `could_not_check`.
+- **F06-event:<f>**, for each state-changing function with a recipe: the accepted call changes state and writes at least one event. Every new event has `role_class` equal to the token's class, `origin` `call` or `rule`, and `tx_id` this transaction's. Without a recipe the case gives `could_not_check`.
+- **F06-repeat:<f>**: the exact same call again is not refused and does not raise, changes no table and writes no event (positive control).
+- **F06-owner:issue_env_token** and **F06-owner:revoke_env_token**: run as the owner, each writes an event with `role_class = owner` and `origin = owner` (DM-31).
+- **F06-role-token**: `relate` with the `devos_kurulum` token and a declared session id writes events whose role class is `devos_kurulum`. Compared with F06-event:relate (`devos_calisma`), only the token differs.
+- **F06-orphan-a** and **F06-orphan-b**: a failure planted on the event write (a), or on the relation write (b), in the middle of a permitted `relate`. The call is refused, no table changes and no event remains.
+- **F06-pre**: `could_not_check` when an object is absent or a fixture cannot be planted.
+
+## Form C0
+| Field | Content |
+|---|---|
+| **ID and claim** | T-W07-F06. **[Designer's addition: F entries have no claim line (R2 section 5 (c))]** Every state-changing function (every `devos_api` function not marked `devos:read`, and the two owner-only token functions) writes its event in the same transaction as its change. The event's `role_class` comes from the caller's token (`owner` for the owner-only functions), never declared. A marked function changes nothing but RejectedAttempt, whether accepted or refused. A failure mid-transaction leaves neither half state nor orphan event, and an exact repeat writes nothing and raises nothing. |
+| **Failure class rule** | Appendix C F06: "Every state-changing function produces an event in the same transaction; on rollback the two are rolled back together; an exact repeat produces no new event." The family: a state change with no event; an event with a declared or missing role class; an event left after its change rolled back, or a change left after its event failed; a duplicate event on a repeat; a function marked as a read that writes. |
+| **Examples** | The original finding, "Creating a relation ... produced no event": F06-event:relate. Other manifestations: every other function one by one (F06-refused:*, F06-event:*, F06-read-*); the owner-only functions (F06-owner:*); the declared role (F06-role-token); the orphan in either order (F06-orphan-a, -b). |
+| **Negative control** | "If a function that produces no event is found" (F06-event:<f> bad), "or an event without the caller's `role_class` taken from its token" (F06-event, F06-role-token, F06-owner), the test fails. "When an error is raised in the middle of a transaction, no half state or orphan event remains" (F06-orphan-a, -b). A marked function that changes a table fails F06-read-*. |
+| **Positive control** | "An exact repeat produces no new event but raises no error either" (F06-repeat:<f>). Each F06-event:<f> is also the positive control for that function's refused call: the two differ only in the token. |
+| **Break attempt** | **B-F06-1** (`breaks/B-F06-1_relate_without_event.sql`) removes event production from one function: a trigger drops every event whose aggregate or event type names a relation. Must turn red: **F06-event:relate, F06-role-token** (Appendix C: "When event production is removed from a function, the test must fail"). |
+| **Stage and environment** | C02. `devos-test`, the migration job's test step, with synthetic tokens of `devos-test`; no Claude environment. The break runs on the throwaway database. It relies on EV-C02-004 Y-05 and X-14. |
+| **Independence level** | Written by the test designer, a fresh-context subagent of type `test-designer` (W-C02-07 phase B, Group B; agent ID in W-C02-07's "Record", point 1). Run by the migration job, by W-C02-09's producer at its head, and by W-C02-13's prober with the break. Assessed by a fresh-context checker that wrote none of the tests, from the raw output. Shared: model lineage, the design records and Appendices B and C. |
+| **Evidence layer** | Structural: events and table contents before and after each call (row counts and content hashes; the hashes are compared, never printed, and `env_tokens` is counted only). It does not show that an event's payload describes the change rightly (semantic), nor that the hourly export carries it (C09). |
+| **Evidence envelope** | README 4's fields; `transport` `sql-set-role` or `throwaway`. Values fixed before the run: each case's rule above; the role classes tried for reads, in this order: `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_kurulum`, `devos_ci`, `devos_backup`; the break's red cases. The list of functions is read at run time, and F06-list records it with the run. |
+
+## Clause table (point 2)
+| Clause of Appendix C F06 (verbatim) | Case ID(s) |
+|---|---|
+| Original finding: "Creating a relation and reassignment changed state but produced no event." | F06-event:relate. Reassignment: F06-event:claim and F06-event:revoke_claim, once their recipes are added (until then `could_not_check`) |
+| Class rule: "Every state-changing function produces an event in the same transaction; on rollback the two are rolled back together; an exact repeat produces no new event." | F06-event:*, F06-orphan-a, F06-orphan-b, F06-repeat:* |
+| Examples: "All state-changing functions, one by one (the function list is extracted automatically from `devos_api` and from the owner-only functions of `devos_private`, `issue_env_token` and `revoke_env_token`; every function whose catalogue comment does not mark it as a read function counts as state-changing, and a function so marked is checked to change no table but RejectedAttempt, on accepted and on refused calls; when a new function is added, the test covers it by itself; PC-42)." | F06-list; F06-refused:*; F06-event:*; F06-owner:*; F06-read-refused:*, F06-read-accepted:* |
+| Negative: "If a function that produces no event is found, or an event without the caller's `role_class` taken from its token (Appendix B 3.13), the test fails" | F06-event:*, F06-role-token, F06-owner:* |
+| Negative: "when an error is raised in the middle of a transaction, no half state or orphan event remains." | F06-orphan-a, F06-orphan-b |
+| Positive: "An exact repeat produces no new event but raises no error either." | F06-repeat:* |
+| Break: "When event production is removed from a function, the test must fail." | B-F06-1: F06-event:relate, F06-role-token |
+
+## Could not check
+- A state-changing function without a recipe gives `could_not_check` for its F06-event case. So F06 cannot PASS until every function has a recipe; the safe direction, since a new function shows up as unchecked, never as passed.
+- A marked function with required parameters and no recipe, or one that no role class's token gets accepted, gives `could_not_check` for F06-read-accepted.
+- An absent object or fixture gives `could_not_check` (F06-pre). Before the build exists the test gives COULD NOT CHECK.
+
+## Self-check (not a result; README 10)
+2026-10-12, through the harness on PostgreSQL 16.15 in the session's container (not the projects' 17, so every line says counts: no), run as an unprivileged user in a user namespace. (1) With no migrations, the file gives COULD NOT CHECK and the break is could not check. (2) With a scratch stub of the interface above (outside the repository, not delivered), the unpatched run passes; B-F06-1 turns red exactly F06-event:relate, F06-role-token, with the file ending in FAIL; the restore passes. The F06 positive control on the stub had recipes for relate, accept, review_finding, affected_entities and explain_paths, the stub's only functions. The stub is the test designer's reading of the design, not the build: a pass on it is no evidence about the build. Three faults in the test's own helpers were found and fixed this way before any result existed: the planter on a table whose columns all have defaults, the reading of a ref list, and the refusal test on a result without an ok key.
+
+## Not covered
+- The expiry job's events (none in C02, DM-06) and the ledger transfer's events (W-C02-06's, DM-40).
+- `mark_exported`'s one event per call (DM-36): covered only once its recipe is added.
+- That the Data API passes the header: the header is simulated here (README 5.1 (a)); the real path is Group D's.
