@@ -12,3 +12,4 @@ C01 routine record (W-C01-32); inputs synthetic (plan Section 8 item 13).
 - `main` commit read (`git rev-parse HEAD` in the starting checkout): `56d1ac7207343124dd4c2244bbad9ee573ea745e` (the starting checkout is on a platform-named branch whose head equals `origin/main`)
 - Control file version line: Version 11 (W-C01-47 item 1, L-254 and L-255, 2026-10-11)
 - Rule 1.9: the starting checkout was shallow (`true`); `git fetch --unshallow origin main` was run there as a call of its own; it now reports `false`.
+- First commit: batuhanozgun-devos <335658439+batuhanozgun-devos@users.noreply.github.com> / batuhanozgun-devos <335658439+batuhanozgun-devos@users.noreply.github.com>; signature headers: 0 (commit `c4559f1`)
