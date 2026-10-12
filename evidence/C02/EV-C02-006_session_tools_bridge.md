@@ -255,6 +255,26 @@ The parameters this item sets that decide when W-C02-12 can start, with what pla
 
 N-209's corrections (1) to (3) were carried by PC-40 (W-C02-16; L-288), merged at `eba94b1` (PR #280), and N-209 is closed. PC-45 carries none of them, since none remains.
 
+## Results after the merge (points 4 and 6; 2026-10-12, the executor)
+
+The bridge merged in PR #290 (`a1a4eae`). Each step's raw record is under `evidence/C02/raw/`, named below; each subagent's report is filed with the session-tools names verbatim and the account's other connectors counted, not named (the repository is public).
+
+| Step | What was observed | Result (section 4.5 / section 6) |
+|---|---|---|
+| S0, before the sync | A fresh `general-purpose` subagent (agent `af908111632a6a16b`, about 18:07Z to 18:10Z) listed all 27 tools of `claude-code-remote` (the 23 the bridge denies tool by tool among them), `ccd_session`'s two tools, and `SendMessage` (deferred); no `RemoteTrigger`, no `ListAgents`, no tool under the other two names (`W-C02-11_subagent_tool_list_control_20261012T1810Z.md`) | Pass: route (ii) can show the deny for these. Not shown by the control: `RemoteTrigger`, `ListAgents`, `check_repo_access`, the other two names |
+| A1, sync | 18:18:40Z; live `HEAD` `a1a4eae`; the live `.claude/settings.json` blob `c6907ccf460912e9403b3f192b834a3681377b24`, equal to the merge's; the working file equal to the merge's (`git diff --quiet`, exit 0) | Done |
+| A2, own-session reading | `get_session` at about 18:18Z: model `claude-opus-5-5`, permission mode `default`, Claude Code 2.1.296, effort `xhigh`; its `cross_session_inbound` read `"unavailable"`, where the reading at 17:09Z read `"available"` | Pass (`get_session` kept and working) |
+| A3, guard live | The guard's decision log has decisions after the sync, the first #17822 at 18:18:42Z (allow, S1: the `get_session` call) | Pass (as far as A3 can show; R4 of CHK-C02-018) |
+| A4, first confirming list | A fresh `general-purpose` subagent (agent `adeb6389feb93b834`, about 18:19Z to 18:22Z): under `claude-code-remote` only `add_repo`, `get_session`, `read_documentation`, `send_later`; no `ccd_session` tool; none of `RemoteTrigger`, `SendMessage`, `ListAgents`; no tool under the other two names; its completion started the session's next turn by itself (`W-C02-11_subagent_tool_list_after1_20261012T1822Z.md`) | Pass: no denied tool listed; every kept tool S0 listed is listed; no tool neither kept nor denied |
+| A5, `send_later` at its use | Armed 18:19:07Z (`trig_01TdQWz6WmxoQzKc6184Mroi`, fire_at 18:32:00Z); delivered as a scheduled-trigger notification queued 18:32:34Z and read 18:32:58Z | Pass: `refuse` does not drop the session's own check-ins; this also holds for the check-in armed for N-202 (CHK-C02-018 R6) |
+| A6, second confirming list | A fresh `general-purpose` subagent (agent `af23734e1c0a5f3ac`, about 18:33Z to 18:36Z, 14 minutes after A4 began and after A5's delivery): the same as A4 (`W-C02-11_subagent_tool_list_after2_20261012T1836Z.md`) | Pass, as A4 |
+| A7, own list (supplement) | Right after A2 the harness removed from the session's context the 23 tools the bridge denies under `claude-code-remote`, naming "Denied by a permission rule"; `ccd_session`'s two tools, shown to the session at about 17:03Z, were not in that notice and were not called (`W-C02-11_executor_tool_list_after_20261012T1833Z.md`) | Recorded; the `ccd_session` case is the "definition already seen" case, not a fail; A4 and A6 show its tools gone from a fresh list |
+| A8, `read_documentation` at its use | One call at about 18:19Z returned the documentation's index | Pass |
+| `add_repo` | Not exercised (section 4.4) | Not shown, with that reason |
+| Point 6, the guard's tests | `tools/test_tool_allowlist.sh` at M = `a1a4eae` in a scratch clone: 821 `ok`, 0 `BAD`, 1 `info` (not a skipped control), last line `ALLOWLIST_TEST PASS`; the three blobs recorded (`W-C02-11_guard_test_a1a4eae.md`) | Pass |
+
+**What the results claim, and what not.** For the tools S0 showed, two fresh subagent lists taken 14 minutes apart, after the sync and after the session went on making calls, lack every denied tool and keep every kept one: self-observation, as point 4 asks, of the permission layer as this session holds it. They do not show the bridge as a new session reads it at its start, nor the entries under the other two server names, `RemoteTrigger` or `check_repo_access`, which rest on the documentation (sections 4.2 and 4.6); W-C02-12's first session in each environment and C03 test 3 show those first. `refuse` itself cannot be observed from the session (R7 1 (b)); the change of `get_session`'s `cross_session_inbound` field is recorded as seen, not as its proof.
+
 ## Residuals
 
 - **The guard's single prefix** (1.4 item 4; CHK-C02-018 R5): in a session where the session-tools server registers under one of the other two names, the guard denies `get_session` too, so that session's opening check fails visibly; W-C02-12's first session in each environment reads such a denial as this case, not as the bridge. Carried by N-251 on `plan/work/C02.md`.
