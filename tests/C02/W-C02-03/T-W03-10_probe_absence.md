@@ -45,4 +45,4 @@ This is the build's step (4) in each job; the test fixes what it must show.
 
 ## Depends on R1 to R6
 
-R6 does not apply to the listing itself. If the first-migration exception uses the same listing (section 5: "the same query as (4)"), part D of T-W03-DEC applies to it within the exception's reads. P13's possible widening would count `supabase_migrations` as Supabase's own, which this test's exclusion list already does.
+R6 does not apply to the listing itself. If the first-migration exception uses the same listing (section 5: "the same query as (4)"), part D of T-W03-DEC applies to it within the exception's reads. P13's widening (the executor's decision of 2026-10-12; T-W03-DEC "Depends on") takes an empty history table, so the exception's listing counts `supabase_migrations` as Supabase's own; this test's exclusion list already does.

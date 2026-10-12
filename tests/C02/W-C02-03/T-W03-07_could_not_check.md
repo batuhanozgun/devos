@@ -15,6 +15,7 @@ Synthetic test data (plan Section 8 item 13): part A's inputs are made up in `te
 - D21 to D23: the status and the list disagree, or the status is absent.
 - D24: no call was made.
 - E09 to E17: the three reads incomplete, not in one snapshot, absent or partial.
+- E22, E23: the history table present and its row count not read (null, or the field missing).
 
 Blocking where it guards a merge: `pr_decide` gives `fail` for a pull request changing a merged migration when the report is absent (P07), lacks a project (P08), is at another commit (P09), is not completed (P10), is not JSON (P15), or has one project "could not check" (P16). For a pull request that only adds migrations, "could not check" is shown in the state and does not block (P02), as M16 decides.
 
@@ -38,7 +39,7 @@ Positive control C01: a well-formed `expected` with readable records gives `no_d
 |---|---|
 | **ID and claim** | T-W03-07. Missing, unreadable or partial input to the comparison, in the function or at its caller, gives "could not check", never "no difference". That result is kept apart from the other two, and it blocks the `devos` apply and a pull request that changes a merged migration. |
 | **Failure class rule** | A comparison that did not run in full is taken as clean, or as an ordinary difference that lets work go on, or is dropped from the count. Examples of this family: the function returns "no difference" on bad input; it returns a partial list as complete; it raises and the caller reads the silence as clean; the caller drops the completeness flag; the pull-request check passes a change to an applied migration without a readable report. |
-| **Examples** | Missing: B C02 to C04; A D16, E13; `pr_decide` P07.<br>Malformed: B C05 to C09; A D17, D18, D21 to D23, E14, E19; P15.<br>Unreadable: B C10, C11; A D14.<br>Partial: B C12, C13; A D15, D19, D20, E09 to E12, E15 to E17; P08 to P10, P16; C c1, c2. |
+| **Examples** | Missing: B C02 to C04; A D16, E13; `pr_decide` P07.<br>Malformed: B C05 to C09; A D17, D18, D21 to D23, E14, E19; P15.<br>Unreadable: B C10, C11; A D14.<br>Partial: B C12, C13; A D15, D19, D20, E09 to E12, E15 to E17, E22, E23; P08 to P10, P16; C c1, c2. |
 | **Negative control** | Every example gives "could not check" (or, in part B, raises), and the guarded work is blocked: `apply = no` or `verdict = fail`. |
 | **Positive control** | B C01 (`no_difference` on well-formed input); A D01, D05, E01, E02; `pr_decide` P01, P02 (adding migrations under "could not check" is shown, not blocked, as M16 decides), P06, P13, P14; live, T-W03-05's run. |
 | **Break attempt** | **B4** (`breaks/B4_could_not_check_as_clean.sql`, throwaway database only) turns "could not check", an error or a null result into "no difference". C02 to C13 must turn red.<br>**B2** turns C07 red as well.<br>**Part A's breaks** (T-W03-DEC): a copy of `decide` that treats a missing completeness flag as complete (D19), and a copy of `pr_decide` that passes on "could not check" (P07 to P10, P15).<br>The self-check on PostgreSQL 16.15 with a scratch stub (not delivered) gave B4 12 bad of 13 and the unpatched run 13 of 13. |
@@ -56,4 +57,4 @@ Positive control C01: a well-formed `expected` with readable records gives `no_d
 
 ## Depends on R1 to R6
 
-R6 bears on E11 and E12 only, which accept both of its forms and refuse anything else. P13's possible widening changes E05 (T-W03-DEC). R1 to R5 do not touch this test.
+R6 bears on E11 and E12 only, which accept both of its forms and refuse anything else. P13's widening (the executor's decision of 2026-10-12; T-W03-DEC "Depends on") made T-W03-DEC's E05 a positive control and added E20 to E24 there; E22 and E23, the history table present with its row count not read, are partial reads of this test's class. R1 to R5 do not touch this test.
