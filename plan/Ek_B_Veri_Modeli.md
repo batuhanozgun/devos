@@ -15,7 +15,7 @@ These principles hold for every family; if a family breaks one of them, that is 
 1. **Single write path.** Agents and jobs call only the functions in the `devos_api` schema. Writing directly to the tables in the `devos_private` schema is closed to all application roles (access rules + revoking privileges). The functions run with definer rights and check the caller's role themselves.
 2. **State and event together.** Every state change produces an event (`event`) within the same transaction; if the transaction is rolled back, both are rolled back together (F06). An exact repeat of the same change produces no new event.
 3. **Revision.** Every meaningful object carries a `revision` number. An update does not change the old revision; it produces a new revision and a reason. References to other objects carry which revision they refer to.
-4. **Scope and revision check.** An operation checks the work's scope together with the scope and revision of the target and of the source. Checking only one of them is the F05 failure.
+4. **Scope and revision check.** An operation checks the work's scope together with the scope and revision of the target and of the source. Checking only one of them is the F05 failure. A scope is a dotted path of lower-case labels (for example `soul.discovery`); a target or a source is within a work item's scope when its scope equals the work item's or lies under it, and a work item's scope lies within its Mission's (PC-42).
 5. **State axes are separate.** A work item's execution, validity, acceptance and external-effect states are separate fields; there is no single "done" field.
 6. **Three-valued logic.** Readiness and support groups take the value true, false or unknown. In an ALL group, one false makes the result false; if there is no false but there is an unknown, the result is unknown. In an ANY group, one true is enough; if there is no true but there is an unknown, the result is unknown. An empty group does not count as ready.
 7. **Short transaction.** No database transaction is held open during the agent's long work. The agent relies on an immutable input snapshot; at the end, a short transaction produces acceptance or a conflict. A conflict does not throw the work away; the result is kept as a candidate.
@@ -56,12 +56,12 @@ For each family: purpose, core fields, rules, states and transitions. Where a ru
 
 | Family (section) | Activated | First need |
 |---|---|---|
-| Mission (3.1) | C02 | Work's parent (`mission_ref`); its own rule is first tested in C10 |
+| Mission (3.1) | C02 | Work's parent (`mission_ref`); the rule that only a decision of Batu's opens or widens it is enforced from C02, and N29 tests its class part (PC-42); the purpose audit over it is first tested in C10 |
 | Need (3.2) | C02 | N01 |
 | Inquiry (3.2) | C07, if C07's discovery measures need it as a separate record; until then an inquiry is a `Need` in the state `investigating` | K-1 discovery work |
-| Work and WorkStanding (3.3) | C02 | F05, F08, N17, the concurrency test |
+| Work and WorkStanding (3.3) | C02, with the database copy of the high-impact path list (3.3; PC-42) | F05, F08, N17, N29, the concurrency test |
 | Relation (3.4) | C02 | F04, K05, F08 (a) |
-| Assignment (3.5): claim, claim token, generation, epoch, expiry | C02; the liveness signal's sender and form in C06 | N17, F01 (c), the concurrency test; C06's acceptance on interruption |
+| Assignment (3.5): claim, claim token, generation, epoch, expiry | C02, with `heartbeat`'s minimal form and `revoke_claim` (3.5; PC-42); the liveness signal's sender, and any change to `heartbeat`'s form, in C06 | N17, F01 (c), F08 (c), the concurrency test; C06's acceptance on interruption |
 | Grant (3.6) | Deferred until an external effect needs a permission narrower than role class plus claim | — |
 | Subagent task definition (3.7) | C04 | F02; C04's acceptance |
 | UseReceipt (3.7) | C06 | C06's acceptance; K03 |
@@ -74,8 +74,9 @@ For each family: purpose, core fields, rules, states and transitions. Where a ru
 | Review, Verdict, Acceptance (3.11) | C02 | N04, N25, N28; the sample of N01 |
 | Operation and Observation (3.12) | C02 | F01, F07, F08 |
 | Event (3.13) | C02 | F06 |
+| RejectedAttempt (3.13) | C02 (PC-42) | Section 4's rule that a rejected attempt is recorded (plan 6.2); C03 test 2 |
 | Release (3.14) | C05, in the form C05 decides | Role activation (Appendix A section 6 item 7); C10's method changes |
-| EvalRun (3.15) | C02, for C03 (its access rule) | N08 |
+| EvalRun (3.15) | C02, for C03 (its access rule, and its `work_ref`, which keeps the exam link only in exam records; PC-42); the grader's fields in C05 (note N-095 T-74) | N08 |
 | Competence (3.15) | C05 | C05 task 4 and acceptance |
 | EvidenceEnvelope (3.15) | As a form in git from C01; as database fields from C04 (benchmark) and C05 (exams) | Every evidence record |
 | UserModel (3.16) | C06 | C06's acceptance (criterion 14) |
@@ -86,7 +87,7 @@ For each family: purpose, core fields, rules, states and transitions. Where a ru
 | Learning (3.20) | C07 | C07 measure 6 (criterion 28); C10 |
 | Budget and Usage (3.21) | C04 | N12; C04 task 6 |
 | Recovery (3.22) | C09 | F03, K08 |
-| LeakFingerprint (3.23) | C02, for C03 (test 6, N06); the library's fingerprints in C04 (task 5) | C03 test 6; N06 |
+| LeakFingerprint (3.23) | C02, for C03 (test 6, N06), whose synthetic fingerprints come through the migration path (3.23; PC-42); the library's fingerprints in C04 (task 5) | C03 test 6; N06 |
 | SessionRecord (3.24) | C04 | C04's acceptance (what changed since the last session); C06's hand-over |
 | LaunchRecord (3.24) | C06 | N24 |
 | ProtocolAudit (3.25) | C05 | C05's acceptance; N19 |
@@ -131,7 +132,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 - If a work item's input changes, it becomes `qualification = stale`; the old output is not deleted.
 - Reopening: work items whose basis has changed are taken into the candidate review set; they are not cancelled automatically.
 - The late result of a cancelled claim is kept as candidate evidence and does not mix into the current product.
-- `impact_class` follows rules, not the agent's choice (PC-08). A work item is `high` when it changes a path on the high-impact path list (plan 6.7: rules, roles, methods, schema, security and release settings), creates or changes a cost, touches a matter that belongs to Batu (purpose, scope, cost, his accounts and his other work), or prepares an irreversible external effect. Where the database can decide a trigger, it enforces it: under a work item labelled `routine`, an `Artifact` or `Operation` whose target is on the high-impact path list, an `Operation` whose `effect_class` is irreversible, and a link to a decision of class `high_impact` or `batu` are refused. The other triggers are declared; for a set share of work items labelled `routine`, the database creates a `Review` of kind `sample` for the audit environment (3.11), which also checks the label (Appendix C N29).
+- `impact_class` follows rules, not the agent's choice (PC-08). A work item is `high` when it changes a path on the high-impact path list (plan 6.7: rules, roles, methods, schema, security and release settings), creates or changes a cost, touches a matter that belongs to Batu (purpose, scope, cost, his accounts and his other work), or prepares an irreversible external effect. Where the database can decide a trigger, it enforces it: under a work item labelled `routine`, an `Artifact` or `Operation` whose target is on the high-impact path list, an `Operation` whose `effect_class` is irreversible, and a link to a decision of class `high_impact` or `batu` are refused. The other triggers are declared; for a set share of work items labelled `routine`, the database creates a `Review` of kind `sample` for the audit environment (3.11), which also checks the label (Appendix C N29). The database copy of the high-impact path list is a table filled by migration from plan 6.7's list and changed only together with it; whether an `Operation`'s effect is irreversible is read from the server's table of effect classes (3.12), never from the agent (PC-42).
 
 ### 3.4 Relation — typed relation
 
@@ -151,7 +152,8 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 **Rules:**
 - A work item can have only one active claim at a time; this is enforced at database level by a uniqueness constraint.
-- The claim carries an expiry (`lease_expires_at`), built in C02 with the claim. Who sends the liveness signal that extends it, and how, is decided in C06 (EV-C00-012 D18; PC-08). If the time runs out, the claim becomes `expired` and the work item can become ready again.
+- The claim carries an expiry (`lease_expires_at`), built in C02 with the claim. Who sends the liveness signal that extends it, and how, is decided in C06 (EV-C00-012 D18; PC-08). If the time runs out, the claim becomes `expired` and the work item can become ready again. From C02 the lease runs 30 minutes from the claim or from the last `heartbeat`; `heartbeat` (with the claim token, and only for a caller whose role class is the claim's) extends only an active claim of the current generation, made in the current global authority epoch, whose lease has not run out, and C06 may change its form (PC-42). Expiry is computed, not applied by a job: `claim`, `ready_works()` and every effect's re-check compare `lease_expires_at` with the database's clock, and the `claim` that next takes the work item marks the lapsed claim `expired`, with its event (section 8, provisional on C02's tests; PC-42).
+- `revoke_claim` revokes one claim, with its reason; only `devos_denetim` calls it, while a claimant gives up its own claim with `release`. The work item can then be claimed again at once, under a new generation (PC-42). Like `heartbeat`, `release` takes the claim token only from a caller whose role class is the claim's (S8 line 2, decided with the identity chain, `evidence/C02/EV-C02-003_identity_chain_and_environments.md` §4.3; PC-42).
 - Every operation that produces an effect requires the claim token and checks that the claim is still active, its generation current and its epoch valid. Another session in the same environment cannot carry out an operation with someone else's claim.
 
 ### 3.6 Grant — permission (deferred)
@@ -188,10 +190,11 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 **Chunk fields:** `id`, `source_ref`, `source_revision`, `span` (start and end), `heading_path`, `text`, `tsv_tr`, `tsv_en`, `tsv_simple`, `embedding` (its dimension according to the model chosen in C04), `embedding_model`, `privacy_class`, `authority_status`.
 
-**Finding fields:** `id`, `revision`, `claim`, `source_spans`, `qualifiers`, `counter_evidence_searched` (mandatory: the counter-evidence searched for and found, or "none found"), `confidence`, `open_questions`, `fresh_until` (for information that can change), `status` (candidate / reviewed / accepted_for_use / stale / withdrawn), `use_scope`.
+**Finding fields:** `id`, `revision`, `claim`, `source_spans` (each with whether its source is primary or secondary and the date it was read; PC-42), `qualifiers`, `counter_evidence_searched` (mandatory: the counter-evidence searched for and found, or "none found"), `confidence`, `open_questions`, `changeable` (mandatory: whether the finding carries information that can change; PC-42), `fresh_until` (for information that can change), `agent_addressed` (text in a source that is addressed to agents, flagged and kept: each entry its source span and a short description in DevOS's words, never the text; empty when none was found, absent when not assessed; ECC-149; PC-42), `privacy_class` (principle 10; PC-42), `scope` (principle 4; PC-42), `status` (candidate / reviewed / accepted_for_use / stale / withdrawn), `use_scope`.
 
 **Rules:**
-- A finding that carries information that can change cannot move to the `accepted_for_use` state undated or with only secondary sources.
+- A finding that carries information that can change cannot move to the `accepted_for_use` state undated or with only secondary sources. Until C04 this reads `changeable` and its source spans' primary or secondary marker and reading date, which the writer declares and the sample review checks (principle 12); from C04 a span's Source record decides primary or secondary for an ingested source (Appendix C N09; PC-42).
+- `counter_evidence_searched` and `changeable` are format gates (principle 12), and Finding is one of the sample's streams (section 8; PC-42).
 - Sources with a historical status do not overshadow current information in the search ranking; their status is visible in the result.
 - The vectors and indexes of chunks are tied to the source revision; they are regenerated when the source changes.
 - When the model changes, all vectors are regenerated; vectors of two models are not mixed in the same query.
@@ -214,7 +217,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.10 Artifact and Assembly — product and composite product
 
-**Artifact fields:** `id`, `revision`, `path`, `commit`, `kind`, `status` (candidate / current / superseded).
+**Artifact fields:** `id`, `revision`, `path`, `commit`, `kind`, `scope` (principle 4; PC-42), `status` (candidate / current / superseded).
 
 **Assembly fields:** `id`, `name`, `design_baseline` (intent revision), `working_assembly` (the sequence of realized part revisions), `delivery_baseline` (the accepted whole), `snapshot_id`.
 
@@ -247,14 +250,17 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 **Rules:**
 - Same key and same full intent: the existing record is returned. Same key and different intent: conflict (F01).
-- At the moment of the effect, the current work item, dependencies, claim (active, current generation, valid epoch) and read set are re-checked (F08); `grant_ref` and the grant check join when Grant is activated (3.6; PC-08). Which dependencies enter the read set is determined on the server side according to the operation type; it is not left to a short list written by the agent.
+- At the moment of the effect, the current work item, dependencies, claim (active, current generation, valid epoch) and read set are re-checked (F08); `grant_ref` and the grant check join when Grant is activated (3.6; PC-08). Which dependencies enter the read set is determined on the server side according to the operation type; it is not left to a short list written by the agent. The server keeps a table of effect classes, filled by migration by the stage that first prepares each kind of effect (C03's effect channels, C08's release): for each class, whether it is irreversible (3.3) and the mandatory elements of its read set (the work item and its revision, its hard dependencies, the active claim with its generation, the authority epoch, the target's expected base, and the revision of every input). `prepare_operation` refuses a class that is not in the table, and the agent's read set can add to the mandatory elements, never remove one (PC-42).
+- An idempotency key's record is never deleted: a delayed retry, however late, is answered from the existing record and the real state, never accepted as a new operation (Appendix C F01 (d); PC-42).
 - Observations are appended, not deleted; a later "unknown" does not erase an earlier "applied" (F07).
 
 ### 3.13 Event — event
 
-**Fields:** `id`, `aggregate_type`, `aggregate_id`, `aggregate_revision`, `tx_id`, `event_type`, `payload`, `role_class` (from the caller's token, never declared), `declared_session_id` (declared), `created_at`, `exported_at` (PC-08).
+**Fields:** `id`, `aggregate_type`, `aggregate_id`, `aggregate_revision`, `tx_id`, `event_type`, `payload`, `role_class` (from the caller's token, never declared), `origin` (call / rule / owner / job; PC-42), `declared_session_id` (declared), `created_at`, `exported_at` (PC-08).
 
-**Rules:** The growth of the event ID is not by itself a global order; export and monitoring work with the transaction ID and the object revision. The event record is the source of the hourly export.
+**Rules:** The growth of the event ID is not by itself a global order; export and monitoring work with the transaction ID and the object revision. The event record is the source of the hourly export. `role_class` is the role class of the verified token of the call in which the event happens, also for a record the database makes by rule within that call (`origin = rule`: a sample review, a lapsed claim marked `expired` by the next claim); an owner-only function (section 2) records `owner`, read from the database session, and a scheduled job, from C04, its own database role (`origin = job`); none of them is ever declared. `mark_exported` writes one event per call, for the range it marks (PC-42).
+
+**RejectedAttempt** (PC-42): the record of a rejected attempt (section 4; plan 6.2). **Fields:** `id`, `function_name`, `role_class` (from the token when it was verified, otherwise `none`, a recorded value that means no role class and is never a default role class), `reason_code`, `counted_hour` and `count` (counted rows only), `declared_session_id` (declared), `reason` and `target_ref` (+revision, when the call names one) (per-call rows only), `created_at`, `exported_at`. **Rules:** A token is verified when it matches a non-revoked `env_tokens` row (3.27); a missing, empty, malformed, unknown or revoked token, or a header that cannot be read, is not verified. A call without a verified token adds one to the single counted row for its function, reason code and hour, which is increased in place; a caller with a verified token refused for another reason gets one row per call. A counted row changes only during its hour and is exported after it. Every function records its refusals, read functions included (Appendix C F06). The function rolls back its own partial work in an inner block, writes this record and returns the refusal, so that the record stays while no half state or orphan event remains (F06). It keeps no input content, and never a token or anything derived from one. Only the functions write it; `devos_denetim` reads it.
 
 ### 3.14 Release — rules, roles, methods
 
@@ -268,7 +274,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 **Competence fields:** `id`, `role`, `task_class`, `model_and_settings`, `tools_and_context_method`, `eval_refs`, `result_summary`, `known_limits`, `retest_triggers`, `valid_for_release`, `status` (current / retest_required / retired; PC-08).
 
-**EvalRun fields:** `id`, `eval_set_id` (ID only; the content is in `devos-evals`), `eval_set_version`, `subject_role`, `subject_release`, `runner_session`, `results` (positive and negative examples separately), `run_at`.
+**EvalRun fields:** `id`, `eval_set_id` (ID only; the content is in `devos-evals`), `eval_set_version`, `subject_role`, `subject_release`, `runner_session`, `work_ref` (+revision: the work item an exam task was opened as; the link lives only here, so only `devos_sinav` can read it; C05 may change the form, note N-138; PC-42), `results` (positive and negative examples separately), `run_at`.
 
 **Rules:** When the model, the role text, the tool set or the context method changes, the related competence's `status` becomes `retest_required`. `EvalRun` and `Competence` are written only with the `devos_sinav` role, and `EvalRun` is read only with it. Other role classes read a competence only through `competence_summary(role)`, which returns `task_class`, `model_and_settings`, `tools_and_context_method`, `known_limits`, `status` and `valid_for_release`, never `eval_refs` or `result_summary`; `session_brief(role)` uses it for the role's competence profile (plan 6.5 item 1; Appendix A 3.3), and release activation uses it to see that the exam was passed (PC-08). Exam tasks are opened in the working environment as ordinary `Work`; in the `Work` record, the fact that the task is an exam is kept in a field the working environment cannot see.
 
@@ -284,11 +290,12 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.17 Decision — decision
 
-**Fields:** `id`, `revision`, `class` (routine / high_impact / batu), `question` (English), `presented_text_tr` (in the `batu` class, the Turkish text shown to Batu), `answer_original_tr` (Batu's answer, verbatim), `answer_interpretation_en`, `why_this_owner`, `options` (each: description, purpose, benefit, cost, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `alternatives_state` (compared / single_viable_path / open_exploration; PC-08), `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_at`.
+**Fields:** `id`, `revision`, `class` (routine / high_impact / batu), `question` (English), `presented_text_tr` (in the `batu` class, the Turkish text shown to Batu), `answer_original_tr` (Batu's answer, verbatim), `answer_interpretation_en`, `why_this_owner`, `options` (each: description, purpose, benefit, cost, risk), `alternatives_considered`, `single_viable_path_reason`, `premises`, `criteria`, `evidence_refs`, `assumptions`, `reversibility`, `reopen_triggers`, `recommendation`, `recommendation_rationale`, `if_unanswered`, `alternatives_state` (compared / single_viable_path / open_exploration; PC-08), `status` (draft / open / answered / accepted / superseded / withdrawn), `answer`, `answered_by`, `answer_channel_ref`, `answered_revision` (the revision the answer is to; PC-42), `answered_at`.
 
 **Rules:**
 - Decisions of the `high_impact` and `batu` classes cannot move to the `open` state until the result of the alternatives research (the compared options, or `single_viable_path_reason`, or `alternatives_state = open_exploration`), the criteria, evidence, assumptions, `premises` (premise inventory), reversibility and the reopening conditions have been entered (format gate). A decision opened with `alternatives_state = open_exploration` cannot be answered or accepted until the compared options or `single_viable_path_reason` are entered (plan K-3 item 2; PC-08).
 - The answer to a `batu`-class decision can come only from Batu's identity: B3 = (a) was chosen, so the answer is processed only after the decision channel's intake has verified that it came from Batu's GitHub account (plan 6.9). Option (b)'s `devos_batu` role is removed (PC-08).
+- An answer is bound to the revision it answers (T-36; ECC-80; PC-42): `answered_revision` is set with the answer and must equal the decision's current revision when the answer is recorded; an answer to another revision is recorded as an event, with its channel reference, and not applied, and the decision stays open. Once a decision is answered, no new revision of it is written: a change after the answer is a new decision that `supersedes` it (3.4). C06 tests the channel's cases (note N-096 on `plan/work/C06.md`).
 - When a new decision is opened, related earlier decisions are queried and linked to the record; an earlier decision is reopened only with new material information or a changed goal. A recorded defect in the earlier decision's basis is new material information: a reasonable alternative it never considered (absent from its `alternatives_considered`), one of its `premises` shown false, or a failed from-scratch test on the same evidence (Appendix D, D1). Re-arguing the same evidence in the same frame is not (plan K-3 item 3; PC-16).
 - `class` follows rules, not the agent's choice (PC-08). A decision is `batu` when it concerns a matter that belongs to Batu (purpose, scope, cost, his accounts and his other work; plan K-11 item 7), and at least `high_impact` when it concerns the schema, the rules, roles or methods, security, a cost or an irreversible effect. Where the database can decide, it enforces it: a decision that opens or widens a Mission cannot be below `batu`, and from Constraint's activation (C05, section 3) neither can one that changes a Constraint; a decision tied to a work item of `impact_class = high` cannot be `routine`. A set share of the decisions labelled `routine` falls to the sample review (3.11).
 
@@ -314,7 +321,7 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 **Fields:** `id`, `surface` (routine_runs / session_usage / supabase_db_size / storage / actions_minutes / second_model_quota), `limit_value`, `limit_source` (read from the account, or documentation), `observed_usage`, `observed_at`, `reservations`, `uncertainty`.
 
-**Rule:** When a limit's set threshold is approached, a decision record is opened; the scope is not narrowed silently.
+**Rule:** When a limit's set threshold is approached, a decision record is opened; the scope is not narrowed silently. Routine usage counts, apart from the runs, each expected occurrence of a routine that no registered session matches (T-77; section 6; PC-42).
 
 ### 3.22 Recovery — recovery
 
@@ -324,15 +331,15 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.23 LeakFingerprint — leak fingerprint
 
-**Fields:** `hash` (rolling-window hashes produced from private source chunks), `source_ref`. No content is kept. Only `devos_ingest` writes; `devos_ci` reads.
+**Fields:** `hash` (rolling-window hashes produced from private source chunks), `source_ref`, `origin` (`library`, or `synthetic` for a test's planted fake text; PC-42). No content is kept. Of the application roles only `devos_ingest` writes; `devos_ci` reads. C03 test 6's synthetic fingerprints come through the migration path, labelled `synthetic` (plan Section 8 item 13); `source_ref` is required for `library` rows and refers to Source from C04 (PC-42).
 
 ### 3.24 SessionRecord and LaunchRecord — session and launch
 
 **SessionRecord fields:** `id`, `role_class` (from the token), `declared_session_id`, `routine_ref`, `started_at`, `last_seen_at`, `ended_at`, `handoff_ref` (structured hand-over record).
 
-**LaunchRecord fields (for emergency API triggers):** `id`, `routine_ref`, `reason`, `intent_at`, `returned_session_id`, `result` (started / uncertain / failed / reconciled), `reconciled_by`.
+**LaunchRecord fields (for emergency API triggers):** `id`, `routine_ref`, `reason`, `work_ref` and `cause` (the work item and the cause the launch answers; T-77; PC-42), `intent_at`, `returned_session_id`, `result` (started / uncertain / failed / reconciled), `reconciled_by`.
 
-**Rules:** A launch whose response is lost stays `uncertain`; before a retry, its counterpart is searched for in the session list and in `SessionRecord`. Blind repetition is forbidden.
+**Rules:** A launch whose response is lost stays `uncertain`; before a retry, its counterpart is searched for in the session list and in `SessionRecord`. Blind repetition is forbidden. A second launch for the same cause is refused until the first is reconciled as failed (T-77; Appendix C N24; PC-42).
 
 ### 3.25 ProtocolAudit — thinking discipline audit trail
 
@@ -363,14 +370,14 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ## 4. `devos_api` functions
 
-Each function: permitted roles, checked conditions, the event it produces. On failure, an error with a reason is returned and the rejected attempt is recorded.
+Each function: permitted roles, checked conditions, the event it produces. On failure, an error with a reason is returned and the rejected attempt is recorded (RejectedAttempt, 3.13; PC-42).
 
 | Group | Functions | Key checks |
 |---|---|---|
 | Session | `session_brief(role)`, `register_session`, `record_handoff`, `record_launch`, `reconcile_launch` | Role class from the token; the `role` parameter only selects which role package is loaded. An uncertain launch is not repeated blindly |
 | Mission and need | `open_mission`, `revise_mission`, `record_need`, `resolve_need` | Mission only by Batu's decision; `why_needed` mandatory for a need |
 | Work | `admit_work`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` | Scope and revision; link to the mission revision |
-| Readiness and claim | `ready_works()`, `claim(work_id)` → claim token, `heartbeat`, `release` | Single active claim; epoch and generation; expiry; effects require the claim token. `heartbeat`'s sender and form are decided in C06 |
+| Readiness and claim | `ready_works()`, `claim(work_id)` → claim token, `heartbeat`, `release`, `revoke_claim` | Single active claim; epoch and generation; expiry, computed (3.5); effects require the claim token. `heartbeat` is built in C02 in its minimal form (3.5); its sender, and any change to its form, are decided in C06; `revoke_claim` only `devos_denetim` (PC-42) |
 | Relation | `relate`, `retract_relation`, `affected_entities(root, limits)`, `explain_paths(root, target, limits)` | Cycle rejection in hard dependencies; the result carries completeness information |
 | Task and use | `record_task` (C04), `record_use` (C06); `send_request`, `answer_request`, `deliver_contribution` deferred with Request and Contribution (3.7) | Mandatory needs not shortened; one declared writer per product; only the consumer writes the use (declared inside a session) |
 | Knowledge | `record_finding`, `review_finding`, `search(query, modes, filters)`, `read_source(source_ref, revision, span)`, `ingest_source` (only `devos_ingest`) | Date and primary source for information that can change; the privacy filter is applied first; three status fields |
@@ -378,7 +385,7 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 | Product | `register_artifact`, `update_assembly`, `snapshot_assembly` | Design and working state separate |
 | Review | `open_review`, `record_verdict`, `accept` | Only `devos_denetim`; `basis_refs` mandatory; no repair in the same transaction; `sample` reviews are created by the database |
 | External effect | `prepare_operation`, `record_attempt`, `record_observation` | Full intent; re-check at the moment of the effect |
-| Decision | `open_decision`, `answer_decision`, `link_prior_decisions` | Mandatory fields by class; class by rule; answer identity |
+| Decision | `open_decision`, `answer_decision`, `link_prior_decisions` | Mandatory fields by class; class by rule; answer identity, and the answer bound to the revision answered (3.17; PC-42) |
 | Learning and exam | `record_learning`, `record_eval_run`, `competence_summary(role)`, `propose_release`, `activate_release`, `rollback_release` | The proposer cannot activate; an exam is required; `competence_summary` returns no exam content (3.15); the release functions take the form C05 decides (3.14) |
 | Limits | `record_usage`, `budget_status` | A decision is opened at the threshold |
 | User and policy | `record_constraint`, `revise_constraint`, `update_user_model`, `set_effort_policy`, `record_dead_end`; `grant`, `revoke_grant` deferred with Grant (3.6) | Effort reduction only with audit approval, for the item or by a standing policy; constraint change with a decision record |
@@ -395,7 +402,7 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 
 | Job | Frequency | Output |
 |---|---|---|
-| Expired claims | Every few minutes | `expired` claims, the work item becoming ready again |
+| Expired claims | Not built: expiry is computed when claims are checked (3.5; section 8; PC-42) | — |
 | Deadlock scan | Hourly | A decision record for wait cycles |
 | Stale record and link check | Daily | Maintenance work for stale findings and broken references |
 | Purpose audit | Daily | Maintenance work for work items weakly tied to the mission |
@@ -407,7 +414,9 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 
 The frequencies are initial values; they are changed, with reasons, on the basis of observations in C06 and C11.
 
-**Activation** (PC-08): the job that marked ready work every few minutes is removed; readiness is the momentary result of `ready_works()`, and `claim` re-checks it (3.3). The expiry of claims is built in C02 with the claim; whether it is applied by the expired-claims job or computed when `claim` and `ready_works()` run is chosen in C02 with the tests (section 8). The deadlock scan is activated in C06; limit tracking in C04; the constraint contradiction scan in C05; the purpose audit, the capability gap scan, the silent-failure sampling, the stale record and link check and the assumption inventory testing in C10.
+**Activation** (PC-08): the job that marked ready work every few minutes is removed; readiness is the momentary result of `ready_works()`, and `claim` re-checks it (3.3). The expiry of claims is built in C02 with the claim; it is computed when `claim`, `ready_works()` and every effect's re-check run, not applied by a job (3.5; section 8, provisional on C02's tests; PC-42). The deadlock scan is activated in C06; limit tracking in C04; the constraint contradiction scan in C05; the purpose audit, the capability gap scan, the silent-failure sampling, the stale record and link check and the assumption inventory testing in C10.
+
+**Due occurrences** (T-77; PC-42): for every job in this table, and every export and ingestion job, a check outside the job compares the job's expected occurrences with its recorded outcomes, per job, so that one stopped job is not hidden by the others' fresh records; each occurrence records its outcome as an `Event` (`origin = job`, 3.13). The check runs on the independent monitoring path (section 6) and is built with each job, at the stage that activates it: limit tracking and ingestion in C04, the constraint contradiction scan in C05, the deadlock scan in C06, the export in C09, the other jobs in C10.
 
 ---
 
@@ -415,9 +424,9 @@ The frequencies are initial values; they are changed, with reasons, on the basis
 
 - In the normal flow, sessions start through scheduled routines (plan Section 6.4); the database sends no trigger.
 - In emergencies (Batu's awaited decision has arrived and work is waiting; recovery), an API trigger from the reserve budget is used. The trigger sends only the work ID; the session reads the actual information from the database.
-- Every trigger is recorded as a `LaunchRecord`; an uncertain result is not repeated before it is reconciled.
+- Every trigger is recorded as a `LaunchRecord`; an uncertain result is not repeated before it is reconciled, and a second launch for the same cause is refused until the first is reconciled as failed (3.24; T-77; PC-42).
 - Every session registers itself at opening with `register_session`.
-- **Independent monitoring:** A path independent of the DevOS components (for example a scheduled GitHub Actions job in `devos-backup`) checks the time of the last session record, the last backup and the last ingestion; if the expected interval is exceeded, it opens an issue assigned to Batu. This path also notices routines switching themselves off and Actions minutes running out. It also notifies Batu of every commit pushed to `agentic-os-search` with a credential DevOS's sessions can use: the machine account's, and the Claude GitHub App's if C01 #12 shows that sessions reach the library through it (observation of the single-writer principle, and of whether C04's removal of that access held; whether the job can read who pushed each commit is settled when it is built, C09). The path is independent of DevOS's runtime components, so that it notices their failure; it is not independent of DevOS, which builds it and can change it, so this signal is not safeguard 2 of Section 0.5 of the plan (PC-07, alternative E): that safeguard is a setting outside DevOS's control, Batu's decision D-014.
+- **Independent monitoring:** A path independent of the DevOS components (for example a scheduled GitHub Actions job in `devos-backup`) checks the time of the last session record, the last backup and the last ingestion; if the expected interval is exceeded, it opens an issue assigned to Batu. It checks per routine and per job (T-77; PC-42): it compares each routine's expected occurrences with the sessions registered for it, and each job's with its recorded outcomes (section 5), so that one stopped routine or job is not hidden by the others' fresh records; a registration that matches no expected run is flagged (note N-136, X1). This path also notices routines switching themselves off and Actions minutes running out. It also notifies Batu of every commit pushed to `agentic-os-search` with a credential DevOS's sessions can use: the machine account's, and the Claude GitHub App's if C01 #12 shows that sessions reach the library through it (observation of the single-writer principle, and of whether C04's removal of that access held; whether the job can read who pushed each commit is settled when it is built, C09). The path is independent of DevOS's runtime components, so that it notices their failure; it is not independent of DevOS, which builds it and can change it, so this signal is not safeguard 2 of Section 0.5 of the plan (PC-07, alternative E): that safeguard is a setting outside DevOS's control, Batu's decision D-014.
 
 ---
 
@@ -427,7 +436,7 @@ The frequencies are initial values; they are changed, with reasons, on the basis
 - **Semantic search:** the model chosen in C04; the query vector is produced on the session's own machine.
 - **Merging:** Keyword and semantic results are merged with a rank-based merging method; the merging setting is chosen with the C04 benchmark.
 - **Status:** Results carry their authority status; historical sources do not get ahead of a current source of the same relevance.
-- **DevOS's own knowledge** (PC-08): every knowledge-bearing record DevOS makes (Finding, Decision, DeadEnd, Learning, UserModel, Constraint) is reachable by the same keyword, semantic and relation searches as library chunks, through a catalogue entry written with the record or one search view over them (chosen in C04); a family is covered from the stage that activates it.
+- **DevOS's own knowledge** (PC-08): every knowledge-bearing record DevOS makes (Finding, Decision, DeadEnd, Learning, UserModel, Constraint) is reachable by the same keyword, semantic and relation searches as library chunks, through a catalogue entry written with the record or one search view over them (chosen in C04); a family activated before C04 (Finding and Decision, C02) is covered from C04, where the search view is built, and a later family from the stage that activates it. Until C04, `link_prior_decisions` links the earlier decisions its caller names and those already related to the new one (3.4); the query for related earlier decisions (3.17) joins it in C04 (PC-42).
 - **Continuation queries:** The continuation of a bounded relation or search query is tied to the same snapshot (snapshot, revision, policy); if the data changes in the meantime, the continuation information becomes invalid and the query restarts explicitly. Parts coming from different snapshots are not merged into a single "complete" result.
 - **Privacy:** The filter is applied before the search; even the existence of results a role cannot see is not leaked. If completeness is limited because of a region that cannot be seen, this is stated without revealing the content.
 
@@ -435,7 +444,7 @@ The frequencies are initial values; they are changed, with reasons, on the basis
 
 ## 8. Details to be chosen with evidence in C02
 
-These are implementation details deliberately left open in this appendix. Each has an initial proposal; the choice is made in C02, with the tests in Appendix C and with its reasons.
+These are implementation details deliberately left open in this appendix. Each has an initial proposal; the choice is made in C02, with the tests in Appendix C and with its reasons, except the vector index and the chunk size, which rest on C04's search benchmark and are chosen there (C04 tasks 3 and 6; PC-42).
 
 | Topic | Initial proposal | What the choice will be based on |
 |---|---|---|
@@ -444,5 +453,20 @@ These are implementation details deliberately left open in this appendix. Each h
 | Vector index | An approximate nearest neighbour index suited to the dimension of the chosen model | C04 search benchmark and size |
 | Chunk size | Chunks of roughly one or two paragraphs that respect the heading structure | C04 search benchmark |
 | How the environment token reaches the database | Carried in a separate request header through the API credential feature of the Claude environment; `devos_api` functions read the header and compare its hash with `env_tokens` | C01 #3, a documentation reading, not an observation (`evidence/C01/EV-C01-002_row3_environment_token.md` F3 and section 1.3, read 10 October 2026; not independently tested; PC-40, 2026-10-12): where it is observed is for C02's identity-chain design (W-C02-05) to decide; C02 negative tests. If the header path does not work, an Edge Function gate that verifies the token |
+
+**Choices made in C02** (PC-42; `evidence/C02/EV-C02-002_data_model_choices.md` gives each one's reasons, evidence and alternatives). A provisional choice stands until the named test confirms it; if the test fails, the choice changes through Section 14 of the plan before C02 closes.
+
+| Topic | Choice | State |
+|---|---|---|
+| Concurrency control | `claim` locks its work item's row and rests on the unique index of one active claim per work item; every change to a work item's readiness inputs locks that row, and an effect's re-check locks it, its claim and the global authority epoch's row for share; a write of a hard dependency first takes one transaction-level advisory lock, then checks for a cycle; isolation is PostgreSQL's default (read committed); locks are taken in one order (the hard-dependency lock, the work item, the claim, the global authority epoch); the global authority epoch is one row, which `revoke_env_token` increments under an update lock | Provisional: confirmed by C02's Concurrency test, run repeatedly with its failure frequency recorded |
+| Revision storage form | Each family that carries `revision` has one row per object for its identity and state (for Work, WorkStanding's axes) and an append-only table holding every revision, the current one included; a reference to a revision is a foreign key to that table; the current form is a view | Decided |
+| Vector index; chunk size | Chosen in C04 with the search benchmark and the capacity measurement (note on `plan/work/C04.md`) | Moved to C04 |
+| How the environment token reaches the database | Chosen with the identity chain's design (`evidence/C02/EV-C02-003_identity_chain_and_environments.md`) | Decided there |
+| Claim expiry (section 5, "Activation") | Computed when `claim`, `ready_works()` and every effect's re-check run; no expired-claims job (3.5) | Provisional: confirmed by C02's tests F08 (c), N17 and Concurrency |
+| Lease | 30 minutes from the claim or the last `heartbeat`; `heartbeat` is built in its minimal form (3.5) | Decided for C02 to C05; read again in C06 with the liveness signal |
+| Sample share (principle 12; 3.3; 3.17) | One record in every block of 10 of a stream, at a position drawn at random when the block opens and not visible to agents. The streams are each format-gated family, the work items labelled `routine` and the decisions labelled `routine`. The block sizes are kept in a table that changes only by migration; a throwaway test database (plan Section 8 item 3) may set a block of 1 | Decided; its value read again in C06 against the audit queue |
+| EffortPolicy as fields of Work (EV-C00-012 R17) | EffortPolicy stays a family, since a standing policy serves many work items (3.18); WorkStanding's axes are the state fields of the work item's row | Decided |
+| SessionRecord as an event type (EV-C00-012 R23) | SessionRecord stays a table with its events, like every other family; LaunchRecord keeps its states | Decided |
+| The `devos_api` contract (ECC-188, `contract-first`) | The SQL migrations are its only authored contract; no separate machine-checkable schema is written | Decided |
 
 *Translation note: English translation of the Turkish original at devos commit 3de3a17 (W-C00-06, plan C00 step 0). Since the fidelity review passed, this English text is binding (plan 0.6 item 1).*
