@@ -12,6 +12,8 @@
 
 **States.** "exists" (with the record that shows it); "planned (created at ...)"; "revoked"; "removed". A planned row gives what the plan says now; it is checked against the real key when the key is created.
 
+**[2026-10-12, CHK-C01-111 finding 7; L-278]** The C01 probe tokens were never created (rows 16 and 17; W-C01-47 item 5): PC-21 item 1 removed P1 and P3, which they belonged to. The sentences above that have them come first (Batu's steps 4 and 5), stay listed as existing until C02's first migration, and be revoked by Batu's step 9 were written for that setup and no longer apply; for those two rows the state is "never created", which is added here to the states above.
+
 ## Inventory
 
 | # | Identifier | Owner | Where it is kept | Permissions | Revocation path | State | Source record |
