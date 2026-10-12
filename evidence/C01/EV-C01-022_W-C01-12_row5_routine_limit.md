@@ -159,8 +159,8 @@ The question (comment `6110301769`, in Turkish; read by the executor) asked him 
 | Run | Branch | S | End | How it started | Result | Closing record, limit message |
 |---|---|---|---|---|---|---|
 | CS1 | `claude/probe-c01-cs1-20261012T0604Z` at `c2240846ccea2cc9587cc3547ee388c05fd771f3` | 06:04:44Z (CS1 STAMP.md) | 06:08:54Z (CS1 CLOSING.md item 1) | Run now: Batu's press (D-030 (a)), his words in the working session at about 06:04Z, "Run now'a bastım." (L-265). The stamp reads the start as a scheduled task from the first message's wrapper, as earlier presses showed; S matches no schedule time | done | none (item 7) |
-| CS2 | `claude/probe-c01-cs2-20261012T0808Z` at `8d55d851bca0feb3c9533c9d88f2c4ea29e608ba` | 08:08:36Z (CS2 STAMP.md) | 08:12:58Z (CS2 CLOSING.md item 1) | The routine's daily schedule (about 08:07Z); the stamp reads it as scheduled | done | none (item 7) |
+| CS2 | `claude/probe-c01-cs2-20261012T0808Z` at `8d55d851bca0feb3c9533c9d88f2c4ea29e608ba` | 08:08:36Z (CS2 STAMP.md) | 08:12:58Z (CS2 CLOSING.md item 1) | The routine's daily schedule (about 08:07Z), inferred, not observed: S is 1 min 36 s after it and no press was asked or reported; the stamp reads it as scheduled (CHK-C01-107 C2) | done | none (item 7) |
 
-- **Count.** 2026-10-12 has two runs by this listing: one by Run now (CS1) and one by the schedule (CS2). The most starts in any 60-minute span on that day is one. Neither run saw a usage or routine limit message.
+- **Count.** 2026-10-12 has two runs by this listing: one by Run now (CS1) and one by the schedule, inferred (CS2). The most starts in any 60-minute span on that day is one. Neither run saw a usage or routine limit message.
 - **Batu's run list.** Not read for this count, as before (section 5, second row).
 - **Still open.** N-191 stays open until the routine is deleted (W-C01-47 item 3): a run after this listing, if any, is counted in a further addendum.
