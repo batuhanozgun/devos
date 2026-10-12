@@ -21,8 +21,11 @@ part plants it (w07_6tk_token_reasons.sql, 6TK-hu0 to hu4).
 Runs: by the migration job's runner inside its devos-test step, from the repository root, as
   python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <one JSON object on standard input>
 (README section 5.1 (b); note N-255 on plan/work/C02.md). The input is the job's one JSON object:
-  {"target": "devos-test", "endpoint": "<the project's API base URL>", "publishable_key": "<key>",
+  {"endpoint": "<the project's API base URL>", "apikey": "<the publishable key>" or null,
    "tokens": {"<role class>": "<token>", ...}, "revoked_token": "<token>"}
+exactly those four keys (N-255, "The key's source, decided"). apikey null means the key is not stored yet: every
+Data API case is then "could not check", exit 3, with that reason. This program declares no need of the database,
+so the job runs it under env -i, with no environment.
 Without the endpoint, the publishable key or a token it needs, every Data API case is "could not check", and the
 line says which input is missing (never a value).
 This program uses tokens.devos_denetim and revoked_token. Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK; the last line is
@@ -40,13 +43,13 @@ results = []
 
 def case(cid, outcome, detail):
     results.append(outcome)
-    print(f"{cid}\t{outcome}\t{detail}")
+    print(TAB.join((str(cid), str(outcome), str(detail))))
 
 
 def call(cfg, token, method="POST", send_empty=False):
     url = cfg["endpoint"].rstrip("/") + "/rest/v1/rpc/token_role_class"
     req = urllib.request.Request(url, data=b"{}" if method == "POST" else None, method=method)
-    req.add_header("apikey", cfg["publishable_key"])
+    req.add_header("apikey", cfg["apikey"])
     req.add_header("Content-Type", "application/json")
     req.add_header("Content-Profile", "devos_api")
     req.add_header("Accept-Profile", "devos_api")
@@ -93,32 +96,64 @@ def judge(cid, cfg, token, want, send_empty=False):
     case(cid, "ok" if ok else "bad", f"HTTP {st}; refusal {ref or '-'} (wanted {want}); role class {role_of(js) or 'none'}")
 
 
-def missing_inputs(cfg, classes, revoked=False):
-    """What the job's input lacks, by name only (N-255); never a value."""
+NL, TAB = chr(10), chr(9)
+WS = " " + chr(9) + chr(10) + chr(11) + chr(12) + chr(13)  # the whitespace class, written without a backslash
+# The job's input (note N-255 on plan/work/C02.md, with "The key's source, decided"): one JSON object on standard input
+# with exactly the keys endpoint, apikey (a string or null), tokens (role class to token) and revoked_token. Nothing of
+# it is printed: a missing or wrong key is named, never a value.
+INPUT_KEYS = ("endpoint", "apikey", "tokens", "revoked_token")
+
+
+def read_input():
+    """(the object, None), or (None, the reason by name only)."""
+    if sys.stdin is None or sys.stdin.isatty():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        raw = sys.stdin.read()
+    except (OSError, ValueError):
+        return None, "standard input could not be read"
+    if not raw.strip():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        cfg = json.loads(raw)
+    except ValueError:
+        return None, "the input on standard input is not JSON (N-255)"
+    raw = None
     if not isinstance(cfg, dict):
-        return ["the JSON object on standard input itself"]
-    toks = cfg.get("tokens") if isinstance(cfg.get("tokens"), dict) else {}
-    out = [k for k in ("endpoint", "publishable_key") if not cfg.get(k)]
-    out += ["tokens." + c for c in classes if not toks.get(c)]
-    if revoked and not cfg.get("revoked_token"):
+        return None, "the input is not one JSON object (N-255)"
+    missing = [k for k in INPUT_KEYS if k not in cfg]
+    extra = sum(1 for k in cfg if k not in INPUT_KEYS)
+    if missing or extra:
+        return None, ("the input's keys are not exactly " + ", ".join(INPUT_KEYS) + " (N-255): missing "
+                      + (", ".join(missing) or "none") + "; " + str(extra) + " other key(s), not named")
+    if cfg["apikey"] is not None and not isinstance(cfg["apikey"], str):
+        return None, "apikey is neither a string nor null (N-255)"
+    if not isinstance(cfg["tokens"], dict):
+        return None, "tokens is not an object from role class to token (N-255)"
+    return cfg, None
+
+def api_lacks(cfg, classes, revoked=False):
+    """What a Data API program lacks in the job's input, by name, or None. apikey null: N-255's key not stored yet."""
+    if cfg["apikey"] is None:
+        return ("apikey is null: the job holds no publishable key for devos-test yet (N-255, The key's source, "
+                "decided), so no Data API case can run")
+    out = [] if cfg["apikey"] else ["apikey (empty)"]
+    if not isinstance(cfg["endpoint"], str) or not cfg["endpoint"]:
+        out.append("endpoint")
+    out += ["tokens." + c for c in classes if not isinstance(cfg["tokens"].get(c), str) or not cfg["tokens"].get(c)]
+    if revoked and (not isinstance(cfg["revoked_token"], str) or not cfg["revoked_token"]):
         out.append("revoked_token")
-    return out
+    return ("the job's input has no " + ", ".join(out)) if out else None
 
 
 def main():
     print(f"{TEST}: Data API part (synthetic tokens from the job; no value or header is printed)")
-    cfg = None
-    if not sys.stdin.isatty():
-        try:
-            raw = sys.stdin.read()
-            cfg = json.loads(raw) if raw.strip() else None
-            raw = None
-        except ValueError:
-            cfg = None
-    den = (cfg or {}).get("tokens", {}).get("devos_denetim") if isinstance((cfg or {}).get("tokens"), dict) else None
-    lack = missing_inputs(cfg, ["devos_denetim"], revoked=True)
+    cfg, lack = read_input()
+    if cfg is not None:
+        lack = api_lacks(cfg, ["devos_denetim"], revoked=True)
+    den = cfg["tokens"]["devos_denetim"] if not lack else None
     if lack:
-        case("6TK-http", "could_not_check", "missing from the job's input (N-255): " + ", ".join(lack))
+        case("6TK-http", "could_not_check", lack)
     else:
         rnd = den[-43:]
         alt = "B" if rnd[10] == "A" else "A"

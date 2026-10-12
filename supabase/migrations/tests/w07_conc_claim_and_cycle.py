@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# w07-needs-database: yes
 """T-W07-CONC: Appendix C "Concurrency" (C02), with EV-C02-002 DM-01's and DM-06's confirming cases.
 
 Synthetic test data (plan Section 8 item 13): every mission, work item, relation, artifact, scope
@@ -7,12 +8,15 @@ holds no personal or business data. Specification: tests/C02/W-C02-07/T-W07-CONC
 
 Run: python3 -I supabase/migrations/tests/w07_conc_claim_and_cycle.py < <one JSON object>  (from the repository root)
   The migration job's devos-test step (README 5.1 (b); EV-C02-003 §6.3; note N-255 on plan/work/C02.md) gives the job's
-  one JSON object on standard input, whose "target" is "devos-test", and runs the program in the step's own libpq
+  one JSON object on standard input (N-255: exactly endpoint, apikey, tokens, revoked_token; none is used here) and,
+  since line 2 declares w07-needs-database, runs the program in the step's own libpq
   connection environment for devos-test as postgres; the program never reads, prints or stores a connection value, it
   only passes the environment to psql. It uses no publishable key and none of the job's tokens: it issues its own
   synthetic tokens through its owner connection and revokes each by its env_tokens row ID (README section 8).
-  {"target": "throwaway"}  the break harness's throwaway database (README 5.2); w07.throwaway must be 'yes' there.
-Any other target, no input, or no connection gives COULD NOT CHECK. It is never run against devos.
+  The break harness gives the same four keys with null values and its throwaway database's socket (README 5.2); the
+  program reads the database setting w07.throwaway to tell that database apart.
+No input, another input form, or no database connection settings give COULD NOT CHECK. It is never run against devos:
+with N-255's input form, which names no target, that rests on the job running its programs in the devos-test step only.
 Committed fixtures (the executor's decision: allowed in devos-test, forbidden in devos by EV-C02-002 DM-23): one
 owner-planted synthetic Decision of class batu with its revision, one Mission, the work items, relations and artifacts
 of the runs, and the claims; all labelled SYNTHETIC W-C02-07 and listed in the output.
@@ -44,7 +48,43 @@ LOCK_KEY = 20701    # two-integer advisory key space of this test (classid); obj
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HELPERS_FROM = os.path.join(HERE, 'w07_f01_whole_intent.sql')  # the Group A helpers, from the class-high SQL file
-REDACT = re.compile(r'[A-Za-z0-9_\-+/=]{32,}')
+REDACT = re.compile('[-A-Za-z0-9_+/=]{32,}')
+NL, TAB = chr(10), chr(9)
+WS = " " + chr(9) + chr(10) + chr(11) + chr(12) + chr(13)  # the whitespace class, written without a backslash
+# The job's input (note N-255 on plan/work/C02.md, with "The key's source, decided"): one JSON object on standard input
+# with exactly the keys endpoint, apikey (a string or null), tokens (role class to token) and revoked_token. Nothing of
+# it is printed: a missing or wrong key is named, never a value.
+INPUT_KEYS = ("endpoint", "apikey", "tokens", "revoked_token")
+
+
+def read_input():
+    """(the object, None), or (None, the reason by name only)."""
+    if sys.stdin is None or sys.stdin.isatty():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        raw = sys.stdin.read()
+    except (OSError, ValueError):
+        return None, "standard input could not be read"
+    if not raw.strip():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        cfg = json.loads(raw)
+    except ValueError:
+        return None, "the input on standard input is not JSON (N-255)"
+    raw = None
+    if not isinstance(cfg, dict):
+        return None, "the input is not one JSON object (N-255)"
+    missing = [k for k in INPUT_KEYS if k not in cfg]
+    extra = sum(1 for k in cfg if k not in INPUT_KEYS)
+    if missing or extra:
+        return None, ("the input's keys are not exactly " + ", ".join(INPUT_KEYS) + " (N-255): missing "
+                      + (", ".join(missing) or "none") + "; " + str(extra) + " other key(s), not named")
+    if cfg["apikey"] is not None and not isinstance(cfg["apikey"], str):
+        return None, "apikey is neither a string nor null (N-255)"
+    if not isinstance(cfg["tokens"], dict):
+        return None, "tokens is not an object from role class to token (N-255)"
+    return cfg, None
+
 NEED = ['devos_private.issue_env_token(text)', 'devos_private.revoke_env_token(*)', 'devos_api.open_mission(jsonb)',
         'devos_api.admit_work(jsonb)', 'devos_api.claim(uuid,text)', 'devos_api.relate(jsonb)',
         'devos_api.revoke_claim(uuid,text)', 'devos_api.register_artifact(text,jsonb)']
@@ -57,7 +97,7 @@ def finish(result, detail, code):
 
 def clean(text):
     """Error text without anything long enough to be a credential (raw-output hygiene, README section 4)."""
-    return REDACT.sub('[withheld]', (text or '').strip().replace('\n', ' '))[:300]
+    return REDACT.sub('[withheld]', (text or '').strip().replace(NL, ' '))[:300]
 
 
 def psql_cmd():
@@ -106,7 +146,7 @@ select 'W07|done';
 
 
 def parse(out, err):
-    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'errors': re.findall(r'ERROR:\s+([0-9A-Z]{5})', err)}
+    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'errors': re.findall('ERROR:[' + WS + ']+([0-9A-Z]{5})', err)}
     for line in out.splitlines():
         parts = line.split('|')
         if parts[0] != 'W07':
@@ -122,7 +162,7 @@ def race(lock_no, scripts):
     """Starts every script behind one barrier, releases them together, returns their parsed results."""
     holder = subprocess.Popen(psql_cmd() + ['-v', 'ON_ERROR_STOP=1'], stdin=subprocess.PIPE,
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
-    holder.stdin.write(f'select pg_advisory_lock({LOCK_KEY}, {lock_no});\n')
+    holder.stdin.write(f'select pg_advisory_lock({LOCK_KEY}, {lock_no});' + NL)
     holder.stdin.flush()  # the holder's session stays idle, holding the lock, until it is told to release it
     lock_q = ("select count(*) filter (where granted and mode = 'ExclusiveLock') || '|' || "
               "count(*) filter (where not granted and mode = 'ShareLock') from pg_locks "
@@ -141,7 +181,7 @@ def race(lock_no, scripts):
         if waiting >= len(scripts):
             break
         time.sleep(0.05)
-    holder.stdin.write(f'select pg_advisory_unlock({LOCK_KEY}, {lock_no});\n')  # every waiting connection starts at once
+    holder.stdin.write(f'select pg_advisory_unlock({LOCK_KEY}, {lock_no});' + NL)  # every waiting connection starts at once
     holder.stdin.close()
     results = []
     for p in procs:
@@ -162,23 +202,23 @@ def overlapped(results):
 
 
 def main():
-    try:
-        cfg = json.loads(sys.stdin.read() or 'null') if sys.stdin is not None and not sys.stdin.isatty() else None
-    except (ValueError, OSError):
-        cfg = None
-    target = cfg.get('target', '') if isinstance(cfg, dict) else ''
-    cfg = None  # nothing else of the job's input is used or kept (N-255)
-    if target not in ('devos-test', 'throwaway'):
-        finish('COULD NOT CHECK', 'the input on standard input names no target devos-test or throwaway (N-255)', 3)
-    if not shutil.which('psql') or not any(os.environ.get(v) for v in ('PGHOST', 'PGSERVICE', 'PGDATABASE')):
-        finish('COULD NOT CHECK', 'no psql or no database connection given', 3)
+    cfg, why = read_input()
+    if cfg is None:
+        finish('COULD NOT CHECK', why, 3)
+    cfg = None  # nothing of the job's input is used or kept: this program issues its own tokens (README 5.1 (b))
+    if not any(os.environ.get(v) for v in ("PGHOST", "PGHOSTADDR", "PGSERVICE", "PGDATABASE")):
+        finish('COULD NOT CHECK', 'no database connection settings (libpq environment) given; this program declares '
+               'w07-needs-database (N-255)', 3)
+    if not shutil.which('psql'):
+        finish('COULD NOT CHECK', 'psql is not on the path given', 3)
     rc, out, err = run_sql("select coalesce(current_setting('w07.throwaway', true), '') || '|' || "
                            "exists (select 1 from pg_roles where rolname = 'supabase_admin');")
     if rc != 0:
         finish('COULD NOT CHECK', 'the database could not be reached: ' + clean(err), 3)
     marker, supa = out.strip().split('|')
-    if target == 'throwaway' and (marker != 'yes' or supa == 't'):
-        finish('COULD NOT CHECK', 'W07_TARGET=throwaway but the database is not the harness throwaway database', 3)
+    if marker == 'yes' and supa == 't':
+        finish('COULD NOT CHECK', 'w07.throwaway is yes but role supabase_admin exists: neither the harness database '
+               'nor devos-test', 3)
     missing = [n for n in NEED if run_sql(
         f"select not exists (select 1 from pg_proc p join pg_namespace s on s.oid = p.pronamespace "
         f"where s.nspname || '.' || p.proname = '{n[:-3]}');" if n.endswith('(*)')
@@ -189,7 +229,7 @@ def main():
     run_id = uuid.uuid4().hex[:8]
     scope = f'synthetic.w07.conc.r{run_id}'
     n_work = RUNS_CLAIM + 2 * RUNS_CYC2 + 4 * RUNS_CYC4 + 2 * RUNS_LATE
-    setup = ('create temp table w07_results (case_id text primary key, outcome text not null, detail text not null);\n'
+    setup = ('create temp table w07_results (case_id text primary key, outcome text not null, detail text not null);' + NL
              + helpers() + f"""
 create temp table w07_ids (n int, id text, rev int);""" + f"""
 do $s$
@@ -288,10 +328,10 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
         w, x = take(2)
         payload = json.dumps({'work_ref': ref(w), 'path': f'w07_fixture/conc_{run_id}_{run}', 'commit': 'a7' * 20,
                               'kind': 'w07_fixture', 'scope': scope, 'declared_session_id': 'w07_fixture_session_e'})
-        pre = ("begin;\nselect (set_config('request.headers', json_build_object('x-devos-env-token', "
-               "current_setting('w07.tok'))::text, true) is not null);\nset local role anon;\n"
-               f"select set_config('w07.ct', coalesce(devos_api.claim('{w[0]}'::uuid, 'w07_fixture_session_e')->>'claim_token', ''), false) <> '';\n"
-               "reset role;\ncommit;")
+        pre = NL.join(["begin;", "select (set_config('request.headers', json_build_object('x-devos-env-token', "
+                       "current_setting('w07.tok'))::text, true) is not null);", "set local role anon;",
+                       f"select set_config('w07.ct', coalesce(devos_api.claim('{w[0]}'::uuid, 'w07_fixture_session_e')->>'claim_token', ''), false) <> '';",
+                       "reset role;", "commit;"])
         eff = worker_script('devos_calisma', lock_no, f"devos_api.register_artifact(current_setting('w07.ct'), '{payload}'::jsonb)", pre=pre)
         rev = worker_script('devos_denetim', lock_no, "devos_api.revoke_claim(current_setting('w07.aid')::uuid, 'w07_fixture SYNTHETIC W-C02-07 race')",
                             prep=f"select set_config('w07.aid', coalesce((select id::text from devos_private.assignment where work_ref = '{w[0]}'::uuid and status = 'active'), ''), true) is not null;")

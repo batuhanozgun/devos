@@ -363,7 +363,7 @@ begin
   end loop;
   -- Reading: every devos_api function whose text reads the exam records' table refuses the same four tokens.
   for c in select p.oid, p.proname from pg_proc p join pg_namespace s on s.oid = p.pronamespace
-           where s.nspname = 'devos_api' and p.oid <> fw and p.prosrc ~* ('\m' || evname || '\M')
+           where s.nspname = 'devos_api' and p.oid <> fw and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]')
              and p.proname <> 'competence_summary' order by 2 loop
     nread := nread + 1;
     foreach cls in array four loop

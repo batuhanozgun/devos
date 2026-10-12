@@ -37,6 +37,7 @@ Synthetic test data (plan Section 8 item 13): every string the scan's controls p
   - `7SCAN-pf3`: its token patterns equal `shared/token_format.md` section 3.
   - `7SCAN-pf4`: its guard patterns equal the guard file's, re-read at run time.
   - A failure of any gives COULD NOT CHECK, and the scan does not run.
+  - `7SCAN-pf5` (phase C3; C1's open 5): the class-high program `supabase/migrations/tests/w07_idc_real_path.py` embeds the environment token's exact pattern as `ENV_TOKEN_EXACT_PARTS` (the marker split, so that only the two shared files hold it literally). Read with `ast`, never run, the parts joined must equal the pattern file's `env_token_exact`: `ok` when equal, `bad` when they differ, `could_not_check` when the program or the name cannot be read. Its own controls, in the scratch copy: `7SCAN-ec-same` (an equal copy answers equal), `7SCAN-ec-diff` (one character added answers differ) and `7SCAN-ec-missing` (no such name answers could not check).
 - **Positive controls, in a scratch copy** (planted, must be found as VALUE, answer fail):
   - `7SCAN-p1`: an environment token;
   - `-p2`: a claim token;
@@ -76,11 +77,11 @@ Synthetic test data (plan Section 8 item 13): every string the scan's controls p
 | **Examples** | (1) The original need (point 7; EV-C02-003 §14): a token of the environment format written into a fixture (`7SCAN-p1`). (2) Another manifestation: a claim token (`p2`), a cut copy (`p3`), a guard-pattern key (`p5` to `p8`), a password value (`p9`), a connection string (`p10`). (3) Another: a file the scan cannot read, counted as clean (`u1`, `u2`, `pa1`). |
 | **Negative control** | `7SCAN-p*` must be found. `7SCAN-m*`, `-u*` and `-pa1` must answer could not check. The subject, `7SCAN-s1` and `-s2`, must hold no VALUE. |
 | **Positive control** | `7SCAN-neg0` and `7SCAN-n1` to `-n3`: a clean tree, and names that look like credentials, are not findings. The scan does not answer "found" to everything. |
-| **Break attempt** | A copy of the program in a scratch directory, with one change, run with the same `--root`. This is an executable's break (README 5.2's patches are SQL); the prober makes it.<br>**B-7SCAN-1** (unreadable counted as clean). In the copy, the two lines `problems.append(f"{rel}: cannot be read ({type(e).__name__}) (unreadable)")` and `problems.append(f"{rel}: not a regular file, not read (unreadable)")` each become `pass`. Red: `7SCAN-u1` and `7SCAN-u2`.<br>**B-7SCAN-2** (token formats not scanned). In the copy, `pats = [("tok:" + k, r) for k, r in comp["tok"].items() if k.endswith("_find")]` becomes `pats = []`. Red: `7SCAN-p1` to `7SCAN-p4`.<br>Each must end with exit 1, and the unchanged program must pass again after. |
+| **Break attempt** | A copy of the program in a scratch directory, with one change, run with the same `--root`. This is an executable's break (README 5.2's patches are SQL); the prober makes it.<br>**B-7SCAN-1** (unreadable counted as clean). In the copy, the two lines `problems.append(f"{rel}: cannot be read ({type(e).__name__}) (unreadable)")` and `problems.append(f"{rel}: not a regular file, not read (unreadable)")` each become `pass`. Red: `7SCAN-u1` and `7SCAN-u2`.<br>**B-7SCAN-2** (token formats not scanned). In the copy, `pats = [("tok:" + k, r) for k, r in comp["tok"].items() if k.endswith("_find")]` becomes `pats = []`. Red: `7SCAN-p1` to `7SCAN-p4`.<br>**B-7SCAN-3** (phase C3; the embedded copy not compared). In the copy, `same = got == comp["raw"]["token_patterns"]["env_token_exact"]` becomes `same = True`. Red: `7SCAN-ec-diff`.<br>Each must end with exit 1, and the unchanged program must pass again after. |
 | **Stage and environment** | C02. Any checkout of `devos` at the head that adds W-C02-07's tests, with Python 3 and no credential and no network. Not a Supabase project and not a Claude environment's token. |
 | **Independence level** | Written by the test designer (fresh-context `test-designer` subagent, phase B, Group D; agent ID in W-C02-07's Record). Run before the merge by W-C02-07's fresh-context checker, or by the executor with the raw output given to that checker, never by its writer for the result. Its breaks are run by W-C02-13's prober. Shared: model lineage, README section 6, and the guard file it reads. |
 | **Evidence layer** | Structural: strings of known shapes in files. It does not show that no secret is present in a shape it does not know, an encoded copy (base64 of a token, URL-encoded), a password with no digit (rule 2's limit), or anything outside the subject (the repository's history, other branches: W-C02-12 point 9's scan). |
-| **Evidence envelope** | README section 4.<br>Fixed before the run: every case `ok`. The controls' answers are clean 4, fail 14, could not check 5. Each break's red cases are as above. The classification rule is the pattern file's, version 1.<br>`target_commit`: the head scanned. `criterion_version`: the commit that merged this file and the pattern file. `transport`: none (a file scan).<br>`observations_ref`: the program's output, with the head's SHA. `raw_evidence_ref`: under `evidence/C02/raw/`, after README section 4's checks, which this program's output itself passes. |
+| **Evidence envelope** | README section 4.<br>Fixed before the run: every case `ok` (34 cases since phase C3). The controls' answers are clean 4, fail 14, could not check 5. Each break's red cases are as above. The classification rule is the pattern file's, version 1.<br>`target_commit`: the head scanned. `criterion_version`: the commit that merged this file and the pattern file. `transport`: none (a file scan).<br>`observations_ref`: the program's output, with the head's SHA. `raw_evidence_ref`: under `evidence/C02/raw/`, after README section 4's checks, which this program's output itself passes. |
 
 ## Clause table
 
@@ -90,6 +91,7 @@ Not an Appendix C test. Point 7 maps as follows:
 |---|---|
 | "a scan of the test files and fixtures" | `7SCAN-s1` |
 | "with the guard's credential patterns" | `pf4`, `p5` to `p9`, `n2` |
+| (the class-high program's embedded copy of the token pattern equals the shared one; phase C3) | `pf5`, `ec-same`, `ec-diff`, `ec-missing` |
 | "and the token format W-C02-05 designs" | `pf3`, `p1` to `p4` |
 | "finds no token, key or password value" | `s1`, `s2` |
 | "after the scan is shown to catch a planted fake of that format in a scratch copy" | `p1` to `p4`, before `s1`, in the same run |
@@ -112,6 +114,8 @@ Not a format-gate test.
 ## Self-check (not a result)
 
 On 2026-10-12 the test designer ran the program over the clone `claude/c02-w07-tests`, holding Group D's files then present: PASS (30/30). All 23 controls answered as expected. Three NAME hits were reported in `shared/token_format.md`, its words "token:" and "token=" in prose. Both breaks were made on a scratch copy, and each turned exactly its red cases. This is not the point-7 result, which needs all four groups' files at the head that adds them.
+
+Phase C3 self-check (not a result), 2026-10-12, over the clone `claude/c02-w07-tests` with phase C3's changes: PASS (34/34); the 23 scan controls answered clean 4, fail 14, could not check 5; `7SCAN-pf5` equal; `7SCAN-ec-*` as expected. B-7SCAN-3 on a scratch copy turned exactly `7SCAN-ec-diff` red, exit 1.
 
 ## Not covered
 

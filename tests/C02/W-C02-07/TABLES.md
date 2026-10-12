@@ -10,6 +10,7 @@ Phase A wrote the skeleton of this file. The phase C2 test designer filled it on
 - Appendix C is quoted from `plan/Ek_C_Testler.md` at `main` `b679568`, unchanged since `db2ebd9`, which carries PC-42's and PC-43's changes. `Ek_C:NN` is its line.
 - C02's acceptance lines are quoted from `plan/work/C02.md` lines 29 to 39 at `b679568`.
 - The specifications are those at the clone's head `c699a19` (phases A and B), before phase C1's alignment. Case IDs inside a specification are stable.
+- **Phase C3** (2026-10-12) updated this file on the branch at `e8f5ce8`, which carries `main` `11feac5` (PC-44, the ledger transfer's functions). The rows phase C3 changed say so; an Appendix B line cited with `11feac5` is at that commit (README section 8.1). Phase C3 closed the gaps of section 7 that are test work and marks each with what closed it.
 
 **Columns.**
 - "Case ID(s)" are the case IDs of the test's own specification.
@@ -28,8 +29,9 @@ Every run below was of type `test-designer`, a fresh-context subagent given `.cl
 | B, Group B | `aa0b3721911d8646a` | 11 tests: `T-W07-F04`, `-K05`, `-F06`, `-N09`, `-N25`, `-N28`, `-DM02`, `-DM19`, `-DM19B`, `-5A`, `-REL`. Their SQL files, two Data API programs (DM19B part B, 5A part B), 12 breaks (`B-F04-1` and `-2`, `B-K05-1`, `B-F06-1`, `B-N09-1`, `B-N25-1`, `B-N28-1`, `B-DM02-1`, `B-DM19-1`, `B-DM19B-1`, `B-5A-1`, `B-REL-1`), and the break harness with its canary. |
 | B, Group C | `ad4981899748d3c8c` | 10 tests: `T-W07-N01`, `-N02`, `-N03`, `-N29`, `-T31`, `-5D`, `-FGFIND`, `-DM11`, `-DM47`, `-6ST`. Their SQL files, DM47's program and 38 breaks (`B-N01-*`, `B-N02-*`, `B-N03-*`, `B-N29-*`, `B-T31-*`, `B-5D-*`, `B-FGFIND-*`, `B-DM11-*`, `B-DM47-*`, `B-6ST-*`). |
 | B, Group D | `a6ab96b9844c2e843` | 8 tests: `T-W07-IDC`, `-6TK`, `-5B`, `-N04`, `-N08`, `-RT`, `-7SCAN`, `-6SC`. `shared/token_format.md` and `shared/scan_patterns.json`, their SQL files, three programs (IDC's real path, 6TK over HTTP, 7SCAN), 10 SQL breaks (`B-IDC-1` to `-3`, `B-6TK-1` and `-2`, `B-5B-1` and `-2`, `B-N04-1`, `B-N08-1` and `-2`) and 7SCAN's two scratch-copy breaks. |
-| C1 | the executor adds it | Aligns names and interfaces across the groups, moves the programs the migration job runs under `supabase/migrations/tests/` (N-255), and aligns `README.md`. The tests it changes are the executor's to record from its report. |
-| C2 | the executor adds it | This file only. No test, product or verdict. |
+| C1 | `afaf6459da4ede741` | Aligns names and interfaces across the groups, moves the programs the migration job runs under `supabase/migrations/tests/` (N-255), and aligns `README.md`. The tests it changes are the executor's to record from its report. |
+| C2 | `a1fc040de6876b43d` | This file only. No test, product or verdict. |
+| C3 | phase C3: the executor fills in the ID | Closes the test-work gaps of section 7: new cases F01-t1, F01-t2, F01-g (F01), F08-g1, F08-pos6, F08-g2, F08-w, F08-pos7 (F08), F04-m1, F04-m2, F04-u1, F04-u2 (F04), F06's recipes, 5B's row R19, 7SCAN-pf5 with 7SCAN-ec-same, -ec-diff and -ec-missing; six breaks (`B-F01-4` to `-6`, `B-F04-3`, `B-F08-3`, `-4`), `B-F08-2`'s red set widened, `B-7SCAN-3`; the six programs' input to N-255's form, with the database declaration; every backslash removed from `supabase/migrations/tests/`; the IDC program's embedded token pattern; README sections 1, 5.1, 5.2 and 8.1; the harness's program input and run time; 5F's stale text; this file. No product or verdict. |
 
 Total: 40 test specifications (11 + 11 + 10 + 8). Each one's C0 field "Independence level" names its writer, its runner (the migration job, the build producer at its head, W-C02-13's prober with the breaks) and its assessor (a fresh-context checker). Checking those fields is point 3's work, not this file's.
 
@@ -44,13 +46,13 @@ Each table quotes Appendix C's clauses with their line. A class rule with severa
 | # | Line | Clause (verbatim) | Case ID(s) | Moved to |
 |---|---|---|---|---|
 | F01-c0 | — | Claim: none in the F entries | Form C0 "ID and claim", the designer's addition | — |
-| F01-r1 | 35 | "bound to the operation's **whole intent**: type" | **GAP**: no case changes the type (`effect_class` or `idempotency_namespace`) under the same key | — |
+| F01-r1 | 35 | "bound to the operation's **whole intent**: type" | F01-t1 (another effect class), F01-t2 (another idempotency namespace: never answered from the existing record). Phase C3, closing G1 | — |
 | F01-r2 | 35 | "target" | F01-a, F01-d2 | — |
 | F01-r3 | 35 | "expected base" | F01-b | — |
 | F01-r4 | 35 | "content" | F01-e | — |
 | F01-r5 | 35 | "work item" | F01-f | — |
 | F01-r6 | 35 | "claim generation" | F01-c | — |
-| F01-r7 | 35 | "authority epoch" | **GAP**: no case of its own. The specification argues that a new epoch also ends the claim, so a same-key call under it differs in generation too (F01-c's class). No case varies the epoch alone, and no break drops it from the comparison. | — |
+| F01-r7 | 35 | "authority epoch" | F01-g: the stored record's epoch planted one lower, the same key and intent from the same claim. Phase C3, closing G2 | — |
 | F01-r8 | 35 | "(and the grant revision once Grant is activated, Appendix B 3.6; PC-08)" | none | Not active in C02: Grant is deferred (Appendix B 3.6; PC-08), and the clause is conditioned on its activation |
 | F01-ea | 36 | "(a) same content, different target" | F01-a | — |
 | F01-eb | 36 | "(b) same content and target, different expected base" | F01-b | — |
@@ -59,7 +61,7 @@ Each table quotes Appendix C's clauses with their line. A class rule with severa
 | F01-n1 | 37 | "(a)–(c) are rejected as conflicts" | F01-a, F01-b, F01-c | — |
 | F01-n2 | 37 | "(d) is not accepted as if it were a new operation; the real state is read" | F01-d1, F01-d2 | — |
 | F01-p1 | 38 | "The same key with the same full intent returns the existing record and produces no new effect" | F01-pos2, F01-d1 | — |
-| F01-b1 | 39 | "When one of the intent fields is removed from the comparison, the corresponding example must start to pass and the test must fail" | B-F01-1 (F01-a, F01-d2), B-F01-2 (F01-c), B-F01-3 (F01-d1 to -d3) | — |
+| F01-b1 | 39 | "When one of the intent fields is removed from the comparison, the corresponding example must start to pass and the test must fail" | B-F01-1 (F01-a, F01-d2), B-F01-2 (F01-c), B-F01-3 (F01-d1 to -d3), B-F01-4 (F01-t1), B-F01-5 (F01-t2), B-F01-6 (F01-g) | — |
 
 ### F04 · `T-W07-F04` · `T-W07-F04_affected_records.md` (Ek_C:61-68)
 
@@ -99,7 +101,7 @@ Each table quotes Appendix C's clauses with their line. A class rule with severa
 | # | Line | Clause (verbatim) | Case ID(s) | Moved to |
 |---|---|---|---|---|
 | F06-c0 | — | Claim: none in the F entries | Form C0, the designer's addition | — |
-| F06-r1 | 82 | "Every state-changing function produces an event in the same transaction" | F06-event:\<f\>, one per state-changing function. **GAP (partial)**: only functions with an accepted-call recipe can pass; the specification has recipes for 5, and every other state-changing function gives `could_not_check` | — |
+| F06-r1 | 82 | "Every state-changing function produces an event in the same transaction" | F06-event:\<f\>, one per state-changing function. Phase C3 (G5, closed in part): a recipe for every state-changing C02 function README 8.1 lets the file form (27 state-changing functions with recipes, phases B, C1 and C3 together); listed as `could_not_check`, each with its reason: the ledger transfer's fourteen functions, `mark_exported`, `link_prior_decisions` and `deployment_drift`'s event case (section 7, G20) | — |
 | F06-r2 | 82 | "on rollback the two are rolled back together" | F06-orphan-a, F06-orphan-b | — |
 | F06-r3 | 82 | "an exact repeat produces no new event" | F06-repeat:\<f\> | — |
 | F06-e1 | 83 | "All state-changing functions, one by one (the function list is extracted automatically from `devos_api` and from the owner-only functions of `devos_private`, `issue_env_token` and `revoke_env_token`" | F06-list; F06-refused:\<f\> (no recipe needed); F06-event:\<f\>; F06-owner:issue_env_token, F06-owner:revoke_env_token | — |
@@ -112,7 +114,7 @@ Each table quotes Appendix C's clauses with their line. A class rule with severa
 | F06-p1 | 85 | "An exact repeat produces no new event but raises no error either" | F06-repeat:\<f\> | — |
 | F06-b1 | 86 | "When event production is removed from a function, the test must fail" | B-F06-1 (F06-event:relate, F06-role-token) | — |
 
-The original finding's "reassignment" (Ek_C:81) maps to F06-event:claim and F06-event:revoke_claim, which give `could_not_check` until their recipes are added (the same GAP as F06-r1).
+The original finding's "reassignment" (Ek_C:81) maps to F06-event:claim and F06-event:revoke_claim, both with recipes since phases C1 and C3.
 
 ### F07 · `T-W07-F07` · `T-W07-F07_observation_history.md` (Ek_C:88-95; C02 part)
 
@@ -137,10 +139,10 @@ F07-a2, -b2 and -c2 read the current state through `devos_api.operation_state`, 
 | # | Line | Clause (verbatim) | Case ID(s) | Moved to |
 |---|---|---|---|---|
 | F08-c0 | — | Claim: none in the F entries | Form C0, the designer's addition | — |
-| F08-r1 | 100 | "At the moment of effect, the current work item … [is] checked again" | **GAP (uncertain)**: no F08 case changes the work item between claim and effect. The nearest case is T-W07-F05's F05-c, an operation naming the work item's old revision at `prepare_operation`. | — |
+| F08-r1 | 100 | "At the moment of effect, the current work item … [is] checked again" | F08-w (the work item revised after the claim; the effect then refused), with its paired control F08-pos7. Phase C3, closing G4 | — |
 | F08-r2 | 100 | "dependencies" | F08-a | — |
-| F08-r3a | 100 | "claim (active" | F08-c1 (revoked), F08-c2 (expired) | — |
-| F08-r3b | 100 | "current generation" | **GAP**: no effect is made with a released or earlier-generation claim token after the work item was claimed again. The specification points to DM07-oldgen (`heartbeat`, not an effect) and F01-c (the key's comparison, not the effect's re-check). W-C02-09 point 4 lists effects "with a released … claim" and "with an earlier generation" as refused, and F08's "Serves" line names the released claim, but no case makes one. | — |
+| F08-r3a | 100 | "claim (active" | F08-c1 (revoked), F08-c2 (expired), F08-g1 (released; phase C3) | — |
+| F08-r3b | 100 | "current generation" | F08-g1 (a released claim's token), F08-g2 (the earlier generation's token after the work item is claimed again), with F08-pos6. Phase C3, closing G3 | — |
 | F08-r3c | 100 | "valid epoch)" | F08-c3 | — |
 | F08-r4 | 100 | "and read set are checked again" | F08-b, F08-d | — |
 | F08-r5 | 100 | "(and the grant, once Grant is activated; PC-08)" | none | Not active in C02: Grant is deferred (Appendix B 3.6; PC-08) |
@@ -151,11 +153,11 @@ F07-a2, -b2 and -c2 read the current state through `devos_api.operation_state`, 
 | F08-ec2 | 101 | "or expiry of the claim" | F08-c2 (lease planted as passed) | — |
 | F08-ec3 | 101 | "or an authority epoch change after the claim" | F08-c3 (a synthetic token revoked) | — |
 | F08-ed | 101 | "(d) the agent deliberately writing an incomplete read set" | F08-d | — |
-| F08-n1 | 102 | "The effect is rejected" | F08-a, -b, -c1, -c2, -c3, -d | — |
+| F08-n1 | 102 | "The effect is rejected" | F08-a, -b, -c1, -c2, -c3, -d; F08-g1, -g2, -w (phase C3) | — |
 | F08-n2 | 102 | "the candidate result is kept" | F08-a (F08-pos0's artifact still there) | — |
 | F08-p1 | 103 | "After the dependency is resolved, the effect can be made" | F08-pos2 | — |
 | F08-p2 | 103 | "an independent exploration work item can continue under another claim" | F08-pos1 | — |
-| F08-b1 | 104 | "When the re-check at the moment of effect is removed, (a) must pass" | B-F08-1 (F08-a); B-F08-2 (F08-c1, -c2, -c3) | — |
+| F08-b1 | 104 | "When the re-check at the moment of effect is removed, (a) must pass" | B-F08-1 (F08-a); B-F08-2 (F08-c1, -c2, -c3, -g1); B-F08-3 (F08-c1, -g1, -g2); B-F08-4 (F08-w) (phase C3 added the last two and -g1) | — |
 
 ### Concurrency · `T-W07-CONC` · `T-W07-CONC_claim_and_cycle.md` (Ek_C:106-110)
 
@@ -344,9 +346,9 @@ W-C02-03's tests are merged on `main`: commit `ceb206b` (CHK-C02-017's condition
 
 | # | Line | Acceptance line (verbatim) | Tests (ID · specification) | Run in which item | Gaps |
 |---|---|---|---|---|---|
-| A1 | 29 | "✔ The Appendix C tests whose stage is C02 pass (F02's rule is tested in C04 with the subagent task definition; PC-08); when each rule is deliberately broken, the related test fails." | The 18 tests of section 1, with their breaks: `T-W07-F01`, `-F04`, `-F05`, `-F06`, `-F07`, `-F08`, `-CONC`, `-N01`, `-N02`, `-N03`, `-N04`, `-N08`, `-N09`, `-N17`, `-N25`, `-N28`, `-N29`, `-K05`. The breaks run on the harness of `harness/README.md` (Group B). F02: C04. | W-C02-09 point 8: F01, F04 with K05, F05, F06, F07, F08, Concurrency, N09, N17, N25. W-C02-10 point 7: N01, N02, N03, N04, N28, N29; point 5: N08. W-C02-13 runs them all, with their breaks (points 1 to 4). K05 part B: W-C02-13 in sitting B2. | Section 1's GAP rows; section 7, G1 to G9 |
+| A1 | 29 | "✔ The Appendix C tests whose stage is C02 pass (F02's rule is tested in C04 with the subagent task definition; PC-08); when each rule is deliberately broken, the related test fails." | The 18 tests of section 1, with their breaks: `T-W07-F01`, `-F04`, `-F05`, `-F06`, `-F07`, `-F08`, `-CONC`, `-N01`, `-N02`, `-N03`, `-N04`, `-N08`, `-N09`, `-N17`, `-N25`, `-N28`, `-N29`, `-K05`. The breaks run on the harness of `harness/README.md` (Group B). F02: C04. | W-C02-09 point 8: F01, F04 with K05, F05, F06, F07, F08, Concurrency, N09, N17, N25. W-C02-10 point 7: N01, N02, N03, N04, N28, N29; point 5: N08. W-C02-13 runs them all, with their breaks (points 1 to 4). K05 part B: W-C02-13 in sitting B2. | Section 7: G6 to G9 and G20 (G1 to G4 closed in phase C3; G5 in part) |
 | A2 | 30 | "✘ No role can write directly to the tables." | `T-W07-5A` · `T-W07-5A_no_direct_writes.md` (5A-w, 5A-r, 5A-snap, 5A-cat-\*, part B 5A-B-\*; positive control 5A-pos). Also `T-W07-DM02` · `T-W07-DM02_revision_append_only.md` (the revision tables refuse UPDATE and DELETE to every role). The migration credential's role and the project owner are named as outside the line, with the reason (5A, "Outside the line"). | W-C02-08 points 4 and 6 (negatives; DM02 also point 3); W-C02-09 point 8 (5A-pos); W-C02-13 | — |
-| A3 | 31 | "✘ With each environment's real token, an operation that requires another environment's authority is rejected." | With `devos-test`'s synthetic tokens: `T-W07-5B` · `T-W07-5B_authorization_matrix.md` (every cell of EV-C02-003 §4.1; point 5 (b)'s "Cannot do" lines, by its clause table); `T-W07-N04`; `T-W07-N08`; `T-W07-N03` (its token cases); `T-W07-N01` (N01-tok-\*); `T-W07-IDC` · `T-W07-IDC_identity_chain.md` (IDC-n-\*: issuing and revoking refused to every class). With the real tokens: `T-W07-RT` · `T-W07-RT_real_token_runs.md` | 5B: W-C02-09 point 8 (role lists) and W-C02-10 point 5 (separation). N04, N08, N03: W-C02-10 point 5. IDC: W-C02-09 point 3. RT: W-C02-12 points 4 to 7, counted by W-C02-13 (point 2) only if its envelope shows the same deployed migrations and function versions. | G7 (ten functions with no row; five rows with unnamed functions); RT-s8l2 not made with real tokens, for the reason RT states |
+| A3 | 31 | "✘ With each environment's real token, an operation that requires another environment's authority is rejected." | With `devos-test`'s synthetic tokens: `T-W07-5B` · `T-W07-5B_authorization_matrix.md` (every cell of EV-C02-003 §4.1; point 5 (b)'s "Cannot do" lines, by its clause table); `T-W07-N04`; `T-W07-N08`; `T-W07-N03` (its token cases); `T-W07-N01` (N01-tok-\*); `T-W07-IDC` · `T-W07-IDC_identity_chain.md` (IDC-n-\*: issuing and revoking refused to every class). With the real tokens: `T-W07-RT` · `T-W07-RT_real_token_runs.md` | 5B: W-C02-09 point 8 (role lists) and W-C02-10 point 5 (separation). N04, N08, N03: W-C02-10 point 5. IDC: W-C02-09 point 3. RT: W-C02-12 points 4 to 7, counted by W-C02-13 (point 2) only if its envelope shows the same deployed migrations and function versions. | G7 (ten functions with no row; five rows with unnamed functions); RT-s8l2 not made with real tokens, for the reason RT states. Phase C3: PC-44's fourteen ledger transfer functions are 5B's row R19, "Only `devos_kurulum`" (Appendix B section 4, B:397 at `11feac5`) |
 | A4 | 32 | "✘ An operation with another session's claim, and with a fake session ID, is rejected." | `T-W07-5C` · `T-W07-5C_other_session_fake_id.md` (a claim-bearing operation that is not a verdict: 5C-n1 to 5C-n5); `T-W07-N17`; `T-W07-N04` (verdicts: N04-e1-\*, N04-e2, N04-k6); `T-W07-RT` (RT-cal-n5 to RT-cal-n8, RT-kur-n5) | 5C, N17: W-C02-09 points 4 and 8. N04: W-C02-10 point 5. RT: W-C02-12 point 6. | G13 (the reading of "fake session ID"); RT-cal-n7 and RT-cal-n8 are labelled "within one session" (W-C02-12 point 7) |
 | A5 | 33 | "✘ The format gates reject empty fields; "filled but meaningless" examples fall to the sample review." | `T-W07-5D` · `T-W07-5D_format_gates_empty.md`; `T-W07-N01`; `T-W07-N02`; `T-W07-N03`; `T-W07-FGFIND` · `T-W07-FGFIND_finding_gate.md`; `T-W07-T31` · `T-W07-T31_planted_rate.md`; N29-sample-\* (the routine sample). The share's "could not check": `T-W07-6ST` · `T-W07-6ST_settings_could_not_check.md`. N-032's gate is moved to C03 (EV-C02-002 §3 row 2.12; N-211). | W-C02-10 points 2, 3, 6 and 7; W-C02-13 point 5 | G6 (C06's carrier note) |
 | A6 | 34 | "✔ Complete records are accepted." | The positive controls: 5D-need-pos, 5D-dec-hi-pos, 5D-dec-batu-pos, 5D-eff-pos, 5D-find-pos, 5D-eff-rev-pos; N01-pos; N02-pos-\*; N03-pos-\*; FGFIND-pos, FGFIND-pos-changeable | W-C02-10 point 7; W-C02-13 point 5 | — |
@@ -377,7 +379,7 @@ Sources: W-C02-09 point 7; W-C02-10 points 3 and 4; EV-C02-002 (DM-01, DM-06, DM
 | K4 | The rule gate: an element of the read set | W-C02-09 point 7; EV-C02-002 DM-37 | 6RG-s1 | 6RG-s3 | 6RG-s2 | `T-W07-6RG` (control 6RG-s0) |
 | K5 | Readiness: a group with an unknown member (never counted ready) | W-C02-09 point 7; B principle 6 | 6RG-g2 | 6RG-g3 | 6RG-g1 | `T-W07-6RG` (control 6RG-g0) |
 | K6 | The claim's expiry, computed at `claim`, `ready_works()` and every effect | EV-C02-002 DM-06 | 6RG-l1, 6RG-l4, 6RG-l5 | 6RG-l2 | 6RG-l3 | `T-W07-6RG` (control 6RG-l0) |
-| K7 | `affected_entities` and `explain_paths` at a limit | W-C02-09 point 7; F04 (d); EV-C02-002 DM-35 | **GAP**: no case | **GAP**: no case | F04-d1, F04-d2 (the limit reached: `complete = false`); F04-c-flag (a hidden region) | `T-W07-F04` (section 7, G10) |
+| K7 | `affected_entities` and `explain_paths` at a limit, and with missing or unreadable input | W-C02-09 point 7; F04 (d); EV-C02-002 DM-35 | F04-m1, F04-m2 (a root that names no record; phase C3) | F04-u1, F04-u2 (the relation table renamed for the call; phase C3) | F04-d1, F04-d2 (the limit reached: `complete = false`); F04-c-flag (a hidden region) | `T-W07-F04`; break B-F04-3 ("could not check" folded into clean). G10 closed |
 | K8 | The sample share's setting | W-C02-10 point 3; EV-C02-002 DM-08 | 6ST-share-\<f\>-missing | -unreadable | -partial | `T-W07-6ST` (6ST-counts, -clean, -fail) |
 | K9 | The sample stream's hidden position, a separate stored input | EV-C02-002 DM-08 | 6ST-pos-missing | 6ST-pos-unreadable | 6ST-pos-partial | `T-W07-6ST` |
 | K10 | The high-impact path list's copy | W-C02-10 point 4; EV-C02-002 DM-47, DM-48 | 6ST-path-missing, 6ST-path-op-missing | 6ST-path-unreadable | 6ST-path-partial | `T-W07-6ST` |
@@ -390,7 +392,8 @@ Sources: W-C02-09 point 7; W-C02-10 points 3 and 4; EV-C02-002 (DM-01, DM-06, DM
 | K17 | The ledger transfer's checks | W-C02-06 | — | — | — | W-C02-14 point 13's tests (E2), not here |
 | K18 | The pull-request checks' reading of the migration job's run record, and from step 4 their call of `deployment_drift` with the CI key | EV-C02-003 lines 367 and 1329 at `b679568`, citing EV-C02-001 point 1 (c) | — | — | — | `deployment_drift`'s (E1); what a difference or "could not check" stops is EV-C02-001's |
 | K19 | The executor's count-only log check on `devos` | EV-C02-003 §14 | — | — | — | None. The executor's decision 2 of phase B: a manual procedure, not a check C02 builds; it carries its own positive control in §14 |
-| K20 | The migration job's reading of the test programs' exit codes (0 pass, 1 fail, 3 could not check) | N-255 (the executor's decision; W-C02-03's build) | — | — | — | **GAP**: no test named (section 7, G11) |
+| K20 | The migration job's reading of the test programs' exit codes (0 pass, 1 fail, 3 could not check), with their input (N-255's four keys) and environment (`env -i` unless a program declares `# w07-needs-database: yes`) | N-255 (the executor's decision; W-C02-03's build) | — | — | — | Not tested here, by the executor's decision: W-C02-03's build checker judges the runner by running its step against stub programs (section 7, G11) |
+| K21 | The comparison of the class-high IDC program's embedded token pattern with `shared/scan_patterns.json` (phase C3; C1's open 5) | W-C02-07 point 7; README section 6 | 7SCAN-ec-missing (no such name in the program) | none planted: a program `ast` cannot parse gives could not check by the code | none: a tuple of strings either joins or is not read | `T-W07-7SCAN` (`7SCAN-pf5`; controls 7SCAN-ec-same, -ec-diff; break B-7SCAN-3) |
 
 Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value right after issuing (a step of `T-W07-IDC`); the network-level result in W-C02-12's sessions (an observation W-C02-12 records); X1's registration flag (C06, T-77's parts, EV-C02-002's table of later parts).
 
@@ -412,7 +415,7 @@ Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value r
 | `T-W07-6RG` · `T-W07-6RG_rule_gate_could_not_check.md` | A | W-C02-09 point 7 (point 8, assigned here) | — | None (spec, 2026-10-12) |
 | `T-W07-5F` · `T-W07-5F_migration_lines.md` | A | No build item: W-C02-07 point 5 (f); the tests it cites serve W-C02-03 | — | None (spec, 2026-10-12) |
 | `T-W07-F04` · `T-W07-F04_affected_records.md` | B | W-C02-09 points 7 and 8 | — | None; seconds of computation (spec, 2026-10-12) |
-| `T-W07-K05` · `T-W07-K05_many_paths.md` | B | W-C02-09 point 8 (part A) | Part B: W-C02-13, in a session of sitting B2 (W-C02-12), by the executor's decision | Part A none. Part B adds one set of calls in that session, minutes (spec, 2026-10-12), and waits on sitting B2, whose time on the critical path is W-C02-12 point 3's (G15) |
+| `T-W07-K05` · `T-W07-K05_many_paths.md` | B | W-C02-09 point 8 (part A) | Part B: W-C02-13, in a session of sitting B2 (W-C02-12), by the executor's decision | Part A none. Part B adds one set of calls in that session, minutes (spec, 2026-10-12), and waits on sitting B2: its time on the critical path is W-C02-12 point 3's, not this test's (spec, as phase C3 words it; G15 closed) |
 | `T-W07-F06` · `T-W07-F06_state_change_event.md` | B | W-C02-09 points 5 and 8 | — | None (spec, 2026-10-12) |
 | `T-W07-N09` · `T-W07-N09_finding_gate.md` | B | W-C02-09 point 8 | C04 part: C04 | None (spec, 2026-10-12) |
 | `T-W07-N25` · `T-W07-N25_verdict_staleness.md` | B | W-C02-09 point 8 | C08 part: C08 | None (spec, 2026-10-12) |
@@ -422,7 +425,7 @@ Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value r
 | `T-W07-DM19B` · `T-W07-DM19B_burst_count.md` | B | W-C02-09 point 3 (point 8, assigned here) | Part B: the job must run its program (N-255) | None scheduled. Part B makes 251 HTTP calls, seconds to a minute (spec, 2026-10-12) |
 | `T-W07-5A` · `T-W07-5A_no_direct_writes.md` | B | Negatives: W-C02-08 points 4 and 6. Positive (5A-pos): W-C02-09 point 8 | Part B: the job must run its program (N-255) | None (spec, 2026-10-12) |
 | `T-W07-REL` · `T-W07-REL_relation_status.md` | B | W-C02-09 point 6 (point 8, assigned here; the executor's decision 1) | — | None (spec, 2026-10-12) |
-| The break harness (`harness/README.md`) | B | W-C02-13 point 3; also runs W-C02-03's breaks B1 to B4 | — | Not stated in the harness's specification; the breaks run on a throwaway database (G15) |
+| The break harness (`harness/README.md`) | B | W-C02-13 point 3; also runs W-C02-03's breaks B1 to B4 | — | About 4 to 5 s a patch for its three clusters, about 6 minutes for 85 patches, plus three applies of the build and three runs of each patch's files (B-CONC-1 and -2 about 3 minutes each); the build's apply time is unknown before the build. Phase C3's self-check, PostgreSQL 16.15, 2026-10-12 (`harness/README.md`, "Run time"; G15 closed) |
 | `T-W07-N01` · `T-W07-N01_need_justification.md` | C | W-C02-10 points 2, 3 and 7 | — | None; about 90 calls in one transaction (spec, 2026-10-12) |
 | `T-W07-N02` · `T-W07-N02_decision_alternatives.md` | C | W-C02-10 points 6 and 7 | N02-oe-transfer: W-C02-06's design, then W-C02-14 | None (spec, 2026-10-12) |
 | `T-W07-N03` · `T-W07-N03_effort_policy.md` | C | W-C02-10 points 2, 5 and 7 | Real tokens: `T-W07-RT` (RT-cal-n4) | None (spec, 2026-10-12) |
@@ -438,7 +441,7 @@ Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value r
 | `T-W07-5B` · `T-W07-5B_authorization_matrix.md` | D | W-C02-09 point 8 (role lists); W-C02-10 point 5 (separation lines) | The rows N-256 leaves open (section 6) | None (spec, 2026-10-12) |
 | `T-W07-N04` · `T-W07-N04_self_approval.md` | D | W-C02-10 points 5 and 7 | Part T: W-C02-14 (point 13), after W-C02-06's design. Real tokens: W-C02-12 (`T-W07-RT`) | None (spec, 2026-10-12) |
 | `T-W07-N08` · `T-W07-N08_exam_records.md` | D | W-C02-10 point 5 (point 7) | Real tokens: W-C02-12 point 5 (`T-W07-RT`) | None (spec, 2026-10-12) |
-| `T-W07-RT` · `T-W07-RT_real_token_runs.md` | D | W-C02-12 points 4 to 7 | — | None to W-C02-13's own run, which counts these runs only on a matching envelope. The runs wait on Batu's steps 2 to 5; their time on the critical path is W-C02-12 point 3's (spec, 2026-10-12; G15) |
+| `T-W07-RT` · `T-W07-RT_real_token_runs.md` | D | W-C02-12 points 4 to 7 | — | None to W-C02-13's own run, which counts these runs only on a matching envelope. The runs wait on Batu's steps 2 to 5; their time on the critical path is W-C02-12 point 3's, not this test's (spec, as phase C3 words it; G15 closed) |
 | `T-W07-7SCAN` · `T-W07-7SCAN_test_file_scan.md` | D | No build item: W-C02-07 point 7 | — | None; about one second, before W-C02-07's checker verdict (spec, 2026-10-12) |
 | `T-W07-6SC` · `T-W07-6SC_scans_could_not_check.md` | D | W-C02-12 point 9 | — | None (spec, 2026-10-12) |
 | N18 and the transfer checks' tests | — | W-C02-14 point 13 | Not written: W-C02-06's design first | Stated when written |
@@ -493,14 +496,14 @@ Counts: 40 tests and the harness, mapped.
 
 ## 7. Gaps found
 
-Each gap names the point it touches. None is closed here: closing one is a test designer's change to a specification before any result (README section 8), or the executor's record write.
+Each gap names the point it touches. Phase C2 closed none. Phase C3, a test designer's change before any result (README section 8), closed those that are test work and marks each **Closed** with what closed it; the others stay as phase C2 wrote them, for the executor's record write or decision.
 
 **Clauses without a case, and nothing that moves them (point 2):**
-- **G1 (point 2; F01).** The class rule's "type" has no case: no call changes `effect_class` or `idempotency_namespace` under the same key (F01-r1).
-- **G2 (point 2; F01).** The class rule's "authority epoch" has no case of its own and no break. The specification argues it falls into F01-c's class (F01-r7).
-- **G3 (point 2; F08; W-C02-09 point 4).** The class rule's "current generation" has no effect case: no effect is made with a released or earlier-generation claim token after the work item is claimed again. W-C02-09 point 4 lists both as refused effects, and F08's "Serves" line names the released claim. DM07-oldgen is `heartbeat`, and F01-c is the key's comparison (F08-r3b).
-- **G4 (point 2; F08; uncertain).** "The current work item" re-checked at the moment of effect has no F08 case. Only T-W07-F05's F05-c refuses an old work-item revision at `prepare_operation` (F08-r1). The checker judges whether F05-c carries it.
-- **G5 (point 2; F06).** "Every state-changing function produces an event" can pass only for the 5 functions with recipes. Every other one, including the original finding's reassignment (`claim`, `revoke_claim`), gives `could_not_check` until its recipe is added. F06 cannot pass until then (Group B's report, Open 4).
+- **G1 (point 2; F01). Closed in phase C3:** F01-t1 (another effect class: refused) and F01-t2 (another idempotency namespace: never answered from key 1's record; either reading of the namespace allowed), with B-F01-4 and B-F01-5 (F01-r1). Self-checked on a scratch stub.
+- **G2 (point 2; F01). Closed in phase C3:** F01-g plants the stored epoch one lower (no call changes the epoch alone, B 3.5), with B-F01-6 (F01-r7). Self-checked on a scratch stub.
+- **G3 (point 2; F08; W-C02-09 point 4). Closed in phase C3:** F08-g1 (a released claim's token), F08-g2 (the earlier generation's token after the work item is claimed again) and F08-pos6; breaks B-F08-2 (now also F08-g1) and B-F08-3 (F08-c1, -g1, -g2) (F08-r3b). Self-checked on a scratch stub.
+- **G4 (point 2; F08). Closed in phase C3:** F08-w (the work item revised after its claim; the effect refused) and F08-pos7, with B-F08-4 (F08-r1). If the build ends a claim when its work item is revised, F08-w's refusal comes from the claim and B-F08-4 is revised before the run. Self-checked on a scratch stub.
+- **G5 (point 2; F06). Closed in part in phase C3:** recipes for every state-changing C02 function README 8.1 lets the file form, `claim` and `revoke_claim` among them; the rest are listed in the specification and in each case's detail (G20). The phase C3 recipes ran on no stub of their functions.
 
 **Records and moves (point 4):**
 - **G6 (point 4; N02).** The carrier note on `plan/work/C06.md` for the open-exploration case of `answer_decision` is absent at `b679568`, and point 4 asks the record to name it.
@@ -511,16 +514,21 @@ Each gap names the point it touches. None is closed here: closing one is a test 
 - **G9 (point 2; K05).** Part B stays `could_not_check` until W-C02-13's run in sitting B2. Neither W-C02-12's nor W-C02-13's acceptance names it; this record assigns it (section 6, item 1).
 
 **Checks (point 6):**
-- **G10 (point 6; F04).** `affected_entities` and `explain_paths` are tested only with partial input (the limit). No case plants a missing root or an unreadable relation table. `GROUPS.md` counts this as a check of W-C02-09 point 7, whose "missing, unreadable and partial" wording covers it.
-- **G11 (point 6; N-255).** No test shows that the migration job counts a program's exit 3 as "could not check", never as a pass. W-C02-03's merged tests predate N-255, and W-C02-07's programs only define their own exit codes. The executor decides whether W-C02-03's build checker takes this or a test is added.
+- **G10 (point 6; F04). Closed in phase C3:** F04-m1 and F04-m2 (a root that names no record) and F04-u1 and F04-u2 (the relation table unreadable), each wanting the "could not check" answer, with B-F04-3 (K7). Self-checked on a scratch stub extended to answer so.
+- **G11 (point 6; N-255).** No test here shows that the migration job counts a program's exit 3 as "could not check", never as a pass. W-C02-03's merged tests predate N-255, and W-C02-07's programs only define their own exit codes. The executor's decision (phase C3's task, point 7): W-C02-03's build checker judges the runner by running its step against stub programs, so no test is written here (K20). That judgement also covers the job's input object and its `env -i` unless the declaration.
 - **G12 (point 6; 6SC).** `T-W07-6SC` is a specification run by a procedure, with no program, because none was assigned (Group D's report, Open 4). Whether the two scans become programs is the executor's call.
 
 **Readings and stale text the checker should see (points 2, 5 and 8):**
 - **G13 (point 5 (c); 5C).** `T-W07-5C` reads "with a fake session ID, is rejected" in EV-C02-003 §4.4's form: a fake declared session ID changes nothing, and the claim token decides. So 5C-pos2 (the right claim token with a fake ID) is accepted, and the refusals 5C-n2, -n3 and -n5 come from the missing or foreign claim. This follows B principle 8 and W-C02-09 point 3. W-C02-09 point 4 and C02's acceptance line (line 32) word it as a rejection.
-- **G14 (point 5 (f); 5F).** `T-W07-5F`'s "Interface assumed" and "Could not check" describe W-C02-03's tests as unmerged. They are on `main` at `ceb206b`, so the text is stale; aligning it is phase C1's.
-- **G15 (point 8; PC-23).** `T-W07-RT` and K05 part B wait on Batu's steps 2 to 5 (sitting B2). Their time on the critical path is W-C02-12 point 3's, which is not yet stated (W-C02-12 is `planned`). The break harness's specification gives no run time for W-C02-13.
+- **G14 (point 5 (f); 5F). Closed in phase C3:** `T-W07-5F`'s "Interface assumed", "Examples", "Positive control", clause table and "Could not check" now say that W-C02-03's tests are on `main` (merged at `ceb206b`, an ancestor of `11feac5`, where every cited path is present).
+- **G15 (point 8; PC-23). Closed in phase C3, as far as this item can:** `T-W07-RT` and K05 part B say that their time on the critical path is W-C02-12 point 3's (still unstated there: W-C02-12 is `planned`); the harness's run time is measured by a self-check and stated with its date (section 4).
 - **G16 (point 2; N08).** "and scores" is moved to C05 on the specification's reading. Appendix C names C05 as a stage of N08 without saying which part is C05's.
 - **G17 (point 2; self-checks, not results).** B-CONC-2's red set was not shown in the designer's self-check, and F07 and DM07 were not rerun after their last fix (Group A's report, Open 3 and 4). W-C02-13 shows the breaks; the checker may want these before the merge.
+- **G17, a phase C3 note.** Phase C3 reran B-F01-1 to -3 and B-F08-1 and -2 on a scratch stub with the new cases present: their red sets are as named (B-F08-2 now with F08-g1). F07's and DM07's breaks were not rerun.
 - **G18 (points 2 and 4; N28 and the sample).** DM-41's trigger refuses a Review and a new revision of its target in one transaction. The database's own sample Review, made in the same transaction as a format-gated record, would trip it unless exempted, and the design does not state the exemption (Group B's report, Open 1). The sample tests (N01, N02, N03, FGFIND, 5D, T31, N29) and N28 would show the conflict.
+
+**Found in phase C3 (reported for the checker and the executor):**
+- **G19 (point 7; CONC).** N-255's decided input form names no target, so Concurrency, which commits fixtures, no longer reads `devos-test` from its input. That it never runs in `devos` now rests on the job running its programs in the `devos-test` step only (W-C02-03's build). The program still tells the harness's database apart by `w07.throwaway`.
+- **G20 (point 2; F06, and G8).** F06 cannot pass until the ledger transfer's fourteen functions, `mark_exported` and `link_prior_decisions` have recipes, and `deployment_drift`'s event case is the Data API's. W-C02-06's design is accepted at `11feac5` (PC-44), so N02-oe-transfer's and N04 part T's wait (G8) is now on the transfer's payload names (W-C02-09) and W-C02-14 point 13's tests, not on the design.
 
 **Outside this file, reported only:** the groups' names for shared objects differ (for example the event table's name, the epoch table, the refusal form). Aligning them is phase C1's work. It changes no mapping above, since case IDs are stable.

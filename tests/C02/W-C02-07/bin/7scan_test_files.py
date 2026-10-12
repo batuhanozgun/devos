@@ -35,6 +35,10 @@ PATTERN_FILE = os.path.join(SUBJECT_DIR, "shared", "scan_patterns.json")
 FORMAT_FILE = os.path.join(SUBJECT_DIR, "shared", "token_format.md")
 GUARD_FILE = os.path.join(".claude", "hooks", "tool_allowlist.py")
 VALUE_SCAN = os.path.join("tools", "credential_value_scan.py")
+# Phase C3 (C1's open 5): the class-high IDC program embeds the environment token's exact pattern; 7SCAN-pf5 checks
+# that the embedded copy, read with ast and never run, equals the pattern file's.
+IDC_PROGRAM = os.path.join(SQL_DIR, "w07_idc_real_path.py")
+EMBED_NAME = "ENV_TOKEN_EXACT_PARTS"
 STRIP = "\"'`,;.()[]{}"
 
 results = []  # (case_id, outcome, detail); outcome in ok / bad / could_not_check
@@ -107,6 +111,35 @@ def check_agreement(root, comp):
     if redact != comp["raw"]["guard_redact"] or cvars != comp["vars"]:
         raise Cnc("7SCAN-pf4: the pattern file's guard patterns differ from the guard file; the pattern file is revised first")
     case("7SCAN-pf4", "ok", "REDACT and CREDENTIAL_VARS equal the guard file's")
+
+
+def embedded_copy(path):
+    """The joined parts of the pattern the IDC program embeds, read with ast (never run); raises Cnc."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            tree = ast.parse(f.read())
+    except (OSError, SyntaxError, ValueError, UnicodeDecodeError) as e:
+        raise Cnc(f"the program cannot be read ({type(e).__name__})")
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == EMBED_NAME for t in node.targets):
+            try:
+                parts = ast.literal_eval(node.value)
+            except ValueError:
+                raise Cnc(f"{EMBED_NAME} is not a literal")
+            if not isinstance(parts, tuple) or not parts or not all(isinstance(p, str) for p in parts):
+                raise Cnc(f"{EMBED_NAME} is not a tuple of strings")
+            return "".join(parts)
+    raise Cnc(f"no {EMBED_NAME} in the program")
+
+
+def compare_embedded(path, comp):
+    """('equal' | 'differ' | 'could_not_check', why)."""
+    try:
+        got = embedded_copy(path)
+    except Cnc as e:
+        return "could_not_check", str(e)
+    same = got == comp["raw"]["token_patterns"]["env_token_exact"]
+    return ("equal" if same else "differ"), ""
 
 
 # ---------------------------------------------------------------- the scan itself
@@ -328,6 +361,18 @@ def controls(comp, scratch_parent):
         ans, *_ = scan_tree(t, comp)
         counts[ans] += 1
         case("7SCAN-pa2", "ok" if ans == "fail" else "bad", f"a finding beside a partial read answered {ans} (fail wins)")
+        # 7SCAN-pf5's own controls (phase C3): its comparison answers equal, differ and could not check.
+        exact = comp["raw"]["token_patterns"]["env_token_exact"]
+        cut = len(exact) // 2
+        for cid, text, want in (
+                ("7SCAN-ec-same", f"{EMBED_NAME} = ({exact[:cut]!r}, {exact[cut:]!r})", "equal"),
+                ("7SCAN-ec-diff", f"{EMBED_NAME} = ({exact[:cut]!r}, {(exact[cut:] + 'x')!r})", "differ"),
+                ("7SCAN-ec-missing", "W07_OTHER_NAME = ('w07_fixture',)", "could_not_check")):
+            p = os.path.join(top, cid + ".py")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write("# SYNTHETIC W-C02-07 planted control" + chr(10) + text + chr(10))
+            ans, _ = compare_embedded(p, comp)
+            case(cid, "ok" if ans == want else "bad", f"a planted copy answered {ans}, wanted {want}")
     finally:
         shutil.rmtree(top, ignore_errors=True)
     print(f"7SCAN answers seen in the controls: clean {counts['clean']}, fail {counts['fail']}, "
@@ -370,6 +415,11 @@ def main():
         case("7SCAN-pf1", "ok", "pattern file present")
         case("7SCAN-pf2", "ok", "pattern file well formed")
         check_agreement(root, comp)
+        ans, why = compare_embedded(os.path.join(root, IDC_PROGRAM), comp)
+        case("7SCAN-pf5", {"equal": "ok", "differ": "bad"}.get(ans, "could_not_check"),
+             f"{IDC_PROGRAM}: {EMBED_NAME}, joined, "
+             + {"equal": "equals", "differ": "differs from"}.get(ans, "could not be compared with")
+             + " the pattern file's env_token_exact" + (f" ({why})" if why else ""))
     except Cnc as e:
         case(str(e).split(":", 1)[0], "could_not_check", str(e))
         return finish()

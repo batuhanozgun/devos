@@ -484,7 +484,7 @@ begin
   perform pg_temp.w07_expect('N01-pos', 'devos_calisma', 'record_need', a, 'accepted', null, 'need');
   perform pg_temp.w07_expect('N01-neg1', 'devos_calisma', 'record_need', a || '{"why_needed": ""}', 'refused', array['why_needed'], 'need');
   perform pg_temp.w07_expect('N01-neg2', 'devos_calisma', 'record_need', a - 'why_needed', 'refused', array['why_needed'], 'need');
-  perform pg_temp.w07_expect('N01-neg3', 'devos_calisma', 'record_need', a || '{"why_needed": "  \t\n "}', 'refused', array['why_needed'], 'need');
+  perform pg_temp.w07_expect('N01-neg3', 'devos_calisma', 'record_need', a || jsonb_build_object('why_needed', '  ' || chr(9) || chr(10) || ' '), 'refused', array['why_needed'], 'need');
 end $f$;
 create function pg_temp.n01_share() returns void language plpgsql as $f$
 declare s jsonb := pg_temp.w07_state('need');

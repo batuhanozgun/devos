@@ -369,7 +369,7 @@ begin
   for c in select format('%I.%I', s.nspname, k.relname) q, s.nspname from pg_class k
            join pg_namespace s on s.oid = k.relnamespace
            where k.relkind in ('r', 'p', 'm') and s.nspname not in ('pg_catalog', 'information_schema', 'pg_toast')
-             and s.nspname not like 'pg\_temp%' and s.nspname not like 'pg\_toast\_temp%' order by 1 loop
+             and s.nspname !~ '^pg_temp' and s.nspname !~ '^pg_toast_temp' order by 1 loop
     begin
       execute format('select count(*) from %s w07t, unnest($1::text[]) w07k where strpos(w07t::text, w07k) > 0', c.q)
         using scrub into n;

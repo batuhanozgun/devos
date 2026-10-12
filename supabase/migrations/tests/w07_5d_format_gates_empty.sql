@@ -484,7 +484,7 @@ begin
   perform pg_temp.w07_expect(p_case || '-absent', 'devos_calisma', p_fn, p_base - p_field, 'refused', w, p_tbl);
   perform pg_temp.w07_expect(p_case || '-null', 'devos_calisma', p_fn, p_base || jsonb_build_object(p_field, null), 'refused', w, p_tbl);
   perform pg_temp.w07_expect(p_case || '-empty', 'devos_calisma', p_fn, p_base || jsonb_build_object(p_field, ''), 'refused', w, p_tbl);
-  perform pg_temp.w07_expect(p_case || '-whitespace', 'devos_calisma', p_fn, p_base || jsonb_build_object(p_field, E'  \t\n '), 'refused', w, p_tbl);
+  perform pg_temp.w07_expect(p_case || '-whitespace', 'devos_calisma', p_fn, p_base || jsonb_build_object(p_field, '  ' || chr(9) || chr(10) || ' '), 'refused', w, p_tbl);
   if p_list then
     perform pg_temp.w07_expect(p_case || '-emptylist', 'devos_calisma', p_fn, p_base || jsonb_build_object(p_field, '[]'::jsonb), 'refused', w, p_tbl);
   end if;
@@ -507,7 +507,7 @@ begin
     perform pg_temp.d5_forms('5D-dec-' || t || '-reversibility', 'open_decision', a, 'reversibility', false, 'decision');
     foreach form in array array['absent', 'null', 'empty', 'whitespace', 'emptylist'] loop
       b := a - 'alternatives_state' - 'alternatives_considered' - 'options' - 'single_viable_path_reason';
-      v := case form when 'null' then 'null'::jsonb when 'empty' then '""'::jsonb when 'whitespace' then to_jsonb(E'  \t\n '::text)
+      v := case form when 'null' then 'null'::jsonb when 'empty' then '""'::jsonb when 'whitespace' then to_jsonb(('  ' || chr(9) || chr(10) || ' ')::text)
                      when 'emptylist' then '[]'::jsonb end;
       if form <> 'absent' then b := b || jsonb_build_object('options', v);
         if form <> 'emptylist' then b := b || jsonb_build_object('single_viable_path_reason', v); end if; end if;

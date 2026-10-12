@@ -24,7 +24,7 @@ create temp table w07_results (case_id text primary key,
   outcome text not null check (outcome in ('ok', 'bad', 'could_not_check')), detail text not null);
 
 create function pg_temp.w07_rec(p_id text, p_outcome text, p_detail text) returns void language sql as $f$
-  insert into w07_results values (p_id, p_outcome, left(replace(coalesce(p_detail, ''), E'\n', ' '), 600))
+  insert into w07_results values (p_id, p_outcome, left(replace(coalesce(p_detail, ''), chr(10), ' '), 600))
   on conflict (case_id) do update set
     outcome = case when w07_results.outcome = 'bad' or excluded.outcome = 'bad' then 'bad'
                    when w07_results.outcome = 'could_not_check' or excluded.outcome = 'could_not_check'
@@ -331,9 +331,24 @@ begin
   return null;
 end $f$;
 
+-- Phase C3 (G10; README section 3 (i)): a missing or unreadable input must be answered "could not check" (status
+-- refused, reason_code could_not_check), never with a result ("nothing else is affected") and never folded into
+-- another refusal. A raised error, or a call that cannot be formed, is this test's own could_not_check (README 8.1).
+create function pg_temp.w07_cnc_answer(p_id text, c jsonb, p_what text) returns void language sql as $f$
+  select pg_temp.w07_rec(p_id,
+    case when c ? 'interface' or c->>'error' is not null then 'could_not_check'
+         when jsonb_typeof(c->'result') = 'object' and c->'result'->>'status' = 'refused'
+              and c->'result'->>'reason_code' = 'could_not_check' then 'ok'
+         else 'bad' end,
+    p_what || ': ' || case when c ? 'interface' or c->>'error' is not null
+                           then 'the answer could not be observed in form (README 8.1): ' else '' end
+      || pg_temp.w07_show(c) || '; wanted status refused with reason_code could_not_check')
+$f$;
+
 do $$
 declare why text; tok text; i int; c jsonb; refs text[]; want text[]; p jsonb; bad_paths text := ''; h jsonb; h2 jsonb;
         big constant jsonb := '{"max_depth": 100, "max_records": 1000, "max_paths": 10}';
+        fn text;  -- phase C3
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -433,6 +448,28 @@ begin
       else pg_temp.w07_complete(c) is false and coalesce(array_length(refs, 1), 0) <= 5 end,
     format('chain of 40 with max_records 5: %s rows, completeness flag %s', coalesce(array_length(refs, 1), 0),
            coalesce(pg_temp.w07_complete(c)::text, 'absent')));
+  -- Phase C3 (G10; point 6 (i)): missing and unreadable input, beside the partial input of (d). (m1, m2) a root that
+  -- names no record; (u1, u2) the relation table unreadable: renamed for the call inside a subtransaction that is rolled
+  -- back right after it, so the table is back before the next case.
+  c := pg_temp.w07_call('affected_entities', jsonb_build_object('root', gen_random_uuid(), 'limits', big), tok);
+  perform pg_temp.w07_cnc_answer('F04-m1', c, 'affected_entities with a root that names no record');
+  c := pg_temp.w07_call('explain_paths', jsonb_build_object('root', gen_random_uuid(), 'target', pg_temp.w07_n('a', 'm1'),
+         'limits', big), tok);
+  perform pg_temp.w07_cnc_answer('F04-m2', c, 'explain_paths with a root that names no record');
+  foreach fn in array array['affected_entities', 'explain_paths'] loop
+    begin
+      execute 'alter table devos_private.relation rename to relation_w07_unreadable';
+      c := pg_temp.w07_call(fn, jsonb_build_object('root', pg_temp.w07_n('a', 'm0'), 'limits', big)
+             || case when fn = 'explain_paths' then jsonb_build_object('target', pg_temp.w07_n('a', 'm1')) else '{}' end, tok);
+      raise exception using errcode = 'P0W07', message = 'w07: undo the rename';
+    exception
+      when sqlstate 'P0W07' then null;
+      when others then
+        c := jsonb_build_object('interface', 'the relation table could not be made unreadable: ' || sqlstate || ' ' || left(sqlerrm, 150));
+    end;
+    perform pg_temp.w07_cnc_answer(case when fn = 'affected_entities' then 'F04-u1' else 'F04-u2' end, c,
+      fn || ' with the relation table unreadable (renamed for the call)');
+  end loop;
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

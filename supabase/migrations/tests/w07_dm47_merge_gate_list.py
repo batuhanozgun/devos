@@ -1,3 +1,4 @@
+# w07-needs-database: yes
 """T-W07-DM47: the database's high-impact path table equals plan 6.7's list, path by path, and every path in it is
 class high in the merge gate (EV-C02-002 DM-47; W-C02-10 point 4). Specification: tests/C02/W-C02-07/T-W07-DM47_path_table.md.
 
@@ -8,17 +9,21 @@ this program (README section 4's hygiene), and only paths, counts and exit codes
 
 Run, from the repository root (python3 -I; standard library only):
   python3 -I supabase/migrations/tests/w07_dm47_merge_gate_list.py < <JSON>   the migration job's devos-test step: no
-      arguments, the job's one JSON object on standard input (N-255; this program reads nothing from it), the table
-      read with psql in the step's own libpq environment (never a credential on the command line)
+      arguments, the job's one JSON object on standard input (N-255: exactly endpoint, apikey, tokens, revoked_token;
+      none is used here, but another form gives COULD NOT CHECK), the table read with psql in the step's own libpq
+      environment, which line 1's w07-needs-database declaration asks the job for (never a credential on the command
+      line)
   ... --rows-file F   rows already read, one path per line
   ... --self-test     its own could-not-check cases (point 6)
-With no psql or no libpq target it gives COULD NOT CHECK. It takes no publishable key and no token. Last line:
+With no input, no psql or no libpq settings it gives COULD NOT CHECK. It takes no publishable key and no token. Last line:
 W07_DM47_MERGE_GATE_LIST PASS (n/n), FAIL (...) or COULD NOT CHECK (...) (README section 3); exit 0, 1 or 3.
 The gate's high paths beyond plan 6.7's list are printed as notes, never a failure (the executor's decision on Group
 C's open 1).
 """
 import argparse
 import importlib.util
+import json
+import os
 import pathlib
 import re
 import shutil
@@ -38,16 +43,54 @@ class CouldNotCheck(Exception):
     pass
 
 
+NL, TAB = chr(10), chr(9)
+WS = " " + chr(9) + chr(10) + chr(11) + chr(12) + chr(13)  # the whitespace class, written without a backslash
+# The job's input (note N-255 on plan/work/C02.md, with "The key's source, decided"): one JSON object on standard input
+# with exactly the keys endpoint, apikey (a string or null), tokens (role class to token) and revoked_token. Nothing of
+# it is printed: a missing or wrong key is named, never a value.
+INPUT_KEYS = ("endpoint", "apikey", "tokens", "revoked_token")
+
+
+def read_input():
+    """(the object, None), or (None, the reason by name only)."""
+    if sys.stdin is None or sys.stdin.isatty():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        raw = sys.stdin.read()
+    except (OSError, ValueError):
+        return None, "standard input could not be read"
+    if not raw.strip():
+        return None, "no JSON object on standard input: the migration job's devos-test step gives it (N-255)"
+    try:
+        cfg = json.loads(raw)
+    except ValueError:
+        return None, "the input on standard input is not JSON (N-255)"
+    raw = None
+    if not isinstance(cfg, dict):
+        return None, "the input is not one JSON object (N-255)"
+    missing = [k for k in INPUT_KEYS if k not in cfg]
+    extra = sum(1 for k in cfg if k not in INPUT_KEYS)
+    if missing or extra:
+        return None, ("the input's keys are not exactly " + ", ".join(INPUT_KEYS) + " (N-255): missing "
+                      + (", ".join(missing) or "none") + "; " + str(extra) + " other key(s), not named")
+    if cfg["apikey"] is not None and not isinstance(cfg["apikey"], str):
+        return None, "apikey is neither a string nor null (N-255)"
+    if not isinstance(cfg["tokens"], dict):
+        return None, "tokens is not an object from role class to token (N-255)"
+    return cfg, None
+
+
 def plan_paths(repo):
     """The backticked spans of plan 6.7's "High-impact path list" bullet (as tools/test_merge_gate.py's plan_list)."""
     try:
         text = (repo / PLAN).read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError) as e:
         raise CouldNotCheck(f"{PLAN} is missing or unreadable ({type(e).__name__})")
-    sec = re.search(r"^### 6\.7 .*?(?=^#{1,3} |\Z)", text, re.M | re.S)
-    bullet = sec and re.search(r"^- \*\*High-impact path list\*\*.*?(?=\n- |\n\s*\n|\n#|\Z)", sec.group(0), re.M | re.S)
+    sec = re.search("^### 6[.]7 .*?(?=^#{1,3} |(?!.))", text, re.M | re.S)  # (?!.) under re.S: the end of the text
+    bullet = sec and re.search("^- [*][*]High-impact path list[*][*].*?(?=" + NL + "- |" + NL + "[" + WS + "]*" + NL + "|" + NL
+                                 + "#|(?!.))", sec.group(0), re.M | re.S)
     if not bullet:
-        raise CouldNotCheck("no section 6.7" if not sec else "no \"High-impact path list\" bullet in section 6.7")
+        raise CouldNotCheck("no section 6.7" if not sec else 'no "High-impact path list" bullet in section 6.7')
     paths = re.findall(r"`([^`]+)`", bullet.group(0))
     if not paths:
         raise CouldNotCheck("the bullet names no path (partial)")
@@ -140,9 +183,9 @@ def verdict(cases):
     return f"PASS ({n}/{n})", 0
 
 
-SYN_PLAN = ("# W07 synthetic plan\n\n### 6.7 Trust boundaries\n\n"
-            "- **High-impact path list** (PC-08): synthetic: `CLAUDE.md`, `.claude/`, `w07_fixture/`, and the code of a "
-            "w07_fixture channel once it exists.\n- **Other bullet**: none.\n\n### 6.8 Next\n")
+SYN_PLAN = NL.join(["# W07 synthetic plan", "", "### 6.7 Trust boundaries", "",
+                    "- **High-impact path list** (PC-08): synthetic: `CLAUDE.md`, `.claude/`, `w07_fixture/`, and the code of a "
+                    "w07_fixture channel once it exists.", "- **Other bullet**: none.", "", "### 6.8 Next", ""])
 SYN_ROWS = ["CLAUDE.md", ".claude/", "w07_fixture/"]
 
 
@@ -208,7 +251,14 @@ def main(argv=None):
     if a.rows_file:
         def get_rows():
             return rows_file(a.rows_file)
-    else:  # the job's run (N-255): psql in the step's own libpq environment
+    else:  # the job's run (N-255): its one JSON object on standard input; psql in the step's own libpq environment
+        cfg, why = read_input()
+        if cfg is None or not any(os.environ.get(v) for v in ("PGHOST", "PGHOSTADDR", "PGSERVICE", "PGDATABASE")):
+            print("DM47-input | could_not_check | " + (why or "no database connection settings (libpq environment) "
+                                                       "given; this program declares w07-needs-database (N-255)"))
+            print("W07_DM47_MERGE_GATE_LIST COULD NOT CHECK (1 of 1 could not be checked)")
+            return 3
+        cfg = None
         get_rows = rows_psql
     cases, notes = compare(pathlib.Path(a.repo), get_rows)
     for c in cases:

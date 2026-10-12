@@ -317,7 +317,24 @@ insert into w07_matrix values
   ('competence_summary', 'R11', 'yyyynn'),
   ('deployment_drift', 'R16', '------'),
   ('mark_exported', 'R17', 'nnnnny'),
-  ('ingest_source', 'R18', 'nnnnnn');
+  ('ingest_source', 'R18', 'nnnnnn'),
+  -- Phase C3: R19 is not an EV-C02-003 section 4.1 row. Appendix B section 4's "Ledger transfer" row (PC-44 place 10,
+  -- main 11feac5): "Only devos_kurulum". Before the ledger_handed_over event every one of them passes the role gate for
+  -- devos_kurulum; no test here plants the hand-over (W-C02-14 point 13's tests do).
+  ('begin_transfer_run', 'R19', 'nnnynn'),
+  ('transfer_mission', 'R19', 'nnnynn'),
+  ('transfer_work', 'R19', 'nnnynn'),
+  ('transfer_relation', 'R19', 'nnnynn'),
+  ('transfer_decision', 'R19', 'nnnynn'),
+  ('transfer_review', 'R19', 'nnnynn'),
+  ('transfer_acceptance', 'R19', 'nnnynn'),
+  ('transfer_need', 'R19', 'nnnynn'),
+  ('transfer_finding', 'R19', 'nnnynn'),
+  ('transfer_artifact', 'R19', 'nnnynn'),
+  ('transfer_event', 'R19', 'nnnynn'),
+  ('end_transfer_run', 'R19', 'nnnynn'),
+  ('record_handover', 'R19', 'nnnynn'),
+  ('record_ledger_entry', 'R19', 'nnnynn');
 -- Rows whose function the design does not name: the build's names go in w07_cfg's fn_R.. keys (README section 8).
 create temp table w07_named_rows (row_id text primary key, cells text not null, what text not null);
 insert into w07_named_rows values

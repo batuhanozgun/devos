@@ -11,7 +11,7 @@ Synthetic test data (plan Section 8 item 13): the tokens are synthetic tokens is
 
 **Command.**
 - Part A: (statement timeout 120 s, README 5.1 (a)) `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_6tk_token_reasons.sql` in `devos-test`, by the job's test step as `postgres`, and on the throwaway database by the harness.
-- Part B: `python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <JSON from the job>`. The job must run it in its `devos-test` step, giving it one `devos_denetim` token and one revoked token (the executor's decision 3).
+- Part B: `python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <JSON from the job>`. The job must run it in its `devos-test` step, giving it the job's one JSON object on standard input, with exactly the keys `endpoint`, `apikey` (a string, or `null` while the key is not stored), `tokens` and `revoked_token` (N-255, "The key's source, decided"); it declares no need of the database, so the job runs it under `env -i`. With `apikey` null it exits 3 with that reason. It uses `endpoint`, `apikey`, one `devos_denetim` token and the revoked token (the executor's decision 3).
 
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC` ("Interface assumed"). Beyond it:

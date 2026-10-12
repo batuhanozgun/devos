@@ -301,6 +301,7 @@ do $$
 declare why text; k text; w text; a text; m jsonb; sc text := 'synthetic.w07.f08';
         wa jsonb; wx jsonb; we jsonb; wb jsonb; wsrc jsonb; wc1 jsonb; wc2 jsonb; wc3 jsonb; wd jsonb; wi1 jsonb; wi2 jsonb;
         ca jsonb; ce jsonb; cb jsonb; cc1 jsonb; cc2 jsonb; cc3 jsonb; cd jsonb; r jsonb; x jsonb; s0 jsonb; art0 text;
+        wg jsonb; ww jsonb; wv jsonb; cg jsonb; cg2 jsonb; cw jsonb; cv jsonb;  -- phase C3 (G3, G4)
 begin
   why := pg_temp.w07_pre(array['devos_private.issue_env_token(text)', 'devos_private.revoke_env_token(*)',
     'devos_api.open_mission(jsonb)', 'devos_api.admit_work(jsonb)', 'devos_api.revise_work(jsonb)',
@@ -319,15 +320,19 @@ begin
     wsrc := pg_temp.w07_fixture_work(w, m, sc); wc1 := pg_temp.w07_fixture_work(w, m, sc);
     wc2 := pg_temp.w07_fixture_work(w, m, sc); wc3 := pg_temp.w07_fixture_work(w, m, sc);
     wi1 := pg_temp.w07_fixture_work(w, m, sc); wi2 := pg_temp.w07_fixture_work(w, m, sc);
+    wg := pg_temp.w07_fixture_work(w, m, sc); ww := pg_temp.w07_fixture_work(w, m, sc);
+    wv := pg_temp.w07_fixture_work(w, m, sc);
     wd := pg_temp.w07_fixture_work(w, m, sc, jsonb_build_object('input_refs', jsonb_build_array(
             jsonb_build_object('id', wi1->>'id', 'revision', 1), jsonb_build_object('id', wi2->>'id', 'revision', 1))));
     perform pg_temp.w07_effect_class();
     ca := pg_temp.w07_claim(w, wa); ce := pg_temp.w07_claim(w, we); cb := pg_temp.w07_claim(w, wb);
     cc1 := pg_temp.w07_claim(w, wc1); cc2 := pg_temp.w07_claim(w, wc2); cc3 := pg_temp.w07_claim(w, wc3);
     cd := pg_temp.w07_claim(w, wd);
+    cg := pg_temp.w07_claim(w, wg); cw := pg_temp.w07_claim(w, ww); cv := pg_temp.w07_claim(w, wv);
     if ca->>'status' is distinct from 'ok' or ce->>'status' is distinct from 'ok' or cb->>'status' is distinct from 'ok'
        or cc1->>'status' is distinct from 'ok' or cc2->>'status' is distinct from 'ok'
-       or cc3->>'status' is distinct from 'ok' or cd->>'status' is distinct from 'ok' then
+       or cc3->>'status' is distinct from 'ok' or cd->>'status' is distinct from 'ok'
+       or cg->>'status' is distinct from 'ok' or cw->>'status' is distinct from 'ok' or cv->>'status' is distinct from 'ok' then
       raise exception 'w07: a fixture claim was refused';
     end if;
   exception when others then
@@ -408,6 +413,50 @@ begin
   exception when others then
     perform pg_temp.w07_cnc('F08-c2 effect with an expired claim', left(sqlerrm, 200));
   end;
+
+  -- Phase C3 (G3): the claim's current generation at the moment of effect. (g1) the claim released, then an effect
+  -- with its token; (pos6) the work item claimed again at once and the new claim's effect made; (g2) then an effect
+  -- with the earlier generation's token (W-C02-09 point 4: "with a released ... claim", "with an earlier generation").
+  begin
+    r := pg_temp.w07_call(w, 'select devos_api.release($1)', cg->>'claim_token');
+    if r->>'status' is distinct from 'ok' then
+      raise exception 'release refused: %', coalesce(r->>'reason_code', r->>'w07_raised', r->>'status');
+    end if;
+    s0 := pg_temp.w07_state();
+    perform pg_temp.w07_judge('F08-g1 effect with a released claim',
+      pg_temp.w07_effect(w, cg->>'claim_token', wg, 'f08/g1'), 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end);
+    cg2 := pg_temp.w07_claim(w, wg);
+    perform pg_temp.w07_judge('F08-pos6 the new generation''s claim makes the effect',
+      case when cg2->>'status' = 'ok' then pg_temp.w07_effect(w, cg2->>'claim_token', wg, 'f08/g_new') else cg2 end, 'ok');
+    if cg2->>'status' is distinct from 'ok' then raise exception 'the work item could not be claimed again'; end if;
+    s0 := pg_temp.w07_state();
+    perform pg_temp.w07_judge('F08-g2 effect with the earlier generation''s token',
+      pg_temp.w07_effect(w, cg->>'claim_token', wg, 'f08/g2'), 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  exception when others then
+    perform pg_temp.w07_cnc(g, left(sqlerrm, 200))
+      from unnest(array['F08-g1', 'F08-pos6', 'F08-g2']) g;  -- the block's rows were rolled back with it
+  end;
+
+  -- Phase C3 (G4): the current work item at the moment of effect. (w) the work item is revised after its claim; the
+  -- effect then names the revision it was claimed at; (pos7) the same effect on a work item not revised. They differ
+  -- only in the revision made between the claim and the effect.
+  begin
+    x := pg_temp.w07_call(w, 'select devos_api.revise_work($2)', null, jsonb_build_object('id', ww->>'id',
+           'base_revision', (ww->>'revision')::int, 'scope', sc, 'reason', 'w07_fixture SYNTHETIC W-C02-07 work change'));
+    if x->>'status' is distinct from 'ok' then
+      raise exception 'the work item could not be revised: %', coalesce(x->>'reason_code', x->>'w07_raised', x->>'status');
+    end if;
+    s0 := pg_temp.w07_state();
+    perform pg_temp.w07_judge('F08-w the work item revised after the claim',
+      pg_temp.w07_effect(w, cw->>'claim_token', ww, 'f08/w'), 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  exception when others then
+    perform pg_temp.w07_cnc('F08-w the work item revised after the claim', left(sqlerrm, 200));
+  end;
+  perform pg_temp.w07_judge('F08-pos7 the same effect on a work item not revised',
+    pg_temp.w07_effect(w, cv->>'claim_token', wv, 'f08/w_unrevised'), 'ok');
 
   -- (d) the agent writes an incomplete read set: one of the work item's inputs is left out (DM-37).
   perform pg_temp.w07_judge('F08-pos5 a read set naming every input',

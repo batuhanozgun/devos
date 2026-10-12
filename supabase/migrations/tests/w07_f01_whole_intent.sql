@@ -306,8 +306,18 @@ end $f$;
 create function pg_temp.w07_delete_paths(p_schemas text[]) returns int language sql as $f$
   select count(*)::int from pg_proc p join pg_namespace n on n.oid = p.pronamespace
   where (n.nspname = any(p_schemas) or (n.nspname like 'pg_temp%' and 'pg_temp' = any(p_schemas)))
-    and p.prokind in ('f', 'p') and p.prosrc ~* 'delete\s+from\s+(only\s+)?("?devos_private"?\.)?"?operation"?\M'
+    and p.prokind in ('f', 'p') and p.prosrc ~* 'delete[[:space:]]+from[[:space:]]+(only[[:space:]]+)?("?devos_private"?[.])?"?operation"?[[:>:]]'
 $f$;
+
+-- Phase C3 (G1): a second synthetic effect class, planted by the owner inside this transaction like the first.
+create function pg_temp.w07_effect_class_b() returns void language plpgsql as $f$
+begin
+  if not exists (select 1 from devos_private.effect_class where effect_class = 'w07_fixture_effect_b') then
+    perform pg_temp.w07_owner_insert('devos_private.effect_class', jsonb_build_object(
+      'effect_class', 'w07_fixture_effect_b', 'irreversible', 'false',
+      'mandatory_read_set', '{work,hard_dependencies,claim,authority_epoch,expected_base,inputs}'));
+  end if;
+end $f$;
 
 do $$
 declare why text; k text; w text; m jsonb; w1 jsonb; w2 jsonb; c jsonb; c2 jsonb; c3 jsonb; r jsonb; s0 jsonb;
@@ -346,26 +356,73 @@ begin
          when pg_temp.w07_state() <> s0 then 'state changed (a new operation or event)' end);
 
   -- (a) same content, different target; (b) different expected base; (e) different content; (f) other work item.
+  -- Phase C3: the digest is taken before each call (it was taken after the call, so "nothing changed" compared the
+  -- state with itself).
   s0 := pg_temp.w07_state();
   r := pg_temp.w07_prepare(w, c->>'claim_token',
          pg_temp.w07_op(w1, 'w07_fixture_key_1', '{"target": "w07_fixture/target_b"}'));
-  s0 := pg_temp.w07_state();
   perform pg_temp.w07_judge('F01-a different target', r, 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  s0 := pg_temp.w07_state();
   r := pg_temp.w07_prepare(w, c->>'claim_token',
          pg_temp.w07_op(w1, 'w07_fixture_key_1', '{"expected_base": "w07_fixture_base_2"}'));
-  s0 := pg_temp.w07_state();
   perform pg_temp.w07_judge('F01-b different expected base', r, 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  s0 := pg_temp.w07_state();
   r := pg_temp.w07_prepare(w, c->>'claim_token',
          pg_temp.w07_op(w1, 'w07_fixture_key_1', '{"payload_hash": "w07_fixture_payload_2"}'));
-  s0 := pg_temp.w07_state();
   perform pg_temp.w07_judge('F01-e different content', r, 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
-  r := pg_temp.w07_prepare(w, c3->>'claim_token', pg_temp.w07_op(w2, 'w07_fixture_key_1'));
   s0 := pg_temp.w07_state();
+  r := pg_temp.w07_prepare(w, c3->>'claim_token', pg_temp.w07_op(w2, 'w07_fixture_key_1'));
   perform pg_temp.w07_judge('F01-f other work item', r, 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
+
+  -- Phase C3 (G1): the type. (t1) the same key with another effect class; (t2) the same key under another
+  -- idempotency namespace, which must never be answered from key 1's record (refused as a conflict, or accepted as a
+  -- record of its own with another id: the design does not say whether the namespace is part of the key or of the
+  -- intent, so both are allowed and only "the existing record returned" is bad).
+  begin
+    perform pg_temp.w07_effect_class_b();
+    s0 := pg_temp.w07_state();
+    r := pg_temp.w07_prepare(w, c->>'claim_token',
+           pg_temp.w07_op(w1, 'w07_fixture_key_1', '{"effect_class": "w07_fixture_effect_b"}'));
+    perform pg_temp.w07_judge('F01-t1 different effect class', r, 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  exception when others then
+    perform pg_temp.w07_cnc('F01-t1 different effect class', 'could not plant the second class: ' || left(sqlerrm, 200));
+  end;
+  s0 := pg_temp.w07_state();
+  r := pg_temp.w07_prepare(w, c->>'claim_token',
+         pg_temp.w07_op(w1, 'w07_fixture_key_1', '{"idempotency_namespace": "w07_fixture_ns_b"}'));
+  if r->>'status' = 'ok' then
+    perform pg_temp.w07_judge('F01-t2 another namespace', r, 'ok',
+      case when r->>'id' is not distinct from id1 or r->>'id' is null
+             then 'answered from key 1''s record in another namespace (the existing record returned)'
+           when pg_temp.w07_state() = s0 then 'accepted as its own record, but nothing was written' end,
+      'accepted as a record of its own (the namespace read as part of the key)');
+  else
+    perform pg_temp.w07_judge('F01-t2 another namespace', r, 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end, 'refused (the namespace read as part of the intent)');
+  end if;
+
+  -- Phase C3 (G2): the authority epoch on its own. The design gives no path where only the epoch differs (a new
+  -- epoch ends the claim, B 3.5), so the state is planted: key 4 is prepared, then the owner sets its stored epoch one
+  -- lower; the same key and intent from the same claim (same generation, the current epoch) must be a conflict.
+  begin
+    r := pg_temp.w07_prepare(w, c->>'claim_token', pg_temp.w07_op(w1, 'w07_fixture_key_4'));
+    if r->>'status' is distinct from 'ok' then raise exception 'prepare of key 4 refused'; end if;
+    update devos_private.operation set authority_epoch = authority_epoch - 1
+     where idempotency_namespace = 'w07_fixture' and idempotency_key = 'w07_fixture_key_4';
+    get diagnostics n = row_count;
+    if n <> 1 then raise exception 'the epoch plant touched % rows', n; end if;
+    s0 := pg_temp.w07_state();
+    r := pg_temp.w07_prepare(w, c->>'claim_token', pg_temp.w07_op(w1, 'w07_fixture_key_4'));
+    perform pg_temp.w07_judge('F01-g different authority epoch', r, 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed' end);
+  exception when others then
+    perform pg_temp.w07_cnc('F01-g different authority epoch', 'could not plant the earlier epoch: ' || left(sqlerrm, 200));
+  end;
 
   -- (c) everything the same, different claim generation.
   begin

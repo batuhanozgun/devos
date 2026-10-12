@@ -14,7 +14,7 @@ Synthetic test data (plan Section 8 item 13): every record these runs touch is w
 - one step of the pull-request checks with the `devos_ci` key, which W-C02-12 adds for the run.
 
 Each session writes its result file to its own `claude/` branch: role classes, outcomes and reason codes only.
-**Time added to W-C02-13's run.** None to W-C02-13's own run: it counts these runs only if their envelope shows the same deployed migrations and function versions (W-C02-13 point 2). The runs themselves wait on Batu's steps 2 to 5. W-C02-12 point 3 states the time that adds on the critical path, with its source and date (PC-23).
+**Time added to W-C02-13's run.** None to W-C02-13's own run: it counts these runs only if their envelope shows the same deployed migrations and function versions (W-C02-13 point 2). The runs themselves wait on Batu's steps 2 to 5. Their time on the critical path is W-C02-12 point 3's, with its source and date (PC-23), not this test's: this test adds none of its own (phase C3, G15).
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds.
 - The same functions and refusal form as `T-W07-IDC`, `T-W07-5B`, `T-W07-N04` and `T-W07-N08`.
 - The fixtures in `devos`: DM-23's test Mission, work items `W1` to `W4` under it, and the fixture IDs listed in W-C02-12's record.

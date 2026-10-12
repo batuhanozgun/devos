@@ -495,11 +495,11 @@ begin
   if (select count(*) from unnest(a) u) <> (select count(distinct u) from unnest(a) u) then bad := bad || 'a duplicate entry; '; end if;
   perform pg_temp.w07_rec('DM47-b', bad = '', coalesce(nullif(bad, ''), 'every entry a non-blank repository-relative path; no duplicate'));
   select string_agg(n.nspname || '.' || p.proname, ', ') into w from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-   where n.nspname = 'devos_api' and p.prosrc ~* '(insert\s+into|update|delete\s+from|truncate)\s+(only\s+)?(devos_private\.)?high_impact_path';
+   where n.nspname = 'devos_api' and p.prosrc ~* '(insert[[:space:]]+into|update|delete[[:space:]]+from|truncate)[[:space:]]+(only[[:space:]]+)?(devos_private[.])?high_impact_path';
   perform pg_temp.w07_rec('DM47-c', w is null, coalesce('devos_api functions whose source writes the table: ' || w,
     'no devos_api function''s source writes the table (a static look)'));
   select string_agg(r.rolname, ', ') into w from pg_roles r
-   where (r.rolname in ('anon', 'authenticated') or r.rolname like 'devos\_%')
+   where (r.rolname in ('anon', 'authenticated') or r.rolname ~ '^devos_')
      and has_table_privilege(r.oid, 'devos_private.high_impact_path', 'INSERT, UPDATE, DELETE, TRUNCATE');
   perform pg_temp.w07_rec('DM47-d', w is null, coalesce('roles with a write privilege on it: ' || w,
     'anon, authenticated and every devos_ role hold no write privilege on it'));

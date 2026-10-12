@@ -132,14 +132,23 @@ class Cluster:
 
 
 def run_program(cl, path):
-    """A program the migration job runs (README 5.1 (b); N-255), here on the throwaway database: its one JSON object on
-    standard input names the target throwaway, and its libpq environment is this cluster's socket, nothing else."""
-    env = clean_env()
-    env.update({"PGHOST": str(cl.sock), "PGPORT": cl.port, "PGUSER": "postgres", "PGDATABASE": "w07_throwaway"})
-    psql_dir = str(pathlib.Path(cl.a.pg_bin))
-    env["PATH"] = psql_dir + os.pathsep + env.get("PATH", "")
+    """A program the migration job runs (README 5.1 (b); N-255), here on the throwaway database, run as the job runs it:
+    its one JSON object on standard input has exactly the four keys, with no endpoint, key or token here; a program
+    that declares "# w07-needs-database: yes" among its first ten lines gets this cluster's socket as its libpq
+    environment (and the server's bin directory as its PATH), nothing else; any other program gets no environment at
+    all (the job's env -i)."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            head = [next(f, "").rstrip("\n") for _ in range(10)]
+    except OSError:
+        head = []
+    env = {}
+    if "# w07-needs-database: yes" in head:
+        env = {"PGHOST": str(cl.sock), "PGPORT": cl.port, "PGUSER": "postgres", "PGDATABASE": "w07_throwaway",
+               "PATH": str(pathlib.Path(cl.a.pg_bin)), "LC_ALL": "C"}
+    payload = {"endpoint": None, "apikey": None, "tokens": {}, "revoked_token": None}
     return subprocess.run([sys.executable, "-I", str(path)], env=env, capture_output=True, text=True,
-                          input=json.dumps({"target": "throwaway"}), timeout=5400)
+                          input=json.dumps(payload), timeout=5400)
 
 
 def run_file(cl, path):

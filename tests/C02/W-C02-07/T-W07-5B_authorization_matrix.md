@@ -48,6 +48,7 @@ Columns, in order: `devos_calisma` (cal), `devos_denetim` (den), `devos_sinav` (
 | R16 | `deployment_drift` | the same | n n n n y n: Data API only, `T-W07-IDC` cases `IDC-dd-*` |
 | R17 | `mark_exported` | the same | n n n n n y |
 | R18 | `ingest_source` | the same, if present | n n n n n n |
+| R19 | Not a §4.1 row: Appendix B section 4's "Ledger transfer" row (B:397 at `main` `11feac5`; PC-44 place 10), "Only `devos_kurulum`" | `begin_transfer_run`, `transfer_mission`, `transfer_work`, `transfer_relation`, `transfer_decision`, `transfer_review`, `transfer_acceptance`, `transfer_need`, `transfer_finding`, `transfer_artifact`, `transfer_event`, `end_transfer_run`, `record_handover`, `record_ledger_entry` (phase C3) | n n n y n n |
 
 **Two readings stated** (the matrix's cells, applied to functions):
 - **R02's `devos_sinav` cell** reads "✔ exam tasks only, as ordinary work (B:38)". At the role gate it is ✔. That a sinav call opens only exam tasks is a check after the gate, not part of the role list, and is not tested here.
@@ -71,7 +72,7 @@ Columns, in order: `devos_calisma` (cal), `devos_denetim` (den), `devos_sinav` (
   - `5B-unmapped-<function>`: a function with no row, read from the catalogue, gives COULD NOT CHECK, so a function added later is never silently untested.
   - `5B-row-<row>`: a C02 row with no function present gives COULD NOT CHECK.
 
-The rows that may be absent are R11 (Competence is C05's), R16 (`deployment_drift`) and R18 (`ingest_source` is C04's).
+The rows that may be absent are R11 (Competence is C05's), R16 (`deployment_drift`) and R18 (`ingest_source` is C04's). R19's functions are W-C02-09's (B:408, PC-44): until they exist, `5B-row-R19` gives COULD NOT CHECK. R19's ✔ cell is the role gate before the hand-over; that every function but four refuses after the `ledger_handed_over` event is W-C02-14 point 13's test.
 
 ## Form C0
 

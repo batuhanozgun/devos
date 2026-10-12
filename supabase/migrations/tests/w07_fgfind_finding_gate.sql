@@ -485,7 +485,7 @@ begin
     'fresh_until', '2026-12-31', 'claim', 'SYNTHETIC W-C02-07: the w07_fixture service limit is 5 calls a minute'), 'accepted', null, 'finding');
   perform pg_temp.w07_expect('FGFIND-neg-ces-empty', 'devos_calisma', 'record_finding', a || '{"counter_evidence_searched": ""}',
     'refused', array['counter_evidence_searched'], 'finding');
-  perform pg_temp.w07_expect('FGFIND-neg-ces-whitespace', 'devos_calisma', 'record_finding', a || '{"counter_evidence_searched": " \t "}',
+  perform pg_temp.w07_expect('FGFIND-neg-ces-whitespace', 'devos_calisma', 'record_finding', a || jsonb_build_object('counter_evidence_searched', ' ' || chr(9) || ' '),
     'refused', array['counter_evidence_searched'], 'finding');
   perform pg_temp.w07_expect('FGFIND-neg-ces-absent', 'devos_calisma', 'record_finding', a - 'counter_evidence_searched',
     'refused', array['counter_evidence_searched'], 'finding');

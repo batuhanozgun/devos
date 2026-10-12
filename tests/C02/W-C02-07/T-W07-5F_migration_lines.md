@@ -9,7 +9,7 @@ Synthetic test data (plan Section 8 item 13): this test reads file paths and fie
 
 The checker of W-C02-07 runs it, and W-C02-13's prober runs it again.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. W-C02-03's test files at the paths below, as on branch `claude/c02-w03-tests` (commit `86ebd65`, its check CHK-C02-017 at `a755c92`, PASS-WITH-CONDITIONS), **not yet merged into `main`** when this was written. The citation waits for that merge (W-C02-07's body: a partial wait, off the critical path). Until then this test's result is COULD NOT CHECK. If CHK-C02-017's conditions C1 and C2 change a path or a field, the table is revised before the result.
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. W-C02-03's test files at the paths below. They are on `main`: merged at `ceb206b` (CHK-C02-017's conditions C1 and C2 applied), an ancestor of `main` `11feac5`, where phase C3 found every path below present (phase C3, G14; when this was first written, on 2026-10-12, they were on branch `claude/c02-w03-tests` at `86ebd65`, not yet merged). If a later change on `main` moves a path or a field, the table is revised before the result.
 
 ## The table (the cases)
 | Case | Line of `plan/work/C02.md`'s acceptance | W-C02-03's test (path) | Point | Runs it |
@@ -27,9 +27,9 @@ A case is `ok` when the path is on `main` and each of the ten fields is present;
 |---|---|
 | **ID and claim** | `T-W07-5F`: every migration line of C02's Acceptance (`plan/work/C02.md` lines 36 to 39) maps to a test in form C0, on `main`, named by path with the item that runs it. |
 | **Failure class rule** | Any migration line whose test is absent, not in form C0, or cited by a path that is not on `main`. **[Designer's addition: an Acceptance line, not an Appendix C entry.]** |
-| **Examples** | The original gap: "The migration items … no Appendix C test" (R2 section 5 (b)), checked for every line (5F-36 to -39). Another manifestation: a cited test that exists only on an unmerged branch (the state when this was written: every case is `could_not_check`). |
+| **Examples** | The original gap: "The migration items … no Appendix C test" (R2 section 5 (b)), checked for every line (5F-36 to -39). Another manifestation: a cited test that exists only on an unmerged branch (the state when this was first written; since `ceb206b` the tests are on `main`). |
 | **Negative control** | A field removed from a scratch copy of one cited specification, and a citation to an absent path, must each make the check `bad` and `could_not_check`. Run on a scratch copy outside the repository before the real run. |
-| **Positive control** | Run on W-C02-03's branch (`a755c92`) by the test designer on 2026-10-12, the field check found all ten fields in each of `T-W03-05`, `-06`, `-07`, `-08`, `-09`, `-10`, `-14` and `-DEC`. It is repeated on `main` once merged. |
+| **Positive control** | Run on W-C02-03's branch (`a755c92`) by the test designer on 2026-10-12, the field check found all ten fields in each of `T-W03-05`, `-06`, `-07`, `-08`, `-09`, `-10`, `-14` and `-DEC`. Phase C3 repeated the look on `main` `11feac5` (2026-10-12): all ten fields in each of the eight. Both are looks, not this test's result. |
 | **Break attempt** | (1) What is removed: one C0 field from one cited specification (for example the "Break attempt" row of `T-W03-08`), or one path from the table. (2) Path: a scratch copy of the repository outside the clone, never a commit. (3) The case of that line (5F-38) must turn `bad`. |
 | **Stage and environment** | C02. A repository read; no Supabase project and no token. |
 | **Independence level** | Written by the test designer (fresh-context `test-designer` subagent; agent ID in W-C02-07's Record). Run by W-C02-07's checker, and by W-C02-13's prober. Assessed by a fresh-context checker that wrote no test. Shared: model lineage and the plan text. |
@@ -37,13 +37,13 @@ A case is `ok` when the path is on `main` and each of the ten fields is present;
 | **Evidence envelope** | README section 4. Fixed before the run: the table above and the ten field names. `target_commit`: the `main` commit read. Raw evidence `W07-5F-<run_at>`: the command's output. |
 
 ## Clause table
-Not an Appendix C test. Lines 36 to 39 of `plan/work/C02.md`, each mapped above. No line lacks a test in form C0 at `a755c92`, so none is written here.
+Not an Appendix C test. Lines 36 to 39 of `plan/work/C02.md`, each mapped above. No line lacks a test in form C0 at `a755c92`, nor on `main` `11feac5` (phase C3's look), so none is written here.
 
 ## Format gate
 Not a format-gate test.
 
 ## Could not check
-COULD NOT CHECK while W-C02-03's tests are not on `main` (the state on 2026-10-12), or when a cited file cannot be read.
+COULD NOT CHECK when a cited path is not on the `main` commit read, or when a cited file cannot be read. (Before `ceb206b` merged W-C02-03's tests, that was every case.)
 
 ## Not covered
 - Whether W-C02-03's tests pass, or fail on their breaks (W-C02-03, W-C02-13).

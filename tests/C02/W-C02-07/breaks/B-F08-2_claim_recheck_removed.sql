@@ -1,4 +1,5 @@
--- w07-break: test=w07_f08_recheck_at_effect.sql; expect-red=F08-c1,F08-c2,F08-c3
+-- w07-break: test=w07_f08_recheck_at_effect.sql; expect-red=F08-c1,F08-c2,F08-c3,F08-g1
+-- Phase C3: F08-g1 (a released claim, the work item's latest) joins the red set: the wrapper makes it active.
 -- Rule removed: the re-check of the claim at the moment of effect: active, lease not run out, epoch valid (Appendix C
 -- F08 (c); B 3.5 and 3.12; EV-C02-002 DM-06). The dependency and read-set re-checks stay.
 -- Specification: tests/C02/W-C02-07/T-W07-F08_recheck_at_effect.md. How: register_artifact(text, jsonb) is renamed

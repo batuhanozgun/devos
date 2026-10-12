@@ -24,7 +24,7 @@ create temp table w07_results (case_id text primary key,
   outcome text not null check (outcome in ('ok', 'bad', 'could_not_check')), detail text not null);
 
 create function pg_temp.w07_rec(p_id text, p_outcome text, p_detail text) returns void language sql as $f$
-  insert into w07_results values (p_id, p_outcome, left(replace(coalesce(p_detail, ''), E'\n', ' '), 600))
+  insert into w07_results values (p_id, p_outcome, left(replace(coalesce(p_detail, ''), chr(10), ' '), 600))
   on conflict (case_id) do update set
     outcome = case when w07_results.outcome = 'bad' or excluded.outcome = 'bad' then 'bad'
                    when w07_results.outcome = 'could_not_check' or excluded.outcome = 'could_not_check'
@@ -298,9 +298,9 @@ begin
   end if;
   perform pg_temp.w07_rec('DM02-list', 'ok', 'revision tables found: ' || (
     select string_agg(c.relname, ', ' order by c.relname) from pg_class c join pg_namespace n on n.oid = c.relnamespace
-     where n.nspname = 'devos_private' and c.relkind in ('r', 'p') and c.relname like '%\_revision'));
+     where n.nspname = 'devos_private' and c.relkind in ('r', 'p') and c.relname ~ '_revision$'));
   for t in select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
-            where n.nspname = 'devos_private' and c.relkind in ('r', 'p') and c.relname like '%\_revision'
+            where n.nspname = 'devos_private' and c.relkind in ('r', 'p') and c.relname ~ '_revision$'
             order by c.relname loop
     perform pg_temp.w07_dm02_table(t);
   end loop;
