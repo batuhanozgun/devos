@@ -166,14 +166,39 @@ t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Create a 
 wf=$(mktemp -d); printf 'export const meta = {name:"x",description:"x"}\nawait agent("read", {label:"a"})\n' > "$wf/ok.js"
 t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"ok.js\"},\"cwd\":\"$wf\"}"
 # --- W-C01-45 (PC-35 "Routing" item 1): skills and agent types only from the repository (T4). The planted
-# negatives use a made-up plugin namespace; each has a counterpart the executor uses, which stays allowed.
+# negatives use a made-up plugin namespace; where one has a counterpart, it stays allowed: an agent type the
+# executor uses, or the fixture's skill below.
+# W-C01-47 item 2: the repository-skill controls run in a fixture checkout, whatever this checkout's .claude/skills/
+# holds: a copy of the guard under test at its .claude/hooks/tool_allowlist.py (the guard reads the skills of the
+# checkout its own file is in) and one made-up skill directory. Each call goes through the settings command,
+# unchanged, with $CLAUDE_PROJECT_DIR at the fixture, and must be decided by rule T4; once the skill's directory is
+# removed, the same call is denied.
+# s4 <exp> <label> <skill>: one Skill call through $cmd; the decision must be exp, by rule T4
+s4() { local r j="{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"$3\"}}"; r=$(decide "$j")
+  if [ "$r" = "$1" ] && tail -n 1 "$OUTS" | grep -qE "(DENIED by rule T4 |allowed by rule T4: )"; then echo "ok   exp=$1 T4 $2 $j"
+  else echo "BAD  exp=$1 T4 got=$r (or not by T4) $2 $j"; fail=1; fi; }
+fx=$(mktemp -d); fsk=fixture-skill; mkdir -p "$fx/.claude/hooks" "$fx/.claude/skills/$fsk"
+cp "$hook" "$fx/.claude/hooks/tool_allowlist.py"
+printf -- '---\nname: %s\ndescription: A made-up skill for this test.\n---\nSYNTHETIC test fixture; never loaded.\n' "$fsk" > "$fx/.claude/skills/$fsk/SKILL.md"
+fcmd="CLAUDE_PROJECT_DIR='$fx'; $(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])')"
+fs() { local cmd="$fcmd"; s4 "$@"; }   # s4 in the fixture checkout
+fs allow "fixture: the skill its .claude/skills/ provides" "$fsk"
+fs deny  "fixture: the same skill, namespaced" "example-plugin:$fsk"
+fs deny  "fixture: the same skill, /-prefixed" "/$fsk"
+s4 deny  "this checkout's guard: the fixture's skill, which it does not provide" "$fsk"
+rm -r "$fx/.claude/skills/$fsk"
+fs deny  "fixture: the skill's directory removed, .claude/skills/ empty" "$fsk"
+rmdir "$fx/.claude/skills"
+fs deny  "fixture: no .claude/skills/ at all" "$fsk"
+rm -rf "$fx"
+# this checkout's own skill, when it holds one: the same three controls through $cmd, an extra beside the fixture's
 sk=$(ls .claude/skills 2>/dev/null | head -1)
 if [ -n "$sk" ]; then
   t allow "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"$sk\"}}"
   t deny  "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"example-plugin:$sk\"}}"
   t deny  "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"/$sk\"}}"
 else
-  echo "info no skill under .claude/skills/: the repository-skill allow control is SKIPPED"
+  echo "info this checkout holds no skill under .claude/skills/: its repository-skill controls ran in the fixture above"
 fi
 t deny '{"tool_name":"Skill","tool_input":{"skill":"example-plugin:tally"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"init"}}'
