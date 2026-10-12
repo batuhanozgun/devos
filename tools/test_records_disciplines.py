@@ -8,7 +8,11 @@ A fixture repository in a temporary directory holds a minimal plan/ tree (an emp
 five generated blocks and a section 1, two logs), and records.py runs in it as a child process, rendered once so
 that its views match. One log holds one planted entry per case; every entry's answers carry a marker string that
 no output may contain. N-110's cases (a) and (b) (L-170, L-171) kill CHK-C01-001's mutants R8 and R10; L-172 to
-L-178 plant correction lines ("Disciplines of L-<n>"). Then the check runs, by import, on this checkout's real log:
+L-178 plant correction lines ("Disciplines of L-<n>"). N-127's case X6 (L-179, L-180; CHK-C01-009 finding 3) plants
+an entry whose own line is missing or malformed and whose only correction line names that entry itself: it must
+still fail, which kills mutant X6 (a correction naming its own entry counts). D-031's case (L-181) plants a
+"Dn: no: <text>" answer, which must fail: the form of a "no" stays "Dn: no" with nothing after it (W-C02-15).
+Then the check runs, by import, on this checkout's real log:
 no entry from L-159 on may fail, and every such entry must be counted. Prints one line per case and
 RECORDS_DISCIPLINES_TEST PASS only if every case behaves as written.
 """
@@ -81,6 +85,14 @@ PLANTED = {   # number: (case label, the entry's lines, the expected reason or N
           [GOOD, "- **Disciplines of L-177 (D1–D9):** " + nine()], None),
     177: ("a correction in an earlier entry does not count", [f"- **Work.** {MARKER}"], MISSING),
     178: ("a correction line is not the entry's own line", ["- **Disciplines of L-100 (D1–D9):** " + nine()], MISSING),
+    179: ("(N-127 X6) an entry without its own line, whose only correction line names itself with nine good answers, "
+          "still fails", ["- **Disciplines of L-179 (D1–D9):** " + nine(d3=f"yes: {MARKER}.")], MISSING),
+    180: ("(N-127 X6) an entry with a malformed own line, whose only correction line names itself with nine good "
+          "answers, still fails", ["- **Disciplines (D1–D9):** " + nine().replace("D4: no. ", ""),
+                                   "- **Disciplines of L-180 (D1–D9):** " + nine(d3=f"yes: {MARKER}.")], "D4 missing"),
+    181: ("(D-031) a 'Dn: no: <text>' answer fails: a 'no' stays 'Dn: no' with nothing after it",
+          ["- **Disciplines (D1–D9):** " + nine(d9=f"no: {MARKER}.")],
+          "D9 is not 'no', 'yes: <text>' or 'uncertain: <text>'"),
 }
 LOG = "# FX log (append-only)\n\n## Entries\n\n" + "".join(
     entry(n, *lines) + ("## Findings\n\n### FND-001 · fixture finding\n\n" + GOOD + "\n\n## Entries\n\n"
@@ -129,8 +141,8 @@ def main():
         case("(L-168, L-169) every log file is read: a good entry passes, a missing line fails",
              "168" not in got and got.get("169") == MISSING, out)
         case("(2) failing entries, views that match: one line per failing entry, DISCIPLINES FAIL, no RENDER OK, "
-             "exit 1", rc == 1 and len(got) == sum(1 for l in lines if l.startswith("DISCIPLINES: ")) == 13
-             and "DISCIPLINES FAIL: 7 of 20 log entries from L-159 on carry the nine answers" in lines
+             "exit 1", rc == 1 and len(got) == sum(1 for l in lines if l.startswith("DISCIPLINES: ")) == 16
+             and "DISCIPLINES FAIL: 7 of 23 log entries from L-159 on carry the nine answers" in lines
              and lines[-1] == "RENDER VIEWS MATCH; not OK, because the discipline check failed"
              and "RENDER OK" not in lines, out)
 
@@ -140,7 +152,7 @@ def main():
         rc, lines, out = run(root, "render", "--check")
         case("(3) failing entries and views that differ: both reported, exit 1",
              rc == 1 and lines[-1] == "RENDER DIFFERS: plan/ledger.md"
-             and sum(1 for l in lines if l.startswith("DISCIPLINES: ")) == 13, out)
+             and sum(1 for l in lines if l.startswith("DISCIPLINES: ")) == 16, out)
         logs(root, "# FX log (append-only)\n\n" + entry(159, GOOD))
         rc, lines, out = run(root, "render", "--check")
         case("(4) a clean log and views that differ: RENDER DIFFERS as before, exit 1",
@@ -153,8 +165,8 @@ def main():
         per_entry = [[x for x in ls if x.startswith("DISCIPLINES: ")] for ls in (lines, lines2)]
         case("(5) render with failing entries prints the same lines and a warning, and renders anyway",
              rc == 0 and "rendered plan/ledger.md and DURUM.md" in lines and per_entry[0] == per_entry[1]
-             and len(per_entry[0]) == 13
-             and "warning: 13 log entries from L-159 on lack the nine discipline answers (D-016); rendered anyway"
+             and len(per_entry[0]) == 16
+             and "warning: 16 log entries from L-159 on lack the nine discipline answers (D-016); rendered anyway"
              in lines and rc2 == 1 and lines2[-1].startswith("RENDER VIEWS MATCH"), out + out2)
 
         case("(6) no output contains an entry's text", len(OUTPUTS) >= 6 and not any(MARKER in o for o in OUTPUTS),
