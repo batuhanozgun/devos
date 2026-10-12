@@ -27,7 +27,7 @@ env:
   W03_EXCLUDED_SCHEMAS: "auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations"
   W03_SCHEMA_ENTRY_ONLY: "public"
   W03_EXCLUDED_ROLES: "postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role"
-  W03_TOKEN_CLASSES: "devos_kurulum devos_calisma devos_denetim devos_sinav devos_ingest devos_ci devos_backup"
+  W03_TOKEN_CLASSES: "devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup"  # EV-C02-003 section 4.1's columns; the first also gives the revoked token
   W03_PLANT_B64: ""
   W03_FIXTURE_ISSUE: ""
   W03_CLI_CONFIG: |
@@ -335,7 +335,10 @@ jobs:
           \set ON_ERROR_STOP on
           begin transaction isolation level repeatable read, read only;
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
-                 (r->>'history_table_exists')::boolean as w03_hist
+                 (r->>'history_table_exists')::boolean as w03_hist,
+                 (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                   where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                   as w03_hist_oid
             from (select json_build_object(
               'function_exists', exists (
                 select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
@@ -378,10 +381,12 @@ jobs:
               )) as r) s \gset
           \echo W03READS :w03_reads
           \if :w03_hist
-          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
+                 'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
             from supabase_migrations.schema_migrations \gset
           \echo W03APPLIED :w03_applied
           \echo W03ROWS :w03_rows
+          \echo W03SAMETABLE :w03_same_table
           \endif
           \if :w03_fn
           select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
@@ -428,7 +433,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          reads_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -436,10 +442,13 @@ jobs:
               reads = None
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
+              # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
+              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
+              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
-                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+                           history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
               if hist and complete:
                   applied = applied_text
@@ -505,7 +514,7 @@ jobs:
           done
           exit $failed
       - id: tokens
-        name: "(8) synthetic tokens for the test programs, if any"
+        name: "(8) synthetic tokens for the test programs, if any, issued as owner"
         if: ${{ steps.dbtests.outcome == 'success' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
@@ -520,50 +529,119 @@ jobs:
           fi
           umask 077
           python3 -I - <<'PY'
-          # EV-C02-003 section 6.3: the test issues the synthetic tokens it needs, commits them for calls over HTTP, and revokes
-          # them before the run ends. Issued with devos_private.issue_env_token(role_class) (Appendix B section 2, B:46).
+          # N-255 (2): as owner, one synthetic token per role class the tests use (W03_TOKEN_CLASSES, EV-C02-003 section 4.1's
+          # columns) and one more, of the first class, revoked before the programs run: the "revoked token". Issued with
+          # devos_private.issue_env_token(role_class), revoked with devos_private.revoke_env_token(token) (B:46; EV-C02-003
+          # section 6.3). Each token is masked before anything else is printed, and is never printed; the file (0600, under
+          # the runner's temporary directory) is rewritten after every issue, so that the step that revokes them, which runs
+          # in every case, finds every token issued before a failure or a cancellation.
           import json, os, subprocess
-          tokens = {}
-          for role_class in os.environ["W03_TOKEN_CLASSES"].split():
-              r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"rc={role_class}", "-f", "-"],
-                                 input="select devos_private.issue_env_token(:'rc');\n", capture_output=True, text=True)
+          path = os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json")
+          classes = os.environ["W03_TOKEN_CLASSES"].split()
+          state = {"tokens": {}, "revoked_token": None, "revoked_before_programs": False}
+          def save():
+              with open(path + ".tmp", "w", encoding="utf-8") as f:
+                  json.dump(state, f)
+              os.replace(path + ".tmp", path)
+          def psql(sql, name, value):
+              return subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"{name}={value}", "-f", "-"],
+                                    input=sql, capture_output=True, text=True)
+          def issue(role_class):
+              r = psql("select devos_private.issue_env_token(:'rc');\n", "rc", role_class)
               token = r.stdout.strip()
               if r.returncode or not token or "\n" in token:
-                  print(f"synthetic token for {role_class}: not issued (psql exit {r.returncode})")
-                  continue
+                  return None, r.returncode
               print("::add-mask::" + token.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"), flush=True)
-              tokens[role_class] = token
+              return token, 0
+          ok = True
+          for role_class in classes:
+              token, rc = issue(role_class)
+              if token is None:
+                  print(f"synthetic token for {role_class}: not issued (psql exit {rc})")
+                  ok = False
+                  continue
+              state["tokens"][role_class] = token
+              save()
               print(f"synthetic token for {role_class}: issued")
-          with open(os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json"), "w", encoding="utf-8") as f:
-              json.dump(tokens, f)
-          raise SystemExit(0 if len(tokens) == len(os.environ["W03_TOKEN_CLASSES"].split()) else 1)
+          token, rc = issue(classes[0])
+          if token is None:
+              print(f"revoked token ({classes[0]}): not issued (psql exit {rc})")
+              ok = False
+          else:
+              state["revoked_token"] = token
+              save()
+              r = psql("select devos_private.revoke_env_token(:'tok');\n", "tok", token)
+              state["revoked_before_programs"] = r.returncode == 0
+              save()
+              print(f"revoked token ({classes[0]}): issued and " + ("revoked" if r.returncode == 0 else
+                                                                    f"NOT revoked (psql exit {r.returncode})"))
+              ok = ok and r.returncode == 0
+          raise SystemExit(0 if ok else 1)
           PY
       - id: dbprograms
-        name: "(8) test programs (no credential in reach of their step)"
+        name: "(8) test programs, in name order: input on standard input, an empty environment, the database only if declared"
         if: ${{ steps.dbtests.outcome == 'success' && steps.tokens.outcome == 'success' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          DEVOS_TEST_PUBLISHABLE_KEY: ${{ secrets.DEVOS_TEST_PUBLISHABLE_KEY }}
         run: |
           set -uo pipefail
-          shopt -s nullglob
-          programs=(supabase/migrations/tests/*.py)
-          if [ ${#programs[@]} -eq 0 ]; then
-            echo "database test programs: none"
-            exit 0
-          fi
-          failed=0
-          for p in "${programs[@]}"; do
-            env -i PATH="/usr/bin:/bin" HOME="$RUNNER_TEMP" LANG=C.UTF-8 DEVOS_DATA_API_URL="https://${PROJECT_REF}.supabase.co" \
-              DEVOS_TEST_TOKENS_FILE="$RUNNER_TEMP/w03tokens.json" timeout 600 python3 -I "$p"
-            rc=$?
-            case $rc in
-              0) echo "database test program ${p}: pass" ;;
-              3) echo "database test program ${p}: could not check"; failed=1 ;;
-              *) echo "database test program ${p}: fail (exit ${rc})"; failed=1 ;;
-            esac
-          done
-          exit $failed
+          umask 077
+          python3 -I - <<'PY'
+          # N-255: runs supabase/migrations/tests/*.py in name order, after the SQL database tests, in devos-test only. Each
+          # program gets one JSON object on standard input: {"endpoint", "apikey", "tokens", "revoked_token"}. It runs with
+          # an environment built from nothing (env -i's effect) holding PATH, HOME (a new empty directory) and LANG only,
+          # unless a line "# w07-needs-database: yes" among its first ten lines declares that it needs the database; then it
+          # also gets this step's own connection settings in libpq's variables (PGHOST, PGPORT, PGUSER, PGDATABASE,
+          # PGPASSWORD, and PGSSLMODE so that it connects as this step does), never on a command line. The environment is
+          # passed to the process directly rather than as env -i's NAME=VALUE arguments, so the password is in no process's
+          # arguments. Exit 0 pass, 1 fail, 3 could not check, anything else fail. The report line per program gives its
+          # name and result only; this step prints no token, key or password.
+          import glob, json, os, re, subprocess, tempfile
+          programs = sorted(glob.glob("supabase/migrations/tests/*.py"))
+          if not programs:
+              print("test programs: none")
+              raise SystemExit(0)
+          try:
+              with open(os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json"), encoding="utf-8") as f:
+                  state = json.load(f)
+              tokens, revoked = state["tokens"], state["revoked_token"]
+              assert isinstance(tokens, dict) and tokens and isinstance(revoked, str) and state["revoked_before_programs"]
+          except (OSError, ValueError, KeyError, TypeError, AssertionError):
+              print("test programs: could not check (the synthetic tokens are not all there); no program runs")
+              raise SystemExit(1)
+          # The Data API endpoint, derived from the project reference in this job's connection settings: the pooler user
+          # is postgres.<project ref> (EV-C02-001 M19), and the project's URL is https://<project ref>.supabase.co
+          # (EV-C02-003, "Names this design fixes"). If it cannot be derived, null, and the programs report "could not check".
+          m = re.fullmatch(r"postgres\.([a-z]{20})", os.environ.get("PGUSER", ""))
+          endpoint = f"https://{m.group(1)}.supabase.co" if m else None
+          apikey = os.environ.get("DEVOS_TEST_PUBLISHABLE_KEY") or None
+          print(f"test programs: {len(programs)}; endpoint {endpoint or 'null (not derivable)'}; publishable key "
+                f"{'set' if apikey else 'not set (null)'}; tokens for {sorted(tokens)} and one revoked token", flush=True)
+          payload = json.dumps({"endpoint": endpoint, "apikey": apikey, "tokens": tokens, "revoked_token": revoked})
+          DB_VARS = ("PGHOST", "PGPORT", "PGUSER", "PGDATABASE", "PGPASSWORD", "PGSSLMODE")
+          failed = False
+          for p in programs:
+              with open(p, encoding="utf-8", errors="replace") as f:
+                  head = [f.readline() for _ in range(10)]
+              needs_db = any(ln.strip() == "# w07-needs-database: yes" for ln in head)
+              home = tempfile.mkdtemp(prefix="w03prog-", dir=os.environ["RUNNER_TEMP"])
+              env = {"PATH": "/usr/bin:/bin", "HOME": home, "LANG": "C.UTF-8"}
+              if needs_db:
+                  env.update({k: os.environ[k] for k in DB_VARS if os.environ.get(k)})
+              try:
+                  rc = subprocess.run(["timeout", "600", "python3", "-I", p], input=payload, text=True, env=env).returncode
+              except OSError:
+                  rc = -1
+              result = {0: "pass", 1: "fail", 3: "could not check"}.get(rc, "fail")
+              failed = failed or rc != 0
+              print(f"test program {os.path.basename(p)}: {result}", flush=True)
+          raise SystemExit(1 if failed else 0)
+          PY
       - id: tokens_revoke
-        name: "(8) revoke the synthetic tokens"
-        if: ${{ always() && steps.tokens.outcome != 'skipped' }}
+        name: "(8) revoke every synthetic token issued, in every case"
+        if: ${{ always() }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -576,11 +654,17 @@ jobs:
           fi
           python3 -I - "$f" <<'PY'
           # Revoked with devos_private.revoke_env_token, called with the token (EV-C02-003 section 6.3). That argument form is
-          # assumed here; W-C02-09 fixes the function's signature, and this step is changed with it if it differs.
+          # assumed here; W-C02-09 fixes the function's signature, and this step is changed with it if it differs. The
+          # revoked token is revoked again only if its revocation before the programs did not succeed.
           import json, subprocess, sys
-          tokens = json.load(open(sys.argv[1], encoding="utf-8"))
+          state = json.load(open(sys.argv[1], encoding="utf-8"))
+          todo = list(state.get("tokens", {}).items())
+          if state.get("revoked_token") and not state.get("revoked_before_programs"):
+              todo.append(("the revoked token", state["revoked_token"]))
+          elif state.get("revoked_token"):
+              print("revoked token: already revoked before the programs")
           bad = 0
-          for role_class, token in tokens.items():
+          for role_class, token in todo:
               r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"tok={token}", "-f", "-"],
                                  input="select devos_private.revoke_env_token(:'tok');\n", capture_output=True, text=True)
               print(f"synthetic token for {role_class}: {'revoked' if r.returncode == 0 else 'NOT revoked'}")
@@ -604,7 +688,7 @@ jobs:
           if [ "$HEAD_STATE" != "yes" ]; then
             go="${HEAD_STATE:-no}"
           elif [ "$APPLY" = "success" ] && [ "$RESULT" = "no_difference" ] && [ "$TESTS" = "success" ] \
-               && [ "$PROGRAMS" = "success" ] && [ "$REVOKED" != "failure" ]; then
+               && [ "$PROGRAMS" = "success" ] && [ "$REVOKED" = "success" ]; then
             go="yes"
           else
             go="no"
@@ -915,7 +999,10 @@ jobs:
           \set ON_ERROR_STOP on
           begin transaction isolation level repeatable read, read only;
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
-                 (r->>'history_table_exists')::boolean as w03_hist
+                 (r->>'history_table_exists')::boolean as w03_hist,
+                 (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                   where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                   as w03_hist_oid
             from (select json_build_object(
               'function_exists', exists (
                 select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
@@ -958,10 +1045,12 @@ jobs:
               )) as r) s \gset
           \echo W03READS :w03_reads
           \if :w03_hist
-          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
+                 'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
             from supabase_migrations.schema_migrations \gset
           \echo W03APPLIED :w03_applied
           \echo W03ROWS :w03_rows
+          \echo W03SAMETABLE :w03_same_table
           \endif
           \if :w03_fn
           select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
@@ -1008,7 +1097,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          reads_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1016,10 +1106,13 @@ jobs:
               reads = None
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
+              # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
+              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
+              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
-                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+                           history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
               if hist and complete:
                   applied = applied_text
@@ -1064,8 +1157,8 @@ jobs:
         shell: python
         run: |
           # The decision of the devos job's apply (EV-C02-001 M07, M16; section 5, "The job's shape" and "The first-migration
-          # exception"; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). Inputs come only through env; outputs go to
-          # GITHUB_OUTPUT. It holds no secret and connects to nothing.
+          # exception", as changed after P13 on 2026-10-12; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). Inputs come only
+          # through env; outputs go to GITHUB_OUTPUT. It holds no secret and connects to nothing.
           import json, os, re
 
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
@@ -1124,9 +1217,17 @@ jobs:
                   return None, "complete", "complete is not true: the reads did not all finish"
               if r.get("snapshot") not in SNAPSHOTS:
                   return None, "snapshot", f"snapshot={r.get('snapshot')!r} is not one of the two allowed forms"
-              rows = r.get("history_rows")
-              if rows is not None and (isinstance(rows, bool) or not isinstance(rows, int)):
+              # The history table's row count, read in the same snapshot (EV-C02-001 section 5 as changed after P13).
+              if "history_rows" not in r:
+                  return None, "history_rows", "history_rows is missing: the row-count read is absent"
+              rows = r["history_rows"]
+              if rows is not None and (isinstance(rows, bool) or not isinstance(rows, int) or rows < 0):
                   return None, "history_rows", "history_rows is not a count"
+              if r["history_table_exists"] and rows is None:
+                  return None, "history_rows", "history_table_exists=true but history_rows=null: the row count was not read"
+              if not r["history_table_exists"] and rows is not None:
+                  return None, "history_rows", (f"history_table_exists=false but history_rows={rows}: the reads disagree "
+                                                f"(a count is given for a table read as absent)")
               return r, None, None
 
 
@@ -1184,25 +1285,32 @@ jobs:
                   finish("no", "could_not_check", "not_taken", "the reads say deployment_drift is absent, but a call was made",
                          f"{NOT_TAKEN} (DRIFT_CALL={os.environ.get('DRIFT_CALL', '') or 'absent'} and DRIFT_RESULT contradict "
                          f"the reads; {state})")
-              elif reads["history_table_exists"]:
-                  finish("no", "could_not_check", "not_taken", "the history table exists without deployment_drift",
-                         f"{NOT_TAKEN} (history_table_exists=true, history_rows={reads.get('history_rows')}, without the "
-                         f"function: not the never-pushed state; {state})")
+              elif reads["history_table_exists"] and reads["history_rows"] > 0:
+                  finish("no", "could_not_check", "not_taken", f"the history table holds {reads['history_rows']} rows "
+                         f"without deployment_drift", f"{NOT_TAKEN} (history_table_exists=true, "
+                         f"history_rows={reads['history_rows']}: the history table holds a row without the function; {state})")
               elif reads["listing"]:
                   finish("no", "could_not_check", "not_taken", f"the listing holds {len(reads['listing'])} objects outside "
                          f"Supabase's own", f"{NOT_TAKEN} (listing is not empty: {json.dumps(reads['listing'])})")
               elif expected is None:
                   finish("no", "could_not_check", "not_taken", expected_err, f"{NOT_TAKEN} (EXPECTED unusable: {expected_err})")
               else:
-                  line = (f"first-migration exception: taken (function_exists=false, history_table_exists=false, listing=[], "
-                          f"snapshot={reads['snapshot']}, complete=true)")
+                  # Taken in one of two table states, and the line names which (EV-C02-001 section 5 as changed after P13):
+                  # no history table (the never-pushed state), or a history table holding no row (what a failed first apply
+                  # leaves, P13; or a table emptied out of band, investigated under section 4, "Repair paths").
+                  if reads["history_table_exists"]:
+                      table, seen = "history_table_exists=true, history_rows=0", "the history table present and holding no row"
+                  else:
+                      table, seen = "history_table_exists=false", "no history table (the never-pushed state)"
+                  line = (f"first-migration exception: taken (function_exists=false, {table}, listing=[], "
+                          f"snapshot={reads['snapshot']}, complete=true; table state: {seen})")
                   if not expected:
                       finish("no", "no_difference", "taken", "nothing on main to apply", line, [])
                   elif go != "yes":
                       finish("no", "differences", "taken", f"devos-test go={go or 'absent'}", line, expected)
                   else:
-                      finish("yes", "differences", "taken", f"never-pushed state: every version on main is pending ({len(expected)})",
-                             line, expected)
+                      finish("yes", "differences", "taken", f"first-migration exception, {seen}: every version on main is "
+                             f"pending ({len(expected)})", line, expected)
           else:
               line = f"{NOT_TAKEN} (function_exists=true: deployment_drift exists, so step (5) uses its result)"
               if not reads["history_table_exists"]:
@@ -1281,7 +1389,10 @@ jobs:
           \set ON_ERROR_STOP on
           begin transaction isolation level repeatable read, read only;
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
-                 (r->>'history_table_exists')::boolean as w03_hist
+                 (r->>'history_table_exists')::boolean as w03_hist,
+                 (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                   where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                   as w03_hist_oid
             from (select json_build_object(
               'function_exists', exists (
                 select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
@@ -1324,10 +1435,12 @@ jobs:
               )) as r) s \gset
           \echo W03READS :w03_reads
           \if :w03_hist
-          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
+                 'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
             from supabase_migrations.schema_migrations \gset
           \echo W03APPLIED :w03_applied
           \echo W03ROWS :w03_rows
+          \echo W03SAMETABLE :w03_same_table
           \endif
           \if :w03_fn
           select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
@@ -1374,7 +1487,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          reads_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1382,10 +1496,13 @@ jobs:
               reads = None
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
+              # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
+              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
+              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
-                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+                           history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
               if hist and complete:
                   applied = applied_text
@@ -1622,7 +1739,10 @@ jobs:
           \set ON_ERROR_STOP on
           begin transaction isolation level repeatable read, read only;
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
-                 (r->>'history_table_exists')::boolean as w03_hist
+                 (r->>'history_table_exists')::boolean as w03_hist,
+                 (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                   where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                   as w03_hist_oid
             from (select json_build_object(
               'function_exists', exists (
                 select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
@@ -1665,10 +1785,12 @@ jobs:
               )) as r) s \gset
           \echo W03READS :w03_reads
           \if :w03_hist
-          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
+                 'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
             from supabase_migrations.schema_migrations \gset
           \echo W03APPLIED :w03_applied
           \echo W03ROWS :w03_rows
+          \echo W03SAMETABLE :w03_same_table
           \endif
           \if :w03_fn
           select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
@@ -1715,7 +1837,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          reads_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1723,10 +1846,13 @@ jobs:
               reads = None
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
+              # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
+              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
+              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
-                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+                           history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
               if hist and complete:
                   applied = applied_text
@@ -2100,7 +2226,10 @@ jobs:
           \set ON_ERROR_STOP on
           begin transaction isolation level repeatable read, read only;
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
-                 (r->>'history_table_exists')::boolean as w03_hist
+                 (r->>'history_table_exists')::boolean as w03_hist,
+                 (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                   where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                   as w03_hist_oid
             from (select json_build_object(
               'function_exists', exists (
                 select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
@@ -2143,10 +2272,12 @@ jobs:
               )) as r) s \gset
           \echo W03READS :w03_reads
           \if :w03_hist
-          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
+                 'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
             from supabase_migrations.schema_migrations \gset
           \echo W03APPLIED :w03_applied
           \echo W03ROWS :w03_rows
+          \echo W03SAMETABLE :w03_same_table
           \endif
           \if :w03_fn
           select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
@@ -2193,7 +2324,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          reads_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -2201,10 +2333,13 @@ jobs:
               reads = None
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
+              # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
+              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
+              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
-                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+                           history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
               if hist and complete:
                   applied = applied_text
