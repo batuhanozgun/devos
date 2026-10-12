@@ -2,7 +2,8 @@
 # shape"); build record evidence/C02/EV-C02-007_migration_path_build.md. Class high (tools/merge_gate.py).
 # On a push to main: devos-test (apply, compare, tests), then devos (compare, decide, apply, compare again), in that
 # order, with devos applied only on devos-test's go = yes and its own comparison (M07). On the schedule: compare and
-# search only, in each project. The only workflow that names the environments migrate-devos-test and migrate-devos;
+# search only, in each project (and, while W03_PLANT_B64 is set, check-devos-test prints the synthetic plant once, step
+# plant; T-W03-09 p4). The only workflow that names the environments migrate-devos-test and migrate-devos;
 # no other event starts it (M04). The credential reaches only the steps that connect (M21). Nothing reads under
 # supabase/ but supabase/migrations/ (Y-09; supabase/functions/ only for its existence, until N-230). Every connection
 # authenticates the server (sslmode=verify-full against the pinned Supabase Root 2021 CA), and the password reaches a
@@ -60,7 +61,7 @@ env:
   W03_SCHEMA_ENTRY_ONLY: "public"
   W03_EXCLUDED_ROLES: "postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role"
   W03_TOKEN_CLASSES: "devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup"  # EV-C02-003 section 4.1's columns; the first also gives the revoked token
-  W03_PLANT_B64: ""
+  W03_PLANT_B64: ""  # T-W03-09's plant, base64; while set, every scheduled run prints it once (step plant; EV-C02-007 section 14)
   W03_FIXTURE_ISSUE: ""
   W03_CLI_CONFIG: |
     # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
@@ -881,8 +882,10 @@ jobs:
           raise SystemExit(1 if failed else 0)
           PY
       - id: tokens_revoke
-        name: "(8) revoke every synthetic token issued, in every case"
-        if: ${{ always() }}
+        name: "(8) revoke every synthetic token issued: once the head check said yes, in every case"
+        # Only after a yes from the head check, as every other step that holds the secret (T-W03-08 (e); EV-C02-007
+        # section 14); then in every case, so that tokens issued before a failure or a cancellation are revoked.
+        if: ${{ always() && steps.head.outputs.head == 'yes' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -2705,6 +2708,36 @@ jobs:
           if e.get("GITHUB_STEP_SUMMARY"):
               with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
                   f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")
+      - id: plant
+        name: "point 9's positive control p4: print the synthetic plant once, if one is set (holds no secret)"
+        if: ${{ always() && env.W03_PLANT_B64 != '' }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # T-W03-09's plant p4, "a line that a run of migrate.yml prints". The plant is a synthetic value made up for that
+          # test, never a credential; the workflow holds it only as base64 in W03_PLANT_B64, a form the search does not
+          # match. This step holds no secret. It is in this job only and runs in every case while W03_PLANT_B64 is set, so
+          # every scheduled run prints it exactly once, here. It prints the decoded value on one line only if it has the
+          # plant's form, w03-fixture/plant+value@<tag>=x with <tag> a UTC time written YYYYMMDDTHHMMZ; anything else is
+          # refused as "could not check" and nothing of it is printed. How this line meets the search's count, in this run
+          # and in later ones: EV-C02-007 section 14.
+          import base64, datetime, os, re
+          FORM = re.compile(r"w03-fixture/plant\+value@([0-9]{8}T[0-9]{4}Z)=x")
+          value = None
+          try:
+              text = base64.b64decode(os.environ.get("W03_PLANT_B64", ""), validate=True).decode("ascii")
+              m = FORM.fullmatch(text)
+              if m and datetime.datetime.strptime(m.group(1), "%Y%m%dT%H%MZ"):
+                  value = text
+          except ValueError:
+              pass
+          if value is None:
+              print("synthetic plant (T-W03-09 p4): could not check: W03_PLANT_B64 is not the base64 of the plant's form "
+                    "(w03-fixture/plant+value@ then a UTC time YYYYMMDDTHHMMZ then =x); nothing of it is printed")
+              raise SystemExit(1)
+          print("synthetic plant (T-W03-09 p4; made up for that test, not a credential): " + value, flush=True)
+          PY
 
   check-devos:
     name: check-devos (compare and search; applies nothing)
