@@ -1,0 +1,2 @@
+Synthetic plant p1 for T-W03-09 (made up for that test; not a credential). This file lives only on branch claude/w03-search-fixture, which is never merged.
+w03-fixture/plant+value@20261012T2338Z=x
