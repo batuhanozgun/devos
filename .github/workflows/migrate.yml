@@ -82,7 +82,7 @@ jobs:
     env:
       PROJECT: devos-test
       PROJECT_REF: cqbzxexxwrrbrlszoseg
-      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      POOLER_HOST: "aws-0-us-east-1.pooler.supabase.com"  # P3: found by run 38315433827 (2026-10-12) without the credential; EV-C02-007 section 13
       PGPORT: "5432"
       PGUSER: postgres.cqbzxexxwrrbrlszoseg
       PGDATABASE: postgres
@@ -996,7 +996,7 @@ jobs:
     env:
       PROJECT: devos
       PROJECT_REF: zyqgltzfzkdvrmvxlamz
-      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      POOLER_HOST: "aws-0-us-east-1.pooler.supabase.com"  # P3: found by run 38315433827 (2026-10-12) without the credential; EV-C02-007 section 13
       PGPORT: "5432"
       PGUSER: postgres.zyqgltzfzkdvrmvxlamz
       PGDATABASE: postgres
@@ -2043,7 +2043,7 @@ jobs:
     env:
       PROJECT: devos-test
       PROJECT_REF: cqbzxexxwrrbrlszoseg
-      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      POOLER_HOST: "aws-0-us-east-1.pooler.supabase.com"  # P3: found by run 38315433827 (2026-10-12) without the credential; EV-C02-007 section 13
       PGPORT: "5432"
       PGUSER: postgres.cqbzxexxwrrbrlszoseg
       PGDATABASE: postgres
@@ -2719,7 +2719,7 @@ jobs:
     env:
       PROJECT: devos
       PROJECT_REF: zyqgltzfzkdvrmvxlamz
-      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      POOLER_HOST: "aws-0-us-east-1.pooler.supabase.com"  # P3: found by run 38315433827 (2026-10-12) without the credential; EV-C02-007 section 13
       PGPORT: "5432"
       PGUSER: postgres.zyqgltzfzkdvrmvxlamz
       PGDATABASE: postgres
