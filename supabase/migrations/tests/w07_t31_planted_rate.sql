@@ -5,7 +5,8 @@
 --
 -- Claim. N-074 T-31's C02 part: 80 planted filled-but-meaningless records (20 in each of the four format-gated streams) are
 -- caught, as sample reviews queued for the audit environment, at the rate written before any run: 8 of 80 (one in
--- every block of 10), tolerance 0 records (CHK-C00-022 F12 (c); DM-08).
+-- every block of 10), tolerance 0 records (CHK-C00-022 F12 (c); DM-08). Phase C4b (EV-C02-008 5.2): T31-unseen-<stream>, which
+-- need several transactions (DM-41 (a)), are part B, tests/C02/W-C02-07/harness/scenarios/t31_open_block.sql (throwaway only).
 -- Specification: tests/C02/W-C02-07/T-W07-T31_planted_rate.md
 -- Where it runs: the migration job's devos-test step, as postgres, after the merge's migrations (README 5.1 (a));
 -- the break harness's throwaway PostgreSQL (README 5.2). Transport sql-set-role: each call runs as anon with the token

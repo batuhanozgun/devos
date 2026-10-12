@@ -1,8 +1,8 @@
--- w07-break: test=w07_roc_ownership_and_claim_class.sql; expect-red=ROC-o-cancel_work-cal-exam,ROC-leak-cancel_work
+-- w07-break: test=w07_roc_ownership_and_claim_class.sql,w07_n08_exam_fact.sql; expect-red=ROC-o-cancel_work-cal-exam,ROC-leak-cancel_work,EXF-pair-cancel_work,N08-x-cancel_work-cal
 -- Break patch for T-W07-ROC (tests/C02/W-C02-07/T-W07-ROC_ownership_and_claim_class.md, "Break attempt"; phase C4a). Rule
 -- changed: Rule O's reading for devos_calisma (EV-C02-008 1.7.1: "The check reads nothing about exams"): cancel_work is
 -- wrapped so that it reads the exam link and refuses devos_calisma on a work item an exam run names, the leak the rule
--- forbids. The caller's class is read through devos_api.token_role_class() (README 8.1: it carries role_class).
+-- forbids (phase C4b: also T-W07-N08 part X's pair on cancel_work, EV-C02-008 5.1's "1.7.1's break"). The caller's class is read through devos_api.token_role_class() (README 8.1: it carries role_class).
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/ (README 5.2; plan Section 8
 -- item 3 as PC-42 place 3 writes it), never on devos-test or devos; it sits outside supabase/migrations/, so no job applies it.
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the

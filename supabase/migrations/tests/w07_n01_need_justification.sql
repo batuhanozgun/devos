@@ -5,7 +5,9 @@
 --
 -- Claim. N01: a need without a justification is refused (format gate); a filled but meaningless justification is accepted
 -- and lands in sample review; at the set share the sampled share matches the rate (tolerance 0); a sample review
--- written with any environment token is refused (Appendix C N01; W-C02-10 points 2, 3 and 7; EV-C02-002 DM-08).
+-- written with any environment token is refused (Appendix C N01; W-C02-10 points 2, 3 and 7; EV-C02-002 DM-08). Phase C4b
+-- (EV-C02-008 5.2): N01-same-answer here; the cases of the open block, which need several transactions (DM-41 (a)), are
+-- part B, tests/C02/W-C02-07/harness/scenarios/n01_open_block.sql, on the throwaway database only.
 -- Specification: tests/C02/W-C02-07/T-W07-N01_need_justification.md
 -- Where it runs: the migration job's devos-test step, as postgres, after the merge's migrations (README 5.1 (a));
 -- the break harness's throwaway PostgreSQL (README 5.2). Transport sql-set-role: each call runs as anon with the token
@@ -542,6 +544,35 @@ begin
   end loop;
 end $f$;
 
+-- Phase C4b (EV-C02-008 5.2 (b), its table's N01-same-answer; CHK-C02-028 F7): from a block boundary, one complete block of
+-- needs written with the same arguments; the ten answers differ in nothing but each record's own id (a sampled mark, or
+-- any value that grows with the withheld sample, an event id among them, is a difference). The block must draw exactly
+-- one sample, so that a drawing write is among the ten.
+create function pg_temp.n01_same_answer() returns void language plpgsql as $f$
+declare why text; bs int; i int; r jsonb; ans text[] := '{}'; ids text[] := '{}'; k int := 0; x text; a jsonb;
+begin
+  why := pg_temp.w07_align('need', 'need', null);
+  if why is not null then perform pg_temp.w07_put('N01-same-answer', 'could_not_check', why); return; end if;
+  bs := (pg_temp.w07_state('need')->>'block_size')::int;
+  a := pg_temp.w07_args('need', 'complete', 700);
+  for i in 1 .. bs loop
+    r := pg_temp.w07_call('devos_calisma', 'record_need', a);
+    if pg_temp.w07_kind(r) <> 'accepted' then
+      perform pg_temp.w07_rec('N01-same-answer', false, format('record %s of the block was not accepted: %s', i, pg_temp.w07_brief(r))); return;
+    end if;
+    ids := ids || (r->>'id');
+    ans := ans || replace(r::text, r->>'id', '<id>');
+  end loop;
+  foreach x in array ids loop k := k + pg_temp.w07_samples(x, false); end loop;
+  if k <> 1 then
+    perform pg_temp.w07_put('N01-same-answer', 'could_not_check', format('the block drew %s samples (one is needed for a drawing write among the ten)', k)); return;
+  end if;
+  perform pg_temp.w07_rec('N01-same-answer', (select count(distinct v) = 1 from unnest(ans) v),
+    format('%s answers to the same need, the block''s drawing write among them: %s distinct after each record''s own id is set aside (wanted 1)%s',
+      bs, (select count(distinct v) from unnest(ans) v),
+      case when (select count(distinct v) from unnest(ans) v) > 1 then '; e.g. ' || left((select string_agg(distinct v, ' / ') from unnest(ans) v), 300) else '' end));
+end $f$;
+
 do $$
 declare why text;
 begin
@@ -564,6 +595,7 @@ begin
   perform pg_temp.w07_run('N01-rate', $q$select pg_temp.w07_blocks('N01-rate', 'need', 'need', 'complete', null, 3)$q$);
   perform pg_temp.w07_run('N01-writer', $q$select pg_temp.n01_writer()$q$);
   perform pg_temp.w07_run('N01-tok', $q$select pg_temp.n01_tokens()$q$);
+  perform pg_temp.w07_run('N01-same-answer', $q$select pg_temp.n01_same_answer()$q$);  -- phase C4b
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

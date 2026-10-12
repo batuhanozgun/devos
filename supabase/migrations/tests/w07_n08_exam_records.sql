@@ -4,7 +4,9 @@
 --
 -- T-W07-N08: N08's database part in C02 (EV-C02-003 §4.5; PC-43 place 10): every access to the exam records with the
 -- working, audit, devos_kurulum and devos_ci tokens is refused, the exam fact lives only in the exam records
--- (EV-C02-002 DM-24), and the exam token accesses. Specification: tests/C02/W-C02-07/T-W07-N08_exam_records.md.
+-- (EV-C02-002 DM-24), and the exam token accesses. Specification: tests/C02/W-C02-07/T-W07-N08_exam_records.md (part A).
+-- Phase C4b (EV-C02-008 5.1): the reader finder exempts nine functions by name; their answers, N08-s3, N08-s4 and the
+-- EXF pairs are part X, w07_n08_exam_fact.sql.
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',
@@ -277,6 +279,12 @@ exception when others then
 end $f$;
 -- ===== end of the helper block =====
 
+-- Phase C4b: the nine functions the reader finder exempts by name (EV-C02-008 5.1, after CHK-C02-027 D).
+create function pg_temp.n08_exempt() returns text[] language sql immutable as $f$
+  select array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'relate', 'retract_relation',
+               'set_effort_policy', 'affected_entities', 'explain_paths']
+$f$;
+
 create function pg_temp.w07_pre_common() returns text language plpgsql as $f$
 declare k text;
 begin
@@ -362,9 +370,17 @@ begin
       'record_eval_run with the ' || cls || ' token: ' || pg_temp.w07_says(r));
   end loop;
   -- Reading: every devos_api function whose text reads the exam records' table refuses the same four tokens.
+  -- Phase C4b (EV-C02-008 5.1, its list for T-W07-N08 after CHK-C02-027 D): nine functions are exempt by name, fixed
+  -- before any result. Each admits some of the four classes and reads the table only on the branch where the caller's
+  -- class is devos_sinav (Rule O's sin limit; set_effort_policy's kind (a); relate's own reason for sin; the exam record
+  -- shown to sin by the two walks). Their answers to the four classes are part X's N08-x-<function>-<class> cases
+  -- (w07_n08_exam_fact.sql); relate's refusal of an exam record as an end is T-W07-F04's F04-m4.
+  select string_agg(p.proname, ', ' order by p.proname) into lst from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+   where s.nspname = 'devos_api' and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]') and p.proname = any(pg_temp.n08_exempt());
+  raise notice 'T-W07-N08: exempt by name (EV-C02-008 5.1), naming %: %', ev, coalesce(lst, 'none');
   for c in select p.oid, p.proname from pg_proc p join pg_namespace s on s.oid = p.pronamespace
            where s.nspname = 'devos_api' and p.oid <> fw and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]')
-             and p.proname <> 'competence_summary' order by 2 loop
+             and p.proname <> 'competence_summary' and not p.proname = any(pg_temp.n08_exempt()) order by 2 loop
     nread := nread + 1;
     foreach cls in array four loop
       r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>cls), pg_temp.w07_sql_for(c.oid), scrub);
@@ -396,7 +412,16 @@ begin
     perform pg_temp.w07_cnc('N08-wp2', 'the work item fixture could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 100));
   end;
   if wid is not null then
-    sqlw := pg_temp.w07_sql_for(fw, jsonb_build_object('work', quote_literal(wid)));
+    -- Phase C4b: interface v1 (README 8.1) gives record_eval_run one parameter p jsonb with B 3.14's EvalRun fields, which
+    -- the substitution by argument name below never reached; with that form the payload names the work item in work_ref.
+    if (select pronargs = 1 and proargnames[1] = 'p' and proargtypes[0] = 'jsonb'::regtype from pg_proc where oid = fw) then
+      sqlw := format('select to_jsonb(w07x) from devos_api.record_eval_run(%L::jsonb) as w07x limit 1', jsonb_build_object(
+        'work_ref', wid, 'work_revision', 1, 'eval_set_id', 'w07_fixture_eval_set', 'eval_set_version', 'w07_fixture_v1',
+        'subject_role', 'w07_fixture_role', 'subject_release', 'w07_fixture_release', 'runner_session', 'w07_fixture_session',
+        'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07'), 'run_at', now()));
+    else
+      sqlw := pg_temp.w07_sql_for(fw, jsonb_build_object('work', quote_literal(wid)));
+    end if;
     r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), sqlw, scrub);
     if pg_temp.w07_is_accepted(r, 'devos_sinav', true) then
       perform pg_temp.w07_put('N08-wp2', true, 'record_eval_run on a planted work item, exam token: accepted; ' || pg_temp.w07_says(r));

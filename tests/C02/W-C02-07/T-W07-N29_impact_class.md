@@ -59,4 +59,4 @@ Other cases:
 COULD NOT CHECK when an object is absent (`N29-pre`), the effect class table lacks `name` or `irreversible`, the path table is empty (`N29-art`), a fixture or claim cannot be made, or a stream cannot be aligned.
 
 ## Not covered
-The Constraint case (C05); triggers the database cannot read (declared, sampled); whether the audit environment judges the label rightly (C03 onward); `devos`.
+The Constraint case (C05); triggers the database cannot read (declared, sampled); whether the audit environment judges the label rightly (C03 onward); `devos`. Phase C4b (EV-C02-008 5.2, N-263): the routine streams' sample is withheld while its block is open; EV-C02-008 5.2 gives these streams the same unseen case as N01's "unless the designer puts them in N01", and the designer did: `T-W07-N01` part B's `N01-unseen-routine-work` and `N01-unseen-routine-decision`, so this test is unchanged.

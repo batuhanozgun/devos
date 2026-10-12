@@ -241,12 +241,15 @@ end $f$;
 create temp table w07_edges (g text, x uuid, y uuid);
 create temp table w07_nodes (g text, name text, ref uuid, primary key (g, name));
 
+-- Phase C4b: each node is a record, a work item planted by the owner (Appendix C F04: "a small graph of 55 records"), so
+-- that a root or target names a record: a root that names no record is F04-m1's case (W-C02-09 point 7; G2 item 4).
 create function pg_temp.w07_n(p_g text, p_name text) returns uuid language plpgsql as $f$
 declare r uuid;
 begin
   select ref into r from w07_nodes where g = p_g and name = p_name;
   if r is null then
-    r := gen_random_uuid();
+    r := (pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title',
+            'w07_fixture_node_' || p_g || '_' || p_name || ' SYNTHETIC W-C02-07')) ->> 'work_id')::uuid;
     insert into w07_nodes values (p_g, p_name, r);
   end if;
   return r;
@@ -321,6 +324,7 @@ create function pg_temp.w07_pre() returns text language plpgsql as $f$
 begin
   if to_regprocedure('devos_private.issue_env_token(text)') is null then return 'devos_private.issue_env_token(text) does not exist'; end if;
   if to_regclass('devos_private.relation') is null then return 'devos_private.relation does not exist'; end if;
+  if to_regclass('devos_private.work_revision') is null then return 'devos_private.work_revision does not exist'; end if;  -- phase C4b: the nodes are records
   if not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_api'
                   and p.proname in ('affected_entities', 'explain_paths') having count(distinct p.proname) = 2) then
     return 'devos_api.affected_entities or devos_api.explain_paths does not exist';
