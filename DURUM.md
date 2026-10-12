@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 12 Ekim 2026, 22:55 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 12 Ekim 2026, 23:42 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C02 (Veri modeli, kural kapısı ve kimlik zinciri).
 
@@ -14,8 +14,8 @@
 
 **Şu an**
 
-**Senden beklenen** (acil değil; şu an bunu bekleyen bir iş yok): Adım 1, veritabanı şifrelerini GitHub'a girmek ([#6'daki yorum](https://github.com/batuhanozgun/devos/issues/6#issuecomment-6129504560)); karar değil, yalnız adım; yaklaşık 15 dakika, ücretsiz. 
-**Senin kuralın kayıtta (D-033):** kullanıcı aksini belirtmedikçe sözleri teknik şartname değildir; kurulum, DevOS ve SOUL için. D-032 bu yüzden geri çekildi. Kararlarının içinden teknik olup bizi kısıtlayanların listesi hazırlanıyor; konuşmak için sana tek parça gelecek. 
+**Senden beklenen:** şu an hiçbir şey. Adım 1 tamam (12 Ekim 23:33; iki veritabanının şifresi değişti ve GitHub'a girildi); doğrulamasını göç işinin ilk çalışması yapacak, sonucu #6'da bildireceğim. 
+**Senin kuralın kayıtta (D-033):** kullanıcı aksini belirtmedikçe sözleri teknik şartname değildir; kurulum, DevOS ve SOUL için. D-032 bu yüzden geri çekildi. Kararlarının içinden teknik olup bizi kısıtlayanların listesi kayda yazılıyor; bir denetçi sorularıma baktıktan sonra sana tek parça gelecek. 
 **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 yarın 11:40'tan sonra; birleşik deneme kısmi, N-207). 
-**C02 sürüyor.** Yedi madde kabul edildi: W-C02-15, W-C02-19, W-C02-16, W-C02-04 (veri modeli), W-C02-05 (kimlik zinciri ve ortamlar), W-C02-11 (oturum araçlarının kapatılması), W-C02-06 (defterin aktarım tasarımı). Veritabanı değişikliklerini uygulayacak yol (W-C02-03) kuruldu ve denetimde; C02'nin testleri (W-C02-07) tamamlanıyor. 
+**C02 sürüyor.** Yedi madde kabul edildi: W-C02-15, W-C02-19, W-C02-16, W-C02-04 (veri modeli), W-C02-05 (kimlik zinciri ve ortamlar), W-C02-11 (oturum araçlarının kapatılması), W-C02-06 (defterin aktarım tasarımı). Veritabanı değişikliklerini uygulayacak yol (W-C02-03): dört denetimin bulguları düzeltildi; bağlantının sunucuyu doğrulaması ekleniyor, sonra son denetim. C02'nin testleri (W-C02-07) tamamlanıyor. 
 **Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim).
