@@ -9,7 +9,7 @@ Written by CS1 on `claude/probe-c01-cs1-20261012T0604Z`.
 | Q1 | Count the words in text T1; write the number. | taken 2026-10-12T06:07:12Z (CS1); done 2026-10-12T06:07:20Z, boot ID `352eb2d1-e9b0-4b57-ab1a-da42252e0ec8` |
 | Q2 | Sort list L1 in plain character order; write the sorted list. | taken 2026-10-12T06:07:44Z (CS1); done 2026-10-12T06:07:50Z, boot ID `352eb2d1-e9b0-4b57-ab1a-da42252e0ec8` |
 | Q3 | Add the numbers in N1; write the sum. | taken 2026-10-12T08:11:39Z (CS2); done 2026-10-12T08:11:48Z, boot ID `4897ecb6-c230-4dce-ab38-aa148e8fedf9` |
-| Q4 | Write a two-sentence English summary of text T1. | open |
+| Q4 | Write a two-sentence English summary of text T1. | taken 2026-10-12T08:12:00Z (CS2); done 2026-10-12T08:12:05Z, boot ID `4897ecb6-c230-4dce-ab38-aa148e8fedf9` |
 
 ## Inputs (synthetic, control file 6.1)
 
