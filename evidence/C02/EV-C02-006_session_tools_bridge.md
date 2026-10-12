@@ -14,7 +14,7 @@ sources:
   - "plan/Installation_Working_Order.md and plan/DevOS_Kurulum_Plani.md at main db2ebd9 (working order sections 2, 3, 4, 7 and 10; plan 6.7 and lines 927, 964 and 974); plan/Ek_E_Iletisim.md line 85; plan/decisions/D-014, D-017 and D-020, and the titles and dates of D-001 to D-031; PC-40."
   - "The producer's searches, 2026-10-12: the four tool names R7's table lacks (check_repo_access, register_repo_root, watch_url, unwatch_url), with the Grep tool over the clone at db2ebd9 (plan/, evidence/, .claude/) and over /tmp/devos-guard/ (the guard's decision logs on this machine)."
   - ".claude/settings.json, .claude/hooks/tool_allowlist.py (lines 91 to 141), .claude/hooks/record_owned_id.py (lines 16 to 17) and tools/test_tool_allowlist.sh (its settings checks and its last line), read only at db2ebd9."
-claim: "Points 1, 2, 3, 5, 7, 8 and 10 are records from the documentation (documented, not independently tested), the installation's records and the control list (a self-report). Points 4 and 6 are carried out by the executor after the merge, as sections 4 and 6 set out. Nothing here is observed after the change."
+claim: "Points 1, 2, 3, 5, 7, 8 and 10 are records from the documentation (documented, not independently tested), the installation's records and the control list (a self-report). Points 4 and 6 were carried out by the executor after the merge (PR #290, `a1a4eae`), as sections 4 and 6 set out, and are observed results: the section \"Results after the merge\" records them, with an evidence envelope of their own (CHK-C02-021 C1). Everything before that section was written before the change."
 ---
 
 # EV-C02-006 · The session-tools bridge before the environments (W-C02-11)
@@ -31,7 +31,7 @@ claim: "Points 1, 2, 3, 5, 7, 8 and 10 are records from the documentation (docum
 | Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud, Opus 5.5, Claude Code 2.1.296 (`get_session` at 17:09Z, L-289, as CTL records). |
 | Criterion version | W-C02-11's acceptance block as it stands at `db2ebd9`. |
 | Input | The executor's decisions for W-C02-11 (2026-10-12); R7; CTL. |
-| Actual observation | None after the change. CTL is the session's own report before it. |
+| Actual observation | Before the change, none: CTL is the session's own report before it. After the merge: the observations of points 4 and 6, in the section "Results after the merge", which carries its own envelope (CHK-C02-021 C1). |
 | Raw evidence ID | `evidence/C02/raw/W-C02-11_doc_reading_R7.md`; `evidence/C02/raw/W-C02-11_executor_tool_list_before_20261012.md`; the post-merge raw files named in sections 4.4 and 6. |
 | Independence level | Producer: same session, fresh-context subagent (declared, Ek A 5.3). Its own checks are not independent assurance; a fresh-context checker judges points 1 to 8 and 10 (point 9). |
 
@@ -254,6 +254,40 @@ The parameters this item sets that decide when W-C02-12 can start, with what pla
 ## 10. N-209 (point 10)
 
 N-209's corrections (1) to (3) were carried by PC-40 (W-C02-16; L-288), merged at `eba94b1` (PR #280), and N-209 is closed. PC-45 carries none of them, since none remains.
+
+## Results after the merge (points 4 and 6; 2026-10-12, the executor)
+
+The bridge merged in PR #290 (`a1a4eae`). Each step's raw record is under `evidence/C02/raw/`, named below; each subagent's report is filed with the session-tools names verbatim and the account's other connectors counted, not named (the repository is public).
+
+**Evidence envelope of these results** (plan Section 8 item 9; CHK-C02-021 C1)
+
+| Field | Value |
+|---|---|
+| Source commit | Each result's: S0 in the live tree at `db2ebd9`, before the bridge; A1 to A5 and A8 in the live tree at the merge commit `a1a4eae8be81b8aaafef7b6d5a8a699f2be1dfce` (from 18:18:40Z); A6 and both A7 readings in the live tree at `4da5ef2` (from 18:29:36Z), whose `.claude/settings.json` blob `c6907ccf460912e9403b3f192b834a3681377b24` is the merge's; point 6 in a scratch clone at `a1a4eae`. |
+| Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud, model `claude-opus-5-5`, permission mode `default`, Claude Code 2.1.296, effort `xhigh` (`get_session`, step A2, about 18:18:42Z). The subagents of S0, A4 and A6 ran in it, type `general-purpose`. |
+| Criterion version | W-C02-11's acceptance block, unchanged from `db2ebd9`; this record's sections 4.5 and 6 as merged at `a1a4eae`. S0's row was in `da6f2f9` (18:06:25Z) before S0 began (18:07:17Z), and the row CHK-C02-018 C1 added merged at 18:18:30Z, before A4 began. |
+| Input | Task T (section 4.4) for S0, A4 and A6; the executor's own readings for A1, A2, A3, A5, A7 and A8; `bash tools/test_tool_allowlist.sh` for point 6. |
+| Raw evidence ID | Under `evidence/C02/raw/`: `W-C02-11_subagent_tool_list_control_20261012T1810Z.md` (S0), `W-C02-11_subagent_tool_list_after1_20261012T1822Z.md` (A4), `W-C02-11_subagent_tool_list_after2_20261012T1836Z.md` (A6), `W-C02-11_executor_tool_list_after_20261012T1833Z.md` (A7), `W-C02-11_executor_tool_list_after_compaction_20261012T1839Z.md` (A7, second reading), `W-C02-11_guard_test_a1a4eae.md` (point 6). |
+| Independence level | The subagents' lists are their own self-reports; A1 to A3, A5, A7, A8 and point 6 are the executor's own readings and run, in the same session. Fresh-context checkers judge them (CHK-C02-021; the delta check of A7's second reading): same session, fresh-context subagents (declared, Ek A 5.3). |
+
+| Step | What was observed | Result (section 4.5 / section 6) |
+|---|---|---|
+| S0, before the sync | A fresh `general-purpose` subagent (agent `af908111632a6a16b`, about 18:07Z to 18:10Z) listed all 27 tools of `claude-code-remote` (the 23 the bridge denies tool by tool among them), `ccd_session`'s two tools, and `SendMessage` (deferred); no `RemoteTrigger`, no `ListAgents`, no tool under the other two names (`W-C02-11_subagent_tool_list_control_20261012T1810Z.md`) | Pass: route (ii) can show the deny for these. Not shown by the control: `RemoteTrigger`, `ListAgents`, `check_repo_access`, the other two names |
+| A1, sync | 18:18:40Z; live `HEAD` `a1a4eae`; the live `.claude/settings.json` blob `c6907ccf460912e9403b3f192b834a3681377b24`, equal to the merge's; the working file equal to the merge's (`git diff --quiet`, exit 0) | Done |
+| A2, own-session reading | `get_session` at about 18:18Z: model `claude-opus-5-5`, permission mode `default`, Claude Code 2.1.296, effort `xhigh`; its `cross_session_inbound` read `"unavailable"`, where the reading at 17:09Z read `"available"` | Pass (`get_session` kept and working) |
+| A3, guard live | The guard's decision log has decisions after the sync, the first #17822 at 18:18:42Z (allow, S1: the `get_session` call) | Pass (as far as A3 can show; R4 of CHK-C02-018) |
+| A4, first confirming list | A fresh `general-purpose` subagent (agent `adeb6389feb93b834`, about 18:19Z to 18:22Z): under `claude-code-remote` only `add_repo`, `get_session`, `read_documentation`, `send_later`; no `ccd_session` tool; none of `RemoteTrigger`, `SendMessage`, `ListAgents`; no tool under the other two names; its completion started the session's next turn by itself (`W-C02-11_subagent_tool_list_after1_20261012T1822Z.md`) | Pass: no denied tool listed; every kept tool S0 listed is listed; no tool neither kept nor denied |
+| A5, `send_later` at its use | Armed 18:19:07Z (`trig_01TdQWz6WmxoQzKc6184Mroi`, fire_at 18:32:00Z); delivered as a scheduled-trigger notification queued 18:32:34Z and read 18:32:58Z | Pass: `refuse` does not drop the session's own check-ins; this also holds for the check-in armed for N-202 (CHK-C02-018 R6) |
+| A6, second confirming list | A fresh `general-purpose` subagent (agent `af23734e1c0a5f3ac`, about 18:33Z to 18:36Z, 14 minutes after A4 began and after A5's delivery): the same as A4 (`W-C02-11_subagent_tool_list_after2_20261012T1836Z.md`) | Pass, as A4 |
+| A7, own list (supplement) | Right after A2 the harness removed from the session's context the 23 tools the bridge denies under `claude-code-remote`, naming "Denied by a permission rule"; `ccd_session`'s two tools, shown to the session at about 17:03Z, were not in that notice and were not called; neither were `ListAgents`, loaded in full in CTL, nor `SendMessage` (CHK-C02-021 R1) (`W-C02-11_executor_tool_list_after_20261012T1833Z.md`) | Recorded; the `ccd_session` case is the "definition already seen" case, not a fail; A4 and A6 show its tools gone from a fresh list |
+| A7, second reading, after a compaction | After the session's context was compacted (between the guard's records #18199, 18:37:50Z, and #18231, 18:39:24Z), the session was shown its tool lists again: under `claude-code-remote` only the four kept tools; `ListAgents` loaded; `SendMessage` deferred; `ccd_session`'s two tools announced "now available"; `RemoteTrigger` absent; none of them called (`W-C02-11_executor_tool_list_after_compaction_20261012T1839Z.md`) | Recorded, by section 4.5's A7 row: all three were seen by this session before the bridge went live, and the guard denies each (T1, M1). For them the working session's own list cannot tell an already-seen definition from a deny that does not hold for this session; A4 and A6 stay the confirmation, and no route here shows `ListAgents`'s deny |
+| A8, `read_documentation` at its use | One call at about 18:19Z returned the documentation's index | Pass |
+| `add_repo` | Not exercised (section 4.4) | Not shown, with that reason |
+| Point 6, the guard's tests | `tools/test_tool_allowlist.sh` at M = `a1a4eae` in a scratch clone: 821 `ok`, 0 `BAD`, 1 `info` (not a skipped control), last line `ALLOWLIST_TEST PASS`; the three blobs recorded (`W-C02-11_guard_test_a1a4eae.md`) | Pass |
+
+**What the results claim, and what not.** For the tools S0 showed, two fresh subagent lists taken 14 minutes apart, after the sync and after the session went on making calls, lack every denied tool and keep every kept one: self-observation, as point 4 asks, of the permission layer as this session holds it. They do not show the bridge as a new session reads it at its start, nor the entries under the other two server names, `RemoteTrigger` or `check_repo_access`, which rest on the documentation (sections 4.2 and 4.6); W-C02-12's first session in each environment and C03 test 3 show those first. `refuse` itself cannot be observed from the session (R7 1 (b)); the change of `get_session`'s `cross_session_inbound` field is recorded as seen, not as its proof. A working session that saw a tool before the deny may go on listing it, after a compaction too (A7's second reading); for `ListAgents`, `SendMessage` and `ccd_session`'s two tools the guard is then the only observed layer in this session.
+
+**What "session, messaging or routine tool" covers** (CHK-C02-021 R2). S9's surface: sessions, messages between sessions, and Claude routines (EV-C01-004 S9). The account's other connectors are outside it, mail-sending tools among them, and the guard's M1 denies them (`.claude/hooks/tool_allowlist.py` lines 91 to 96). The GitHub tools are outside it too; their writes reach only `devos`, under the guard's M2 to M7.
 
 ## Residuals
 
