@@ -4,7 +4,7 @@ item: W-C02-03
 kind: build
 title: "The migration path's build: the migration workflow, the pull-request checks, the deciding steps, the first migration and the listing of point 10 (W-C02-03, points 5 to 14)"
 date: 2026-10-12
-main_at: 4da5ef2
+main_at: 9537194
 produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (same session; declared, Ek A 5.3)"
 sources:
   - "evidence/C02/EV-C02-001_migration_path.md (every section; M01 to M32, O1 to O3, sections 4, 5, 6, 10, 12), plan/decisions/PC-41.md, evidence/C02/EV-C02-004_reconciliation_decisions.md (Y-01 to Y-12), EV-C02-002 section 13 A2, EV-C02-003 sections 1.6, 5.3 and 6.3, at main 4da5ef2"
@@ -13,6 +13,7 @@ sources:
   - "P13: the Supabase command-line tool's own source at tag v2.120.0 (commit 753520fa7202ed5f8b25883a4c0aa7e5e9ad1fc4, a shallow clone of https://github.com/supabase/cli read 2026-10-12 about 18:40Z), files apps/cli/src/command-internal/db-push-core.ts, migration-apply.ts, migration-history.ts and apps/cli/src/commands/db/push/push.command.ts; read as data, not run"
   - "Local runs on a throwaway PostgreSQL 16.15 cluster (port 54403, scratch directory outside the clone, stopped and deleted after), 2026-10-12 18:46Z to 19:05Z"
   - "Revision of 2026-10-12 (section 9), at the branch head ffe6111 (main 11feac5 merged in), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): tests/C02/W-C02-03/T-W03-DEC_decision_steps.md and test_decision_steps.py as changed after P13 (PR #296); plan/work/C02.md notes N-255 (with 'The key's source, decided', L-295) and N-257, and 'Batu's steps' row 1a; EV-C02-003 sections 1.1, 4.1 and 6.3; local runs on a second throwaway PostgreSQL 16.15 cluster (port 54417, data directory under the postgres user's home, outside the clone, stopped and deleted after)"
+  - "Revision of 2026-10-12 (section 10), at the branch head 762640d (main 9537194, PR #298, merged in), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the four checker lenses' results at 762640d (acceptance, security, mechanical, changes since the earlier verdicts); local runs on a third throwaway PostgreSQL 16.15 cluster (port 54461, data directory under the postgres user's home, outside the clone, stopped and deleted after)"
 claim: "A build, checked offline only. The offline tests pass at this build. Nothing ran against devos or devos-test, and no workflow ran on GitHub: every behaviour of GitHub, of the pooler and of the projects is still documented, inferred or read in source, until the first runs after Batu's step 1. Section 6 lists what stays live-only."
 ---
 
@@ -76,7 +77,7 @@ No file under `tools/` was added: both deciding steps are form (a) (section 3). 
 
 ## 4. Pins (M20, P12)
 
-- **The command-line tool:** Supabase CLI v2.120.0 (npm `latest`, published 2026-10-06T16:40:30Z), asset `supabase_linux_amd64.tar.gz` from `https://github.com/supabase/cli/releases/download/v2.120.0/`. Its published SHA-256 in the release's `checksums.txt` (entry `supabase_2.120.0_linux_amd64.tar.gz`) is `7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e`, and the downloaded asset's own SHA-256 is the same [obs, 2026-10-12 18:3xZ]. The workflow downloads the asset by that URL and stops on a mismatch before any step receives the credential. The tarball holds `supabase` (an x86-64 executable, 112 MB) and `supabase-go`; in v2.120.0, `db push` is implemented in TypeScript (`apps/cli`) [src]. Neither binary was run here.
+- **The command-line tool:** Supabase CLI v2.120.0 (npm `latest`, published 2026-10-06T16:40:30Z), asset `supabase_linux_amd64.tar.gz` from `https://github.com/supabase/cli/releases/download/v2.120.0/`. Its published SHA-256 in the release's `checksums.txt` (entry `supabase_2.120.0_linux_amd64.tar.gz`) is `7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e`, and the downloaded asset's own SHA-256 is the same [obs, 2026-10-12 18:3xZ]. The workflow downloads the asset by that URL and stops on a mismatch before any step receives the credential. (Corrected 2026-10-12, section 10.8: on a mismatch the tool is not extracted and no step that runs it runs; `compare` still runs and holds the credential.) The tarball holds `supabase` (an x86-64 executable, 112 MB) and `supabase-go`; in v2.120.0, `db push` is implemented in TypeScript (`apps/cli`) [src]. Neither binary was run here.
 - **`actions/checkout`:** tag v6.1.0 is commit `d23441a48e516b6c34aea4fa41551a30e30af803` of `actions/checkout` itself (a lightweight tag in that repository's refs; its `action.yml` runs on `node24`) [obs: `git ls-remote` and a fetch of the tag, 2026-10-12T18:49Z]. Both workflows use it with `persist-credentials: false`.
 - **Not pinned by DevOS:** the runner image's `psql`, `git`, `python3`, `curl`, `timeout` (EV-C02-001 M20's residual); `migration-checks.yml` and the M22 step rely on the image's PyYAML and fail closed without it.
 
@@ -86,7 +87,7 @@ No file under `tools/` was added: both deciding steps are form (a) (section 3). 
 |---|---|
 | P12 | Settled: the checksum and the checkout commit, section 4 |
 | P13 | **Settled by reading the pinned source, and its result triggers the design's own rule.** [src v2.120.0] `applyMigrations` calls `createMigrationTable` once, before the first file, as its own `BEGIN … COMMIT` (migration-history.ts lines 101 to 114; migration-apply.ts lines 649 to 670), and only when something is pending; each file then runs in its own batch. A dry run never calls it: `db push --dry-run` lists the remote history, which reads a missing table as empty (`isUndefinedTableError`), prints "Would push these migrations" and returns (db-push-core.ts lines 210 to 220). So the dry run does not create the table, but a first file that fails after it leaves the table, empty, without the function. EV-C02-001 section 5's residual says that in this case "before the first migration merges a change to this record … decides whether the exception also takes a table that holds no version". That change is the executor's (section 7). The build follows the record as it stands: E05 (an empty table without the function) is "could not check". **Acted on 2026-10-12:** the executor decided that the exception takes the empty table; the test changed first (PR #296), then EV-C02-001 and `decide` (section 9.1) |
-| R6 / T-W03-DEC part D | Observed on PostgreSQL 16.15 [obs]: session A opened a read-only REPEATABLE READ transaction and took its snapshot; session B then created `devos_api.deployment_drift(jsonb)` and `supabase_migrations.schema_migrations` and committed; A's reads statement, the text taken from `migrate.yml` (job `devos`, step `compare`), gave `function_exists false, history_table_exists false, listing []`, while `to_regclass` in the same transaction already saw B's table. The same statement after both sessions saw all four objects. The projects run 17.6 (`devos` observed; `devos-test` not); this probe ran on 16 |
+| R6 / T-W03-DEC part D | Observed on PostgreSQL 16.15 [obs]: session A opened a read-only REPEATABLE READ transaction and took its snapshot; session B then created `devos_api.deployment_drift(jsonb)` and `supabase_migrations.schema_migrations` and committed; A's reads statement, the text taken from `migrate.yml` (job `devos`, step `compare`), gave `function_exists false, history_table_exists false, listing []`, while `to_regclass` in the same transaction already saw B's table. The same statement after both sessions saw all four objects. The projects run 17.6 (`devos` observed; `devos-test` not); this probe ran on 16. **2026-10-12, section 10.2:** on 17, could not check; observed on 16.15 only, as support |
 | P1, P2, P3, P4, P6, P7, P9, P10, P11 | Settled by the first runs (point 5's push run; point 14's fixtures; two queued runs; point 8's re-runs; the first scheduled run; 8 days of schedule; W-C02-08's first test run; the fixture design). P10 is in part already a build fact: the job runs the SQL tests as `postgres` with psql, files run as written |
 | P5 | When `devos_api` is exposed (M26) |
 | P8 | A reading through the GitHub API or by Batu (EV-C02-001 section 10) |
@@ -95,14 +96,14 @@ No file under `tools/` was added: both deciding steps are form (a) (section 3). 
 
 | Point | The build | Live only |
 |---|---|---|
-| 5 ✔ apply | The push run applies to `devos-test`, compares, tests, then `devos` compares, decides, applies, compares again; each step prints its result | The first push run after Batu's step 1 and after the pooler hosts are recorded; point 5's fixture, its reads in each project |
+| 5 ✔ apply | The push run applies to `devos-test`, compares, tests, then `devos` compares, decides, applies, compares again; each step prints its result | The first push run after Batu's step 1 and after the pooler hosts are recorded; point 5's fixture, its reads in each project (`devos-test`'s read: a database-test file that comes with the fixture, section 10.3) |
 | 6 ✘ merged, not applied | `deployment_drift` names the five kinds (S01 to S10 pass; B1 to B3 red, section 8); `decide` and `pr_decide` stop on them (T-W03-DEC) | Forms (i) and (ii) by point 14's fixtures; the next pull request's check; form (iii) is not reached in C02 |
 | 7 ✘ could not check | The function (C01 to C13 pass; B4 red), the caller (`compare`'s call states; D13 to D24, E09 to E17) and the guarded work (`apply = no`; `verdict = fail`). The client-side timeout gave `call = timeout` against a test copy that sleeps [obs] | c1 and c3 from runs |
 | 8 ✘ other branch | Only `migrate.yml` names the environments, on `push` to `main` and `schedule`; M22 refuses anything else; the head check ends a run at a commit that is not `main`'s head before the secret | The branch runs (a) to (f) |
 | 9 ✘ session reads it | The search step, with counts only; its positive control needs the plants | The search, the plants, the break copies |
-| 10 ✔ probe schema absent | The listing step in each push job, with its printed exclusion list and the control without it (`auth.users` present: yes or no) | The listings of both projects, before the first apply; `devos` also by the builder's read-only connection |
+| 10 ✔ probe schema absent | The listing step in each push job, with its printed exclusion list and the control without it (`auth.users` present: yes or no) | The listings of both projects, before the first apply; `devos` also by the builder's read-only connection; T-W03-10's planted (d) and (e) and its widened-list break (section 10.8) |
 | 11 | Nothing here | N-099 T-65's line on `plan/work/C09.md`, with the live evidence |
-| 12 | Tests merged before this build (CHK-C02-017, CHK-C02-020); the job prints names, versions, counts and statuses only | Each result's envelope and raw output |
+| 12 | Tests merged before this build (CHK-C02-017, CHK-C02-020); the job prints names, versions, counts and statuses only (**limited 2026-10-12, section 10.8:** the report line does; other lines print outputs verbatim) | Each result's envelope and raw output |
 | 13 | Class high: the two workflows and the migration need a fresh-context verdict at the head that adds them | That verdict, and the item's |
 | 14 order | `test_workflow_order.py` PASS with its 17 copies red (it reads the workflow) | The failing fixture, the second example, the positive control's step times |
 
@@ -168,7 +169,7 @@ Made at the branch head `ffe6111` (`main` `11feac5` merged in) by a fresh-contex
 - A program that does need the database says so in a line of its own text. That file is class high, so the need is reviewed with the program.
 
 **Limits.**
-- The programs run as the same operating-system user as the step. A program written to find the password could read it from its parent's environment through `/proc` [inf]. The default therefore guards against accident, not against a hostile program; the boundary against that is the class-high review of every file under `supabase/migrations/tests/`.
+- The programs run as the same operating-system user as the step. A program written to find the password could read it from its parent's environment through `/proc` [inf; observed by the security lens, section 10.8]. The default therefore guards against accident, not against a hostile program; the boundary against that is the class-high review of every file under `supabase/migrations/tests/`.
 - A token whose `issue_env_token` call committed, in a step cancelled before the file was rewritten (one call's window), is not in the file and is not revoked [inf].
 - `always()` running after a cancellation is GitHub's documented behaviour, which the build already relied on [doc, not re-read here].
 
@@ -224,8 +225,237 @@ Made at the branch head `ffe6111` (`main` `11feac5` merged in) by a fresh-contex
 
 ### 9.5 What is still open
 
-1. **EV-C02-001's "one secret".** M03 and its "Names" say that each environment holds one secret, `SUPABASE_DB_PASSWORD`, and so does Batu's step text, "each with one secret". With N-255's decision (L-295), `migrate-devos-test` also holds `DEVOS_TEST_PUBLISHABLE_KEY`. That is a record change for the executor, outside this revision's list. The step text of "Batu's steps" row 1a is the executor's.
+1. **Closed 2026-10-12 by `8e74473` (section 10.1).** **EV-C02-001's "one secret".** M03 and its "Names" say that each environment holds one secret, `SUPABASE_DB_PASSWORD`, and so does Batu's step text, "each with one secret". With N-255's decision (L-295), `migrate-devos-test` also holds `DEVOS_TEST_PUBLISHABLE_KEY`. That is a record change for the executor, outside this revision's list. The step text of "Batu's steps" row 1a is the executor's.
 2. **The endpoint's form.** The runner gives `https://<ref>.supabase.co`, and the Data API's paths are below it. W-C02-07's phase C aligns its programs to this, or the executor changes it here.
-3. **The disagreement rule has no test case.** T-W03-DEC, "What it does not cover", leaves it to the test designer to add one once the executor has decided, and it now is decided. Until then it rests on section 9.4's direct run.
+3. **Closed 2026-10-12 by PR #298, E25 and E26 (section 10.1).** **The disagreement rule has no test case.** T-W03-DEC, "What it does not cover", leaves it to the test designer to add one once the executor has decided, and it now is decided. Until then it rests on section 9.4's direct run.
 4. **The new `compare` guard and the runner.** Both are this producer's choices, shown on PostgreSQL 16 only. The projects run 17.6 (`devos`), and the runner's behaviour on GitHub is live-only (first runs after Batu's step 1 and sitting A).
 5. **Section 7's items 2 and 4 to 7 stand.** These are P3, `revoke_env_token`'s assumed argument, the order of the first merges, Y-09's test and R1's closure.
+
+## 10. Revision after the four checker lenses at `762640d` (2026-10-12)
+
+Made at the branch head `762640d` (`main` `9537194`, PR #298, merged in) by a fresh-context producer subagent of the same working session (declared, Ek A 5.3), offline only, like the rest of this record. Its inputs are the four lenses' results at that head: acceptance, security, mechanical, and the changes since the earlier verdicts. Each finding is named below by lens and ID. Files changed: `.github/workflows/migrate.yml`, `.github/workflows/migration-checks.yml`, `evidence/C02/EV-C02-001_migration_path.md` (two dated lines) and this record. No test under `tests/C02/W-C02-03/` or `supabase/migrations/tests/` was changed. A script outside the repository replaced each repeated step body in every copy at once, asserting the number of copies; section 10.10 shows the copies identical.
+
+### 10.1 The records at the head (acceptance F1; changes F2; mechanical M9)
+
+- **The head's result.** `test_decision_steps.py` gives `W03_DECISION_TEST PASS (69/69)`, E25 and E26 included [obs, section 10.10].
+- **Break copies.** A copy of `decide` without the disagreement rule gives `FAIL (2 bad, 0 could not check, of 69)`, red on E25 and E26. A copy that refuses only a count above 0 gives `FAIL (1 bad …)`, red on E26.
+- **The git order.** The rule's code came first, in `b0f3ab1` (19:39:16Z), and its test after, in `7d7730b` (19:51:45Z, PR #298). Section 9.4's `67/67` and its direct run of the rule were made before that test existed, so they do not count for E25 and E26 (README, "A test is never changed after a result…"; Ek G G8 item 3). The result that counts is the run at the head, after the test: this section's.
+- **Section 9.5.** Item 1 is closed by `8e74473`, in which EV-C02-001's M03 and "Names" add `DEVOS_TEST_PUBLISHABLE_KEY`, dated. Item 3 is closed by PR #298.
+- **`main_at`** is now `9537194`, the `main` merged into the head. EV-C02-001's line on the disagreement rule (point 6) gets a dated note saying that E25 and E26 now test it.
+
+### 10.2 T-W03-DEC part D (acceptance F3)
+
+- **The label.** Part D could not be checked on PostgreSQL 17, since no 17 cluster is available here; the projects run 17.6 (`devos` observed). It was observed on 16.15 only, as supporting evidence: section 5's R6 row, section 9.4's D1 to D4, and section 10.7's probe.
+- **The consequence.** By T-W03-DEC's own rule (its line 109), the read step's snapshot claim on the projects is "could not check". The first-migration exception rests on the reads' agreement in the live run only.
+
+### 10.3 Point 5's read in `devos-test` (acceptance F2)
+
+- **The route: a database-test file.** It comes with point 5's fixture, as `supabase/migrations/tests/<name>.sql`, a class-high file judged with the fixture. It:
+  - holds no psql meta-command, and runs in its own `begin … rollback`;
+  - reads, from `pg_catalog`, the definition T-W03-05 item 2 names: columns, types, the primary key, the default, the comment and the view's definition;
+  - reads the history row with the fixture's version and name;
+  - raises each value as a `NOTICE`;
+  - compares each field with the file's text and raises an error on a difference (T-W03-05's negative control);
+  - ends with its `NOTICE: <NAME> PASS (` line.
+- **The workflow needs nothing more.** `dbtests` already does all of this:
+  - It runs in job `devos-test` after the apply and a clean comparison.
+  - It prints every line of each file's psql output, `NOTICE`s included. Each line carries the file's name, with control characters escaped. This makes the lines the job's own read, labelled by job, step and file.
+  - The file passes only on exit 0 and its PASS notice, so a read that finds a difference fails the step, and `go` is not `yes`.
+  - It accepts any name of the fixed form (section 10.4), so the fixture's arrival is a class-high change to `supabase/migrations/tests/` only, not to the workflow.
+- **Shown [obs, PostgreSQL 16.15].** A scratch file `w03_fixture_apply_read.sql` (not in the repository) read `devos_private.function_deployment`'s columns and raised them as `NOTICE`s. `dbtests` printed `w03_fixture_apply_read.sql: psql:…: NOTICE:  W03_FIXTURE_READ column slug: text` and the six other column lines, then the file's PASS notice and `database test w03_fixture_apply_read.sql: passed`.
+- **If the read is not made.** If the comparison is not clean, `dbtests` does not run, and `devos-test`'s part of T-W03-05 is "could not check" ("A project not reached").
+
+### 10.4 The SQL test runner (security F1)
+
+`dbtests` is now a Python program run as `python3 -I -`:
+- It takes every name in `supabase/migrations/tests/` ending in `.sql` (any case), in name order.
+- It runs a file only if it is a regular file, not a link, whose name matches `[a-z0-9_]+\.sql`. Any other name gives "database test <name, escaped>: could not check (…); not run", and the step fails.
+- It refuses a file holding a backslash by searching the file's bytes. Nothing interprets the name.
+- It passes the path to psql as an argument, as `psql -X -v ON_ERROR_STOP=1 -f <path>`, and prints psql's output itself, line by line, with the name before each line.
+- No file name, path or content reaches a `sed` program, a shell or another interpreter.
+
+[obs] It ran on a scratch directory holding six files:
+- `a_fail.sql` (`select 1/0`): `not passed (psql exit 3)`;
+- `b_ok.sql`: `passed`;
+- `c_backslash.sql` (`\! echo INJECTED`): `refused, it holds a backslash`;
+- `|e;#.sql`, whose content would have made the old `sed` program run commands: "could not check …; not run", and no line `INJECTED` appeared;
+- `Upper.SQL` and a name holding a newline: "could not check", the newline printed as `\n`.
+
+The step exited 1. `test_workflow_order.py` still reads `ON_ERROR_STOP=1` and the PASS check in this body, and its two runner break copies are still red (section 10.10).
+
+### 10.5 M22 (security F2, F3; mechanical M6, M7)
+
+`workflow_check` now checks the following.
+
+**In every workflow file:**
+- no job-level `uses:`, a call of a reusable workflow, wherever it appears;
+- every action pinned by full commit SHA. This is EV-C02-001 section 3's "Reusable workflows" row as written; the earlier build checked both only in files that name an environment.
+
+**In a workflow that names an environment:**
+- each job's `runs-on:` must be the exact label `ubuntu-24.04`, the label M20 names; a list or `self-hosted` is refused;
+- `container:` and `services:` are refused;
+- a job holding an apply step must be `devos-test` or `devos`, and its `if:` must admit the `push` event alone. The check reads `if:` as a conjunction (`&&`) of exactly one `github.event_name == 'push'` and only the status terms `!cancelled()`, `always()` and `success()`. Any other form is "could not check" and the check fails: an `||`, another event such as `schedule`, a negated or `!=` event test, a function such as `contains(…)`. A job holding an apply step with no `if:` admits every event and fails.
+
+**Self-check.** Before judging the files, the step makes 18 wrong copies of the files at the pull request's head. Each copy changes one place, and each must fail on its own rule and only on it. A control must pass: `migration-checks.yml` with `workflow_dispatch`, since it names no environment. The new copies are:
+- `devos-test` on `push || schedule`;
+- `devos-test` on a negated event test;
+- `devos-test` on any event but `schedule`;
+- `devos` on `schedule`;
+- `devos-test` with no `if:`;
+- a workflow naming no environment that calls a reusable workflow;
+- a workflow naming no environment that uses an action by tag;
+- `devos-test` in a container;
+- `devos` with services;
+- `devos-test` on `self-hosted`;
+- `check-devos` on a list of labels.
+
+The seven kinds the earlier build reported are kept. A rule the files at the head already break is reported as "not shown" rather than as a self-check failure.
+
+**Exit codes.** 0 pass, 1 fail, 3 could not check.
+
+[obs] The step's own body ran on the clone, and on wrong copies written to disk:
+- The clone: 18 "fails on its own rule, as it must" lines, the control passing, then `workflow check: pass`, exit 0.
+- Disk copies (exit 1 for a fail, 3 for could not check):
+
+  | Copy | Result |
+  |---|---|
+  | push or schedule | could not check, 3 |
+  | a reusable-workflow caller with no environment | FAIL, 1 |
+  | container | FAIL, 1 |
+  | `self-hosted` | FAIL, 1 |
+  | services | FAIL, 1 |
+  | `contains(github.event_name, 'push')` | could not check, 3 |
+
+- **Found and fixed by the self-check:** a list in `runs-on:` made the first draft raise `TypeError`. Any exception in the check is now "could not check".
+
+### 10.6 Shell semantics (security F4; mechanical M10)
+
+**Explicit shells.** Every `run:` step now names its shell. A bash body has `shell: bash`, which GitHub runs as `bash --noprofile --norc -eo pipefail {0}` [doc, from memory, not re-read here]. A Python body keeps `shell: python`.
+
+**Each body is written to hold under that `-e`:**
+- A command whose exit code the step reads is written `cmd && rc=0 || rc=$?`, or inside `if`. This covers psql in listing and compare, the tool in dryrun and apply, and the tests in `w03_tests`.
+- A Python program that decides the step's result is followed by `|| exit $?`, or `&& rc=0 || rc=$?` where `tokens_revoke` must still delete its file.
+- A step of several commands sets an `ERR` trap. It prints "<step>: could not check (a command of this step failed, line N)", so no `-e` exit is silent. This covers the CLI install, the working directory, the listing, the dry run, the apply and the comparison.
+- `cli` now checks the download and the extraction with `if`. `presence` prints "could not check" and stops if the mask cannot be made.
+
+**Found here [obs].** Under `-e` and `pipefail`, the dry run's version extraction (`grep … | sed … | sort -u | python3`) ended the step when the tool's output named no file, that is, on a dry run with nothing pending. It is now one Python read that gives `[]`.
+
+[obs] Each changed body ran under `bash --noprofile --norc -eo pipefail`, with a command that fails:
+
+| Step | Failure | Result |
+|---|---|---|
+| `cli` | the download fails | "could not check (the download failed) …", exit 1 |
+| `cli` | the checksum does not match | "checksum MISMATCH; the tool is not extracted, and no step that runs it runs", exit 1 |
+| `workdir` | an unwritable temporary directory | "expected: could not check (a command of this step failed, line 5)" |
+| `presence` | `python3` fails | "credential present: could not check …", exit 1 |
+| listing | the database unreachable | both psql errors printed, "listing: could not check (the read did not complete)", the control line, `count=` written, exit 1 |
+| compare | the database unreachable | "result=could_not_check call=not_called", every output written, exit 0 |
+| compare | `W03_TIMEOUT=0.01` | "call=timeout" |
+| dryrun | a stub tool exits 2 | its output printed with `\x1b` escaped and the `\r` piece on its own `cli: ` line, the pending versions, "dry run: exit 2", exit 2 |
+| dryrun | the stub prints no file name | `pending=[]`, exit 0 |
+| apply | the stub exits 1 | its output, the working directory's list, "apply: exit 1" |
+| dbtests | as in section 10.4 | as there |
+| `w03_tests` | a decision test that exits 1 | both tests ran, then "W-C02-03 tests: decision steps exit 1, workflow order exit 0", exit 1 |
+
+The token steps ran too, with the results in section 10.8.
+
+### 10.7 The one-snapshot guard: a lock (changes F1)
+
+**The change.** `compare` (five identical copies) now reads whether the history table exists first, in its own statement. Then, inside the read-only REPEATABLE READ transaction and before any `select`, it takes `lock table supabase_migrations.schema_migrations in access share mode`. PostgreSQL takes a REPEATABLE READ transaction's snapshot at its first `select`, not at `LOCK` [doc, the LOCK page, from memory; observed in the probe below: a row B inserted after A's `LOCK` and before A's reads is counted by A].
+
+**What the lock does.** `ACCESS SHARE` conflicts only with `ACCESS EXCLUSIVE`, the lock that `TRUNCATE`, a table-rewriting `ALTER TABLE`, `DROP` and `VACUUM FULL` take. None of them can run on the table between the reads and the count, and one that committed before the lock is in the snapshot.
+
+**The guards that stay or are added:**
+- The oid comparison stays, so a schema renamed and a table re-created under the old name between the two statements still gives "not complete" [inf; not probed].
+- A table that did not exist at the first read, so was not locked, but is present in the snapshot, makes the reads "not complete" (`W03LOCKED`).
+- A lock already held by another session makes `compare` wait up to its client-side timeout, then `call=timeout`: "could not check".
+
+**Probe [obs, PostgreSQL 16.15].** Session A is `compare`'s own body under `bash -eo pipefail`, with session B injected by psql's `\!` after A's reads statement. B ran with `lock_timeout = 2s`. The table held one row and the function was absent.
+
+| Case | Old body (`762640d`) | New body |
+|---|---|---|
+| no change | | `history_rows=1`, complete |
+| table-rewriting `ALTER TABLE … ADD COLUMN … DEFAULT clock_timestamp()` | B committed; A `history_rows=0`, complete (the residual the lens found; the table still held 1 row) | B "canceling statement due to lock timeout"; A `history_rows=1`, complete |
+| `TRUNCATE` | B committed; A 0, complete (the old D4) | B timed out; A 1, complete |
+| drop and re-create empty (D3) | | B timed out; A 1, complete |
+| `VACUUM FULL` | | B timed out; A 1, complete |
+| `DELETE`, an MVCC-safe control | | B committed; A 1, the snapshot's count |
+| B inserts a row after A's `LOCK`, before A's reads | | B committed; A `history_rows=2`, complete: the snapshot is taken after the lock |
+| the table and its row created by B after the first read | | `history_table_exists=true`, `history_rows=null`, `complete=false` |
+| D1, part D: B adds the function, the table and a row after A's snapshot | | `False False None`, complete |
+| D2: an empty table; B adds a row and the function after A's snapshot | | `False True 0`, complete |
+| never pushed | | `False False None`, complete |
+
+**What remains.** The schema-rename route rests on the oid comparison, not probed. Everything here is on 16.15 only (section 10.2). The section 9.1 residual ("`TRUNCATE` is not MVCC-safe …") is closed by the lock, and so is the rewrite race the lens found.
+
+### 10.8 Refinements
+
+- **Acceptance F4 (point 12's hygiene).** Section 6 row 12's claim is limited to what the files do.
+  - The `W03REPORT` line holds names, versions, counts and statuses only (JSON, ASCII).
+  - Other lines print outputs verbatim:
+    - the command-line tool's output (dryrun, apply), with control characters escaped;
+    - psql's error text (connect as it was; listing and compare escaped);
+    - each database test's full output, escaped;
+    - the test programs' own output, unprocessed.
+  - For these, the hygiene layer is GitHub's masks. They cover the raw secret (GitHub's own) and the percent-encoded form (`presence`). They cover each synthetic token (`tokens`) and the publishable key, a secret value.
+  - **Residual:** if the tool re-serialises the connection string with another encoding of its user part, that form is not masked. Whether v2.120.0 prints its `--db-url` was not read: could not check.
+- **Acceptance F5 (the search's "none found").** "none found by that method" is printed only for places backed by a found plant. Every other place gets "search: could not check: <place> (the plant was not found in …)", and so do the percent-encoded form not found anywhere and every place when no plant is configured. Issue #6 is backed by the fixture issue, read with the same code (T-W03-09 p3).
+  - [obs] A local repository held the plant in its current tree (plain form) and only in its history (percent form), with the API unreachable. The step printed "none found by that method in: repository: history; repository: current trees". It printed "could not check" for issue #6, the fixture issue and the logs, and its last line reads "0 matches, but could not check …".
+  - With no plant: every place "could not check", and no "none found".
+  - Not run here: a configured plant missing from a place that was read (a guard denial, section 10.10).
+- **Acceptance F6.** Job `devos`'s report now carries `APPLY: ${{ steps.apply.outcome }}`, as `apply_step`. So "apply: yes" with a skipped or failed apply reads as such.
+- **Acceptance F7 (point 10).** Two parts of T-W03-10 remain: its planted sensitivity check (positive control (ii): a schema, its table, a view, a function, a role, and a table in `public`) and its widened-list break.
+  - Each runs either in `devos-test`, inside a rolled-back database-test file (section 10.3's route), or on a throwaway database labelled with its PostgreSQL version.
+  - Neither has run as this record's evidence. The acceptance lens's run on 16.15 is a checker's.
+- **Security F6, second half.** No synthetic token is on any process's command line now. `tokens` and `tokens_revoke` pass each token to psql in its environment (`W03_TOKEN`), and the step's own SQL reads it with `\getenv`. psql 15 or later is needed; the runner's psql version is [doc, from memory] 16. An older psql fails `\getenv` under `ON_ERROR_STOP`, so the step fails and `go` is not `yes`.
+  - [obs] A psql wrapper logged every command line: 14 lines, holding 0 of the 7 tokens.
+  - `tokens` issued six and revoked the seventh.
+  - `dbprograms`: one program "pass", one "could not check", exit 1.
+  - With one revocation refused, `tokens_revoke` printed "NOT revoked" for it and "revoked" for five, exited 1, and deleted the token file.
+- **Security F7 (section 9.2's limits).** The no-database default is not a boundary against a program that reads its parent's environment:
+  - The `/proc` route is observed: the security lens's undeclared program read `PGPASSWORD` from its grandparent [obs, that lens].
+  - Hosted runners give passwordless `sudo`, so code in a job can read the job's secrets from the runner's own process [doc, from memory, per that lens; not re-read].
+  - A program can leave a process behind past `timeout 600` that reads a later step's environment; `tokens_revoke` holds `PGPASSWORD` [inf].
+  - **Why the review is the boundary.** Everything in the job runs as the same operating-system user, with the step's environment within reach, so no setting inside the job separates a hostile program from the credential. The boundary is the class-high review: every file under `supabase/migrations/tests/` and both workflows merge only with a fresh-context verdict (`tools/merge_gate.py`). The per-step `env` and the declaration line guard against accident only.
+- **Security F8.** Names and versions read from the database are printed with control characters escaped: the listing's items, the comparison's differences, psql's error lines, the database tests' output and the tool's output.
+  - [obs] A schema named `w03 evil⏎::add-mask::forged` printed as `listing: schema w03 evil\n::add-mask::forged`, one line.
+  - `decide` and `report` already print JSON (ASCII).
+  - **Not changed:** `pr_decide` prints versions taken from the run report, decoded from its JSON, in the pull-request check's log. That job holds no secret. `pr_inputs` still keeps the last report line per project. Both are outside this revision's list.
+- **Security F9.** The checksum line now reads "checksum MISMATCH; the tool is not extracted, and no step that runs it runs", and section 4 has a dated correction. `compare` still runs and holds the credential.
+- **Security F10.** EV-C02-001's M21 sentence is corrected by a dated line (see 10.8, acceptance F4, for the residual).
+- **Security F12.** The search step's git processes get only `PATH`, `HOME`, `LANG` and `GIT_TERMINAL_PROMPT=0`. None of them needs the credential or the token, since the repository is public; the GitHub API calls stay in the step's own process. [obs] A git wrapper logged the names of 12 git processes. They held no `SUPABASE_DB_PASSWORD` and no `GH_TOKEN`; besides the four given, only `PWD`, `SHLVL` and `_`, which the wrapper's own bash sets.
+
+### 10.9 Pending, not made here
+
+A researcher is gathering the facts, and a later change makes these; the code's parts are as they were:
+- **Security F5:** the server is not authenticated. `sslmode=require`, against `verify-full` with a pinned root certificate.
+- **Security F6, first half:** the password, percent-encoded, sits in the command-line tool's `--db-url` argument during dryrun and apply.
+- **Security F11:** concurrency groups are shared across branches. A branch workflow naming group `migrate` with `cancel-in-progress: true` could cancel a running apply.
+
+### 10.10 Outputs of the checks run for this revision
+
+- `python3 -I tests/C02/W-C02-03/test_decision_steps.py`: `W03_DECISION_TEST PASS (69/69)`, exit 0. `--self-check`: `W03_DECISION_SELF_CHECK PASS (7/7)`, exit 0. Break copies: section 10.1.
+- `python3 -I tests/C02/W-C02-03/test_workflow_order.py`: `ok   .github/workflows/migrate.yml: order and stop present as written`, its 17 copies red, `W03_ORDER_TEST PASS (.github/workflows/migrate.yml)`, exit 0. `--self-check`: `W03_ORDER_TEST PASS (synthetic skeleton)`, exit 0.
+- **The repeated bodies.** A comparison of each step id's `run` and `shell` across jobs found every repeated id identical:
+  - `compare` ×5 (`compare_after` included) `1260def3e0a4`;
+  - ×4: `head` `8da1cee258f9`, `workdir` `39a09b6a79ce`, `pooler` `3886dddb628d`, `presence` `81c784e3f1f1`, `connect` `bf7ddd9af758`, `report` `ae92c5b56744`;
+  - ×2: `cli` `9a997b75cce6`, `listing` `b1b058f32c88`, `dryrun` `cbeb38000a88`, `apply` `2b3808cf965b`, `search` `af60920e3ead`.
+
+  `decide` (`e4e381332519`) and `pr_decide` are unchanged.
+- **PostgreSQL 16.15, a throwaway cluster.** No `supabase_admin` role, `w03.throwaway = 'yes'`, each run on a fresh database built from the migration:
+  - without a patch: `W03_DRIFT_DETECTS PASS (10/10)` and `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`;
+  - B1: `FAIL (8 bad …)` and `FAIL (12 bad …)`;
+  - B2: 4 and 1 bad;
+  - B3: 5 bad, the other file 13/13;
+  - B4: the first file 10/10, the other 12 bad.
+
+  The migration and the tests are unchanged since section 9.4, whose named red cases these counts match.
+- **Step bodies, M22, the probe:** sections 10.4 to 10.8.
+- **`python3 -I tools/credential_value_scan.py`**, run from the working tree with `--dir` set to the clone's `.github`, `supabase` and `evidence/C02`:
+  - `.github` 2 files read, `supabase` 3, `evidence/C02` 54;
+  - each value searched: "0 files hold it";
+  - `CREDENTIAL_VALUE_SCAN DONE`, exit 0.
+
+  It was run before this line was written and again after.
+- From the clone: `python3 -B tools/records.py render --check` gave `RENDER OK`, and `bash tools/check_service_names.sh` gave `SERVICE_NAMES CLEAN`, each exit 0.
+- **Guard denial #20260, rule B11.** A further run of the search step, with a plant configured but absent, was refused: an assignment of `HOME` on a command that would run git. It was not pursued another way, so that path is not shown (10.8, acceptance F5).

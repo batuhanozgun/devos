@@ -29,68 +29,233 @@ jobs:
         name: "M22: which workflows name the environments, their events, pins, applies, calls"
         shell: python
         run: |
-          # M22 (EV-C02-001): a static check of the workflow files at this pull request's head: which workflows name the
-          # migration environments, their events, their pins, no apply outside the push jobs, no workflow calls. It reads the
-          # files as data (YAML) and runs nothing from them.
-          import glob, os, re, sys
+          # M22 (EV-C02-001): a static check of the workflow files at this pull request's head. In every workflow file: no job
+          # calls a reusable workflow (a job-level uses:) and every action is pinned by full commit SHA (EV-C02-001 section 3,
+          # "Reusable workflows"). In a workflow that names a migration environment: only migrate.yml may; it starts only on
+          # push to main and on schedule; each job runs on the GitHub-hosted label ubuntu-24.04 (M20), with no container and no
+          # services; a step that applies is only in the push jobs, and only when the job's if: admits the push event alone. It
+          # reads the files as data (YAML) and runs nothing from them. A condition it cannot read is "could not check", never a
+          # pass. First it judges wrong copies of the files (its self-check): each must fail on its own rule, the control pass.
+          import copy, glob, os, re
           try:
               import yaml
           except ImportError:
               print("workflow check: could not check (PyYAML is not installed on the runner)")
-              raise SystemExit(1)
+              raise SystemExit(3)
 
           ENVIRONMENTS = {"migrate-devos-test", "migrate-devos"}
+          RUNNERS = {"ubuntu-24.04"}
+          PUSH_JOBS = ("devos-test", "devos")
+          PUSH = "github.event_name=='push'"
+          STATUS = {"!cancelled()", "always()", "success()"}
           PIN = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(/[^@\s]+)?@[0-9a-f]{40}")
           APPLY = re.compile(r"\bdb\s+(push|reset)\b|\bmigration\s+(up|repair)\b|psql\b[^\n]*\s-f\s[^\n]*migrations")
-          problems, naming = [], []
-          for path in sorted(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")):
-              try:
-                  wf = yaml.safe_load(open(path, encoding="utf-8")) or {}
-              except Exception as exc:
-                  problems.append(f"{path}: does not parse ({type(exc).__name__})")
-                  continue
-              jobs = wf.get("jobs") or {}
-              env_jobs = {}
-              for jid, job in jobs.items():
-                  e = (job or {}).get("environment")
-                  name = e.get("name") if isinstance(e, dict) else e
-                  if name:
-                      env_jobs[jid] = str(name)
-              if not env_jobs:
-                  continue
-              naming.append(path)
-              if os.path.basename(path) != "migrate.yml":
-                  problems.append(f"{path}: names an environment ({sorted(set(env_jobs.values()))}); only migrate.yml may")
-              for jid, name in env_jobs.items():
-                  if name not in ENVIRONMENTS:
-                      problems.append(f"{path}: job {jid} names environment {name!r}, not one of the migration environments")
-              on = wf.get("on", wf.get(True))
-              events = [on] if isinstance(on, str) else list(on or [])
-              for ev in events:
-                  if ev not in ("push", "schedule"):
-                      problems.append(f"{path}: event {ev!r}; a workflow naming an environment starts only on push and schedule")
-              push = on.get("push") if isinstance(on, dict) else None
-              if "push" in events and (not isinstance(push, dict) or push.get("branches") != ["main"] or set(push) != {"branches"}):
-                  problems.append(f"{path}: push must be on branch main only, with no other filter")
-              for jid, job in jobs.items():
-                  job = job or {}
-                  if "uses" in job:
-                      problems.append(f"{path}: job {jid} calls a workflow")
-                  cond = re.sub(r"\s+", "", str(job.get("if", ""))).replace('"', "'")
-                  push_only = "github.event_name=='push'" in cond
-                  for s in job.get("steps") or []:
-                      if not isinstance(s, dict):
+
+
+          def push_alone(cond):
+              """A job's if: as this check reads it: 'push' (the push event alone), 'all' (no if: every event) or None (a form
+              this check does not read: an ||, another event, a negation of the event test, or anything else)."""
+              if cond is None:
+                  return "all"
+              c = re.sub(r"\s+", "", str(cond)).replace('"', "'")
+              if c.startswith("${{") and c.endswith("}}"):
+                  c = c[3:-2]
+              terms = c.split("&&")
+              if terms.count(PUSH) == 1 and all(t == PUSH or t in STATUS for t in terms):
+                  return "push"
+              return None
+
+
+          def check(files):
+              """files: {path: the parsed workflow, or the exception it raised}. Returns (problems, could-not-check, naming)."""
+              problems, cnc, naming = [], [], []
+              for path, wf in sorted(files.items()):
+                  if isinstance(wf, Exception) or not isinstance(wf, dict) or not isinstance(wf.get("jobs") or {}, dict):
+                      problems.append(f"{path}: does not parse as a workflow")
+                      continue
+                  jobs = wf.get("jobs") or {}
+                  env_jobs = {}
+                  for jid, job in jobs.items():
+                      job = job if isinstance(job, dict) else {}
+                      if "uses" in job:
+                          problems.append(f"{path}: job {jid} calls a reusable workflow ({job['uses']!r})")
+                      for s in job.get("steps") or []:
+                          if isinstance(s, dict) and "uses" in s and not PIN.fullmatch(str(s["uses"]).strip()):
+                              problems.append(f"{path}: job {jid} uses {s['uses']!r}, not an action pinned by full commit SHA")
+                      e = job.get("environment")
+                      name = e.get("name") if isinstance(e, dict) else e
+                      if name:
+                          env_jobs[jid] = str(name)
+                  if not env_jobs:
+                      continue
+                  naming.append(path)
+                  if os.path.basename(path) != "migrate.yml":
+                      problems.append(f"{path}: names an environment ({sorted(set(env_jobs.values()))}); only migrate.yml may")
+                  for jid, name in env_jobs.items():
+                      if name not in ENVIRONMENTS:
+                          problems.append(f"{path}: job {jid} names environment {name!r}, not one of the migration environments")
+                  on = wf.get("on", wf.get(True))
+                  events = [on] if isinstance(on, str) else list(on or [])
+                  for ev in events:
+                      if ev not in ("push", "schedule"):
+                          problems.append(f"{path}: event {ev!r}; a workflow naming an environment starts only on push and schedule")
+                  push = on.get("push") if isinstance(on, dict) else None
+                  if "push" in events and (not isinstance(push, dict) or push.get("branches") != ["main"] or set(push) != {"branches"}):
+                      problems.append(f"{path}: push must be on branch main only, with no other filter")
+                  for jid, job in jobs.items():
+                      job = job if isinstance(job, dict) else {}
+                      if "uses" in job:
                           continue
-                      if "uses" in s and not PIN.fullmatch(str(s["uses"]).strip()):
-                          problems.append(f"{path}: job {jid} uses {s['uses']!r}, not an action pinned by full commit SHA")
-                      applies = s.get("id") in ("apply", "dryrun") or APPLY.search(str(s.get("run", "")))
-                      if applies and not (push_only and jid in ("devos-test", "devos")):
-                          problems.append(f"{path}: job {jid} step {s.get('id')!r} applies, outside the push jobs")
+                      if not isinstance(job.get("runs-on"), str) or job["runs-on"] not in RUNNERS:
+                          problems.append(f"{path}: job {jid} runs on {job.get('runs-on')!r}, not the GitHub-hosted label ubuntu-24.04")
+                      for key in ("container", "services"):
+                          if key in job:
+                              problems.append(f"{path}: job {jid} has {key}:, which a workflow naming an environment may not")
+                      applies = [s.get("id") for s in job.get("steps") or [] if isinstance(s, dict) and (
+                          s.get("id") in ("apply", "dryrun") or APPLY.search(str(s.get("run", ""))))]
+                      if not applies:
+                          continue
+                      form = push_alone(job.get("if"))
+                      if jid not in PUSH_JOBS:
+                          problems.append(f"{path}: job {jid} step {applies[0]!r} applies, outside the push jobs")
+                      elif form == "all":
+                          problems.append(f"{path}: job {jid} holds an apply step and has no if:, so it admits every event")
+                      elif form is None:
+                          cnc.append(f"{path}: job {jid} holds an apply step and its if: {job.get('if')!r} is not a form this "
+                                     f"check reads as the push event alone (an ||, another event or a negation is refused)")
+              return problems, cnc, naming
+
+
+          def load():
+              files = {}
+              for path in sorted(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")):
+                  try:
+                      files[path] = yaml.safe_load(open(path, encoding="utf-8")) or {}
+                  except Exception as exc:
+                      files[path] = exc
+              return files
+
+
+          def self_check(files):
+              """Wrong copies of the files at this head, each changed in one place; (label, how, the text its message holds).
+              Returns the number of copies that did not fail on their own rule (or could not be made)."""
+              m, c = ".github/workflows/migrate.yml", ".github/workflows/migration-checks.yml"
+              sha = "d23441a48e516b6c34aea4fa41551a30e30af803"
+
+              def job(f, jid):
+                  return f[m]["jobs"][jid]
+
+              def on(f, path=m):
+                  return f[path]["on"] if "on" in f[path] else f[path][True]
+
+              def setif(jid, value):
+                  def how(f):
+                      if value is None:
+                          job(f, jid).pop("if")
+                      else:
+                          job(f, jid)["if"] = value
+                  return how
+
+              def put(jid, key, value):
+                  def how(f):
+                      job(f, jid)[key] = value
+                  return how
+
+              def add_file(name, wf):
+                  def how(f):
+                      f[".github/workflows/" + name] = wf
+                  return how
+
+              def step_uses(f):
+                  job(f, "devos-test")["steps"][1]["uses"] = "actions/checkout@v6"
+
+              hosted = {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}
+              copies = [
+                  ("migrate.yml on workflow_dispatch", lambda f: on(f).update({"workflow_dispatch": None}), "'workflow_dispatch'"),
+                  ("push on a claude/** branch too", lambda f: on(f)["push"].update({"branches": ["main", "claude/**"]}),
+                   "push must be on branch main only"),
+                  ("push with a path filter", lambda f: on(f)["push"].update({"paths": ["supabase/**"]}),
+                   "push must be on branch main only"),
+                  ("checkout pinned by tag", step_uses, "not an action pinned by full commit SHA"),
+                  ("a second workflow naming migrate-devos",
+                   add_file("other.yml", {"on": {"push": {"branches": ["main"]}},
+                                          "jobs": {"x": {**hosted, "environment": "migrate-devos"}}}), "only migrate.yml may"),
+                  ("an apply step in a scheduled job", lambda f: job(f, "check-devos-test")["steps"].append(
+                      {"id": "x", "run": "supabase db push"}), "applies, outside the push jobs"),
+                  ("migrate.yml calls a reusable workflow", lambda f: f[m]["jobs"].update(
+                      {"call": {"uses": f"someone/elsewhere/.github/workflows/w.yml@{sha}"}}), "calls a reusable workflow"),
+                  ("devos-test on push || schedule",
+                   setif("devos-test", "${{ github.event_name == 'push' || github.event_name == 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos-test on a negated event test", setif("devos-test", "${{ !(github.event_name == 'schedule') }}"),
+                   "is not a form this check reads"),
+                  ("devos-test on any event but schedule", setif("devos-test", "${{ github.event_name != 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos on schedule", setif("devos", "${{ !cancelled() && github.event_name == 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos-test with no if:", setif("devos-test", None), "admits every event"),
+                  ("a workflow naming no environment calls a reusable workflow",
+                   add_file("caller.yml", {"on": {"push": {"branches": ["main"]}},
+                                           "jobs": {"x": {"uses": "someone/elsewhere/.github/workflows/w.yml@main"}}}),
+                   "calls a reusable workflow"),
+                  ("a workflow naming no environment uses an action by tag",
+                   add_file("tagged.yml", {"on": {"pull_request": None},
+                                           "jobs": {"x": {"runs-on": "ubuntu-24.04", "steps": [{"uses": "actions/checkout@v4"}]}}}),
+                   "not an action pinned by full commit SHA"),
+                  ("devos-test in a container", put("devos-test", "container", "someorg/someimage:latest"), "has container:"),
+                  ("devos with services", put("devos", "services", {"db": {"image": "postgres"}}), "has services:"),
+                  ("devos-test on a self-hosted runner", put("devos-test", "runs-on", "self-hosted"), "not the GitHub-hosted label"),
+                  ("check-devos on a list of labels", put("check-devos", "runs-on", ["self-hosted", "linux"]),
+                   "not the GitHub-hosted label"),
+              ]
+              base = check(files)
+              base = set(base[0]) | set(base[1])
+              bad = 0
+              for label, how, why in copies:
+                  f = copy.deepcopy(files)
+                  try:
+                      how(f)
+                  except (KeyError, IndexError, TypeError, AttributeError):
+                      print(f"workflow check: self-check: {label}: could not be made from the files at this head")
+                      bad += 1
+                      continue
+                  p, n, _ = check(f)
+                  new = (set(p) | set(n)) - base
+                  if new and all(why in x for x in new):
+                      print(f"workflow check: self-check: {label}: fails on its own rule, as it must")
+                  elif not new and any(why in x for x in base):
+                      print(f"workflow check: self-check: {label}: not shown, the files at this head already break that rule")
+                  else:
+                      print(f"workflow check: self-check: {label}: does NOT fail on its own rule ({sorted(new) or 'it passes'})")
+                      bad += 1
+              f = copy.deepcopy(files)
+              try:
+                  on(f, c).update({"workflow_dispatch": None})
+                  p, n, _ = check(f)
+                  ok = (set(p) | set(n)) == base
+              except (KeyError, TypeError, AttributeError):
+                  ok = False
+              print("workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): "
+                    + ("passes, as it must" if ok else "does NOT pass"))
+              return bad + (not ok)
+
+
+          files = load()
+          try:
+              bad = self_check(files)
+              problems, cnc, naming = check(files)
+          except Exception as exc:
+              print(f"workflow check: could not check (the check itself failed on these files: {type(exc).__name__})")
+              raise SystemExit(3)
           print("workflow check: workflows naming an environment: " + (", ".join(naming) or "none"))
           for p in problems:
               print("workflow check: " + p)
-          print("workflow check: " + ("FAIL" if problems else "pass"))
-          raise SystemExit(1 if problems else 0)
+          for p in cnc:
+              print("workflow check: could not check: " + p)
+          if bad:
+              print(f"workflow check: could not check: the self-check failed ({bad})")
+          print("workflow check: " + ("FAIL" if problems else "could not check" if cnc or bad else "pass"))
+          raise SystemExit(1 if problems else 3 if cnc or bad else 0)
       - id: pr_inputs
         name: "M15: changed files, main's head, and the migration job's latest report there"
         if: ${{ !cancelled() }}
@@ -271,11 +436,13 @@ jobs:
       - id: w03_tests
         name: "W-C02-03's offline tests of the deciding steps and the order"
         if: ${{ !cancelled() }}
+        shell: bash
         run: |
           set -uo pipefail
-          python3 -I tests/C02/W-C02-03/test_decision_steps.py
-          a=$?
-          python3 -I tests/C02/W-C02-03/test_workflow_order.py
-          b=$?
+          python3 -I tests/C02/W-C02-03/test_decision_steps.py && a=0 || a=$?
+          python3 -I tests/C02/W-C02-03/test_workflow_order.py && b=0 || b=$?
           echo "W-C02-03 tests: decision steps exit ${a}, workflow order exit ${b}"
-          [ $a -eq 0 ] && [ $b -eq 0 ]
+          if [ "$a" -eq 0 ] && [ "$b" -eq 0 ]; then
+            exit 0
+          fi
+          exit 1

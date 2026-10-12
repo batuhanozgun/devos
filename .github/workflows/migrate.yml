@@ -64,6 +64,7 @@ jobs:
     steps:
       - id: head
         name: "(1) head check: act only at main's head (M05)"
+        shell: bash
         run: |
           main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
           if [ -z "$main_head" ]; then
@@ -85,25 +86,35 @@ jobs:
       - id: cli
         name: "install the command-line tool, its checksum checked (M20, P12)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "command-line tool v${CLI_VERSION}: could not check (a command of this step failed, line ${LINENO}); no step that runs it runs"' ERR
           d="$RUNNER_TEMP/w03cli"
           rm -rf "$d"
           mkdir -p "$d"
-          curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
-            "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"
+          if ! curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
+              "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"; then
+            echo "command-line tool v${CLI_VERSION}: could not check (the download failed); it is not extracted, and no step that runs it runs"
+            exit 1
+          fi
           if ! printf '%s  %s\n' "$CLI_SHA256" "$d/cli.tar.gz" | sha256sum --check --status; then
-            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the job stops before any step receives the credential"
+            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the tool is not extracted, and no step that runs it runs"
             exit 1
           fi
           echo "command-line tool v${CLI_VERSION}: checksum matches the release's published SHA-256 ${CLI_SHA256}"
-          tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go
+          if ! tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go; then
+            echo "command-line tool v${CLI_VERSION}: could not check (the archive did not extract); no step that runs it runs"
+            exit 1
+          fi
           echo "path=$d/supabase" >> "$GITHUB_OUTPUT"
       - id: workdir
         name: "build the tool's working directory; expected from main's head (M08, M14, Y-09)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "expected: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$RUNNER_TEMP/w03work"
           rm -rf "$w"
           mkdir -p "$w/supabase/migrations"
@@ -148,6 +159,7 @@ jobs:
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
           if [ -n "$POOLER_HOST" ]; then
             echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
@@ -171,14 +183,17 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
-            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          elif python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'; then
             echo "credential present: yes"
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "credential present: no"
-            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "credential present: could not check (its percent-encoded form could not be masked); the job stops"
+            exit 1
           fi
       - id: connect
         name: "(3) connect"
@@ -186,6 +201,7 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
@@ -202,8 +218,10 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "listing: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/listing.sql" <<'SQL'
           \set ON_ERROR_STOP on
@@ -250,11 +268,12 @@ jobs:
           echo "  roles excluded (Supabase's own), besides every pg_* role: ${W03_EXCLUDED_ROLES}"
           echo "  objects that belong to an extension are listed as that extension"
           timeout 120 psql -X -q -A -t -v ex_schemas="$W03_EXCLUDED_SCHEMAS" -v entry_only="$W03_SCHEMA_ENTRY_ONLY" \
-            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err"
-          rc=$?
-          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err"
-          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY'
+            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err" || true
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
           d = os.environ["W03_DIR"]
           def listing(name):
               for ln in open(os.path.join(d, name), encoding="utf-8"):
@@ -267,13 +286,13 @@ jobs:
               return None
           items, control = listing("out"), listing("control")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           if os.environ["W03_RC"] != "0" or items is None:
               print("listing: could not check (the read did not complete)")
               count = ""
           else:
               for item in items:
-                  print("listing: " + item)
+                  print("listing: " + esc(item))
               count = str(len(items))
               print(f"listing: {count} objects outside Supabase's own")
           if control is None:
@@ -293,15 +312,17 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
+        shell: bash
         run: |
           set -uo pipefail
+          trap 'echo "dry run: could not check (a command of this step failed, line ${LINENO})"' ERR
           url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
-          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1
-          rc=$?
-          sed 's/^/cli: /' "$RUNNER_TEMP/w03dry.out"
-          pending="$(grep -oE '[0-9]+_[^ ]*\.sql' "$RUNNER_TEMP/w03dry.out" | sed -E 's/_.*//' | sort -u | python3 -I -c 'import json, sys; print(json.dumps(sys.stdin.read().split()))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1 && rc=0 || rc=$?
+          python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03dry.out"
+          pending="$(python3 -I -c 'import json, re, sys; print(json.dumps(sorted({m.split("_")[0] for m in re.findall(r"[0-9]+_[^ \n]*\.sql", open(sys.argv[1], encoding="utf-8", errors="replace").read())})))' "$RUNNER_TEMP/w03dry.out")"
           echo "dry run: pending versions: ${pending}"
           echo "pending=${pending}" >> "$GITHUB_OUTPUT"
+          echo "dry run: exit ${rc}"
           exit $rc
       - id: apply
         name: "(6) apply to devos-test"
@@ -311,14 +332,15 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
+        shell: bash
         run: |
           set -uo pipefail
+          trap 'echo "apply: could not check (a command of this step failed, line ${LINENO})"' ERR
           url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
-          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1
-          rc=$?
-          sed 's/^/cli: /' "$RUNNER_TEMP/w03apply.out"
+          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1 && rc=0 || rc=$?
+          python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03apply.out"
           echo "working directory after the command-line tool (names only):"
-          (cd "$W" && find . -type f | sort | sed 's/^/  /')
+          (cd "$W" && find . -type f | sort | sed 's/^/  /') || echo "  could not be listed"
           echo "apply: exit ${rc}"
           exit $rc
       - id: compare
@@ -328,12 +350,23 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/compare.sql" <<'SQL'
           \set ON_ERROR_STOP on
+          -- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no
+          -- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads
+          -- and the count. A table that appears after this first read is counted as not locked: the reads are partial.
+          select exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                          where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                 as w03_hist_lock \gset
           begin transaction isolation level repeatable read, read only;
+          \if :w03_hist_lock
+          lock table supabase_migrations.schema_migrations in access share mode;
+          \endif
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
                  (r->>'history_table_exists')::boolean as w03_hist,
                  (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
@@ -380,6 +413,7 @@ jobs:
                 ) s
               )) as r) s \gset
           \echo W03READS :w03_reads
+          \echo W03LOCKED :w03_hist_lock
           \if :w03_hist
           select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
                  'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
@@ -396,9 +430,13 @@ jobs:
           \echo W03END
           SQL
           timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
-            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
-          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
                    "function_differs"}
 
@@ -433,8 +471,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, same_text, drift_text = (
-              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
+          reads_text, locked_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -443,10 +481,12 @@ jobs:
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
               # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
-              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
-              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
+              # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog
+              # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial
+              # (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
+              complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()
+                                          and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
                            history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
@@ -465,7 +505,7 @@ jobs:
           result_json = drift_text if call == "ok" else ""
           kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           project = os.environ.get("PROJECT", "")
           if isinstance(reads, dict):
               print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
@@ -475,7 +515,7 @@ jobs:
               print(f"reads in {project}: could not check (the reads did not complete)")
           print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
           for x in diffs:
-              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+              print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
                            ("applied", applied)):
@@ -487,38 +527,62 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           set -uo pipefail
-          shopt -s nullglob
-          files=(supabase/migrations/tests/*.sql)
-          if [ ${#files[@]} -eq 0 ]; then
-            echo "database tests: none"
-            exit 0
-          fi
-          failed=0
-          for f in "${files[@]}"; do
-            if grep -q '\\' "$f"; then
-              echo "database test ${f}: refused, it holds a backslash (a psql meta-command would run with the credential in reach)"
-              failed=1
-              continue
-            fi
-            psql -X -v ON_ERROR_STOP=1 -f "$f" > "$RUNNER_TEMP/w03test.out" 2>&1
-            rc=$?
-            sed "s|^|${f##*/}: |" "$RUNNER_TEMP/w03test.out"
-            if [ $rc -eq 0 ] && grep -Eq 'NOTICE: +[A-Z0-9_]+ PASS \(' "$RUNNER_TEMP/w03test.out"; then
-              echo "database test ${f}: passed"
-            else
-              echo "database test ${f}: not passed (psql exit ${rc})"
-              failed=1
-            fi
-          done
-          exit $failed
+          python3 -I - <<'PY' || exit $?
+          # The database tests (EV-C02-001 M09; T-W03-06, T-W03-07): each file supabase/migrations/tests/<name>.sql, in name
+          # order, run as written with psql, errors stopping the file; it passes only on exit 0 and its "NOTICE: <NAME> PASS ("
+          # line. Only a regular file whose name is lower-case letters, digits and underscores, then .sql, is run; any other
+          # .sql name is "could not check" and is not run. A file holding a backslash is refused (every psql meta-command begins
+          # with one). No file name, path or content is put into a shell, sed or other program here: the name is matched by a
+          # fixed pattern, the content is searched as bytes, and psql gets the path as an argument. Output lines are printed
+          # with the file's name, control characters escaped.
+          import os, re, subprocess
+          DIR = "supabase/migrations/tests"
+          NAME = re.compile(r"[a-z0-9_]+\.sql")
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)
+
+
+          names = sorted(n for n in os.listdir(DIR) if n.lower().endswith(".sql")) if os.path.isdir(DIR) else []
+          if not names:
+              print("database tests: none")
+              raise SystemExit(0)
+          failed = False
+          for n in names:
+              path = os.path.join(DIR, n)
+              if not NAME.fullmatch(n) or os.path.islink(path) or not os.path.isfile(path):
+                  print(f"database test {esc(n)}: could not check (only a regular file named [a-z0-9_]+.sql is run); not run")
+                  failed = True
+                  continue
+              with open(path, "rb") as f:
+                  if b"\\" in f.read():
+                      print(f"database test {n}: refused, it holds a backslash (a psql meta-command would run with the credential "
+                            f"in reach)")
+                      failed = True
+                      continue
+              r = subprocess.run(["psql", "-X", "-v", "ON_ERROR_STOP=1", "-f", path], stdin=subprocess.DEVNULL,
+                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+              out = r.stdout.decode("utf-8", "replace")
+              for ln in out.splitlines():
+                  print(f"{n}: {esc(ln)}")
+              if r.returncode == 0 and re.search(r"NOTICE: +[A-Z0-9_]+ PASS \(", out):
+                  print(f"database test {n}: passed")
+              else:
+                  print(f"database test {n}: not passed (psql exit {r.returncode})")
+                  failed = True
+          raise SystemExit(1 if failed else 0)
+          PY
       - id: tokens
         name: "(8) synthetic tokens for the test programs, if any, issued as owner"
         if: ${{ steps.dbtests.outcome == 'success' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           set -uo pipefail
           shopt -s nullglob
@@ -528,13 +592,14 @@ jobs:
             exit 0
           fi
           umask 077
-          python3 -I - <<'PY'
+          python3 -I - <<'PY' || exit $?
           # N-255 (2): as owner, one synthetic token per role class the tests use (W03_TOKEN_CLASSES, EV-C02-003 section 4.1's
           # columns) and one more, of the first class, revoked before the programs run: the "revoked token". Issued with
           # devos_private.issue_env_token(role_class), revoked with devos_private.revoke_env_token(token) (B:46; EV-C02-003
           # section 6.3). Each token is masked before anything else is printed, and is never printed; the file (0600, under
           # the runner's temporary directory) is rewritten after every issue, so that the step that revokes them, which runs
-          # in every case, finds every token issued before a failure or a cancellation.
+          # in every case, finds every token issued before a failure or a cancellation. A token reaches psql only through its
+          # environment (psql's \getenv), never through a command line.
           import json, os, subprocess
           path = os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json")
           classes = os.environ["W03_TOKEN_CLASSES"].split()
@@ -543,11 +608,11 @@ jobs:
               with open(path + ".tmp", "w", encoding="utf-8") as f:
                   json.dump(state, f)
               os.replace(path + ".tmp", path)
-          def psql(sql, name, value):
-              return subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"{name}={value}", "-f", "-"],
-                                    input=sql, capture_output=True, text=True)
+          def psql(sql, args=(), env=None):
+              return subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", *args, "-f", "-"],
+                                    input=sql, capture_output=True, text=True, env={**os.environ, **(env or {})})
           def issue(role_class):
-              r = psql("select devos_private.issue_env_token(:'rc');\n", "rc", role_class)
+              r = psql("select devos_private.issue_env_token(:'rc');\n", ("-v", f"rc={role_class}"))
               token = r.stdout.strip()
               if r.returncode or not token or "\n" in token:
                   return None, r.returncode
@@ -570,7 +635,7 @@ jobs:
           else:
               state["revoked_token"] = token
               save()
-              r = psql("select devos_private.revoke_env_token(:'tok');\n", "tok", token)
+              r = psql("\\getenv tok W03_TOKEN\nselect devos_private.revoke_env_token(:'tok');\n", env={"W03_TOKEN": token})
               state["revoked_before_programs"] = r.returncode == 0
               save()
               print(f"revoked token ({classes[0]}): issued and " + ("revoked" if r.returncode == 0 else
@@ -585,10 +650,11 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           DEVOS_TEST_PUBLISHABLE_KEY: ${{ secrets.DEVOS_TEST_PUBLISHABLE_KEY }}
+        shell: bash
         run: |
           set -uo pipefail
           umask 077
-          python3 -I - <<'PY'
+          python3 -I - <<'PY' || exit $?
           # N-255: runs supabase/migrations/tests/*.py in name order, after the SQL database tests, in devos-test only. Each
           # program gets one JSON object on standard input: {"endpoint", "apikey", "tokens", "revoked_token"}. It runs with
           # an environment built from nothing (env -i's effect) holding PATH, HOME (a new empty directory) and LANG only,
@@ -636,7 +702,8 @@ jobs:
                   rc = -1
               result = {0: "pass", 1: "fail", 3: "could not check"}.get(rc, "fail")
               failed = failed or rc != 0
-              print(f"test program {os.path.basename(p)}: {result}", flush=True)
+              name = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in os.path.basename(p))
+              print(f"test program {name}: {result}", flush=True)
           raise SystemExit(1 if failed else 0)
           PY
       - id: tokens_revoke
@@ -645,6 +712,7 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           set -uo pipefail
           f="$RUNNER_TEMP/w03tokens.json"
@@ -652,11 +720,12 @@ jobs:
             echo "synthetic tokens: none to revoke"
             exit 0
           fi
-          python3 -I - "$f" <<'PY'
+          python3 -I - "$f" <<'PY' && rc=0 || rc=$?
           # Revoked with devos_private.revoke_env_token, called with the token (EV-C02-003 section 6.3). That argument form is
           # assumed here; W-C02-09 fixes the function's signature, and this step is changed with it if it differs. The
-          # revoked token is revoked again only if its revocation before the programs did not succeed.
-          import json, subprocess, sys
+          # revoked token is revoked again only if its revocation before the programs did not succeed. A token reaches
+          # psql only through its environment (psql's \getenv), never through a command line.
+          import json, os, subprocess, sys
           state = json.load(open(sys.argv[1], encoding="utf-8"))
           todo = list(state.get("tokens", {}).items())
           if state.get("revoked_token") and not state.get("revoked_before_programs"):
@@ -665,13 +734,13 @@ jobs:
               print("revoked token: already revoked before the programs")
           bad = 0
           for role_class, token in todo:
-              r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"tok={token}", "-f", "-"],
-                                 input="select devos_private.revoke_env_token(:'tok');\n", capture_output=True, text=True)
+              r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-f", "-"],
+                                 input="\\getenv tok W03_TOKEN\nselect devos_private.revoke_env_token(:'tok');\n",
+                                 capture_output=True, text=True, env={**os.environ, "W03_TOKEN": token})
               print(f"synthetic token for {role_class}: {'revoked' if r.returncode == 0 else 'NOT revoked'}")
               bad += r.returncode != 0
           raise SystemExit(1 if bad else 0)
           PY
-          rc=$?
           rm -f "$f"
           exit $rc
       - id: go
@@ -684,6 +753,7 @@ jobs:
           TESTS: ${{ steps.dbtests.outcome }}
           PROGRAMS: ${{ steps.dbprograms.outcome }}
           REVOKED: ${{ steps.tokens_revoke.outcome }}
+        shell: bash
         run: |
           if [ "$HEAD_STATE" != "yes" ]; then
             go="${HEAD_STATE:-no}"
@@ -764,6 +834,7 @@ jobs:
     steps:
       - id: head
         name: "(1) head check: act only at main's head (M05)"
+        shell: bash
         run: |
           main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
           if [ -z "$main_head" ]; then
@@ -785,25 +856,35 @@ jobs:
       - id: cli
         name: "install the command-line tool, its checksum checked (M20, P12)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "command-line tool v${CLI_VERSION}: could not check (a command of this step failed, line ${LINENO}); no step that runs it runs"' ERR
           d="$RUNNER_TEMP/w03cli"
           rm -rf "$d"
           mkdir -p "$d"
-          curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
-            "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"
+          if ! curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
+              "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"; then
+            echo "command-line tool v${CLI_VERSION}: could not check (the download failed); it is not extracted, and no step that runs it runs"
+            exit 1
+          fi
           if ! printf '%s  %s\n' "$CLI_SHA256" "$d/cli.tar.gz" | sha256sum --check --status; then
-            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the job stops before any step receives the credential"
+            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the tool is not extracted, and no step that runs it runs"
             exit 1
           fi
           echo "command-line tool v${CLI_VERSION}: checksum matches the release's published SHA-256 ${CLI_SHA256}"
-          tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go
+          if ! tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go; then
+            echo "command-line tool v${CLI_VERSION}: could not check (the archive did not extract); no step that runs it runs"
+            exit 1
+          fi
           echo "path=$d/supabase" >> "$GITHUB_OUTPUT"
       - id: workdir
         name: "build the tool's working directory; expected from main's head (M08, M14, Y-09)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "expected: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$RUNNER_TEMP/w03work"
           rm -rf "$w"
           mkdir -p "$w/supabase/migrations"
@@ -848,6 +929,7 @@ jobs:
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
           if [ -n "$POOLER_HOST" ]; then
             echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
@@ -871,14 +953,17 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
-            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          elif python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'; then
             echo "credential present: yes"
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "credential present: no"
-            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "credential present: could not check (its percent-encoded form could not be masked); the job stops"
+            exit 1
           fi
       - id: connect
         name: "(3) connect"
@@ -886,6 +971,7 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
@@ -902,8 +988,10 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "listing: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/listing.sql" <<'SQL'
           \set ON_ERROR_STOP on
@@ -950,11 +1038,12 @@ jobs:
           echo "  roles excluded (Supabase's own), besides every pg_* role: ${W03_EXCLUDED_ROLES}"
           echo "  objects that belong to an extension are listed as that extension"
           timeout 120 psql -X -q -A -t -v ex_schemas="$W03_EXCLUDED_SCHEMAS" -v entry_only="$W03_SCHEMA_ENTRY_ONLY" \
-            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err"
-          rc=$?
-          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err"
-          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY'
+            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err" || true
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
           d = os.environ["W03_DIR"]
           def listing(name):
               for ln in open(os.path.join(d, name), encoding="utf-8"):
@@ -967,13 +1056,13 @@ jobs:
               return None
           items, control = listing("out"), listing("control")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           if os.environ["W03_RC"] != "0" or items is None:
               print("listing: could not check (the read did not complete)")
               count = ""
           else:
               for item in items:
-                  print("listing: " + item)
+                  print("listing: " + esc(item))
               count = str(len(items))
               print(f"listing: {count} objects outside Supabase's own")
           if control is None:
@@ -992,12 +1081,23 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/compare.sql" <<'SQL'
           \set ON_ERROR_STOP on
+          -- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no
+          -- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads
+          -- and the count. A table that appears after this first read is counted as not locked: the reads are partial.
+          select exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                          where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                 as w03_hist_lock \gset
           begin transaction isolation level repeatable read, read only;
+          \if :w03_hist_lock
+          lock table supabase_migrations.schema_migrations in access share mode;
+          \endif
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
                  (r->>'history_table_exists')::boolean as w03_hist,
                  (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
@@ -1044,6 +1144,7 @@ jobs:
                 ) s
               )) as r) s \gset
           \echo W03READS :w03_reads
+          \echo W03LOCKED :w03_hist_lock
           \if :w03_hist
           select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
                  'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
@@ -1060,9 +1161,13 @@ jobs:
           \echo W03END
           SQL
           timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
-            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
-          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
                    "function_differs"}
 
@@ -1097,8 +1202,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, same_text, drift_text = (
-              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
+          reads_text, locked_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1107,10 +1212,12 @@ jobs:
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
               # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
-              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
-              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
+              # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog
+              # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial
+              # (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
+              complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()
+                                          and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
                            history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
@@ -1129,7 +1236,7 @@ jobs:
           result_json = drift_text if call == "ok" else ""
           kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           project = os.environ.get("PROJECT", "")
           if isinstance(reads, dict):
               print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
@@ -1139,7 +1246,7 @@ jobs:
               print(f"reads in {project}: could not check (the reads did not complete)")
           print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
           for x in diffs:
-              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+              print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
                            ("applied", applied)):
@@ -1347,15 +1454,17 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
+        shell: bash
         run: |
           set -uo pipefail
+          trap 'echo "dry run: could not check (a command of this step failed, line ${LINENO})"' ERR
           url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
-          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1
-          rc=$?
-          sed 's/^/cli: /' "$RUNNER_TEMP/w03dry.out"
-          pending="$(grep -oE '[0-9]+_[^ ]*\.sql' "$RUNNER_TEMP/w03dry.out" | sed -E 's/_.*//' | sort -u | python3 -I -c 'import json, sys; print(json.dumps(sys.stdin.read().split()))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1 && rc=0 || rc=$?
+          python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03dry.out"
+          pending="$(python3 -I -c 'import json, re, sys; print(json.dumps(sorted({m.split("_")[0] for m in re.findall(r"[0-9]+_[^ \n]*\.sql", open(sys.argv[1], encoding="utf-8", errors="replace").read())})))' "$RUNNER_TEMP/w03dry.out")"
           echo "dry run: pending versions: ${pending}"
           echo "pending=${pending}" >> "$GITHUB_OUTPUT"
+          echo "dry run: exit ${rc}"
           exit $rc
       - id: apply
         name: "(7) apply to devos"
@@ -1365,14 +1474,15 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
+        shell: bash
         run: |
           set -uo pipefail
+          trap 'echo "apply: could not check (a command of this step failed, line ${LINENO})"' ERR
           url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
-          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1
-          rc=$?
-          sed 's/^/cli: /' "$RUNNER_TEMP/w03apply.out"
+          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1 && rc=0 || rc=$?
+          python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03apply.out"
           echo "working directory after the command-line tool (names only):"
-          (cd "$W" && find . -type f | sort | sed 's/^/  /')
+          (cd "$W" && find . -type f | sort | sed 's/^/  /') || echo "  could not be listed"
           echo "apply: exit ${rc}"
           exit $rc
       - id: compare_after
@@ -1382,12 +1492,23 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/compare.sql" <<'SQL'
           \set ON_ERROR_STOP on
+          -- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no
+          -- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads
+          -- and the count. A table that appears after this first read is counted as not locked: the reads are partial.
+          select exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                          where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                 as w03_hist_lock \gset
           begin transaction isolation level repeatable read, read only;
+          \if :w03_hist_lock
+          lock table supabase_migrations.schema_migrations in access share mode;
+          \endif
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
                  (r->>'history_table_exists')::boolean as w03_hist,
                  (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
@@ -1434,6 +1555,7 @@ jobs:
                 ) s
               )) as r) s \gset
           \echo W03READS :w03_reads
+          \echo W03LOCKED :w03_hist_lock
           \if :w03_hist
           select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
                  'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
@@ -1450,9 +1572,13 @@ jobs:
           \echo W03END
           SQL
           timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
-            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
-          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
                    "function_differs"}
 
@@ -1487,8 +1613,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, same_text, drift_text = (
-              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
+          reads_text, locked_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1497,10 +1623,12 @@ jobs:
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
               # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
-              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
-              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
+              # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog
+              # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial
+              # (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
+              complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()
+                                          and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
                            history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
@@ -1519,7 +1647,7 @@ jobs:
           result_json = drift_text if call == "ok" else ""
           kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           project = os.environ.get("PROJECT", "")
           if isinstance(reads, dict):
               print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
@@ -1529,7 +1657,7 @@ jobs:
               print(f"reads in {project}: could not check (the reads did not complete)")
           print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
           for x in diffs:
-              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+              print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
                            ("applied", applied)):
@@ -1553,6 +1681,7 @@ jobs:
           DECIDE_APPLY: ${{ steps.decide.outputs.apply }}
           DECIDE_REASON: ${{ steps.decide.outputs.reason }}
           EXCEPTION: ${{ steps.decide.outputs.exception }}
+          APPLY: ${{ steps.apply.outcome }}
         shell: python
         run: |
           import json, os
@@ -1610,6 +1739,7 @@ jobs:
     steps:
       - id: head
         name: "(1) head check: act only at main's head (M05)"
+        shell: bash
         run: |
           main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
           if [ -z "$main_head" ]; then
@@ -1631,8 +1761,10 @@ jobs:
       - id: workdir
         name: "expected from main's head (M14)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "expected: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$RUNNER_TEMP/w03work"
           rm -rf "$w"
           mkdir -p "$w/supabase/migrations"
@@ -1677,6 +1809,7 @@ jobs:
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
           if [ -n "$POOLER_HOST" ]; then
             echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
@@ -1700,14 +1833,17 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
-            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          elif python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'; then
             echo "credential present: yes"
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "credential present: no"
-            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "credential present: could not check (its percent-encoded form could not be masked); the job stops"
+            exit 1
           fi
       - id: connect
         name: "(3) connect"
@@ -1715,6 +1851,7 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
@@ -1732,12 +1869,23 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/compare.sql" <<'SQL'
           \set ON_ERROR_STOP on
+          -- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no
+          -- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads
+          -- and the count. A table that appears after this first read is counted as not locked: the reads are partial.
+          select exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                          where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                 as w03_hist_lock \gset
           begin transaction isolation level repeatable read, read only;
+          \if :w03_hist_lock
+          lock table supabase_migrations.schema_migrations in access share mode;
+          \endif
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
                  (r->>'history_table_exists')::boolean as w03_hist,
                  (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
@@ -1784,6 +1932,7 @@ jobs:
                 ) s
               )) as r) s \gset
           \echo W03READS :w03_reads
+          \echo W03LOCKED :w03_hist_lock
           \if :w03_hist
           select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
                  'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
@@ -1800,9 +1949,13 @@ jobs:
           \echo W03END
           SQL
           timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
-            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
-          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
                    "function_differs"}
 
@@ -1837,8 +1990,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, same_text, drift_text = (
-              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
+          reads_text, locked_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -1847,10 +2000,12 @@ jobs:
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
               # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
-              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
-              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
+              # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog
+              # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial
+              # (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
+              complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()
+                                          and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
                            history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
@@ -1869,7 +2024,7 @@ jobs:
           result_json = drift_text if call == "ok" else ""
           kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           project = os.environ.get("PROJECT", "")
           if isinstance(reads, dict):
               print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
@@ -1879,7 +2034,7 @@ jobs:
               print(f"reads in {project}: could not check (the reads did not complete)")
           print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
           for x in diffs:
-              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+              print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
                            ("applied", applied)):
@@ -1895,13 +2050,17 @@ jobs:
         run: |
           # Point 9's search (EV-C02-001 section 10; tests/C02/W-C02-03/T-W03-09_credential_search.md). This step holds this
           # job's own project's value. Everything it reads is data: it is only counted with a fixed-string count, never run,
-          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded).
+          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded). Its git
+          # processes get neither the credential nor the GitHub token: none of them needs either (the repository is public).
+          # A place where a configured plant is not found is "could not check", never "none found" (T-W03-09).
           import base64, io, json, os, subprocess, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
 
           repo = os.environ["GITHUB_REPOSITORY"]
           api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
           token = os.environ.get("GH_TOKEN", "")
           this_run = os.environ.get("GITHUB_RUN_ID", "")
+          GIT_ENV = {k: os.environ[k] for k in ("PATH", "HOME", "LANG") if k in os.environ}
+          GIT_ENV["GIT_TERMINAL_PROMPT"] = "0"
 
 
           def forms(v):
@@ -1934,7 +2093,7 @@ jobs:
 
 
           def git(*args, **kw):
-              return subprocess.run(["git", *args], capture_output=True, **kw)
+              return subprocess.run(["git", *args], capture_output=True, env=GIT_ENV, **kw)
 
 
           # 1. Every ref's tree and history: a mirror clone holds every branch, tag and pull-request ref the repository offers.
@@ -1958,7 +2117,8 @@ jobs:
                       f.write(ids)
                   n = 0
                   with open(ids_path, "rb") as fin:
-                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE)
+                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE,
+                                   env=GIT_ENV)
                       while True:
                           header = p.stdout.readline()
                           if not header:
@@ -2020,16 +2180,34 @@ jobs:
           for g in gaps:
               print("search: could not check: " + g)
           found = sum(v for (who, _, _), v in counts.items() if who == "credential")
+          unbacked = []
           if "plant" not in needles:
               print("search positive control: no plant configured (W03_PLANT_B64 is empty), so a 0 here is not backed by a "
                     "positive control: could not check")
+              unbacked = list(places)
+          else:
+              # Issue #6 is backed by the fixture issue, read with the same code (T-W03-09, plant p3); every other place by its own.
+              fixture = f"issue #{os.environ['W03_FIXTURE_ISSUE']}" if os.environ.get("W03_FIXTURE_ISSUE") else None
+              for place in places:
+                  backing = fixture if place == "issue #6" and fixture else place
+                  if not sum(counts.get(("plant", backing, form), 0) for form in ("plain", "percent")):
+                      print(f"search: could not check: {place} (the plant was not found in {backing})")
+                      unbacked.append(place)
+              if not any(counts.get(("plant", place, "percent"), 0) for place in places):
+                  print("search: could not check: the percent-encoded form (the plant was not found in that form in any place)")
+                  unbacked = list(places)
           if "credential" not in needles:
               print("search: could not check (credential present: no)")
           elif found:
               print(f"search: the credential was FOUND ({found} matches); it is treated as exposed (EV-C02-001 M30)")
               raise SystemExit(1)
           else:
-              print("search: none found by that method" + (" in the places it read" if gaps else ""))
+              backed = [p for p in places if p not in unbacked]
+              if backed:
+                  print("search: none found by that method in: " + "; ".join(backed))
+              if unbacked or gaps:
+                  print("search: 0 matches, but could not check (no positive control, or not read): "
+                        + "; ".join(unbacked + [g.split(":")[0] for g in gaps]))
       - id: report
         name: "report (names, versions, counts and statuses only)"
         if: ${{ always() }}
@@ -2097,6 +2275,7 @@ jobs:
     steps:
       - id: head
         name: "(1) head check: act only at main's head (M05)"
+        shell: bash
         run: |
           main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
           if [ -z "$main_head" ]; then
@@ -2118,8 +2297,10 @@ jobs:
       - id: workdir
         name: "expected from main's head (M14)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          trap 'echo "expected: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$RUNNER_TEMP/w03work"
           rm -rf "$w"
           mkdir -p "$w/supabase/migrations"
@@ -2164,6 +2345,7 @@ jobs:
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
         run: |
           if [ -n "$POOLER_HOST" ]; then
             echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
@@ -2187,14 +2369,17 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
-            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          elif python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'; then
             echo "credential present: yes"
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
-            echo "credential present: no"
-            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "credential present: could not check (its percent-encoded form could not be masked); the job stops"
+            exit 1
           fi
       - id: connect
         name: "(3) connect"
@@ -2202,6 +2387,7 @@ jobs:
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
@@ -2219,12 +2405,23 @@ jobs:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: bash
         run: |
-          set -u
+          set -uo pipefail
+          trap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR
           w="$(mktemp -d)"
           cat > "$w/compare.sql" <<'SQL'
           \set ON_ERROR_STOP on
+          -- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no
+          -- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads
+          -- and the count. A table that appears after this first read is counted as not locked: the reads are partial.
+          select exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                          where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))
+                 as w03_hist_lock \gset
           begin transaction isolation level repeatable read, read only;
+          \if :w03_hist_lock
+          lock table supabase_migrations.schema_migrations in access share mode;
+          \endif
           select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
                  (r->>'history_table_exists')::boolean as w03_hist,
                  (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
@@ -2271,6 +2468,7 @@ jobs:
                 ) s
               )) as r) s \gset
           \echo W03READS :w03_reads
+          \echo W03LOCKED :w03_hist_lock
           \if :w03_hist
           select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,
                  'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table
@@ -2287,9 +2485,13 @@ jobs:
           \echo W03END
           SQL
           timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
-            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
-          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?
           import json, os
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
                    "function_differs"}
 
@@ -2324,8 +2526,8 @@ jobs:
                   if ln.startswith(tag + " "):
                       return ln[len(tag) + 1:]
               return None
-          reads_text, applied_text, rows_text, same_text, drift_text = (
-              tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
+          reads_text, locked_text, applied_text, rows_text, same_text, drift_text = (
+              tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))
           ended = "W03END" in out
           try:
               reads = json.loads(reads_text) if reads_text else None
@@ -2334,10 +2536,12 @@ jobs:
           fm_reads, applied = "", "null"
           if isinstance(reads, dict):
               # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the
-              # table it counted is the one the snapshot's catalog read saw (W03SAMETABLE: the same oid); otherwise, or if
-              # the count was not read, the reads are partial (EV-C02-001 section 5 as changed after P13).
+              # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog
+              # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial
+              # (EV-C02-001 section 5 as changed after P13).
               hist = reads.get("history_table_exists") is True
-              complete = not hist or (applied_text is not None and (rows_text or "").isdigit() and same_text == "t")
+              complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()
+                                          and same_text == "t")
               reads.update(complete=complete, snapshot="repeatable_read_transaction",
                            history_rows=int(rows_text) if hist and complete else None)
               fm_reads = json.dumps(reads, separators=(",", ":"))
@@ -2356,7 +2560,7 @@ jobs:
           result_json = drift_text if call == "ok" else ""
           kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
           for ln in open(os.path.join(d, "err"), encoding="utf-8"):
-              print("psql: " + ln.rstrip())
+              print("psql: " + esc(ln.rstrip()))
           project = os.environ.get("PROJECT", "")
           if isinstance(reads, dict):
               print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
@@ -2366,7 +2570,7 @@ jobs:
               print(f"reads in {project}: could not check (the reads did not complete)")
           print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
           for x in diffs:
-              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+              print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
                            ("applied", applied)):
@@ -2382,13 +2586,17 @@ jobs:
         run: |
           # Point 9's search (EV-C02-001 section 10; tests/C02/W-C02-03/T-W03-09_credential_search.md). This step holds this
           # job's own project's value. Everything it reads is data: it is only counted with a fixed-string count, never run,
-          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded).
+          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded). Its git
+          # processes get neither the credential nor the GitHub token: none of them needs either (the repository is public).
+          # A place where a configured plant is not found is "could not check", never "none found" (T-W03-09).
           import base64, io, json, os, subprocess, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
 
           repo = os.environ["GITHUB_REPOSITORY"]
           api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
           token = os.environ.get("GH_TOKEN", "")
           this_run = os.environ.get("GITHUB_RUN_ID", "")
+          GIT_ENV = {k: os.environ[k] for k in ("PATH", "HOME", "LANG") if k in os.environ}
+          GIT_ENV["GIT_TERMINAL_PROMPT"] = "0"
 
 
           def forms(v):
@@ -2421,7 +2629,7 @@ jobs:
 
 
           def git(*args, **kw):
-              return subprocess.run(["git", *args], capture_output=True, **kw)
+              return subprocess.run(["git", *args], capture_output=True, env=GIT_ENV, **kw)
 
 
           # 1. Every ref's tree and history: a mirror clone holds every branch, tag and pull-request ref the repository offers.
@@ -2445,7 +2653,8 @@ jobs:
                       f.write(ids)
                   n = 0
                   with open(ids_path, "rb") as fin:
-                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE)
+                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE,
+                                   env=GIT_ENV)
                       while True:
                           header = p.stdout.readline()
                           if not header:
@@ -2507,16 +2716,34 @@ jobs:
           for g in gaps:
               print("search: could not check: " + g)
           found = sum(v for (who, _, _), v in counts.items() if who == "credential")
+          unbacked = []
           if "plant" not in needles:
               print("search positive control: no plant configured (W03_PLANT_B64 is empty), so a 0 here is not backed by a "
                     "positive control: could not check")
+              unbacked = list(places)
+          else:
+              # Issue #6 is backed by the fixture issue, read with the same code (T-W03-09, plant p3); every other place by its own.
+              fixture = f"issue #{os.environ['W03_FIXTURE_ISSUE']}" if os.environ.get("W03_FIXTURE_ISSUE") else None
+              for place in places:
+                  backing = fixture if place == "issue #6" and fixture else place
+                  if not sum(counts.get(("plant", backing, form), 0) for form in ("plain", "percent")):
+                      print(f"search: could not check: {place} (the plant was not found in {backing})")
+                      unbacked.append(place)
+              if not any(counts.get(("plant", place, "percent"), 0) for place in places):
+                  print("search: could not check: the percent-encoded form (the plant was not found in that form in any place)")
+                  unbacked = list(places)
           if "credential" not in needles:
               print("search: could not check (credential present: no)")
           elif found:
               print(f"search: the credential was FOUND ({found} matches); it is treated as exposed (EV-C02-001 M30)")
               raise SystemExit(1)
           else:
-              print("search: none found by that method" + (" in the places it read" if gaps else ""))
+              backed = [p for p in places if p not in unbacked]
+              if backed:
+                  print("search: none found by that method in: " + "; ".join(backed))
+              if unbacked or gaps:
+                  print("search: 0 matches, but could not check (no positive control, or not read): "
+                        + "; ".join(unbacked + [g.split(":")[0] for g in gaps]))
       - id: report
         name: "report (names, versions, counts and statuses only)"
         if: ${{ always() }}
