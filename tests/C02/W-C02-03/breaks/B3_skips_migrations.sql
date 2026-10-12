@@ -6,6 +6,10 @@
 -- After this patch, supabase/migrations/tests/w03_drift_detects.sql and w03_drift_could_not_check.sql are run with
 -- w03.throwaway = 'yes'; S02, S03, S04, S05 and S09 of w03_drift_detects.sql must turn red (FAIL). Without any patch, the same run is the harness's positive control.
 -- No psql meta-command is used.
+-- The whole patch is one statement (CHK-C02-017 C1): the guard's two checks come first, and the rename and the
+-- replacement run only after both pass, as execute statements inside the same do block. A refusal is an error of that
+-- one statement, so nothing of the patch is applied, whatever the client does after an error (with or without
+-- ON_ERROR_STOP, ON_ERROR_ROLLBACK or a wrapping transaction).
 do $g$
 begin
   if coalesce(current_setting('w03.throwaway', true), '') <> 'yes' then
@@ -14,8 +18,8 @@ begin
   if exists (select 1 from pg_roles where rolname = 'supabase_admin') then
     raise exception 'w03 break patch refused: role supabase_admin exists, so this may be a Supabase project';
   end if;
-end $g$;
-alter function devos_api.deployment_drift(jsonb) rename to deployment_drift_w03_orig;
+  execute 'alter function devos_api.deployment_drift(jsonb) rename to deployment_drift_w03_orig';
+  execute $p$
 create function devos_api.deployment_drift(expected jsonb) returns jsonb language plpgsql security definer
 set search_path = pg_catalog as $f$
 declare r jsonb; kept jsonb;
@@ -28,4 +32,6 @@ begin
     from jsonb_array_elements(r->'differences') d where d->>'kind' like 'function%';
   return r || jsonb_build_object('differences', kept,
     'status', case when jsonb_array_length(kept) = 0 then 'no_difference' else 'differences' end);
-end $f$;
+end $f$
+$p$;
+end $g$;

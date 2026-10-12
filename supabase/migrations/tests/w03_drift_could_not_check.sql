@@ -10,7 +10,9 @@
 -- specification, in tests/C02/W-C02-03/test_decision_steps.py.
 -- Runs where, interface assumed and safety: as tests/C02/W-C02-03/T-W03-06_merged_not_applied.md part B and the
 -- header of w03_drift_detects.sql in this directory. The unreadable states are made by renaming a record inside a
--- subtransaction that is rolled back before the next case. No psql meta-command is used. Output: one row per case,
+-- subtransaction that is rolled back before the next case. Only sequence values outlast the final rollback: a planted
+-- row in a table with an identity or serial column (devos_private.function_deployment, if the build gives it one)
+-- advances that sequence; no row, table, column or function is left changed. No psql meta-command is used. Output: one row per case,
 -- then PASS, FAIL or COULD NOT CHECK; FAIL and COULD NOT CHECK raise an error.
 begin;
 set local search_path = pg_catalog, pg_temp;

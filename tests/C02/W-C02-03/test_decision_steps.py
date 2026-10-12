@@ -26,6 +26,10 @@ Options:
                          red and reports "could not check" without the build; it holds no decision logic
 Output: one line per case ("ok", "BAD", "CNC" for could not check, "n/a"), then one final line:
   W03_DECISION_TEST PASS (n/n) exit 0 | W03_DECISION_TEST FAIL (...) exit 1 | W03_DECISION_TEST COULD NOT CHECK (...) exit 3
+  With --impl the final line begins "W03_DECISION_TEST (break-copy run)" and names the files run instead of the
+  workflow's code, so it is never a result of the build.
+The report line of `decide` is checked as T-W03-DEC "Interface" item 3 states: "taken" with the three reads' results,
+"not taken" with the name of the state that kept it from being taken.
 """
 import json
 import os
@@ -89,6 +93,41 @@ R_CNC = result("could_not_check", [], complete=False)
 
 def kind_result(kind, key=V3):
     return result("differences", [diff(kind, key)])
+
+
+# The report line (EV-C02-001 section 5, "The report says when it was taken"; T-W03-DEC "Interface" item 3).
+# "taken" must carry the three reads' results, each as <field>=<value> or "<field>": <value>:
+TAKEN_READS = (("function_exists", r"false"), ("history_table_exists", r"false"), ("listing", r"\[\s*\]"))
+# "not taken" must name the state that kept it from being taken, by the name of the input or read field that shows
+# it (case-insensitive). Cases not listed have the function present (FM_READS says so), so any of the three reads'
+# names is a true account of that state.
+FUNCTION_PRESENT = ("function_exists", "history_table_exists", "listing")
+NOT_TAKEN_STATE = {"E04": ("history_table_exists", "history_rows"), "E05": ("history_table_exists", "history_rows"),
+                   "E06": ("function_exists", "history_table_exists"), "E06b": ("function_exists",
+                                                                                "history_table_exists"),
+                   "E07": ("function_exists", "history_table_exists"), "E08": ("listing",), "E09": ("listing",),
+                   "E10": ("complete",), "E11": ("snapshot",), "E12": ("snapshot",), "E13": ("fm_reads",),
+                   "E14": ("fm_reads",), "E15": ("function_exists",), "E16": ("history_table_exists",),
+                   "E17": ("listing",), "E18": ("drift_call", "drift_result"), "E19": ("expected",)}
+
+
+def report_line_problems(cid, want_exc, stdout):
+    lines = [ln for ln in stdout.splitlines() if "first-migration exception:" in ln]
+    taken = [ln for ln in lines if "first-migration exception: taken" in ln]
+    not_taken = [ln for ln in lines if "first-migration exception: not taken" in ln]
+    if want_exc == "taken":
+        if not taken or not_taken:
+            return ["stdout lacks the report line 'first-migration exception: taken' (or also says 'not taken')"]
+        if not any(all(re.search(rf"{f}[\"']?\s*[=:]\s*{v}", ln, re.I) for f, v in TAKEN_READS) for ln in taken):
+            return ["the 'taken' line does not carry the three reads' results "
+                    "(function_exists=false, history_table_exists=false, listing=[])"]
+        return []
+    if not not_taken or taken:
+        return ["stdout lacks the report line 'first-migration exception: not taken' (or also says 'taken')"]
+    names = NOT_TAKEN_STATE.get(cid, FUNCTION_PRESENT)
+    if not any(n in ln.lower() for ln in not_taken for n in names):
+        return [f"the 'not taken' line does not name the state that kept it from being taken ({' or '.join(names)})"]
+    return []
 
 
 # decide cases: (id, what, env, expected apply, expected result_kind or None, expected exception)
@@ -379,9 +418,7 @@ def check_decide(code):
             problems.append(f"result_kind={kind!r}, wanted {want_kind!r}")
         if out.get("exception") != want_exc:
             problems.append(f"exception={out.get('exception')!r}, wanted {want_exc!r}")
-        line = "first-migration exception: " + ("taken" if want_exc == "taken" else "not taken")
-        if line not in stdout or (want_exc != "taken" and "first-migration exception: taken" in stdout):
-            problems.append(f"stdout lacks the report line {line!r}")
+        problems += report_line_problems(cid, want_exc, stdout)
         if not out.get("reason"):
             problems.append("no reason output")
         if out.get("apply") == "yes" and "pending" in out:
@@ -475,14 +512,18 @@ def main(argv):
               target(repo, CHECKS, None, "pr_decide", PR_ENV, "pr_decide (pull-request check)",
                      impls.get("pr_decide"), check_pr)]
     n = COUNT["ok"] + COUNT["bad"] + COUNT["cnc"]
+    # Under --impl the line names the break-copy run, so it cannot be filed as the build's result (CHK-C02-017 Rf1).
+    head = "W03_DECISION_TEST" + (" (break-copy run)" if impls else "")
+    tail = (f"; {', '.join(f'{k}={v}' for k, v in sorted(impls.items()))} ran instead of the workflow's code; "
+            f"not a result of the build") if impls else ""
     if COUNT["bad"]:
-        print(f"W03_DECISION_TEST FAIL ({COUNT['bad']} bad, {COUNT['cnc']} could not check, of {n})")
+        print(f"{head} FAIL ({COUNT['bad']} bad, {COUNT['cnc']} could not check, of {n}{tail})")
         return 1
     if COUNT["cnc"] or "cnc" in states:
-        print(f"W03_DECISION_TEST COULD NOT CHECK ({COUNT['cnc']} of {n} could not be checked; none passed in "
-              f"their place)")
+        print(f"{head} COULD NOT CHECK ({COUNT['cnc']} of {n} could not be checked; none passed in "
+              f"their place{tail})")
         return 3
-    print(f"W03_DECISION_TEST PASS ({COUNT['ok']}/{n})")
+    print(f"{head} PASS ({COUNT['ok']}/{n}{tail})")
     return 0
 
 
@@ -511,7 +552,8 @@ def self_check():
             r = subprocess.run([sys.executable, "-I", str(me), "--repo", str(empty), "--impl", f"{step}={f}"],
                                capture_output=True, text=True)
             last = r.stdout.strip().splitlines()[-1] if r.stdout.strip() else ""
-            results.append((f"{name}: red", r.returncode == 1 and "FAIL" in last, last))
+            results.append((f"{name}: red, named a break-copy run", r.returncode == 1 and last.startswith(
+                "W03_DECISION_TEST (break-copy run) FAIL"), last))
         r = subprocess.run([sys.executable, "-I", str(me), "--repo", str(empty)], capture_output=True, text=True)
         last = r.stdout.strip().splitlines()[-1] if r.stdout.strip() else ""
         results.append(("no workflow: could not check", r.returncode == 3 and "COULD NOT CHECK" in last, last))

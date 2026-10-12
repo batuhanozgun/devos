@@ -14,7 +14,9 @@
 -- with "kind" and "version", or "slug" for the function kinds); devos_private.function_deployment has columns slug
 -- and source_sha256. If the build's names differ, the test designer revises this file before its first run.
 -- Safety: everything happens inside one transaction that ends in rollback; the fixture replaces the records' rows
--- only inside it. No psql meta-command is used. Output: one row per case, then PASS, FAIL or COULD NOT CHECK; FAIL
+-- only inside it. Only sequence values outlast the rollback: a planted row in a table with an identity or serial
+-- column (devos_private.function_deployment, if the build gives it one) advances that sequence, because a sequence's
+-- next value is never rolled back. No row, table, column or function is left changed. No psql meta-command is used. Output: one row per case, then PASS, FAIL or COULD NOT CHECK; FAIL
 -- and COULD NOT CHECK raise an error, so the step fails and the job's go is not yes.
 begin;
 set local search_path = pg_catalog, pg_temp;

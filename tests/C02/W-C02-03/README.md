@@ -31,7 +31,7 @@ All fixtures are synthetic (plan Section 8 item 13). Each file says so in its he
 - `test_decision_steps.py` and `test_workflow_order.py` when `.github/workflows/migrate.yml` or `migration-checks.yml` is absent;
 - the SQL tests when `devos_api.deployment_drift(jsonb)` or one of the records is absent.
 
-Each also has a self-check that turns red on programs or workflows that are wrong by construction (`--self-check`).
+The two Python tests each have a self-check (`--self-check`) that turns red on programs or workflows that are wrong by construction. The SQL tests have no self-check of their own. Their check is the break patches `breaks/B1` to `B4`, run on the throwaway database, with the unpatched run as the positive control (T-W03-06 and T-W03-07, "Break attempt"). Each patch refuses, and applies nothing, unless `w03.throwaway = 'yes'` is set and no `supabase_admin` role exists. The guard and the patch are one statement, so this holds whatever the client does after an error.
 
 **Interfaces.** Where the design leaves a name or a form open, the specification states the interface the test assumes, under "Interface". If the build chooses another form, the test designer revises the test before its first run. The revision is merged before the result it judges, so git order still shows the test first. The builder does not adapt a test.
 
