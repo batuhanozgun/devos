@@ -34,6 +34,9 @@ being taken.
 The first-migration exception is tested as EV-C02-001 section 5 states it after its change on P13 (the executor's
 decision of 2026-10-12; T-W03-DEC "Depends on"): taken with the function absent, the history table absent or present
 and holding no row, and a clean listing, all read completely in one snapshot; every other state "could not check".
+A read whose fields disagree, the history table reported absent with a row count given (0 included), is "could not
+check" and names history_rows; the table absent with the row count null is read as before (the executor's decision
+of 2026-10-12, E25 and E26; T-W03-DEC "Depends on").
 """
 import json
 import os
@@ -123,7 +126,8 @@ NOT_TAKEN_STATE = {"E04": ("history_table_exists", "history_rows"),
                    "E10": ("complete",), "E11": ("snapshot",), "E12": ("snapshot",), "E13": ("fm_reads",),
                    "E14": ("fm_reads",), "E15": ("function_exists",), "E16": ("history_table_exists",),
                    "E17": ("listing",), "E18": ("drift_call", "drift_result"), "E19": ("expected",),
-                   "E22": ("history_rows",), "E23": ("history_rows",), "E24": ("listing",)}
+                   "E22": ("history_rows",), "E23": ("history_rows",), "E24": ("listing",),
+                   "E25": ("history_rows",), "E26": ("history_rows",)}
 
 
 def report_line_problems(cid, want_exc, stdout):
@@ -252,6 +256,12 @@ def decide_cases():
         FM_READS=reads(False, True, [], rows=0, drop="history_rows"), **nc)
     add("E24", "history table empty, no function, but a schema in the listing", "no", "could_not_check",
         "not_taken", FM_READS=reads(False, True, ["schema w03_fixture_schema"], rows=0), **nc)
+    # a read whose fields disagree (the executor's decision of 2026-10-12; T-W03-DEC "Depends on")
+    add("E25", "reads disagree: history table reported absent with a row count of 3, no function, listing clean "
+        "(break: a copy that ignores the row count when the table is absent)", "no", "could_not_check", "not_taken",
+        FM_READS=reads(False, False, [], rows=3), **nc)
+    add("E26", "reads disagree: history table reported absent with a row count of 0, no function, listing clean",
+        "no", "could_not_check", "not_taken", FM_READS=reads(False, False, [], rows=0), **nc)
     return c
 
 
