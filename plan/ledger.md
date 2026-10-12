@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-030 answered (a), pressed for CS1, in the working session at about 2026-10-12T06:04Z (L-265). D-029 answered (b) in the working session at about 2026-10-12T05:53Z, with his constraint for SOUL (L-263). D-028 answered (a) in the working session at about 19:21Z (L-251; P4 started at about 19:14Z). D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T15:01:37Z (comment `6110352256`, row 5's reading, not a decision; L-226). | 2026-10-12T06:05Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). Issue #6 comment `6109982927` (2026-10-11T14:20:30Z) and working session 14:40:50Z: pressed for P3's first attempt (L-221). Working session 14:48:46Z: pressed for P3's second attempt (L-226). Issue #6 comment `6110352256` (2026-10-11T15:01:37Z) and working session 15:02:19Z: row 5's reading, no routine line, and a question whether he must run the routine again, answered there: not now (L-226). Working session about 19:21Z: D-028 (a), pressed for P4 (L-251). Working session 2026-10-12 about 05:49Z: a question why he is asked to turn the skills off, answered there; about 05:53Z: D-029 (b), with a constraint for SOUL (L-263); about 06:04Z: D-030 (a), pressed for CS1 (L-265); about 06:10Z: on the session's effort setting, for information (L-266); about 06:45Z: at the computer, asking whether anything is expected of him and whether to set the effort to ultracode, answered there (yes, D-008); about 07:05Z: effort set to ultracode, and D-002 amended on the weekly pace warning (L-267). Working session about 07:15Z to 07:25Z: why the routine is deleted, answered there (L-268). Issue #6 comment `6120677086` (2026-10-12T08:35:04Z) and working session about 08:36Z: the routine and the variable line deleted (W-C01-47 item 3; L-269). Working session about 11:20Z to 11:35Z: questions on what runs in the background, what "deletion" means, and whether proving it is unnecessary work; he agreed with moving the one-day observation off the critical path (L-275). Working session 11:37Z: two questions for discussion, why DevOS may see only what it created and why the one-day wait was chosen; answered there, recorded as N-203 (C03) and N-204 (C06) (L-276). Working session 13:21Z: a question what C02 is, answered there; 13:36Z: both Supabase projects are paused after a week without activity, for information; resuming them is his step when the work needs it (C02's "Batu's steps" row 0; L-282). Working session 14:25:30Z: how the work is going, answered there (L-289); 15:11:24Z to 15:15:18Z: both projects resumed, step 0 (L-286); 16:08:29Z: whether anything is expected of him, answered there: nothing now (L-289). Issue #6 comment `6128880946` (2026-10-12T17:03:22Z): the projects are already active, and whether he misunderstood; answered on #6 (comment `6128959795`): no, step 0 is done (L-289). | 2026-10-12T17:17Z |
-| summary_tr | **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 yarın 11:40'tan sonra; birleşik deneme kısmi, N-207). <br>**C02 sürüyor.** Dört madde kabul edildi: W-C02-15 (disiplin denetimleri), W-C02-19 (birleştirme kapısı veritabanı değişikliklerini yüksek etkili sayıyor), W-C02-16 (yan dal kuralı), W-C02-04 (veri modelinin açık seçimleri). Veritabanı değişikliklerini uygulayacak yolun tasarımı (W-C02-03) ana dala girdi; testleri ve yapımı sırada. Kimlik zinciri tasarımı (W-C02-05) denetimden geçti; sıradaki birleştirme o. <br>Şu an senden beklenen bir şey yok. Sıradaki adımın (Supabase veritabanı şifrelerini GitHub'a girmek), adım metnindeki birkaç küçük düzeltme denetlenince #6'ya gelecek. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T17:20Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T17:20Z |
+| summary_tr | **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 yarın 11:40'tan sonra; birleşik deneme kısmi, N-207). <br>**C02 sürüyor.** Beş madde kabul edildi: W-C02-15, W-C02-19, W-C02-16, W-C02-04 (veri modelinin açık seçimleri), W-C02-05 (kimlik zinciri ve ortamlar). Veritabanı değişikliklerini uygulayacak yolun tasarımı (W-C02-03) ana dala girdi; testleri yazılıyor. Sırada aktarım tasarımı (W-C02-06) ve testler (W-C02-07). <br>Şu an senden beklenen bir şey yok. Sıradaki adımın (Supabase veritabanı şifrelerini GitHub'a girmek), adım metnindeki son düzeltme denetlenince #6'ya gelecek. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T17:36Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T17:37Z |
 
 ---
 
@@ -33,19 +33,17 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- none
+- `W-C02-06` The ledger transfer, designed (task 8)
+- `W-C02-07` C02's tests, written before the build (task 6)
+- `W-C02-11` The guard and settings before the environments (task 7's prerequisites)
 
 **Running:**
 - `W-C02-03` Migration path (task 0): claimed by `nobody`
-- `W-C02-05` The identity chain and the environments, designed (tasks 3, 4 and 7): claimed by `nobody`
 
 **Not ready, with the first unmet condition:**
-- `W-C02-06`: depends on W-C02-05 (not accepted)
-- `W-C02-07`: depends on W-C02-05 (not accepted)
 - `W-C02-08`: depends on W-C02-03 (not accepted)
 - `W-C02-09`: depends on W-C02-08 (not accepted)
 - `W-C02-10`: depends on W-C02-09 (not accepted)
-- `W-C02-11`: depends on W-C02-05 (not accepted)
 - `W-C02-12`: depends on W-C02-03 (not accepted)
 - `W-C02-13`: depends on W-C02-10 (not accepted)
 - `W-C02-14`: depends on W-C02-06 (not accepted)
@@ -64,9 +62,9 @@ Selection among ready items: critical path first, one logged sentence of reason 
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
 | `C01` | Platform verification | accepted | accepted 38, cancelled 10 | 4 |
-| `C02` | Data model, rule gate and identity chain | running | accepted 6, blocked 11, running 2 | 16 |
-| `C03` | Trust boundaries and effect channels | planned | no items | 22 |
-| `C04` | Knowledge, search and context | planned | no items | 16 |
+| `C02` | Data model, rule gate and identity chain | running | accepted 7, blocked 8, ready 3, running 1 | 16 |
+| `C03` | Trust boundaries and effect channels | planned | no items | 23 |
+| `C04` | Knowledge, search and context | planned | no items | 17 |
 | `C05` | Common rules, roles and methods | planned | no items | 13 |
 | `C06` | Working order, audit and decision channel | planned | no items | 19 |
 | `C07` | First real loop: the cognitive gate | planned | no items | 5 |
@@ -161,13 +159,13 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C02-02` | The test designer: its role file | accepted | — | — | `plan/work/W-C02-02.md` |
 | `W-C02-03` | Migration path (task 0) | running | — | — | `plan/work/W-C02-03.md` |
 | `W-C02-04` | The data model's open choices, decided (tasks 1, 2 and 5) | accepted | — | — | `plan/work/W-C02-04.md` |
-| `W-C02-05` | The identity chain and the environments, designed (tasks 3, 4 and 7) | running | — | — | `plan/work/W-C02-05.md` |
-| `W-C02-06` | The ledger transfer, designed (task 8) | blocked: depends on W-C02-05 (not accepted) | — | — | `plan/work/W-C02-06.md` |
-| `W-C02-07` | C02's tests, written before the build (task 6) | blocked: depends on W-C02-05 (not accepted) | — | — | `plan/work/W-C02-07.md` |
+| `W-C02-05` | The identity chain and the environments, designed (tasks 3, 4 and 7) | accepted | — | — | `plan/work/W-C02-05.md` |
+| `W-C02-06` | The ledger transfer, designed (task 8) | ready | — | — | `plan/work/W-C02-06.md` |
+| `W-C02-07` | C02's tests, written before the build (task 6) | ready | — | — | `plan/work/W-C02-07.md` |
 | `W-C02-08` | Schema, role classes and access rules (tasks 1 and 4) | blocked: depends on W-C02-03 (not accepted) | — | — | `plan/work/W-C02-08.md` |
 | `W-C02-09` | `devos_api` functions, their events, and the identity chain's functions (tasks 2 and 3) | blocked: depends on W-C02-08 (not accepted) | — | — | `plan/work/W-C02-09.md` |
 | `W-C02-10` | Format gates, samples, impact-class rules and environment-level separation rules (task 5) | blocked: depends on W-C02-09 (not accepted) | — | — | `plan/work/W-C02-10.md` |
-| `W-C02-11` | The guard and settings before the environments (task 7's prerequisites) | blocked: depends on W-C02-05 (not accepted) | — | — | `plan/work/W-C02-11.md` |
+| `W-C02-11` | The guard and settings before the environments (task 7's prerequisites) | ready | — | — | `plan/work/W-C02-11.md` |
 | `W-C02-12` | The three environments and their tokens, with the real-token tests (task 7) | blocked: depends on W-C02-03 (not accepted) | — | — | `plan/work/W-C02-12.md` |
 | `W-C02-13` | C02's tests run in full, each with its break (task 6) | blocked: depends on W-C02-10 (not accepted) | — | — | `plan/work/W-C02-13.md` |
 | `W-C02-14` | The ledger transfer (task 8) | blocked: depends on W-C02-06 (not accepted) | — | — | `plan/work/W-C02-14.md` |
@@ -261,6 +259,7 @@ The numbering rule (rule 5 above) is unchanged. K1–K9 and B1–B3 are recorded
 | `PC-40` | Working order section 5: a side branch closes when its result is recorded, its closing check has passed and it is merged into main, and no plan step starts before then, also while the branch waits only on that check and merge (W-C02-16; N-205, N-144; CHK-C01-112 finding 12); with N-209's plan text corrections: C01's purpose read under FR-05 premise P2, C01 row 3's documented facts not called observed, stale pointers | technical | accepted | `plan/decisions/PC-40.md` |
 | `PC-41` | The migration path's design (W-C02-03, EV-C02-001) in the plan and Appendix B: each project's migration credential is its `postgres` password, kept as the secret of a GitHub environment per project limited to `main`, not in "the repository's secret settings"; `devos-test` first and `devos` only after it succeeds; the records the comparison reads and its callers; the probe-schema text corrected, since P3 was never built; key inventory rows 23 and 24 | technical | accepted | `plan/decisions/PC-41.md` |
 | `PC-42` | The data model's open choices (W-C02-04): Appendix B section 8 decided, with the rows it lacked (claim expiry computed, the lease and heartbeat, the sample share, R17, R23, contract-first); the vector index and chunk size moved to C04; the fields and rules the source maps found missing; T-36's answer-to-revision binding, T-37's Finding flag and T-77's outside check of due occurrences written in; a break path that never touches the projects | technical | accepted | `plan/decisions/PC-42.md` |
+| `PC-43` | The identity chain and the environments (W-C02-05): each environment token a network secret of its own environment, devos_kurulum's rights and limits, Batu's steps for the tokens and the three environments, Appendix B's token rules, Appendix C's N04, N08 and N17 as S8 extends them, and the key inventory's token rows | technical | accepted | `plan/decisions/PC-43.md` |
 <!-- /generated -->
 
 ---
@@ -278,20 +277,20 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-194` | `C01` | L-251 | open | **The builder's own one-shot check-ins are not recorded as owned** (L-251; 2026-10-11). The executor armed two check-ins into the working... |
 | `N-074` | `C02` | EV-C00-014 | open | **Decided at this stage, from W-C00-10 round 1** (`evidence/C00/EV-C00-014_w10_round1_dispositions.md`, 2026-10-05, L-146): T-31 (strengt... |
 | `N-112` | `C02` | CHK-C01-005 | open | **Pointer** to N-111 on `C05` (verbatim there): C01 row 4 is observed again whenever the Claude Code version changes (CHK-C01-005 conditi... |
-| `N-125` | `C02` | CHK-C01-007 | open | **Batu's steps for the installation environment's token and the CI role's key** (CHK-C01-007 finding 13(a); 2026-10-06, L-170). `plan/key... |
-| `N-131` | `C02` | FR-05 | open | **From FR-05 (2026-10-10, L-179), before C02 builds DevOS's environments and the identity chain.** (1) PC-21 names, before this stage's e... |
 | `N-136` | `C02` | W-C01-42 | open | **Keeping the three environments apart inside one account: what C02 builds** (W-C01-42; D-020 (a); `evidence/C01/EV-C01-004_environment_s... |
 | `N-181` | `C02` | W-C01-14 | open | **Session tools that arrive after a session's first call** (W-C01-14; `evidence/C01/EV-C01-020_W-C01-14_row7_embedding_session.md`, secti... |
 | `N-174` | `C02` | EV-C01-017 | open | **The guard's own tests again before DevOS's environments open** (EV-C01-017, "What the record cannot show"; PC-21 item 5; W-C01-38; 2026... |
 | `N-201` | `C02` | N-091 | open | **Each stage file lists Batu's steps, from C02 on** (T-49; N-091 on `plan/work/C01.md`; W-C01-48 item 2; 2026-10-12, L-272). Like `plan/w... |
 | `N-202` | `C02` | W-C01-47 | open | **The routine's deletion observed after one full period of its schedule** (W-C01-47 item 4 as changed on 2026-10-12, L-275). Batu reporte... |
 | `N-207` | `C02` | CHK-C01-112 | open | **Plan Section 8 item 5 at this stage's end, read cumulatively** (CHK-C01-112 finding 7 and R1; lens E of C01's stage close; L-279). C01'... |
-| `N-208` | `C02` | CHK-C01-112 | open | **Re-reading C01's documentation-based facts** (CHK-C01-112 R3; PC-21 item 9; FR-05 `reopen_if`; L-279). C01 established rows 3, 9 (its m... |
 | `N-240` | `C02` | L-285 | open | **`DURUM.md`'s first line counts only open decision records** (L-285). `tools/records.py` writes "Senden beklenen: Hiçbir şey. … issue'su... |
 | `N-242` | `C02` | CHK-C02-003 | open | **A surviving mutant of `tools/subagent_audit.py`** (CHK-C02-003 finding 12; L-286). Mutant P1 (`if not re.search(r"\w", block):` made `i... |
+| `N-220` | `C02` | W-C02-05 | open | **Re-reading C01's documentation-based facts: the rule** (N-208; W-C02-05; `evidence/C02/EV-C02-003_identity_chain_and_environments.md` s... |
+| `N-221` | `C02` | W-C02-05 | open | **The identity chain's first part, Batu's step 4 and the installation environment's self-check, before W-C02-09 builds the rest** (N-131;... |
 | `N-233` | `C02` | W-C02-03 | open | **Where the database tests the migration job runs live** (W-C02-03; `evidence/C02/EV-C02-001_migration_path.md` M08, M09 and section 6 (c... |
 | `N-243` | `C02` | CHK-C02-007 | open | **Refinements of working order section 5's "What waits for the close"** (CHK-C02-007 findings 3 (b) to (d); L-288). Not blocking, carried... |
 | `N-244` | `C02` | CHK-C02-009 | open | **Carried from the data model's check to the items that build on it** (CHK-C02-009's non-blocking findings; CHK-C02-011's note for the te... |
+| `N-245` | `C02` | CHK-C02-014 | open | **Refinements of the identity chain's record and step text, before they are next used** (CHK-C02-014 R1, R2, R5 to R7; CHK-C02-012's refi... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
 | `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
@@ -311,6 +310,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-187` | `C03` | W-C01-20 | open | **Skills that the repository does not provide reach DevOS's sessions, and skills trigger from their description** (W-C01-20; `evidence/C0... |
 | `N-203` | `C03` | L-276 | open | **Which role may see or act on which session or routine: by purpose, not by who created it** (Batu's question in the working session, 202... |
 | `N-210` | `C03` | N-201 | open | **Pointer** to N-201 on `C02` (verbatim there; N-091 on `C01`): this stage's file lists, in a "Batu's steps" section, each step the stage... |
+| `N-222` | `C03` | W-C02-05 | open | **What C02's identity chain leaves to this stage** (W-C02-05; `evidence/C02/EV-C02-003_identity_chain_and_environments.md` sections 3.2, ... |
 | `N-211` | `C03` | W-C02-04 | open | **N-032's structural part, moved here** (W-C02-04; `evidence/C02/EV-C02-002_data_model_choices.md` section 3, part 2.12; PC-42; 2026-10-1... |
 | `N-230` | `C03` | W-C02-03 | open | **The deploy path for the first Edge Function** (W-C02-03; `evidence/C02/EV-C02-001_migration_path.md` M12 and section 4; PC-41; 2026-10-... |
 | `N-231` | `C03` | W-C02-03 | open | **The migration channel at C03** (W-C02-03; `evidence/C02/EV-C02-001_migration_path.md` M22, M32, section 3 and section 10 point 9; PC-41... |
@@ -328,6 +328,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-133` | `C04` | FR-05 | open | **From FR-05 (2026-10-10, L-179).** (1) Whether the leak check's semantic layer is kept is decided here with its measurement; Batu was to... |
 | `N-146` | `C04` | PC-24 | open | **When a declared writer stops being active** (PC-24; W-C01-10, EV-C01-008; 2026-10-11). Appendix B 3.7's rule "While a task definition t... |
 | `N-179` | `C04` | W-C01-14 | open | **C01 row 7's Actions part, moved here** (W-C01-14; `evidence/C01/EV-C01-020_W-C01-14_row7_embedding_session.md`; 2026-10-11). Plan C01 r... |
+| `N-223` | `C04` | W-C02-05 | open | **A claim refused without a registration of the same role class** (EV-C01-004 S8 line 3; N-136; W-C02-05; `evidence/C02/EV-C02-003_identi... |
 | `N-212` | `C04` | W-C02-04 | open | **Carried from C02's data model** (W-C02-04; `evidence/C02/EV-C02-002_data_model_choices.md`; PC-42; 2026-10-12). Each item has its own d... |
 | `N-232` | `C04` | W-C02-03 | open | **`session_brief`'s call of `deployment_drift`** (W-C02-03; `evidence/C02/EV-C02-001_migration_path.md` M14 to M16; PC-41 places 10 and 1... |
 | `N-046` | `C05` | OI-007 | open | **Pointer** to N-032 on `C02` (verbatim there): the behavioural part of the FND-001 regression test (the DR10 hidden exam) belongs to C05. |
@@ -401,7 +402,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-140` | `C12` | W-C01-42 | open | **The session-tools server deny at its target** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S9; 2026-10-11). |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 64 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-063, N-073, N-102, N-104, N-105, N-156, N-167, N-170, N-186, N-173, N-185, N-149, N-148, N-145, N-144, N-143, N-141, N-109, N-110, N-122, N-124, N-129, N-191, N-192, N-031, N-032, N-064, N-092, N-127, N-128, N-198, N-205, N-209, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 67 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-063, N-073, N-102, N-104, N-105, N-156, N-167, N-170, N-186, N-173, N-185, N-149, N-148, N-145, N-144, N-143, N-141, N-109, N-110, N-122, N-124, N-129, N-191, N-192, N-031, N-032, N-064, N-092, N-125, N-127, N-128, N-131, N-198, N-205, N-208, N-209, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
