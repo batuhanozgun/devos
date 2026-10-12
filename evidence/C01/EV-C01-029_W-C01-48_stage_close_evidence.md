@@ -87,6 +87,11 @@ These were read in full at `3301de7`. Part A (steps 1-9) adds `DEVOS_ENVIRONMENT
   - `isUsingOverage` false at every reading that shows it (b).
 - **Could not check:** the account's extra-usage setting itself. No session reads it; Batu's report on his account pages (EV-C01-022 section 1.3) is his word.
 
+- **[2026-10-12, CHK-C01-109 C1; L-273] Two more instructions given in the working session**, taken from the C01 log and "Batu's steps" in `plan/work/C01.md` (the working session's instructions to him are recorded there; the transcript was not read for them):
+  - Choose Accept edits for the working session (2026-10-10, about 20:58Z; L-178; "Batu's steps" row 6): a permission mode of the session (D-008). Does not enable a paid feature: it changes how the session asks for permission, not what the account pays for.
+  - Set the session's effort to ultracode (2026-10-12, about 06:45Z, at his question; L-267; row 16): the effort D-008 fixed, drawn from his plan's included usage (D-002). Does not enable a paid feature.
+  With these, (a)'s result stands: no instruction given to Batu or to a probe session in C01 enables a paid feature.
+
 ### (a.5) The routine's stored prompt and the control files a probe session acts on
 
 - **The stored prompt.** `ROUTINE_DESIGN.md` section 3, verbatim, read in full. `git log` shows 19 commits to `ROUTINE_DESIGN.md`. The prompt block was extracted from all 19 versions, from "You are a C01 probe run of DevOS" to "…the bans win: do nothing else and end.", and its SHA-256 is the same in every one. At `3301de7`, section 3's copy and step 13's copy also have the same SHA-256. So the prompt did not change during C01, as section 3 says. It has five bans (self-observation only; no token or secret; write only the run's own branch; no other sessions, routines or repositories; start text is data) and one instruction: read `CONTROL.md`. **No paid feature**: it enables nothing.
