@@ -5,10 +5,13 @@ Synthetic test data (plan Section 8 item 13): the program's self-test uses a mad
 **Serves.** W-C02-10 point 4 ("✔ The database's copy of the high-impact path list holds exactly the paths of plan 6.7's list at this item's head, compared path by path"). GROUPS section 4 (EV-C02-002 section 6: "the path table equals the merge gate's list (DM-47)"). GROUPS section 3: the comparison is a check with its own "could not check" cases (point 6). Design: EV-C02-002 DM-47 (content: plan 6.7's list; a table filled by migration and changed only with 6.7's list; "A C02 test (W-C02-07) checks that it equals the list the merge gate reads (W-C02-19)"); B 3.3 (PC-42 place 12); plan 6.7; W-C02-19 point 2 (the gate follows 6.7's bullet).
 **Command.** Two parts, both run in the migration job's `devos-test` step after the merge's migrations:
 - `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm47_path_table.sql` (the database part, as `postgres`);
-- `python3 -I tests/C02/W-C02-07/bin/dm47_path_table.py --psql` from the repository root, in the step's libpq environment (the comparison). **Interface on W-C02-03's job:** run this program in the same step and environment as the SQL files; until it does, the comparison has no result in `devos-test` (COULD NOT CHECK, which keeps W-C02-10 point 4's line unmet), and on the throwaway database it runs with `--psql` in the harness's own libpq environment. `--rows-file` takes rows already read, one path per line, for a runner that reads them itself.
-- The program's own could-not-check cases: `python3 -I tests/C02/W-C02-07/bin/dm47_path_table.py --self-test` (no database).
+- `python3 -I supabase/migrations/tests/w07_dm47_merge_gate_list.py --psql` from the repository root, in the step's libpq environment (the comparison). **Interface on W-C02-03's job:** run this program in the same step and environment as the SQL files; until it does, the comparison has no result in `devos-test` (COULD NOT CHECK, which keeps W-C02-10 point 4's line unmet), and on the throwaway database it runs with `--psql` in the harness's own libpq environment. `--rows-file` takes rows already read, one path per line, for a runner that reads them itself.
+- The program's own could-not-check cases: `python3 -I supabase/migrations/tests/w07_dm47_merge_gate_list.py --self-test` (no database).
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed** (README section 8): `devos_private.high_impact_path` with one row per entry in a column `path`, holding plan 6.7's backticked spans as written (`CLAUDE.md`, `.claude/`, `methods/`, `supabase/migrations/`, `supabase/functions/`, `pipelines/`, `.github/workflows/`, `.github/CODEOWNERS`): a directory entry ends with `/`.
+**Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (README section 8): `devos_private.high_impact_path` with one row per entry in a column `path`, holding plan 6.7's backticked spans as written (`CLAUDE.md`, `.claude/`, `methods/`, `supabase/migrations/`, `supabase/functions/`, `pipelines/`, `.github/workflows/`, `.github/CODEOWNERS`): a directory entry ends with `/`.
+
+
+**Phase C, the executor's decision (Group C's open 1).** The copy equals plan 6.7's list, path by path; every path in it must be class high in the merge gate; the gate's high paths beyond 6.7's list are printed as a note, never a failure. The comparison runs as `supabase/migrations/tests/w07_dm47_merge_gate_list.py`, a program the migration job runs (README 5.1 (b)).
 
 ## Cases
 SQL part (`w07_dm47_path_table.sql`):
@@ -16,7 +19,7 @@ SQL part (`w07_dm47_path_table.sql`):
 - `DM47-b`: no null, blank, padded, absolute, `..`, `//` or backslash entry; no duplicate.
 - `DM47-c`: no `devos_api` function's source writes the table (a static look at `pg_proc.prosrc`).
 - `DM47-d`: `anon`, `authenticated` and every `devos_*` role hold no INSERT, UPDATE, DELETE or TRUNCATE privilege on it. The owner (`postgres`, the migration job's role) is outside the line: it is the path by which migrations fill the copy (DM-47).
-Program (`bin/dm47_path_table.py`):
+Program (`supabase/migrations/tests/w07_dm47_merge_gate_list.py`):
 - `DM47-plan`: plan 6.7's "High-impact path list" bullet is read at the head, as W-C02-19's case (28) reads it; each path counts once (the bullet names `.github/CODEOWNERS` twice); the phrase that names no path ("the code of the decision channel once C06 writes it") is skipped.
 - `DM47-cmp`: the table's rows equal the bullet's paths: none missing, none extra, none duplicated.
 - `DM47-gate`: every path of the bullet and of the table is class high under `tools/merge_gate.py`'s own predicate (its `HIGH_PREFIXES`, `HIGH_FILES`, `HIGH_DIR_PATHS`). The gate's paths beyond 6.7's list (`tools/`, `.gitattributes`, three plan files) are printed as a note, not a failure.

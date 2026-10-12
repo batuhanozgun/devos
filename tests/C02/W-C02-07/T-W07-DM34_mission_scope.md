@@ -5,7 +5,10 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.dm34` a
 **Serves.** W-C02-09 point 8 ("every other test W-C02-07's record assigns to this item"); EV-C02-002 DM-34 and section 6 ("a scope outside the Mission refused at `admit_work`"); B principle 4 (PC-42: a dotted path of lower-case labels; a work item's scope lies within its Mission's) and B 3.1 ("Opening internal work cannot widen the mission's scope").
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm34_mission_scope.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-DM34-1`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** The Group A common interface v1 as `T-W07-F01` states it (the fixture Mission, `admit_work`'s payload, the return form). Also `devos_api.revise_work(jsonb)` with `{id, base_revision, scope, reason}`. A malformed scope is refused, not normalised.
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it (the fixture Mission, `admit_work`'s payload, the return form). Also `devos_api.revise_work(jsonb)` with `{id, base_revision, scope, reason}`. A malformed scope is refused, not normalised.
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Input | Expected |

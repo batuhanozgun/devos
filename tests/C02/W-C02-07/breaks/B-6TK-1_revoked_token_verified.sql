@@ -1,6 +1,7 @@
 -- w07-break: test=w07_6tk_token_reasons.sql,w07_idc_identity_chain.sql; expect-red=6TK-rv1-a,6TK-rv1-b,6TK-h3,IDC-r2
 -- Break patch of tests/C02/W-C02-07/T-W07-6TK_token_reasons.md, "Break attempt" (README 5.2). Removed: the revocation check of the derivation (B 3.27: a revoked token is not verified): in
 -- devos_private.caller_role_class's own text, 'revoked_at is not null' becomes false and 'revoked_at is null' becomes true.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -26,3 +27,4 @@ begin
   end loop;
   if n = 0 then raise exception 'w07 break not applied: no revoked_at test found in caller_role_class (not a break shown)'; end if;
 end $b$;
+commit;

@@ -1,6 +1,7 @@
 -- w07-break: test=w07_idc_identity_chain.sql; expect-red=IDC-r1
 -- Break patch of tests/C02/W-C02-07/T-W07-IDC_identity_chain.md, "Break attempt" (README 5.2). Removed: the epoch increment of revoke_env_token (B:46; B principle 9): a trigger on the global authority
 -- epoch's table (the name the test's w07_cfg assumes) cancels every update of it.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -23,3 +24,4 @@ begin
   execute 'create trigger w07_break_keep_epoch before update on devos_private.global_authority_epoch for each row '
           'execute function devos_private.w07_break_keep_epoch()';
 end $b$;
+commit;

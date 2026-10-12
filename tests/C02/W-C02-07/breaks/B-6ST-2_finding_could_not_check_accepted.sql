@@ -5,6 +5,7 @@
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
 -- specification assumes (revised before a first result if the build differs, README section 8).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -20,11 +21,12 @@ set search_path = pg_catalog as $f$
 declare r jsonb; nid uuid;
 begin
   r := devos_api.record_finding_w07_orig(p);
-  if r->>'reason_code' = 'could_not_check' or r->>'status' = 'could_not_check' then
+  if r->>'reason_code' = 'could_not_check' then
     nid := gen_random_uuid();
     insert into devos_private.finding select * from jsonb_populate_record(null::devos_private.finding, p || jsonb_build_object('id', nid));
-    return jsonb_build_object('status', 'accepted', 'id', nid);
+    return jsonb_build_object('status', 'ok', 'id', nid);
   end if;
   return r;
 end $f$;
 grant execute on function devos_api.record_finding(jsonb) to anon, authenticated;
+commit;

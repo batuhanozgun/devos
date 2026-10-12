@@ -26,15 +26,15 @@ create function pg_temp.w07_cfg(p_key text) returns text language sql immutable 
   select t.v from (values
     ('api_role', 'anon'),                                  -- the role a Data API request with the publishable key runs as
     ('env_tokens', 'devos_private.env_tokens'),            -- B 3.27 (name fixed by the design)
-    ('epoch_table', 'devos_private.global_authority_epoch'), -- one row (EV-C02-002 DM-01); name assumed
+    ('epoch_table', 'devos_private.global_authority_epoch'), -- one row (EV-C02-002 DM-01); README section 8
     ('epoch_column', 'epoch'),                             -- assumed
-    ('events', 'devos_private.events'),                    -- Event, B 3.13; name assumed; columns id, role_class, origin
-    ('rejected', 'devos_private.rejected_attempts'),       -- RejectedAttempt, DM-19's fields; name assumed
+    ('events', 'devos_private.event'),                    -- Event, B 3.13; README section 8 (B:16); columns id, role_class, origin
+    ('rejected', 'devos_private.rejected_attempt'),       -- RejectedAttempt, DM-19's fields; README section 8
     ('role_codes', 'role_class_not_permitted'),            -- reason code(s) of a wrong-role-class refusal; assumed
-    ('review_table', 'devos_private.reviews'),             -- B 3.11; assumed
-    ('verdict_table', 'devos_private.verdicts'),           -- B 3.11; assumed
-    ('work_table', 'devos_private.works'),                 -- B 3.3; assumed
-    ('evalrun_table', 'devos_private.eval_runs')           -- B 3.15; assumed
+    ('review_table', 'devos_private.review'),             -- B 3.11; assumed
+    ('verdict_table', 'devos_private.verdict'),           -- B 3.11; assumed
+    ('work_table', 'devos_private.work'),                 -- B 3.3; assumed
+    ('evalrun_table', 'devos_private.eval_run')           -- B 3.15; assumed
   ) t(k, v) where t.k = p_key
 $f$;
 
@@ -160,7 +160,7 @@ end $f$;
 -- The refusal a function returned: a JSON object with status 'refused' or refused true, carrying reason_code.
 create function pg_temp.w07_code(r jsonb) returns text language sql as $f$
   select case when jsonb_typeof(r->'res') = 'object'
-               and (r->'res'->>'status' = 'refused' or r->'res'->'refused' = 'true'::jsonb or r->'res' ? 'reason_code')
+               and r->'res'->>'status' = 'refused'  -- interface v1 (README section 8)
               then coalesce(r->'res'->>'reason_code', 'refused_without_code') end
 $f$;
 
@@ -464,7 +464,7 @@ begin
   end if;
   -- Part T (W-C02-14; the executor's decision 5): the ledger transfer's copy, written through W-C02-06's path under
   -- devos_kurulum, counting as no audit verdict. Not a case of this file's result; reported on its own line.
-  raise notice 'T-W07-N04 PART T (W-C02-14) COULD NOT CHECK (W-C02-06''s transfer path is not accepted yet; its interface is named in the specification)';
+  raise notice 'W07_N04_SELF_APPROVAL_PART_T COULD NOT CHECK (W-C02-14; W-C02-06''s transfer path is not accepted yet; its interface is named in the specification)';
   cal := null; den := null; kur := null; scrub := null;
 end $$;
 

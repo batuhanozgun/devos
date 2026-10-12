@@ -6,7 +6,7 @@
 -- empty, malformed, unknown or revoked, or whose header cannot be read'): one case per reason code, each refused before
 -- any other check, counted under role class none, and kept apart from a wrong-role-class refusal and from acceptance;
 -- and the derivation's own stored input (env_tokens) missing, unreadable or partial, which must never let a call through.
--- Specification: tests/C02/W-C02-07/T-W07-6TK_token_reasons.md. The Data API half: bin/6tk_http_reasons.py.
+-- Specification: tests/C02/W-C02-07/T-W07-6TK_token_reasons.md. The Data API half: supabase/migrations/tests/w07_6tk_http_reasons.py.
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',
@@ -26,15 +26,15 @@ create function pg_temp.w07_cfg(p_key text) returns text language sql immutable 
   select t.v from (values
     ('api_role', 'anon'),                                  -- the role a Data API request with the publishable key runs as
     ('env_tokens', 'devos_private.env_tokens'),            -- B 3.27 (name fixed by the design)
-    ('epoch_table', 'devos_private.global_authority_epoch'), -- one row (EV-C02-002 DM-01); name assumed
+    ('epoch_table', 'devos_private.global_authority_epoch'), -- one row (EV-C02-002 DM-01); README section 8
     ('epoch_column', 'epoch'),                             -- assumed
-    ('events', 'devos_private.events'),                    -- Event, B 3.13; name assumed; columns id, role_class, origin
-    ('rejected', 'devos_private.rejected_attempts'),       -- RejectedAttempt, DM-19's fields; name assumed
+    ('events', 'devos_private.event'),                    -- Event, B 3.13; README section 8 (B:16); columns id, role_class, origin
+    ('rejected', 'devos_private.rejected_attempt'),       -- RejectedAttempt, DM-19's fields; README section 8
     ('role_codes', 'role_class_not_permitted'),            -- reason code(s) of a wrong-role-class refusal; assumed
-    ('review_table', 'devos_private.reviews'),             -- B 3.11; assumed
-    ('verdict_table', 'devos_private.verdicts'),           -- B 3.11; assumed
-    ('work_table', 'devos_private.works'),                 -- B 3.3; assumed
-    ('evalrun_table', 'devos_private.eval_runs')           -- B 3.15; assumed
+    ('review_table', 'devos_private.review'),             -- B 3.11; assumed
+    ('verdict_table', 'devos_private.verdict'),           -- B 3.11; assumed
+    ('work_table', 'devos_private.work'),                 -- B 3.3; assumed
+    ('evalrun_table', 'devos_private.eval_run')           -- B 3.15; assumed
   ) t(k, v) where t.k = p_key
 $f$;
 
@@ -160,7 +160,7 @@ end $f$;
 -- The refusal a function returned: a JSON object with status 'refused' or refused true, carrying reason_code.
 create function pg_temp.w07_code(r jsonb) returns text language sql as $f$
   select case when jsonb_typeof(r->'res') = 'object'
-               and (r->'res'->>'status' = 'refused' or r->'res'->'refused' = 'true'::jsonb or r->'res' ? 'reason_code')
+               and r->'res'->>'status' = 'refused'  -- interface v1 (README section 8)
               then coalesce(r->'res'->>'reason_code', 'refused_without_code') end
 $f$;
 

@@ -3,6 +3,7 @@
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -33,3 +34,4 @@ begin
                    case when g.grantee = 0 then 'public' else quote_ident(pg_get_userbyid(g.grantee)) end);
   end loop;
 end $p$;
+commit;

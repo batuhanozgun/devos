@@ -17,11 +17,17 @@ Cases:
   IDC-dd-<rc>    deployment_drift over the Data API (EV-C02-003 §4.1 row deployment_drift: devos_ci only); a caller over
                  HTTP is never the migration job's direct login, so the derivation applies. devos_ci passes the role
                  gate; the five others get a role refusal.
-Interface (the executor's decision 3; W-C02-03's job builds the runner): the job runs
-  python3 -I tests/C02/W-C02-07/bin/idc_real_path.py < <JSON on standard input>
-with {"endpoint": "https://<devos-test host>", "apikey": "<publishable key>", "tokens": {"<role class>": "<token>", ...
-for all six classes}, "role_codes": ["<wrong-role-class reason code>", ...] (optional)}. Without that input every Data
-API case is "could not check". Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK.
+Runs: by the migration job's runner inside its devos-test step, from the repository root, as
+  python3 -I supabase/migrations/tests/w07_idc_real_path.py < <one JSON object on standard input>
+(README section 5.1 (b); note N-255 on plan/work/C02.md). The input is the job's one JSON object:
+  {"target": "devos-test", "endpoint": "<the project's API base URL>", "publishable_key": "<key>",
+   "tokens": {"<role class>": "<token>", ...}, "revoked_token": "<token>"}
+Without the endpoint, the publishable key or a token it needs, every Data API case is "could not check", and the
+line says which input is missing (never a value).
+This program uses the tokens of all six role classes. The wrong-role-class reason code is interface v1's
+role_class_not_permitted (README section 8). It reads the token format's pattern from
+tests/C02/W-C02-07/shared/scan_patterns.json (data only: parsed as JSON, compiled as a regular expression, never run).
+Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK; the last line is "W07_IDC_REAL_PATH PASS|FAIL|COULD NOT CHECK (...)".
 """
 import json
 import os
@@ -31,8 +37,8 @@ import urllib.error
 import urllib.request
 
 sys.dont_write_bytecode = True
-TEST = "T-W07-IDC"
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".."))
+TEST = "W07_IDC_REAL_PATH"
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 CLASSES = ["devos_calisma", "devos_denetim", "devos_sinav", "devos_kurulum", "devos_ci", "devos_backup"]
 TOKEN_CODES = {"missing", "empty", "malformed", "unknown", "revoked", "header_unreadable"}
 LABEL = "w07_fixture SYNTHETIC W-C02-07"
@@ -105,7 +111,7 @@ def rpc(cfg, fn, body, token, method="POST"):
     url = cfg["endpoint"].rstrip("/") + "/rest/v1/rpc/" + fn
     data = json.dumps(body).encode() if method == "POST" else None
     req = urllib.request.Request(url, data=data, method=method)
-    req.add_header("apikey", cfg["apikey"])
+    req.add_header("apikey", cfg["publishable_key"])
     req.add_header("Content-Type", "application/json")
     req.add_header("Content-Profile", "devos_api")
     req.add_header("Accept-Profile", "devos_api")
@@ -150,7 +156,7 @@ def role_of(js):
 def http_cases(cfg):
     pat = json.load(open(os.path.join(ROOT, "tests", "C02", "W-C02-07", "shared", "scan_patterns.json")))
     exact = re.compile(pat["token_patterns"]["env_token_exact"])
-    role_codes = set(cfg.get("role_codes") or ["role_class_not_permitted"])
+    role_codes = {"role_class_not_permitted"}
     toks = cfg["tokens"]
     for rc in CLASSES:
         if not toks.get(rc):
@@ -190,6 +196,18 @@ def http_cases(cfg):
             case(f"IDC-dd-{rc}", "ok" if ok else "bad", f"HTTP {st}; refusal {ref or '-'} (wanted a role refusal)")
 
 
+def missing_inputs(cfg, classes, revoked=False):
+    """What the job's input lacks, by name only (N-255); never a value."""
+    if not isinstance(cfg, dict):
+        return ["the JSON object on standard input itself"]
+    toks = cfg.get("tokens") if isinstance(cfg.get("tokens"), dict) else {}
+    out = [k for k in ("endpoint", "publishable_key") if not cfg.get(k)]
+    out += ["tokens." + c for c in classes if not toks.get(c)]
+    if revoked and not cfg.get("revoked_token"):
+        out.append("revoked_token")
+    return out
+
+
 def main():
     print(f"{TEST}: Data API part and file look (synthetic tokens from the job; no value or header is printed)")
     file_look()
@@ -201,10 +219,9 @@ def main():
             raw = None
         except ValueError:
             cfg = None
-    if not cfg or not cfg.get("endpoint") or not cfg.get("apikey") or not isinstance(cfg.get("tokens"), dict):
-        case("IDC-http", "could_not_check",
-             "no endpoint, publishable key and synthetic tokens on standard input: the migration job's devos-test step "
-             "does not run this program yet (the executor's decision 3; W-C02-03's job)")
+    lack = missing_inputs(cfg, CLASSES)
+    if lack:
+        case("IDC-http", "could_not_check", "missing from the job's input (N-255): " + ", ".join(lack))
     else:
         try:
             http_cases(cfg)

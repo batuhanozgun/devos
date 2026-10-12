@@ -3,6 +3,7 @@
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -36,10 +37,11 @@ security definer set search_path = pg_catalog as $f$
 declare r jsonb;
 begin
   r := to_jsonb(devos_api.review_finding_w07_orig(finding_id, revision, status));
-  if status = 'accepted_for_use' and (r->>'ok' = 'false' or r ? 'reason_code') then
+  if status = 'accepted_for_use' and r->>'status' = 'refused' then
     update devos_private.finding f set status = 'accepted_for_use' where f.id = finding_id;
-    return jsonb_build_object('ok', true, 'status', 'accepted_for_use');
+    return jsonb_build_object('status', 'ok', 'finding_status', 'accepted_for_use');
   end if;
   return r;
 end $f$;
 grant execute on function devos_api.review_finding(uuid, integer, text) to anon, authenticated;
+commit;

@@ -5,7 +5,7 @@ Synthetic test data (plan Section 8 item 13): findings made up inside a rolled-b
 **Serves.** W-C02-09 point 8 ("N09 (its C02 part)"). Appendix C N09 (Ek_C:126): "A finding that is undated or has only secondary sources cannot become `accepted_for_use`" / "A dated finding with a primary source can" / stage "C02, C04". Appendix B 3.8's rule, with PC-42 place 15: "Until C04 this reads `changeable` and its source spans' primary or secondary marker and reading date". EV-C02-002 DM-26: "A finding with `changeable` true cannot move to `accepted_for_use` undated or without a primary span."
 **Command.** In `devos-test`: the migration job's test step runs `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n09_finding_gate.sql` as `postgres`, and passes only on the notice `W07_N09_FINDING_GATE PASS`. Break: `python3 -I tests/C02/W-C02-07/harness/run_breaks.py --patch tests/C02/W-C02-07/breaks/B-N09-1_undated_accepted.sql --pg-bin <PostgreSQL 17 bin>`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** Group B's call convention, as T-W07-F04 states it. For this test:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. Group B's call convention, as T-W07-F04 states it. For this test:
 - `devos_private.finding` (`id`, `status`, `scope`) and `devos_private.finding_revision` (`finding_id`, `revision`, `claim`, `source_spans`, `changeable`, `counter_evidence_searched`), as DM-02 splits a family;
 - each span is an object with `primary` (boolean) and, when dated, `read_at` (a date);
 - `devos_api.review_finding(finding_id uuid, revision integer, status text)`, permitted to `devos_denetim`.

@@ -5,12 +5,15 @@ Synthetic test data (plan Section 8 item 13): every need, decision, Mission and 
 **Serves.** W-C02-10 points 2, 3 and 7 (N01, the sample review, the sample share, the refusal of an agent-written sample). C02 Acceptance lines "✘ The format gates reject empty fields; "filled but meaningless" examples fall to the sample review." and "✔ Complete records are accepted." Appendix C N01 (`Ek_C:118`), verbatim in the clause table. Design: B principle 12, B 3.2, B 3.11 (sample reviews "created by the database, never by an agent"); EV-C02-002 DM-08 (one in every block of 10, at a hidden random position; "the test needs no tolerance"), DM-31 (a rule-made record belongs to its call).
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n01_need_justification.sql`, run as `postgres` by the migration job's `devos-test` step after the merge's migrations (README 5.1 (a)), and by the break harness (`tests/C02/W-C02-07/harness/`, Group B) on its throwaway database with the patches below.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit. It makes about 90 calls inside one transaction (seconds).
-**Interface assumed** (README section 8; revised before a first result if the build differs):
-- `devos_api.record_need(jsonb)`, `open_decision(jsonb)`, `open_mission(jsonb)`, `open_review(jsonb)`; each returns jsonb. An acceptance carries `id`; a refusal is returned as `{"status": "refused", "reason_code": …, "field": …}` (B 3.13: the function rolls back its own partial work, records the refusal and returns it), or raised; a format-gate refusal names its field (`why_needed`).
+**Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (README section 8; revised before a first result if the build differs):
+- `devos_api.record_need(jsonb)`, `open_decision(jsonb)`, `open_mission(jsonb)`, `open_review(jsonb)`; each returns jsonb. An acceptance carries `id`; a refusal is returned as `{"status": "refused", "reason_code": …, "field": …}` (B 3.13: the function rolls back its own partial work, records the refusal and returns it); a raised error is not interface v1's answer and makes the case "could not check" (README section 8.1); a format-gate refusal names its field (`why_needed`).
 - `devos_private.issue_env_token(text)` returns the token once (text, or jsonb with `token`); calls run as `anon` with the header `x-devos-env-token` (EV-C02-003 §1.6).
 - Sample reviews are rows of `devos_private.review` with `kind = 'sample'`; the row names the target record's `id`, and one of its fields holds `devos_denetim` (the audit environment's queue).
 - `devos_private.sample_stream` has one row per stream (`stream`, `block_size`, `block_seen` = records counted in the open block, `block_position` = the hidden position); the need stream is `need`.
 - Fixtures: a `batu` decision opened with the working token and answered at owner level (C02 builds no answering function, B:390), and a Mission on it opened with the `devos_kurulum` token (DM-23; EV-C02-003 §4.1).
+
+
+**Phase C, the executor's decision (DM-41 and sample reviews).** The sample Review this test expects is created by the database in the same transaction as the need; the tests assume the build exempts it from DM-41's trigger, an interface for W-C02-10 (README section 8.1).
 
 ## Cases
 - `N01-pos`: a complete need, working token → accepted, one `need` row more.

@@ -2,6 +2,7 @@
 -- Break patch of tests/C02/W-C02-07/T-W07-5B_authorization_matrix.md, "Break attempt" (README 5.2). Removed: one cell of the role list (B:47; B:379): devos_calisma is added beside devos_denetim in
 -- devos_api.record_verdict's own text. If the build keeps role lists outside the function, this patch refuses to apply and
 -- the prober writes the same one-cell change for that place (specification, "Break attempt").
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -29,3 +30,4 @@ begin
     raise exception 'w07 break not applied: no role list naming devos_denetim found in devos_api.record_verdict; not a break shown (W-C02-13 point 3)';
   end if;
 end $b$;
+commit;

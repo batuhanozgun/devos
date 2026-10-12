@@ -5,6 +5,7 @@
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
 -- specification assumes (revised before a first result if the build differs, README section 8).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -27,3 +28,4 @@ begin
   end loop;
   if n = 0 then raise exception 'w07 break: no trigger or constraint on devos_private.decision holds the rule (revise the patch)'; end if;
 end $d$;
+commit;

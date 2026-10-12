@@ -5,7 +5,10 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.n17`, f
 **Serves.** W-C02-09 points 4 and 8 ("N17 (with point 4's N-136 cases)"); Appendix C N17 as PC-43 place 11 words it; EV-C02-003 §4.3 (S8 line 2), §4.4 (S8 line 3 moved to C04), §4.5; EV-C02-002 DM-06 (an effect with a lapsed claim is refused) and DM-07; B 3.5. The real-token runs cite this test for the same rule (T-W07-RT, W-C02-12 point 6, README 5.3).
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n17_claim_token.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-N17-1` and `breaks/B-5C-1`.
 **Time added to W-C02-13's run.** None. The lapsed claim (N17-n9) is planted with `lease_expires_at` one second before `now()` (README section 9).
-**Interface assumed.** The Group A common interface v1 as `T-W07-F01` states it. Also: `devos_api.heartbeat(claim_token text)`, `devos_api.release(claim_token text)`, `devos_api.register_artifact(claim_token text, jsonb)` (the effect). The claim result carries `assignment_id`. Owner plant of `devos_private.assignment.lease_expires_at`. Break patches: the derivation `devos_private.caller_role_class(function_name) returns text` (EV-C02-003 §1.6), and `claim_token_hash` as hex SHA-256 of the whole token (§1.7; the encoding is assumed).
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it. Also: `devos_api.heartbeat(claim_token text)`, `devos_api.release(claim_token text)`, `devos_api.register_artifact(claim_token text, jsonb)` (the effect). The claim result carries `assignment_id`. Owner plant of `devos_private.assignment.lease_expires_at`. Break patches: the derivation `devos_private.caller_role_class(function_name) returns text` (EV-C02-003 §1.6), and `claim_token_hash` as hex SHA-256 of the whole token (§1.7; the encoding is assumed).
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Input | Expected |

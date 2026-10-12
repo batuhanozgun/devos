@@ -5,7 +5,7 @@ Synthetic test data (plan Section 8 item 13): decisions, a review and a verdict 
 **Serves.** W-C02-09 point 8 ("N25 (its C02 part)"). Appendix C N25 (Ek_C:142): "When `basis_refs`, the criterion or the use changes, the old verdict cannot be used for acceptance" / "A verdict whose basis stays the same is valid" / stage "C02, C08". Appendix B 3.11: "When `basis_refs`, `criterion` or `use` changes, the verdict goes stale and a new acceptance is needed; the old verdict is not automatically carried over to another use of the same product". EV-C02-002 DM-02 (revisions never change, so a verdict's basis cannot change under it).
 **Command.** In `devos-test`: the migration job's test step runs `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n25_verdict_staleness.sql` as `postgres`, and passes only on the notice `W07_N25_VERDICT_STALENESS PASS`. Break: `python3 -I tests/C02/W-C02-07/harness/run_breaks.py --patch tests/C02/W-C02-07/breaks/B-N25-1_stale_verdict_accepted.sql --pg-bin <PostgreSQL 17 bin>`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** Group B's call convention, as T-W07-F04 states it. For this test:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. Group B's call convention, as T-W07-F04 states it. For this test:
 - `devos_private.review` (`kind`, `target_ref`, `target_revision`, `criterion_ref`, `criterion_version`, `use`, `basis_refs` as `[{ref, revision}]`);
 - `devos_private.verdict` (`review_ref`, `result`) and `devos_private.acceptance`;
 - `devos_private.decision_revision` (`decision_id`, `revision`): a basis or criterion "changes" when a newer revision of it exists (DM-02);

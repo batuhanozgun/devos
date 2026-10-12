@@ -3,6 +3,7 @@
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -16,3 +17,4 @@ create schema if not exists w07_break;
 create function w07_break.drop_row() returns trigger language plpgsql as $f$ begin return null; end $f$;
 create trigger w07break_drop_rejected_attempt before insert on devos_private.rejected_attempt
   for each row execute function w07_break.drop_row();
+commit;

@@ -1,6 +1,7 @@
 -- w07-break: test=w07_idc_identity_chain.sql; expect-red=IDC-v1
 -- Break patch of tests/C02/W-C02-07/T-W07-IDC_identity_chain.md, "Break attempt" (README 5.2). Removed: B 3.27's rule "the token itself is kept in no table": issue_env_token is renamed and wrapped, and the
 -- wrapper also writes the token it returns into a new table, devos_private.w07_break_kept.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -27,3 +28,4 @@ begin
     insert into devos_private.w07_break_kept values (t); return t; end $x$$w$, f.t);
   execute format('revoke execute on function devos_private.issue_env_token(%s) from public', f.t);
 end $b$;
+commit;

@@ -62,11 +62,14 @@ begin
     k := null;
     if innames[i] is not null then
       if coalesce(p_args, '{}') ? innames[i] then k := innames[i];
-      elsif innames[i] like 'p\_%' and coalesce(p_args, '{}') ? substr(innames[i], 3) then k := substr(innames[i], 3);
+      elsif innames[i] = 'p' and atypes[i] = 3802 then k := '*';  -- interface v1: a record's fields in p jsonb
       end if;
     end if;
     typ := format_type(atypes[i], null);
-    if k is not null then
+    if k = '*' then
+      v := coalesce(p_args, '{}') - array_remove(innames, null); used := used || array(select jsonb_object_keys(v));
+      parts := parts || format('%I => %L::jsonb', innames[i], v::text);
+    elsif k is not null then
       v := p_args -> k; used := used || k;
       if jsonb_typeof(v) = 'null' then parts := parts || format('%I => null::%s', innames[i], typ);
       elsif atypes[i] in (114, 3802) then parts := parts || format('%I => %L::%s', innames[i], v::text, typ);
@@ -118,14 +121,12 @@ begin
                             'ms', round(extract(epoch from clock_timestamp() - t0) * 1000));
 end $f$;
 
--- A call is refused when it raised, or returned an object that says so (DM-19: the refusal is returned).
+-- A call is refused when it raised (a privilege refusing a direct write raises), or returned status refused
+-- (interface v1, README section 8; DM-19: a function returns its refusal, which T-W07-DM19 checks).
 create function pg_temp.w07_refused(c jsonb) returns boolean language sql as $f$
   select coalesce(not (c ? 'interface') and (c->>'error' is not null
       or (coalesce(jsonb_typeof(c->'result'), '') = 'object' and (
-            coalesce(c->'result'->>'ok', '') = 'false'
-         or lower(coalesce(c->'result'->>'status', c->'result'->>'outcome', '')) in
-              ('refused', 'rejected', 'could_not_check', 'error')
-         or (c->'result'->>'reason_code') is not null))), false)
+            c->'result'->>'status' = 'refused'))), false)  -- interface v1 (README section 8)
 $f$;
 
 create function pg_temp.w07_show(c jsonb) returns text language sql as $f$

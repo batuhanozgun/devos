@@ -9,12 +9,15 @@ Synthetic test data (plan Section 8 item 13): every planted string is made at ru
 
 **Command.** A specification run by a procedure, since GROUPS.md assigns this test no executable (Open, in the report). W-C02-13's prober, or W-C02-12's producer at its head, runs the build's scans as their interface names below, in a scratch directory outside the repository. It records each case's answer. The scans themselves are W-C02-12's build: the first message's scan, and the record's scan.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed** (the build names it; this test is revised before the first result if it differs). Each scan is a program, or a fixed procedure, that:
+**Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (the build names it; this test is revised before the first result if it differs). Each scan is a program, or a fixed procedure, that:
 - (a) takes its list of places as input: folders, files, environment variables, and git refs; issue #6's comments and the records for W-C02-12 point 9's scan;
 - (b) prints, per place, either a count of strings of the format or `could not check` with a reason, never a matched string;
 - (c) ends with one answer: `none found by the scanned patterns` (clean), `found` (fail) or `could not check`;
 - (d) uses the finder patterns of `shared/token_format.md` section 3, the session's scan for the environment token only;
 - (e) runs its planted control first.
+
+
+**Phase C, the executor's decision.** 6SC stays a procedure; no program is written for it.
 
 ## Cases
 
@@ -76,5 +79,5 @@ Not a format-gate test.
 ## Not covered
 
 - The executor's count-only log check on `devos` (EV-C02-003 §14): a procedure the executor runs, with its own positive control there, not a check C02 builds (the executor's decision 2).
-- The guard's stop of the formats (W-C02-11's tests).
+- The guard's stop of the formats (W-C02-20's tests; `plan/work/W-C02-20.md`).
 - W-C02-07's own scan (`T-W07-7SCAN`).

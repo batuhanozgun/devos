@@ -5,7 +5,10 @@ Synthetic test data (plan Section 8 item 13): one revision row per revision tabl
 **Serves.** W-C02-08 points 3 and 6. EV-C02-002 DM-02 (a): "The revision table refuses update and delete to every role"; section 6 asks W-C02-07 to cover it, as a rule no Appendix C test names (plan Section 8 item 3). Appendix B principle 3: "An update does not change the old revision".
 **Command.** In `devos-test`: the migration job's test step runs `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm02_revision_append_only.sql` as `postgres`, and passes only on the notice `W07_DM02_REVISION_APPEND_ONLY PASS`. Break: `python3 -I tests/C02/W-C02-07/harness/run_breaks.py --patch tests/C02/W-C02-07/breaks/B-DM02-1_work_revision_writable.sql --pg-bin <PostgreSQL 17 bin>`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** `devos_private.<family>_revision` for `mission`, `work`, `finding`, `artifact` and `decision` (DM-02's families in C02), each with an integer `revision`. Every `devos_private` table whose name ends in `_revision` is read from the catalogue at run time, so a family a later stage adds is covered without editing the file.
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. `devos_private.<family>_revision` for `mission`, `work`, `finding`, `artifact` and `decision` (DM-02's families in C02), each with an integer `revision`. Every `devos_private` table whose name ends in `_revision` is read from the catalogue at run time, so a family a later stage adds is covered without editing the file.
+
+
+**Phase C, the executor's decision.** TRUNCATE counts as a delete for DM-02, so the `-trunc` cases stay.
 
 ## Cases (one set per revision table, from the catalogue)
 - **DM02-<table>-ins** (positive control): a new revision row is appended at the owner level.

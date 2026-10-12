@@ -24,7 +24,7 @@ begin
       declare r jsonb;
       begin
         r := devos_api.%3$I(%4$s);
-        if r->>'status' = 'could_not_check' then return jsonb_build_object('status', 'ok', 'w07_break', 'folded into clean'); end if;
+        if r->>'status' = 'refused' and r->>'reason_code' = 'could_not_check' then return jsonb_build_object('status', 'ok', 'w07_break', 'folded into clean'); end if;
         return r;
       end $f$ $p$, f.fn, f.params, f.fn || '_w07_orig', f.args);
     execute format('grant execute on function devos_api.%I%s to anon', f.fn, f.sig);

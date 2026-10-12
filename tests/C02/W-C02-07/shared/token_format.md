@@ -6,7 +6,7 @@ Synthetic test data (plan Section 8 item 13): this file holds no token, no key a
 
 **Who takes them from here.**
 - W-C02-09: `devos_private.issue_env_token` and `claim` produce tokens of exactly these forms, and the derivation (`devos_private.caller_role_class`) refuses any other string as `malformed`.
-- W-C02-11: the guard's stop of both formats in URLs and outbound text (EV-C02-003 §1.6, §1.7).
+- W-C02-20 (`plan/work/W-C02-20.md`; the stop moved there from W-C02-11): the guard's stop of both formats in URLs and outbound text (EV-C02-003 §1.6, §1.7).
 - W-C02-12 point 9: the scan of the repository, branches, issue #6 and the records.
 - The session's own format scan (EV-C02-003 §3.2), which counts the environment token's format only.
 - The executor's count-only log check (EV-C02-003 §14, part 2).
@@ -83,7 +83,7 @@ These are the reason codes of EV-C02-003 §15 and Appendix B 3.27, taken in this
 
 - No file holds a string of either format, or an example of one. The markers appear only here and in `shared/scan_patterns.json`, and never followed by 16 or more alphabet characters.
 - A test that needs a well-formed token gets one at run time from `issue_env_token` or `claim` (README section 6). A malformed one is made by cutting or altering an issued one at run time. An unknown one is made by changing one character of an issued token's random part at run time.
-- A test that checks an issued token's form reads the exact pattern from `shared/scan_patterns.json` at run time (`bin/idc_real_path.py` does). An SQL file checks only the shape that needs no marker: the same prefix for every role class, followed by 43 characters of the alphabet (`w07_idc_identity_chain.sql`, case `IDC-f1`).
+- A test that checks an issued token's form reads the exact pattern from `shared/scan_patterns.json` at run time (`supabase/migrations/tests/w07_idc_real_path.py` does). An SQL file checks only the shape that needs no marker: the same prefix for every role class, followed by 43 characters of the alphabet (`w07_idc_identity_chain.sql`, case `IDC-f1`).
 
 ## 8. Not covered
 

@@ -5,6 +5,7 @@
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
 -- specification assumes (revised before a first result if the build differs, README section 8).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -23,8 +24,9 @@ begin
     nid := gen_random_uuid();
     insert into devos_private.review select * from jsonb_populate_record(null::devos_private.review,
       jsonb_build_object('id', nid, 'kind', 'sample', 'target_ref', p->>'target_ref', 'queue_role_class', 'devos_denetim', 'origin', 'call'));
-    return jsonb_build_object('status', 'accepted', 'id', nid);
+    return jsonb_build_object('status', 'ok', 'id', nid);
   end if;
   return devos_api.open_review_w07_orig(p);
 end $f$;
 grant execute on function devos_api.open_review(jsonb) to anon, authenticated;
+commit;

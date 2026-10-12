@@ -2,6 +2,7 @@
 -- Break patch of tests/C02/W-C02-07/T-W07-6TK_token_reasons.md, "Break attempt" (README 5.2). Removed: the record of a call without a verified token (B 3.27; DM-19: counted as RejectedAttempt under role
 -- class none): a trigger on RejectedAttempt's table (the name the test's w07_cfg assumes) drops every row or update whose
 -- role_class is none.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -17,11 +18,12 @@ begin
 end $g$;
 do $b$
 begin
-  if to_regclass('devos_private.rejected_attempts') is null then
-    raise exception 'w07 break not applied: devos_private.rejected_attempts (w07_cfg rejected) not found';
+  if to_regclass('devos_private.rejected_attempt') is null then
+    raise exception 'w07 break not applied: devos_private.rejected_attempt (w07_cfg rejected) not found';
   end if;
   execute 'create function devos_private.w07_break_drop_none() returns trigger language plpgsql as $t$ begin '
           'if new.role_class::text = ''none'' then return null; end if; return new; end $t$';
-  execute 'create trigger w07_break_drop_none before insert or update on devos_private.rejected_attempts for each row '
+  execute 'create trigger w07_break_drop_none before insert or update on devos_private.rejected_attempt for each row '
           'execute function devos_private.w07_break_drop_none()';
 end $b$;
+commit;

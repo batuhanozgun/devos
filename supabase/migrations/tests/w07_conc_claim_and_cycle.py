@@ -5,18 +5,24 @@ Synthetic test data (plan Section 8 item 13): every mission, work item, relation
 (synthetic.w07.conc.<run id>), path and session id this program writes is made up, labelled SYNTHETIC W-C02-07, and
 holds no personal or business data. Specification: tests/C02/W-C02-07/T-W07-CONC_claim_and_cycle.md.
 
-Run: python3 -I tests/C02/W-C02-07/bin/conc_claim_and_cycle.py   (from the repository root)
-  W07_TARGET=devos-test  the migration job's devos-test step (README 5.1 (b); EV-C02-003 §6.3), with the job's
-                         libpq connection environment for devos-test as postgres; the program never reads, prints or
-                         stores a connection value, it only passes the environment to psql.
-  W07_TARGET=throwaway   the break harness's throwaway database (README 5.2); w07.throwaway must be 'yes' there.
-Anything else, or no connection, gives COULD NOT CHECK. It is never run against devos.
+Run: python3 -I supabase/migrations/tests/w07_conc_claim_and_cycle.py < <one JSON object>  (from the repository root)
+  The migration job's devos-test step (README 5.1 (b); EV-C02-003 §6.3; note N-255 on plan/work/C02.md) gives the job's
+  one JSON object on standard input, whose "target" is "devos-test", and runs the program in the step's own libpq
+  connection environment for devos-test as postgres; the program never reads, prints or stores a connection value, it
+  only passes the environment to psql. It uses no publishable key and none of the job's tokens: it issues its own
+  synthetic tokens through its owner connection and revokes each by its env_tokens row ID (README section 8).
+  {"target": "throwaway"}  the break harness's throwaway database (README 5.2); w07.throwaway must be 'yes' there.
+Any other target, no input, or no connection gives COULD NOT CHECK. It is never run against devos.
+Committed fixtures (the executor's decision: allowed in devos-test, forbidden in devos by EV-C02-002 DM-23): one
+owner-planted synthetic Decision of class batu with its revision, one Mission, the work items, relations and artifacts
+of the runs, and the claims; all labelled SYNTHETIC W-C02-07 and listed in the output.
 
 Transport: several direct connections through psql, each acting as role anon with the x-devos-env-token header set
 by set_config (transport sql-set-role, several connections). Tokens: each connection issues its own synthetic token
 with devos_private.issue_env_token inside the database, keeps it in a session setting, never in a statement text, a
 table or the output, and revokes it before it ends; claim tokens stay in the same way inside their session.
-Exit codes: 0 PASS, 1 FAIL, 3 COULD NOT CHECK. The last line is "T-W07-CONC PASS|FAIL|COULD NOT CHECK (...)".
+Exit codes: 0 PASS, 1 FAIL, 3 COULD NOT CHECK. The last line is "W07_CONC_CLAIM_AND_CYCLE PASS|FAIL|COULD NOT CHECK (...)"
+(README section 3).
 """
 import json
 import os
@@ -37,16 +43,15 @@ WAIT_S = 60         # longest wait for a barrier or a connection
 LOCK_KEY = 20701    # two-integer advisory key space of this test (classid); objid is the run number
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..'))
-HELPERS_FROM = os.path.join(ROOT, 'supabase', 'migrations', 'tests', 'w07_f01_whole_intent.sql')
+HELPERS_FROM = os.path.join(HERE, 'w07_f01_whole_intent.sql')  # the Group A helpers, from the class-high SQL file
 REDACT = re.compile(r'[A-Za-z0-9_\-+/=]{32,}')
-NEED = ['devos_private.issue_env_token(text)', 'devos_private.revoke_env_token(text)', 'devos_api.open_mission(jsonb)',
+NEED = ['devos_private.issue_env_token(text)', 'devos_private.revoke_env_token(*)', 'devos_api.open_mission(jsonb)',
         'devos_api.admit_work(jsonb)', 'devos_api.claim(uuid,text)', 'devos_api.relate(jsonb)',
         'devos_api.revoke_claim(uuid,text)', 'devos_api.register_artifact(text,jsonb)']
 
 
 def finish(result, detail, code):
-    print(f'T-W07-CONC {result} ({detail})')
+    print(f'W07_CONC_CLAIM_AND_CYCLE {result} ({detail})')
     sys.exit(code)
 
 
@@ -75,7 +80,13 @@ def helpers():
 def worker_script(cls, lock_no, call, pre='', prep=''):
     """One racing connection: its own token; optional pre-steps; wait at the barrier; one call; commit; revoke."""
     return f"""
-do $w$ begin perform set_config('w07.tok', devos_private.issue_env_token('{cls}'), false); end $w$;
+do $w$ declare b text[]; i text; begin
+  lock table devos_private.env_tokens in share row exclusive mode;  -- this connection's row is the only new one
+  select coalesce(array_agg(id::text), '{{}}') into b from devos_private.env_tokens;
+  perform set_config('w07.tok', devos_private.issue_env_token('{cls}'), false);
+  select id::text into strict i from devos_private.env_tokens where not (id::text = any(b));
+  perform set_config('w07.tok_id', i, false);
+end $w$;
 {pre}
 begin;
 select pg_advisory_xact_lock_shared({LOCK_KEY}, {lock_no});
@@ -88,7 +99,8 @@ reset role;
 select 'W07|t1|' || extract(epoch from clock_timestamp());
 commit;
 select 'W07|t2|' || extract(epoch from clock_timestamp());
-do $w$ begin perform devos_private.revoke_env_token(current_setting('w07.tok')); perform set_config('w07.tok', '', false); end $w$;
+do $w$ begin execute format('select devos_private.revoke_env_token(%L)', current_setting('w07.tok_id'));
+  perform set_config('w07.tok', '', false); end $w$;
 select 'W07|done';
 """
 
@@ -150,9 +162,14 @@ def overlapped(results):
 
 
 def main():
-    target = os.environ.get('W07_TARGET', '')
+    try:
+        cfg = json.loads(sys.stdin.read() or 'null') if sys.stdin is not None and not sys.stdin.isatty() else None
+    except (ValueError, OSError):
+        cfg = None
+    target = cfg.get('target', '') if isinstance(cfg, dict) else ''
+    cfg = None  # nothing else of the job's input is used or kept (N-255)
     if target not in ('devos-test', 'throwaway'):
-        finish('COULD NOT CHECK', 'W07_TARGET is not devos-test or throwaway', 3)
+        finish('COULD NOT CHECK', 'the input on standard input names no target devos-test or throwaway (N-255)', 3)
     if not shutil.which('psql') or not any(os.environ.get(v) for v in ('PGHOST', 'PGSERVICE', 'PGDATABASE')):
         finish('COULD NOT CHECK', 'no psql or no database connection given', 3)
     rc, out, err = run_sql("select coalesce(current_setting('w07.throwaway', true), '') || '|' || "
@@ -162,7 +179,10 @@ def main():
     marker, supa = out.strip().split('|')
     if target == 'throwaway' and (marker != 'yes' or supa == 't'):
         finish('COULD NOT CHECK', 'W07_TARGET=throwaway but the database is not the harness throwaway database', 3)
-    missing = [n for n in NEED if run_sql(f"select to_regprocedure('{n}') is null;")[1].strip() != 'f']
+    missing = [n for n in NEED if run_sql(
+        f"select not exists (select 1 from pg_proc p join pg_namespace s on s.oid = p.pronamespace "
+        f"where s.nspname || '.' || p.proname = '{n[:-3]}');" if n.endswith('(*)')
+        else f"select to_regprocedure('{n}') is null;")[1].strip() != 'f']
     if missing:
         finish('COULD NOT CHECK', 'absent: ' + ', '.join(missing), 3)
 
@@ -175,6 +195,7 @@ create temp table w07_ids (n int, id text, rev int);""" + f"""
 do $s$
 declare k text; w text; m jsonb; x jsonb; i int;
 begin
+  perform pg_temp.w07_token_mark();
   k := pg_temp.w07_tok('devos_kurulum'); w := pg_temp.w07_tok('devos_calisma');
   perform set_config('w07.k', k, false); perform set_config('w07.w', w, false);
   m := pg_temp.w07_fixture_mission(k, '{scope}');
@@ -184,8 +205,8 @@ begin
   end loop;
 end $s$;
 select 'W07|id|' || n || '|' || id || '|' || rev from w07_ids order by n;
-do $s$ begin perform devos_private.revoke_env_token(current_setting('w07.k'));
-  perform devos_private.revoke_env_token(current_setting('w07.w')); end $s$;
+do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's rows, by ID (README section 8)
+  perform set_config('w07.k', '', false); perform set_config('w07.w', '', false); end $s$;
 """)
     started = time.time()
     rc, out, err = run_sql(setup)
@@ -193,7 +214,8 @@ do $s$ begin perform devos_private.revoke_env_token(current_setting('w07.k'));
     if rc != 0 or len(ids) != n_work:
         finish('COULD NOT CHECK', 'the committed fixtures could not be written: ' + clean(err), 3)
     ids = [(i, int(r)) for i, r in ids]
-    print(f'fixtures: one Mission and {n_work} work items under scope {scope} (synthetic; left in place, append-only)')
+    print(f'fixtures: one owner-planted Decision of class batu with its revision, one Mission and {n_work} work items '
+          f'under scope {scope} (synthetic, devos-test only; left in place, append-only)')
 
     cases, errors, nxt = {}, [], 0
     expected_refusal_errors = set()

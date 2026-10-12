@@ -65,11 +65,14 @@ begin
     k := null;
     if innames[i] is not null then
       if coalesce(p_args, '{}') ? innames[i] then k := innames[i];
-      elsif innames[i] like 'p\_%' and coalesce(p_args, '{}') ? substr(innames[i], 3) then k := substr(innames[i], 3);
+      elsif innames[i] = 'p' and atypes[i] = 3802 then k := '*';  -- interface v1: a record's fields in p jsonb
       end if;
     end if;
     typ := format_type(atypes[i], null);
-    if k is not null then
+    if k = '*' then
+      v := coalesce(p_args, '{}') - array_remove(innames, null); used := used || array(select jsonb_object_keys(v));
+      parts := parts || format('%I => %L::jsonb', innames[i], v::text);
+    elsif k is not null then
       v := p_args -> k; used := used || k;
       if jsonb_typeof(v) = 'null' then parts := parts || format('%I => null::%s', innames[i], typ);
       elsif atypes[i] in (114, 3802) then parts := parts || format('%I => %L::%s', innames[i], v::text, typ);
@@ -121,14 +124,12 @@ begin
                             'ms', round(extract(epoch from clock_timestamp() - t0) * 1000));
 end $f$;
 
--- A call is refused when it raised, or returned an object that says so (DM-19: the refusal is returned).
+-- A call is refused when it raised (a privilege refusing a direct write raises), or returned status refused
+-- (interface v1, README section 8; DM-19: a function returns its refusal, which T-W07-DM19 checks).
 create function pg_temp.w07_refused(c jsonb) returns boolean language sql as $f$
   select coalesce(not (c ? 'interface') and (c->>'error' is not null
       or (coalesce(jsonb_typeof(c->'result'), '') = 'object' and (
-            coalesce(c->'result'->>'ok', '') = 'false'
-         or lower(coalesce(c->'result'->>'status', c->'result'->>'outcome', '')) in
-              ('refused', 'rejected', 'could_not_check', 'error')
-         or (c->'result'->>'reason_code') is not null))), false)
+            c->'result'->>'status' = 'refused'))), false)  -- interface v1 (README section 8)
 $f$;
 
 create function pg_temp.w07_show(c jsonb) returns text language sql as $f$
@@ -237,10 +238,31 @@ begin
   return r;
 end $f$;
 
+-- Revocation by the env_tokens row ID (README section 8, interface v1): mark the rows present, then revoke, as owner,
+-- each row issued since the mark. Row IDs are not secret; no token, hash or part of one is read or kept.
+create function pg_temp.w07_token_mark() returns void language plpgsql as $f$
+begin
+  create temp table if not exists w07_token_marked (id text);
+  delete from w07_token_marked;
+  execute 'insert into w07_token_marked select id::text from devos_private.env_tokens';
+end $f$;
+
+create function pg_temp.w07_revoke_since_mark() returns int language plpgsql as $f$
+declare i text; n int := 0;
+begin
+  for i in execute 'select id::text from devos_private.env_tokens where id::text not in (select id from w07_token_marked)'
+  loop
+    execute format('select devos_private.revoke_env_token(%L)', i);
+    n := n + 1;
+  end loop;
+  return n;
+end $f$;
+
 create function pg_temp.w07_pre() returns text language plpgsql as $f$
 begin
-  if to_regprocedure('devos_private.issue_env_token(text)') is null or to_regprocedure('devos_private.revoke_env_token(text)') is null then
-    return 'devos_private.issue_env_token(text) or revoke_env_token(text) does not exist';
+  if to_regprocedure('devos_private.issue_env_token(text)') is null or not exists (select 1 from pg_proc p
+       join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_private' and p.proname = 'revoke_env_token') then
+    return 'devos_private.issue_env_token(text) or revoke_env_token does not exist';
   end if;
   if to_regclass('devos_private.event') is null or to_regclass('devos_private.rejected_attempt') is null then
     return 'devos_private.event or devos_private.rejected_attempt does not exist';
@@ -318,7 +340,23 @@ begin
     'accept', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('verdict_ref', v->'id', 'accepted_use', 'w07_fixture_use_one')),
     'review_finding', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('finding_id', fd->'id', 'revision', 1, 'status', 'reviewed')),
     'affected_entities', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('root', a->'work_id', 'limits', '{}'::jsonb)),
-    'explain_paths', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('root', a->'work_id', 'target', b->'work_id', 'limits', '{}'::jsonb)));
+    'explain_paths', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('root', a->'work_id', 'target', b->'work_id', 'limits', '{}'::jsonb)))
+    -- Phase C: recipes for the functions whose arguments README section 8.1 fixes and whose inputs this file plants.
+    -- A recipe the build refuses gives could_not_check (below), never bad: it shows nothing about the event rule.
+    || jsonb_build_object(
+    'claim', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('work_id', d->'work_id',
+      'declared_session_id', 'w07_fixture_session_f06')),
+    'revise_work', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('id', b->'work_id',
+      'base_revision', b->'revision', 'scope', 'synthetic.w07fixture', 'reason', 'w07_fixture SYNTHETIC W-C02-07 revision')),
+    'record_need', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
+      'condition', 'w07_fixture SYNTHETIC W-C02-07 condition', 'why_needed', 'w07_fixture SYNTHETIC W-C02-07: F06 needs one accepted need')),
+    'open_decision', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('class', 'routine',
+      'question', 'w07_fixture SYNTHETIC W-C02-07 routine question')),
+    'record_finding', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('claim', 'w07_fixture SYNTHETIC W-C02-07 claim',
+      'scope', 'synthetic.w07fixture', 'changeable', false, 'source_spans', '[]'::jsonb,
+      'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found')),
+    'open_review', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('kind', 'review', 'target_ref', a->'work_id',
+      'target_revision', a->'revision', 'use', 'w07_fixture_use_f06', 'basis_refs', '[]'::jsonb)));
 
   select count(*) into n_listed from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_api';
   perform pg_temp.w07_rec('F06-list', 'ok', format('%s devos_api functions (%s marked devos:read) and the two owner-only functions, read from the catalogue',
@@ -371,13 +409,27 @@ begin
     else
       tok := case recipes->f.proname->>'class' when 'devos_calisma' then t_cal else pg_temp.w07_token(recipes->f.proname->>'class') end;
       m := pg_temp.w07_measure(f.proname, recipes->f.proname->'args', tok);
+      if m->'call' ? 'interface' or pg_temp.w07_refused(m->'call') then  -- phase C: the recipe was not accepted
+        perform pg_temp.w07_rec('F06-event:' || f.proname, 'could_not_check', 'the recipe''s call was not accepted, so no state '
+          || 'change could be observed: ' || pg_temp.w07_show(m->'call'));
+        perform pg_temp.w07_rec('F06-repeat:' || f.proname, 'could_not_check', 'no accepted call to repeat');
+        continue;
+      end if;
       perform pg_temp.w07_check('F06-event:' || f.proname, not pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'changed') > 0
           and jsonb_array_length(m->'events') >= 1
           and not exists (select 1 from jsonb_array_elements(m->'events') e where e->>'role_class' is distinct from recipes->f.proname->>'class'
                             or e->>'origin' not in ('call', 'rule') or (e->>'this_tx')::boolean is not true),
         pg_temp.w07_show(m->'call') || '; tables changed: ' || (m->'changed')::text || '; new events ' || (m->'events')::text);
+      if f.proname in ('record_need', 'open_decision', 'record_finding', 'open_review') then
+        perform pg_temp.w07_rec('F06-repeat:' || f.proname, 'could_not_check', 'phase C recipe: a repeat of a creating call '
+          || 'with no idempotency key makes a new record, not the same change (B principle 2), so it is not judged here');
+        continue;
+      end if;
       m2 := pg_temp.w07_measure(f.proname, recipes->f.proname->'args', tok);
-      perform pg_temp.w07_check('F06-repeat:' || f.proname, not pg_temp.w07_refused(m2->'call') and jsonb_array_length(m2->'changed') = 0
+      -- An exact repeat makes no event and raises no error (B principle 2): accepted unchanged, or a returned refusal
+      -- (a claim already held, a stale base revision) with nothing changed.
+      perform pg_temp.w07_check('F06-repeat:' || f.proname, (m2->'call'->>'error') is null and not (m2->'call' ? 'interface')
+          and jsonb_array_length(m2->'changed') = 0
           and jsonb_array_length(m2->'events') = 0,
         'exact repeat: ' || pg_temp.w07_show(m2->'call') || '; tables changed: ' || (m2->'changed')::text || '; new events ' || jsonb_array_length(m2->'events'));
     end if;
@@ -385,13 +437,14 @@ begin
 
   -- The owner-only functions: role_class owner and origin owner, read from the database session (DM-31).
   e0 := pg_temp.w07_ids('devos_private.event');
+  perform pg_temp.w07_token_mark();
   t_x := pg_temp.w07_token('devos_sinav');
   ev := pg_temp.w07_new_events(e0);
   perform pg_temp.w07_check('F06-owner:issue_env_token', jsonb_array_length(ev) >= 1
       and not exists (select 1 from jsonb_array_elements(ev) e where e->>'role_class' <> 'owner' or e->>'origin' <> 'owner'),
     'issue_env_token as the owner: new events ' || ev::text);
   e0 := pg_temp.w07_ids('devos_private.event');
-  execute 'select devos_private.revoke_env_token($1)' using t_x;
+  perform pg_temp.w07_revoke_since_mark();  -- t_x's row, by its ID (README section 8)
   ev := pg_temp.w07_new_events(e0);
   perform pg_temp.w07_check('F06-owner:revoke_env_token', jsonb_array_length(ev) >= 1
       and not exists (select 1 from jsonb_array_elements(ev) e where e->>'role_class' <> 'owner' or e->>'origin' <> 'owner'),

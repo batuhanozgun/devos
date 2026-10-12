@@ -17,9 +17,12 @@ Design relied on:
 
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_5b_authorization_matrix.sql`. It runs in `devos-test`, by the job's test step as `postgres`, and on the throwaway database by the harness. Its statement timeout is 300 s.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed.** As `T-W07-IDC`. Beyond it:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC`. Beyond it:
 - the wrong-role-class refusal's reason code is `role_class_not_permitted` (in `w07_cfg` key `role_codes`; a list is allowed);
 - the functions of the five rows whose function the design does not name go in `pg_temp.w07_fn_cfg`, keyed `R10r`, `R12`, `R13`, `R14` and `R15`. They are empty until the build names them.
+
+
+**Phase C, the executor's decision (N-256).** The ten C02 functions with no row of permitted role classes in EV-C02-003 §4.1 give "could not check", one case each, until the executor decides their rows; the assumed lists are then revised before any result (README section 8).
 
 ## The matrix as the file holds it
 

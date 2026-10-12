@@ -1,8 +1,9 @@
 -- w07-break: test=supabase/migrations/tests/w07_rel_relation_status.sql; expect-red=REL-a,REL-b
--- Removes Relation's rule (B 3.4; PC-16 place 13: model_extracted with observation refused) wherever it sits: check constraints and triggers on devos_private.relation that name model_extracted are dropped or disabled, and devos_api.relate(text, uuid, integer, uuid, integer, text, boolean, text, text) is wrapped so that the pair is written as inference and then set to observation.
+-- Removes Relation's rule (B 3.4; PC-16 place 13: model_extracted with observation refused) wherever it sits: check constraints and triggers on devos_private.relation that name model_extracted are dropped or disabled, and devos_api.relate(jsonb) is wrapped so that the pair is written as inference and then set to observation.
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -29,22 +30,21 @@ end $p$;
 do $c$
 declare src text;
 begin
-  src := pg_get_functiondef('devos_api.relate(text, uuid, integer, uuid, integer, text, boolean, text, text)'::regprocedure);
+  src := pg_get_functiondef('devos_api.relate(jsonb)'::regprocedure);
   src := regexp_replace(src, 'FUNCTION devos_api\.relate\(', 'FUNCTION devos_api.relate_w07_orig(');
   src := regexp_replace(src, '\mrelate\.', 'relate_w07_orig.', 'g');
   execute src;
 end $c$;
-create or replace function devos_api.relate(type text, from_ref uuid, from_revision integer, to_ref uuid, to_revision integer,
-  scope text, hard boolean, method text, epistemic_status text) returns jsonb language plpgsql security definer
+create or replace function devos_api.relate(p jsonb) returns jsonb language plpgsql security definer
 set search_path = pg_catalog as $f$
-declare r jsonb; flip boolean := method = 'model_extracted' and epistemic_status = 'observation';
+declare r jsonb; flip boolean := p->>'method' = 'model_extracted' and p->>'epistemic_status' = 'observation';
 begin
-  r := to_jsonb(devos_api.relate_w07_orig(type, from_ref, from_revision, to_ref, to_revision, scope, hard, method,
-                case when flip then 'inference' else epistemic_status end));
-  if flip and not (r->>'ok' = 'false' or r ? 'reason_code') then
+  r := to_jsonb(devos_api.relate_w07_orig(case when flip then p || '{"epistemic_status": "inference"}'::jsonb else p end));
+  if flip and r->>'status' = 'ok' then
     update devos_private.relation x set epistemic_status = 'observation'
-     where x.from_ref = relate.from_ref and x.to_ref = relate.to_ref and x.method = 'model_extracted';
+     where x.from_ref::text = p->>'from_ref' and x.to_ref::text = p->>'to_ref' and x.method = 'model_extracted';
   end if;
   return r;
 end $f$;
-grant execute on function devos_api.relate(text, uuid, integer, uuid, integer, text, boolean, text, text) to anon, authenticated;
+grant execute on function devos_api.relate(jsonb) to anon, authenticated;
+commit;

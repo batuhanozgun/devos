@@ -1,6 +1,6 @@
 # W-C02-07 tests: the split into four groups (phase A)
 
-Every test that W-C02-07's acceptance asks for is in exactly one group below. Each group writes its own files only and follows `README.md`. The groups are cut to be about equal in work.
+Every test that W-C02-07's acceptance asks for is in exactly one group below. Phase C aligned the groups' files to one assumed interface (README section 8.1) and moved every program the migration job runs to `supabase/migrations/tests/` (note N-255 on `plan/work/C02.md`); the paths below are the aligned ones. Each group writes its own files only and follows `README.md`. The groups are cut to be about equal in work.
 
 - **Group A:** claims, effects and concurrency.
 - **Group B:** graph, events, reviews and direct writes; it also owns the break harness.
@@ -51,7 +51,7 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ea
 **Files.**
 - Specifications: `tests/C02/W-C02-07/T-W07-{F01,F05,F07,F08,CONC,N17,5C,DM07,DM34,6RG,5F}_<slug>.md`.
 - SQL: `supabase/migrations/tests/w07_{f01,f05,f07,f08,n17,5c,dm07,dm34,6rg}_<slug>.sql`.
-- Concurrency's multi-connection runner: `tests/C02/W-C02-07/bin/conc_<slug>.py` (README 5.1 (b)), with an SQL part if any.
+- Concurrency's multi-connection runner: `supabase/migrations/tests/w07_conc_claim_and_cycle.py`, a program the migration job runs (phase C: note N-255; README 5.1 (b)).
 - Breaks: `tests/C02/W-C02-07/breaks/B-{F01,F05,F07,F08,CONC,N17,5C,DM07,DM34,6RG}-<n>_<slug>.sql`.
 
 **Sources** (beyond section 1):
@@ -111,7 +111,7 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ea
 **Files.**
 - Specifications: `tests/C02/W-C02-07/T-W07-{F04,K05,F06,N09,N25,N28,DM02,DM19,DM19B,5A}_<slug>.md`.
 - SQL: `supabase/migrations/tests/w07_{f04,k05,f06,n09,n25,n28,dm02,dm19,5a}_<slug>.sql`.
-- `DM19B` needs calls without a verified token through the Data API, so its runner is `tests/C02/W-C02-07/bin/dm19b_<slug>.py`, with an SQL part if any.
+- `DM19B` needs calls without a verified token through the Data API, so its part B is `supabase/migrations/tests/w07_dm19b_burst_over_http.py`, a program the migration job runs (phase C: N-255; README 5.1 (b)); its SQL part is `w07_dm19b_burst_count.sql`. 5A's part B is `supabase/migrations/tests/w07_5a_exposed_schema.py`.
 - Breaks: `tests/C02/W-C02-07/breaks/B-{F04,K05,F06,N09,N25,N28,DM02,DM19,DM19B,5A}-<n>_<slug>.sql`.
 - The harness: `tests/C02/W-C02-07/harness/README.md` (its specification, with its own positive control and its refusals) and `tests/C02/W-C02-07/harness/run_breaks.py`.
 
@@ -161,7 +161,7 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ea
 **Files.**
 - Specifications: `tests/C02/W-C02-07/T-W07-{N01,N02,N03,N29,T31,5D,FGFIND,DM11,DM47,6ST}_<slug>.md`.
 - SQL: `supabase/migrations/tests/w07_{n01,n02,n03,n29,t31,5d,fgfind,dm11,dm47,6st}_<slug>.sql`.
-- `DM47` reads the merge gate's list, which is not in the database. If it needs a non-SQL part, it goes in `bin/dm47_<slug>.py`.
+- `DM47` reads the merge gate's list, which is not in the database: its comparison is `supabase/migrations/tests/w07_dm47_merge_gate_list.py`, a program the migration job runs (phase C: N-255; README 5.1 (b)).
 - Breaks: `tests/C02/W-C02-07/breaks/B-{N01,N02,N03,N29,T31,5D,FGFIND,DM11,DM47,6ST}-<n>_<slug>.sql`.
 
 **Sources** (beyond section 1):
@@ -204,13 +204,13 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ea
 | `T-W07-RT` | The real-token runs in `devos` (README 5.3): the cases of W-C02-12 points 4 to 6, per environment and for `devos_kurulum` and `devos_ci`. Each ✘ case names the 5.1 test of the same rule (from Groups A and D) whose break stands for it (W-C02-12 point 8) | W-C02-12 points 4 to 7 |
 | `T-W07-7SCAN` | Point 7's scan over the test files and fixtures of all four groups, with its planted control in a scratch copy and its own missing, unreadable and partial inputs (point 6) | W-C02-07 point 7 (it judges this set) |
 | `T-W07-6SC` | Point 6 for the scans that W-C02-05 designs and C02 runs: the session's format scan (`EV3:239-251`) and W-C02-12 point 9's scan of the repository, branches, issue #6 and the records. Each is tested with missing, unreadable and partial input, against the build's scan through the interface it names. A place the scan cannot read gives "could not check", never zero | W-C02-12 point 9 |
-| `shared/token_format.md` | The literal markers of the environment token's and the claim token's formats (`EV3:133-139`, `EV3:164-179`), and the patterns that find them, fixed before the build. Checked against the guard's existing patterns | W-C02-09 (the issuer), W-C02-11 (the guard), W-C02-12 point 9 |
+| `shared/token_format.md` | The literal markers of the environment token's and the claim token's formats (`EV3:133-139`, `EV3:164-179`), and the patterns that find them, fixed before the build. Checked against the guard's existing patterns | W-C02-09 (the issuer), W-C02-20 (the guard's stop; `plan/work/W-C02-20.md`), W-C02-12 point 9 |
 
 **Files.**
 - Specifications: `tests/C02/W-C02-07/T-W07-{IDC,6TK,5B,N04,N08,RT,7SCAN,6SC}_<slug>.md`.
 - SQL: `supabase/migrations/tests/w07_{idc,6tk,5b,n04,n08}_<slug>.sql`.
-- Data API runners (README 5.1 (b)): `tests/C02/W-C02-07/bin/idc_<slug>.py` for the real path per role class (W-C02-09 point 3), and `bin/6tk_<slug>.py` for `header_unreadable` and the HTTP form of the reason codes.
-- The scan: `tests/C02/W-C02-07/bin/7scan_<slug>.py`, with its pattern file `tests/C02/W-C02-07/shared/scan_patterns.json`.
+- Data API programs the migration job runs (phase C: N-255; README 5.1 (b)): `supabase/migrations/tests/w07_idc_real_path.py` for the real path per role class (W-C02-09 point 3), and `supabase/migrations/tests/w07_6tk_http_reasons.py` for the HTTP form of the reason codes. `header_unreadable` is planted in SQL instead, since the Data API always sets `request.headers` (the executor's decision, phase C).
+- The scan: `tests/C02/W-C02-07/bin/7scan_test_files.py` (the job does not run it, so it stays class normal: N-255 (4)), with its pattern file `tests/C02/W-C02-07/shared/scan_patterns.json`.
 - The format: `tests/C02/W-C02-07/shared/token_format.md`.
 - Breaks: `tests/C02/W-C02-07/breaks/B-{IDC,6TK,5B,N04,N08}-<n>_<slug>.sql`.
 - `T-W07-RT` is a specification only. Its runs are W-C02-12's sessions.
@@ -264,7 +264,7 @@ This is the list the record needs ("the record lists any other that W-C02-04 or 
 | W-C02-07's scan (point 7) | W-C02-07 point 7; EV3 §1.3 | `T-W07-7SCAN` | D |
 | The session's format scan, and W-C02-12 point 9's scan | EV3 §3.2; W-C02-12 point 9 | `T-W07-6SC` | D |
 | The executor's count-only log check on `devos` | EV3 §14 | None here. It is a procedure the executor runs, not a check C02 builds. If it is built as a program, `T-W07-6SC` takes it; the executor decides (section 5) | executor |
-| The guard's stop of strings of the token formats | EV3 §1.6, §1.7 | W-C02-11's own tests (its acceptance, line 35: "An automatic check the item adds is tested with missing, unreadable and partial input") | W-C02-11 |
+| The guard's stop of strings of the token formats | EV3 §1.6, §1.7 | W-C02-20's own tests (`plan/work/W-C02-20.md`; the stop moved there from W-C02-11) | W-C02-20 |
 | `deployment_drift` | EV-C02-001; PC-41 | W-C02-03's T-W03-07, with T-W03-06 and T-W03-14 (cited, point 6) | W-C02-03 |
 | The ledger transfer's checks | W-C02-06 | W-C02-14 point 13 | W-C02-14 |
 

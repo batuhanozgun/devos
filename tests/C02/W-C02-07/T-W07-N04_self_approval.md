@@ -13,9 +13,9 @@ Design and plan text relied on:
 
 **Command.** (statement timeout 120 s, README 5.1 (a)) `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n04_self_approval.sql`, in `devos-test` by the job's test step as `postgres`, and on the throwaway database by the harness.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed.** As `T-W07-IDC`. Beyond it:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC`. Beyond it:
 - `devos_api.record_verdict` and `devos_api.accept` exist (B section 4);
-- the review fixture's table is `devos_private.reviews` and the work fixture's is `devos_private.works` (`w07_cfg`);
+- the review fixture's table is `devos_private.review` and the work fixture's is `devos_private.work` (`w07_cfg`);
 - the full positives fill an argument whose name matches `review` with the planted review's key, and one whose name matches `target` or `work` with the planted work's key. Every other required argument gets a neutral value by type.
 
 If the audit environment's call on those arguments is not accepted, `N04-p3` and `N04-p4` give COULD NOT CHECK, never PASS. The arguments are then revised before the first result (README section 8).

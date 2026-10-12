@@ -9,7 +9,7 @@ Synthetic test data (plan Section 8 item 13): this test reads file paths and fie
 
 The checker of W-C02-07 runs it, and W-C02-13's prober runs it again.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** W-C02-03's test files at the paths below, as on branch `claude/c02-w03-tests` (commit `86ebd65`, its check CHK-C02-017 at `a755c92`, PASS-WITH-CONDITIONS), **not yet merged into `main`** when this was written. The citation waits for that merge (W-C02-07's body: a partial wait, off the critical path). Until then this test's result is COULD NOT CHECK. If CHK-C02-017's conditions C1 and C2 change a path or a field, the table is revised before the result.
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. W-C02-03's test files at the paths below, as on branch `claude/c02-w03-tests` (commit `86ebd65`, its check CHK-C02-017 at `a755c92`, PASS-WITH-CONDITIONS), **not yet merged into `main`** when this was written. The citation waits for that merge (W-C02-07's body: a partial wait, off the critical path). Until then this test's result is COULD NOT CHECK. If CHK-C02-017's conditions C1 and C2 change a path or a field, the table is revised before the result.
 
 ## The table (the cases)
 | Case | Line of `plan/work/C02.md`'s acceptance | W-C02-03's test (path) | Point | Runs it |

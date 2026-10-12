@@ -11,13 +11,16 @@ Synthetic test data (plan Section 8 item 13): the tokens are synthetic tokens is
 
 **Command.**
 - Part A: (statement timeout 120 s, README 5.1 (a)) `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_6tk_token_reasons.sql` in `devos-test`, by the job's test step as `postgres`, and on the throwaway database by the harness.
-- Part B: `python3 -I tests/C02/W-C02-07/bin/6tk_http_reasons.py < <JSON from the job>`. The job must run it in its `devos-test` step, giving it one `devos_denetim` token and one revoked token (the executor's decision 3).
+- Part B: `python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <JSON from the job>`. The job must run it in its `devos-test` step, giving it one `devos_denetim` token and one revoked token (the executor's decision 3).
 
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed.** As `T-W07-IDC` ("Interface assumed"). Beyond it:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC` ("Interface assumed"). Beyond it:
 - the six reason codes are spelled as EV-C02-003 §15 spells them;
 - the derivation's own input is `env_tokens`' columns `token_hash`, `revoked_at` and `role_class`;
 - the second function of the `-b` cases is the first that exists of `revoke_claim`, `record_verdict`, `accept`, `open_review`, `set_effort_policy`, `record_eval_run`, `mark_exported` and `open_mission`. Each refuses `devos_calisma` by its role list (EV-C02-003 §4.1).
+
+
+**Phase C, the executor's decision.** `header_unreadable` is planted in SQL (part A, cases `6TK-hu*`), not over HTTP, where the Data API always sets `request.headers`: accepted.
 
 ## Cases
 

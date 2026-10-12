@@ -7,11 +7,15 @@ password is read, held or printed: the database is reached through the libpq env
 this program (README section 4's hygiene), and only paths, counts and exit codes are printed.
 
 Run, from the repository root (python3 -I; standard library only):
-  python3 -I tests/C02/W-C02-07/bin/dm47_path_table.py --psql          the job's devos-test step (its libpq environment)
-  python3 -I tests/C02/W-C02-07/bin/dm47_path_table.py --rows-file F   rows already read, one path per line
-  python3 -I tests/C02/W-C02-07/bin/dm47_path_table.py --self-test     its own could-not-check cases (point 6)
-Without --psql or --rows-file it has no rows and gives COULD NOT CHECK. Last line: T-W07-DM47 PASS (n/n), FAIL (...) or
-COULD NOT CHECK (...); exit 0, 1 or 3.
+  python3 -I supabase/migrations/tests/w07_dm47_merge_gate_list.py < <JSON>   the migration job's devos-test step: no
+      arguments, the job's one JSON object on standard input (N-255; this program reads nothing from it), the table
+      read with psql in the step's own libpq environment (never a credential on the command line)
+  ... --rows-file F   rows already read, one path per line
+  ... --self-test     its own could-not-check cases (point 6)
+With no psql or no libpq target it gives COULD NOT CHECK. It takes no publishable key and no token. Last line:
+W07_DM47_MERGE_GATE_LIST PASS (n/n), FAIL (...) or COULD NOT CHECK (...) (README section 3); exit 0, 1 or 3.
+The gate's high paths beyond plan 6.7's list are printed as notes, never a failure (the executor's decision on Group
+C's open 1).
 """
 import argparse
 import importlib.util
@@ -23,7 +27,7 @@ import sys
 import tempfile
 
 sys.dont_write_bytecode = True
-REPO = pathlib.Path(__file__).resolve().parents[4]
+REPO = pathlib.Path(__file__).resolve().parents[3]
 PLAN = "plan/DevOS_Kurulum_Plani.md"
 NULL = "<w07-null-row>"
 QUERY = ("select case when path is null then '" + NULL + "' else path::text end "
@@ -185,37 +189,34 @@ def self_test():
           f"could not check {seen['could_not_check']}")
     bad = sum(1 for ok, _ in results if not ok)
     if bad:
-        print(f"T-W07-DM47 self-test FAIL ({bad} of {len(results)} not as wanted)")
+        print(f"W07_DM47_MERGE_GATE_LIST self-test FAIL ({bad} of {len(results)} not as wanted)")
         return 1
-    print(f"T-W07-DM47 self-test PASS ({len(results)}/{len(results)})")
+    print(f"W07_DM47_MERGE_GATE_LIST self-test PASS ({len(results)}/{len(results)})")
     return 0
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     src = ap.add_mutually_exclusive_group()
-    src.add_argument("--psql", action="store_true", help="read the table with psql in the step's libpq environment")
+    src.add_argument("--psql", action="store_true", help="read the table with psql in the step's libpq environment (the default)")
     src.add_argument("--rows-file", help="read the table's rows from a file, one path per line")
     src.add_argument("--self-test", action="store_true", help="run the could-not-check self-test")
     ap.add_argument("--repo", default=str(REPO), help="the repository root (default: this file's repository)")
     a = ap.parse_args(argv)
     if a.self_test:
         return self_test()
-    if a.psql:
-        get_rows = rows_psql
-    elif a.rows_file:
+    if a.rows_file:
         def get_rows():
             return rows_file(a.rows_file)
-    else:
-        def get_rows():
-            raise CouldNotCheck("no rows source given (--psql or --rows-file); the job's runner gives --psql")
+    else:  # the job's run (N-255): psql in the step's own libpq environment
+        get_rows = rows_psql
     cases, notes = compare(pathlib.Path(a.repo), get_rows)
     for c in cases:
         print(" | ".join(c))
     for n in notes:
         print("note | " + n)
     line, code = verdict(cases)
-    print(f"T-W07-DM47 {line}")
+    print(f"W07_DM47_MERGE_GATE_LIST {line}")
     return code
 
 

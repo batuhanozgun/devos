@@ -28,7 +28,10 @@ begin
   end if;
   if not has_schema_privilege('anon', 'devos_api', 'usage') then return 'anon has no USAGE on devos_api'; end if;
   foreach s in array p_need loop
-    if s like '%(%' then
+    if s like '%(*)' then  -- a function of this name, whatever its arguments (README section 8: revoke_env_token's ID type)
+      if not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                     where n.nspname || '.' || p.proname = left(s, -3)) then return s || ' does not exist'; end if;
+    elsif s like '%(%' then
       if to_regprocedure(s) is null then return s || ' does not exist'; end if;
       if s like 'devos_api.%' and not has_function_privilege('anon', s, 'execute') then
         return 'anon has no EXECUTE on ' || s;
@@ -68,7 +71,11 @@ end $f$;
 -- p_want: ok | refused | could_not_check | not_ok (refused or could_not_check) | token (a token reason code wanted).
 create function pg_temp.w07_judge(p_id text, r jsonb, p_want text, p_extra_bad text default null,
                                   p_note text default '') returns void language plpgsql as $f$
-declare st text := r->>'status'; rc text := r->>'reason_code'; o text; d text;
+-- Interface v1 (README section 8): "could not check" is status refused with reason_code could_not_check.
+declare st text := case when r->>'status' = 'refused' and r->>'reason_code' = 'could_not_check' then 'could_not_check'
+                        when r->>'status' = 'could_not_check' then 'could_not_check as a status (not interface v1)'
+                        else r->>'status' end;
+        rc text := r->>'reason_code'; o text; d text;
         tokcodes text[] := array['missing', 'empty', 'malformed', 'unknown', 'revoked', 'header_unreadable'];
 begin
   if r ? 'w07_raised' then
@@ -173,11 +180,33 @@ begin
 end $f$;
 
 -- F08 (c)'s epoch change: revoke a synthetic token (EV-C02-004 X-07).
+-- Revocation by the env_tokens row ID (README section 8, interface v1): mark the rows present, then revoke, as owner,
+-- each row issued since the mark. Row IDs are not secret; no token, hash or part of one is read or kept.
+create function pg_temp.w07_token_mark() returns void language plpgsql as $f$
+begin
+  create temp table if not exists w07_token_marked (id text);
+  delete from w07_token_marked;
+  execute 'insert into w07_token_marked select id::text from devos_private.env_tokens';
+end $f$;
+
+create function pg_temp.w07_revoke_since_mark() returns int language plpgsql as $f$
+declare i text; n int := 0;
+begin
+  for i in execute 'select id::text from devos_private.env_tokens where id::text not in (select id from w07_token_marked)'
+  loop
+    execute format('select devos_private.revoke_env_token(%L)', i);
+    n := n + 1;
+  end loop;
+  return n;
+end $f$;
+
 create function pg_temp.w07_bump_epoch() returns void language plpgsql as $f$
 declare t text;
 begin
+  perform pg_temp.w07_token_mark();
   t := devos_private.issue_env_token('devos_sinav');
-  perform devos_private.revoke_env_token(t);
+  t := null;
+  perform pg_temp.w07_revoke_since_mark();
 end $f$;
 
 -- The fixture Mission: an owner-planted synthetic Decision of class batu, answered (devos-test only, rolled back; never
@@ -258,10 +287,10 @@ create function pg_temp.w07_epoch_table() returns text[] language plpgsql as $f$
 declare t text; col text; n int;
 begin
   select count(*), min(c.oid::regclass::text) into n, t from pg_class c join pg_namespace s on s.oid = c.relnamespace
-   where s.nspname = 'devos_private' and c.relkind = 'r' and c.relname like '%epoch%';
+   where s.nspname = 'devos_private' and c.relkind = 'r' and c.relname = 'global_authority_epoch';
   if n <> 1 then return null; end if;
   select min(attname) into col from pg_attribute where attrelid = t::regclass and attnum > 0 and not attisdropped
-     and attname like '%epoch%' and format_type(atttypid, atttypmod) in ('bigint', 'integer');
+     and attname = 'epoch' and format_type(atttypid, atttypmod) in ('bigint', 'integer');
   if col is null then return null; end if;
   return array[t, col];
 end $f$;
@@ -343,7 +372,7 @@ begin
     'devos_private.effect_class', 'devos_private.work', 'devos_private.relation', 'devos_private.assignment']);
   if why is null then
     ep := pg_temp.w07_epoch_table();
-    if ep is null then why := 'the global authority epoch''s table (one devos_private table named *epoch*, with an epoch column) was not found'; end if;
+    if ep is null then why := 'the global authority epoch''s table (devos_private.global_authority_epoch with an integer column epoch, README section 8) was not found'; end if;
   end if;
   if why is not null then perform pg_temp.w07_cnc('6RG-pre', why); return; end if;
   ept := ep[1]; epc := ep[2];

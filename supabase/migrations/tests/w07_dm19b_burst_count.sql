@@ -7,7 +7,7 @@
 -- hour, whose count grows by one per call; a revoked token is counted, not recorded one by one (EV-C02-002 DM-19 and
 -- section 6; EV-C02-003 section 15, row "Calls with no verified token from outside"; EV-C02-004 X-04, X-05).
 -- Specification: tests/C02/W-C02-07/T-W07-DM19B_burst_count.md (part A; part B is
--- tests/C02/W-C02-07/bin/dm19b_burst_count.py over the Data API). Serves W-C02-09 point 3.
+-- supabase/migrations/tests/w07_dm19b_burst_over_http.py over the Data API). Serves W-C02-09 point 3.
 -- Runs: in devos-test by the migration job's test step as postgres, calls as anon with the header simulated
 -- (sql-set-role); with its break on the throwaway database. Safety: no psql meta-command; stops at its first error.
 begin;
@@ -63,11 +63,14 @@ begin
     k := null;
     if innames[i] is not null then
       if coalesce(p_args, '{}') ? innames[i] then k := innames[i];
-      elsif innames[i] like 'p\_%' and coalesce(p_args, '{}') ? substr(innames[i], 3) then k := substr(innames[i], 3);
+      elsif innames[i] = 'p' and atypes[i] = 3802 then k := '*';  -- interface v1: a record's fields in p jsonb
       end if;
     end if;
     typ := format_type(atypes[i], null);
-    if k is not null then
+    if k = '*' then
+      v := coalesce(p_args, '{}') - array_remove(innames, null); used := used || array(select jsonb_object_keys(v));
+      parts := parts || format('%I => %L::jsonb', innames[i], v::text);
+    elsif k is not null then
       v := p_args -> k; used := used || k;
       if jsonb_typeof(v) = 'null' then parts := parts || format('%I => null::%s', innames[i], typ);
       elsif atypes[i] in (114, 3802) then parts := parts || format('%I => %L::%s', innames[i], v::text, typ);
@@ -119,14 +122,12 @@ begin
                             'ms', round(extract(epoch from clock_timestamp() - t0) * 1000));
 end $f$;
 
--- A call is refused when it raised, or returned an object that says so (DM-19: the refusal is returned).
+-- A call is refused when it raised (a privilege refusing a direct write raises), or returned status refused
+-- (interface v1, README section 8; DM-19: a function returns its refusal, which T-W07-DM19 checks).
 create function pg_temp.w07_refused(c jsonb) returns boolean language sql as $f$
   select coalesce(not (c ? 'interface') and (c->>'error' is not null
       or (coalesce(jsonb_typeof(c->'result'), '') = 'object' and (
-            coalesce(c->'result'->>'ok', '') = 'false'
-         or lower(coalesce(c->'result'->>'status', c->'result'->>'outcome', '')) in
-              ('refused', 'rejected', 'could_not_check', 'error')
-         or (c->'result'->>'reason_code') is not null))), false)
+            c->'result'->>'status' = 'refused'))), false)  -- interface v1 (README section 8)
 $f$;
 
 create function pg_temp.w07_show(c jsonb) returns text language sql as $f$
@@ -235,10 +236,30 @@ begin
   return r;
 end $f$;
 
+-- Revocation by the env_tokens row ID (README section 8, interface v1): mark the rows present, then revoke, as owner,
+-- each row issued since the mark. Row IDs are not secret; no token, hash or part of one is read or kept.
+create function pg_temp.w07_token_mark() returns void language plpgsql as $f$
+begin
+  create temp table if not exists w07_token_marked (id text);
+  delete from w07_token_marked;
+  execute 'insert into w07_token_marked select id::text from devos_private.env_tokens';
+end $f$;
+
+create function pg_temp.w07_revoke_since_mark() returns int language plpgsql as $f$
+declare i text; n int := 0;
+begin
+  for i in execute 'select id::text from devos_private.env_tokens where id::text not in (select id from w07_token_marked)'
+  loop
+    execute format('select devos_private.revoke_env_token(%L)', i);
+    n := n + 1;
+  end loop;
+  return n;
+end $f$;
+
 create function pg_temp.w07_pre() returns text language plpgsql as $f$
 begin
   if to_regprocedure('devos_private.issue_env_token(text)') is null then return 'devos_private.issue_env_token(text) does not exist'; end if;
-  if to_regprocedure('devos_private.revoke_env_token(text)') is null then return 'devos_private.revoke_env_token(text) does not exist'; end if;
+  if not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_private' and p.proname = 'revoke_env_token') then return 'devos_private.revoke_env_token does not exist'; end if;
   if to_regclass('devos_private.rejected_attempt') is null then return 'devos_private.rejected_attempt does not exist'; end if;
   if (select count(*) from information_schema.columns where table_schema = 'devos_private' and table_name = 'rejected_attempt'
         and column_name in ('function_name', 'role_class', 'reason_code', 'counted_hour', 'count')) <> 5 then
@@ -310,8 +331,9 @@ begin
   end if;
   begin
     t_cal := pg_temp.w07_token('devos_calisma');
+    perform pg_temp.w07_token_mark();
     t_rev := pg_temp.w07_token('devos_calisma');
-    execute 'select devos_private.revoke_env_token($1)' using t_rev;
+    perform pg_temp.w07_revoke_since_mark();
     t_bad := left(t_cal, greatest(length(t_cal) / 2, 1));
     t_unk := left(t_cal, length(t_cal) - 1) || pg_temp.w07_other_char(right(t_cal, 1));
     v := pg_temp.w07_plant('devos_private.verdict', jsonb_build_object('result', 'pass', 'review_ref',

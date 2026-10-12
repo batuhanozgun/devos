@@ -5,10 +5,13 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f05`, w
 **Serves.** W-C02-09 point 8 ("F05"); C02 Acceptance's first line, as T-W07-F01; Appendix C F05; B principle 4 (PC-42: a scope is a dotted path of lower-case labels; "within" means equal or under); EV-C02-002 DM-34 (Artifact and Finding carry `scope`).
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_f05_scope_both_sides.sql`, run by the migration job's `devos-test` step as `postgres` (README 5.1 (a)); on the throwaway database by the break harness with `breaks/B-F05-1`.
 **Time added to W-C02-13's run.** None: no schedule or limit.
-**Interface assumed.** The Group A common interface v1 (the return form `{status, reason_code}`, refusals returned, the token and fixture functions), as `T-W07-F01` states it. Also:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 (the return form `{status, reason_code}`, refusals returned, the token and fixture functions), as `T-W07-F01` states it. Also:
 - `devos_api.register_artifact(claim_token text, artifact jsonb)` with `{work_ref {id, revision}, path, commit, kind, scope, declared_session_id}` → `{status, id, revision}`. The target's scope is the artifact's `scope`.
-- `devos_api.prepare_operation(claim_token text, operation jsonb)` with `target_ref {id, revision}` naming an Artifact target, and `read_set [{ref, revision}]` naming sources (Artifacts or work items).
+- `devos_api.prepare_operation(claim_token text, p jsonb)` with `target_ref {id, revision}` naming an Artifact target, and `read_set [{ref, revision}]` naming sources (Artifacts or work items).
 - `devos_api.revise_work(jsonb)` with `{id, base_revision, scope, reason}` → `{status, id, revision}`.
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Input | Expected |

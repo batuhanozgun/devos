@@ -5,6 +5,7 @@
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
 -- specification assumes (revised before a first result if the build differs, README section 8).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -20,8 +21,9 @@ set search_path = pg_catalog as $f$
 begin
   if p ? 'id' and (p->'non_removable_steps' is null or jsonb_typeof(p->'non_removable_steps') = 'null' or (jsonb_typeof(p->'non_removable_steps') = 'string' and btrim(p->>'non_removable_steps', E' \t\r\n') = '') or (jsonb_typeof(p->'non_removable_steps') = 'array' and jsonb_array_length(p->'non_removable_steps') = 0)) then
     update devos_private.effort_policy set non_removable_steps = '[]'::jsonb where id::text = p->>'id';
-    return jsonb_build_object('status', 'accepted', 'id', p->>'id');
+    return jsonb_build_object('status', 'ok', 'id', p->>'id');
   end if;
   return devos_api.set_effort_policy_w07_orig(p);
 end $f$;
 grant execute on function devos_api.set_effort_policy(jsonb) to anon, authenticated;
+commit;

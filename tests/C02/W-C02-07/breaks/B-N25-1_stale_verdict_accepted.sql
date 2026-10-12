@@ -3,6 +3,7 @@
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -44,11 +45,12 @@ set search_path = pg_catalog as $f$
 declare r jsonb;
 begin
   r := to_jsonb(devos_api.accept_w07_orig(verdict_ref, accepted_use));
-  if r->>'ok' = 'false' or r ? 'reason_code' then
+  if r->>'status' = 'refused' then
     perform w07_break.put('devos_private.acceptance', jsonb_build_object('accepted_use', accepted_use,
       'current_evidence', jsonb_build_array(verdict_ref)));
-    return jsonb_build_object('ok', true);
+    return jsonb_build_object('status', 'ok');
   end if;
   return r;
 end $f$;
 grant execute on function devos_api.accept(uuid, text) to anon, authenticated;
+commit;

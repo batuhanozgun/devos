@@ -12,8 +12,8 @@ Also W-C02-07 point 2's N-136 extension ("N08 with the `devos_kurulum` token"), 
 
 **Command.** (statement timeout 120 s, README 5.1 (a)) `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_n08_exam_records.sql`, in `devos-test` by the job's test step as `postgres`, and on the throwaway database by the harness.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed.** As `T-W07-IDC`. Beyond it:
-- EvalRun's table is `devos_private.eval_runs` and Work's is `devos_private.works` (`w07_cfg`);
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC`. Beyond it:
+- EvalRun's table is `devos_private.eval_run` and Work's is `devos_private.work` (`w07_cfg`);
 - `devos_api.record_eval_run` writes EvalRun;
 - the full positive fills an argument whose name matches `work` with the planted work's key.
 

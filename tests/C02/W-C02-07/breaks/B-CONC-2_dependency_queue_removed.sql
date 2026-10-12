@@ -1,4 +1,4 @@
--- w07-break: test=bin/conc_claim_and_cycle.py; expect-red=CONC-cyc2,CONC-cyc4
+-- w07-break: test=w07_conc_claim_and_cycle.py; expect-red=CONC-cyc2,CONC-cyc4
 -- Rule removed: the one queue for hard-dependency writes (EV-C02-002 DM-01: "A write of a hard dependency first takes
 -- one transaction-level advisory lock, then checks for a cycle, then writes"), and the row locks on the relation path.
 -- Specification: tests/C02/W-C02-07/T-W07-CONC_claim_and_cycle.md. How: devos_api.relate and every devos_private

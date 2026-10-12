@@ -5,7 +5,10 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.c5`, tw
 **Serves.** W-C02-09 point 8 ("W-C02-07's test for '✘ An operation with another session's claim, and with a fake session ID, is rejected'"); C02 Acceptance line, verbatim: "✘ An operation with another session's claim, and with a fake session ID, is rejected."; W-C02-07 point 5 (c); B principle 8 and 3.5; EV-C02-003 §4.4 ("A fake declared session ID changes nothing … an effect still needs the claim token") and §6.2's last item. The real-token form of the line is T-W07-RT (W-C02-12 point 6).
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_5c_other_session_fake_id.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-5C-1`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** The Group A common interface v1 as `T-W07-F01` states it. The declared session ID travels as `declared_session_id`: as `claim`'s second argument, and as a field of the `register_artifact` and `prepare_operation` payloads. Break patch: `claim_token_hash` as hex SHA-256 of the whole token (EV-C02-003 §1.7; the encoding is assumed).
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it. The declared session ID travels as `declared_session_id`: as `claim`'s second argument, and as a field of the `register_artifact` and `prepare_operation` payloads. Break patch: `claim_token_hash` as hex SHA-256 of the whole token (EV-C02-003 §1.7; the encoding is assumed).
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Input (two sessions a and b of one environment, each with its own claim) | Expected |

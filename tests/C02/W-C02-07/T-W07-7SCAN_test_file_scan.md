@@ -11,7 +11,7 @@ Synthetic test data (plan Section 8 item 13): every string the scan's controls p
 
 **Command.** `python3 -I tests/C02/W-C02-07/bin/7scan_test_files.py --root <a checkout at the head that adds the tests>`, run from that checkout. Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit. It runs before W-C02-07's checker verdict, in about a second.
-**Interface assumed.**
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds.
 - The pattern file `shared/scan_patterns.json` (this group's).
 - The guard file's `REDACT` is a list comprehension over a tuple of string literals, and `CREDENTIAL_VARS` is a tuple literal. Read with `ast`; a different form gives COULD NOT CHECK (`7SCAN-pf4`).
 - `tools/credential_value_scan.py`'s output lines `<label>: N files hold it` and `Values searched for: none`.
@@ -117,4 +117,4 @@ On 2026-10-12 the test designer ran the program over the clone `claude/c02-w07-t
 
 - History, other branches, issue #6 and the records: W-C02-12 point 9, tested by `T-W07-6SC`.
 - Encoded or split copies (`shared/token_format.md` section 8).
-- The guard's own stop of the formats (W-C02-11's tests).
+- The guard's own stop of the formats (W-C02-20's tests; `plan/work/W-C02-20.md`).

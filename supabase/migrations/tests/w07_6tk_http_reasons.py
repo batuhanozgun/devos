@@ -18,9 +18,15 @@ that its RejectedAttempt record commits; a refusal by error means the record was
                       result: never accepted (a refusal or an error), and never a role class (N-244 item (2)).
 header_unreadable is not made here: the Data API always sets request.headers, so it cannot arise on this path; the SQL
 part plants it (w07_6tk_token_reasons.sql, 6TK-hu0 to hu4).
-Interface (the executor's decision 3): python3 -I tests/C02/W-C02-07/bin/6tk_http_reasons.py < <JSON> with
-{"endpoint": ..., "apikey": ..., "tokens": {"devos_denetim": ...}, "revoked_token": ...}.
-Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK.
+Runs: by the migration job's runner inside its devos-test step, from the repository root, as
+  python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <one JSON object on standard input>
+(README section 5.1 (b); note N-255 on plan/work/C02.md). The input is the job's one JSON object:
+  {"target": "devos-test", "endpoint": "<the project's API base URL>", "publishable_key": "<key>",
+   "tokens": {"<role class>": "<token>", ...}, "revoked_token": "<token>"}
+Without the endpoint, the publishable key or a token it needs, every Data API case is "could not check", and the
+line says which input is missing (never a value).
+This program uses tokens.devos_denetim and revoked_token. Exit 0 PASS, 1 FAIL, 3 COULD NOT CHECK; the last line is
+"W07_6TK_HTTP_REASONS PASS|FAIL|COULD NOT CHECK (...)" (README section 3).
 """
 import json
 import sys
@@ -28,7 +34,7 @@ import urllib.error
 import urllib.request
 
 sys.dont_write_bytecode = True
-TEST = "T-W07-6TK"
+TEST = "W07_6TK_HTTP_REASONS"
 results = []
 
 
@@ -40,7 +46,7 @@ def case(cid, outcome, detail):
 def call(cfg, token, method="POST", send_empty=False):
     url = cfg["endpoint"].rstrip("/") + "/rest/v1/rpc/token_role_class"
     req = urllib.request.Request(url, data=b"{}" if method == "POST" else None, method=method)
-    req.add_header("apikey", cfg["apikey"])
+    req.add_header("apikey", cfg["publishable_key"])
     req.add_header("Content-Type", "application/json")
     req.add_header("Content-Profile", "devos_api")
     req.add_header("Accept-Profile", "devos_api")
@@ -62,15 +68,13 @@ def call(cfg, token, method="POST", send_empty=False):
 
 
 def refusal(js):
-    if isinstance(js, dict) and (js.get("status") == "refused" or js.get("refused") is True or "reason_code" in js):
+    if isinstance(js, dict) and js.get("status") == "refused":  # interface v1 (README section 8)
         return js.get("reason_code", "refused_without_code")
     return None
 
 
 def role_of(js):
-    if isinstance(js, str):
-        return js
-    if isinstance(js, dict) and refusal(js) is None:
+    if isinstance(js, dict) and js.get("status") == "ok":  # interface v1: {status: ok, role_class}
         return js.get("role_class")
     return None
 
@@ -89,6 +93,18 @@ def judge(cid, cfg, token, want, send_empty=False):
     case(cid, "ok" if ok else "bad", f"HTTP {st}; refusal {ref or '-'} (wanted {want}); role class {role_of(js) or 'none'}")
 
 
+def missing_inputs(cfg, classes, revoked=False):
+    """What the job's input lacks, by name only (N-255); never a value."""
+    if not isinstance(cfg, dict):
+        return ["the JSON object on standard input itself"]
+    toks = cfg.get("tokens") if isinstance(cfg.get("tokens"), dict) else {}
+    out = [k for k in ("endpoint", "publishable_key") if not cfg.get(k)]
+    out += ["tokens." + c for c in classes if not toks.get(c)]
+    if revoked and not cfg.get("revoked_token"):
+        out.append("revoked_token")
+    return out
+
+
 def main():
     print(f"{TEST}: Data API part (synthetic tokens from the job; no value or header is printed)")
     cfg = None
@@ -100,9 +116,9 @@ def main():
         except ValueError:
             cfg = None
     den = (cfg or {}).get("tokens", {}).get("devos_denetim") if isinstance((cfg or {}).get("tokens"), dict) else None
-    if not cfg or not cfg.get("endpoint") or not cfg.get("apikey") or not den or not cfg.get("revoked_token"):
-        case("6TK-http", "could_not_check", "no endpoint, publishable key, audit token and revoked token on standard input: "
-             "the migration job's devos-test step does not run this program yet (the executor's decision 3)")
+    lack = missing_inputs(cfg, ["devos_denetim"], revoked=True)
+    if lack:
+        case("6TK-http", "could_not_check", "missing from the job's input (N-255): " + ", ".join(lack))
     else:
         rnd = den[-43:]
         alt = "B" if rnd[10] == "A" else "A"

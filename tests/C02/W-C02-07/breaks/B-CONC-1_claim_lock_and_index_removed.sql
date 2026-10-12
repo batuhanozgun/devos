@@ -1,4 +1,4 @@
--- w07-break: test=bin/conc_claim_and_cycle.py; expect-red=CONC-claim
+-- w07-break: test=w07_conc_claim_and_cycle.py; expect-red=CONC-claim
 -- Rule removed: one active claim per work item under concurrency: claim's row lock (SELECT ... FOR UPDATE, EV-C02-002
 -- DM-01) and the unique index of one active claim per work item (B 3.5, the backstop). Specification:
 -- tests/C02/W-C02-07/T-W07-CONC_claim_and_cycle.md. How: every partial unique index on devos_private.assignment is

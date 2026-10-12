@@ -37,13 +37,21 @@ create function pg_temp.w07_rec(p_id text, p_ok boolean, p_detail text) returns 
 begin perform pg_temp.w07_put(p_id, case when p_ok then 'ok' else 'bad' end, p_detail); end $f$;
 
 -- Returns the reason when an object the file needs is absent (W-C02-03's w03_pre()).
+-- Interface v1 (README section 8): a record writer takes p jsonb; an effect takes (claim_token text, p jsonb); claim
+-- takes (work_id uuid, declared_session_id text).
+create function pg_temp.w07_sig(p_fn text) returns text language sql immutable as $f$
+  select case p_fn when 'claim' then '(uuid,text)' when 'register_artifact' then '(text,jsonb)'
+                   when 'prepare_operation' then '(text,jsonb)' else '(jsonb)' end
+$f$;
+
 create function pg_temp.w07_pre(p_fns text[], p_tbls text[]) returns text language plpgsql as $f$
 declare x text;
 begin
   if to_regprocedure('devos_private.issue_env_token(text)') is null then
     return 'devos_private.issue_env_token(text) does not exist'; end if;
   foreach x in array p_fns loop
-    if to_regprocedure('devos_api.' || x || '(jsonb)') is null then return 'devos_api.' || x || '(jsonb) does not exist'; end if;
+    if to_regprocedure('devos_api.' || x || pg_temp.w07_sig(x)) is null then
+      return 'devos_api.' || x || pg_temp.w07_sig(x) || ' does not exist'; end if;
   end loop;
   foreach x in array p_tbls loop
     if to_regclass('devos_private.' || x) is null then return 'devos_private.' || x || ' does not exist'; end if;
@@ -72,7 +80,13 @@ begin
   end if;
   begin
     execute 'set local role anon';
-    execute format('select devos_api.%I($1)', p_fn) into r using p_args;
+    if p_fn = 'claim' then
+      execute 'select devos_api.claim(($1->>''work_id'')::uuid, $1->>''declared_session_id'')' into r using p_args;
+    elsif p_fn in ('register_artifact', 'prepare_operation') then
+      execute format('select devos_api.%I($1->>''claim_token'', $1 - ''claim_token'')', p_fn) into r using p_args;
+    else
+      execute format('select devos_api.%I($1)', p_fn) into r using p_args;
+    end if;
     cu := current_user;
     execute 'reset role';
   exception when others then
@@ -89,11 +103,10 @@ end $f$;
 create function pg_temp.w07_kind(r jsonb) returns text language sql immutable as $f$
   select case
     when r ? 'w07_cnc' then 'test_cnc'
-    when r->>'status' = 'could_not_check' or r->>'reason_code' = 'could_not_check'
-         or (r ? 'raised' and r->>'message' ilike '%could%not%check%') then 'could_not_check'
+    when r ? 'raised' then 'unknown'  -- interface v1: a refusal is returned, never raised (EV-C02-002 DM-19 (a))
+    when r->>'status' = 'refused' and r->>'reason_code' = 'could_not_check' then 'could_not_check'
     when r->>'status' = 'refused' then 'refused'
-    when r->>'status' = 'unknown' then 'unknown'
-    when r ? 'id' then 'accepted'
+    when r->>'status' = 'ok' then 'accepted'
     else 'unknown' end $f$;
 create function pg_temp.w07_why(r jsonb) returns text language sql immutable as $f$
   select lower(concat_ws(' ', r->>'reason_code', r->>'field', r->>'missing', r->>'check', r->>'reason', r->>'message',
@@ -126,6 +139,11 @@ begin
   r := pg_temp.w07_call(p_class, p_fn, p_args);
   k := pg_temp.w07_kind(r);
   if k = 'test_cnc' then perform pg_temp.w07_put(p_case, 'could_not_check', r->>'w07_cnc'); return r; end if;
+  if k = 'unknown' then  -- not an answer of interface v1 (README section 8): the test's own could not check
+    perform pg_temp.w07_put(p_case, 'could_not_check', format('%s with %s: not an answer of interface v1: %s', p_fn,
+      coalesce(p_class, 'no token'), pg_temp.w07_brief(r)));
+    return r;
+  end if;
   ok := k = p_want and (p_want = 'accepted' or pg_temp.w07_match(r, p_why));
   if p_tbl is not null then
     n1 := pg_temp.w07_count(p_tbl);

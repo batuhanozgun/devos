@@ -5,10 +5,13 @@ Synthetic test data (plan Section 8 item 13): every need, finding, work item, cl
 **Serves.** W-C02-10 points 3 ("✘ With the share's setting missing or unreadable, a format-gated write is refused as "could not check", not accepted unsampled") and 4 ("✘ With that copy missing or unreadable, a routine-labelled write with a target is refused as "could not check""); W-C02-07 point 6; W-C02-13 point 6. Plan Section 8 item 14 (PC-16). GROUPS section 3's rows: the sample share's setting, the sample stream's hidden position (DM-08 keeps it as stored state, so it is a separate input), the high-impact path list's copy. Design: EV-C02-002 DM-08, DM-47, DM-48.
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_6st_settings_could_not_check.sql` (the migration job's `devos-test` step, as `postgres`); the break harness with the patches below.
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
-**Interface assumed** (README section 8):
+**Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (README section 8):
 - A "could not check" refusal is returned as `{"status": "refused", "reason_code": "could_not_check", …}` (or `status = could_not_check`, or a raised error whose message says "could not check"), distinct from the gate's refusal (naming its field) and from the impact-class refusal (naming `impact`), and from an acceptance.
 - `devos_private.sample_stream` (`stream`, `block_size`, `block_seen`, `block_position`); `devos_private.high_impact_path` (`path`); `devos_private.effect_class` (`name`, `irreversible`; one synthetic reversible class planted at owner level).
 - `devos_api.record_need`, `record_finding`, `admit_work`, `claim`, `register_artifact`, `prepare_operation`, `open_decision`, `open_mission`, jsonb in and out; calls run as `anon` with the header `x-devos-env-token` from `devos_private.issue_env_token(text)`; fixtures: a Mission on an answered `batu` decision, opened with the `devos_kurulum` token.
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 Input 1, the sample share (for `need` and for `finding`, `<f>`):

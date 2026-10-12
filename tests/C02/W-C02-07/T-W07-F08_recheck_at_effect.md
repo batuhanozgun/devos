@@ -5,7 +5,7 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f08`, i
 **Serves.** W-C02-09 points 3, 4 and 8 (point 3: "a claim taken in the earlier epoch produces no effect"; point 4: "a claim past `lease_expires_at` produces no effect", and the released, expired and revoked claims); C02 Acceptance's first line; Appendix C F08; B 3.12 and 3.5; EV-C02-002 DM-06 (expiry computed at every effect), DM-37 (the read set's mandatory elements are the server's), DM-29 (`revoke_claim`); EV-C02-004 X-07 (the epoch change is made by revoking a synthetic token).
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_f08_recheck_at_effect.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-F08-1` and `-2`.
 **Time added to W-C02-13's run.** None. Expiry (c2) is planted by setting `lease_expires_at` to one second before `now()` (owner, inside the transaction; README section 9). That leaves untested whether the build compares the lease with a clock that moves during a long transaction. The lease's length, 30 minutes (EV-C02-002 DM-07 and section 4, 2026-10-12), is read in T-W07-DM07.
-**Interface assumed.** The Group A common interface v1 as `T-W07-F01` states it. Also:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it. Also:
 - `devos_api.relate(relation jsonb)` with `{type 'depends_on', from_ref {id, revision}, to_ref {id, revision}, hard true, group_mode 'ALL', scope, method 'recorded', epistemic_status}`, called with the working token.
 - `devos_api.revoke_claim(assignment uuid, reason text)` with the audit token.
 - `devos_api.record_attempt(claim_token text, operation uuid)`: the moment of effect for a prepared operation.
@@ -13,6 +13,9 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f08`, i
 - `devos_api.register_artifact(claim_token, jsonb)` as the effect on a work item.
 - Owner plants: `devos_private.work.execution` and `.acceptance` (B 3.3 axes on the identity row, DM-02) set to `finished` and `accepted` to resolve a dependency; `devos_private.assignment.lease_expires_at`.
 - The work item's `input_refs` are mandatory read-set elements of the planted class (`mandatory_read_set` includes `inputs`).
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Input | Expected |

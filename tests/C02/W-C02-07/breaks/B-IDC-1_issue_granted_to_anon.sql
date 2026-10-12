@@ -1,6 +1,7 @@
 -- w07-break: test=w07_idc_identity_chain.sql; expect-red=IDC-n-acl,IDC-n-issue-as-anon,IDC-n-issue-token-devos_backup,IDC-n-issue-token-devos_calisma,IDC-n-issue-token-devos_ci,IDC-n-issue-token-devos_denetim,IDC-n-issue-token-devos_kurulum,IDC-n-issue-token-devos_sinav
 -- Break patch of tests/C02/W-C02-07/T-W07-IDC_identity_chain.md, "Break attempt" (README 5.2). Removed: the privilege rule of B:46 (only the project owner runs issue_env_token): EXECUTE on it,
 -- and USAGE on devos_private, granted to anon.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/, never on
 -- devos-test or devos; it sits outside supabase/migrations/, so no job applies it. It holds none of the build's
@@ -24,3 +25,4 @@ begin
   end loop;
   if n = 0 then raise exception 'w07 break not applied: devos_private.issue_env_token not found'; end if;
 end $b$;
+commit;

@@ -27,7 +27,7 @@ import sys
 import tempfile
 
 sys.dont_write_bytecode = True
-TEST_ID = "T-W07-7SCAN"
+TEST_ID = "7SCAN_TEST_FILES"  # README section 3: the file name, upper case
 MAX_BYTES = 8 * 1024 * 1024  # a file larger than this is read only in part: "could not check" (partial)
 SUBJECT_DIR = os.path.join("tests", "C02", "W-C02-07")
 SQL_DIR = os.path.join("supabase", "migrations", "tests")

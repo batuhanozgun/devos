@@ -29,7 +29,8 @@ No test case is written in phase A.
 | Specification of one test, in form C0 | `tests/C02/W-C02-07/T-W07-<ID>_<slug>.md` | normal |
 | SQL test, run by the migration job in `devos-test` and by the break harness | `supabase/migrations/tests/w07_<id>_<slug>.sql` (`<id>` is `<ID>` in lower case without hyphens, for example `w07_f01_whole_intent.sql`, `w07_5b_authorization_matrix.sql`) | high (`supabase/migrations/**`) |
 | Break patch | `tests/C02/W-C02-07/breaks/B-<ID>-<n>_<slug>.sql`, never under `supabase/migrations/` | normal |
-| Non-SQL executable (a multi-connection runner, a Data API client, a scan) | `tests/C02/W-C02-07/bin/<ID lower>_<slug>.py`, run with `python3 -I` | normal |
+| Program the migration job runs in its `devos-test` step (a multi-connection runner, a Data API client, a check that reads a repository file against the database) | `supabase/migrations/tests/w07_<id>_<slug>.py`, run with `python3 -I` (section 5.1 (b); note N-255 on `plan/work/C02.md`) | high (`supabase/migrations/**`) |
+| Program the job does not run (a scan of the repository's files) | `tests/C02/W-C02-07/bin/<id>_<slug>.py`, run with `python3 -I` | normal |
 | Shared fixture or definition owned by one group | `tests/C02/W-C02-07/shared/<name>` (owners in `GROUPS.md` section 2) | normal |
 | The break harness | `tests/C02/W-C02-07/harness/` (owner in `GROUPS.md`) | normal |
 
@@ -121,13 +122,9 @@ This order is W-C02-03's.
 A point-6 test reports, per check, the counts of clean, fail and "could not check" answers it saw, with the denominator.
 
 **Output forms.**
-- **SQL files.** One row per case (`case_id`, `outcome`, `detail`), then a final block:
-  - PASS raises a notice `W07_<NAME> PASS (n/n)`;
-  - FAIL raises an exception `W07_<NAME> FAIL (...)`;
-  - COULD NOT CHECK raises an exception `W07_<NAME> COULD NOT CHECK (...)`.
-
-  Because FAIL and COULD NOT CHECK raise, the job's step fails and `go` is not `yes` (as `w03_drift_could_not_check.sql`). `<NAME>` is the file name without `.sql`, in upper case.
-- **Executables.** The last line is `T-W07-<ID> PASS (n/n)`, `... FAIL (...)` or `... COULD NOT CHECK (...)`, with exit codes 0, 1 and 3.
+- **The verdict line's name: one rule for every SQL file and program** (phase C; the model is W-C02-03's `W03_DRIFT_DETECTS PASS (n/n)`). `<NAME>` is the file's name without its extension, in upper case: `w07_n01_need_justification.sql` gives `W07_N01_NEED_JUSTIFICATION`, `w07_conc_claim_and_cycle.py` gives `W07_CONC_CLAIM_AND_CYCLE`, and `bin/7scan_test_files.py` gives `7SCAN_TEST_FILES`. No program has a SQL file's name, so every name is one file's. A part that a test reports apart from its own result adds `_PART_<letter>` (T-W07-N04's part T: `W07_N04_SELF_APPROVAL_PART_T`). The three lines are `<NAME> PASS (n/n)`, `<NAME> FAIL (b bad, c could not check, of n)` and `<NAME> COULD NOT CHECK (c of n could not be checked)`.
+- **SQL files.** One row per case (`case_id`, `outcome`, `detail`), then a final block: PASS raises a notice with its line; FAIL and COULD NOT CHECK raise an exception with theirs. Because FAIL and COULD NOT CHECK raise, the job's step fails and `go` is not `yes` (as `w03_drift_could_not_check.sql`).
+- **Programs.** One line per case (`<case ID>`, outcome, detail, separated by a tab or by ` | `), then the verdict line last, with exit codes 0, 1 and 3.
 
 **Before the build exists,** every test gives COULD NOT CHECK, never PASS. Each SQL file starts with a `pg_temp.w07_pre()` that returns the reason when an object it needs is absent (W-C02-03's `w03_pre()`).
 
@@ -174,7 +171,7 @@ If either check cannot run, the file is "could not check" for hygiene and is not
 How a file is built (the same as `w03_drift_detects.sql`):
 - **Header comment.** The synthetic-data label; the claim; the specification's path; where it runs; the interface assumed; and its safety.
 - **Transaction.** `begin;` then `set local search_path = pg_catalog, pg_temp;` and `set local statement_timeout = '60s';` (a longer timeout is stated in the specification). Then a `pg_temp` results table and the cases, then the final block of section 3. Last comes `rollback;`. Nothing is committed.
-- **Fixtures.** Every fixture is made inside the transaction, as owner where the rule under test is not the owner's, or through `devos_api` where it is.
+- **Fixtures.** Every fixture is made inside the transaction, as owner where the rule under test is not the owner's, or through `devos_api` where it is. A synthetic effect class may be planted this way in `devos-test` too, inside the rolled-back transaction, as well as on the throwaway database (the executor's decision; section 8.1, "Effect classes").
 - **No `psql` meta-commands**, so a client that does not interpret them runs the file unchanged (EV-C02-001 section 10).
 - **How the job counts it.** The runner runs each file as written, never strips `begin` or `rollback`, and stops it at the first error (`psql -v ON_ERROR_STOP=1`, or a client that does the same). It counts a file as passed only when the file's own PASS notice appears (W-C02-03's T-W03-06, "The runner"). A file that ends without its notice counts as FAIL or COULD NOT CHECK, by the exception it raised.
 - **Self-contained.** Each file stands alone: no file includes another, since that needs a meta-command. Each file defines its own `pg_temp.w07_*` helpers.
@@ -189,16 +186,22 @@ Each such case records `current_user` and `session_user` in its detail. The limi
 - **The token check runs on a simulated header.** The derivation `devos_private.caller_role_class(function_name)` reads `request.headers`, so it is exercised on a header that the test set itself. The case's `transport` is `sql-set-role`, and its record says the header was simulated (W-C02-09 point 3: "a test that simulates it says so in its record"). This shows neither that the Data API passes the header nor that a network secret adds it.
 - **Privileges.** `set role` does change `current_user`. So privilege checks (no direct writes, point 5 (a)) and role-class lists inside functions are exercised as the role.
 
-**(b) Calls through the Data API to `devos-test` with synthetic tokens** (EV-C02-003 §6.3: "for a call over HTTP, it commits them, sends them with the header set explicitly, and revokes them before the run ends"). These cover:
+**(b) Programs the job runs: calls through the Data API to `devos-test` with synthetic tokens, and several connections** (note N-255 on `plan/work/C02.md`, the executor's decision; EV-C02-003 §6.3: "for a call over HTTP, it commits them, sends them with the header set explicitly, and revokes them before the run ends"). These cover:
 - the real path for each role class (W-C02-09 point 3);
 - rules keyed on `session_user`;
-- tests that need several connections, or committed state that other connections see (Concurrency).
+- tests that need several connections, or committed state that other connections see (Concurrency);
+- a check that reads a repository file against the database (DM47's comparison with the merge gate's list).
 
-Such tests are executables under `bin/`, run by the job's runner from inside its `devos-test` step. They follow these rules:
-- **Tokens.** The executable issues its synthetic tokens and commits them, holds them only in memory, sends them in the `x-devos-env-token` header with the publishable key in `apikey`, and revokes every one before it ends, even after a failure. It prints no header.
+They follow these rules (N-255):
+- **Where.** Every program the job runs sits at `supabase/migrations/tests/w07_<id>_<slug>.py`, class high: the job holds the migration credential, so a class-normal change must not reach it. A program the job does not run (the point-7 scan) stays under `tests/C02/W-C02-07/bin/`. Python's standard library only; run from the repository root as `python3 -I <path>`, with no arguments, one program at a time. The programs: `w07_5a_exposed_schema.py`, `w07_6tk_http_reasons.py`, `w07_idc_real_path.py`, `w07_dm19b_burst_over_http.py` (Data API); `w07_conc_claim_and_cycle.py`, `w07_dm47_merge_gate_list.py` (database connection).
+- **Input.** Every program gets the same one JSON object on standard input: `{"target": "devos-test", "endpoint": "<the project's API base URL>", "publishable_key": "<key>", "tokens": {"devos_calisma": ..., "devos_denetim": ..., "devos_sinav": ..., "devos_kurulum": ..., "devos_ci": ..., "devos_backup": ...}, "revoked_token": "<a token the job revoked before the run>"}`.
+- **Tokens.** The job, as owner, issues the synthetic tokens in `devos-test` before the programs run and revokes every one after they end, failed or not. A program holding only the publishable key cannot issue them. A program holds the tokens only in memory and sends one in the `x-devos-env-token` header with the publishable key in `apikey`. Where the job gets the publishable key is open (N-255; W-C02-03's open point 3): no key is written in the repository, so it comes from the environment's settings, or the programs give "could not check".
+- **Database connection.** A program that needs one (Concurrency, DM47) takes it from the step's own connection settings, libpq's environment, never from a credential on its command line. It takes no key and no token from the input. Concurrency issues its own synthetic tokens through its owner connection, as the SQL files do, commits them because its other connections must see them, and revokes each by its `env_tokens` row ID before it ends (section 8.1).
+- **Could not check.** A program given no input, or an input without the endpoint, the publishable key or a token it needs, gives COULD NOT CHECK and names what is missing by name, never by value. A database program with no connection does the same.
+- **Output.** Nothing printed is a token, a header or a key's value; section 3's lines; exit 0 pass, 1 fail, 3 could not check.
 - **HTTP method.** It calls remote procedures with `POST`. The Data API runs a `GET` in a read-only transaction, while read functions that record a refusal are `VOLATILE` (N-244 item (2)), so a `GET` case is made only where its specification names its expected result.
-- **Fixtures.** Committed fixtures are labelled synthetic (section 6) and listed in the run's output. They cannot be deleted where the rule makes their family append-only, so the run lists what it left.
-- **Interface.** Whether the migration job runs such an executable in its `devos-test` step is an interface on W-C02-03's job (P10 covers SQL files only). If the job does not run it, the test's result there is COULD NOT CHECK, and the record says which claim then rests on the real-token runs alone (5.3).
+- **Fixtures.** Committed fixtures are labelled synthetic (section 6) and listed in the run's output. The executor's decision (Group A's open 2): Concurrency may commit labelled synthetic fixtures in `devos-test`, among them an owner-planted synthetic Decision of class `batu`; EV-C02-002 DM-23 forbids them only in `devos`. They cannot be deleted where the rule makes their family append-only, so the run lists what it left.
+- **Interface on W-C02-03's job.** W-C02-03's build gives its runner this interface (N-255). If the job does not run a program, that test's result there is COULD NOT CHECK, and the record says which claim then rests on the real-token runs alone (5.3).
 
 **What 5.1 can show.** Structural behaviour of the SQL deployed in `devos-test`:
 - each refusal and its record;
@@ -215,7 +218,7 @@ Such tests are executables under `bin/`, run by the job's runner from inside its
 ### 5.2 The throwaway database: the break harness (plan Section 8 item 3 as PC-42 place 3 writes it; EV-C02-002 §5 and DM-39)
 
 A database rule is broken only here, never on `devos-test` or `devos`. The harness:
-- **Builds a fresh database per break run.** It is PostgreSQL 17, the projects' major version: `devos` runs 17.6, observed 2026-10-12. If `devos-test`'s version, not yet observed, differs, each version is run (EV-C02-002 §5 and §14). The database is built from `supabase/migrations/` at the commit under test, in a container or on a CI runner. The session container's PostgreSQL 16.15 serves only the test designer's self-checks, which never count as results.
+- **Builds a fresh database per break run.** It is PostgreSQL 17, the projects' major version: `devos` runs 17.6, observed 2026-10-12. A run on another major version, such as the session container's 16.15, is a self-check that never counts (the executor's decision; the harness labels it `counts: no`). If `devos-test`'s version, not yet observed, differs, each version is run (EV-C02-002 §5 and §14). The database is built from `supabase/migrations/` at the commit under test, in a container or on a CI runner. The session container's PostgreSQL 16.15 serves only the test designer's self-checks, which never count as results.
 - **Holds no credential to `devos-test` or `devos`** (EV-C02-002 A2 item 3), and refuses to run against anything but its own local database.
 - **Supplies what Supabase supplies and the migrations use** (N-244 item (2): the throwaway database lacks Supabase's roles and request settings). It creates each as a labelled stand-in before applying the migrations, and lists them in its output:
   - the roles `anon`, `authenticated`, `authenticator` and `service_role`, as stand-ins without login;
@@ -232,14 +235,15 @@ A database rule is broken only here, never on `devos-test` or `devos`. The harne
 
 **How a break patch is built** (as W-C02-03's `breaks/B4_could_not_check_as_clean.sql`):
 - **Header.**
-  - The first line names the test and the example that must turn red, in a machine-readable form: `-- w07-break: test=<sql file>[,<sql file>]; expect-red=<case IDs>`.
+  - The first line names the test and the example that must turn red, in a machine-readable form: `-- w07-break: test=<file>[,<file>]; expect-red=<case IDs>`. A bare file name is a file of `supabase/migrations/tests/`; a path is from the repository root. A program named there (Concurrency, DM47) is run by the harness as the job runs it (section 5.1 (b)), with `{"target": "throwaway"}` on standard input and the throwaway database's socket as its only libpq environment.
   - Then the rule removed and the synthetic label.
   - No `psql` meta-command.
-- **Guard block.** It raises unless `current_setting('w07.throwaway', true) = 'yes'`, and raises if `supabase_admin` exists.
+- **Guard block.** It raises unless `current_setting('w07.throwaway', true) = 'yes'`, and raises if `supabase_admin` exists. The guard covers the whole change (CHK-C02-017's condition C1): either the change is inside the guard's block, or the patch runs as one transaction (`begin;` before the guard, `commit;` last), so that a refused guard aborts everything after it, whatever the client does after an error.
+- **Wrappers.** A patch that wraps a build function keeps its parameter types and order (section 8.1), so that a call by position still binds. Group A's and Group C's wrappers name their parameters differently from section 8.1 (for example `p_claim_token`, `p_operation`); the tests that reach them call by position, so a call by name to a wrapped function is not assumed to bind.
 - **The change.** It removes one rule and no more. For example, it renames the build's function and wraps it so that one check is skipped, or drops one trigger, constraint or privilege revocation. It holds as little of the build's logic as it can, so the test cannot pass by copying the build.
 - **Location.** It sits outside `supabase/migrations/`, so no job ever applies it.
 
-**Executables against the harness.** The tests of 5.1 (b) run against the throwaway database only for breaks of rules they test there, such as Concurrency's. Their Data API calls are then replaced by direct connections. The specification says which assertions hold on each transport.
+**Programs against the harness.** The programs of 5.1 (b) run against the throwaway database only for breaks of rules they test there: Concurrency's and DM47's, which use a database connection. The Data API programs do not run there; their rules' breaks are shown by the SQL test of the same rule. The specification says which assertions hold on each transport.
 
 **What 5.2 can show.** That a test turns red when its rule is removed, and green again when it is restored. Also the test designer's self-checks of the test's own logic.
 
@@ -310,7 +314,7 @@ It is first shown to catch a planted synthetic string of each token format, and 
 
 ## 7. Shared definitions
 
-- **The literal markers of both token formats.** EV-C02-003 §1.3 and §1.7 leave the markers to W-C02-07, "when it writes its scan". They are fixed once, in `shared/token_format.md`, by the group that owns the scan. W-C02-09's issuing function and W-C02-11's guard pattern take them from there. They are checked against the guard's existing patterns, so that neither marker is caught or masked by an unrelated pattern.
+- **The literal markers of both token formats.** EV-C02-003 §1.3 and §1.7 leave the markers to W-C02-07, "when it writes its scan". They are fixed once, in `shared/token_format.md`, by the group that owns the scan. W-C02-09's issuing function and the guard's stop of the token formats take them from there; that stop is W-C02-20's (`plan/work/W-C02-20.md`), no longer W-C02-11's. They are checked against the guard's existing patterns, so that neither marker is caught or masked by an unrelated pattern.
 - **The break harness** (5.2) is written once, by the group named in `GROUPS.md`. Other groups write their patches to section 5.2's form and list their files in their patches' `w07-break` lines.
 - **SQL fixtures are not shared.** Each SQL file makes its own, since no file can include another. Helper functions use the `pg_temp.w07_` prefix. A group that wants a common helper copies it and names its source.
 
@@ -318,7 +322,61 @@ It is first shown to catch a planted synthetic string of each token format, and 
 
 Where the design leaves a name or a form open, the specification states the interface it assumes under "Interface assumed". Examples: a function's signature, a reason code's spelling, the read marker's form, the sample-stream table, the path-list table.
 
-If the build chooses another form, the test designer revises the test before its first result. The revision is merged before the result it judges, the build item's record shows the change in its `git diff` of the test files (W-C02-08 point 6), and the builder never adapts a test. After a result of the build has been seen, a test is changed only under ledger rule 3, with the earlier result void and the test repeated, by the executor's decision (Appendix G G8 item 3).
+Section 8.1 states the one interface every file assumes. If the build chooses another form, the test designer revises the test before its first result. The revision is merged before the result it judges, the build item's record shows the change in its `git diff` of the test files (W-C02-08 point 6), and the builder never adapts a test. After a result of the build has been seen, a test is changed only under ledger rule 3, with the earlier result void and the test repeated, by the executor's decision (Appendix G G8 item 3).
+
+### 8.1 The assumed interface, version 1 (phase C)
+
+Line numbers are at `b679568`, the `main` commit this branch carries (B is `plan/Ek_B_Veri_Modeli.md`, EV2 and EV3 are EV-C02-002 and EV-C02-003). This is the one form every specification, SQL file, program, break patch and the harness assume. Phase C fixed it from the four groups' assumptions. Each entry says where it comes from: **fixed** (a design source names it; the line is cited) or **chosen** (no source fixes it; the reason is given). Everything chosen is an assumption about the build, not a requirement on it: if W-C02-09 or W-C02-10 builds another form, the tests are revised before their first result (section 8, above).
+
+**Schemas.** `devos_api` holds the functions the Data API exposes (fixed: Appendix B section 4's heading). `devos_private` holds the tables and the private functions (fixed for `issue_env_token`, B:47; `caller_role_class`, EV3:158; `function_deployment`, B:395; chosen for the other tables, which no source places).
+
+**Tables** (all in `devos_private`; the field names are Appendix B section 3's).
+
+| Record | Table | Source |
+|---|---|---|
+| EnvToken | `env_tokens` (`id`, `role_class`, `token_hash`, `issued_at`, `revoked_at`) | Fixed: B:366 (fields), B:368 (`env_tokens`) |
+| The global authority epoch | `global_authority_epoch`, one row, integer column `epoch` | Chosen. B:23 names the counter `authority_epoch` and EV-C02-002 DM-01 makes it one row with its lock; no source names the table. Reason: EV-C02-004 T-4 (EV2:481) keeps "the global authority epoch", the row, apart from the claim's own field `authority_epoch` (B:152), so the table's name carries "global" and its column is not called `authority_epoch` |
+| Event | `event` | Fixed: B:16 ("produces an event (`event`)") |
+| RejectedAttempt | `rejected_attempt` | Chosen. B 3.13 (B:264) and EV2 DM-19 name the record, not its table. Reason: the singular form B uses for `event` (B:16) and `assignment` (B:22) |
+| Every other family | its singular name: `work`, `assignment`, `operation`, `observation`, `relation`, `artifact`, `mission`, `need`, `decision`, `finding`, `effort_policy`, `review`, `verdict`, `acceptance`, `eval_run`, `effect_class`, `sample_stream`, `high_impact_path`; a family's revisions in `<family>_revision` | Chosen, by the same rule (`assignment` is B:22's) |
+
+**Owner-only functions.**
+- `devos_private.issue_env_token(role_class text) returns text`: the token, returned once; only its hash is stored. Fixed: B:47 (`issue_env_token(role_class)`, "returns the token once and stores only its hash"); EV3:506 (`issue_env_token('devos_kurulum')`).
+- `devos_private.revoke_env_token(<the env_tokens row's id>)`: sets `revoked_at` and increments the global authority epoch (fixed: B:47, B:368). Its argument is **chosen**: no source fixes it (B:47; EV3:117 says only that one token can be revoked alone). Reason: the token exists only in its secret (EV3:146), so Batu, who revokes in `devos` (PC-43 place 6), holds no value to pass; and a value in a statement's text can reach Postgres logs, which "can keep statement text and error details" (EV3:1280; EV3:229). The argument has the type of `env_tokens.id`, and a test passes it as an untyped literal. A test finds the ID as the row its own issue added (the rows marked before the issue, read after it); it never reads, compares or keeps a hash.
+
+**`devos_api` functions: answers.**
+- Every function returns one `jsonb` object (chosen: one answer form over SQL and over the Data API).
+- **Accepted:** `{"status": "ok", ...}`. A call that writes a record carries its `id` (and `revision` where the family has revisions); `claim` carries `claim_token` and `assignment_id`; `token_role_class()` carries `role_class`; `ready_works()` carries `works`; `affected_entities` and `explain_paths` carry `records` or `paths`, and `complete` (chosen).
+- **Refused:** `{"status": "refused", "reason_code": "<code>", "reason": "<text>"}`, returned, never raised, so that its RejectedAttempt record commits. Fixed: EV2:207 (DM-19 (a): "on a refusal it rolls that block back, writes the record and returns the refusal"); B:264. The keys are chosen.
+- **Could not check:** `{"status": "refused", "reason_code": "could_not_check", "reason": "<the input that could not be read>"}`. Fixed in substance by W-C02-09 point 7 (the check "refuses the write ... and records 'could not check' with its reason"); the form is chosen. It keeps the three answers apart: clean (`ok`), fail (`refused` with any other code) and could not check.
+- **An answer outside this form** (a raised error, another status, no object) is never a pass. Groups A, C and D make the case the test's own COULD NOT CHECK. Group B's helper also reads direct writes, where a privilege's raised error is the refusal under test (T-W07-5A, T-W07-DM02), so it reads any raised error as a refusal; for its function calls that shows only that the write was blocked. T-W07-DM19 is the test that fails a refusal that is raised.
+
+**`devos_api` functions: parameters.** Parameters are named. Over the Data API a call is `POST /rest/v1/rpc/<function>` whose JSON body's keys are the parameter names (EV3:108: a session calls a function as a Data API remote procedure call); in SQL a test calls positionally or by name.
+- **Where Appendix B section 4 names them, those names** (fixed): `claim(work_id uuid, declared_session_id text)` (`claim(work_id)`; `declared_session_id` is Assignment's field, B:152); `affected_entities(root uuid, limits jsonb)`; `explain_paths(root uuid, target uuid, limits jsonb)`; `token_role_class()`; `deployment_drift(expected jsonb)`.
+- **Chosen everywhere else.** Reason: no source fixes these forms; this is the form most of the four groups' files and break patches already used, and were self-checked on; and it keeps a record's fields, among them a format gate's "absent" field, in one object. The alternative, one named parameter per field, is equally open to the build, and would be a revision of the tests before their first result.
+  - A function that writes a new record, or a new revision, of one family takes the record's fields as one parameter `p jsonb`: `open_mission`, `revise_mission`, `record_need`, `admit_work`, `revise_work`, `relate`, `open_decision`, `set_effort_policy`, `record_finding`, `open_review`, `record_observation`, `record_eval_run`, `record_verdict`.
+  - A function that acts under a claim takes the claim token first, as `claim_token text` (EV3:170: "`heartbeat`, `release` and every effect take it as a parameter"): `register_artifact(claim_token text, p jsonb)`, `prepare_operation(claim_token text, p jsonb)`, `record_attempt(claim_token text, operation_id uuid)`, `heartbeat(claim_token text)`, `release(claim_token text)`.
+  - A function that changes the state of one existing record takes its identifier and the new values: `revoke_claim(assignment_id uuid, reason text)`, `accept(verdict_ref uuid, accepted_use text)`, `review_finding(finding_id uuid, revision integer, status text)`.
+  - Identifiers are `uuid` (chosen; Appendix B fixes no type; a test compares them as text).
+- **Reads the tests need that Appendix B section 4 does not name** (chosen; W-C02-09 names them, N-256): `operation_state(operation_id uuid)` (T-W07-F07's current state) and `read_rejected_attempts(since timestamptz)` returning `{"status": "ok", "rows": [...]}` (T-W07-DM19B part B; the `devos_denetim` read of RejectedAttempt, EV3 §4.1).
+- **Role classes with no row.** Ten C02 functions have no row of permitted role classes in EV3 §4.1 (`ready_works`, `relate`, `retract_relation`, `affected_entities`, `explain_paths`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `review_finding`). Until the executor decides them (N-256), T-W07-5B gives "could not check" for each, and the other tests call them with the role class their specification names, stated there as assumed.
+
+**Reason codes.**
+- Token refusals: `missing`, `empty`, `malformed`, `unknown`, `revoked`, `header_unreadable` (fixed: EV3:1310; B:368; EV2:207).
+- A role class the function does not permit: `role_class_not_permitted` (chosen; no source names it; Group D's spelling).
+- Could not check: `could_not_check` (chosen, above).
+- Any other refusal: a test reads its reason code only where its specification names it. A format gate's refusal names the empty field in its `reason_code` or `reason` (chosen; T-W07-5D).
+
+**Other names.**
+- The token header: `x-devos-env-token`, read from `request.headers` (fixed: B:465; EV3:28; EV3:158).
+- RejectedAttempt's `role_class` for a call without a verified token: `none` (fixed: B:264; B:368).
+- A read function's marker: its catalogue comment begins with `devos:read` (fixed: EV2:288, DM-36 (a)).
+- The role a Data API request with the publishable key runs as: `anon`, which has USAGE on `devos_api` and EXECUTE on its functions (chosen; W-C02-08 grants it). No application role has EXECUTE on the owner-only functions (fixed: B:46; EV3:293).
+- The token formats' markers: `shared/token_format.md` only (section 7).
+
+**For W-C02-10: sample Reviews and DM-41** (the executor's decision on Group B's open 1). DM-41 (EV2:304) refuses a new revision of a review's target in the same transaction as the Review. The tests assume the build exempts a `sample` Review that the database itself creates by rule in the same transaction as a format-gated record (B 3.11: "`sample` reviews are created by the database"); without that exemption every format-gated write would refuse itself. T-W07-N28 tests DM-41 with Reviews written through `open_review`; T-W07-N01, T-W07-5D and T-W07-T31 rely on the exemption.
+
+**Effect classes** (the executor's decision on Group A's open 1 and Group C's open 5). DM-37 (EV2:294) fills the effect-class table by migration and puts the tests' synthetic classes on the throwaway database. The tests may also plant a synthetic effect class as an owner-level fixture inside their own rolled-back transaction in `devos-test`; nothing is committed.
 
 ## 9. Naming the build item a test serves (point 8)
 

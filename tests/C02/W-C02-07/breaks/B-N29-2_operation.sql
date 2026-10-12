@@ -5,6 +5,7 @@
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
 -- specification assumes (revised before a first result if the build differs, README section 8).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -14,15 +15,16 @@ begin
     raise exception 'w07 break patch refused: role supabase_admin exists, so this may be a Supabase project';
   end if;
 end $g$;
-alter function devos_api.prepare_operation(jsonb) rename to prepare_operation_w07_orig;
-create function devos_api.prepare_operation(p jsonb) returns jsonb language plpgsql security definer
+alter function devos_api.prepare_operation(text, jsonb) rename to prepare_operation_w07_orig;
+create function devos_api.prepare_operation(claim_token text, p jsonb) returns jsonb language plpgsql security definer
 set search_path = pg_catalog as $f$
 declare old text; r jsonb;
 begin
   execute format('select %I::text from devos_private.work where id::text = $1', 'impact_class') into old using p->>'work_ref';
   execute format('update devos_private.work set %I = %L where id::text = %L', 'impact_class', 'high', p->>'work_ref');
-  r := devos_api.prepare_operation_w07_orig(p);
+  r := devos_api.prepare_operation_w07_orig(claim_token, p);
   execute format('update devos_private.work set %I = %L where id::text = %L', 'impact_class', old, p->>'work_ref');
   return r;
 end $f$;
-grant execute on function devos_api.prepare_operation(jsonb) to anon, authenticated;
+grant execute on function devos_api.prepare_operation(text, jsonb) to anon, authenticated;
+commit;

@@ -5,10 +5,13 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f07`, i
 **Serves.** W-C02-09 point 8 ("F07 (its C02 part)"); C02 Acceptance's first line; Appendix C F07; B 3.12 ("Observations are appended, not deleted; a later 'unknown' does not erase an earlier 'applied'").
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_f07_observation_history.sql`, run by the migration job's `devos-test` step as `postgres` (README 5.1 (a)); on the throwaway database by the harness with `breaks/B-F07-1`.
 **Time added to W-C02-13's run.** None. Observation times are given as data (`observed_at` two hours and one hour ago); nothing waits.
-**Interface assumed.** The Group A common interface v1, as `T-W07-F01` states it (the return form, refusals returned, the token, fixture, claim and `prepare_operation` forms, the planted effect class). Also:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1, as `T-W07-F01` states it (the return form, refusals returned, the token, fixture, claim and `prepare_operation` forms, the planted effect class). Also:
 - `devos_api.record_observation(observation jsonb)` with `{operation_ref, source, observed_at, observed_effect}` (`applied` / `not_applied` / `unknown`), called with the working token (B:36, "external-effect intents and their observations"), with no claim token → `{status, id}`.
 - `devos_api.operation_state(operation uuid)`, a read function marked `devos:read` (EV-C02-002 DM-36) → `{status, ever_applied boolean, current_effect text}`. B section 4 names no such read. It is the form this test assumes for "the current-state question", and W-C02-09 must provide it or the test designer revises the test to the build's read before the first result (README section 8).
 - Owner reads of `devos_private.observation` (B 3.12's columns, `id`) and of `devos_private.work.acceptance` (the acceptance axis, B 3.3).
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 | Case | Sequence on one operation | Expected |

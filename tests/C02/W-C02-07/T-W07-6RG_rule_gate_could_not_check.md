@@ -5,13 +5,16 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.rg`, tw
 **Serves.** W-C02-09 point 7; W-C02-07 point 6; plan Section 8 item 14; PC-16; B principle 6; EV-C02-002 DM-01 (the global authority epoch), DM-06 (expiry computed at `claim`, `ready_works()` and every effect), DM-37 (the read set); GROUPS.md section 3's rows for the rule gate.
 **Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_6rg_rule_gate_could_not_check.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-6RG-1` and `-2`.
 **Time added to W-C02-13's run.** None.
-**Interface assumed.** The Group A common interface v1 as `T-W07-F01` states it. Also:
+**Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it. Also:
 - "Could not check" is returned as `{status: 'could_not_check', reason_code}`, apart from `refused` (W-C02-09 point 7: "records 'could not check' with its reason"). A raised error is a case `could_not_check` (the record would not survive).
 - The global authority epoch is the one `devos_private` table whose name contains `epoch`, with an integer column whose name contains `epoch`; it is found in the catalogue.
 - `devos_api.ready_works()` → `{status, works [{id}]}`.
 - `devos_api.relate(jsonb)` with `{type, from_ref {id, revision}, to_ref {id, revision}, hard, group_mode, scope, method, epistemic_status}`.
 - `devos_private.work (execution, acceptance)`, or `devos_private.work_revision` if it exists, for the unreadable reference.
 - `devos_private.relation (from_ref, to_revision)`, and `devos_private.assignment (lease_expires_at, generation)`.
+
+
+**Phase C, the executor's decision on effect classes.** A synthetic effect class may be planted as an owner-level fixture inside the test's rolled-back transaction in `devos-test` (nothing is committed), as well as on the throwaway database (README section 8.1, "Effect classes").
 
 ## Cases
 Each "could not check" case wants the answer `could_not_check`, and the state digest unchanged by the call (the write blocked).

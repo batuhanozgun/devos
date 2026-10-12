@@ -131,17 +131,34 @@ class Cluster:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
+def run_program(cl, path):
+    """A program the migration job runs (README 5.1 (b); N-255), here on the throwaway database: its one JSON object on
+    standard input names the target throwaway, and its libpq environment is this cluster's socket, nothing else."""
+    env = clean_env()
+    env.update({"PGHOST": str(cl.sock), "PGPORT": cl.port, "PGUSER": "postgres", "PGDATABASE": "w07_throwaway"})
+    psql_dir = str(pathlib.Path(cl.a.pg_bin))
+    env["PATH"] = psql_dir + os.pathsep + env.get("PATH", "")
+    return subprocess.run([sys.executable, "-I", str(path)], env=env, capture_output=True, text=True,
+                          input=json.dumps({"target": "throwaway"}), timeout=5400)
+
+
 def run_file(cl, path):
-    r = cl.psql("postgres", "w07_throwaway", "-A", "-t", "-F", SEP, "-f", str(path))
+    if path.suffix == ".py":
+        r = run_program(cl, path)
+        lines, marks = r.stdout.splitlines(), MARK.findall(r.stdout)
+        split = lambda line: [x.strip() for x in (line.split("\t") if "\t" in line else line.split(" | ", 2))]
+    else:
+        r = cl.psql("postgres", "w07_throwaway", "-A", "-t", "-F", SEP, "-f", str(path))
+        lines, marks = r.stdout.splitlines(), MARK.findall(r.stderr)
+        split = lambda line: line.split(SEP)
     cases = {}
-    for line in r.stdout.splitlines():
-        parts = line.split(SEP)
+    for line in lines:
+        parts = split(line)
         if len(parts) == 3 and parts[1] in OUTCOMES:
             cases[parts[0]] = (parts[1], parts[2])
-    marks = MARK.findall(r.stderr)
     result = marks[-1][1] if marks else "ERROR"
     return {"file": str(path), "result": result, "cases": cases, "bad": sorted(k.split()[0] for k, v in cases.items() if v[0] == "bad"),
-            "tail": "" if marks else r.stderr.strip()[-400:]}
+            "tail": "" if marks else (r.stderr or r.stdout).strip()[-400:]}
 
 
 def phase(a, label, migrations, tests, patch=None):
@@ -180,11 +197,22 @@ def parse_patch(path, repo, w03_dir):
     m = HEADER.match(text.splitlines()[0])
     if not m:
         raise Refused(f"{path}: the first line is not a w07-break header")
-    tests = [repo / t.strip() for t in m.group(1).split(",") if t.strip()]
+    # A bare name is a file of supabase/migrations/tests/ (README section 1), or the canary's own file; a path is
+    # from the repository root.
+    def resolve(t):
+        if "/" in t:
+            return repo / t
+        p = repo / "supabase/migrations/tests" / t
+        return p if p.is_file() else repo / t
+    tests = [resolve(t.strip()) for t in m.group(1).split(",") if t.strip()]
     for t in tests:
         if not t.is_file():
             raise Refused(f"{path}: test file {t} not found")
-        check_sql_file(t)
+        if t.suffix == ".py":
+            if t.parent.resolve() != (repo / "supabase/migrations/tests").resolve():
+                raise Refused(f"{path}: a program it runs must be one the migration job runs (supabase/migrations/tests/)")
+        else:
+            check_sql_file(t)
     return tests, sorted(x.strip() for x in m.group(2).split(",") if x.strip())
 
 
