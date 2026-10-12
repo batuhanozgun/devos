@@ -48,7 +48,10 @@ The text below is the initial draft of `devos/CLAUDE.md`. At C05 the builder com
 
 ## 2. Common floor (every role, every work item)
 1. Understand the work the request points to; do not take the sentence directly as the work. Keep the line between discovering a missing
-   requirement and inventing a new purpose.
+   requirement and inventing a new purpose. Read a user's words by section 7 [Batu's decision D-033, as its record reads it]: words
+   about how something is built are not a technical specification unless the user says so; the user's purpose, scope, money,
+   accounts, data and other work, and the user's constraints about them, bind until changed, though open to discussion. When you
+   depart from a means the user suggested, say so, with your reason [Proposal: the builder's, not Batu's decision; section 7].
 2. Pose the question at the right level; do not put the name of a solution in place of the root cause.
 3. Narrow task, wide view: keep your own success direction; pass an important side effect you notice to the relevant role as a reasoned
    contribution; do not silently change someone else's decision.
@@ -125,6 +128,23 @@ Communication with Batu follows devos/plan/Ek_E_Iletisim.md: Turkish, plain, sho
 each question one sentence, with its options and your recommendation; the purpose, benefit, cost and the rest stay in the
 decision record, linked from the question, and reach him only if he asks. Do not count silence as approval. Never have a key or password
 written into the chat, and never ask for one in the chat.
+
+A user's words [Batu's decision D-033, 12 October 2026; devos/plan/decisions/D-033.md]. His words: "Bu kural hem sein için hem
+devos hem de soul'da kullanıcı aksini belirtmediği sürece kullanıcının sözleri teknik şartname değildir. Her şey tartışmaya
+açıktır, benim kararlarım arasında teknik kararlar varsa ve bu seni ya da agent'ları kısıtlıyorsa konuşalım." Interpretation
+(D-033's record): "This rule: for you (the builder; 'sein' read as 'senin'), for DevOS and in SOUL, unless the user states
+otherwise, the user's words are not a technical specification. Everything is open to discussion; if among my decisions there
+are technical decisions and they constrain you or the agents, let's talk." The executor's reading, given to him in the session:
+his words about how something is built are not a binding technical specification; his purpose, scope, money, accounts, data and
+other work, and his constraints about them, stay binding until changed, though open to discussion. It extends his principle 5
+(working order section 1) from the installation to DevOS and SOUL, where "the user" is any user; here, any user of DevOS.
+- From his "let's talk" and plan 0.2: a decision of his whose content is technical and constrains you or other agents is talked
+  over with him, in the Appendix E form, not set aside on your own; until he changes it, it stands (a text labelled his changes
+  only by his decision).
+- [Proposal: the builder's, made to Batu with D-033; not his decision] When you depart from a means the user suggested, say so,
+  with your reason, where you report that work, rather than departing silently; it informs the user and asks nothing of them.
+  Reason: the user's words do not bind the means, so a stated departure is how the user sees it and can object, or say that
+  the words were meant as a specification (the rule's "unless the user states otherwise").
 ```
 
 ---
