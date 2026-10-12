@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-030 answered (a), pressed for CS1, in the working session at about 2026-10-12T06:04Z (L-265). D-029 answered (b) in the working session at about 2026-10-12T05:53Z, with his constraint for SOUL (L-263). D-028 answered (a) in the working session at about 19:21Z (L-251; P4 started at about 19:14Z). D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T15:01:37Z (comment `6110352256`, row 5's reading, not a decision; L-226). | 2026-10-12T06:05Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). Issue #6 comment `6109982927` (2026-10-11T14:20:30Z) and working session 14:40:50Z: pressed for P3's first attempt (L-221). Working session 14:48:46Z: pressed for P3's second attempt (L-226). Issue #6 comment `6110352256` (2026-10-11T15:01:37Z) and working session 15:02:19Z: row 5's reading, no routine line, and a question whether he must run the routine again, answered there: not now (L-226). Working session about 19:21Z: D-028 (a), pressed for P4 (L-251). Working session 2026-10-12 about 05:49Z: a question why he is asked to turn the skills off, answered there; about 05:53Z: D-029 (b), with a constraint for SOUL (L-263); about 06:04Z: D-030 (a), pressed for CS1 (L-265); about 06:10Z: on the session's effort setting, for information (L-266); about 06:45Z: at the computer, asking whether anything is expected of him and whether to set the effort to ultracode, answered there (yes, D-008); about 07:05Z: effort set to ultracode, and D-002 amended on the weekly pace warning (L-267). Working session about 07:15Z to 07:25Z: why the routine is deleted, answered there (L-268). Issue #6 comment `6120677086` (2026-10-12T08:35:04Z) and working session about 08:36Z: the routine and the variable line deleted (W-C01-47 item 3; L-269). Working session about 11:20Z to 11:35Z: questions on what runs in the background, what "deletion" means, and whether proving it is unnecessary work; he agreed with moving the one-day observation off the critical path (L-275). Working session 11:37Z: two questions for discussion, why DevOS may see only what it created and why the one-day wait was chosen; answered there, recorded as N-203 (C03) and N-204 (C06) (L-276). Working session 13:21Z: a question what C02 is, answered there; 13:36Z: both Supabase projects are paused after a week without activity, for information; resuming them is his step when the work needs it (C02's "Batu's steps" row 0; L-282). | 2026-10-12T13:46Z |
-| summary_tr | **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 yarın 11:40'tan sonra; birleşik deneme kısmi, N-207). <br>**C02 başladı.** Test tasarımcısı rolü kabul edildi. C02'nin iş listesi yazıldı: 17 madde, her birinin kabul koşulu test tasarımcısından; şimdi denetçide. Supabase projelerinin duraklatıldığını not ettim; etkinleştirme adımını zamanı gelince isteyeceğim. <br>Şu an senden beklenen bir şey yok. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T14:20Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T14:20Z |
+| summary_tr | **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 yarın 11:40'tan sonra; birleşik deneme kısmi, N-207). <br>**C02'nin iş listesi kabul edildi**: 17 madde, her birinin kabul koşulu test tasarımcısından. İlk işler paralel başlıyor: geçiş yolu (W-C02-03), veri modeli ve kimlik zinciri tasarımları, birleştirme kapısının veritabanı yollarını kapsaması. <br>**Senden beklenen:** Supabase'deki iki projeyi (`devos`, `devos-test`) yeniden etkinleştirmen; adımları issue #6'da. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T14:39Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T14:39Z |
 
 ---
 
@@ -33,15 +33,17 @@
 
 <!-- generated:frontier -->
 **Ready (startable now):**
-- `W-C02-01` Stage work list
+- `W-C02-03` Migration path (task 0)
+- `W-C02-04` The data model's open choices, decided (tasks 1, 2 and 5)
+- `W-C02-05` The identity chain and the environments, designed (tasks 3, 4 and 7)
+- `W-C02-15` Installation tooling: N-127's planted cases and N-198's decision
+- `W-C02-16` Working order section 5: a side branch that waits only on its closing check
+- `W-C02-19` The merge gate covers plan 6.7's high-impact path list
 
 **Running:**
 - none
 
 **Not ready, with the first unmet condition:**
-- `W-C02-03`: depends on W-C02-01 (not accepted)
-- `W-C02-04`: depends on W-C02-01 (not accepted)
-- `W-C02-05`: depends on W-C02-01 (not accepted)
 - `W-C02-06`: depends on W-C02-04 (not accepted)
 - `W-C02-07`: depends on W-C02-04 (not accepted)
 - `W-C02-08`: depends on W-C02-03 (not accepted)
@@ -51,11 +53,8 @@
 - `W-C02-12`: depends on W-C02-03 (not accepted)
 - `W-C02-13`: depends on W-C02-10 (not accepted)
 - `W-C02-14`: depends on W-C02-06 (not accepted)
-- `W-C02-15`: depends on W-C02-01 (not accepted)
-- `W-C02-16`: depends on W-C02-01 (not accepted)
 - `W-C02-17`: depends on W-C02-13 (not accepted)
-- `W-C02-18`: depends on W-C02-01 (not accepted)
-- `W-C02-19`: depends on W-C02-01 (not accepted)
+- `W-C02-18`: depends on W-C02-03 (not accepted)
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
 <!-- /generated -->
@@ -69,7 +68,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
 | `C01` | Platform verification | accepted | accepted 38, cancelled 10 | 6 |
-| `C02` | Data model, rule gate and identity chain | running | accepted 1, blocked 17, ready 1 | 20 |
+| `C02` | Data model, rule gate and identity chain | running | accepted 2, blocked 11, ready 6 | 20 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 19 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
 | `C05` | Common rules, roles and methods | planned | no items | 12 |
@@ -162,11 +161,11 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-46` | P4: row 13's two unchecked parts observed in a routine session (PC-35 routing item 3) | accepted | — | — | `plan/work/W-C01-46.md` |
 | `W-C01-47` | C01's combined scenario; the routine, its variable line and the probe skill removed when C01 ends | accepted | — | — | `plan/work/W-C01-47.md` |
 | `W-C01-48` | Evidence for C01's stage close, gathered while W-C01-47's one-day check runs (W-C01-30 points 1, 3, 4 and 7) | accepted | — | — | `plan/work/W-C01-48.md` |
-| `W-C02-01` | Stage work list | ready | — | — | `plan/work/W-C02-01.md` |
+| `W-C02-01` | Stage work list | accepted | — | — | `plan/work/W-C02-01.md` |
 | `W-C02-02` | The test designer: its role file | accepted | — | — | `plan/work/W-C02-02.md` |
-| `W-C02-03` | Migration path (task 0) | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-03.md` |
-| `W-C02-04` | The data model's open choices, decided (tasks 1, 2 and 5) | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-04.md` |
-| `W-C02-05` | The identity chain and the environments, designed (tasks 3, 4 and 7) | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-05.md` |
+| `W-C02-03` | Migration path (task 0) | ready | — | — | `plan/work/W-C02-03.md` |
+| `W-C02-04` | The data model's open choices, decided (tasks 1, 2 and 5) | ready | — | — | `plan/work/W-C02-04.md` |
+| `W-C02-05` | The identity chain and the environments, designed (tasks 3, 4 and 7) | ready | — | — | `plan/work/W-C02-05.md` |
 | `W-C02-06` | The ledger transfer, designed (task 8) | blocked: depends on W-C02-04 (not accepted) | — | — | `plan/work/W-C02-06.md` |
 | `W-C02-07` | C02's tests, written before the build (task 6) | blocked: depends on W-C02-04 (not accepted) | — | — | `plan/work/W-C02-07.md` |
 | `W-C02-08` | Schema, role classes and access rules (tasks 1 and 4) | blocked: depends on W-C02-03 (not accepted) | — | — | `plan/work/W-C02-08.md` |
@@ -176,11 +175,11 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C02-12` | The three environments and their tokens, with the real-token tests (task 7) | blocked: depends on W-C02-03 (not accepted) | — | — | `plan/work/W-C02-12.md` |
 | `W-C02-13` | C02's tests run in full, each with its break (task 6) | blocked: depends on W-C02-10 (not accepted) | — | — | `plan/work/W-C02-13.md` |
 | `W-C02-14` | The ledger transfer (task 8) | blocked: depends on W-C02-06 (not accepted) | — | — | `plan/work/W-C02-14.md` |
-| `W-C02-15` | Installation tooling: N-127's planted cases and N-198's decision | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-15.md` |
-| `W-C02-16` | Working order section 5: a side branch that waits only on its closing check | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-16.md` |
+| `W-C02-15` | Installation tooling: N-127's planted cases and N-198's decision | ready | — | — | `plan/work/W-C02-15.md` |
+| `W-C02-16` | Working order section 5: a side branch that waits only on its closing check | ready | — | — | `plan/work/W-C02-16.md` |
 | `W-C02-17` | C02's combined scenario, read cumulatively (plan Section 8 item 5) | blocked: depends on W-C02-13 (not accepted) | — | — | `plan/work/W-C02-17.md` |
-| `W-C02-18` | Stage close review | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-18.md` |
-| `W-C02-19` | The merge gate covers plan 6.7's high-impact path list | blocked: depends on W-C02-01 (not accepted) | — | — | `plan/work/W-C02-19.md` |
+| `W-C02-18` | Stage close review | blocked: depends on W-C02-03 (not accepted) | — | — | `plan/work/W-C02-18.md` |
+| `W-C02-19` | The merge gate covers plan 6.7's high-impact path list | ready | — | — | `plan/work/W-C02-19.md` |
 <!-- /generated -->
 
 ---
