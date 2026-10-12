@@ -1,0 +1,591 @@
+# DevOS pull-request checks of the migration path: W-C02-03, the build of evidence/C02/EV-C02-001_migration_path.md
+# (M15, M16, M22); build record evidence/C02/EV-C02-007_migration_path_build.md. Class high (tools/merge_gate.py).
+# They hold no secret and name no environment. Until devos_ci exists (W-C02-05, W-C02-12) they read the migration
+# job's report of its latest completed run at main's head (M15); the direct call of deployment_drift comes then.
+name: migration-checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  migration-checks:
+    name: migration checks (M15, M16, M22)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - id: checkout
+        name: "check out the pull request's merge commit, with history (no credential kept)"
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, a commit of actions/checkout (P12)
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: workflow_check
+        name: "M22: which workflows name the environments, their events, pins, applies, calls"
+        shell: python
+        run: |
+          # M22 (EV-C02-001): a static check of the workflow files at this pull request's head. In every workflow file: no job
+          # calls a reusable workflow (a job-level uses:) and every action is pinned by full commit SHA (EV-C02-001 section 3,
+          # "Reusable workflows"). In a workflow that names a migration environment: only migrate.yml may; it starts only on
+          # push to main and on schedule; each job runs on the GitHub-hosted label ubuntu-24.04 (M20), with no container and no
+          # services; a step that applies is only in the push jobs, and only when the job's if: admits the push event alone.
+          # Server authentication (security F5): in a job that names an environment, or whose env sets one of libpq's
+          # connection variables, every step's effective PGSSLMODE is verify-full and its PGSSLROOTCERT the pinned root file;
+          # its run text sets sslmode only to verify-full, names another root file only in a step that holds no secret (the
+          # run-time root of negative control (a)), removes neither variable, and no libpq service is set. It reads the files
+          # as data (YAML) and runs nothing from them; a value built at run time is not seen (the class-high review is that
+          # layer). A condition it cannot read is "could not check", never a pass. First it judges wrong copies of the files
+          # (its self-check): each must fail on its own rule, the control pass.
+          import copy, glob, os, re
+          try:
+              import yaml
+          except ImportError:
+              print("workflow check: could not check (PyYAML is not installed on the runner)")
+              raise SystemExit(3)
+
+          # GitHub evaluates every expression opener (a dollar sign, then two opening braces) in a run: body before this
+          # program receives it, so this body holds none: each expression text it needs is built from OPEN, and at run
+          # time is exactly the text written after it (CHK-C02-029 F-1; EV-C02-007 section 12).
+          OPEN = "$" + "{{"
+          ENVIRONMENTS = {"migrate-devos-test", "migrate-devos"}
+          RUNNERS = {"ubuntu-24.04"}
+          PUSH_JOBS = ("devos-test", "devos")
+          PUSH = "github.event_name=='push'"
+          STATUS = {"!cancelled()", "always()", "success()"}
+          PIN = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(/[^@\s]+)?@[0-9a-f]{40}")
+          APPLY = re.compile(r"\bdb\s+(push|reset)\b|\bmigration\s+(up|repair)\b|psql\b[^\n]*\s-f\s[^\n]*migrations")
+          TLS_MODE = "verify-full"
+          TLS_ROOT = "/tmp/w03-supabase-root-2021-ca.crt"
+          LIBPQ = ("PGHOST", "PGHOSTADDR", "PGPASSWORD", "PGSSLMODE", "PGSSLROOTCERT", "PGSERVICE", "PGSERVICEFILE")
+          MODE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLMODE['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")
+          ROOT_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLROOTCERT['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")
+          SERVICE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PGSERVICE(?:FILE)?|service)['\"]?\s*[=:]")
+          UNSET_TEXT = re.compile(r"(?i)(?:\bunset\s+(?:-v\s+)?|(?<!\S)-u\s*|--unset[= ]|\.pop\(\s*['\"]|\bdel\s+[^\n]*?\[\s*['\"])"
+                                  r"(PGSSL(?:MODE|ROOTCERT))\b")
+
+
+          def push_alone(cond):
+              """A job's if: as this check reads it: 'push' (the push event alone), 'all' (no if: every event) or None (a form
+              this check does not read: an ||, another event, a negation of the event test, or anything else)."""
+              if cond is None:
+                  return "all"
+              c = re.sub(r"\s+", "", str(cond)).replace('"', "'")
+              if c.startswith(OPEN) and c.endswith("}}"):
+                  c = c[3:-2]
+              terms = c.split("&&")
+              if terms.count(PUSH) == 1 and all(t == PUSH or t in STATUS for t in terms):
+                  return "push"
+              return None
+
+
+          def env_of(x):
+              return x.get("env") if isinstance(x, dict) and isinstance(x.get("env"), dict) else {}
+
+
+          def tls_problems(path, wf, jobs, env_jobs, problems):
+              """Security F5, in a job that names an environment or whose env (workflow, job or step) sets a libpq variable."""
+              for jid, job in jobs.items():
+                  job = job if isinstance(job, dict) else {}
+                  steps = [s for s in job.get("steps") or [] if isinstance(s, dict)]
+                  envs = [env_of(wf), env_of(job)] + [env_of(s) for s in steps]
+                  if jid not in env_jobs and not any(k in e for e in envs for k in LIBPQ):
+                      continue
+                  for i, s in enumerate(steps):
+                      where = f"{path}: job {jid} step {s.get('id') or '#' + str(i + 1)}"
+                      eff = {**env_of(wf), **env_of(job), **env_of(s)}
+                      if str(eff.get("PGSSLMODE")) != TLS_MODE:
+                          problems.append(f"{where}: sslmode {eff.get('PGSSLMODE')!r}, not verify-full")
+                      if str(eff.get("PGSSLROOTCERT")) != TLS_ROOT:
+                          problems.append(f"{where}: root file {eff.get('PGSSLROOTCERT')!r}, not the pinned one {TLS_ROOT}")
+                      text = str(s.get("run") or "")
+                      for v in MODE_TEXT.findall(text):
+                          if v != TLS_MODE:
+                              problems.append(f"{where}: its run text sets sslmode {v!r}, not verify-full")
+                      secret = any("secrets." in str(v) for v in eff.values())
+                      for v in ROOT_TEXT.findall(text):
+                          if v != TLS_ROOT and secret:
+                              problems.append(f"{where}: its run text names the root file {v!r}, not the pinned one, in a step "
+                                              f"that holds a secret")
+                      for v in UNSET_TEXT.findall(text):
+                          problems.append(f"{where}: its run text removes {v.upper()} from the environment (libpq's default "
+                                          f"then applies)")
+                      if SERVICE_TEXT.search(text) or "PGSERVICE" in eff or "PGSERVICEFILE" in eff:
+                          problems.append(f"{where}: it sets a libpq service, which could change sslmode or the root file")
+
+
+          def check(files):
+              """files: {path: the parsed workflow, or the exception it raised}. Returns (problems, could-not-check, naming)."""
+              problems, cnc, naming = [], [], []
+              for path, wf in sorted(files.items()):
+                  if isinstance(wf, Exception) or not isinstance(wf, dict) or not isinstance(wf.get("jobs") or {}, dict):
+                      problems.append(f"{path}: does not parse as a workflow")
+                      continue
+                  jobs = wf.get("jobs") or {}
+                  env_jobs = {}
+                  for jid, job in jobs.items():
+                      job = job if isinstance(job, dict) else {}
+                      if "uses" in job:
+                          problems.append(f"{path}: job {jid} calls a reusable workflow ({job['uses']!r})")
+                      for s in job.get("steps") or []:
+                          if isinstance(s, dict) and "uses" in s and not PIN.fullmatch(str(s["uses"]).strip()):
+                              problems.append(f"{path}: job {jid} uses {s['uses']!r}, not an action pinned by full commit SHA")
+                      e = job.get("environment")
+                      name = e.get("name") if isinstance(e, dict) else e
+                      if name:
+                          env_jobs[jid] = str(name)
+                  tls_problems(path, wf, jobs, env_jobs, problems)
+                  if not env_jobs:
+                      continue
+                  naming.append(path)
+                  if os.path.basename(path) != "migrate.yml":
+                      problems.append(f"{path}: names an environment ({sorted(set(env_jobs.values()))}); only migrate.yml may")
+                  for jid, name in env_jobs.items():
+                      if name not in ENVIRONMENTS:
+                          problems.append(f"{path}: job {jid} names environment {name!r}, not one of the migration environments")
+                  on = wf.get("on", wf.get(True))
+                  events = [on] if isinstance(on, str) else list(on or [])
+                  for ev in events:
+                      if ev not in ("push", "schedule"):
+                          problems.append(f"{path}: event {ev!r}; a workflow naming an environment starts only on push and schedule")
+                  push = on.get("push") if isinstance(on, dict) else None
+                  if "push" in events and (not isinstance(push, dict) or push.get("branches") != ["main"] or set(push) != {"branches"}):
+                      problems.append(f"{path}: push must be on branch main only, with no other filter")
+                  for jid, job in jobs.items():
+                      job = job if isinstance(job, dict) else {}
+                      if "uses" in job:
+                          continue
+                      if not isinstance(job.get("runs-on"), str) or job["runs-on"] not in RUNNERS:
+                          problems.append(f"{path}: job {jid} runs on {job.get('runs-on')!r}, not the GitHub-hosted label ubuntu-24.04")
+                      for key in ("container", "services"):
+                          if key in job:
+                              problems.append(f"{path}: job {jid} has {key}:, which a workflow naming an environment may not")
+                      applies = [s.get("id") for s in job.get("steps") or [] if isinstance(s, dict) and (
+                          s.get("id") in ("apply", "dryrun") or APPLY.search(str(s.get("run", ""))))]
+                      if not applies:
+                          continue
+                      form = push_alone(job.get("if"))
+                      if jid not in PUSH_JOBS:
+                          problems.append(f"{path}: job {jid} step {applies[0]!r} applies, outside the push jobs")
+                      elif form == "all":
+                          problems.append(f"{path}: job {jid} holds an apply step and has no if:, so it admits every event")
+                      elif form is None:
+                          cnc.append(f"{path}: job {jid} holds an apply step and its if: {job.get('if')!r} is not a form this "
+                                     f"check reads as the push event alone (an ||, another event or a negation is refused)")
+              return problems, cnc, naming
+
+
+          def load():
+              files = {}
+              for path in sorted(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")):
+                  try:
+                      files[path] = yaml.safe_load(open(path, encoding="utf-8")) or {}
+                  except Exception as exc:
+                      files[path] = exc
+              return files
+
+
+          def self_check(files):
+              """Wrong copies of the files at this head, each changed in one place; (label, how, the text its message holds).
+              Returns the number of copies that did not fail on their own rule (or could not be made)."""
+              m, c = ".github/workflows/migrate.yml", ".github/workflows/migration-checks.yml"
+              sha = "d23441a48e516b6c34aea4fa41551a30e30af803"
+
+              def job(f, jid):
+                  return f[m]["jobs"][jid]
+
+              def on(f, path=m):
+                  return f[path]["on"] if "on" in f[path] else f[path][True]
+
+              def setif(jid, value):
+                  def how(f):
+                      if value is None:
+                          job(f, jid).pop("if")
+                      else:
+                          job(f, jid)["if"] = value
+                  return how
+
+              def put(jid, key, value):
+                  def how(f):
+                      job(f, jid)[key] = value
+                  return how
+
+              def add_file(name, wf):
+                  def how(f):
+                      f[".github/workflows/" + name] = wf
+                  return how
+
+              def step_uses(f):
+                  job(f, "devos-test")["steps"][1]["uses"] = "actions/checkout@v6"
+
+              def step(f, jid, sid):
+                  for s in job(f, jid)["steps"]:
+                      if s.get("id") == sid:
+                          return s
+                  raise KeyError(sid)
+
+              def put_env(jid, key, value, sid=None):
+                  def how(f):
+                      (job(f, jid) if sid is None else step(f, jid, sid)).setdefault("env", {})[key] = value
+                  return how
+
+              def drop_env(jid, key):
+                  def how(f):
+                      job(f, jid)["env"].pop(key)
+                  return how
+
+              def edit_run(jid, sid, old, new):
+                  def how(f):
+                      s = step(f, jid, sid)
+                      if old not in s["run"]:
+                          raise KeyError(old)
+                      s["run"] = s["run"].replace(old, new)
+                  return how
+
+              hosted = {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}
+              copies = [
+                  ("migrate.yml on workflow_dispatch", lambda f: on(f).update({"workflow_dispatch": None}), "'workflow_dispatch'"),
+                  ("push on a claude/** branch too", lambda f: on(f)["push"].update({"branches": ["main", "claude/**"]}),
+                   "push must be on branch main only"),
+                  ("push with a path filter", lambda f: on(f)["push"].update({"paths": ["supabase/**"]}),
+                   "push must be on branch main only"),
+                  ("checkout pinned by tag", step_uses, "not an action pinned by full commit SHA"),
+                  ("a second workflow naming migrate-devos",
+                   add_file("other.yml", {"on": {"push": {"branches": ["main"]}},
+                                          "jobs": {"x": {**hosted, "environment": "migrate-devos",
+                                                         "env": {"PGSSLMODE": TLS_MODE, "PGSSLROOTCERT": TLS_ROOT}}}}),
+                   "only migrate.yml may"),
+                  ("an apply step in a scheduled job", lambda f: job(f, "check-devos-test")["steps"].append(
+                      {"id": "x", "run": "supabase db push"}), "applies, outside the push jobs"),
+                  ("migrate.yml calls a reusable workflow", lambda f: f[m]["jobs"].update(
+                      {"call": {"uses": f"someone/elsewhere/.github/workflows/w.yml@{sha}"}}), "calls a reusable workflow"),
+                  ("devos-test on push || schedule",
+                   setif("devos-test", OPEN + " github.event_name == 'push' || github.event_name == 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos-test on a negated event test", setif("devos-test", OPEN + " !(github.event_name == 'schedule') }}"),
+                   "is not a form this check reads"),
+                  ("devos-test on any event but schedule", setif("devos-test", OPEN + " github.event_name != 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos on schedule", setif("devos", OPEN + " !cancelled() && github.event_name == 'schedule' }}"),
+                   "is not a form this check reads"),
+                  ("devos-test with no if:", setif("devos-test", None), "admits every event"),
+                  ("a workflow naming no environment calls a reusable workflow",
+                   add_file("caller.yml", {"on": {"push": {"branches": ["main"]}},
+                                           "jobs": {"x": {"uses": "someone/elsewhere/.github/workflows/w.yml@main"}}}),
+                   "calls a reusable workflow"),
+                  ("a workflow naming no environment uses an action by tag",
+                   add_file("tagged.yml", {"on": {"pull_request": None},
+                                           "jobs": {"x": {"runs-on": "ubuntu-24.04", "steps": [{"uses": "actions/checkout@v4"}]}}}),
+                   "not an action pinned by full commit SHA"),
+                  ("devos-test in a container", put("devos-test", "container", "someorg/someimage:latest"), "has container:"),
+                  ("devos with services", put("devos", "services", {"db": {"image": "postgres"}}), "has services:"),
+                  ("devos-test on a self-hosted runner", put("devos-test", "runs-on", "self-hosted"), "not the GitHub-hosted label"),
+                  ("check-devos on a list of labels", put("check-devos", "runs-on", ["self-hosted", "linux"]),
+                   "not the GitHub-hosted label"),
+                  ("devos-test with sslmode require", put_env("devos-test", "PGSSLMODE", "require"), "not verify-full"),
+                  ("devos without PGSSLMODE (libpq's default, prefer)", drop_env("devos", "PGSSLMODE"), "not verify-full"),
+                  ("check-devos-test with sslmode verify-ca", put_env("check-devos-test", "PGSSLMODE", "verify-ca"),
+                   "not verify-full"),
+                  ("devos's compare overriding sslmode", put_env("devos", "PGSSLMODE", "require", "compare"), "not verify-full"),
+                  ("check-devos without a root file", drop_env("check-devos", "PGSSLROOTCERT"), "not the pinned one"),
+                  ("devos-test trusting the system's roots", put_env("devos-test", "PGSSLROOTCERT", "system"),
+                   "not the pinned one"),
+                  ("devos's dry-run URL with sslmode require", edit_run("devos", "dryrun", "mode=verify-full", "mode=" + "require"),
+                   "run text sets sslmode"),
+                  ("devos-test's connect turning verification off",
+                   edit_run("devos-test", "connect", "timeout 60 psql", "PGSSLMODE" + "=disable timeout 60 psql"),
+                   "run text sets sslmode"),
+                  ("devos's connect removing PGSSLMODE from its environment",
+                   edit_run("devos", "connect", "timeout 60 psql", "env -u PGSSLMODE timeout 60 psql"), "removes PGSSLMODE"),
+                  ("devos-test's apply URL naming another root file",
+                   edit_run("devos-test", "apply", TLS_ROOT, "/tmp/w03-other-root.crt"), "in a step that holds a secret"),
+                  ("devos's controls step holding the secret beside its run-time root",
+                   put_env("devos", "PGPASSWORD", OPEN + " secrets.SUPABASE_DB_PASSWORD }}", "tls"), "in a step that holds a secret"),
+                  ("check-devos-test's compare with a libpq service file",
+                   put_env("check-devos-test", "PGSERVICEFILE", "/tmp/w03-pg_service.conf", "compare"), "libpq service"),
+                  ("a workflow naming no environment that connects with sslmode require",
+                   add_file("connects.yml", {"on": {"push": {"branches": ["main"]}}, "jobs": {"x": {
+                       "runs-on": "ubuntu-24.04", "env": {"PGHOST": "db.example", "PGSSLMODE": "require",
+                                                          "PGSSLROOTCERT": TLS_ROOT},
+                       "steps": [{"run": "psql -X -c 'select 1'"}]}}}), "not verify-full"),
+              ]
+              base = check(files)
+              base = set(base[0]) | set(base[1])
+              bad = 0
+              for label, how, why in copies:
+                  f = copy.deepcopy(files)
+                  try:
+                      how(f)
+                  except (KeyError, IndexError, TypeError, AttributeError):
+                      print(f"workflow check: self-check: {label}: could not be made from the files at this head")
+                      bad += 1
+                      continue
+                  p, n, _ = check(f)
+                  new = (set(p) | set(n)) - base
+                  if new and all(why in x for x in new):
+                      print(f"workflow check: self-check: {label}: fails on its own rule, as it must")
+                  elif not new and any(why in x for x in base):
+                      print(f"workflow check: self-check: {label}: not shown, the files at this head already break that rule")
+                  else:
+                      print(f"workflow check: self-check: {label}: does NOT fail on its own rule ({sorted(new) or 'it passes'})")
+                      bad += 1
+              f = copy.deepcopy(files)
+              try:
+                  on(f, c).update({"workflow_dispatch": None})
+                  p, n, _ = check(f)
+                  ok = (set(p) | set(n)) == base
+              except (KeyError, TypeError, AttributeError):
+                  ok = False
+              print("workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): "
+                    + ("passes, as it must" if ok else "does NOT pass"))
+              return bad + (not ok)
+
+
+          files = load()
+          try:
+              bad = self_check(files)
+              problems, cnc, naming = check(files)
+          except Exception as exc:
+              print(f"workflow check: could not check (the check itself failed on these files: {type(exc).__name__})")
+              raise SystemExit(3)
+          print("workflow check: workflows naming an environment: " + (", ".join(naming) or "none"))
+          for p in problems:
+              print("workflow check: " + p)
+          for p in cnc:
+              print("workflow check: could not check: " + p)
+          if bad:
+              print(f"workflow check: could not check: the self-check failed ({bad})")
+          print("workflow check: " + ("FAIL" if problems else "could not check" if cnc or bad else "pass"))
+          raise SystemExit(1 if problems else 3 if cnc or bad else 0)
+      - id: pr_inputs
+        name: "M15: changed files, main's head, and the migration job's latest report there"
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          # The inputs of pr_decide (M15): this pull request's changed files, main's head, and the report of the latest
+          # completed run of migrate.yml at main's head, read from that run's job logs with this job's own GITHUB_TOKEN
+          # (actions: read). No database credential. The logs are read as data: only lines of the report's fixed form are parsed.
+          import json, os, re, subprocess, urllib.error, urllib.request
+
+          def git(*args):
+              return subprocess.run(["git", *args], capture_output=True, text=True)
+
+          # The changed files, NUL-separated (git diff -z): git then gives every path verbatim, never quoted, whatever its
+          # name holds (non-ASCII, tab, quote, backslash, control character; CHK-C02-035 C2). A diff that fails, or output
+          # that does not parse, leaves the list unreadable (an empty output), which pr_decide reads as "could not check".
+          changed = None
+          diff = subprocess.run(["git", "diff", "-z", "--name-status", "-M", "HEAD^1", "HEAD"], capture_output=True)
+          if diff.returncode:
+              print("changed files: could not be read (git diff failed); pr_decide reads that as could not check")
+          else:
+              fields, changed, i = diff.stdout.decode("utf-8", "surrogateescape").split("\0"), [], 0
+              if fields[-1] == "":
+                  fields.pop()
+              while i < len(fields):
+                  status = fields[i][:1]
+                  n = 2 if status in ("R", "C") else 1
+                  paths = fields[i + 1:i + 1 + n]
+                  if status not in ("A", "C", "D", "M", "R", "T") or len(paths) != n or not all(paths):
+                      print("changed files: could not be read (git diff's output does not parse); pr_decide reads that "
+                            "as could not check")
+                      changed = None
+                      break
+                  changed.append({"path": paths[1], "status": status, "old_path": paths[0]} if n == 2
+                                 else {"path": paths[0], "status": status})
+                  i += 1 + n
+          main_head = git("ls-remote", "origin", "refs/heads/main").stdout.split("\t")[0].strip()
+          repo, api = os.environ["GITHUB_REPOSITORY"], os.environ.get("GITHUB_API_URL", "https://api.github.com")
+
+          def get(url):
+              req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "devos-checks",
+                                                         "X-GitHub-Api-Version": "2022-11-28"})
+              req.add_unredirected_header("Authorization", "Bearer " + os.environ["GH_TOKEN"])
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  return r.read()
+
+          report = ""
+          LINE = re.compile(r"^\S+ W03REPORT (\{.*\})\s*$")
+          try:
+              runs = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?branch=main&status=completed"
+                                    f"&head_sha={main_head}&per_page=20")).get("workflow_runs", []) if main_head else []
+              if not runs:
+                  print(f"run report: none (no completed run of migrate.yml at main's head {main_head or 'unknown'})")
+              else:
+                  run = runs[0]
+                  # Each migration job prints exactly one report line, for its own project; every other line a job prints
+                  # from data is escaped, except the test programs' own output in devos-test. So a project is read only from
+                  # its own job (devos-test or check-devos-test; devos or check-devos), and only if that job's log holds
+                  # exactly one report line, for that project, at the run's commit; anything else leaves the project out,
+                  # which pr_decide reads as "could not check". A line cannot replace another.
+                  OWN = {"devos-test": "devos-test", "check-devos-test": "devos-test", "devos": "devos", "check-devos": "devos"}
+                  projects, unusable = {}, set()
+                  for job in json.loads(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/jobs?per_page=100")).get("jobs", []):
+                      jname = str(job.get("name") or "").split(" ", 1)[0]
+                      own = OWN.get(jname)
+                      log = get(f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs").decode("utf-8", "replace")
+                      found = []
+                      for ln in log.splitlines():
+                          m = LINE.match(ln)
+                          if m:
+                              try:
+                                  found.append(json.loads(m.group(1)))
+                              except ValueError:
+                                  found.append(None)
+                      label = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in jname)
+                      if own is None:
+                          if found:
+                              print(f"run report: job {label} is not a migration job; its {len(found)} report lines are not read")
+                          continue
+                      r = found[0] if len(found) == 1 else None
+                      if own in projects or own in unusable or not isinstance(r, dict) or r.get("project") != own \
+                              or r.get("commit") != run.get("head_sha"):
+                          print(f"run report: job {label}: {len(found)} report lines, not exactly one for {own} at the run's "
+                                f"commit; {own} is not read (could not check)")
+                          unusable.add(own)
+                          projects.pop(own, None)
+                          continue
+                      projects[own] = {k: r.get(k) for k in ("result", "applied_versions", "differences")}
+                  report = json.dumps({"commit": run.get("head_sha"), "completed": run.get("status") == "completed",
+                                       "run_id": run.get("id"), "event": run.get("event"), "projects": projects},
+                                      separators=(",", ":"))
+                  print(f"run report: run {run.get('id')} ({run.get('event')}) at {run.get('head_sha')}: "
+                        f"projects reported: {sorted(projects)}")
+          except (urllib.error.URLError, OSError, ValueError, KeyError) as exc:
+              print(f"run report: could not be read ({type(exc).__name__})")
+              report = ""
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("changed", "" if changed is None else json.dumps(changed)), ("run_report", report),
+                           ("main_head", main_head)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+      - id: pr_decide
+        name: "M16: what this pull request's migration changes may do"
+        if: ${{ !cancelled() }}
+        env:
+          CHANGED: ${{ steps.pr_inputs.outputs.changed }}
+          RUN_REPORT: ${{ steps.pr_inputs.outputs.run_report }}
+          MAIN_HEAD: ${{ steps.pr_inputs.outputs.main_head }}
+        shell: python
+        run: |
+          # What the pull-request check stops (EV-C02-001 M15, M16; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). A pull
+          # request that changes, removes or renames a merged migration file fails unless the run report shows that version
+          # unapplied in both projects; "could not check" cannot show that. Every other pull request passes, with the state
+          # written. Inputs only through env; outputs to GITHUB_OUTPUT.
+          import json, os, re
+
+          PROJECTS = ("devos-test", "devos")
+          RESULTS = ("no_difference", "differences", "could_not_check")
+          MIGRATION = re.compile(r"supabase/migrations/[^/]+\.sql")
+          VERSION = re.compile(r"([0-9]+)_.*\.sql")
+
+
+          def load(name):
+              text = os.environ.get(name, "")
+              try:
+                  return json.loads(text) if text else None
+              except ValueError:
+                  return None
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
+          def words(result):
+              return {"no_difference": "no difference", "differences": "differences",
+                      "could_not_check": "could not check"}.get(result, "could not check")
+
+
+          changed, report, main_head = load("CHANGED"), load("RUN_REPORT"), os.environ.get("MAIN_HEAD", "")
+          problem = None
+          if not isinstance(report, dict):
+              problem = "no readable run report of migrate.yml at main's head"
+          elif report.get("commit") != main_head or not main_head:
+              problem = f"the run report is at {esc(report.get('commit'))}, not at main's head {esc(main_head or 'unknown')}"
+          elif report.get("completed") is not True:
+              problem = "the run report's run is not completed"
+          elif not isinstance(report.get("projects"), dict):
+              problem = "the run report has no projects"
+          projects = {}
+          for p in PROJECTS:
+              r = (report or {}).get("projects", {}).get(p) if problem is None else None
+              ok = isinstance(r, dict) and r.get("result") in RESULTS and isinstance(r.get("applied_versions"), list) \
+                  and isinstance(r.get("differences"), list)
+              projects[p] = r if ok else None
+          parts = []
+          for p in PROJECTS:
+              r = projects[p]
+              if r is None:
+                  parts.append(f"{p}: could not check ({problem or 'the report lacks this project or its fields'})")
+              else:
+                  listed = ", ".join(f"{esc(d.get('kind'))} {esc(d.get('version') or d.get('slug'))}" for d in r["differences"]
+                                     if isinstance(d, dict))
+                  parts.append(f"{p}: {words(r['result'])}" + (f" ({listed})" if listed else ""))
+          state = "; ".join(parts)
+
+          touched, unusable = [], not isinstance(changed, list)
+          for c in changed if isinstance(changed, list) else []:
+              if not isinstance(c, dict) or not isinstance(c.get("path"), str):
+                  unusable = True
+                  continue
+              status = str(c.get("status", ""))[:1]
+              if status in ("A", "C"):
+                  continue
+              old = c.get("old_path") if status == "R" else c["path"]
+              for path in {old, c["path"]} if status not in ("M", "D", "T", "R") else {old}:
+                  if isinstance(path, str) and MIGRATION.fullmatch(path):
+                      touched.append(path)
+
+
+          def unapplied_in_both(version):
+              for p in PROJECTS:
+                  r = projects[p]
+                  if r is None or r["result"] == "could_not_check" or version in r["applied_versions"]:
+                      return False
+                  if not any(isinstance(d, dict) and d.get("kind") == "on_main_not_applied" and d.get("version") == version
+                             for d in r["differences"]):
+                      return False
+              return True
+
+
+          blocked = []
+          for path in sorted(set(touched)):
+              m = VERSION.fullmatch(path.rsplit("/", 1)[1])
+              if not m or not unapplied_in_both(m.group(1)):
+                  blocked.append(path)
+          if unusable:
+              verdict, why = "fail", "the list of changed files could not be read (could not check)"
+          elif blocked:
+              verdict, why = "fail", ("a merged migration is changed, removed or renamed and the records do not show it "
+                                      "unapplied in both projects: " + ", ".join(esc(p) for p in blocked))
+          elif touched:
+              verdict, why = "pass", "each changed migration is shown unapplied in both projects: " + ", ".join(
+                  esc(p) for p in sorted(set(touched)))
+          else:
+              verdict, why = "pass", "no merged migration is changed, removed or renamed"
+          print(f"migration records at main's head: {state}")
+          print(f"pr check: {verdict}: {why}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"verdict={verdict}\nstate={state}\n")
+          if os.environ.get("GITHUB_STEP_SUMMARY"):
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write(f"### Migration records\n\n- {state}\n- check: {verdict}: {why}\n")
+          raise SystemExit(0 if verdict == "pass" else 1)
+      - id: w03_tests
+        name: "W-C02-03's offline tests of the deciding steps and the order"
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I tests/C02/W-C02-03/test_decision_steps.py && a=0 || a=$?
+          python3 -I tests/C02/W-C02-03/test_workflow_order.py && b=0 || b=$?
+          echo "W-C02-03 tests: decision steps exit ${a}, workflow order exit ${b}"
+          if [ "$a" -eq 0 ] && [ "$b" -eq 0 ]; then
+            exit 0
+          fi
+          exit 1
