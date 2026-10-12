@@ -53,7 +53,7 @@ CS2's branch, on CS1's head `c224084`, adds the five `c01-run/CS2/` files and Q3
   - before any queue work it writes and pushes a continuity record saying what it took from CS1's hand-over and what it had to find out elsewhere;
   - it then does the item the hand-over names and the rest of the queue, and redoes no done item.
 - **"The repository's hooks active in the session, as its opening record shows"** is read from part A item 1: the guard's decision log for this session exists and holds records of its calls. Part B item 3 shows which hooks are configured. A hook that was not due (no compaction, no session-tool call) is "configured, not due", not "inactive".
-- **"Names what C01 built"**: a component counts as C01's when a C01 item added or changed it in `main` between C01's start (`c843988`, L-168) and the commit the run read, or when Batu's C01 steps put it in place outside the repository. What existed before C01 and only met the run is listed apart (section 3.2), so that it is not counted as C01's.
+- **"Names what C01 built"**: a component counts as C01's when a C01 item added or changed it in `main` from C01's start to the commit the run read, or when Batu's C01 steps put it in place outside the repository. C01's start is `f03e1e6`, the merge that closed C00 ("C01 starts", L-165 to L-167), which is the first parent of C01's first merge `c843988`. So `c843988`'s own diff counts as C01's: PC-19, note N-104 on `plan/work/C01.md`, checked by CHK-C01-001 and CHK-C01-002 and closed at L-168. What existed before C01 and only met the run is listed apart (section 3.2), so that it is not counted as C01's. (Corrected after CHK-C01-108 C1; see the end of section 3.)
 - **"Could not check"** stays apart from "met" and "not used" (plan Section 8 item 14).
 
 ## 1. CS1
@@ -312,12 +312,14 @@ CS2's branch, on CS1's head `c224084`, adds the five `c01-run/CS2/` files and Q3
 ### 3.1 Built by C01
 
 This list rests on four things:
-- `git diff --stat c843988 56d1ac7` over `.claude/`, `CLAUDE.md`, `tools/`, `.github/`, `plan/Installation_Working_Order.md`, `plan/key_inventory.md` and `evidence/C01/routine/`;
+- `git diff --stat f03e1e6 56d1ac7` over `.claude/`, `CLAUDE.md`, `tools/`, `.github/`, `plan/Installation_Working_Order.md`, `plan/Ek_D_Dusunme_Protokolleri.md`, `plan/key_inventory.md` and `evidence/C01/routine/`; `f03e1e6` is `c843988`'s first parent, so PC-19's own diff is included;
 - the per-merge diffs on `main`'s first-parent line;
 - each item's front matter (`acceptance: accepted`, `accepted_by`);
 - the ledger entries named.
 
-`.github/` did not change in C01. "Used" means the run's records show the component acting in the run. "In force, not exercised" means it was in place at `14ec14c` (and, for CS2, at `56d1ac7`, with the same blobs), and no call reached the path that would show it. "Offered" means it was in the session's list and not called. "Not used" for a document or tool means that no record of the run names it; CS2's step, unlike CS1's, asks for no list of sources.
+`.github/` did not change in C01. Every path in that diff is in a row below, except the earlier runs' copies under `evidence/C01/routine/runs/`, which are records of those runs. The rest of `git diff --stat f03e1e6 56d1ac7` is not listed as components: the plan's text and its Appendices E and G (wording changed with C01's findings), `DURUM.md`, decisions, work items, the ledger and evidence records.
+
+"Used" means the run's records show the component acting in the run. "In force, not exercised" means it was in place at `14ec14c` (and, for CS2, at `56d1ac7`, with the same blobs), and no call reached the path that would show it. "Offered" means it was in the session's list and not called. "Not used" for a document or tool means that no record of the run names it; CS2's step, unlike CS1's, asks for no list of sources.
 
 | # | Component (where) | C01 item and merge | CS1 | Evidence (CS1) | CS2 |
 |---|---|---|---|---|---|
@@ -334,20 +336,23 @@ This list rests on four things:
 | 11 | The guard's pass is a marker (`DevOS guard: pass, no decision …`) | N-185, W-C01-38 point 2 (L-233; merge `e9fc0a4`) | in force, not exercised: "0 passed to the user" | OPENING.md:7; CLOSING.md:22 | in force, not exercised: "0 passed to the user" (CS2/OPENING.md:7; CLOSING.md:16) |
 | 12 | Keep-out, guard part: rule T4 allows only the repository's skills and agent types | W-C01-45 (CHK-C01-105; L-238; merge `f607b0b`; EV-C01-023) | in force, not exercised: no Skill or Agent call. No `other` agent type was offered. 24 skills of one other prefix are still offered, as PC-39 and D-029 (b) leave them (1.4 item 2) | OPENING.md:22-23; CLOSING.md:22 | in force, not exercised: no Skill or Agent call; no `other` agent type; the same 24 skills of one other prefix offered (CS2/OPENING.md:22-23; CLOSING.md:16) |
 | 13 | Keep-out, settings part: one `enabledPlugins` entry set to false and one `env` key ending `HOOKS_ENABLED` set to false | W-C01-45 (as row 12) | in force. Its effect is not separable in CS1: no plugin was seen acting, and the entry does not reach the account's synced skills (EV-C01-026 3.5) | OPENING.md:16, 23 | in force; its effect is not separable, as in CS1 (CS2/OPENING.md:16, 23) |
-| 14 | The records and audit tools: `tools/records.py`, `tools/subagent_audit.py`, `tools/stop_check.sh` and their tests | W-C01-28 (CHK-C01-009, merge `6a3aa55`); W-C01-43 (CHK-C01-033, `946eacd`); W-C01-44 (CHK-C01-037, `b57d85f`, tests only); FR-06 and PC-23 (CHK-C01-042, L-200, `1713864`); N-149, N-156, N-167 (CHK-C01-069, CHK-C01-070, L-216, L-219, `9025ecc`) | not used: they are the executor's tools; a run follows its control file. Not among CS1's sources | HANDOVER.md:44-48 | not used: no CS2 record names them |
-| 15 | `CLAUDE.md`: the disciplines' trigger "before entering a wait" (PC-23) | FR-06 and PC-23 (merge `1713864`) | could not check: CS1 does not record whether `CLAUDE.md` was in its context. It gave D1 to D9 as its control file's 3.4 item 10 asks | CLOSING.md:28-37 | could not check, as for CS1. It gave D1 to D9 as 3.4 item 10 asks (CS2/CLOSING.md:22-31) |
-| 16 | `plan/Installation_Working_Order.md`: the changes the items named make to it | W-C01-28, FR-06, L-216, W-C01-38, N-185, W-C01-45 (merges `6a3aa55`, `1713864`, `9025ecc`, `8fe23a7`, `e9fc0a4`, `f607b0b`) | not used: it is the executor's working order; a routine session follows the task in its first message (`CLAUDE.md`) | — | not used, as for CS1 |
+| 14 | The records and audit tools: `tools/records.py`, `tools/subagent_audit.py`, `tools/stop_check.sh` and their tests | PC-19, N-104 (CHK-C01-001, CHK-C01-002, L-168, merge `c843988`: the disciplines checks in `records.py` and `subagent_audit.py`, and their tests); W-C01-28 (CHK-C01-009, merge `6a3aa55`); W-C01-43 (CHK-C01-033, `946eacd`); W-C01-44 (CHK-C01-037, `b57d85f`, tests only); FR-06 and PC-23 (CHK-C01-042, L-200, `1713864`); N-149, N-156, N-167 (CHK-C01-069, CHK-C01-070, L-216, L-219, `9025ecc`) | not used: they are the executor's tools; a run follows its control file. Not among CS1's sources | HANDOVER.md:44-48 | not used: no CS2 record names them |
+| 15 | `CLAUDE.md`: the "Thinking disciplines" line (PC-19), and its trigger "before entering a wait" (PC-23) | PC-19, N-104 (CHK-C01-001, CHK-C01-002, L-168, merge `c843988`); FR-06 and PC-23 (merge `1713864`) | could not check: CS1 does not record whether `CLAUDE.md` was in its context. It gave D1 to D9 as its control file's 3.4 item 10 asks | CLOSING.md:28-37 | could not check, as for CS1. It gave D1 to D9 as 3.4 item 10 asks (CS2/CLOSING.md:22-31) |
+| 16 | `plan/Installation_Working_Order.md`: the changes the items named make to it | PC-19 (N-104), W-C01-28, FR-06, L-216, W-C01-38, N-185, W-C01-45 (merges `c843988`, `6a3aa55`, `1713864`, `9025ecc`, `8fe23a7`, `e9fc0a4`, `f607b0b`) | not used: it is the executor's working order; a routine session follows the task in its first message (`CLAUDE.md`) | — | not used, as for CS1 |
 | 17 | The key inventory `plan/key_inventory.md`, including its note on the routine and rows 16 and 17 | W-C01-02 (CHK-C01-007, merge `2399915`); routine note in merge `48ad43d` (L-196) | not used. No key or token appears in CS1's seven records, and none was issued for the routine (its schedule trigger only; key inventory, "The C01 routine") | the seven records | not used. No key or token appears in CS2's ten copied files, which the producer also searched for key-like words and prefixes, finding none. None was issued for the routine |
+| 18 | The role files `.claude/agents/checker.md`, `prober.md`, `producer.md` and `researcher.md`: the section "Thinking disciplines (D-016)" and the `## Disciplines (D1–D9)` block in the output form. The fifth, `counter-designer.md`, is excepted (D-016) and unchanged in C01 (3.2) | PC-19, N-104 (CHK-C01-001, CHK-C01-002, L-168, merge `c843988`) | offered as five `repository` agent types, not called | OPENING.md:22 | offered as five `repository` agent types, not called (CS2/OPENING.md:22) |
+| 19 | `plan/Ek_D_Dusunme_Protokolleri.md`: the trigger "before entering a wait or ending work whose next step waits on a schedule, a person or an outside event" in section 2 item 3 and in section 1's table, and D3 item 2's weighing of the time a method adds | FR-06 and PC-23 (`ecfece7`; CHK-C01-039, CHK-C01-040, CHK-C01-042; L-200; merge `1713864`) | not used: no record of CS1 names the file, nor does its list of sources. It gave D1 to D9 as its control file's 3.4 item 10 asks, which points to this file's section 2 item 3; where it took the questions from is not recorded (as row 15) | HANDOVER.md:44-48; CLOSING.md:28-37 | not used: no CS2 record names the file. It gave D1 to D9 as 3.4 item 10 asks (CS2/CLOSING.md:22-31) |
+| 20 | The guard's tests `tools/test_tool_allowlist.sh`: the tests for rows 10 to 12 | W-C01-38 (merge `8fe23a7`), N-185 (`e9fc0a4`), W-C01-45 (`f607b0b`). After the commit CS2 read: W-C01-47 item 2 (CHK-C01-106, merge `53d28fe` at 08:14:34Z, after CS2 closed) | not used: a run does not run the guard's tests, and no record of CS1 names the file. With EV-C01-017 and EV-C01-023, these tests are the evidence that rows 10 to 12 work, which the run did not exercise | the seven records | not used: no CS2 record names the file; item 2's change came after both runs |
 
 ### 3.2 Met by the run, built before C01 (not C01's)
 
-These existed at C01's start `c843988` and C01 did not change them, or C01 changed only parts listed in 3.1. They are listed so that the run's use of them is not counted as C01's.
+These existed at C01's start `f03e1e6` and C01 did not change them, or C01 changed only parts listed in 3.1. They are listed so that the run's use of them is not counted as C01's.
 
 | Component | CS1 | Evidence | CS2 |
 |---|---|---|---|
 | The guard `.claude/hooks/tool_allowlist.py` as such (from `3cd686a`), with its rules other than C01's changes: B0 for an allowed shell call, L1 for a push after the leak check, T1 for the tool allow list | used: 54 calls allowed under B0, L1 and T1 by the closing summary | CLOSING.md:22; 1.4 item 4 | used: 59 calls allowed under B0, L1 and T1 by the closing summary (CS2/CLOSING.md:16) |
 | `tools/guard_report.py` | used, twice | OPENING.md:7; CLOSING.md:22 | used, twice (CS2/OPENING.md:7; CLOSING.md:16) |
-| Role files `.claude/agents/` (five; unchanged in C01) | offered as five `repository` agent types, not called | OPENING.md:22 | offered as five `repository` agent types, not called (CS2/OPENING.md:22) |
+| The role file `.claude/agents/counter-designer.md` (unchanged in C01; the other four role files are 3.1 row 18) | offered as a `repository` agent type with the other four, not called | OPENING.md:22 | offered as a `repository` agent type with the other four, not called (CS2/OPENING.md:22) |
 | PostToolUse hook `record_owned_id.py` on two session tools | configured, not due: no session-tool call | OPENING.md:10, 24 | configured, not due: no session-tool call (CS2/OPENING.md:10, 14, 24) |
 | SessionStart hook `reread_after_compact.py`, matcher `compact` | configured, not due: no compaction | OPENING.md:24; CLOSING.md:7 | configured, not due: no compaction (CS2/OPENING.md:24; CLOSING.md:7) |
 | The PermissionRequest hook (the guard; its C01 wrapper is 3.1 row 10) | configured. Whether a permission request arose is not recorded: could not check | OPENING.md:24 | configured; could not check, as for CS1 (CS2/OPENING.md:24) |
@@ -370,14 +375,18 @@ These existed at C01's start `c843988` and C01 did not change them, or C01 chang
   - `ROUTINE_DESIGN.md` and `AFTER_K.md`;
   - the records and audit tools;
   - the working order;
+  - Appendix D's PC-23 change;
+  - the guard's tests;
   - the merge gate;
   - the key inventory.
-- **Could not check:** `CLAUDE.md`'s PC-23 change, and the PermissionRequest hook.
+- **Could not check:** `CLAUDE.md`'s disciplines line (PC-19, PC-23), and the PermissionRequest hook.
 - **CS2's part.** CS2 used what CS1 used, and two things more:
   - the routine's schedule, by inference from S (2.2);
   - the second half of the hand-over chain: its branch from CS1's closing head under rule 2.5, and its continuity record before queue work.
 
   Its "offered", "in force, not exercised", "not used" and "could not check" lists are CS1's, except that the schedule is no longer in "not used".
+
+**Corrected 2026-10-12 after CHK-C01-108 C1.** The base of "built by C01" was `c843988`, which left out C01's first change, PC-19; it is now `c843988`'s first parent `f03e1e6`. So the four role files PC-19 changed moved from 3.2 to 3.1 row 18, with only `counter-designer.md` left in 3.2. PC-19's "Thinking disciplines" line was added to row 15, and `c843988` to rows 14 and 16. Rows 19 (Appendix D, PC-23) and 20 (the guard's tests) were added. No used or not-used classification of an existing component changed: the role files stay offered, not called.
 
 ## 4. What the record cannot show (plan Section 8 item 14)
 
