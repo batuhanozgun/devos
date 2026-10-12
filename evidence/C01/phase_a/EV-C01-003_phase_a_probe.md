@@ -2,6 +2,9 @@
 
 **What this is.** The evidence for W-C01-25 (`plan/work/W-C01-25.md`), plan Section 9, C01, "Phase-A probe" (PC-16; CHK-C00-046 condition 5). A discovery subagent picked one real SOUL development question; three researchers read the library and outside sources on it; a synthesizer wrote a sourced result; a fresh subagent continued from that result alone; and a fresh-context probe checker judged the result against criteria (a) to (f). This record gives the question and how it was chosen, every run with its role, task and agent, the result, and the verdict. The seven outputs are filed under `raw/`, and the workflow script that holds every task is filed verbatim as `tasks.js`; section 8 states how the outputs were cleaned for this public repository. W-C01-25 asks that the probe ran, was judged and reached C02, not that its criteria were met (PC-16 place 9); nothing here adopts the result.
 
+
+**[2026-10-12, CHK-C01-112 R6 and R9; L-279]** Two files carry the ID EV-C01-003: this one (the phase-A probe, W-C01-25) and row 17's record, `evidence/C01/EV-C01-003_row17_control_surface.md` (W-C01-36); a bare citation is read by its context. In `raw/07_probe_checker_verdict.md` the front matter's `checker_run: AGENT-ID` is a placeholder the probe checker wrote; the agent is `a53b94908b2dced5f` (the table below).
+
 ## Evidence envelope (plan Section 8 item 9)
 
 | Field | Value |

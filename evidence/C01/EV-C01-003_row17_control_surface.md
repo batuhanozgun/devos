@@ -2,6 +2,8 @@
 
 **What this is.** This is the evidence for W-C01-36 (`plan/work/W-C01-36.md`). It covers plan C01 row 17, "Control surface across environments", as the PC-21 note under C01 item 7 takes it. The platform's current official documentation was read on 2026-10-10 for one question: what a session's own tools are documented to do to sessions, routines and environment settings outside the session's own environment, and whether the documentation states any limit by environment. The reading is set beside L-119's observation that a session in Accept edits cannot start sessions. The record then gives the two dispositions the item asks for: (a) row 17's unfavourable case, recorded as the design, and (b) N-047. This is a documentation reading only. Apart from L-119, which is cited, nothing here is an observation of the platform's behaviour.
 
+**[2026-10-12, CHK-C01-112 R6; L-279]** Two files carry the ID EV-C01-003: this one (row 17, W-C01-36) and the phase-A probe's record, `evidence/C01/phase_a/EV-C01-003_phase_a_probe.md` (W-C01-25). A bare citation of EV-C01-003 is read by its context: row 17 or the control surface means this file; the phase-A probe means the other.
+
 ## Disciplines (D1–D9)
 D1: yes: I kept the documented isolation of each session's machine apart from the account-level controls a session may reach, so that the isolation statements are not read as a limit by environment.
 D2: yes: PC-21 item 7 already says "not stated", so I searched the full documentation text for a statement either way before recording "not stated", and I list the favourable statements as counter-evidence in section 6.
