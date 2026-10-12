@@ -26,7 +26,7 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 **Names** (chosen here; none is secret):
 - `.github/workflows/migrate.yml`: the migration workflow, the only workflow that names either environment. Jobs on a push: `devos-test`, then `devos`. Jobs on the schedule: `check-devos-test`, `check-devos`.
 - `.github/workflows/migration-checks.yml`: the pull-request checks. They hold no secret.
-- GitHub environments `migrate-devos-test` and `migrate-devos`, each holding one secret, `SUPABASE_DB_PASSWORD`.
+- GitHub environments `migrate-devos-test` and `migrate-devos`, each holding one secret, `SUPABASE_DB_PASSWORD`. (Added 2026-10-12, N-255: from sitting A, `migrate-devos-test` also holds `DEVOS_TEST_PUBLISHABLE_KEY`, the test project's publishable key for W-C02-07's test programs, which is no credential to either database; step 1's text describes the state at its own end and is unchanged.)
 - `supabase/migrations/<version>_<name>.sql`: the migration files (top level of that directory only). `supabase/migrations/tests/`: the database tests the job runs in `devos-test`.
 - `devos_private.function_deployment`: the record of deployed function versions.
 
@@ -36,7 +36,7 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 |---|---|---|
 | M01 | The credential, per project: the password of Supabase's `postgres` role (the project's database password), used by the Supabase command-line tool (CLI) with `db push --db-url` over the session pooler | Decided. Its use without `supabase link` is provisional (P1); P1's fallback keeps the same credential and Batu's step |
 | M02 | Not used: a custom migration role; a Supabase access token minting a short-lived CLI login; Supabase's GitHub integration; the Management API's apply endpoint; a repository secret | Decided, with reopen conditions (section 2) |
-| M03 | Kept in two GitHub environments, one per project, each with the deployment-branch rule "Selected branches and tags" = `main` only, administrators' bypass off, no required reviewers, no wait timer, one secret | Decided; the refusal of other branches is observed at the build (point 8) |
+| M03 | Kept in two GitHub environments, one per project, each with the deployment-branch rule "Selected branches and tags" = `main` only, administrators' bypass off, no required reviewers, no wait timer, one secret (Added 2026-10-12, N-255: from sitting A, `migrate-devos-test` also holds `DEVOS_TEST_PUBLISHABLE_KEY`, the test project's publishable key for W-C02-07's test programs, which is no credential to either database; step 1's text describes the state at its own end and is unchanged.) | Decided; the refusal of other branches is observed at the build (point 8) |
 | M04 | `migrate.yml` starts on `push` to `main` (applies) and on `schedule` every 6 hours (compares only). No other event. No other workflow names either environment | Decided |
 | M05 | Head check: a run applies or connects only if its commit is `main`'s current head; otherwise it ends as "superseded" before any step receives the secret | Decided |
 | M06 | Concurrency: one group for `migrate.yml`, `cancel-in-progress: false`, `queue: max` | Decided; provisional (P4), with a fallback (section 5) |
