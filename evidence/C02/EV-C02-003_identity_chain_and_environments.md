@@ -297,7 +297,7 @@ Notes on the cells. The row "Reading review verdicts, decisions, current authori
 
 **Tests, in every direction.** Each ✘ cell, with that column's token, is a negative case of W-C02-07's authorization test, run in `devos-test` inside the migration job's step (synthetic tokens; §6.3). The separation lines are tried again by W-C02-12 with each environment's real token, from inside it. Each ✔ cell is a positive control. Every column is taken against every row, not only working against audit (R2 §5 (b)). `devos_ingest` arrives in C04 (B:98) and has no column here; the row `ingest_source` is tried from C04.
 
-*Added 2026-10-12:* rows for the ten C02 functions this matrix has none for (`ready_works`, `relate`, `retract_relation`, `affected_entities`, `explain_paths`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `review_finding`; N-256), and the function of the row "Reading RejectedAttempt", are decided in `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 1; the text above is unchanged.
+*Added 2026-10-12:* rows for the ten C02 functions this matrix has none for (`ready_works`, `relate`, `retract_relation`, `affected_entities`, `explain_paths`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `review_finding`; N-256), and the function of the row "Reading RejectedAttempt", are decided in `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 1; so are, in its section 1.7, the rows of `operation_state`, of the ledger transfer's fourteen functions, and `set_effort_policy`'s gate row, with the row "Effort-reduction approval; standing effort policies" kept as an operation row (CHK-C02-025 C3). The text above is unchanged.
 
 ### 4.2 S8 line 1: `devos_kurulum`
 
