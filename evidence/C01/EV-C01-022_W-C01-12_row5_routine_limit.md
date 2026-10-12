@@ -164,3 +164,12 @@ The question (comment `6110301769`, in Turkish; read by the executor) asked him 
 - **Count.** 2026-10-12 has two runs by this listing: one by Run now (CS1) and one by the schedule, inferred (CS2). The most starts in any 60-minute span on that day is one. Neither run saw a usage or routine limit message.
 - **Batu's run list.** Not read for this count, as before (section 5, second row).
 - **Still open.** N-191 stays open until the routine is deleted (W-C01-47 item 3): a run after this listing, if any, is counted in a further addendum.
+
+## Addendum (2026-10-12, listing at 11:48:48Z): the last count before the routine's deletion (N-191; W-C01-47 item 4)
+
+**Source.** `git ls-remote --heads origin` at 2026-10-12T11:48:48Z, run by the executor in the working session's live tree at `main` `b7897d5` (raw: `evidence/C01/raw/W-C01-47_item4_branch_listing_20261012T1148Z.txt`; EV-C01-030 section 3). It lists the nine `claude/probe-c01-…` branches of the last addendum, at the same heads, and no other.
+
+- **Count.** No run after the listing of 08:15:03Z. Final count up to this listing: seven runs on 2026-10-11 (one by the schedule, six by Run now) and two on 2026-10-12 (CS1 by Run now, CS2 by the schedule, inferred). No run saw a usage or routine limit message.
+- **The routine.** Batu reported it deleted at 2026-10-12T08:35:04Z (issue #6 comment `6120677086`; reported, not observed). This listing covers no scheduled time after his report (the next would be 2026-10-13 at about 08:07Z); note N-202 on `plan/work/C02.md` lists again after one full period, and a run it finds is counted in a further addendum here and reopens W-C01-47.
+- **Batu's run list.** Not read for this count, as before (section 5, second row).
+- **N-191 closes** with W-C01-47 item 4's record (L-277).

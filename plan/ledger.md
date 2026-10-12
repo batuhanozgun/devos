@@ -24,8 +24,8 @@
 | Waiting for Batu | Generated: open decisions of class `batu` in section 4, and the first line of `DURUM.md`. None open. D-030 answered (a), pressed for CS1, in the working session at about 2026-10-12T06:04Z (L-265). D-029 answered (b) in the working session at about 2026-10-12T05:53Z, with his constraint for SOUL (L-263). D-028 answered (a) in the working session at about 19:21Z (L-251; P4 started at about 19:14Z). D-027 answered (a) in the working session on 2026-10-11 (L-211; P3's press follows the executor's word on issue #6), D-022 (a) (L-210), D-021 (a) (L-201), D-019 and D-020 (L-185), D-018 on 2026-10-10 (L-178); his routine step is reported done (L-185). Issue #6 last answered 2026-10-11T15:01:37Z (comment `6110352256`, row 5's reading, not a decision; L-226). | 2026-10-12T06:05Z |
 | Binding plan text | The English plan package (W-C00-06 accepted on CHK-C00-020; plan 0.6 item 1: the Turkish text was binding until the fidelity review passed and is removed from the repository by this merge, history at `3de3a17`), with recorded changes PC-01 to PC-06 (PC-01 superseded by PC-06) | 2026-10-05 |
 | answers seen through | issue #6 comment `6010051563` (2026-10-06T05:33Z, `batuhanozgun`): "> D-009: a" on the withdrawn D-009, disregarded at his word in the working session (`plan/decisions/D-009.md`). Working session, 2026-10-06 to 05:57Z: D-015 (the form of questions), D-014 answered, questions on D-013 answered there (L-155). Working session about 06:10Z: D-013 declined as not his, decided (a) by the builder (L-156). Working session about 06:29Z: the e-mails turned on, "sanırım" (D-014, L-157). Working session to about 09:00Z: D-016 (the thinking disciplines); the branch setting turned on (L-159). Working session 10:11Z to 10:39Z: a question about the machine account's e-mail address and a new repository of his other work (L-162); the language of messages to him (L-169). Working session about 16:20Z: a request for a short summary (L-172). Working session 2026-10-10 about 20:58Z (`session_01XyxvJd3RayQk4HCrjurbVH`): D-018 answered, the frame review FR-05 directed, and the mode switched to Accept edits at the session's request (L-178). Working session 2026-10-10 about 22:00Z: he is away until about 07:00Z, for information (L-180). Issue #6 comment `6105974865` (2026-10-11T05:49:08Z): D-019 (a), the routine step done, and a question on D-020; working session 2026-10-11 shortly before 05:59Z: D-020 (a) with a direction (L-185). Issue #6 comment `6107475020` (2026-10-11T09:13:31Z): D-021 (a), pressed (L-201). Issue #6 comment `6109603950` (2026-10-11T13:37:20Z): row 6's notification arrived on his phone in the GitHub app (W-C01-13), and D-022 (a), pressed (L-210). Working session about 13:55Z, and issue #6 comment `6109755510` (2026-10-11T13:54:43Z): D-027 (a), pressed for P2 (L-211, L-217). Issue #6 comment `6109982927` (2026-10-11T14:20:30Z) and working session 14:40:50Z: pressed for P3's first attempt (L-221). Working session 14:48:46Z: pressed for P3's second attempt (L-226). Issue #6 comment `6110352256` (2026-10-11T15:01:37Z) and working session 15:02:19Z: row 5's reading, no routine line, and a question whether he must run the routine again, answered there: not now (L-226). Working session about 19:21Z: D-028 (a), pressed for P4 (L-251). Working session 2026-10-12 about 05:49Z: a question why he is asked to turn the skills off, answered there; about 05:53Z: D-029 (b), with a constraint for SOUL (L-263); about 06:04Z: D-030 (a), pressed for CS1 (L-265); about 06:10Z: on the session's effort setting, for information (L-266); about 06:45Z: at the computer, asking whether anything is expected of him and whether to set the effort to ultracode, answered there (yes, D-008); about 07:05Z: effort set to ultracode, and D-002 amended on the weekly pace warning (L-267). Working session about 07:15Z to 07:25Z: why the routine is deleted, answered there (L-268). Issue #6 comment `6120677086` (2026-10-12T08:35:04Z) and working session about 08:36Z: the routine and the variable line deleted (W-C01-47 item 3; L-269). Working session about 11:20Z to 11:35Z: questions on what runs in the background, what "deletion" means, and whether proving it is unnecessary work; he agreed with moving the one-day observation off the critical path (L-275). Working session 11:37Z: two questions for discussion, why DevOS may see only what it created and why the one-day wait was chosen; answered there, recorded as N-203 (C03) and N-204 (C06) (L-276). | 2026-10-12T11:46Z |
-| summary_tr | C01'in birleşik denemesi bitti; deneme becerisi depodan kaldırıldı; rutin ve ortam satırı silindi (senin bildirimin, 11:35). W-C01-48 kabul edildi. <br>**Değişiklik kabul edildi:** silmenin bir günlük gözlemi C01'in kapanışını bekletmiyor; yarın 11:40'tan sonra dallara C02'nin ilk işinde bakılacak (N-202). Senin iki sorun (DevOS neyi görebilmeli; bekleme gereksiz miydi) C03 ve C06'ya not olarak yazıldı. <br>Şu an senden beklenen bir şey yok. Sıradaki: W-C01-47'nin kaydı ve kabulü, C01'in kapanış denetimi, sonra C02. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T11:46Z |
-| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T11:46Z |
+| summary_tr | C01'in birleşik denemesi bitti; deneme becerisi depodan kaldırıldı; rutin ve ortam satırı silindi (senin bildirimin, 11:35). W-C01-48 kabul edildi. <br>Silmenin kaydı yazıldı: senin rutinler sayfasındaki bakışın birincil kanıt; dallarda bildiriminden sonra yeni bir çalışma yok. Yarın 11:40'tan sonra dallara C02'nin ilk işinde bir kez daha bakılacak (N-202). <br>Şu an senden beklenen bir şey yok. Sıradaki: W-C01-47'nin kabul denetimi, C01'in kapanış denetimi, sonra C02. <br>**Kullanım:** haftalık kullanım hızı uyarısı var; senin sözünle iş hafif işlerle sınırlı değil (D-002, 12 Ekim). | 2026-10-12T11:50Z |
+| Rendered | Written by `tools/records.py render` from the clock; `DURUM.md`'s update line comes from here. | 2026-10-12T11:50Z |
 
 ---
 
@@ -36,11 +36,12 @@
 - none
 
 **Running:**
-- `W-C01-47` C01's combined scenario; the routine, its variable line and the probe skill removed when C01 ends: claimed by `nobody`
+- none
 
 **Not ready, with the first unmet condition:**
 - `W-C01-30`: depends on W-C01-47 (not accepted)
 - `W-C01-45`: finished, waiting for acceptance
+- `W-C01-47`: finished, waiting for acceptance
 - `W-C01-48`: finished, waiting for acceptance
 
 Selection among ready items: critical path first, one logged sentence of reason (`plan/Installation_Working_Order.md` section 4). Candidates never appear here; they are in the zoom view.
@@ -54,7 +55,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 | Stage | Title | State | Items by state | Open notes |
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
-| `C01` | Platform verification | running | accepted 34, blocked 1, cancelled 10, running 1, unknown 2 | 8 |
+| `C01` | Platform verification | running | accepted 34, blocked 1, cancelled 10, finished 1, unknown 2 | 7 |
 | `C02` | Data model, rule gate and identity chain | planned | no items | 16 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 18 |
 | `C04` | Knowledge, search and context | planned | no items | 14 |
@@ -146,7 +147,7 @@ Each item's acceptance condition, front matter and notes are in its file (`plan/
 | `W-C01-44` | N-141: a planted case for the per-message block test, and the fixture docstring aligned | accepted | — | — | `plan/work/W-C01-44.md` |
 | `W-C01-45` | Plugins the repository does not provide kept out of DevOS's sessions from the repository (PC-35 routing item 1) | unknown: accepted without an existing accepted_by file | — | — | `plan/work/W-C01-45.md` |
 | `W-C01-46` | P4: row 13's two unchecked parts observed in a routine session (PC-35 routing item 3) | accepted | — | — | `plan/work/W-C01-46.md` |
-| `W-C01-47` | C01's combined scenario; the routine, its variable line and the probe skill removed when C01 ends | running | — | — | `plan/work/W-C01-47.md` |
+| `W-C01-47` | C01's combined scenario; the routine, its variable line and the probe skill removed when C01 ends | finished, not accepted | — | — | `plan/work/W-C01-47.md` |
 | `W-C01-48` | Evidence for C01's stage close, gathered while W-C01-47's one-day check runs (W-C01-30 points 1, 3, 4 and 7) | unknown: accepted without an existing accepted_by file | — | — | `plan/work/W-C01-48.md` |
 <!-- /generated -->
 
@@ -246,7 +247,6 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-144` | `C01` | CHK-C01-042 | open | **A side branch that waits only on its check, and the next plan step** (CHK-C01-042 C1; 2026-10-11, L-200). Working order section 5 says ... |
 | `N-122` | `C01` | CHK-C01-006 | open | **Recommendations of CHK-C01-006 for C01's last items** (findings 4, 5 and 10; 2026-10-06, L-169; not conditions). (1) **Row 4's version,... |
 | `N-129` | `C01` | L-173 | open | **The form of a "no" answer** (2026-10-06, L-173; PC-20). Two helpers in a row (agents `aad82641009d6300f` and `a7f263717d66fe06b`, W-C01... |
-| `N-191` | `C01` | W-C01-12 | open | **EV-C01-022's dated addendum: the routine's runs after the branch listing of 2026-10-11T15:01:00Z** (C01 row 5; W-C01-12; L-226; 2026-10... |
 | `N-194` | `C01` | L-251 | open | **The builder's own one-shot check-ins are not recorded as owned** (L-251; 2026-10-11). The executor armed two check-ins into the working... |
 | `N-031` | `C02` | OI-006 | open | **Item:** EV-C00-001 has no raw-evidence reference (plan Section 8.9; Appendix B, `EvidenceEnvelope`). |
 | `N-032` | `C02` | OI-007 | open | **Item:** FND-001 needs a class-level regression test (plan Section 6.11; Appendix C, C0). **Examples:** (a) this case; (b) "the builder'... |
@@ -361,7 +361,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-140` | `C12` | W-C01-42 | open | **The session-tools server deny at its target** (W-C01-42; `evidence/C01/EV-C01-004_environment_separation_one_account.md` S9; 2026-10-11). |
 
 Notes `answered` (answered inside W-C00-12, which D-010 cancelled on 2026-10-05; kept on their items as history): 19 (N-006, N-007, N-008, N-009, N-010, N-011, N-012, N-013, N-014, N-015, N-016, N-017, N-018, N-019, N-020, N-022, N-023, N-024, N-025).
-Notes `closed` (closed with their disposition): 51 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-063, N-073, N-102, N-104, N-105, N-156, N-167, N-170, N-186, N-173, N-185, N-149, N-148, N-145, N-143, N-141, N-109, N-110, N-124, N-192, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
+Notes `closed` (closed with their disposition): 52 (N-027, N-045, N-058, N-062, N-084, N-086, N-106, N-028, N-029, N-030, N-048, N-063, N-073, N-102, N-104, N-105, N-156, N-167, N-170, N-186, N-173, N-185, N-149, N-148, N-145, N-143, N-141, N-109, N-110, N-124, N-191, N-192, N-037, N-001, N-002, N-003, N-004, N-005, N-061, N-060, N-072, N-083, N-089, N-051, N-056, N-059, N-021, N-026, N-049, N-050, N-052, N-053).
 <!-- /generated -->
 
 Gaps: see EV-C00-003 (G-001 to G-017; final version with a disposition per gap). Findings: FND-001 in `plan/ledger/C00-log.md`.
