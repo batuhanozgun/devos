@@ -11,12 +11,16 @@ reviewed_head the head, or a commit X of this pull request (an ancestor of the h
 base) with X..head class normal; has verdict PASS or PASS-WITH-CONDITIONS; has the independence and checker_run
 fields; and repeats no key. Anything else fails closed, with the reason.
 
-Class high: .claude/**, tools/**, .github/workflows/**, CLAUDE.md, .gitattributes,
-plan/Installation_Working_Order.md (successor of the retired plan/Builder_Operating_Model.md),
-plan/Ek_A_Rol_Sozlesmeleri.md and plan/Ek_D_Dusunme_Protokolleri.md; any path whose file name is CLAUDE.md or
-that has a .claude/ component; deleting a plan/work/*.md file, or changing or removing an existing
-<!-- acceptance --> block in one (adding a block where none existed is class normal). A change to
-.claude/hooks/owned_ids.txt that only adds recorder lines (session_... or trig_...) is class normal.
+Class high: .claude/**, tools/**, .github/workflows/**, methods/**, supabase/migrations/**, supabase/functions/**,
+pipelines/**, CLAUDE.md, .gitattributes, plan/Installation_Working_Order.md (successor of the retired
+plan/Builder_Operating_Model.md), plan/Ek_A_Rol_Sozlesmeleri.md, plan/Ek_D_Dusunme_Protokolleri.md and
+.github/CODEOWNERS; any path whose file name is CLAUDE.md or that has a .claude/ component; a file or symbolic link
+at the path methods, pipelines, supabase, supabase/migrations, supabase/functions, .github or .github/workflows, or
+named .claude at any depth (it would redirect the listed paths below it); deleting a plan/work/*.md file, or
+changing or removing an existing <!-- acceptance --> block in one (adding a block where none existed is class
+normal). A change to .claude/hooks/owned_ids.txt that only adds recorder lines (session_... or trig_...) is class
+normal. Plan 6.7's high-impact path list (PC-08) is among these paths; case (28) of tools/test_merge_gate.py checks
+that against the plan.
 
 Output: reason lines, then GATE PASS (exit 0) or GATE FAIL (exit 1); GATE ERROR (exit 2) when it cannot run.
 """
@@ -28,9 +32,14 @@ import sys
 
 sys.dont_write_bytecode = True
 
-HIGH_PREFIXES = (".claude/", "tools/", ".github/workflows/")
+HIGH_PREFIXES = (".claude/", "tools/", ".github/workflows/", "methods/", "supabase/migrations/", "supabase/functions/",
+                 "pipelines/")
 HIGH_FILES = {"CLAUDE.md", ".gitattributes", "plan/Installation_Working_Order.md", "plan/Ek_A_Rol_Sozlesmeleri.md",
-              "plan/Ek_D_Dusunme_Protokolleri.md"}
+              "plan/Ek_D_Dusunme_Protokolleri.md", ".github/CODEOWNERS"}
+# A file or symbolic link standing at one of these paths (a listed directory or its parent) redirects what the list
+# names below it while no listed path is in the diff; so does one named .claude at any depth.
+HIGH_DIR_PATHS = {"methods", "pipelines", "supabase", "supabase/migrations", "supabase/functions", ".github",
+                  ".github/workflows"}
 OWNED = ".claude/hooks/owned_ids.txt"
 ACC_OPEN, ACC_CLOSE = "<!-- acceptance -->", "<!-- /acceptance -->"
 RECORDER_LINE = re.compile(r"(session|trig)_[A-Za-z0-9]+")
@@ -82,7 +91,8 @@ def high_paths(base, head):
         if p == OWNED:
             if not recorder_only(show(base, p), show(head, p)):
                 out.append(f"{p} (not only added recorder lines)")
-        elif p.startswith(HIGH_PREFIXES) or p in HIGH_FILES or parts[-1] == "CLAUDE.md" or ".claude" in parts[:-1]:
+        elif (p.startswith(HIGH_PREFIXES) or p in HIGH_FILES or parts[-1] == "CLAUDE.md" or ".claude" in parts[:-1]
+              or p in HIGH_DIR_PATHS or parts[-1] == ".claude"):
             out.append(p)
         elif p.startswith("plan/work/") and p.endswith(".md"):
             old = acceptance_blocks(show(base, p))
