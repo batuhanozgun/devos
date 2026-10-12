@@ -14,6 +14,8 @@
 | Raw evidence ID | The raw listing above; issue #6 comments `6120564296` and `6120677086`; the nine probe branches' heads in section 2 |
 | Independence level | The executor's own reading, same session; a fresh-context checker judges it with W-C01-47's accepting check (declared, Ek A 5.3) |
 
+**[2026-10-12, CHK-C01-111 finding 1; L-278]** The SHA-256 above is of the span without its final newline. With it, as EV-C01-028 and the interim verdicts compute it (`sed` from `<!-- acceptance -->` to `<!-- /acceptance -->`), the same span gives `8138c678c8577bd280944ae4148788e3d8370cf8af15143b2e561e4ee88c545f`, the value CHK-C01-110 and CHK-C01-111 cite.
+
 ## 1. Batu's report (reported by Batu, not observed)
 
 - **When and what.** Issue #6 comment `6120677086`, 2026-10-12T08:35:04Z, by `batuhanozgun`: "rutin ve satır silindi" ("the routine and the line are deleted"); he said the same in the working session at about 08:36Z (L-269). It answers comment `6120564296` (08:27:11Z), which gave him steps 25 to 37 of `evidence/C01/routine/ROUTINE_DESIGN.md`. Both deletions, the routine `devos-c01-rutin` and the line `DEVOS_ENVIRONMENT=devos-kurulum` of `devos-kurulum`, rest on this one report; each is "reported by Batu, not observed" (plan Section 8 item 14).

@@ -388,6 +388,8 @@ These existed at C01's start `f03e1e6` and C01 did not change them, or C01 chang
 
 **Corrected 2026-10-12 after CHK-C01-108 C1.** The base of "built by C01" was `c843988`, which left out C01's first change, PC-19; it is now `c843988`'s first parent `f03e1e6`. So the four role files PC-19 changed moved from 3.2 to 3.1 row 18, with only `counter-designer.md` left in 3.2. PC-19's "Thinking disciplines" line was added to row 15, and `c843988` to rows 14 and 16. Rows 19 (Appendix D, PC-23) and 20 (the guard's tests) were added. No used or not-used classification of an existing component changed: the role files stay offered, not called.
 
+**[2026-10-12, CHK-C01-108 finding 5(b), CHK-C01-111 finding 11; L-278]** Row 7 of section 3.1 reads `ROUTINE_DESIGN.md` as "not used": neither run read the file. Its section 3, though, is the routine's stored prompt, which Batu entered into the routine (W-C01-33) and which started both CS1 and CS2; so the file's content drove both runs, through the routine, while the file itself was not among their sources.
+
 ## 4. What the record cannot show (plan Section 8 item 14)
 
 1. **Push 7's guard answer: could not check.** A closing record cannot record its own push (CS1/CLOSING.md:18; CS2/CLOSING.md:15). The platform accepted both: `c224084` and `8d55d85` are the branch heads on the remote.
