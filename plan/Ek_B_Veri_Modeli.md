@@ -32,7 +32,7 @@ These principles hold for every family; if a family breaks one of them, that is 
 
 | Database role | Who uses it | What it can do | Cannot do |
 |---|---|---|---|
-| `devos_kurulum` | Builder (phase A) | Installation operations; closed in C12 | Issuing tokens |
+| `devos_kurulum` | Builder (phase A) | Installation operations: the ledger transfer, which also writes, through its own path and under this role class, the copies of the installation's checker verdicts and acceptances, which count as no audit verdict, until C03 hands binding review to the audit environment; after the transfer, the installation's own records (work items and claims on them, log events, decisions, findings); opening and revising a Mission on a decision of Batu's (3.1) until C06 builds `answer_decision`'s path, which then names its role; closed in C12 | Issuing tokens; reading or writing exam records (`EvalRun`, `Competence`, the exam schema, the fact that a task is an exam); reading rejected attempts (RejectedAttempt, 3.13); any other verdict or acceptance, and any release activation, approval of a rule or control change, effort-reduction approval or authority approval for a high-impact merge (EV-C02-003 section 4.2) |
 | `devos_calisma` | Working environment | Opening work other than missions, need and decision records, claiming, writing contributions and candidates, findings, context, proposals, external-effect intents | Binding verdicts, acceptance, release activation, approving rule changes, reading exam records |
 | `devos_denetim` | Audit environment | Reviews, verdicts, acceptance, review of rule and control changes, authority approval for high-impact merges, advancing recovery stages | Writing products and candidates, reading exam records |
 | `devos_sinav` | Exam environment | Opening exam tasks as ordinary work, writing exam runs and competence | Writing products, writing verdicts |
@@ -43,7 +43,7 @@ These principles hold for every family; if a family breaks one of them, that is 
 The `devos_batu` role of option B3 (b) (a decision panel) is removed: B3 = (a) was chosen, so Batu's answers come through the decision channel's intake, which checks his GitHub account (plan 6.9), not through a database role (PC-08).
 
 - Agent environments do not hold Supabase's secret (service) key; environments carry the public (publishable) key and an environment token. Every `devos_api` function first verifies the token and derives the role class from it.
-- Tokens are issued with `devos_private.issue_env_token(role_class)`; only the project owner (Batu, from the Supabase dashboard) can run this function. The function returns the token once and stores only its hash. `revoke_env_token` runs with the same authority and increments the authority epoch.
+- Tokens are issued with `devos_private.issue_env_token(role_class)`; only the project owner (Batu, from the Supabase dashboard) can run this function. The function returns the token once and stores only its hash. `revoke_env_token` runs with the same authority and increments the authority epoch. No migration and no job calls either function in the live project. C02's database tests issue and revoke synthetic tokens in `devos-test` only inside the migration job's run, never by a step of Batu's, and keep them nowhere; F08 (c)'s epoch change is made by revoking one of them (EV-C02-003 section 6.3).
 - At the start of every function, the permitted roles are checked. The role list sits in the function's definition and is tested with the authorization tests in Appendix C.
 
 ---
@@ -355,9 +355,9 @@ Database roles (section 2): `devos_calisma`, `devos_denetim` and `devos_sinav` i
 
 ### 3.27 EnvToken — environment token
 
-**Fields:** `id`, `role_class`, `token_hash`, `issued_at`, `revoked_at`, `authority_epoch`.
+**Fields:** `id`, `role_class`, `token_hash`, `issued_at`, `revoked_at`.
 
-**Rule:** The token itself is kept in no table and no record.
+**Rule:** The token itself is kept in no table and no record; `env_tokens` is this family's table, and it keeps the token's hash only. A token is verified when the request's `x-devos-env-token` header holds a token whose hash matches a non-revoked row; a missing, empty, malformed, unknown or revoked token, or a header that cannot be read, is not verified: the call gets no role class (recorded as `none`, never a default role class, plan 6.2), is refused before any other check, and is counted as RejectedAttempt (3.13) counts calls without a verified token, with its reason code (`missing`, `empty`, `malformed`, `unknown`, `revoked`, `header_unreadable`), never with the presented value or anything derived from it. Every `devos_api` function establishes this first, through one private derivation, `devos_private.caller_role_class`; only `deployment_drift` first admits the migration job's direct login (section 4, as PC-41 words it). A token stays verified until it is revoked: `revoke_env_token` sets `revoked_at` and increments the global authority epoch, which ends every claim of the old epoch (principle 9), not the other environments' tokens. Every DevOS token is issued by the live project; `devos-test` holds only the synthetic tokens its tests issue and discard inside the migration job's run. A token has DevOS's recognisable format (a fixed marker and a random part), so that the outbound checks can stop it (plan 6.7). No function returns the header's value or puts it in an error or a log message (EV-C02-003).
 
 ---
 
@@ -367,7 +367,7 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 
 | Group | Functions | Key checks |
 |---|---|---|
-| Session | `session_brief(role)`, `register_session`, `record_handoff`, `record_launch`, `reconcile_launch` | Role class from the token; the `role` parameter only selects which role package is loaded. An uncertain launch is not repeated blindly |
+| Session | `token_role_class()`, `session_brief(role)`, `register_session`, `record_handoff`, `record_launch`, `reconcile_launch` | Role class from the token; `token_role_class()` is a read built on the derivation every function calls first (`devos_private.caller_role_class`, 3.27): it returns the role class the caller's verified token gives, and is otherwise refused with its reason code; it is built with EnvToken (C02; EV-C02-003); the `role` parameter only selects which role package is loaded. An uncertain launch is not repeated blindly |
 | Mission and need | `open_mission`, `revise_mission`, `record_need`, `resolve_need` | Mission only by Batu's decision; `why_needed` mandatory for a need |
 | Work | `admit_work`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` | Scope and revision; link to the mission revision |
 | Readiness and claim | `ready_works()`, `claim(work_id)` → claim token, `heartbeat`, `release` | Single active claim; epoch and generation; expiry; effects require the claim token. `heartbeat`'s sender and form are decided in C06 |
@@ -376,7 +376,7 @@ Each function: permitted roles, checked conditions, the event it produces. On fa
 | Knowledge | `record_finding`, `review_finding`, `search(query, modes, filters)`, `read_source(source_ref, revision, span)`, `ingest_source` (only `devos_ingest`) | Date and primary source for information that can change; the privacy filter is applied first; three status fields |
 | Context (deferred, 3.9) | `request_context`, `build_package`, `record_dispatch` | Mandatory needs cannot be shortened |
 | Product | `register_artifact`, `update_assembly`, `snapshot_assembly` | Design and working state separate |
-| Review | `open_review`, `record_verdict`, `accept` | Only `devos_denetim`; `basis_refs` mandatory; no repair in the same transaction; `sample` reviews are created by the database |
+| Review | `open_review`, `record_verdict`, `accept` | Only `devos_denetim`, except the ledger transfer's copies of the installation's checker verdicts and acceptances, which the transfer writes through its own path with `devos_kurulum` until C03 hands binding review to the audit environment, and which keep that role class and count as no audit verdict (section 2; PC-43); `basis_refs` mandatory; no repair in the same transaction; `sample` reviews are created by the database |
 | External effect | `prepare_operation`, `record_attempt`, `record_observation` | Full intent; re-check at the moment of the effect |
 | Decision | `open_decision`, `answer_decision`, `link_prior_decisions` | Mandatory fields by class; class by rule; answer identity |
 | Learning and exam | `record_learning`, `record_eval_run`, `competence_summary(role)`, `propose_release`, `activate_release`, `rollback_release` | The proposer cannot activate; an exam is required; `competence_summary` returns no exam content (3.15); the release functions take the form C05 decides (3.14) |
