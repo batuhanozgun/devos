@@ -10,6 +10,7 @@ sources:
   - "evidence/C02/raw/W-C02-01_source_map_R1_appendix_B.md (2.4, sections 4 and 5), _R2_appendix_C.md (sections 4 and 5), _R3_marks_and_batu_steps.md, _R4_open_notes.md ('Flags') and _R5_platform_documentation.md (its pages read 2026-10-12 between 12:58Z and 13:08Z)."
   - "Documentation passages re-read by this producer on 2026-10-12 from the raw copies the R5 researcher fetched that day: code.claude.com/docs/en/cloud-environments ('Configure your environment', 'Set environment variables', 'Add network secrets', 'Add a secret', 'Which requests get the secret', 'Requests that never get the secret', 'Archive an environment', 'Network access', 'Access levels'); supabase.com/docs/guides/api/securing-your-api ('Pre-request checks', the request-information table, 'Use additional API keys'); supabase.com/docs/guides/observability/log-field-reference ('Captured HTTP headers'). No page shows a content date."
   - "For the revision (section 'Revision after EV-C02-004'): evidence/C02/EV-C02-004_reconciliation_decisions.md (the executor's reconciliation decisions, parts 1 and 2) and the reading it rests on, evidence/C02/raw/W-C02-0405_reconciliation_R45.md; plan/DevOS_Kurulum_Plani.md, plan/Ek_B_Veri_Modeli.md, plan/Ek_C_Testler.md and plan/key_inventory.md at main eba94b1 (PC-40 merged); plan/decisions/PC-40.md; PC-42 places 27 to 36 and EV-C02-002's DM-01, DM-05, DM-19, DM-23, DM-29, DM-31, DM-36 and section 13 as they stand in W-C02-04's branch (read for their interfaces only; EV-C02-002 is being revised too); Appendix B 3.23 (line 327). Read 2026-10-12."
+  - "For the changes after CHK-C02-010: evidence/C02/checks/CHK-C02-010.md (read in full); plan/work/W-C02-05.md's acceptance block; plan/Ek_E_Iletisim.md section 7; plan/work/W-C02-12.md points 1, 6, 7, 9 and 10; the R5 raw page copies re-read 2026-10-12 (CE 'Add a secret', 'Select an environment from the CLI', 'Network access', 'Access levels'; SA's request-information table; SL 'Sources' and 'Captured HTTP headers'; Supabase's logs page, 'Postgres'); git log -L of P:872, P:1013 and B:98 at 560bcab; plan/decisions/D-003, D-013 to D-031 (searched); plan/decisions/PC-43.md. Read 2026-10-12."
 produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH"
 main_at: 560bcab1d2ac336be06c8eacca08700c44ed485b
 date: 2026-10-12
@@ -36,7 +37,7 @@ claim: "design from the plan, the C01 records and the platforms' documentation; 
 | Deployment configuration | Working session `session_01XyxvJd3RayQk4HCrjurbVH`, cloud; this record was written by a fresh-context producer subagent in a scratch clone at that commit |
 | Criterion version | W-C02-05's acceptance block at `560bcab` |
 | Input | The sources in the front matter |
-| Actual observation | None on the platform. Sections 1 to 17 are design; documentation facts are quoted from the readings named, with their dates |
+| Actual observation | None on the platform. Sections 1 to 17 are design; documentation facts are quoted from the readings named, with their dates. One observation of the executor's (this working session's tool list, 2026-10-12) is cited in §14 |
 | Raw evidence ID | This record; the R5 researcher's raw page copies of 2026-10-12 (session scratchpad), from which the CE, SA and SL passages were re-read |
 | Independence level | Same session, fresh-context subagent (declared, Ek A 5.3) |
 
@@ -71,7 +72,7 @@ Every choice the item's body, N-125, N-131, N-136's design parts, N-208 and R3 G
 | 23 | Section 12 item 1's text (R3 G2, G4) | N-125; R3 G2, G4 | Decided: PC-43 place 4 | §5.5, §9.1 |
 | 24 | Whether a secret added to `devos-kurulum` reaches the running working session (R3 G14) | R3 G14 | Provisional: settled by the working session's self-check in the turn after Batu reports step 4 (the same day as the step) | §6.1 |
 | 25 | That the working session runs in `devos-kurulum` | P:639 | Provisional: shown by the same self-check | §6.1 |
-| 26 | How each environment's real token is tried from inside it when the executor cannot start sessions (R3 G7; "Batu's steps" row 5) | R3 G7 | Decided | §6.2 |
+| 26 | How each environment's real token is tried from inside it when the executor cannot start sessions (R3 G7; "Batu's steps" row 5) | R3 G7 | Decided; each session records its `DEVOS_ENVIRONMENT` value and network result beside the role class it sees, which catches a token in the wrong environment and an environment at the wrong level; what stays unchecked is named (CHK-C02-010 C2) | §6.2 |
 | 27 | A path for the owner-only functions (`issue_env_token`, `revoke_env_token`, F08 (c)'s epoch increment) in tests; "Batu's steps" row 1a | Point 6; B:46 | Decided (EV-C02-004 X-07, Y-05): the migration job's `devos-test` step, no step of Batu's; F08 (c)'s epoch change is a revocation; row 1a's owner-only lines not needed, and row 1a holds only the exposure of `devos_api` (row 39) | §6.3 |
 | 28 | Batu's step text for rows 2 to 5, with S4 (d), S4 (e), S5 and S6 | N-136; point 7 | Decided | §7 |
 | 29 | The network level of each environment (S6) | N-136; P:652 | Decided, as the plan sets it | §7 |
@@ -96,6 +97,7 @@ Every choice the item's body, N-125, N-131, N-136's design parts, N-208 and R3 G
 | 48 | Who reads RejectedAttempt | EV-C02-004 X-13 | Decided: through the builder's read-only connection in `devos`, and in `devos-test` inside the migration job's step; `devos_kurulum` has no read | §6.2 |
 | 49 | The token refusals' reason codes, and how calls without a verified token are counted | EV-C02-004 X-04, X-06 | Decided: the codes here; the count as RejectedAttempt counts them (EV-C02-002 DM-19's key) | §15 |
 | 50 | Who writes the fixtures the real-token tests need in `devos`, and the Mission they hang under | EV-C02-004 X-10 | Decided: written with the `devos_kurulum` token, labelled synthetic, no synthetic `batu`-class record; the Mission's base and label are EV-C02-002's | §6.2 |
+| 51 | How the Data API's own handling of the token's header (`request.headers`) is kept out of `devos`'s Postgres logs, and whether the builder's read-only connection reads them | CHK-C02-010 C3; point 14 | Decided: a check that keeps it out, by the executor (the statement-logging settings before sitting A; a count-only search of the logs with a positive control after the self-check and after B2); if it cannot be made, a documented, untested residual, owner the executor, recorded before sitting A. The connection offers `query_logs` **[Obs: the executor, 2026-10-12]** | §3.1 F-g; §14 |
 
 ## 1. The token's form (point 1)
 
@@ -111,7 +113,7 @@ No DevOS credential goes into any environment variable, setup script, repository
 - It is the only documented form whose value the session cannot read: sessions use the key "without seeing the key"; "the key doesn't appear in the session's environment variables or in any file"; "You can't view the value again after saving" **[Doc: CE, read 2026-10-10 (EV2 F3), 2026-10-11 (EV4 S5) and 2026-10-12 (R5 C1, C3)]**.
 - So it meets criterion 26 as the PC-08 note reads it, a setting that "carries that environment's token to the database in a separate header without the session being able to read it" (P:235), and C00's sixth condition as the PC-18 note reads it, where a secret is visible in an environment variable "where the session can read it" (P:924). There is no departure from a criterion of Batu's, so nothing here goes to him.
 - The Supabase side is documented: a function reads a request's headers from `request.headers` **[Doc: SA, read 2026-10-12 (R5 R1)]**, for the Data API only, not Realtime or Storage ("`pgrst.db_pre_request` … only works with the **Data API**"). DevOS's sessions use only the Data API.
-- A secret's hosts are reached "at every level" of network access **[Doc: CE "Access levels", read 2026-10-10 and 2026-10-12]**, so each environment's network level follows its work (S6), not the token.
+- A secret's hosts stay reachable whichever network level is chosen: "Whichever level you pick, sessions can still reach these", a list that names the hosts listed on the environment's network secrets **[Doc: CE "Access levels", read 2026-10-10 and 2026-10-12]**. So each environment's network level follows its work (S6), not the token.
 - One token can be revoked alone, by `revoke_env_token` (B:46).
 - It adds no component.
 
@@ -224,7 +226,7 @@ Met. PC-21 named the design paths that do not depend on the two unsettled facts:
 | F-d. F-b and F-c together carry the token into a `devos_api` function | **[Inf]**: it joins two vendors' documents (R5 R1) | §3.3, before W-C02-09 builds the rest of the identity chain | §2.1 |
 | F-e. The `apikey` header is mandatory | **[Doc: SA, read 2026-10-12]** | §3.3 | — |
 | F-f. The API gateway's logs omit custom headers: "Other headers still reach the application and client but are omitted from these logs" | **[Doc: SL, read 2026-10-12 (R5 R4)]** | Not observed here | §14's rules do not rely on it alone |
-| F-g. Postgres logs can hold statement text and error details | **[Doc: SL, read 2026-10-12 (R5 R4)]** | — | §14's rule |
+| F-g. Postgres logs can hold statement text and error details ("For `postgres_logs`, statement text and error details can appear in `event_message`"). The Data API puts every request header, the token's header among them, into `request.headers` ("JSON object of the request's headers"). That it does so through a statement in the request's transaction, which Postgres logging could record with the header's value, depending on the project's statement-logging settings (not read), is an inference (CHK-C02-010 point 14). This path is outside §14's rule for DevOS's functions (CHK-C02-010 C3) | **[Doc: SL "Sources"; SA, the request-information table; read 2026-10-12 (R5 R1, R4)]**; **[Inf]** for the statement and its logging | §14's log check, by the executor: part 1, `devos`'s statement-logging settings, before sitting A is asked; part 2, a count-only search of `devos`'s logs with its positive control, right after §3.3's self-check (before W-C02-09 builds beyond the first part) and again after B2's sessions (before W-C02-12's record is judged) | For DevOS's functions, §14's rule. For the Data API's own path, if the check cannot be made: a documented, untested residual, owner the executor, recorded before sitting A is asked (§14) |
 | F-h. A secret added to an environment reaches a session already running there | Not stated **[Doc: CE, read 2026-10-12]**; **[Inf]** as §6.1 | §6.1 | §6.1 |
 | F-i. Anyone with write access to a repository can read all its repository secrets | **[Doc: R5 G1, docs.github.com secure-use, read 2026-10-12]** | Not observed here | §5.2's rule |
 | F-j. An environment secret reaches only jobs that reference the environment, after its rules pass; a branch rule is matched against the run's `GITHUB_REF` | **[Doc: R5 G2, G3, read 2026-10-12]** | — | §5.2 |
@@ -412,15 +414,25 @@ Not stated in the documentation read (CE, 2026-10-10, 2026-10-11 and 2026-10-12)
 - **The first message** (written by W-C02-12) asks for this, in this order, and nothing else:
   1. a record that the guard is live, and the session's own tool list at its start and at its end (N-181; S9);
   2. the format scan with its planted control (§3.2);
-  3. `token_role_class()`;
-  4. the cases of W-C02-12 points 4 to 6, each a database call with the session's own token on synthetic inputs labelled synthetic, using the fixtures below;
-  5. a result file on the session's own `claude/` branch: the role class seen, each case's outcome and refusal reason, and the scan's counts;
-  6. then stop.
+  3. `token_role_class()`, its answer recorded beside the value of the session's non-secret variable `DEVOS_ENVIRONMENT`, which Batu typed into that environment in B1 (§7);
+  4. one plain request, sending no input and no credential, to one host outside the Trusted list that W-C02-12 names from CE's default list, recording only whether it was reached or refused (W-C02-12 point 10's self-observation of the network level);
+  5. the cases of W-C02-12 points 4 to 6, each a database call with the session's own token on synthetic inputs labelled synthetic, using the fixtures below;
+  6. a result file on the session's own `claude/` branch: the `DEVOS_ENVIRONMENT` value and the role class seen, side by side; the network result; each case's outcome and refusal reason; and the scan's counts;
+  7. then stop.
 
   It is plainly defensive and minimal (D-017; D-020). No call acts on another environment's sessions, routines or settings.
+- **What the comparison catches (CHK-C02-010 C2).** The expected results are `devos-calisma` with `devos_calisma` and its request reached; `devos-denetim` with `devos_denetim`, refused; `devos-sinav` with `devos_sinav`, refused (S6; P:652). W-C02-12's record compares the three result files with them.
+  - *A token stored in the wrong environment* shows as a session whose role class does not match its `DEVOS_ENVIRONMENT` value, or as a role class seen in no session or in two. The same comparison catches a B2 session opened in the wrong environment. Batu then gets a narrow step: revoke the tokens involved and store new ones in the right environments (B:46: only he can revoke). That environment's session then runs again.
+  - *An environment created at the wrong network level* shows as a network result that does not match its `DEVOS_ENVIRONMENT` value: `devos-calisma` refused, or `devos-denetim` or `devos-sinav` reached. Batu then changes the level in that environment's **Network access** selector, as a narrow step; running sessions follow "within about a minute" **[Doc: CE "Network access", read 2026-10-12]**. The request is then made again. That reached or refused tells Full from Trusted is **[Inf]** from CE's access-level table, whose **Trusted** row reads "Allowlisted domains only: package registries, GitHub, cloud SDKs" and whose **Full** row reads "Any domain", since what a refused request returns to the session is not stated in the pages read.
+- **What stays unchecked, with its reason.**
+  - *That an environment's name matches the `DEVOS_ENVIRONMENT` value typed in it.* A session can read its variables, but the pages read name nothing that gives it its environment's name **[Doc: CE, read 2026-10-12; Inf]**, and listing the account's environments is beyond this item's level of need. Batu types both in one dialog (B1 steps 10 and 12, 21 and 23, 32 and 34), and each step's see-line shows what he typed. The checks above key on the variable, the token and the level.
+  - *A DevOS token stored in an environment outside the three* (one of his own, or Default). The B2 sessions run only in the three, and the system cannot see the account's other environments, for the same reason. B1's count check shows that no extra token was issued. S4 (d)'s standing rule, and X1 from C06, cover his own sessions, as B1's check says.
+  - *A level stricter than Trusted* (None, or a Custom list) for `devos-denetim` or `devos-sinav`. It also refuses the request, so it is not told apart from Trusted. It narrows reach only, so it shows when the work needs a host the level refuses.
+  - *The network result when the guard in the B2 session does not allow the request* (W-C02-11 sets what it allows). The result is then "could not check" (plan Section 8 item 14), and the level rests on Batu's report alone, labelled so (W-C02-12 point 10).
+  - Which environment Batu's own sessions use, as B1's check says: visible from C06 (X1).
 - **The fixtures in `devos`** (EV-C02-004 X-10). The records these cases need (a Mission and work items under it) are written beforehand, with the `devos_kurulum` token, through `devos_api`, each labelled synthetic (plan Section 8 item 13). No synthetic record of class `batu` is written into `devos`: a synthetic decision of Batu's class in the live database would carry his authority. The Mission rests on a decision of Batu's that exists, and EV-C02-002 names which and how the test Mission is labelled so that it cannot be taken for work.
-- **How the results reach the records with no token value.** The database records each state-changing call's role class and each refusal's reason code (F06; §15; EV-C02-004 X-19), never a value. The session's file holds only role classes, outcomes and counts. The executor reads both through the builder's read-only connection (K-9 item 9), and W-C02-12's record compares them; a mismatch is a finding. `devos_kurulum` has no read of RejectedAttempt (EV-C02-004 X-13: least privilege; the read-only connection already reads `devos`); in `devos-test`, RejectedAttempt is read inside the migration job's step (§6.3). (Revised: the first version also read through the `devos_kurulum` token.)
-- **One session per class is enough.** "Another session's claim" is shown by one session holding two claims and using one's token on the other's work: the database tells claims apart by their token only **[Inf]**. W-C02-12 point 7 labels it so.
+- **How the results reach the records with no token value.** The database records each state-changing call's role class and each refusal's reason code (F06; §15; EV-C02-004 X-19), never a value. The session's file holds only role classes, the non-secret `DEVOS_ENVIRONMENT` value, the network result, outcomes and counts. The executor reads both through the builder's read-only connection (K-9 item 9), and W-C02-12's record compares them; a mismatch is a finding. `devos_kurulum` has no read of RejectedAttempt (EV-C02-004 X-13: least privilege; the read-only connection already reads `devos`); in `devos-test`, RejectedAttempt is read inside the migration job's step (§6.3). (Revised: the first version also read through the `devos_kurulum` token.)
+- **One session per class is enough for the role-class lines.** "Another session's claim" made by one session that holds two claims and uses one claim's token on the other's work is a case within one session. W-C02-12 point 7 labels it so and does not count it as the real-session case. The database tells claims apart by their token only **[Inf]**, so the case tests the same rule, which N17 shows in `devos-test` (W-C02-07). A real-session case would need a second session in one environment, a further narrow step of Batu's. It is not asked for here, since it would test no rule N17 does not test.
 
 ### 6.3 The owner-only functions in tests (B:46; F08 (c))
 
@@ -444,7 +456,7 @@ Nothing here is a step of Batu's, so "Batu's steps" row 1a's owner-only lines ar
 ## 7. Batu's step text for task 7 and step 4 (point 7)
 
 **Batches.**
-- **A** (row 1a's exposure of `devos_api`, then step 4): asked as soon as the identity chain's first part is applied to both projects, so that `devos_api` exists in both (EV-C02-004 Y-01, Y-06); one sitting. If EV-C02-001's build shows the exposure can be made before the schema exists, it moves into row 1's sitting and A's steps 1 to 7 drop out. A holds no owner-only line in `devos-test` (EV-C02-004 Y-05).
+- **A** (row 1a's exposure of `devos_api`, then step 4): asked as soon as the identity chain's first part is applied to both projects, so that `devos_api` exists in both (EV-C02-004 Y-01, Y-06); one sitting. If EV-C02-001's build shows the exposure can be made before the schema exists, it moves into row 1's sitting and A's steps 1 to 6 and 9 to 12 drop out (steps 7 and 8 then open `devos`, and step 13 follows). A holds no owner-only line in `devos-test` (EV-C02-004 Y-05).
 - **B1** (steps 2 and 3): asked as soon as W-C02-11 is accepted (S9's bridge merged and confirmed; N-174's run; N-136: before task 7 and before any session runs in the three environments).
 - **B2** (step 5): asked as soon as W-C02-09 and W-C02-10 are accepted.
 
@@ -454,11 +466,16 @@ B1 and B2 form one sitting if their prerequisites are met together. Each is post
 
 The screen names below come from CE (read 2026-10-12) and from the C01 step text Batu has already followed (`evidence/C01/routine/ROUTINE_DESIGN.md`). The Supabase and GitHub labels are those products' usual ones, not re-read here **[Inf]**, except that a custom schema is exposed by adding it to "Exposed schemas" in the dashboard's API settings **[Doc: R5 S11, supabase.com/docs/guides/api/using-custom-schemas, read 2026-10-12]**; the menu entry's name ("Data API") is **[Inf]**. So each step says to stop with a screenshot if the screen differs.
 
+**Single actions (CHK-C02-010 C1; Appendix E §7 item 1).** Every numbered step below is one action with its own see-line; no step repeats other steps by number. Three things follow from writing the steps out:
+- After **Connect**, the **Edit environment** dialog stays open: "The secret appears in the list with its hosts, saved without the dialog's **Save changes** button" **[Doc: CE "Add a secret", read 2026-10-12]**. So A's return to the dialog is one step that finds it still open (step 35), and in B1 each token's part starts the Claude Code side by reloading its tab (steps 45, 65, 85), so that no earlier dialog or list is open; the environment parts do the same (steps 17, 28).
+- Each line Batu pastes (the SQL lines and B2's first message) is posted on #6 in a code box of its own, which GitHub shows with a copy icon **[Inf]**; the step before each paste copies it from there.
+- `/remote-env` "opens a picker of your existing environments" **[Doc: CE "Select an environment from the CLI", read 2026-10-12]**, so B1 types it, presses Enter and chooses **Default** as three steps, with their skip condition stated before them.
+
 ### 7.1 Türkçe metin (Batu için)
 
 **A. Veritabanı arayüzünün açılması, kurulum ortamının anahtarı ve CI anahtarı** *(1a. satırdaki açma işi ve adım 4)*
 
-DevOS'un veritabanı, kendisine hangi ortamdan seslenildiğini o ortamın kendi anahtarıyla (token) tanır. Bu bölümde önce DevOS'un veritabanı arayüzünü (`devos_api`) iki Supabase projesinde dışarıya açacaksın. Sonra kurulum ortamının (`devos-kurulum`; bu çalışma oturumunun ortamı) anahtarını üretip bu ortamın **ağ sırları** (network secrets) bölümüne koyacaksın. Ağ sırrı, oturumun göremediği, yalnız belirli bir adrese giden isteklere eklenen gizli değerdir. Son olarak denetimlerin (CI) anahtarını üretip `devos` deposunun sırlarına koyacaksın. Anahtarı hiçbir yere yazma, bana gönderme, ekran görüntüsünde gösterme; yalnız aşağıda söylenen kutuya yapıştır. Adımları bilgisayarda, tarayıcıdan yap. Bir ekran burada yazdığından farklı görünürse o adımda dur ve bu konuya (#6) ekran görüntüsünü ekle (anahtar görünmesin); tahminle devam etme. Ek ücret yoktur.
+DevOS'un veritabanı, kendisine hangi ortamdan seslenildiğini o ortamın kendi anahtarıyla (token) tanır. Bu bölümde önce DevOS'un veritabanı arayüzünü (`devos_api`) iki Supabase projesinde dışarıya açacaksın. Sonra kurulum ortamının (`devos-kurulum`; bu çalışma oturumunun ortamı) anahtarını üretip bu ortamın **ağ sırları** (network secrets) bölümüne koyacaksın. Ağ sırrı, oturumun göremediği, yalnız belirli bir adrese giden isteklere eklenen gizli değerdir. Son olarak denetimlerin (CI) anahtarını üretip `devos` deposunun sırlarına koyacaksın. Anahtarı hiçbir yere yazma, bana gönderme, ekran görüntüsünde gösterme; yalnız aşağıda söylenen kutuya yapıştır. Adımları bilgisayarda, tarayıcıdan yap. Bu konuyu (#6) bir sekmede açık tut: kopyalayacağın satırlar burada, her biri kendi kutusunda. Bir ekran burada yazdığından farklı görünürse o adımda dur ve bu konuya (#6) ekran görüntüsünü ekle (anahtar görünmesin); tahminle devam etme. Ek ücret yoktur.
 
 1. supabase.com/dashboard adresini aç.
    Görmen gereken: projelerin listesi; içinde `devos` ve `devos-test`.
@@ -472,88 +489,106 @@ DevOS'un veritabanı, kendisine hangi ortamdan seslenildiğini o ortamın kendi 
    Görmen gereken: alanda, önceden orada olanların yanında `devos_api`.
 6. **Save**'e tıkla.
    Görmen gereken: değişikliğin kaydedildiğini söyleyen bir bildirim; alanda `devos_api` duruyor.
-7. 1. ile 6. adımları bir kez daha yap, yalnız şu farkla: 2. adımda `devos` projesine tıkla.
-   Görmen gereken: `devos` projesinin **Exposed schemas** alanında da `devos_api`.
-8. Sol menüde **SQL Editor**'e tıkla (hâlâ `devos` projesindesin); bulamazsan dur.
-   Görmen gereken: boş bir sorgu kutusu.
-9. Kutuya şu satırı yapıştır: `select devos_private.issue_env_token('devos_kurulum');`
-   Görmen gereken: kutuda yalnız bu satır.
-10. **Run** düğmesine tıkla.
-    Görmen gereken: altta tek satırlık bir sonuç, içinde uzun bir değer. Bu anahtardır ve yalnız bu kez gösterilir.
-11. Sonuçtaki değeri kopyala.
-    Görmen gereken: değer panoda. Başka hiçbir yere yapıştırma.
-12. Yeni bir tarayıcı sekmesinde claude.ai/code adresini aç.
-    Görmen gereken: Claude Code'un ana sayfası açılır.
-13. Mesaj kutusunun üstündeki satırda, ortamın adını gösteren bulut simgesine tıkla.
-    Görmen gereken: ortam seçenekleri açılır.
-14. **Cloud**'u seç.
-    Görmen gereken: bulut ortamlarının listesi; içinde `devos-kurulum`.
-15. İmleci `devos-kurulum`'un üzerine getir.
-    Görmen gereken: satırın sağında bir ayar simgesi belirir.
-16. O ayar simgesine tıkla.
-    Görmen gereken: **Edit environment** penceresi açılır.
-17. Pencerede **Network secrets** bölümünü bul; yoksa dur.
-    Görmen gereken: bölüm görünür (boş olabilir).
-18. **Add secret**'e tıkla.
-    Görmen gereken: bir form açılır; **Credential type** **Bearer** olarak durur. Onu değiştirme.
-19. **Name** alanına `devos anahtari` yaz.
-    Görmen gereken: bu ad alanda.
-20. **Allowed websites** alanına `zyqgltzfzkdvrmvxlamz.supabase.co` yaz.
-    Görmen gereken: alanda yalnız bu adres.
-21. **Custom headers** satırında, **Name** kutusundaki `Authorization` yazısının yerine `x-devos-env-token` yaz.
-    Görmen gereken: Name kutusunda tam olarak `x-devos-env-token`.
-22. Aynı satırda **Prefix** kutusundaki `Bearer` yazısını sil.
-    Görmen gereken: Prefix kutusu boş.
-23. Aynı satırın **Value** kutusuna panodaki değeri yapıştır.
-    Görmen gereken: değer kutuda (gizli görünebilir).
-24. **Connect**'e tıkla.
-    Görmen gereken: sır, `zyqgltzfzkdvrmvxlamz.supabase.co` adresiyle listede görünür ve altında **Not sent** yazmaz. Değeri bir daha göremezsin; bu doğrudur.
-25. Supabase sekmesinde sayfayı yenile.
-    Görmen gereken: sonuç alanı boş; anahtar ekranda yok.
-26. Sol menüde **Project Settings**'e tıkla.
-    Görmen gereken: `devos` projesinin ayarları.
-27. **API Keys**'e tıkla; bulamazsan dur.
-    Görmen gereken: **Publishable key** satırı. Bu anahtar gizli değildir (herkese açık anahtardır).
-28. **Publishable key** değerini kopyala.
-    Görmen gereken: değer panoda.
-29. claude.ai/code sekmesinde 13. ile 16. adımları yap.
-    Görmen gereken: `devos-kurulum`'un **Edit environment** penceresi.
-30. **Environment variables** kutusunun en altına tıklayıp yeni, boş bir satır aç.
-    Görmen gereken: imleç kutunun en altındaki boş satırda.
-31. Bu satıra `DEVOS_PUBLISHABLE_KEY=` yaz ve hemen ardından panodaki değeri yapıştır.
-    Görmen gereken: son satır `DEVOS_PUBLISHABLE_KEY=` ile başlar ve devamında değer vardır. Diğer satırlara dokunma.
-32. Pencerenin **Save changes** düğmesine tıkla.
-    Görmen gereken: pencere kapanır.
-33. Supabase sekmesinde, sol menüde **SQL Editor**'e tıkla.
-    Görmen gereken: sorgu kutusu.
-34. Kutuda bir satır varsa sil.
-    Görmen gereken: kutu boş.
-35. Kutuya şu satırı yapıştır: `select devos_private.issue_env_token('devos_ci');`
+7. supabase.com/dashboard adresini aç.
+   Görmen gereken: projelerin listesi; içinde `devos`.
+8. `devos` projesine tıkla.
+   Görmen gereken: `devos` projesinin sayfası açılır.
+9. Sol menüde **Project Settings**'e tıkla; bulamazsan dur.
+   Görmen gereken: `devos` projesinin ayarları.
+10. **Data API**'ye tıkla; bulamazsan dur.
+    Görmen gereken: **Exposed schemas** alanı.
+11. **Exposed schemas** alanında `devos_api`'yi seç; listede yoksa dur. Alandaki diğer adlara dokunma.
+    Görmen gereken: alanda, önceden orada olanların yanında `devos_api`.
+12. **Save**'e tıkla.
+    Görmen gereken: değişikliğin kaydedildiğini söyleyen bir bildirim; `devos` projesinin **Exposed schemas** alanında da `devos_api` duruyor.
+13. Sol menüde **SQL Editor**'e tıkla (hâlâ `devos` projesindesin); bulamazsan dur.
+    Görmen gereken: boş bir sorgu kutusu.
+14. Bu konuda (#6), şu satırın kutusundaki kopyalama simgesine tıkla: `select devos_private.issue_env_token('devos_kurulum');`
+    Görmen gereken: simge kısa bir süre onay işaretine döner; satır panoda.
+15. Supabase sekmesinde, sorgu kutusuna panodaki satırı yapıştır.
     Görmen gereken: kutuda yalnız bu satır.
-36. **Run** düğmesine tıkla.
-    Görmen gereken: tek satırlık sonuç, içinde uzun bir değer.
-37. Sonuçtaki değeri kopyala.
+16. **Run** düğmesine tıkla.
+    Görmen gereken: altta tek satırlık bir sonuç, içinde uzun bir değer. Bu anahtardır ve yalnız bu kez gösterilir.
+17. Sonuçtaki değeri kopyala.
     Görmen gereken: değer panoda. Başka hiçbir yere yapıştırma.
-38. github.com/batuhanozgun/devos/settings/secrets/actions adresini aç; sayfa açılmazsa dur.
-    Görmen gereken: **Actions secrets** sayfası.
-39. **New repository secret**'a tıkla.
-    Görmen gereken: yeni sır formu.
-40. **Name** alanına `DEVOS_CI_TOKEN` yaz.
-    Görmen gereken: ad alanında `DEVOS_CI_TOKEN`.
-41. **Secret** kutusuna panodaki değeri yapıştır.
-    Görmen gereken: değer kutuda.
-42. **Add secret**'e tıkla.
-    Görmen gereken: listede `DEVOS_CI_TOKEN` görünür; değeri görünmez.
-43. Supabase sekmesinde sayfayı yenile.
+18. Yeni bir tarayıcı sekmesinde claude.ai/code adresini aç.
+    Görmen gereken: Claude Code'un ana sayfası açılır.
+19. Mesaj kutusunun üstündeki satırda, ortamın adını gösteren bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri açılır.
+20. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi; içinde `devos-kurulum`.
+21. İmleci `devos-kurulum`'un üzerine getir.
+    Görmen gereken: satırın sağında bir ayar simgesi belirir.
+22. O ayar simgesine tıkla.
+    Görmen gereken: **Edit environment** penceresi açılır.
+23. Pencerede **Network secrets** bölümünü bul; yoksa dur.
+    Görmen gereken: bölüm görünür (boş olabilir).
+24. **Add secret**'e tıkla.
+    Görmen gereken: bir form açılır; **Credential type** **Bearer** olarak durur. Onu değiştirme.
+25. **Name** alanına `devos anahtari` yaz.
+    Görmen gereken: bu ad alanda.
+26. **Allowed websites** alanına `zyqgltzfzkdvrmvxlamz.supabase.co` yaz.
+    Görmen gereken: alanda yalnız bu adres.
+27. **Custom headers** satırında, **Name** kutusundaki `Authorization` yazısının yerine `x-devos-env-token` yaz.
+    Görmen gereken: Name kutusunda tam olarak `x-devos-env-token`.
+28. Aynı satırda **Prefix** kutusundaki `Bearer` yazısını sil.
+    Görmen gereken: Prefix kutusu boş.
+29. Aynı satırın **Value** kutusuna panodaki değeri yapıştır.
+    Görmen gereken: değer kutuda (gizli görünebilir).
+30. **Connect**'e tıkla.
+    Görmen gereken: sır, `zyqgltzfzkdvrmvxlamz.supabase.co` adresiyle listede görünür ve altında **Not sent** yazmaz; pencere açık kalır. Değeri bir daha göremezsin; bu doğrudur.
+31. Supabase sekmesinde sayfayı yenile.
     Görmen gereken: sonuç alanı boş; anahtar ekranda yok.
-44. Bu konuya (#6) "A tamam" yaz.
+32. Sol menüde **Project Settings**'e tıkla.
+    Görmen gereken: `devos` projesinin ayarları.
+33. **API Keys**'e tıkla; bulamazsan dur.
+    Görmen gereken: **Publishable key** satırı. Bu anahtar gizli değildir (herkese açık anahtardır).
+34. **Publishable key** değerini kopyala.
+    Görmen gereken: değer panoda.
+35. claude.ai/code sekmesine geç.
+    Görmen gereken: `devos-kurulum`'un **Edit environment** penceresi hâlâ açık; **Network secrets** listesinde `devos anahtari`.
+36. **Environment variables** kutusunda son satırın sonuna tıkla.
+    Görmen gereken: imleç son satırın sonunda.
+37. **Enter**'a bas.
+    Görmen gereken: imleç kutunun en altındaki yeni, boş satırda.
+38. Bu satıra `DEVOS_PUBLISHABLE_KEY=` yaz.
+    Görmen gereken: son satır `DEVOS_PUBLISHABLE_KEY=`. Diğer satırlara dokunma.
+39. Hemen ardından, boşluk bırakmadan, panodaki değeri yapıştır.
+    Görmen gereken: son satır `DEVOS_PUBLISHABLE_KEY=` ile başlar ve devamında değer vardır.
+40. Pencerenin **Save changes** düğmesine tıkla.
+    Görmen gereken: pencere kapanır.
+41. Supabase sekmesinde, sol menüde **SQL Editor**'e tıkla.
+    Görmen gereken: sorgu kutusu.
+42. Kutuda bir satır varsa sil.
+    Görmen gereken: kutu boş.
+43. Bu konuda (#6), şu satırın kutusundaki kopyalama simgesine tıkla: `select devos_private.issue_env_token('devos_ci');`
+    Görmen gereken: simge kısa bir süre onay işaretine döner; satır panoda.
+44. Supabase sekmesinde, sorgu kutusuna panodaki satırı yapıştır.
+    Görmen gereken: kutuda yalnız bu satır.
+45. **Run** düğmesine tıkla.
+    Görmen gereken: tek satırlık sonuç, içinde uzun bir değer.
+46. Sonuçtaki değeri kopyala.
+    Görmen gereken: değer panoda. Başka hiçbir yere yapıştırma.
+47. Yeni bir sekmede github.com/batuhanozgun/devos/settings/secrets/actions adresini aç; sayfa açılmazsa dur.
+    Görmen gereken: **Actions secrets** sayfası.
+48. **New repository secret**'a tıkla.
+    Görmen gereken: yeni sır formu.
+49. **Name** alanına `DEVOS_CI_TOKEN` yaz.
+    Görmen gereken: ad alanında `DEVOS_CI_TOKEN`.
+50. **Secret** kutusuna panodaki değeri yapıştır.
+    Görmen gereken: değer kutuda.
+51. **Add secret**'e tıkla.
+    Görmen gereken: listede `DEVOS_CI_TOKEN` görünür; değeri görünmez.
+52. Supabase sekmesinde sayfayı yenile.
+    Görmen gereken: sonuç alanı boş; anahtar ekranda yok.
+53. Bu konuya (#6) "A tamam" yaz.
     Görmen gereken: yorumun konuda görünür.
 
-*Sistemin kontrolü:* Ben bu oturumdan veritabanına, bu ortamın anahtarıyla bir okuma isteği gönderirim. Veritabanı isteğin `devos_kurulum`'dan geldiğini söylerse hem `devos_api` açılmıştır hem de anahtar doğru yerdedir. Oturumda anahtarın okunur bir kopyası olmadığını da kendim tararım. Anahtarın kendisini hiç görmem ve hiçbir kayda yazmam. `devos-test`'teki açılışı, taşıma işinin (migration job) oradaki bir sonraki çalışması gösterir. CI anahtarını, bundan sonraki ilk değişiklik isteğinin (pull request) denetimi kullanır ve sonucu kaydeder.
+*Sistemin kontrolü:* Ben bu oturumdan veritabanına, bu ortamın anahtarıyla bir okuma isteği gönderirim. Veritabanı isteğin `devos_kurulum`'dan geldiğini söylerse hem `devos_api` açılmıştır hem de anahtar doğru yerdedir. Oturumda anahtarın okunur bir kopyası olmadığını da kendim tararım. Anahtarın kendisini hiç görmem ve hiçbir kayda yazmam. Veritabanının günlüklerinde (log) anahtar biçiminde bir dize olup olmadığını da, hiçbir satırını okumadan, yalnız sayısını alarak denetlerim. `devos-test`'teki açılışı, taşıma işinin (migration job) oradaki bir sonraki çalışması gösterir. CI anahtarını, bundan sonraki ilk değişiklik isteğinin (pull request) denetimi kullanır ve sonucu kaydeder.
 
 **B1. Üç DevOS ortamı ve anahtarları** *(adım 2 ve 3)*
 
-DevOS'un çalışma, denetim ve sınav ortamlarını oluşturup her birine kendi anahtarını koyacağız. Kurallar A'dakiyle aynı: anahtarı hiçbir yere yazma ya da gösterme; ekran farklıysa dur. Ek ücret yoktur.
+DevOS'un çalışma, denetim ve sınav ortamlarını oluşturup her birine kendi anahtarını koyacağız. Kurallar A'dakiyle aynı: anahtarı hiçbir yere yazma ya da gösterme; ekran farklıysa dur; bu konuyu (#6) bir sekmede açık tut. Ek ücret yoktur.
 
 1. supabase.com/dashboard adresini aç.
    Görmen gereken: projelerin listesi.
@@ -567,7 +602,10 @@ DevOS'un çalışma, denetim ve sınav ortamlarını oluşturup her birine kendi
    Görmen gereken: değer panoda.
 6. Yeni bir sekmede claude.ai/code adresini aç.
    Görmen gereken: Claude Code'un ana sayfası.
-7. Bulut simgesine tıkla.
+
+*`devos-calisma` ortamı:*
+
+7. Mesaj kutusunun üstündeki bulut simgesine tıkla.
    Görmen gereken: ortam seçenekleri.
 8. **Cloud**'u seç.
    Görmen gereken: bulut ortamlarının listesi.
@@ -579,167 +617,507 @@ DevOS'un çalışma, denetim ve sınav ortamlarını oluşturup her birine kendi
     Görmen gereken: seçicide **Full**.
 12. **Environment variables** kutusuna şu satırı yaz: `DEVOS_ENVIRONMENT=devos-calisma`
     Görmen gereken: kutuda bu satır.
-13. Yeni bir satıra `DEVOS_PUBLISHABLE_KEY=` yaz ve hemen ardından panodaki değeri yapıştır.
-    Görmen gereken: kutuda iki satır. **Setup script** kutusu boş kalır.
-14. **Create environment**'a tıkla.
+13. **Enter**'a bas.
+    Görmen gereken: imleç ikinci, boş satırda.
+14. Bu satıra `DEVOS_PUBLISHABLE_KEY=` yaz.
+    Görmen gereken: ikinci satır `DEVOS_PUBLISHABLE_KEY=`.
+15. Hemen ardından, boşluk bırakmadan, panodaki değeri yapıştır.
+    Görmen gereken: kutuda iki satır; ikincisi `DEVOS_PUBLISHABLE_KEY=` ile başlar ve devamında değer vardır. **Setup script** kutusu boş kalır.
+16. **Create environment**'a tıkla.
     Görmen gereken: `devos-calisma` listede.
-15. 7. ile 14. adımları `devos-denetim` için yap; 11. adımda **Trusted**'ı seç; 12. adımda satır `DEVOS_ENVIRONMENT=devos-denetim` olsun.
+
+*`devos-denetim` ortamı:*
+
+17. claude.ai/code sekmesinde sayfayı yenile.
+    Görmen gereken: Claude Code'un ana sayfası; açık bir pencere ya da liste yok.
+18. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+19. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi.
+20. **Add cloud environment**'a tıkla.
+    Görmen gereken: **New cloud environment** penceresi.
+21. **Name** alanına `devos-denetim` yaz.
+    Görmen gereken: ad alanında `devos-denetim`.
+22. **Network access** seçicisinde **Trusted**'ı seç.
+    Görmen gereken: seçicide **Trusted**.
+23. **Environment variables** kutusuna şu satırı yaz: `DEVOS_ENVIRONMENT=devos-denetim`
+    Görmen gereken: kutuda bu satır.
+24. **Enter**'a bas.
+    Görmen gereken: imleç ikinci, boş satırda.
+25. Bu satıra `DEVOS_PUBLISHABLE_KEY=` yaz.
+    Görmen gereken: ikinci satır `DEVOS_PUBLISHABLE_KEY=`.
+26. Hemen ardından, boşluk bırakmadan, panodaki değeri yapıştır.
+    Görmen gereken: kutuda iki satır; ikincisi `DEVOS_PUBLISHABLE_KEY=` ile başlar ve devamında değer vardır. **Setup script** kutusu boş kalır.
+27. **Create environment**'a tıkla.
     Görmen gereken: `devos-denetim` listede.
-16. 7. ile 14. adımları `devos-sinav` için yap; 11. adımda **Trusted**'ı seç; 12. adımda satır `DEVOS_ENVIRONMENT=devos-sinav` olsun.
+
+*`devos-sinav` ortamı:*
+
+28. claude.ai/code sekmesinde sayfayı yenile.
+    Görmen gereken: Claude Code'un ana sayfası; açık bir pencere ya da liste yok.
+29. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+30. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi.
+31. **Add cloud environment**'a tıkla.
+    Görmen gereken: **New cloud environment** penceresi.
+32. **Name** alanına `devos-sinav` yaz.
+    Görmen gereken: ad alanında `devos-sinav`.
+33. **Network access** seçicisinde **Trusted**'ı seç.
+    Görmen gereken: seçicide **Trusted**.
+34. **Environment variables** kutusuna şu satırı yaz: `DEVOS_ENVIRONMENT=devos-sinav`
+    Görmen gereken: kutuda bu satır.
+35. **Enter**'a bas.
+    Görmen gereken: imleç ikinci, boş satırda.
+36. Bu satıra `DEVOS_PUBLISHABLE_KEY=` yaz.
+    Görmen gereken: ikinci satır `DEVOS_PUBLISHABLE_KEY=`.
+37. Hemen ardından, boşluk bırakmadan, panodaki değeri yapıştır.
+    Görmen gereken: kutuda iki satır; ikincisi `DEVOS_PUBLISHABLE_KEY=` ile başlar ve devamında değer vardır. **Setup script** kutusu boş kalır.
+38. **Create environment**'a tıkla.
     Görmen gereken: listede `devos-calisma`, `devos-denetim` ve `devos-sinav`.
-17. Supabase sekmesinde, `devos` projesinin sol menüsünde **SQL Editor**'e tıkla.
-    Görmen gereken: boş bir sorgu kutusu.
-18. Kutuya şu satırı yapıştır: `select devos_private.issue_env_token('devos_calisma');`
+
+*`devos-calisma`'nın anahtarı:*
+
+39. Supabase sekmesinde, `devos` projesinin sol menüsünde **SQL Editor**'e tıkla.
+    Görmen gereken: sorgu kutusu.
+40. Kutuda bir satır varsa sil.
+    Görmen gereken: kutu boş.
+41. Bu konuda (#6), şu satırın kutusundaki kopyalama simgesine tıkla: `select devos_private.issue_env_token('devos_calisma');`
+    Görmen gereken: simge kısa bir süre onay işaretine döner; satır panoda.
+42. Supabase sekmesinde, sorgu kutusuna panodaki satırı yapıştır.
     Görmen gereken: kutuda yalnız bu satır.
-19. **Run**'a tıkla.
+43. **Run**'a tıkla.
     Görmen gereken: tek satırlık sonuç, içinde uzun bir değer.
-20. Değeri kopyala.
+44. Değeri kopyala.
     Görmen gereken: değer panoda; başka yere yapıştırma.
-21. claude.ai/code sekmesinde A bölümünün 13. ile 16. adımlarını `devos-calisma` için yap.
+45. claude.ai/code sekmesinde sayfayı yenile.
+    Görmen gereken: Claude Code'un ana sayfası; açık bir pencere ya da liste yok.
+46. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+47. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi; içinde `devos-calisma`.
+48. İmleci `devos-calisma`'nın üzerine getir.
+    Görmen gereken: satırın sağında bir ayar simgesi belirir.
+49. O ayar simgesine tıkla.
     Görmen gereken: `devos-calisma`'nın **Edit environment** penceresi.
-22. A bölümünün 17. ile 24. adımlarını yap (ad `devos anahtari`, adres `zyqgltzfzkdvrmvxlamz.supabase.co`).
-    Görmen gereken: sır listede bu adresle; altında **Not sent** yok.
-23. Supabase sekmesinde sayfayı yenile.
+50. Pencerede **Network secrets** bölümünü bul; yoksa dur.
+    Görmen gereken: bölüm görünür (boş).
+51. **Add secret**'e tıkla.
+    Görmen gereken: bir form açılır; **Credential type** **Bearer** olarak durur. Onu değiştirme.
+52. **Name** alanına `devos anahtari` yaz.
+    Görmen gereken: bu ad alanda.
+53. **Allowed websites** alanına `zyqgltzfzkdvrmvxlamz.supabase.co` yaz.
+    Görmen gereken: alanda yalnız bu adres.
+54. **Custom headers** satırında, **Name** kutusundaki `Authorization` yazısının yerine `x-devos-env-token` yaz.
+    Görmen gereken: Name kutusunda tam olarak `x-devos-env-token`.
+55. Aynı satırda **Prefix** kutusundaki `Bearer` yazısını sil.
+    Görmen gereken: Prefix kutusu boş.
+56. Aynı satırın **Value** kutusuna panodaki değeri yapıştır.
+    Görmen gereken: değer kutuda (gizli görünebilir).
+57. **Connect**'e tıkla.
+    Görmen gereken: sır, `zyqgltzfzkdvrmvxlamz.supabase.co` adresiyle listede; altında **Not sent** yok. Değeri bir daha göremezsin; bu doğrudur.
+58. Supabase sekmesinde sayfayı yenile.
     Görmen gereken: anahtar ekranda yok.
-24. 17. ile 23. adımları `devos-denetim` için yap; 18. adımdaki satır `select devos_private.issue_env_token('devos_denetim');` olsun.
-    Görmen gereken: `devos-denetim`'de bir sır, bu adresle.
-25. 17. ile 23. adımları `devos-sinav` için yap; satır `select devos_private.issue_env_token('devos_sinav');` olsun.
-    Görmen gereken: `devos-sinav`'da bir sır, bu adresle.
-26. Bilgisayarında Claude Code'u komut satırından kullanıyorsan orada `/remote-env` yaz ve **Default**'u seç; kullanmıyorsan bu adımı atla.
-    Görmen gereken: varsayılan ortam **Default**.
-27. Bu konuya "B1 tamam" yaz.
-    Görmen gereken: yorumun konuda görünür.
+
+*`devos-denetim`'in anahtarı:*
+
+59. Supabase sekmesinde, `devos` projesinin sol menüsünde **SQL Editor**'e tıkla.
+    Görmen gereken: sorgu kutusu.
+60. Kutuda bir satır varsa sil.
+    Görmen gereken: kutu boş.
+61. Bu konuda (#6), şu satırın kutusundaki kopyalama simgesine tıkla: `select devos_private.issue_env_token('devos_denetim');`
+    Görmen gereken: simge kısa bir süre onay işaretine döner; satır panoda.
+62. Supabase sekmesinde, sorgu kutusuna panodaki satırı yapıştır.
+    Görmen gereken: kutuda yalnız bu satır.
+63. **Run**'a tıkla.
+    Görmen gereken: tek satırlık sonuç, içinde uzun bir değer.
+64. Değeri kopyala.
+    Görmen gereken: değer panoda; başka yere yapıştırma.
+65. claude.ai/code sekmesinde sayfayı yenile.
+    Görmen gereken: Claude Code'un ana sayfası; açık bir pencere ya da liste yok.
+66. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+67. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi; içinde `devos-denetim`.
+68. İmleci `devos-denetim`'in üzerine getir.
+    Görmen gereken: satırın sağında bir ayar simgesi belirir.
+69. O ayar simgesine tıkla.
+    Görmen gereken: `devos-denetim`'in **Edit environment** penceresi.
+70. Pencerede **Network secrets** bölümünü bul; yoksa dur.
+    Görmen gereken: bölüm görünür (boş).
+71. **Add secret**'e tıkla.
+    Görmen gereken: bir form açılır; **Credential type** **Bearer** olarak durur. Onu değiştirme.
+72. **Name** alanına `devos anahtari` yaz.
+    Görmen gereken: bu ad alanda.
+73. **Allowed websites** alanına `zyqgltzfzkdvrmvxlamz.supabase.co` yaz.
+    Görmen gereken: alanda yalnız bu adres.
+74. **Custom headers** satırında, **Name** kutusundaki `Authorization` yazısının yerine `x-devos-env-token` yaz.
+    Görmen gereken: Name kutusunda tam olarak `x-devos-env-token`.
+75. Aynı satırda **Prefix** kutusundaki `Bearer` yazısını sil.
+    Görmen gereken: Prefix kutusu boş.
+76. Aynı satırın **Value** kutusuna panodaki değeri yapıştır.
+    Görmen gereken: değer kutuda (gizli görünebilir).
+77. **Connect**'e tıkla.
+    Görmen gereken: sır, `zyqgltzfzkdvrmvxlamz.supabase.co` adresiyle listede; altında **Not sent** yok. Değeri bir daha göremezsin; bu doğrudur.
+78. Supabase sekmesinde sayfayı yenile.
+    Görmen gereken: anahtar ekranda yok.
+
+*`devos-sinav`'ın anahtarı:*
+
+79. Supabase sekmesinde, `devos` projesinin sol menüsünde **SQL Editor**'e tıkla.
+    Görmen gereken: sorgu kutusu.
+80. Kutuda bir satır varsa sil.
+    Görmen gereken: kutu boş.
+81. Bu konuda (#6), şu satırın kutusundaki kopyalama simgesine tıkla: `select devos_private.issue_env_token('devos_sinav');`
+    Görmen gereken: simge kısa bir süre onay işaretine döner; satır panoda.
+82. Supabase sekmesinde, sorgu kutusuna panodaki satırı yapıştır.
+    Görmen gereken: kutuda yalnız bu satır.
+83. **Run**'a tıkla.
+    Görmen gereken: tek satırlık sonuç, içinde uzun bir değer.
+84. Değeri kopyala.
+    Görmen gereken: değer panoda; başka yere yapıştırma.
+85. claude.ai/code sekmesinde sayfayı yenile.
+    Görmen gereken: Claude Code'un ana sayfası; açık bir pencere ya da liste yok.
+86. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+87. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi; içinde `devos-sinav`.
+88. İmleci `devos-sinav`'ın üzerine getir.
+    Görmen gereken: satırın sağında bir ayar simgesi belirir.
+89. O ayar simgesine tıkla.
+    Görmen gereken: `devos-sinav`'ın **Edit environment** penceresi.
+90. Pencerede **Network secrets** bölümünü bul; yoksa dur.
+    Görmen gereken: bölüm görünür (boş).
+91. **Add secret**'e tıkla.
+    Görmen gereken: bir form açılır; **Credential type** **Bearer** olarak durur. Onu değiştirme.
+92. **Name** alanına `devos anahtari` yaz.
+    Görmen gereken: bu ad alanda.
+93. **Allowed websites** alanına `zyqgltzfzkdvrmvxlamz.supabase.co` yaz.
+    Görmen gereken: alanda yalnız bu adres.
+94. **Custom headers** satırında, **Name** kutusundaki `Authorization` yazısının yerine `x-devos-env-token` yaz.
+    Görmen gereken: Name kutusunda tam olarak `x-devos-env-token`.
+95. Aynı satırda **Prefix** kutusundaki `Bearer` yazısını sil.
+    Görmen gereken: Prefix kutusu boş.
+96. Aynı satırın **Value** kutusuna panodaki değeri yapıştır.
+    Görmen gereken: değer kutuda (gizli görünebilir).
+97. **Connect**'e tıkla.
+    Görmen gereken: sır, `zyqgltzfzkdvrmvxlamz.supabase.co` adresiyle listede; altında **Not sent** yok. Değeri bir daha göremezsin; bu doğrudur.
+98. Supabase sekmesinde sayfayı yenile.
+    Görmen gereken: anahtar ekranda yok.
+
+*Komut satırı:* 99., 100. ve 101. adımlar yalnız bilgisayarında Claude Code'u komut satırından kullanıyorsan içindir. Kullanmıyorsan üçünü de atla ve 102. adıma geç.
+
+99. Komut satırındaki Claude Code'a `/remote-env` yaz.
+    Görmen gereken: satırda `/remote-env`.
+100. **Enter**'a bas.
+     Görmen gereken: ortamlarının listesi açılır.
+101. Listeden **Default**'u seç.
+     Görmen gereken: varsayılan ortam **Default**.
+102. Bu konuya "B1 tamam" yaz.
+     Görmen gereken: yorumun konuda görünür.
 
 *Bundan sonra kalıcı iki kural:*
 - Kendi işlerin için oturum açarken, ya da bir Claude Project'in ortamını seçerken, ortam seçicide DevOS'un ortamlarını (`devos-kurulum`, `devos-calisma`, `devos-denetim`, `devos-sinav`) seçme; **Default**'u ya da DevOS anahtarı olmayan başka bir ortamı kullan. Bir ortamdaki anahtar, o ortamda kim açarsa açsın her oturuma eklenir.
 - Hesabının paylaşılan yerlerine (Claude'daki becerilere, bağlayıcılara, Project talimatlarına ve belleğine) hiçbir anahtar, şifre ya da DevOS'a özgü gizli bilgi koyma.
 
-*Sistemin kontrolü:* Veritabanında her ortam için tam bir geçerli anahtar kaydı olduğunu okurum: yalnız sayısını ve tarihini, anahtarın kendisini değil. Anahtarların doğru ortamda olduğunu B2'deki oturumlar gösterir. Kendi oturumlarının hangi ortamda açıldığını sistem şimdilik göremez; DevOS'un kendi rutinleri gelince (C06) beklenmeyen bir oturum işaretlenir.
+*Sistemin kontrolü:* Veritabanında her ortam için tam bir geçerli anahtar kaydı olduğunu okurum: yalnız sayısını ve tarihini, anahtarın kendisini değil. Her anahtarın doğru ortamda, her ortamın doğru ağ düzeyinde olduğunu B2'deki oturumlar gösterir: her oturum, ortamının `DEVOS_ENVIRONMENT` değerini, veritabanının o oturumun anahtarından çıkardığı rol sınıfının yanına yazar ve Trusted listesinde olmayan tek bir adrese, hiçbir veri göndermeden bir istek yapıp ulaşıp ulaşmadığını kaydeder (`devos-calisma` ulaşmalı; `devos-denetim` ve `devos-sinav` ulaşmamalı). Bir uyuşmazlıkta, ilgili anahtarları iptal edip doğru ortama yenilerini koyman ya da ağ düzeyini düzeltmen için sana kısa bir adım getiririm. Sistemin şimdilik göremedikleri: bir ortamın adının, içine yazdığın `DEVOS_ENVIRONMENT` değeriyle aynı olduğu (oturum ortamın adını göremez; ikisini aynı pencerede yazıyorsun) ve bir DevOS anahtarının bu üç ortamın dışındaki bir ortama konmadığı. Kendi oturumlarının hangi ortamda açıldığını da sistem şimdilik göremez; DevOS'un kendi rutinleri gelince (C06) beklenmeyen bir oturum işaretlenir.
 
 **B2. Her ortamda bir oturum** *(adım 5)*
 
-Her ortamın anahtarı, ancak o ortamda çalışan bir oturumdan denenebilir; ben oturum açamam. Bu yüzden her ortamda kısa bir oturum açmanı rica ediyorum. Oturumlar kullanım hakkından düşer; ek ücret yoktur.
+Her ortamın anahtarı, ancak o ortamda çalışan bir oturumdan denenebilir; ben oturum açamam. Bu yüzden her ortamda kısa bir oturum açmanı rica ediyorum. Bu konuyu (#6) bir sekmede açık tut; ilk mesajı buradan kopyalayacaksın. Oturumlar kullanım hakkından düşer; ek ücret yoktur.
 
-1. claude.ai/code'da bulut simgesine tıkla.
+*`devos-calisma`'da oturum:*
+
+1. Yeni bir sekmede claude.ai/code adresini aç.
+   Görmen gereken: Claude Code'un ana sayfası.
+2. Mesaj kutusunun üstündeki bulut simgesine tıkla.
    Görmen gereken: ortam seçenekleri.
-2. **Cloud**'u seç.
+3. **Cloud**'u seç.
    Görmen gereken: bulut ortamlarının listesi.
-3. `devos-calisma`'ya tıkla.
+4. `devos-calisma`'ya tıkla.
    Görmen gereken: bulut simgesinde `devos-calisma` yazar.
-4. Depo seçicide yalnız `batuhanozgun/devos`'u seçili bırak; başka depo ekleme.
+5. Depo seçicide yalnız `batuhanozgun/devos`'u seçili bırak; başka depo ekleme.
    Görmen gereken: tek depo, `batuhanozgun/devos`.
-5. Model seçicide **Opus 5.5**'i seç.
+6. Model seçicide **Opus 5.5**'i seç.
    Görmen gereken: seçicide Opus 5.5.
-6. İzin modu seçicisinde **Accept edits**'i seç; seçiciyi bulamazsan dur.
+7. İzin modu seçicisinde **Accept edits**'i seç; seçiciyi bulamazsan dur.
    Görmen gereken: seçicide Accept edits.
-7. Mesaj kutusuna, bu konuda verdiğim İngilizce ilk mesajı hiç değiştirmeden yapıştır.
+8. Bu konuda (#6), verdiğim İngilizce ilk mesajın kutusundaki kopyalama simgesine tıkla; simge yoksa dur.
+   Görmen gereken: simge kısa bir süre onay işaretine döner; mesaj panoda.
+9. 1. adımda açtığın claude.ai/code sekmesinde, mesaj kutusuna panodaki mesajı hiç değiştirmeden yapıştır.
    Görmen gereken: mesaj kutuda, ilk satırı verdiğim metinle başlar.
-8. Mesajı gönder.
-   Görmen gereken: oturum çalışmaya başlar; işi bitince son satırında "DONE" yazar. Oturuma başka bir şey yazma.
-9. 1. ile 8. adımları `devos-denetim` için yap.
-   Görmen gereken: ikinci oturum çalışır ve "DONE" ile biter.
-10. 1. ile 8. adımları `devos-sinav` için yap.
-    Görmen gereken: üçüncü oturum çalışır ve "DONE" ile biter.
-11. Bu konuya "B2 tamam" yaz.
+10. Mesajı gönder.
+    Görmen gereken: oturum çalışmaya başlar; işi bitince son satırında "DONE" yazar. Oturuma başka bir şey yazma.
+
+*`devos-denetim`'de oturum:*
+
+11. Yeni bir sekmede claude.ai/code adresini aç.
+    Görmen gereken: Claude Code'un ana sayfası.
+12. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+13. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi.
+14. `devos-denetim`'e tıkla.
+    Görmen gereken: bulut simgesinde `devos-denetim` yazar.
+15. Depo seçicide yalnız `batuhanozgun/devos`'u seçili bırak; başka depo ekleme.
+    Görmen gereken: tek depo, `batuhanozgun/devos`.
+16. Model seçicide **Opus 5.5**'i seç.
+    Görmen gereken: seçicide Opus 5.5.
+17. İzin modu seçicisinde **Accept edits**'i seç; seçiciyi bulamazsan dur.
+    Görmen gereken: seçicide Accept edits.
+18. Bu konuda (#6), verdiğim İngilizce ilk mesajın kutusundaki kopyalama simgesine tıkla; simge yoksa dur.
+    Görmen gereken: simge kısa bir süre onay işaretine döner; mesaj panoda.
+19. 11. adımda açtığın claude.ai/code sekmesinde, mesaj kutusuna panodaki mesajı hiç değiştirmeden yapıştır.
+    Görmen gereken: mesaj kutuda, ilk satırı verdiğim metinle başlar.
+20. Mesajı gönder.
+    Görmen gereken: ikinci oturum çalışır ve "DONE" ile biter. Oturuma başka bir şey yazma.
+
+*`devos-sinav`'da oturum:*
+
+21. Yeni bir sekmede claude.ai/code adresini aç.
+    Görmen gereken: Claude Code'un ana sayfası.
+22. Mesaj kutusunun üstündeki bulut simgesine tıkla.
+    Görmen gereken: ortam seçenekleri.
+23. **Cloud**'u seç.
+    Görmen gereken: bulut ortamlarının listesi.
+24. `devos-sinav`'a tıkla.
+    Görmen gereken: bulut simgesinde `devos-sinav` yazar.
+25. Depo seçicide yalnız `batuhanozgun/devos`'u seçili bırak; başka depo ekleme.
+    Görmen gereken: tek depo, `batuhanozgun/devos`.
+26. Model seçicide **Opus 5.5**'i seç.
+    Görmen gereken: seçicide Opus 5.5.
+27. İzin modu seçicisinde **Accept edits**'i seç; seçiciyi bulamazsan dur.
+    Görmen gereken: seçicide Accept edits.
+28. Bu konuda (#6), verdiğim İngilizce ilk mesajın kutusundaki kopyalama simgesine tıkla; simge yoksa dur.
+    Görmen gereken: simge kısa bir süre onay işaretine döner; mesaj panoda.
+29. 21. adımda açtığın claude.ai/code sekmesinde, mesaj kutusuna panodaki mesajı hiç değiştirmeden yapıştır.
+    Görmen gereken: mesaj kutuda, ilk satırı verdiğim metinle başlar.
+30. Mesajı gönder.
+    Görmen gereken: üçüncü oturum çalışır ve "DONE" ile biter. Oturuma başka bir şey yazma.
+31. Bu konuya "B2 tamam" yaz.
     Görmen gereken: yorumun konuda görünür.
 
-*Sistemin kontrolü:* Her oturum sonucunu kendi kayıt dalına yazar; veritabanı da her değişikliğin ve her reddin hangi ortamın anahtarıyla geldiğini, her reddin nedenini de kaydeder. İkisini ben karşılaştırırım; anahtar hiçbir kayda girmez.
+*Sistemin kontrolü:* Her oturum sonucunu kendi kayıt dalına yazar: ortamının `DEVOS_ENVIRONMENT` değeri, gördüğü rol sınıfı ve ağ denemesinin sonucu yan yana. Veritabanı da her değişikliğin ve her reddin hangi ortamın anahtarıyla geldiğini, her reddin nedenini de kaydeder. İkisini ben karşılaştırırım; anahtar hiçbir kayda girmez.
 
 ### 7.2 English rendering
 
-**A. Exposing the database interface, the installation environment's token and the CI key (row 1a's exposure and step 4).** Intro: the database recognises which environment calls it by that environment's own token; Batu first exposes DevOS's database interface (`devos_api`) in both Supabase projects, then makes `devos-kurulum`'s token (the working session's environment) and stores it in its **Network secrets**, values the session cannot see, attached only to requests for one address, and last makes the CI key and stores it in the `devos` repository's secrets; he never writes, sends or shows a token, works in a browser on a computer, and stops with a screenshot (no token visible) if a screen differs; no fee.
+**A. Exposing the database interface, the installation environment's token and the CI key (row 1a's exposure and step 4).** Intro: the database recognises which environment calls it by that environment's own token; Batu first exposes DevOS's database interface (`devos_api`) in both Supabase projects, then makes `devos-kurulum`'s token (the working session's environment) and stores it in its **Network secrets**, values the session cannot see, attached only to requests for one address, and last makes the CI key and stores it in the `devos` repository's secrets; he never writes, sends or shows a token, works in a browser on a computer, keeps issue #6 open in a tab (each line to copy is there, in a box of its own), and stops with a screenshot (no token visible) if a screen differs; no fee.
 1. Open supabase.com/dashboard. *See:* the projects, `devos` and `devos-test` among them.
 2. Click `devos-test`. *See:* its page.
 3. Click **Project Settings** in the left menu; stop if absent. *See:* the project's settings.
 4. Click **Data API**; stop if absent. *See:* the **Exposed schemas** field.
 5. In **Exposed schemas**, select `devos_api`; stop if it is not listed; leave the other names. *See:* `devos_api` beside those already there.
 6. Click **Save**. *See:* a notice that the change is saved; `devos_api` stays in the field.
-7. Repeat 1 to 6 with `devos` at step 2. *See:* `devos_api` in `devos`'s **Exposed schemas** too.
-8. Click **SQL Editor** in the left menu (still in `devos`); stop if absent. *See:* an empty query box.
-9. Paste `select devos_private.issue_env_token('devos_kurulum');`. *See:* only that line.
-10. Click **Run**. *See:* a one-row result with a long value, shown only this once.
-11. Copy the value. *See:* it is on the clipboard; paste it nowhere else.
-12. Open claude.ai/code in a new tab. *See:* Claude Code's home page.
-13. Click the cloud icon showing the environment's name, above the message box. *See:* the environment options.
-14. Choose **Cloud**. *See:* the cloud environments, `devos-kurulum` among them.
-15. Hover over `devos-kurulum`. *See:* a settings icon on the right.
-16. Click it. *See:* the **Edit environment** dialog.
-17. Find **Network secrets**; stop if absent. *See:* the section (maybe empty).
-18. Click **Add secret**. *See:* a form; **Credential type** stays **Bearer**.
-19. **Name**: `devos anahtari`. *See:* that name.
-20. **Allowed websites**: `zyqgltzfzkdvrmvxlamz.supabase.co`. *See:* only that host.
-21. In **Custom headers**, put `x-devos-env-token` in **Name** in place of `Authorization`. *See:* exactly that name.
-22. Clear `Bearer` from **Prefix**. *See:* Prefix empty.
-23. Paste the value into **Value**. *See:* the value (perhaps masked).
-24. Click **Connect**. *See:* the secret listed with that host, not marked **Not sent**; its value cannot be viewed again, which is right.
-25. Reload the Supabase tab. *See:* no token on screen.
-26. Click **Project Settings** in the left menu. *See:* `devos`'s settings.
-27. Click **API Keys**; stop if absent. *See:* the **Publishable key** (not secret).
-28. Copy it. *See:* on the clipboard.
-29. On claude.ai/code, do steps 13 to 16. *See:* `devos-kurulum`'s **Edit environment** dialog.
-30. Open a new empty line at the bottom of **Environment variables**. *See:* the cursor on it.
-31. Type `DEVOS_PUBLISHABLE_KEY=` and paste the value right after it. *See:* that last line; no other line touched.
-32. Click **Save changes**. *See:* the dialog closes.
-33. In the Supabase tab, click **SQL Editor** in the left menu. *See:* the query box.
-34. Delete any line in the box. *See:* the box empty.
-35. Paste `select devos_private.issue_env_token('devos_ci');`. *See:* only that line.
-36. Click **Run**. *See:* a one-row result with a long value.
-37. Copy the value. *See:* on the clipboard only.
-38. Open github.com/batuhanozgun/devos/settings/secrets/actions; stop if it does not open. *See:* **Actions secrets**.
-39. Click **New repository secret**. *See:* the form.
-40. **Name**: `DEVOS_CI_TOKEN`. *See:* that name.
-41. Paste the value into **Secret**. *See:* the value there.
-42. Click **Add secret**. *See:* `DEVOS_CI_TOKEN` listed, its value hidden.
-43. Reload the Supabase tab. *See:* no token on screen.
-44. Write "A tamam" on issue #6. *See:* the comment.
+7. Open supabase.com/dashboard. *See:* the projects, `devos` among them.
+8. Click `devos`. *See:* its page.
+9. Click **Project Settings** in the left menu; stop if absent. *See:* `devos`'s settings.
+10. Click **Data API**; stop if absent. *See:* the **Exposed schemas** field.
+11. In **Exposed schemas**, select `devos_api`; stop if it is not listed; leave the other names. *See:* `devos_api` beside those already there.
+12. Click **Save**. *See:* a notice that the change is saved; `devos_api` in `devos`'s **Exposed schemas** too.
+13. Click **SQL Editor** in the left menu (still in `devos`); stop if absent. *See:* an empty query box.
+14. On #6, click the copy icon of the box holding `select devos_private.issue_env_token('devos_kurulum');`. *See:* the icon briefly turns into a tick; the line is on the clipboard.
+15. In the Supabase tab, paste the line into the query box. *See:* only that line.
+16. Click **Run**. *See:* a one-row result with a long value, shown only this once.
+17. Copy the value. *See:* it is on the clipboard; paste it nowhere else.
+18. Open claude.ai/code in a new tab. *See:* Claude Code's home page.
+19. Click the cloud icon showing the environment's name, above the message box. *See:* the environment options.
+20. Choose **Cloud**. *See:* the cloud environments, `devos-kurulum` among them.
+21. Hover over `devos-kurulum`. *See:* a settings icon on the right.
+22. Click it. *See:* the **Edit environment** dialog.
+23. Find **Network secrets**; stop if absent. *See:* the section (maybe empty).
+24. Click **Add secret**. *See:* a form; **Credential type** stays **Bearer**.
+25. Type `devos anahtari` in **Name**. *See:* that name.
+26. Type `zyqgltzfzkdvrmvxlamz.supabase.co` in **Allowed websites**. *See:* only that host.
+27. In **Custom headers**, type `x-devos-env-token` in **Name** in place of `Authorization`. *See:* exactly that name.
+28. Clear `Bearer` from **Prefix**. *See:* Prefix empty.
+29. Paste the value into **Value**. *See:* the value (perhaps masked).
+30. Click **Connect**. *See:* the secret listed with that host, not marked **Not sent**; the dialog stays open; its value cannot be viewed again, which is right.
+31. Reload the Supabase tab. *See:* no token on screen.
+32. Click **Project Settings** in the left menu. *See:* `devos`'s settings.
+33. Click **API Keys**; stop if absent. *See:* the **Publishable key** (not secret).
+34. Copy it. *See:* on the clipboard.
+35. Switch to the claude.ai/code tab. *See:* `devos-kurulum`'s **Edit environment** dialog still open, `devos anahtari` under **Network secrets**.
+36. Click at the end of the last line in **Environment variables**. *See:* the cursor there.
+37. Press **Enter**. *See:* the cursor on a new, empty last line.
+38. Type `DEVOS_PUBLISHABLE_KEY=`. *See:* that last line; no other line touched.
+39. Paste the value right after it, with no space. *See:* the last line starts with `DEVOS_PUBLISHABLE_KEY=` and holds the value after it.
+40. Click **Save changes**. *See:* the dialog closes.
+41. In the Supabase tab, click **SQL Editor** in the left menu. *See:* the query box.
+42. Delete any line in the box. *See:* the box empty.
+43. On #6, click the copy icon of the box holding `select devos_private.issue_env_token('devos_ci');`. *See:* the icon briefly turns into a tick; the line is on the clipboard.
+44. In the Supabase tab, paste the line into the query box. *See:* only that line.
+45. Click **Run**. *See:* a one-row result with a long value.
+46. Copy the value. *See:* on the clipboard only.
+47. In a new tab, open github.com/batuhanozgun/devos/settings/secrets/actions; stop if it does not open. *See:* **Actions secrets**.
+48. Click **New repository secret**. *See:* the form.
+49. Type `DEVOS_CI_TOKEN` in **Name**. *See:* that name.
+50. Paste the value into **Secret**. *See:* the value there.
+51. Click **Add secret**. *See:* `DEVOS_CI_TOKEN` listed, its value hidden.
+52. Reload the Supabase tab. *See:* no token on screen.
+53. Write "A tamam" on issue #6. *See:* the comment.
 
-*The system's check:* the working session calls the database with this environment's token; an answer of `devos_kurulum` shows both that `devos_api` is exposed and that the token is in place; the session also scans itself for a readable copy; the builder never sees or records a token; the migration job's next run in `devos-test` shows the exposure there; the first pull request's check after this uses and records the CI key.
+*The system's check:* the working session calls the database with this environment's token; an answer of `devos_kurulum` shows both that `devos_api` is exposed and that the token is in place; the session also scans itself for a readable copy; the builder never sees or records a token, and checks `devos`'s logs for strings of the token format by a count only, reading no line (§14); the migration job's next run in `devos-test` shows the exposure there; the first pull request's check after this uses and records the CI key.
 
-**B1. The three DevOS environments and their tokens (steps 2 and 3).** Same rules; no fee.
+**B1. The three DevOS environments and their tokens (steps 2 and 3).** Same rules (issue #6 kept open in a tab); no fee.
 1. Open supabase.com/dashboard. *See:* the projects.
 2. Click `devos`. *See:* its page.
 3. Click **Project Settings**. *See:* its settings.
 4. Click **API Keys**. *See:* the **Publishable key** (not secret).
 5. Copy it. *See:* on the clipboard.
 6. Open claude.ai/code in a new tab. *See:* the home page.
-7. Click the cloud icon. *See:* the environment options.
+
+*`devos-calisma`:*
+7. Click the cloud icon above the message box. *See:* the environment options.
 8. Choose **Cloud**. *See:* the list.
 9. Click **Add cloud environment**. *See:* **New cloud environment**.
-10. **Name**: `devos-calisma`. *See:* that name.
-11. **Network access**: **Full**. *See:* Full.
-12. **Environment variables**: `DEVOS_ENVIRONMENT=devos-calisma`. *See:* that line.
-13. A new line: `DEVOS_PUBLISHABLE_KEY=` followed by the pasted value. *See:* two lines; **Setup script** stays empty.
-14. Click **Create environment**. *See:* `devos-calisma` listed.
-15. Do 7 to 14 for `devos-denetim`, with **Trusted** at 11 and `DEVOS_ENVIRONMENT=devos-denetim` at 12. *See:* it listed.
-16. Do 7 to 14 for `devos-sinav`, with **Trusted** and `DEVOS_ENVIRONMENT=devos-sinav`. *See:* all three listed.
-17. In the Supabase tab, click **SQL Editor** in `devos`'s left menu. *See:* an empty query box.
-18. Paste `select devos_private.issue_env_token('devos_calisma');`. *See:* only that line.
-19. Click **Run**. *See:* a one-row result.
-20. Copy the value. *See:* on the clipboard only.
-21. On claude.ai/code, do A's steps 13 to 16 for `devos-calisma`. *See:* its **Edit environment** dialog.
-22. Do A's steps 17 to 24 (name `devos anahtari`, host `zyqgltzfzkdvrmvxlamz.supabase.co`). *See:* the secret listed with that host, not **Not sent**.
-23. Reload the Supabase tab. *See:* no token on screen.
-24. Do 17 to 23 for `devos-denetim` with `issue_env_token('devos_denetim')`. *See:* one secret there.
-25. Do 17 to 23 for `devos-sinav` with `issue_env_token('devos_sinav')`. *See:* one secret there.
-26. If he uses Claude Code's command line, type `/remote-env` there and choose **Default**; otherwise skip. *See:* Default as the default.
-27. Write "B1 tamam" on issue #6. *See:* the comment.
+10. Type `devos-calisma` in **Name**. *See:* that name.
+11. Choose **Full** in **Network access**. *See:* Full.
+12. Type `DEVOS_ENVIRONMENT=devos-calisma` in **Environment variables**. *See:* that line.
+13. Press **Enter**. *See:* the cursor on a second, empty line.
+14. Type `DEVOS_PUBLISHABLE_KEY=`. *See:* the second line reads so.
+15. Paste the value right after it, with no space. *See:* two lines, the second starting `DEVOS_PUBLISHABLE_KEY=` with the value after it; **Setup script** stays empty.
+16. Click **Create environment**. *See:* `devos-calisma` listed.
 
-*Two standing rules (S4 (d), (e)):* his own sessions and any Claude Project's environment never use a DevOS environment, only **Default** or another environment with no DevOS token, since a token is attached to every session in its environment, whoever opens it; nothing secret goes into what the account shares (skills, connectors, Project instructions and memory). *The system's check:* the builder reads, through its read-only connection, that each environment has exactly one non-revoked token record (count and date only); B2's sessions show the tokens are in place; which environment his own sessions use is not visible to the system now; from C06 a session matching no expected run is flagged (X1).
+*`devos-denetim`:*
+17. Reload the claude.ai/code tab. *See:* the home page, no dialog or list open.
+18. Click the cloud icon above the message box. *See:* the environment options.
+19. Choose **Cloud**. *See:* the list.
+20. Click **Add cloud environment**. *See:* **New cloud environment**.
+21. Type `devos-denetim` in **Name**. *See:* that name.
+22. Choose **Trusted** in **Network access**. *See:* Trusted.
+23. Type `DEVOS_ENVIRONMENT=devos-denetim` in **Environment variables**. *See:* that line.
+24. Press **Enter**. *See:* the cursor on a second, empty line.
+25. Type `DEVOS_PUBLISHABLE_KEY=`. *See:* the second line reads so.
+26. Paste the value right after it, with no space. *See:* two lines, the second starting `DEVOS_PUBLISHABLE_KEY=` with the value after it; **Setup script** stays empty.
+27. Click **Create environment**. *See:* `devos-denetim` listed.
 
-**B2. One session in each environment (step 5).** Each token can be tried only from a session in its environment, and the builder cannot open sessions; the sessions draw on his usage allowance; no fee.
-1. Click the cloud icon. *See:* the options.
-2. Choose **Cloud**. *See:* the list.
-3. Click `devos-calisma`. *See:* its name on the icon.
-4. Leave only `batuhanozgun/devos` in the repository selector. *See:* one repository.
-5. Model **Opus 5.5**. *See:* Opus 5.5.
-6. Permission mode **Accept edits**; stop if the selector is not found. *See:* Accept edits.
-7. Paste the builder's English first message unchanged. *See:* it in the box.
-8. Send it. *See:* the session works and ends with a last line "DONE"; he types nothing else in it.
-9. Do 1 to 8 for `devos-denetim`. *See:* it ends with "DONE".
-10. Do 1 to 8 for `devos-sinav`. *See:* it ends with "DONE".
-11. Write "B2 tamam" on issue #6. *See:* the comment.
+*`devos-sinav`:*
+28. Reload the claude.ai/code tab. *See:* the home page, no dialog or list open.
+29. Click the cloud icon above the message box. *See:* the environment options.
+30. Choose **Cloud**. *See:* the list.
+31. Click **Add cloud environment**. *See:* **New cloud environment**.
+32. Type `devos-sinav` in **Name**. *See:* that name.
+33. Choose **Trusted** in **Network access**. *See:* Trusted.
+34. Type `DEVOS_ENVIRONMENT=devos-sinav` in **Environment variables**. *See:* that line.
+35. Press **Enter**. *See:* the cursor on a second, empty line.
+36. Type `DEVOS_PUBLISHABLE_KEY=`. *See:* the second line reads so.
+37. Paste the value right after it, with no space. *See:* two lines, the second starting `DEVOS_PUBLISHABLE_KEY=` with the value after it; **Setup script** stays empty.
+38. Click **Create environment**. *See:* all three listed.
 
-*The system's check:* each session writes its result to its own branch; the database records the role class of each state-changing call and each refusal, and each refusal's reason; the builder compares the two; no token enters any record.
+*`devos-calisma`'s token:*
+39. In the Supabase tab, click **SQL Editor** in `devos`'s left menu. *See:* the query box.
+40. Delete any line in the box. *See:* the box empty.
+41. On #6, click the copy icon of the box holding `select devos_private.issue_env_token('devos_calisma');`. *See:* the icon briefly turns into a tick; the line is on the clipboard.
+42. In the Supabase tab, paste the line into the query box. *See:* only that line.
+43. Click **Run**. *See:* a one-row result with a long value.
+44. Copy the value. *See:* on the clipboard only.
+45. Reload the claude.ai/code tab. *See:* the home page, no dialog or list open.
+46. Click the cloud icon above the message box. *See:* the environment options.
+47. Choose **Cloud**. *See:* the list, `devos-calisma` among them.
+48. Hover over `devos-calisma`. *See:* a settings icon on the right.
+49. Click it. *See:* `devos-calisma`'s **Edit environment** dialog.
+50. Find **Network secrets**; stop if absent. *See:* the section (empty).
+51. Click **Add secret**. *See:* a form; **Credential type** stays **Bearer**.
+52. Type `devos anahtari` in **Name**. *See:* that name.
+53. Type `zyqgltzfzkdvrmvxlamz.supabase.co` in **Allowed websites**. *See:* only that host.
+54. In **Custom headers**, type `x-devos-env-token` in **Name** in place of `Authorization`. *See:* exactly that name.
+55. Clear `Bearer` from **Prefix**. *See:* Prefix empty.
+56. Paste the value into **Value**. *See:* the value (perhaps masked).
+57. Click **Connect**. *See:* the secret listed with that host, not **Not sent**; its value cannot be viewed again.
+58. Reload the Supabase tab. *See:* no token on screen.
+
+*`devos-denetim`'s token:*
+59. In the Supabase tab, click **SQL Editor** in `devos`'s left menu. *See:* the query box.
+60. Delete any line in the box. *See:* the box empty.
+61. On #6, click the copy icon of the box holding `select devos_private.issue_env_token('devos_denetim');`. *See:* the icon briefly turns into a tick; the line is on the clipboard.
+62. In the Supabase tab, paste the line into the query box. *See:* only that line.
+63. Click **Run**. *See:* a one-row result with a long value.
+64. Copy the value. *See:* on the clipboard only.
+65. Reload the claude.ai/code tab. *See:* the home page, no dialog or list open.
+66. Click the cloud icon above the message box. *See:* the environment options.
+67. Choose **Cloud**. *See:* the list, `devos-denetim` among them.
+68. Hover over `devos-denetim`. *See:* a settings icon on the right.
+69. Click it. *See:* `devos-denetim`'s **Edit environment** dialog.
+70. Find **Network secrets**; stop if absent. *See:* the section (empty).
+71. Click **Add secret**. *See:* a form; **Credential type** stays **Bearer**.
+72. Type `devos anahtari` in **Name**. *See:* that name.
+73. Type `zyqgltzfzkdvrmvxlamz.supabase.co` in **Allowed websites**. *See:* only that host.
+74. In **Custom headers**, type `x-devos-env-token` in **Name** in place of `Authorization`. *See:* exactly that name.
+75. Clear `Bearer` from **Prefix**. *See:* Prefix empty.
+76. Paste the value into **Value**. *See:* the value (perhaps masked).
+77. Click **Connect**. *See:* the secret listed with that host, not **Not sent**; its value cannot be viewed again.
+78. Reload the Supabase tab. *See:* no token on screen.
+
+*`devos-sinav`'s token:*
+79. In the Supabase tab, click **SQL Editor** in `devos`'s left menu. *See:* the query box.
+80. Delete any line in the box. *See:* the box empty.
+81. On #6, click the copy icon of the box holding `select devos_private.issue_env_token('devos_sinav');`. *See:* the icon briefly turns into a tick; the line is on the clipboard.
+82. In the Supabase tab, paste the line into the query box. *See:* only that line.
+83. Click **Run**. *See:* a one-row result with a long value.
+84. Copy the value. *See:* on the clipboard only.
+85. Reload the claude.ai/code tab. *See:* the home page, no dialog or list open.
+86. Click the cloud icon above the message box. *See:* the environment options.
+87. Choose **Cloud**. *See:* the list, `devos-sinav` among them.
+88. Hover over `devos-sinav`. *See:* a settings icon on the right.
+89. Click it. *See:* `devos-sinav`'s **Edit environment** dialog.
+90. Find **Network secrets**; stop if absent. *See:* the section (empty).
+91. Click **Add secret**. *See:* a form; **Credential type** stays **Bearer**.
+92. Type `devos anahtari` in **Name**. *See:* that name.
+93. Type `zyqgltzfzkdvrmvxlamz.supabase.co` in **Allowed websites**. *See:* only that host.
+94. In **Custom headers**, type `x-devos-env-token` in **Name** in place of `Authorization`. *See:* exactly that name.
+95. Clear `Bearer` from **Prefix**. *See:* Prefix empty.
+96. Paste the value into **Value**. *See:* the value (perhaps masked).
+97. Click **Connect**. *See:* the secret listed with that host, not **Not sent**; its value cannot be viewed again.
+98. Reload the Supabase tab. *See:* no token on screen.
+
+*Command line:* steps 99, 100 and 101 are only for him if he uses Claude Code from his computer's command line; otherwise he skips all three and goes to step 102.
+99. Type `/remote-env` into Claude Code on the command line. *See:* `/remote-env` on the line.
+100. Press **Enter**. *See:* a picker of his environments.
+101. Choose **Default**. *See:* Default as the default.
+102. Write "B1 tamam" on issue #6. *See:* the comment.
+
+*Two standing rules (S4 (d), (e)):* his own sessions and any Claude Project's environment never use a DevOS environment, only **Default** or another environment with no DevOS token, since a token is attached to every session in its environment, whoever opens it; nothing secret goes into what the account shares (skills, connectors, Project instructions and memory). *The system's check:* the builder reads, through its read-only connection, that each environment has exactly one non-revoked token record (count and date only); B2's sessions show that each token is in its environment and each environment at its network level: each session records its `DEVOS_ENVIRONMENT` value beside the role class the database derives from its token, and whether one plain request, sending nothing, to a host outside the Trusted list reached it (`devos-calisma` should, `devos-denetim` and `devos-sinav` should not); on a mismatch he gets a narrow step to revoke the tokens involved and store new ones in the right environments, or to correct the level; not visible to the system now: that an environment's name matches the `DEVOS_ENVIRONMENT` value typed in it (a session cannot see its environment's name; he types both in one dialog), and that no DevOS token sits in an environment outside the three; which environment his own sessions use is not visible either; from C06 a session matching no expected run is flagged (X1).
+
+**B2. One session in each environment (step 5).** Each token can be tried only from a session in its environment, and the builder cannot open sessions; he keeps issue #6 open in a tab, where the first message is; the sessions draw on his usage allowance; no fee.
+
+*In `devos-calisma`:*
+1. Open claude.ai/code in a new tab. *See:* the home page.
+2. Click the cloud icon above the message box. *See:* the options.
+3. Choose **Cloud**. *See:* the list.
+4. Click `devos-calisma`. *See:* its name on the icon.
+5. Leave only `batuhanozgun/devos` in the repository selector. *See:* one repository.
+6. Choose **Opus 5.5** in the model selector. *See:* Opus 5.5.
+7. Choose **Accept edits** in the permission-mode selector; stop if the selector is not found. *See:* Accept edits.
+8. On #6, click the copy icon of the box holding the builder's English first message; stop if there is none. *See:* the icon briefly turns into a tick; the message is on the clipboard.
+9. In the tab opened at step 1, paste the message into the message box unchanged. *See:* it in the box, its first line the builder's.
+10. Send it. *See:* the session works and ends with a last line "DONE"; he types nothing else in it.
+
+*In `devos-denetim`:*
+11. Open claude.ai/code in a new tab. *See:* the home page.
+12. Click the cloud icon above the message box. *See:* the options.
+13. Choose **Cloud**. *See:* the list.
+14. Click `devos-denetim`. *See:* its name on the icon.
+15. Leave only `batuhanozgun/devos` in the repository selector. *See:* one repository.
+16. Choose **Opus 5.5** in the model selector. *See:* Opus 5.5.
+17. Choose **Accept edits** in the permission-mode selector; stop if the selector is not found. *See:* Accept edits.
+18. On #6, click the copy icon of the box holding the builder's English first message; stop if there is none. *See:* the icon briefly turns into a tick; the message is on the clipboard.
+19. In the tab opened at step 11, paste the message into the message box unchanged. *See:* it in the box, its first line the builder's.
+20. Send it. *See:* the second session works and ends with "DONE"; he types nothing else in it.
+
+*In `devos-sinav`:*
+21. Open claude.ai/code in a new tab. *See:* the home page.
+22. Click the cloud icon above the message box. *See:* the options.
+23. Choose **Cloud**. *See:* the list.
+24. Click `devos-sinav`. *See:* its name on the icon.
+25. Leave only `batuhanozgun/devos` in the repository selector. *See:* one repository.
+26. Choose **Opus 5.5** in the model selector. *See:* Opus 5.5.
+27. Choose **Accept edits** in the permission-mode selector; stop if the selector is not found. *See:* Accept edits.
+28. On #6, click the copy icon of the box holding the builder's English first message; stop if there is none. *See:* the icon briefly turns into a tick; the message is on the clipboard.
+29. In the tab opened at step 21, paste the message into the message box unchanged. *See:* it in the box, its first line the builder's.
+30. Send it. *See:* the third session works and ends with "DONE"; he types nothing else in it.
+31. Write "B2 tamam" on issue #6. *See:* the comment.
+
+*The system's check:* each session writes its result to its own branch: its `DEVOS_ENVIRONMENT` value, the role class it sees and its network result side by side; the database records the role class of each state-changing call and each refusal, and each refusal's reason; the builder compares the two; no token enters any record.
 
 ## 8. N-208: re-reading C01's documentation-based facts (point 8)
 
@@ -851,12 +1229,12 @@ No text labelled [Batu's decision] changes. Criterion 26 (P:233) is untouched.
 | S5's form before task 3 | This record and PC-43 merge before W-C02-07 and W-C02-08 (already their `depends_on`) | None beyond this item | P:947 (row 3's fail path: "before C02 builds the identity chain"); PC-21 item 4 (2026-10-10); N-136 (2026-10-11) | D-019 and D-020 (2026-10-11) leave it as it is; D-020 asks for a mechanical structure, which S5 is |
 | The header path observed before W-C02-09 builds beyond the first part (§3.3) | Sitting A sits between the first part's merge and the rest of W-C02-09 | Batu's wait for sitting A, less the part W-C02-08's schema work overlaps. His C01 steps were done within a day of being asked: `plan/work/C01.md`, "Batu's steps", rows 1 and 1a (asked 2026-10-10, done 2026-10-11) and row 2 (asked 2026-10-11T12:29Z, done 13:37Z) **[Obs: those rows]**; so hours at most **[Inf]** | Plan Section 9's ordering principle (PC-08, 2026-10-05) | D-017 (2026-10-10) prefers a session observing itself, which this is; D-020 (2026-10-11): one read call and one scan, no build-out. Sooner at the same quality: ask sitting A in the message that reports the first part's merge; nothing sooner, since the function must exist first |
 | The bridge and the guard's tests before task 7 | B1 waits for W-C02-11 | Not set by this design (W-C02-11's) | N-136, N-174, N-181 (2026-10-11, 2026-10-12) | As W-C02-11 records |
-| Batching of Batu's steps (A; B1; B2) | When steps 2 to 5 can be done | B1's and B2's waits lie on the path to W-C02-12 and W-C02-13, each within a day by C01's record; splitting B1 from B2 saves B1's wait when W-C02-11 finishes before W-C02-09 and W-C02-10; when both are ready they form one sitting. Batu's time: about 20 minutes for A (44 short steps), 30 to 40 for B1, 10 for B2 **[Inf]** | Working order sections 7 and 8 (D-010, 2026-10-05; PC-23) | D-020 (2026-10-11): no more sittings than the order needs; Batu's principle 8 (step by step, together) |
+| Batching of Batu's steps (A; B1; B2) | When steps 2 to 5 can be done | B1's and B2's waits lie on the path to W-C02-12 and W-C02-13, each within a day by C01's record; splitting B1 from B2 saves B1's wait when W-C02-11 finishes before W-C02-09 and W-C02-10; when both are ready they form one sitting. Batu's time: about 25 minutes for A (53 short steps), 40 to 50 for B1 (102), 15 for B2 (31) besides the sessions' own run time **[Inf]**. The work is the same as before CHK-C02-010; writing it out as single actions added copy, reload and Enter steps (§7) | Working order sections 7 and 8 (D-010, 2026-10-05; PC-23) | D-020 (2026-10-11): no more sittings than the order needs; Batu's principle 8 (step by step, together) |
 | The session-opening hand-off (step 5) | When W-C02-12's real-token runs exist | Batu's B2 wait plus three short sessions, minutes to tens of minutes each **[Inf]** | P:878 item 1 (PC-06, 2026-10-05): a separate session "comes to Batu as a single, narrow question" | D-008 (the sessions' settings); D-017 and D-020 (2026-10-10, 2026-10-11): the first message is minimal and plainly defensive |
 | N-208's re-reading points | Each named work in §8's table waits for its re-reading only if a trigger fired | Under an hour each time it fires **[Inf]** | PC-21 item 9 (2026-10-10); plan 0.3 item 12 | D-017 (documentation readings preferred), D-020 |
-| `devos_ci`'s timing | Step 4, inside sitting A (§5.2) | One SQL line and one repository secret inside a sitting Batu makes anyway, minutes **[Inf]** | EV-C02-004 Y-03 (2026-10-12); B:98 ("in C02, for C03") | — |
+| `devos_ci`'s timing | Step 4, inside sitting A (§5.2) | One SQL line and one repository secret inside a sitting Batu makes anyway, minutes **[Inf]** | EV-C02-004 Y-03 (2026-10-12); B:98 ("in C02, for C03"), last set by PC-08 (commit `96220c7`, 2026-10-05; `git log -L98,98:plan/Ek_B_Veri_Modeli.md` at `560bcab`, run 2026-10-12) | None of the decision records after 2026-10-05, D-013 to D-030 (Batu's answers from 2026-10-06 to 2026-10-12), names the CI role, its key or the pull-request checks (their texts searched 2026-10-12 for "devos_ci", "CI key", "CI role" and "pull-request check": no match). None changes B:98's "in C02, for C03", which step 4 meets; and issuing the key in sitting A adds no sitting |
 | The exposure of `devos_api` in sitting A | Sitting A waits until the first part is in both projects (Y-01: `devos-test` first, `devos` only if its tests pass) | A few minutes inside sitting A **[Inf]**; none, if EV-C02-001's build moves it into row 1's sitting | EV-C02-004 Y-06 (2026-10-12); R5 S11 (2026-10-12) | D-020 (2026-10-11): no more sittings than the order needs |
-| `devos_kurulum`'s checker-verdict right ends at C03's hand-over | C03's start | None | P:872, P:1013 | D-003 (re-assessed at C03) |
+| `devos_kurulum`'s checker-verdict right ends at C03's hand-over | C03's start | None | P:872 ("Closing each stage": reviewed "until C03 by a fresh-context Checker subagent"), 2026-10-05: its content set by the D-010 transition bundle (commit `dbb24b5`, citing PC-06), its English text by W-C00-06's translation (commit `5cf796e`). P:1013 (C03's tasks: the audit environment re-reviews C00 to C02's acceptances by sample), 2026-10-05: added by PC-10 (commit `6d1ebbd`). Neither line changed after that day (`git log -L` at `560bcab`, run 2026-10-12); the plan's header date (version 2.1, 29 September 2026) is older than both | D-003 (2026-10-02) comes before both. Of the later decisions, D-019 and D-020 (2026-10-11) and D-029 (2026-10-12) tie their residuals to D-003's re-assessment at C03 and so keep the hand-over at C03. None of D-013 to D-030 moves it (searched 2026-10-12 for "C03", "binding review" and "checker") |
 
 ## 11. Notes closed or carried (point 11)
 
@@ -892,14 +1270,21 @@ No text labelled [Batu's decision] changes. Criterion 26 (P:233) is untouched.
 
 ## 13. No fact upgraded (point 13)
 
-Every platform or Supabase fact above carries **[Doc: …, read …]** with its page and reading date, or **[Inf]**. Only two kinds of fact are called observed, each with its record: C01's records cited as such (for example L-119), and the dates of Batu's C01 steps in §10. The joined header path (F-d) and G14 (F-h) are inferences. Plan line 235's "observed in C01 row 3" is corrected by PC-40, not repeated here.
+Every platform or Supabase fact above carries **[Doc: …, read …]** with its page and reading date, or **[Inf]**. Only three kinds of fact are called observed, each with its record: C01's records cited as such (for example L-119), the dates of Batu's C01 steps in §10, and, in §14, the executor's observation of this working session's tool list on 2026-10-12 (a tool named `query_logs` on the read-only Supabase connection, not called), as stated in this revision's task. What that tool reads is an inference. The joined header path (F-d) and G14 (F-h) are inferences. Plan line 235's "observed in C01 row 3" is corrected by PC-40, not repeated here.
 
 ## 14. No token, and nothing derived from one (point 14)
 
 - No value, hash, prefix, length or marker of any token or key is written in this record, in PC-43, in the step text or in the key inventory. The format's literal marker is deliberately left unwritten (§1.3). The format's strength (§1.3) is a requirement on the generator, fixed before any token exists, not a property read from a token. Hosts, the header name and the secrets' names are names, not values. The SQL lines carry no value.
-- **The design keeps the token out of every table, record and log the database writes (B 3.27).** `env_tokens` holds only the hash. A refusal is recorded as RejectedAttempt with its reason code only (§15), never the presented value or its hash, because an unknown value may be a mistyped real token or another system's secret. The derivation reads only the token header from `request.headers`.
+- **The design keeps the token out of every table, record and log the database writes (B 3.27).** `env_tokens` holds only the hash. A refusal is recorded as RejectedAttempt with its reason code only (§15), never the presented value or its hash, because an unknown value may be a mistyped real token or another system's secret. The derivation reads only the token header from `request.headers`. The Data API's own handling of the header, which no DevOS function controls, is kept out of the logs by the log check below.
 - **The claim token likewise** (§1.7): Assignment holds only its hash; only `claim`'s result carries it; its marker, like the environment token's, is left unwritten here.
 - **No `devos_api` function returns the header's value or puts it in an error** (R5 R4), nor in a notice or a raised message. Postgres logs can keep statement text and error details **[Doc: SL]**, and the gateway's log omits custom headers **[Doc: SL]**, but the rule does not rely on that.
+- **The Data API's own handling of the header (CHK-C02-010 C3).** The Data API puts every request header, the token's header among them, into `request.headers` ("JSON object of the request's headers" **[Doc: SA, read 2026-10-12]**). That it does so through a statement in the request's transaction, which Postgres logging could record with the header's value, is **[Inf]** (CHK-C02-010 point 14). Whether it does depends on the project's statement-logging settings, which were not read; nor was Supabase's "Configure statement logging" page, which SL's logs page points to. No DevOS function writes this, so the rule above does not cover it; if the statement is logged, the token sits in `devos`'s Postgres logs (F-g).
+  - **Its state: a check that keeps it out** (the log check), made by the executor, its owner, on `devos` only, since no real token reaches `devos-test` (§1.5).
+    1. *Settings, before sitting A is asked.* Through the builder's read-only connection, the executor reads `devos`'s statement-logging settings, their names and values only (none is secret). Sitting A is asked only if they do not record the Data API's statements **[Inf: that these settings decide it]**. If they would, changing them comes first, by the path the "Configure statement logging" page gives when it is read then, and sitting A waits for it. First observed: there, before sitting A.
+    2. *Logs, after a token has passed.* The executor searches `devos`'s logs, each source the tool reads, for strings of the token format's marker (§1.3), and records a count per source, never a line. When: right after §3.3's self-check, before W-C02-09 builds beyond the first part; and again after B2's sessions, before W-C02-12's record is judged. Its positive control comes first: a synthetic string of the format, made up and labelled synthetic, is put into the same logs by a read-only statement through the same connection that fails on it, so that the error, which Postgres logs, carries it **[Inf]**. The control must be counted, or the result is "could not check". Any count beyond the control is a finding. Every token that has called `devos` since the last zero count (the CI key among them, which also travels in the header, §5.2) is then revoked and renewed (P:648), and the settings are corrected before a new token is stored.
+  - **Does the builder's read-only connection read those logs?** **[Obs: the executor, this working session's tool list, 2026-10-12, as stated in this revision's task]** The read-only Supabase connection offers a tool named `query_logs`. It was not called. That it reads the projects' Postgres logs is **[Inf]** from its name; its parameters and scope were not read. So a token in those logs could reach the builder, against "The builder never sees the value" (P:648, which PC-43 place 2 keeps). Hence part 2's count-only form, and one rule: until part 2's count after B2 is zero beyond its control, the executor reads `devos`'s logs only in that form.
+  - **If the check cannot be made.** A part cannot be made if the settings cannot be read through the read-only connection, or if `query_logs` cannot return a count without returning log lines (read from the tool's own description, without calling it, before sitting A is asked). That part is then "could not check" (plan Section 8 item 14), and the path is a documented, untested residual. Its owner is the executor, who records it in its log entry (`plan/ledger/C02-log.md`) before sitting A is asked. While it stands, the executor does not read `devos`'s logs through that tool at all.
+  - **What part 1 leaves.** Logging that the statement-logging settings do not govern, for example an error raised in the statement that sets `request.headers` **[Inf]**, stays a documented, untested residual after part 1. Its owner is the executor, and part 2 is what would show it.
 - The client path never prints request headers, and a session's scan prints counts only.
 - **Tests:** W-C02-09 point 3 (looked for by value, right after issuing); W-C02-07 point 7 (the format scan of the test files, with its planted control); W-C02-12 point 9 (the format scan of the repository, branches, issue #6 and the records).
 
@@ -957,6 +1342,7 @@ What this design assumes of the items designed beside it, and what changes if an
 - It is a design. Nothing in it is observed on the platform, and every documentation fact stays untested after any verdict on it. Its independence level is same-session, fresh-context.
 - The screen names in §7 rest on CE (read 2026-10-12) and on the C01 step text; the Supabase and GitHub labels were not re-read, so each step tells Batu to stop if the screen differs.
 - G14 and the header path are provisional until §3.3's self-check.
+- Whether the Data API's handling of the header reaches `devos`'s Postgres logs is an inference; §14's log check observes it, or records it as a residual.
 - The literal format markers (the environment token's and the claim token's) are fixed by W-C02-07, not here.
 - The C02 file's "Batu's steps" table (rows 1a and 4, whose timing and content this design changes) is the executor's (EV-C02-004 Y-12) and was not changed here; N-221 says how to read it.
 - EV-C02-001 and EV-C02-002 are being revised beside this record. This revision follows EV-C02-004's decisions, not those records' final texts, which it has not seen; "Interfaces assumed" names what it takes from each.
@@ -989,10 +1375,10 @@ Revised by a second producer subagent, against `main` `eba94b1`, to the executor
 | T-1, T-3, T-4, T-7, T-8, T-9 | RejectedAttempt; `env_tokens` as EnvToken's table; "the global authority epoch"; "owner-level path" (the first version's "owner-level connection" and "test path" replaced); `none`; "test database" not used for `devos-test` | Terms; §1.4 to §1.6; §5.4; §6.3; §15; PC-43 place 7 |
 | Y-01 | The migration job's order: `devos-test`, its comparison and tests, then `devos` | §3.3; §6.3; N-221 item 2; I-1 |
 | Y-02 | `deployment_drift` named as the one function with the direct-login branch | §1.6; §4.1; §5.3; §0 row 21; PC-43 place 7; I-2 |
-| Y-03 | `devos_ci`: issued at step 4, one key from `devos`, reaching `devos` only, a repository secret; until then the checks read the run record | §5.2; §1.5; §5.5; §7 A steps 33 to 42 (no longer conditional; the `devos-test` key dropped); §10; §0 row 20; PC-43 places 2 and 4, place 12 row 22; N-125's dated line; N-222 item 5; I-3 |
+| Y-03 | `devos_ci`: issued at step 4, one key from `devos`, reaching `devos` only, a repository secret; until then the checks read the run record | §5.2; §1.5; §5.5; §7 A steps 41 to 51 (33 to 42 before CHK-C02-010; no longer conditional; the `devos-test` key dropped); §10; §0 row 20; PC-43 places 2 and 4, place 12 row 22; N-125's dated line; N-222 item 5; I-3 |
 | Y-04 | The rule of the job and of the migrations' review cited | §5.3; §6.3 route 2; I-4 |
 | Y-05 | The owner-level path in `devos-test` is the migration job's step; no other route reaches `devos-test`; row 1a's owner-only lines not needed. Following from it: the `devos-test` `devos_kurulum` token is dropped (a choice that changed; its alternative and the new reason in §1.5 and §5.1), and the header path is first observed on `devos` | §1.5; §3.1; §3.3; §4.1; §5.1; §5.4; §6.3; §7 (batches, A); §0 rows 27 and 42; PC-43 places 2, 4, 6 and 7, place 12 rows 21 and 29, alternative (J); N-221; N-222 item 2; N-125's dated line; I-5 |
-| Y-06 | The exposure of `devos_api` in both projects joins sitting A, before the self-check | §7 (batches; A steps 1 to 7 and its system check, Turkish and English); §5.5; §10; §12; §0 row 39; PC-43 place 4; N-221; I-6 |
+| Y-06 | The exposure of `devos_api` in both projects joins sitting A, before the self-check | §7 (batches; A steps 1 to 12, 1 to 7 before CHK-C02-010, and its system check, Turkish and English); §5.5; §10; §12; §0 row 39; PC-43 place 4; N-221; I-6 |
 | Y-07 | Merge order PC-41, PC-42, PC-43; place 4 changes only the first sentence and is re-quoted at merge | PC-43's Authority and place 4; I-7 |
 
 **Beyond EV-C02-004's list, to keep the record consistent with it and with `main` at `eba94b1`:**
@@ -1000,6 +1386,27 @@ Revised by a second producer subagent, against `main` `eba94b1`, to the executor
 - `devos_kurulum`'s "Cannot" in PC-43 place 5 and KI row 21 names RejectedAttempt (X-13); place 2 names where the CI key is kept (Y-03).
 - §1.7's hash rule is stated for the environment token too, so that both kinds have one rule (X-08).
 - The abbreviations' note on line numbers at `eba94b1`, the envelope's revised commit and the sources' new item.
-- §7's Turkish and English sitting A renumbered (44 steps); B1's steps 21 and 22 re-pointed to A's new numbers.
+- §7's Turkish and English sitting A renumbered (44 steps then; 53 after CHK-C02-010); B1's steps 21 and 22 re-pointed to A's new numbers (written out as single steps after CHK-C02-010, now B1's steps 45 to 57).
 
 **Not applied, and why.** None of the decisions assigned to this record was left unapplied. Part 1's X-05, X-09, X-12, X-14, X-20 and P-7's N-212 item, and part 2's Y-08 to Y-12, are other records' (EV-C02-001, EV-C02-002, the executor's); this record cites them where it relies on them (I-10, I-12, N-221).
+
+## Changes after CHK-C02-010 (2026-10-12)
+
+Made by a producer subagent in a scratch clone at `094bba1` (the design commit `819287c` with the verdict filed), to the conditions of `evidence/C02/checks/CHK-C02-010.md` (PASS-WITH-CONDITIONS). PC-43 is not changed (C3 below).
+
+| Condition | What changed | Where |
+|---|---|---|
+| C1 | Every numbered step is one action with its own see-line, and no step repeats others by number. **Written out:** A 7 as A 7 to 12 (`devos`'s exposure); A 29 as A 35, one step that returns to the dialog, since CE documents that it stays open after **Connect** (§7, "Single actions"); B1 15 and 16 as B1 17 to 27 and 28 to 38; B1 17 to 23 as 39 to 58, with B1 21 and 22 written out as 45 to 57; B1 24 and 25 as 59 to 78 and 79 to 98; B2 1 to 8 as 1 to 10; B2 9 and 10 as 11 to 20 and 21 to 30. **Split:** A 31 as A 38 (type the name) and 39 (paste the value), with A 30's "click and open a line" as 36 and 37; B1 13 as 13 (Enter), 14 (type) and 15 (paste), and the same in each environment's part; B1 26 as 99 (type `/remote-env`), 100 (Enter) and 101 (choose **Default**), with the skip condition stated before them. **Added:** before each paste of a line given on #6, a step that copies it from its box there: B2's first message (B2 8, 18 and 28), and for the same reason the SQL lines (A 14 and 43; B1 41, 61 and 81). Where a written-out step's see-line would otherwise not hold, a step makes it hold: a reload of the claude.ai/code tab (B1 17, 28, 45, 65 and 85), "delete any line in the box" (B1 40, 60 and 80, as A 42), and a new tab per session (B2 1, 11 and 21). A 47 opens GitHub in a new tab, so that #6 stays open. **Counts:** A 53 steps (was 44), B1 102 (was 27), B2 31 (was 11). **References updated:** the batches paragraph (the steps that drop out if the exposure moves to row 1's sitting: A 1 to 6 and 9 to 12); B1's former pointers to A's numbers (now written out); the system checks (none named a step number; B1's and B2's were rewritten for C2); §10's counts and times; the Revision section's rows Y-03 and Y-06 and its last bullet | §7 (batches; "Single actions"; 7.1; 7.2); §10; Revision section |
+| C2 | §6.2's first message records the non-secret `DEVOS_ENVIRONMENT` value beside `token_role_class()`'s answer (item 3) and the result of one plain request to a host outside the Trusted list (item 4), both in the result file (item 6). A new bullet says how a token stored in the wrong environment, and an environment created at the wrong network level, are caught and what follows. Another names what stays unchecked, with its reason: the environment's name against its variable; a token in an environment outside the three; a level stricter than Trusted; a request the guard refuses; his own sessions. B1's system check (Turkish and English) says the same; B2's records the two values; §0 row 26 | §6.2; §7.1 and §7.2 (B1's and B2's system checks); §0 row 26 |
+| C3 | F-g's row names the Data API's own handling of request headers (it puts them into `request.headers`, the token's header among them) as a path into `devos`'s Postgres logs, with its labels. §14 gives the path one state: a check that keeps it out, made by the executor. Part 1 reads the statement-logging settings before sitting A is asked. Part 2 is a count-only search of the logs with a positive control on a synthetic string, after the self-check (before W-C02-09 builds beyond the first part) and after B2 (before W-C02-12's record is judged). If the check cannot be made, the path is a documented, untested residual owned by the executor and recorded before sitting A. §14 records as the executor's observation of 2026-10-12 that the read-only Supabase connection offers `query_logs` (not called). It says that the connection can therefore read those logs **[Inf]**, and limits the executor's reads of them to the count-only form. A's system check (Turkish and English) names the count. Also: §0 row 51 (new); §13 (a third kind of observed fact); the envelope; "What this record cannot show". **PC-43 does not change.** Place 2's "The builder never sees the value" (P:648), place 3's text on `request.headers` and place 7's rule ("No function returns the header's value or puts it in an error or a log message") all stay true; the log check is the executor's, made before and after sitting A, and needs no plan text | §3.1; §14; §7 (A's system check); §0; §13; envelope; "What this record cannot show" |
+| C4 | Row "`devos_ci`'s timing": B:98's date (last set by PC-08, `96220c7`, 2026-10-05), and in place of "—" a check against the later decision records D-013 to D-030. Row "`devos_kurulum`'s checker-verdict right ends at C03's hand-over": P:872's date (2026-10-05; content by the D-010 transition bundle `dbb24b5`, English text by `5cf796e`) and P:1013's date (2026-10-05; PC-10, `6d1ebbd`), found with `git log -L` at `560bcab`. Its check against later decisions now names D-019, D-020 and D-029, since D-003 is older than both lines | §10 |
+
+**The verdict's non-blocking findings.**
+- *Quotation in §1.1:* taken. The CE sentence is now quoted verbatim ("Whichever level you pick, sessions can still reach these").
+- *§6.2's two-claims case:* taken. It now reads as W-C02-12 point 7 reads it: a case within one session, labelled so and not counted as the real-session case. It also says why no second session is asked for.
+- *Point 8, "an item of its own" read as a carrier note (N-220):* not taken here. The verdict leaves the reading to the executor's word, and nothing in this record changes under either reading.
+- *B:446 and B section 8 carrying the topic in two rows:* not taken. It follows EV-C02-004 P-2, the executor's decision.
+- *Merge-time steps (entry A; place 4 re-quoted after PC-41):* not taken. They are the executor's, at merge.
+- *The checker's scratch file:* not this record's.
+
+**Beyond the conditions, to keep the record consistent:** the front matter's source line for this change, and §10's batching row, which says why the step counts grew.
