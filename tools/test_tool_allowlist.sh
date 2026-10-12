@@ -204,7 +204,7 @@ t deny '{"tool_name":"Skill","tool_input":{"skill":"example-plugin:tally"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"init"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"../agents"}}'
 t deny '{"tool_name":"Skill","tool_input":{}}'
-for a in producer checker researcher prober counter-designer general-purpose; do
+for a in producer checker researcher prober counter-designer test-designer general-purpose; do
   t allow "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
 done
 t allow '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x"}}'
