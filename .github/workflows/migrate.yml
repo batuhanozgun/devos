@@ -1,0 +1,2425 @@
+# DevOS migration workflow: W-C02-03, the build of evidence/C02/EV-C02-001_migration_path.md (section 5, "The job's
+# shape"); build record evidence/C02/EV-C02-007_migration_path_build.md. Class high (tools/merge_gate.py).
+# On a push to main: devos-test (apply, compare, tests), then devos (compare, decide, apply, compare again), in that
+# order, with devos applied only on devos-test's go = yes and its own comparison (M07). On the schedule: compare and
+# search only, in each project. The only workflow that names the environments migrate-devos-test and migrate-devos;
+# no other event starts it (M04). The credential reaches only the steps that connect (M21). Nothing reads under
+# supabase/ but supabase/migrations/ (Y-09; supabase/functions/ only for its existence, until N-230).
+name: migrate
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "41 */6 * * *"
+
+permissions: {}
+
+concurrency:
+  group: migrate
+  cancel-in-progress: false
+  queue: max
+
+env:
+  CLI_VERSION: "2.120.0"
+  CLI_SHA256: "7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e"
+  W03_POOLER_CANDIDATES: "aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com"
+  W03_EXCLUDED_SCHEMAS: "auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations"
+  W03_SCHEMA_ENTRY_ONLY: "public"
+  W03_EXCLUDED_ROLES: "postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role"
+  W03_TOKEN_CLASSES: "devos_kurulum devos_calisma devos_denetim devos_sinav devos_ingest devos_ci devos_backup"
+  W03_PLANT_B64: ""
+  W03_FIXTURE_ISSUE: ""
+  W03_CLI_CONFIG: |
+    # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+    project_id = "devos-migrate"
+    [db.migrations]
+    enabled = true
+    [db.seed]
+    enabled = false
+
+jobs:
+  devos-test:
+    name: devos-test (apply, compare, test)
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: migrate-devos-test
+    permissions:
+      contents: read
+    env:
+      PROJECT: devos-test
+      PROJECT_REF: cqbzxexxwrrbrlszoseg
+      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      PGPORT: "5432"
+      PGUSER: postgres.cqbzxexxwrrbrlszoseg
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "15"
+      PGAPPNAME: devos-migrate
+      DO_NOT_TRACK: "1"
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    outputs:
+      go: ${{ steps.go.outputs.go }}
+    steps:
+      - id: head
+        name: "(1) head check: act only at main's head (M05)"
+        run: |
+          main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
+          if [ -z "$main_head" ]; then
+            echo "head check: could not check (main's head could not be read); nothing connects"
+            echo "head=unknown" >> "$GITHUB_OUTPUT"
+          elif [ "$main_head" = "$GITHUB_SHA" ]; then
+            echo "head check: yes (this run's commit ${GITHUB_SHA} is main's head)"
+            echo "head=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "head check: superseded (this run's commit ${GITHUB_SHA}; main's head ${main_head}); nothing connects"
+            echo "head=superseded" >> "$GITHUB_OUTPUT"
+          fi
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, a commit of actions/checkout (P12)
+        with:
+          persist-credentials: false
+      - id: cli
+        name: "install the command-line tool, its checksum checked (M20, P12)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/w03cli"
+          rm -rf "$d"
+          mkdir -p "$d"
+          curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
+            "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"
+          if ! printf '%s  %s\n' "$CLI_SHA256" "$d/cli.tar.gz" | sha256sum --check --status; then
+            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the job stops before any step receives the credential"
+            exit 1
+          fi
+          echo "command-line tool v${CLI_VERSION}: checksum matches the release's published SHA-256 ${CLI_SHA256}"
+          tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go
+          echo "path=$d/supabase" >> "$GITHUB_OUTPUT"
+      - id: workdir
+        name: "build the tool's working directory; expected from main's head (M08, M14, Y-09)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          w="$RUNNER_TEMP/w03work"
+          rm -rf "$w"
+          mkdir -p "$w/supabase/migrations"
+          printf '%s\n' "$W03_CLI_CONFIG" > "$w/supabase/config.toml"
+          python3 -I - "$w" <<'PY'
+          # M08 and Y-09: the command-line tool runs in a directory this step builds: the workflow's own configuration and
+          # copies of the top-level migration files only. M14: `expected` from the same files at this commit (main's head).
+          import json, os, re, shutil, sys
+          w = sys.argv[1]
+          src = "supabase/migrations"
+          pattern = re.compile(r"([0-9]+)_(.*)\.sql")
+          migrations, problems = [], []
+          if os.path.lexists("supabase/functions"):
+              problems.append("supabase/functions/ exists; its part of the comparison comes with the first Edge Function (N-230)")
+          for name in sorted(os.listdir(src)) if os.path.isdir(src) else []:
+              path = os.path.join(src, name)
+              if os.path.islink(path):
+                  problems.append(f"{path} is a symbolic link")
+              elif os.path.isdir(path):
+                  continue  # subdirectories (tests/) hold no migrations
+              elif not pattern.fullmatch(name):
+                  problems.append(f"{path} is a top-level file that is not a migration (<version>_<name>.sql)")
+              else:
+                  match = pattern.fullmatch(name)
+                  shutil.copyfile(path, os.path.join(w, "supabase", "migrations", name))
+                  migrations.append({"version": match.group(1), "name": match.group(2)})
+          versions = [m["version"] for m in migrations]
+          if len(set(versions)) != len(versions):
+              problems.append("two migration files share a version")
+          print("working directory of the command-line tool (names only):")
+          for root, _, files in sorted(os.walk(w)):
+              for f in sorted(files):
+                  print("  " + os.path.relpath(os.path.join(root, f), w))
+          expected = "" if problems else json.dumps(
+              {"commit": os.environ["GITHUB_SHA"], "migrations": migrations, "functions": []}, separators=(",", ":"))
+          for p in problems:
+              print("expected: could not check: " + p)
+          print(f"expected: {len(migrations)} migrations on main at {os.environ['GITHUB_SHA']}: {versions}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
+          PY
+      - id: pooler
+        name: "find the pooler host without the credential (P3)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          if [ -n "$POOLER_HOST" ]; then
+            echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
+            echo "host=${POOLER_HOST}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
+          found=""
+          for h in $W03_POOLER_CANDIDATES; do
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            case "$msg" in
+              *"Tenant or user not found"*) ;;
+              *password*) found="$h"; break ;;
+            esac
+          done
+          echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
+          echo "host=" >> "$GITHUB_OUTPUT"
+          exit 1
+      - id: presence
+        name: "(2) credential present: yes or no"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
+            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            echo "credential present: yes"
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          fi
+      - id: connect
+        name: "(3) connect"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+            echo "connection: succeeded"
+            echo "connected=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "connection: failed"
+            sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
+            echo "connected=no" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+      - id: listing
+        name: "(4) listing of point 10"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/listing.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select (
+          select coalesce(json_agg(o order by o), '[]'::json) from (
+            select 'schema ' || n.nspname as o
+              from pg_catalog.pg_namespace n
+             where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+               and n.nspname <> all (string_to_array(:'entry_only', ' '))
+            union
+            select coalesce('extension ' || e.extname,
+                            case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+              from pg_catalog.pg_class c
+              join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+              left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+              left join pg_catalog.pg_extension e on e.oid = d.refobjid
+             where c.relkind in ('r', 'p', 'f', 'v', 'm')
+               and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+            union
+            select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                            || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+              from pg_catalog.pg_proc p
+              join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+              left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+              left join pg_catalog.pg_extension e on e.oid = d.refobjid
+             where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+            union
+            select 'role ' || r.rolname
+              from pg_catalog.pg_roles r
+             where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+          ) s
+          )::text as w03_listing \gset
+          \echo W03LISTING :w03_listing
+          commit;
+          SQL
+          echo "listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own"
+          echo "  exclusion list, kept as data in this workflow:"
+          echo "  schemas excluded with their contents (Supabase's own): ${W03_EXCLUDED_SCHEMAS}"
+          echo "  schema entries excluded, their contents still listed: ${W03_SCHEMA_ENTRY_ONLY} (the default schema every project is created with)"
+          echo "  roles excluded (Supabase's own), besides every pg_* role: ${W03_EXCLUDED_ROLES}"
+          echo "  objects that belong to an extension are listed as that extension"
+          timeout 120 psql -X -q -A -t -v ex_schemas="$W03_EXCLUDED_SCHEMAS" -v entry_only="$W03_SCHEMA_ENTRY_ONLY" \
+            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err"
+          rc=$?
+          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err"
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          d = os.environ["W03_DIR"]
+          def listing(name):
+              for ln in open(os.path.join(d, name), encoding="utf-8"):
+                  if ln.startswith("W03LISTING "):
+                      try:
+                          v = json.loads(ln[len("W03LISTING "):])
+                          return v if isinstance(v, list) else None
+                      except ValueError:
+                          return None
+              return None
+          items, control = listing("out"), listing("control")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          if os.environ["W03_RC"] != "0" or items is None:
+              print("listing: could not check (the read did not complete)")
+              count = ""
+          else:
+              for item in items:
+                  print("listing: " + item)
+              count = str(len(items))
+              print(f"listing: {count} objects outside Supabase's own")
+          if control is None:
+              print("listing control: could not check (the same query without the exclusion list did not complete)")
+          else:
+              print(f"listing control: the same query without the exclusion list shows {len(control)} objects; "
+                    f"auth.users among them: {'yes' if 'table auth.users' in control else 'no'}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"count={count}\n")
+          raise SystemExit(0 if count else 1)
+          PY
+      - id: dryrun
+        name: "(5) dry run: the pending versions"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.workdir.outputs.dir }}
+        run: |
+          set -uo pipefail
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1
+          rc=$?
+          sed 's/^/cli: /' "$RUNNER_TEMP/w03dry.out"
+          pending="$(grep -oE '[0-9]+_[^ ]*\.sql' "$RUNNER_TEMP/w03dry.out" | sed -E 's/_.*//' | sort -u | python3 -I -c 'import json, sys; print(json.dumps(sys.stdin.read().split()))')"
+          echo "dry run: pending versions: ${pending}"
+          echo "pending=${pending}" >> "$GITHUB_OUTPUT"
+          exit $rc
+      - id: apply
+        name: "(6) apply to devos-test"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.workdir.outputs.dir }}
+        run: |
+          set -uo pipefail
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1
+          rc=$?
+          sed 's/^/cli: /' "$RUNNER_TEMP/w03apply.out"
+          echo "working directory after the command-line tool (names only):"
+          (cd "$W" && find . -type f | sort | sed 's/^/  /')
+          echo "apply: exit ${rc}"
+          exit $rc
+      - id: compare
+        name: "(7) deployment_drift in devos-test, even after a failed apply"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/compare.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
+                 (r->>'history_table_exists')::boolean as w03_hist
+            from (select json_build_object(
+              'function_exists', exists (
+                select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1
+                   and p.proargtypes[0] = 3802),
+              'history_table_exists', exists (
+                select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                 where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),
+              'listing', (
+                select coalesce(json_agg(o order by o), '[]'::json) from (
+                  select 'schema ' || n.nspname as o
+                    from pg_catalog.pg_namespace n
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                     and n.nspname <> all (string_to_array(:'entry_only', ' '))
+                  union
+                  select coalesce('extension ' || e.extname,
+                                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+                    from pg_catalog.pg_class c
+                    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where c.relkind in ('r', 'p', 'f', 'v', 'm')
+                     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+                    from pg_catalog.pg_proc p
+                    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select 'role ' || r.rolname
+                    from pg_catalog.pg_roles r
+                   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+                ) s
+              )) as r) s \gset
+          \echo W03READS :w03_reads
+          \if :w03_hist
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+            from supabase_migrations.schema_migrations \gset
+          \echo W03APPLIED :w03_applied
+          \echo W03ROWS :w03_rows
+          \endif
+          \if :w03_fn
+          select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
+          \echo W03DRIFT :w03_drift
+          \endif
+          commit;
+          \echo W03END
+          SQL
+          timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
+          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+
+
+          def classify(text):
+              """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""
+              try:
+                  r = json.loads(text)
+              except ValueError:
+                  return "could_not_check", [], "the result is not JSON"
+              if not isinstance(r, dict):
+                  return "could_not_check", [], "the result is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))
+              if status not in ("no_difference", "differences"):
+                  return "could_not_check", [], "the result's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return "could_not_check", [], "the result's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return "could_not_check", [], "the result's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return "could_not_check", [], "the result holds a difference of unknown form"
+              return status, diffs, ""
+
+          d, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])
+          out = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()
+          def tagged(tag):
+              for ln in out:
+                  if ln.startswith(tag + " "):
+                      return ln[len(tag) + 1:]
+              return None
+          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          ended = "W03END" in out
+          try:
+              reads = json.loads(reads_text) if reads_text else None
+          except ValueError:
+              reads = None
+          fm_reads, applied = "", "null"
+          if isinstance(reads, dict):
+              hist = reads.get("history_table_exists") is True
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              reads.update(complete=complete, snapshot="repeatable_read_transaction",
+                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+              fm_reads = json.dumps(reads, separators=(",", ":"))
+              if hist and complete:
+                  applied = applied_text
+          if not isinstance(reads, dict):
+              call = "timeout" if rc == 124 else "not_called"
+          elif reads.get("function_exists") is not True:
+              call = "not_called"
+          elif rc == 124:
+              call = "timeout"
+          elif rc == 0 and ended and drift_text is not None:
+              call = "ok"
+          else:
+              call = "error"
+          result_json = drift_text if call == "ok" else ""
+          kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          project = os.environ.get("PROJECT", "")
+          if isinstance(reads, dict):
+              print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
+                    f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "
+                    f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")
+          else:
+              print(f"reads in {project}: could not check (the reads did not complete)")
+          print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
+          for x in diffs:
+              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
+                           ("applied", applied)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+          PY
+      - id: dbtests
+        name: "(8) database tests, only after a clean comparison"
+        if: ${{ steps.compare.outputs.result == 'no_difference' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          files=(supabase/migrations/tests/*.sql)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "database tests: none"
+            exit 0
+          fi
+          failed=0
+          for f in "${files[@]}"; do
+            if grep -q '\\' "$f"; then
+              echo "database test ${f}: refused, it holds a backslash (a psql meta-command would run with the credential in reach)"
+              failed=1
+              continue
+            fi
+            psql -X -v ON_ERROR_STOP=1 -f "$f" > "$RUNNER_TEMP/w03test.out" 2>&1
+            rc=$?
+            sed "s|^|${f##*/}: |" "$RUNNER_TEMP/w03test.out"
+            if [ $rc -eq 0 ] && grep -Eq 'NOTICE: +[A-Z0-9_]+ PASS \(' "$RUNNER_TEMP/w03test.out"; then
+              echo "database test ${f}: passed"
+            else
+              echo "database test ${f}: not passed (psql exit ${rc})"
+              failed=1
+            fi
+          done
+          exit $failed
+      - id: tokens
+        name: "(8) synthetic tokens for the test programs, if any"
+        if: ${{ steps.dbtests.outcome == 'success' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          programs=(supabase/migrations/tests/*.py)
+          if [ ${#programs[@]} -eq 0 ]; then
+            echo "synthetic tokens: none issued (no test program)"
+            exit 0
+          fi
+          umask 077
+          python3 -I - <<'PY'
+          # EV-C02-003 section 6.3: the test issues the synthetic tokens it needs, commits them for calls over HTTP, and revokes
+          # them before the run ends. Issued with devos_private.issue_env_token(role_class) (Appendix B section 2, B:46).
+          import json, os, subprocess
+          tokens = {}
+          for role_class in os.environ["W03_TOKEN_CLASSES"].split():
+              r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"rc={role_class}", "-f", "-"],
+                                 input="select devos_private.issue_env_token(:'rc');\n", capture_output=True, text=True)
+              token = r.stdout.strip()
+              if r.returncode or not token or "\n" in token:
+                  print(f"synthetic token for {role_class}: not issued (psql exit {r.returncode})")
+                  continue
+              print("::add-mask::" + token.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"), flush=True)
+              tokens[role_class] = token
+              print(f"synthetic token for {role_class}: issued")
+          with open(os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json"), "w", encoding="utf-8") as f:
+              json.dump(tokens, f)
+          raise SystemExit(0 if len(tokens) == len(os.environ["W03_TOKEN_CLASSES"].split()) else 1)
+          PY
+      - id: dbprograms
+        name: "(8) test programs (no credential in reach of their step)"
+        if: ${{ steps.dbtests.outcome == 'success' && steps.tokens.outcome == 'success' }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          programs=(supabase/migrations/tests/*.py)
+          if [ ${#programs[@]} -eq 0 ]; then
+            echo "database test programs: none"
+            exit 0
+          fi
+          failed=0
+          for p in "${programs[@]}"; do
+            env -i PATH="/usr/bin:/bin" HOME="$RUNNER_TEMP" LANG=C.UTF-8 DEVOS_DATA_API_URL="https://${PROJECT_REF}.supabase.co" \
+              DEVOS_TEST_TOKENS_FILE="$RUNNER_TEMP/w03tokens.json" timeout 600 python3 -I "$p"
+            rc=$?
+            case $rc in
+              0) echo "database test program ${p}: pass" ;;
+              3) echo "database test program ${p}: could not check"; failed=1 ;;
+              *) echo "database test program ${p}: fail (exit ${rc})"; failed=1 ;;
+            esac
+          done
+          exit $failed
+      - id: tokens_revoke
+        name: "(8) revoke the synthetic tokens"
+        if: ${{ always() && steps.tokens.outcome != 'skipped' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -uo pipefail
+          f="$RUNNER_TEMP/w03tokens.json"
+          if [ ! -f "$f" ]; then
+            echo "synthetic tokens: none to revoke"
+            exit 0
+          fi
+          python3 -I - "$f" <<'PY'
+          # Revoked with devos_private.revoke_env_token, called with the token (EV-C02-003 section 6.3). That argument form is
+          # assumed here; W-C02-09 fixes the function's signature, and this step is changed with it if it differs.
+          import json, subprocess, sys
+          tokens = json.load(open(sys.argv[1], encoding="utf-8"))
+          bad = 0
+          for role_class, token in tokens.items():
+              r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-v", f"tok={token}", "-f", "-"],
+                                 input="select devos_private.revoke_env_token(:'tok');\n", capture_output=True, text=True)
+              print(f"synthetic token for {role_class}: {'revoked' if r.returncode == 0 else 'NOT revoked'}")
+              bad += r.returncode != 0
+          raise SystemExit(1 if bad else 0)
+          PY
+          rc=$?
+          rm -f "$f"
+          exit $rc
+      - id: go
+        name: "go = yes only after the apply, a clean comparison and the tests"
+        if: ${{ always() }}
+        env:
+          HEAD_STATE: ${{ steps.head.outputs.head }}
+          APPLY: ${{ steps.apply.outcome }}
+          RESULT: ${{ steps.compare.outputs.result }}
+          TESTS: ${{ steps.dbtests.outcome }}
+          PROGRAMS: ${{ steps.dbprograms.outcome }}
+          REVOKED: ${{ steps.tokens_revoke.outcome }}
+        run: |
+          if [ "$HEAD_STATE" != "yes" ]; then
+            go="${HEAD_STATE:-no}"
+          elif [ "$APPLY" = "success" ] && [ "$RESULT" = "no_difference" ] && [ "$TESTS" = "success" ] \
+               && [ "$PROGRAMS" = "success" ] && [ "$REVOKED" != "failure" ]; then
+            go="yes"
+          else
+            go="no"
+          fi
+          echo "devos-test go=${go} (head=${HEAD_STATE:-none} apply=${APPLY:-none} comparison=${RESULT:-none} tests=${TESTS:-none} programs=${PROGRAMS:-none} revocation=${REVOKED:-none})"
+          echo "go=${go}" >> "$GITHUB_OUTPUT"
+      - id: report
+        name: "report (names, versions, counts and statuses only)"
+        if: ${{ always() }}
+        env:
+          HEAD_STATE: ${{ steps.head.outputs.head }}
+          PRESENT: ${{ steps.presence.outputs.present }}
+          CONNECTED: ${{ steps.connect.outputs.connected }}
+          LISTING_COUNT: ${{ steps.listing.outputs.count }}
+          RESULT: ${{ steps.compare.outputs.result }}
+          RESULT_JSON: ${{ steps.compare.outputs.result_json }}
+          APPLIED: ${{ steps.compare.outputs.applied }}
+          APPLY: ${{ steps.apply.outcome }}
+          GO: ${{ steps.go.outputs.go }}
+        shell: python
+        run: |
+          import json, os
+          e = os.environ
+          def load(text, default):
+              try:
+                  return json.loads(text) if text else default
+              except ValueError:
+                  return default
+          def project_state(result, result_json, applied):
+              r = load(result_json, {})
+              diffs = r.get("differences") if isinstance(r, dict) and isinstance(r.get("differences"), list) else []
+              return {"result": result or "could_not_check",
+                      "differences": [{k: x[k] for k in ("kind", "version", "slug") if k in x} for x in diffs],
+                      "applied_versions": load(applied, None)}
+          after = e.get("AFTER_RESULT", "")
+          state = project_state(after, e.get("AFTER_JSON", ""), e.get("AFTER_APPLIED", "")) if after else \
+              project_state(e.get("RESULT", ""), e.get("RESULT_JSON", ""), e.get("APPLIED", ""))
+          report = {"project": e["PROJECT"], "event": e["GITHUB_EVENT_NAME"], "run_id": e["GITHUB_RUN_ID"],
+                    "commit": e["GITHUB_SHA"], "head": e.get("HEAD_STATE") or "none",
+                    "credential_present": e.get("PRESENT") or "none", "connection": e.get("CONNECTED") or "none",
+                    "listing_count": e.get("LISTING_COUNT") or None, **state}
+          for k, name in (("GO", "go"), ("APPLY", "apply_step"), ("DECIDE_APPLY", "apply"), ("DECIDE_REASON", "reason"),
+                          ("EXCEPTION", "first_migration_exception"), ("BEFORE_RESULT", "result_before_apply")):
+              if e.get(k) is not None:
+                  report[name] = e.get(k) or "none"
+          line = json.dumps(report, separators=(",", ":"))
+          print("W03REPORT", line)
+          if e.get("GITHUB_STEP_SUMMARY"):
+              with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")
+
+  devos:
+    name: devos (compare, decide, apply)
+    needs: devos-test
+    if: ${{ !cancelled() && github.event_name == 'push' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: migrate-devos
+    permissions:
+      contents: read
+    env:
+      PROJECT: devos
+      PROJECT_REF: zyqgltzfzkdvrmvxlamz
+      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      PGPORT: "5432"
+      PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "15"
+      PGAPPNAME: devos-migrate
+      DO_NOT_TRACK: "1"
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - id: head
+        name: "(1) head check: act only at main's head (M05)"
+        run: |
+          main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
+          if [ -z "$main_head" ]; then
+            echo "head check: could not check (main's head could not be read); nothing connects"
+            echo "head=unknown" >> "$GITHUB_OUTPUT"
+          elif [ "$main_head" = "$GITHUB_SHA" ]; then
+            echo "head check: yes (this run's commit ${GITHUB_SHA} is main's head)"
+            echo "head=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "head check: superseded (this run's commit ${GITHUB_SHA}; main's head ${main_head}); nothing connects"
+            echo "head=superseded" >> "$GITHUB_OUTPUT"
+          fi
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, a commit of actions/checkout (P12)
+        with:
+          persist-credentials: false
+      - id: cli
+        name: "install the command-line tool, its checksum checked (M20, P12)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/w03cli"
+          rm -rf "$d"
+          mkdir -p "$d"
+          curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \
+            "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"
+          if ! printf '%s  %s\n' "$CLI_SHA256" "$d/cli.tar.gz" | sha256sum --check --status; then
+            echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the job stops before any step receives the credential"
+            exit 1
+          fi
+          echo "command-line tool v${CLI_VERSION}: checksum matches the release's published SHA-256 ${CLI_SHA256}"
+          tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go
+          echo "path=$d/supabase" >> "$GITHUB_OUTPUT"
+      - id: workdir
+        name: "build the tool's working directory; expected from main's head (M08, M14, Y-09)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          w="$RUNNER_TEMP/w03work"
+          rm -rf "$w"
+          mkdir -p "$w/supabase/migrations"
+          printf '%s\n' "$W03_CLI_CONFIG" > "$w/supabase/config.toml"
+          python3 -I - "$w" <<'PY'
+          # M08 and Y-09: the command-line tool runs in a directory this step builds: the workflow's own configuration and
+          # copies of the top-level migration files only. M14: `expected` from the same files at this commit (main's head).
+          import json, os, re, shutil, sys
+          w = sys.argv[1]
+          src = "supabase/migrations"
+          pattern = re.compile(r"([0-9]+)_(.*)\.sql")
+          migrations, problems = [], []
+          if os.path.lexists("supabase/functions"):
+              problems.append("supabase/functions/ exists; its part of the comparison comes with the first Edge Function (N-230)")
+          for name in sorted(os.listdir(src)) if os.path.isdir(src) else []:
+              path = os.path.join(src, name)
+              if os.path.islink(path):
+                  problems.append(f"{path} is a symbolic link")
+              elif os.path.isdir(path):
+                  continue  # subdirectories (tests/) hold no migrations
+              elif not pattern.fullmatch(name):
+                  problems.append(f"{path} is a top-level file that is not a migration (<version>_<name>.sql)")
+              else:
+                  match = pattern.fullmatch(name)
+                  shutil.copyfile(path, os.path.join(w, "supabase", "migrations", name))
+                  migrations.append({"version": match.group(1), "name": match.group(2)})
+          versions = [m["version"] for m in migrations]
+          if len(set(versions)) != len(versions):
+              problems.append("two migration files share a version")
+          print("working directory of the command-line tool (names only):")
+          for root, _, files in sorted(os.walk(w)):
+              for f in sorted(files):
+                  print("  " + os.path.relpath(os.path.join(root, f), w))
+          expected = "" if problems else json.dumps(
+              {"commit": os.environ["GITHUB_SHA"], "migrations": migrations, "functions": []}, separators=(",", ":"))
+          for p in problems:
+              print("expected: could not check: " + p)
+          print(f"expected: {len(migrations)} migrations on main at {os.environ['GITHUB_SHA']}: {versions}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
+          PY
+      - id: pooler
+        name: "find the pooler host without the credential (P3)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          if [ -n "$POOLER_HOST" ]; then
+            echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
+            echo "host=${POOLER_HOST}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
+          found=""
+          for h in $W03_POOLER_CANDIDATES; do
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            case "$msg" in
+              *"Tenant or user not found"*) ;;
+              *password*) found="$h"; break ;;
+            esac
+          done
+          echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
+          echo "host=" >> "$GITHUB_OUTPUT"
+          exit 1
+      - id: presence
+        name: "(2) credential present: yes or no"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
+            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            echo "credential present: yes"
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          fi
+      - id: connect
+        name: "(3) connect"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+            echo "connection: succeeded"
+            echo "connected=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "connection: failed"
+            sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
+            echo "connected=no" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+      - id: listing
+        name: "(4) listing of point 10"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/listing.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select (
+          select coalesce(json_agg(o order by o), '[]'::json) from (
+            select 'schema ' || n.nspname as o
+              from pg_catalog.pg_namespace n
+             where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+               and n.nspname <> all (string_to_array(:'entry_only', ' '))
+            union
+            select coalesce('extension ' || e.extname,
+                            case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+              from pg_catalog.pg_class c
+              join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+              left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+              left join pg_catalog.pg_extension e on e.oid = d.refobjid
+             where c.relkind in ('r', 'p', 'f', 'v', 'm')
+               and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+            union
+            select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                            || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+              from pg_catalog.pg_proc p
+              join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+              left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+              left join pg_catalog.pg_extension e on e.oid = d.refobjid
+             where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+               and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+            union
+            select 'role ' || r.rolname
+              from pg_catalog.pg_roles r
+             where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+          ) s
+          )::text as w03_listing \gset
+          \echo W03LISTING :w03_listing
+          commit;
+          SQL
+          echo "listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own"
+          echo "  exclusion list, kept as data in this workflow:"
+          echo "  schemas excluded with their contents (Supabase's own): ${W03_EXCLUDED_SCHEMAS}"
+          echo "  schema entries excluded, their contents still listed: ${W03_SCHEMA_ENTRY_ONLY} (the default schema every project is created with)"
+          echo "  roles excluded (Supabase's own), besides every pg_* role: ${W03_EXCLUDED_ROLES}"
+          echo "  objects that belong to an extension are listed as that extension"
+          timeout 120 psql -X -q -A -t -v ex_schemas="$W03_EXCLUDED_SCHEMAS" -v entry_only="$W03_SCHEMA_ENTRY_ONLY" \
+            -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err"
+          rc=$?
+          timeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err"
+          W03_RC=$rc W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          d = os.environ["W03_DIR"]
+          def listing(name):
+              for ln in open(os.path.join(d, name), encoding="utf-8"):
+                  if ln.startswith("W03LISTING "):
+                      try:
+                          v = json.loads(ln[len("W03LISTING "):])
+                          return v if isinstance(v, list) else None
+                      except ValueError:
+                          return None
+              return None
+          items, control = listing("out"), listing("control")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          if os.environ["W03_RC"] != "0" or items is None:
+              print("listing: could not check (the read did not complete)")
+              count = ""
+          else:
+              for item in items:
+                  print("listing: " + item)
+              count = str(len(items))
+              print(f"listing: {count} objects outside Supabase's own")
+          if control is None:
+              print("listing control: could not check (the same query without the exclusion list did not complete)")
+          else:
+              print(f"listing control: the same query without the exclusion list shows {len(control)} objects; "
+                    f"auth.users among them: {'yes' if 'table auth.users' in control else 'no'}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"count={count}\n")
+          raise SystemExit(0 if count else 1)
+          PY
+      - id: compare
+        name: "(5) deployment_drift in devos before its apply, with the three reads in one snapshot"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/compare.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
+                 (r->>'history_table_exists')::boolean as w03_hist
+            from (select json_build_object(
+              'function_exists', exists (
+                select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1
+                   and p.proargtypes[0] = 3802),
+              'history_table_exists', exists (
+                select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                 where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),
+              'listing', (
+                select coalesce(json_agg(o order by o), '[]'::json) from (
+                  select 'schema ' || n.nspname as o
+                    from pg_catalog.pg_namespace n
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                     and n.nspname <> all (string_to_array(:'entry_only', ' '))
+                  union
+                  select coalesce('extension ' || e.extname,
+                                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+                    from pg_catalog.pg_class c
+                    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where c.relkind in ('r', 'p', 'f', 'v', 'm')
+                     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+                    from pg_catalog.pg_proc p
+                    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select 'role ' || r.rolname
+                    from pg_catalog.pg_roles r
+                   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+                ) s
+              )) as r) s \gset
+          \echo W03READS :w03_reads
+          \if :w03_hist
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+            from supabase_migrations.schema_migrations \gset
+          \echo W03APPLIED :w03_applied
+          \echo W03ROWS :w03_rows
+          \endif
+          \if :w03_fn
+          select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
+          \echo W03DRIFT :w03_drift
+          \endif
+          commit;
+          \echo W03END
+          SQL
+          timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
+          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+
+
+          def classify(text):
+              """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""
+              try:
+                  r = json.loads(text)
+              except ValueError:
+                  return "could_not_check", [], "the result is not JSON"
+              if not isinstance(r, dict):
+                  return "could_not_check", [], "the result is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))
+              if status not in ("no_difference", "differences"):
+                  return "could_not_check", [], "the result's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return "could_not_check", [], "the result's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return "could_not_check", [], "the result's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return "could_not_check", [], "the result holds a difference of unknown form"
+              return status, diffs, ""
+
+          d, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])
+          out = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()
+          def tagged(tag):
+              for ln in out:
+                  if ln.startswith(tag + " "):
+                      return ln[len(tag) + 1:]
+              return None
+          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          ended = "W03END" in out
+          try:
+              reads = json.loads(reads_text) if reads_text else None
+          except ValueError:
+              reads = None
+          fm_reads, applied = "", "null"
+          if isinstance(reads, dict):
+              hist = reads.get("history_table_exists") is True
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              reads.update(complete=complete, snapshot="repeatable_read_transaction",
+                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+              fm_reads = json.dumps(reads, separators=(",", ":"))
+              if hist and complete:
+                  applied = applied_text
+          if not isinstance(reads, dict):
+              call = "timeout" if rc == 124 else "not_called"
+          elif reads.get("function_exists") is not True:
+              call = "not_called"
+          elif rc == 124:
+              call = "timeout"
+          elif rc == 0 and ended and drift_text is not None:
+              call = "ok"
+          else:
+              call = "error"
+          result_json = drift_text if call == "ok" else ""
+          kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          project = os.environ.get("PROJECT", "")
+          if isinstance(reads, dict):
+              print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
+                    f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "
+                    f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")
+          else:
+              print(f"reads in {project}: could not check (the reads did not complete)")
+          print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
+          for x in diffs:
+              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
+                           ("applied", applied)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+          PY
+      - id: decide
+        name: "decide the devos apply (M07, M16, the first-migration exception)"
+        if: ${{ !cancelled() }}
+        env:
+          GO: ${{ needs.devos-test.outputs.go }}
+          FM_READS: ${{ steps.compare.outputs.fm_reads }}
+          DRIFT_CALL: ${{ steps.compare.outputs.call }}
+          DRIFT_RESULT: ${{ steps.compare.outputs.result_json }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        shell: python
+        run: |
+          # The decision of the devos job's apply (EV-C02-001 M07, M16; section 5, "The job's shape" and "The first-migration
+          # exception"; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). Inputs come only through env; outputs go to
+          # GITHUB_OUTPUT. It holds no secret and connects to nothing.
+          import json, os, re
+
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+          SNAPSHOTS = ("one_statement", "repeatable_read_transaction")
+
+
+          def load(name):
+              text = os.environ.get(name, "")
+              if not text:
+                  return None, f"{name} is absent"
+              try:
+                  return json.loads(text), None
+              except ValueError:
+                  return None, f"{name} is not JSON"
+
+
+          def check_expected():
+              e, err = load("EXPECTED")
+              if err:
+                  return None, err
+              if not isinstance(e, dict):
+                  return None, "EXPECTED is not an object"
+              if not isinstance(e.get("commit"), str) or not re.fullmatch(r"[0-9a-f]{40}([0-9a-f]{24})?", e["commit"]):
+                  return None, "EXPECTED has no valid commit"
+              if not isinstance(e.get("migrations"), list) or not isinstance(e.get("functions"), list):
+                  return None, "EXPECTED lacks its migrations or functions list"
+              versions = []
+              for m in e["migrations"]:
+                  if not isinstance(m, dict) or not isinstance(m.get("version"), str) or not re.fullmatch(r"[0-9]+", m["version"]) \
+                          or not isinstance(m.get("name"), str) or m["version"] in versions:
+                      return None, "EXPECTED holds a malformed or repeated migration"
+                  versions.append(m["version"])
+              slugs = []
+              for f in e["functions"]:
+                  if not isinstance(f, dict) or not isinstance(f.get("slug"), str) or not f["slug"] or f["slug"] in slugs \
+                          or not isinstance(f.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", f["sha256"]):
+                      return None, "EXPECTED holds a malformed or repeated function"
+                  slugs.append(f["slug"])
+              return versions, None
+
+
+          def check_reads():
+              """The first-migration exception's three reads. (reads, field that shows the problem, problem)."""
+              r, err = load("FM_READS")
+              if err:
+                  return None, "FM_READS", err
+              if not isinstance(r, dict):
+                  return None, "FM_READS", "FM_READS is not an object"
+              for field in ("function_exists", "history_table_exists"):
+                  if not isinstance(r.get(field), bool):
+                      return None, field, f"{field} is missing or not a boolean"
+              if not isinstance(r.get("listing"), list) or not all(isinstance(x, str) for x in r["listing"]):
+                  return None, "listing", "listing is missing, failed or malformed"
+              if r.get("complete") is not True:
+                  return None, "complete", "complete is not true: the reads did not all finish"
+              if r.get("snapshot") not in SNAPSHOTS:
+                  return None, "snapshot", f"snapshot={r.get('snapshot')!r} is not one of the two allowed forms"
+              rows = r.get("history_rows")
+              if rows is not None and (isinstance(rows, bool) or not isinstance(rows, int)):
+                  return None, "history_rows", "history_rows is not a count"
+              return r, None, None
+
+
+          def check_result():
+              call = os.environ.get("DRIFT_CALL", "")
+              if call != "ok":
+                  return None, f"DRIFT_CALL={call or 'absent'}: no usable result"
+              r, err = load("DRIFT_RESULT")
+              if err:
+                  return None, err
+              if not isinstance(r, dict):
+                  return None, "DRIFT_RESULT is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return None, "deployment_drift answered could_not_check"
+              if status not in ("no_difference", "differences"):
+                  return None, "DRIFT_RESULT's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return None, "DRIFT_RESULT's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return None, "DRIFT_RESULT's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return None, "DRIFT_RESULT holds a difference of unknown form"
+              return r, None
+
+
+          def finish(apply, kind, exception, reason, line, pending=None):
+              reason = " ".join(str(reason).split())
+              print(line)
+              print(f"decide: apply={apply} result_kind={kind} exception={exception}; {reason}")
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+                  f.write(f"apply={apply}\nresult_kind={kind}\nexception={exception}\nreason={reason}\n")
+                  if pending is not None:
+                      f.write(f"pending={json.dumps(pending)}\n")
+              if os.environ.get("GITHUB_STEP_SUMMARY"):
+                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                      f.write(f"### devos: decision\n\n- apply: {apply}\n- result: {kind}\n- {line}\n- reason: {reason}\n")
+
+
+          go = os.environ.get("GO", "")
+          expected, expected_err = check_expected()
+          reads, field, reads_err = check_reads()
+          NOT_TAKEN = "first-migration exception: not taken"
+
+          if reads is None:
+              finish("no", "could_not_check", "not_taken", f"the three reads are not usable ({reads_err})",
+                     f"{NOT_TAKEN} ({field}: {reads_err})")
+          elif not reads["function_exists"]:
+              state = (f"function_exists=false history_table_exists={str(reads['history_table_exists']).lower()} "
+                       f"history_rows={reads.get('history_rows')} listing={json.dumps(reads['listing'])} "
+                       f"snapshot={reads['snapshot']} complete=true")
+              if os.environ.get("DRIFT_CALL", "") != "not_called" or os.environ.get("DRIFT_RESULT", ""):
+                  finish("no", "could_not_check", "not_taken", "the reads say deployment_drift is absent, but a call was made",
+                         f"{NOT_TAKEN} (DRIFT_CALL={os.environ.get('DRIFT_CALL', '') or 'absent'} and DRIFT_RESULT contradict "
+                         f"the reads; {state})")
+              elif reads["history_table_exists"]:
+                  finish("no", "could_not_check", "not_taken", "the history table exists without deployment_drift",
+                         f"{NOT_TAKEN} (history_table_exists=true, history_rows={reads.get('history_rows')}, without the "
+                         f"function: not the never-pushed state; {state})")
+              elif reads["listing"]:
+                  finish("no", "could_not_check", "not_taken", f"the listing holds {len(reads['listing'])} objects outside "
+                         f"Supabase's own", f"{NOT_TAKEN} (listing is not empty: {json.dumps(reads['listing'])})")
+              elif expected is None:
+                  finish("no", "could_not_check", "not_taken", expected_err, f"{NOT_TAKEN} (EXPECTED unusable: {expected_err})")
+              else:
+                  line = (f"first-migration exception: taken (function_exists=false, history_table_exists=false, listing=[], "
+                          f"snapshot={reads['snapshot']}, complete=true)")
+                  if not expected:
+                      finish("no", "no_difference", "taken", "nothing on main to apply", line, [])
+                  elif go != "yes":
+                      finish("no", "differences", "taken", f"devos-test go={go or 'absent'}", line, expected)
+                  else:
+                      finish("yes", "differences", "taken", f"never-pushed state: every version on main is pending ({len(expected)})",
+                             line, expected)
+          else:
+              line = f"{NOT_TAKEN} (function_exists=true: deployment_drift exists, so step (5) uses its result)"
+              if not reads["history_table_exists"]:
+                  finish("no", "could_not_check", "not_taken", "deployment_drift exists but the history table does not "
+                         "(history_table_exists=false)", line)
+              elif expected is None:
+                  finish("no", "could_not_check", "not_taken", expected_err, line)
+              else:
+                  result, err = check_result()
+                  if result is None:
+                      finish("no", "could_not_check", "not_taken", err, line)
+                  elif result["status"] == "no_difference":
+                      finish("no", "no_difference", "not_taken", "no difference: nothing to apply", line)
+                  else:
+                      diffs = result["differences"]
+                      pending = [x["version"] for x in diffs if x["kind"] == "on_main_not_applied"]
+                      others = [x for x in diffs if x["kind"] != "on_main_not_applied"]
+                      if others:
+                          kinds = sorted({x["kind"] for x in others})
+                          finish("no", "differences", "not_taken", f"devos differs from main other than by pending migrations: "
+                                 f"{len(others)} ({', '.join(kinds)})", line)
+                      elif not set(pending) <= set(expected):
+                          finish("no", "could_not_check", "not_taken", "a pending version is not on main's expected list", line)
+                      elif go != "yes":
+                          finish("no", "differences", "not_taken", f"devos-test go={go or 'absent'}", line, pending)
+                      else:
+                          finish("yes", "differences", "not_taken", f"only migrations on main, not applied: {len(pending)}",
+                                 line, pending)
+      - id: dryrun
+        name: "(6) dry run: the pending versions"
+        if: ${{ steps.decide.outputs.apply == 'yes' && steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.workdir.outputs.dir }}
+        run: |
+          set -uo pipefail
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1
+          rc=$?
+          sed 's/^/cli: /' "$RUNNER_TEMP/w03dry.out"
+          pending="$(grep -oE '[0-9]+_[^ ]*\.sql' "$RUNNER_TEMP/w03dry.out" | sed -E 's/_.*//' | sort -u | python3 -I -c 'import json, sys; print(json.dumps(sys.stdin.read().split()))')"
+          echo "dry run: pending versions: ${pending}"
+          echo "pending=${pending}" >> "$GITHUB_OUTPUT"
+          exit $rc
+      - id: apply
+        name: "(7) apply to devos"
+        if: ${{ steps.decide.outputs.apply == 'yes' && steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.workdir.outputs.dir }}
+        run: |
+          set -uo pipefail
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1
+          rc=$?
+          sed 's/^/cli: /' "$RUNNER_TEMP/w03apply.out"
+          echo "working directory after the command-line tool (names only):"
+          (cd "$W" && find . -type f | sort | sed 's/^/  /')
+          echo "apply: exit ${rc}"
+          exit $rc
+      - id: compare_after
+        name: "(8) deployment_drift in devos again after an apply"
+        if: ${{ !cancelled() && steps.apply.outcome != 'skipped' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/compare.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
+                 (r->>'history_table_exists')::boolean as w03_hist
+            from (select json_build_object(
+              'function_exists', exists (
+                select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1
+                   and p.proargtypes[0] = 3802),
+              'history_table_exists', exists (
+                select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                 where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),
+              'listing', (
+                select coalesce(json_agg(o order by o), '[]'::json) from (
+                  select 'schema ' || n.nspname as o
+                    from pg_catalog.pg_namespace n
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                     and n.nspname <> all (string_to_array(:'entry_only', ' '))
+                  union
+                  select coalesce('extension ' || e.extname,
+                                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+                    from pg_catalog.pg_class c
+                    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where c.relkind in ('r', 'p', 'f', 'v', 'm')
+                     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+                    from pg_catalog.pg_proc p
+                    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select 'role ' || r.rolname
+                    from pg_catalog.pg_roles r
+                   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+                ) s
+              )) as r) s \gset
+          \echo W03READS :w03_reads
+          \if :w03_hist
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+            from supabase_migrations.schema_migrations \gset
+          \echo W03APPLIED :w03_applied
+          \echo W03ROWS :w03_rows
+          \endif
+          \if :w03_fn
+          select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
+          \echo W03DRIFT :w03_drift
+          \endif
+          commit;
+          \echo W03END
+          SQL
+          timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
+          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+
+
+          def classify(text):
+              """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""
+              try:
+                  r = json.loads(text)
+              except ValueError:
+                  return "could_not_check", [], "the result is not JSON"
+              if not isinstance(r, dict):
+                  return "could_not_check", [], "the result is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))
+              if status not in ("no_difference", "differences"):
+                  return "could_not_check", [], "the result's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return "could_not_check", [], "the result's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return "could_not_check", [], "the result's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return "could_not_check", [], "the result holds a difference of unknown form"
+              return status, diffs, ""
+
+          d, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])
+          out = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()
+          def tagged(tag):
+              for ln in out:
+                  if ln.startswith(tag + " "):
+                      return ln[len(tag) + 1:]
+              return None
+          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          ended = "W03END" in out
+          try:
+              reads = json.loads(reads_text) if reads_text else None
+          except ValueError:
+              reads = None
+          fm_reads, applied = "", "null"
+          if isinstance(reads, dict):
+              hist = reads.get("history_table_exists") is True
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              reads.update(complete=complete, snapshot="repeatable_read_transaction",
+                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+              fm_reads = json.dumps(reads, separators=(",", ":"))
+              if hist and complete:
+                  applied = applied_text
+          if not isinstance(reads, dict):
+              call = "timeout" if rc == 124 else "not_called"
+          elif reads.get("function_exists") is not True:
+              call = "not_called"
+          elif rc == 124:
+              call = "timeout"
+          elif rc == 0 and ended and drift_text is not None:
+              call = "ok"
+          else:
+              call = "error"
+          result_json = drift_text if call == "ok" else ""
+          kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          project = os.environ.get("PROJECT", "")
+          if isinstance(reads, dict):
+              print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
+                    f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "
+                    f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")
+          else:
+              print(f"reads in {project}: could not check (the reads did not complete)")
+          print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
+          for x in diffs:
+              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
+                           ("applied", applied)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+          PY
+      - id: report
+        name: "report (names, versions, counts and statuses only)"
+        if: ${{ always() }}
+        env:
+          HEAD_STATE: ${{ steps.head.outputs.head }}
+          PRESENT: ${{ steps.presence.outputs.present }}
+          CONNECTED: ${{ steps.connect.outputs.connected }}
+          LISTING_COUNT: ${{ steps.listing.outputs.count }}
+          RESULT: ${{ steps.compare.outputs.result }}
+          RESULT_JSON: ${{ steps.compare.outputs.result_json }}
+          APPLIED: ${{ steps.compare.outputs.applied }}
+          BEFORE_RESULT: ${{ steps.compare.outputs.result }}
+          AFTER_RESULT: ${{ steps.compare_after.outputs.result }}
+          AFTER_JSON: ${{ steps.compare_after.outputs.result_json }}
+          AFTER_APPLIED: ${{ steps.compare_after.outputs.applied }}
+          DECIDE_APPLY: ${{ steps.decide.outputs.apply }}
+          DECIDE_REASON: ${{ steps.decide.outputs.reason }}
+          EXCEPTION: ${{ steps.decide.outputs.exception }}
+        shell: python
+        run: |
+          import json, os
+          e = os.environ
+          def load(text, default):
+              try:
+                  return json.loads(text) if text else default
+              except ValueError:
+                  return default
+          def project_state(result, result_json, applied):
+              r = load(result_json, {})
+              diffs = r.get("differences") if isinstance(r, dict) and isinstance(r.get("differences"), list) else []
+              return {"result": result or "could_not_check",
+                      "differences": [{k: x[k] for k in ("kind", "version", "slug") if k in x} for x in diffs],
+                      "applied_versions": load(applied, None)}
+          after = e.get("AFTER_RESULT", "")
+          state = project_state(after, e.get("AFTER_JSON", ""), e.get("AFTER_APPLIED", "")) if after else \
+              project_state(e.get("RESULT", ""), e.get("RESULT_JSON", ""), e.get("APPLIED", ""))
+          report = {"project": e["PROJECT"], "event": e["GITHUB_EVENT_NAME"], "run_id": e["GITHUB_RUN_ID"],
+                    "commit": e["GITHUB_SHA"], "head": e.get("HEAD_STATE") or "none",
+                    "credential_present": e.get("PRESENT") or "none", "connection": e.get("CONNECTED") or "none",
+                    "listing_count": e.get("LISTING_COUNT") or None, **state}
+          for k, name in (("GO", "go"), ("APPLY", "apply_step"), ("DECIDE_APPLY", "apply"), ("DECIDE_REASON", "reason"),
+                          ("EXCEPTION", "first_migration_exception"), ("BEFORE_RESULT", "result_before_apply")):
+              if e.get(k) is not None:
+                  report[name] = e.get(k) or "none"
+          line = json.dumps(report, separators=(",", ":"))
+          print("W03REPORT", line)
+          if e.get("GITHUB_STEP_SUMMARY"):
+              with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")
+
+  check-devos-test:
+    name: check-devos-test (compare and search; applies nothing)
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: migrate-devos-test
+    permissions:
+      contents: read
+      issues: read
+      actions: read
+    env:
+      PROJECT: devos-test
+      PROJECT_REF: cqbzxexxwrrbrlszoseg
+      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      PGPORT: "5432"
+      PGUSER: postgres.cqbzxexxwrrbrlszoseg
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "15"
+      PGAPPNAME: devos-migrate
+      DO_NOT_TRACK: "1"
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - id: head
+        name: "(1) head check: act only at main's head (M05)"
+        run: |
+          main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
+          if [ -z "$main_head" ]; then
+            echo "head check: could not check (main's head could not be read); nothing connects"
+            echo "head=unknown" >> "$GITHUB_OUTPUT"
+          elif [ "$main_head" = "$GITHUB_SHA" ]; then
+            echo "head check: yes (this run's commit ${GITHUB_SHA} is main's head)"
+            echo "head=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "head check: superseded (this run's commit ${GITHUB_SHA}; main's head ${main_head}); nothing connects"
+            echo "head=superseded" >> "$GITHUB_OUTPUT"
+          fi
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, a commit of actions/checkout (P12)
+        with:
+          persist-credentials: false
+      - id: workdir
+        name: "expected from main's head (M14)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          w="$RUNNER_TEMP/w03work"
+          rm -rf "$w"
+          mkdir -p "$w/supabase/migrations"
+          printf '%s\n' "$W03_CLI_CONFIG" > "$w/supabase/config.toml"
+          python3 -I - "$w" <<'PY'
+          # M08 and Y-09: the command-line tool runs in a directory this step builds: the workflow's own configuration and
+          # copies of the top-level migration files only. M14: `expected` from the same files at this commit (main's head).
+          import json, os, re, shutil, sys
+          w = sys.argv[1]
+          src = "supabase/migrations"
+          pattern = re.compile(r"([0-9]+)_(.*)\.sql")
+          migrations, problems = [], []
+          if os.path.lexists("supabase/functions"):
+              problems.append("supabase/functions/ exists; its part of the comparison comes with the first Edge Function (N-230)")
+          for name in sorted(os.listdir(src)) if os.path.isdir(src) else []:
+              path = os.path.join(src, name)
+              if os.path.islink(path):
+                  problems.append(f"{path} is a symbolic link")
+              elif os.path.isdir(path):
+                  continue  # subdirectories (tests/) hold no migrations
+              elif not pattern.fullmatch(name):
+                  problems.append(f"{path} is a top-level file that is not a migration (<version>_<name>.sql)")
+              else:
+                  match = pattern.fullmatch(name)
+                  shutil.copyfile(path, os.path.join(w, "supabase", "migrations", name))
+                  migrations.append({"version": match.group(1), "name": match.group(2)})
+          versions = [m["version"] for m in migrations]
+          if len(set(versions)) != len(versions):
+              problems.append("two migration files share a version")
+          print("working directory of the command-line tool (names only):")
+          for root, _, files in sorted(os.walk(w)):
+              for f in sorted(files):
+                  print("  " + os.path.relpath(os.path.join(root, f), w))
+          expected = "" if problems else json.dumps(
+              {"commit": os.environ["GITHUB_SHA"], "migrations": migrations, "functions": []}, separators=(",", ":"))
+          for p in problems:
+              print("expected: could not check: " + p)
+          print(f"expected: {len(migrations)} migrations on main at {os.environ['GITHUB_SHA']}: {versions}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
+          PY
+      - id: pooler
+        name: "find the pooler host without the credential (P3)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          if [ -n "$POOLER_HOST" ]; then
+            echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
+            echo "host=${POOLER_HOST}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
+          found=""
+          for h in $W03_POOLER_CANDIDATES; do
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            case "$msg" in
+              *"Tenant or user not found"*) ;;
+              *password*) found="$h"; break ;;
+            esac
+          done
+          echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
+          echo "host=" >> "$GITHUB_OUTPUT"
+          exit 1
+      - id: presence
+        name: "(2) credential present: yes or no"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
+            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            echo "credential present: yes"
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          fi
+      - id: connect
+        name: "(3) connect"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+            echo "connection: succeeded"
+            echo "connected=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "connection: failed"
+            sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
+            echo "connected=no" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+      - id: compare
+        name: "deployment_drift (also keeps the project active, M17)"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/compare.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
+                 (r->>'history_table_exists')::boolean as w03_hist
+            from (select json_build_object(
+              'function_exists', exists (
+                select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1
+                   and p.proargtypes[0] = 3802),
+              'history_table_exists', exists (
+                select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                 where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),
+              'listing', (
+                select coalesce(json_agg(o order by o), '[]'::json) from (
+                  select 'schema ' || n.nspname as o
+                    from pg_catalog.pg_namespace n
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                     and n.nspname <> all (string_to_array(:'entry_only', ' '))
+                  union
+                  select coalesce('extension ' || e.extname,
+                                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+                    from pg_catalog.pg_class c
+                    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where c.relkind in ('r', 'p', 'f', 'v', 'm')
+                     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+                    from pg_catalog.pg_proc p
+                    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select 'role ' || r.rolname
+                    from pg_catalog.pg_roles r
+                   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+                ) s
+              )) as r) s \gset
+          \echo W03READS :w03_reads
+          \if :w03_hist
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+            from supabase_migrations.schema_migrations \gset
+          \echo W03APPLIED :w03_applied
+          \echo W03ROWS :w03_rows
+          \endif
+          \if :w03_fn
+          select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
+          \echo W03DRIFT :w03_drift
+          \endif
+          commit;
+          \echo W03END
+          SQL
+          timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
+          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+
+
+          def classify(text):
+              """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""
+              try:
+                  r = json.loads(text)
+              except ValueError:
+                  return "could_not_check", [], "the result is not JSON"
+              if not isinstance(r, dict):
+                  return "could_not_check", [], "the result is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))
+              if status not in ("no_difference", "differences"):
+                  return "could_not_check", [], "the result's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return "could_not_check", [], "the result's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return "could_not_check", [], "the result's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return "could_not_check", [], "the result holds a difference of unknown form"
+              return status, diffs, ""
+
+          d, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])
+          out = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()
+          def tagged(tag):
+              for ln in out:
+                  if ln.startswith(tag + " "):
+                      return ln[len(tag) + 1:]
+              return None
+          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          ended = "W03END" in out
+          try:
+              reads = json.loads(reads_text) if reads_text else None
+          except ValueError:
+              reads = None
+          fm_reads, applied = "", "null"
+          if isinstance(reads, dict):
+              hist = reads.get("history_table_exists") is True
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              reads.update(complete=complete, snapshot="repeatable_read_transaction",
+                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+              fm_reads = json.dumps(reads, separators=(",", ":"))
+              if hist and complete:
+                  applied = applied_text
+          if not isinstance(reads, dict):
+              call = "timeout" if rc == 124 else "not_called"
+          elif reads.get("function_exists") is not True:
+              call = "not_called"
+          elif rc == 124:
+              call = "timeout"
+          elif rc == 0 and ended and drift_text is not None:
+              call = "ok"
+          else:
+              call = "error"
+          result_json = drift_text if call == "ok" else ""
+          kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          project = os.environ.get("PROJECT", "")
+          if isinstance(reads, dict):
+              print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
+                    f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "
+                    f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")
+          else:
+              print(f"reads in {project}: could not check (the reads did not complete)")
+          print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
+          for x in diffs:
+              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
+                           ("applied", applied)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+          PY
+      - id: search
+        name: "point 9: count matches of this project's credential where a session can read"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          # Point 9's search (EV-C02-001 section 10; tests/C02/W-C02-03/T-W03-09_credential_search.md). This step holds this
+          # job's own project's value. Everything it reads is data: it is only counted with a fixed-string count, never run,
+          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded).
+          import base64, io, json, os, subprocess, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
+          token = os.environ.get("GH_TOKEN", "")
+          this_run = os.environ.get("GITHUB_RUN_ID", "")
+
+
+          def forms(v):
+              return {"plain": v.encode(), "percent": urllib.parse.quote(v, safe="").encode()}
+
+
+          needles = {}
+          if os.environ.get("SUPABASE_DB_PASSWORD"):
+              needles["credential"] = forms(os.environ["SUPABASE_DB_PASSWORD"])
+          if os.environ.get("W03_PLANT_B64"):
+              needles["plant"] = forms(base64.b64decode(os.environ["W03_PLANT_B64"]).decode())
+          counts, places, gaps = {}, [], []
+
+
+          def count(place, data):
+              if place not in places:
+                  places.append(place)
+              for who, fs in needles.items():
+                  for form, needle in fs.items():
+                      counts[(who, place, form)] = counts.get((who, place, form), 0) + data.count(needle)
+
+
+          def get(url):
+              req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "devos-migrate",
+                                                         "X-GitHub-Api-Version": "2022-11-28"})
+              if token:
+                  req.add_unredirected_header("Authorization", "Bearer " + token)
+              with urllib.request.urlopen(req, timeout=120) as r:
+                  return r.read()
+
+
+          def git(*args, **kw):
+              return subprocess.run(["git", *args], capture_output=True, **kw)
+
+
+          # 1. Every ref's tree and history: a mirror clone holds every branch, tag and pull-request ref the repository offers.
+          with tempfile.TemporaryDirectory() as d:
+              m = os.path.join(d, "m.git")
+              if git("clone", "--quiet", "--mirror", f"https://github.com/{repo}.git", m).returncode:
+                  gaps.append("repository: the mirror clone failed")
+              else:
+                  refs = git("-C", m, "for-each-ref", "--format=%(refname)", text=True).stdout.split()
+                  tip_blobs = set()
+                  for ref in refs:
+                      tree = git("-C", m, "rev-parse", "--verify", "--quiet", ref + "^{tree}", text=True).stdout.strip()
+                      if tree:
+                          for entry in git("-C", m, "ls-tree", "-r", "-z", tree).stdout.split(b"\0"):
+                              meta = entry.split(b"\t", 1)[0].split()
+                              if len(meta) == 3 and meta[1] == b"blob":
+                                  tip_blobs.add(meta[2])
+                  ids = git("-C", m, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").stdout
+                  ids_path = os.path.join(d, "ids")
+                  with open(ids_path, "wb") as f:
+                      f.write(ids)
+                  n = 0
+                  with open(ids_path, "rb") as fin:
+                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE)
+                      while True:
+                          header = p.stdout.readline()
+                          if not header:
+                              break
+                          sha, kind, size = header.split()
+                          data = p.stdout.read(int(size))
+                          p.stdout.read(1)
+                          n += 1
+                          count("repository: current trees" if kind == b"blob" and sha in tip_blobs else "repository: history",
+                                data)
+                      p.wait()
+                  count("repository: current trees", b"")
+                  count("repository: history", b"")
+                  print(f"repository: {len(refs)} refs, {n} objects read")
+
+          # 2. Issue #6, and the fixture issue of the positive control if one is named, read with the same code.
+          for number in ["6"] + ([os.environ["W03_FIXTURE_ISSUE"]] if os.environ.get("W03_FIXTURE_ISSUE") else []):
+              place = f"issue #{number}"
+              try:
+                  issue = json.loads(get(f"{api}/repos/{repo}/issues/{number}"))
+                  count(place, (issue.get("title") or "").encode() + b"\n" + (issue.get("body") or "").encode())
+                  page = 1
+                  while True:
+                      comments = json.loads(get(f"{api}/repos/{repo}/issues/{number}/comments?per_page=100&page={page}"))
+                      for c in comments:
+                          count(place, (c.get("body") or "").encode())
+                      if len(comments) < 100:
+                          break
+                      page += 1
+              except (urllib.error.URLError, OSError, ValueError) as exc:
+                  gaps.append(f"{place}: could not be read ({type(exc).__name__})")
+
+          # 3. The logs of migrate.yml's earlier runs (the 100 most recent; this run's own log is not complete yet).
+          place = "logs of migrate.yml's earlier runs"
+          try:
+              listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100"))
+              runs = [r for r in listing.get("workflow_runs", []) if str(r.get("id")) != this_run]
+              total = max(int(listing.get("total_count", 0)) - (1 if this_run else 0), len(runs))
+              read = 0
+              for run in runs:
+                  try:
+                      z = zipfile.ZipFile(io.BytesIO(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/logs")))
+                      for name in z.namelist():
+                          count(place, z.read(name))
+                      read += 1
+                  except (urllib.error.URLError, OSError, zipfile.BadZipFile, KeyError):
+                      pass
+              count(place, b"")
+              print(f"logs: {read} of {total} earlier runs of migrate.yml read")
+              if read < total:
+                  gaps.append(f"logs: {total - read} earlier runs not read")
+          except (urllib.error.URLError, OSError, ValueError) as exc:
+              gaps.append(f"logs: the run list could not be read ({type(exc).__name__})")
+
+          for who in needles:
+              for place in places:
+                  for form in ("plain", "percent"):
+                      print(f"search {who} | {place} | {form}: {counts.get((who, place, form), 0)}")
+          for g in gaps:
+              print("search: could not check: " + g)
+          found = sum(v for (who, _, _), v in counts.items() if who == "credential")
+          if "plant" not in needles:
+              print("search positive control: no plant configured (W03_PLANT_B64 is empty), so a 0 here is not backed by a "
+                    "positive control: could not check")
+          if "credential" not in needles:
+              print("search: could not check (credential present: no)")
+          elif found:
+              print(f"search: the credential was FOUND ({found} matches); it is treated as exposed (EV-C02-001 M30)")
+              raise SystemExit(1)
+          else:
+              print("search: none found by that method" + (" in the places it read" if gaps else ""))
+      - id: report
+        name: "report (names, versions, counts and statuses only)"
+        if: ${{ always() }}
+        env:
+          HEAD_STATE: ${{ steps.head.outputs.head }}
+          PRESENT: ${{ steps.presence.outputs.present }}
+          CONNECTED: ${{ steps.connect.outputs.connected }}
+          RESULT: ${{ steps.compare.outputs.result }}
+          RESULT_JSON: ${{ steps.compare.outputs.result_json }}
+          APPLIED: ${{ steps.compare.outputs.applied }}
+        shell: python
+        run: |
+          import json, os
+          e = os.environ
+          def load(text, default):
+              try:
+                  return json.loads(text) if text else default
+              except ValueError:
+                  return default
+          def project_state(result, result_json, applied):
+              r = load(result_json, {})
+              diffs = r.get("differences") if isinstance(r, dict) and isinstance(r.get("differences"), list) else []
+              return {"result": result or "could_not_check",
+                      "differences": [{k: x[k] for k in ("kind", "version", "slug") if k in x} for x in diffs],
+                      "applied_versions": load(applied, None)}
+          after = e.get("AFTER_RESULT", "")
+          state = project_state(after, e.get("AFTER_JSON", ""), e.get("AFTER_APPLIED", "")) if after else \
+              project_state(e.get("RESULT", ""), e.get("RESULT_JSON", ""), e.get("APPLIED", ""))
+          report = {"project": e["PROJECT"], "event": e["GITHUB_EVENT_NAME"], "run_id": e["GITHUB_RUN_ID"],
+                    "commit": e["GITHUB_SHA"], "head": e.get("HEAD_STATE") or "none",
+                    "credential_present": e.get("PRESENT") or "none", "connection": e.get("CONNECTED") or "none",
+                    "listing_count": e.get("LISTING_COUNT") or None, **state}
+          for k, name in (("GO", "go"), ("APPLY", "apply_step"), ("DECIDE_APPLY", "apply"), ("DECIDE_REASON", "reason"),
+                          ("EXCEPTION", "first_migration_exception"), ("BEFORE_RESULT", "result_before_apply")):
+              if e.get(k) is not None:
+                  report[name] = e.get(k) or "none"
+          line = json.dumps(report, separators=(",", ":"))
+          print("W03REPORT", line)
+          if e.get("GITHUB_STEP_SUMMARY"):
+              with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")
+
+  check-devos:
+    name: check-devos (compare and search; applies nothing)
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: migrate-devos
+    permissions:
+      contents: read
+      issues: read
+      actions: read
+    env:
+      PROJECT: devos
+      PROJECT_REF: zyqgltzfzkdvrmvxlamz
+      POOLER_HOST: ""  # P3: recorded here once found; empty until then, so nothing connects
+      PGPORT: "5432"
+      PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "15"
+      PGAPPNAME: devos-migrate
+      DO_NOT_TRACK: "1"
+      SUPABASE_TELEMETRY_DISABLED: "1"
+    steps:
+      - id: head
+        name: "(1) head check: act only at main's head (M05)"
+        run: |
+          main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
+          if [ -z "$main_head" ]; then
+            echo "head check: could not check (main's head could not be read); nothing connects"
+            echo "head=unknown" >> "$GITHUB_OUTPUT"
+          elif [ "$main_head" = "$GITHUB_SHA" ]; then
+            echo "head check: yes (this run's commit ${GITHUB_SHA} is main's head)"
+            echo "head=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "head check: superseded (this run's commit ${GITHUB_SHA}; main's head ${main_head}); nothing connects"
+            echo "head=superseded" >> "$GITHUB_OUTPUT"
+          fi
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, a commit of actions/checkout (P12)
+        with:
+          persist-credentials: false
+      - id: workdir
+        name: "expected from main's head (M14)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          set -euo pipefail
+          w="$RUNNER_TEMP/w03work"
+          rm -rf "$w"
+          mkdir -p "$w/supabase/migrations"
+          printf '%s\n' "$W03_CLI_CONFIG" > "$w/supabase/config.toml"
+          python3 -I - "$w" <<'PY'
+          # M08 and Y-09: the command-line tool runs in a directory this step builds: the workflow's own configuration and
+          # copies of the top-level migration files only. M14: `expected` from the same files at this commit (main's head).
+          import json, os, re, shutil, sys
+          w = sys.argv[1]
+          src = "supabase/migrations"
+          pattern = re.compile(r"([0-9]+)_(.*)\.sql")
+          migrations, problems = [], []
+          if os.path.lexists("supabase/functions"):
+              problems.append("supabase/functions/ exists; its part of the comparison comes with the first Edge Function (N-230)")
+          for name in sorted(os.listdir(src)) if os.path.isdir(src) else []:
+              path = os.path.join(src, name)
+              if os.path.islink(path):
+                  problems.append(f"{path} is a symbolic link")
+              elif os.path.isdir(path):
+                  continue  # subdirectories (tests/) hold no migrations
+              elif not pattern.fullmatch(name):
+                  problems.append(f"{path} is a top-level file that is not a migration (<version>_<name>.sql)")
+              else:
+                  match = pattern.fullmatch(name)
+                  shutil.copyfile(path, os.path.join(w, "supabase", "migrations", name))
+                  migrations.append({"version": match.group(1), "name": match.group(2)})
+          versions = [m["version"] for m in migrations]
+          if len(set(versions)) != len(versions):
+              problems.append("two migration files share a version")
+          print("working directory of the command-line tool (names only):")
+          for root, _, files in sorted(os.walk(w)):
+              for f in sorted(files):
+                  print("  " + os.path.relpath(os.path.join(root, f), w))
+          expected = "" if problems else json.dumps(
+              {"commit": os.environ["GITHUB_SHA"], "migrations": migrations, "functions": []}, separators=(",", ":"))
+          for p in problems:
+              print("expected: could not check: " + p)
+          print(f"expected: {len(migrations)} migrations on main at {os.environ['GITHUB_SHA']}: {versions}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
+          PY
+      - id: pooler
+        name: "find the pooler host without the credential (P3)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        run: |
+          if [ -n "$POOLER_HOST" ]; then
+            echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"
+            echo "host=${POOLER_HOST}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
+          found=""
+          for h in $W03_POOLER_CANDIDATES; do
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            case "$msg" in
+              *"Tenant or user not found"*) ;;
+              *password*) found="$h"; break ;;
+            esac
+          done
+          echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
+          echo "host=" >> "$GITHUB_OUTPUT"
+          exit 1
+      - id: presence
+        name: "(2) credential present: yes or no"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -n "${SUPABASE_DB_PASSWORD:-}" ]; then
+            python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            echo "credential present: yes"
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "credential present: no"
+            echo "present=no" >> "$GITHUB_OUTPUT"
+          fi
+      - id: connect
+        name: "(3) connect"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+            echo "connection: succeeded"
+            echo "connected=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "connection: failed"
+            sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
+            echo "connected=no" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+      - id: compare
+        name: "deployment_drift (also keeps the project active, M17)"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          EXPECTED: ${{ steps.workdir.outputs.expected }}
+        run: |
+          set -u
+          w="$(mktemp -d)"
+          cat > "$w/compare.sql" <<'SQL'
+          \set ON_ERROR_STOP on
+          begin transaction isolation level repeatable read, read only;
+          select r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,
+                 (r->>'history_table_exists')::boolean as w03_hist
+            from (select json_build_object(
+              'function_exists', exists (
+                select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1
+                   and p.proargtypes[0] = 3802),
+              'history_table_exists', exists (
+                select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                 where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),
+              'listing', (
+                select coalesce(json_agg(o order by o), '[]'::json) from (
+                  select 'schema ' || n.nspname as o
+                    from pg_catalog.pg_namespace n
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                     and n.nspname <> all (string_to_array(:'entry_only', ' '))
+                  union
+                  select coalesce('extension ' || e.extname,
+                                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)
+                    from pg_catalog.pg_class c
+                    join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where c.relkind in ('r', 'p', 'f', 'v', 'm')
+                     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('
+                                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')
+                    from pg_catalog.pg_proc p
+                    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+                    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'
+                    left join pg_catalog.pg_extension e on e.oid = d.refobjid
+                   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'
+                     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))
+                  union
+                  select 'role ' || r.rolname
+                    from pg_catalog.pg_roles r
+                   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))
+                ) s
+              )) as r) s \gset
+          \echo W03READS :w03_reads
+          \if :w03_hist
+          select coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows
+            from supabase_migrations.schema_migrations \gset
+          \echo W03APPLIED :w03_applied
+          \echo W03ROWS :w03_rows
+          \endif
+          \if :w03_fn
+          select devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset
+          \echo W03DRIFT :w03_drift
+          \endif
+          commit;
+          \echo W03END
+          SQL
+          timeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \
+            -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err"
+          W03_RC=$? W03_DIR="$w" python3 -I - <<'PY'
+          import json, os
+          KINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",
+                   "function_differs"}
+
+
+          def classify(text):
+              """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""
+              try:
+                  r = json.loads(text)
+              except ValueError:
+                  return "could_not_check", [], "the result is not JSON"
+              if not isinstance(r, dict):
+                  return "could_not_check", [], "the result is not an object"
+              status, diffs = r.get("status"), r.get("differences")
+              if status == "could_not_check":
+                  return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))
+              if status not in ("no_difference", "differences"):
+                  return "could_not_check", [], "the result's status is absent or unknown"
+              if r.get("complete") is not True:
+                  return "could_not_check", [], "the result's completeness flag is absent or not true"
+              if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):
+                  return "could_not_check", [], "the result's status and its list of differences disagree"
+              for x in diffs:
+                  key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"
+                  if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):
+                      return "could_not_check", [], "the result holds a difference of unknown form"
+              return status, diffs, ""
+
+          d, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])
+          out = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()
+          def tagged(tag):
+              for ln in out:
+                  if ln.startswith(tag + " "):
+                      return ln[len(tag) + 1:]
+              return None
+          reads_text, applied_text, rows_text, drift_text = (tagged(t) for t in ("W03READS", "W03APPLIED", "W03ROWS", "W03DRIFT"))
+          ended = "W03END" in out
+          try:
+              reads = json.loads(reads_text) if reads_text else None
+          except ValueError:
+              reads = None
+          fm_reads, applied = "", "null"
+          if isinstance(reads, dict):
+              hist = reads.get("history_table_exists") is True
+              complete = not hist or (applied_text is not None and (rows_text or "").isdigit())
+              reads.update(complete=complete, snapshot="repeatable_read_transaction",
+                           history_rows=int(rows_text) if hist and (rows_text or "").isdigit() else None)
+              fm_reads = json.dumps(reads, separators=(",", ":"))
+              if hist and complete:
+                  applied = applied_text
+          if not isinstance(reads, dict):
+              call = "timeout" if rc == 124 else "not_called"
+          elif reads.get("function_exists") is not True:
+              call = "not_called"
+          elif rc == 124:
+              call = "timeout"
+          elif rc == 0 and ended and drift_text is not None:
+              call = "ok"
+          else:
+              call = "error"
+          result_json = drift_text if call == "ok" else ""
+          kind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")
+          for ln in open(os.path.join(d, "err"), encoding="utf-8"):
+              print("psql: " + ln.rstrip())
+          project = os.environ.get("PROJECT", "")
+          if isinstance(reads, dict):
+              print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "
+                    f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "
+                    f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")
+          else:
+              print(f"reads in {project}: could not check (the reads did not complete)")
+          print(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))
+          for x in diffs:
+              print(f"comparison in {project}: {x.get('kind')} {x.get('version') or x.get('slug')}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),
+                           ("applied", applied)):
+                  f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
+          PY
+      - id: search
+        name: "point 9: count matches of this project's credential where a session can read"
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          # Point 9's search (EV-C02-001 section 10; tests/C02/W-C02-03/T-W03-09_credential_search.md). This step holds this
+          # job's own project's value. Everything it reads is data: it is only counted with a fixed-string count, never run,
+          # evaluated or put into a command. It prints counts only, per place and per form (plain, percent-encoded).
+          import base64, io, json, os, subprocess, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
+          token = os.environ.get("GH_TOKEN", "")
+          this_run = os.environ.get("GITHUB_RUN_ID", "")
+
+
+          def forms(v):
+              return {"plain": v.encode(), "percent": urllib.parse.quote(v, safe="").encode()}
+
+
+          needles = {}
+          if os.environ.get("SUPABASE_DB_PASSWORD"):
+              needles["credential"] = forms(os.environ["SUPABASE_DB_PASSWORD"])
+          if os.environ.get("W03_PLANT_B64"):
+              needles["plant"] = forms(base64.b64decode(os.environ["W03_PLANT_B64"]).decode())
+          counts, places, gaps = {}, [], []
+
+
+          def count(place, data):
+              if place not in places:
+                  places.append(place)
+              for who, fs in needles.items():
+                  for form, needle in fs.items():
+                      counts[(who, place, form)] = counts.get((who, place, form), 0) + data.count(needle)
+
+
+          def get(url):
+              req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "devos-migrate",
+                                                         "X-GitHub-Api-Version": "2022-11-28"})
+              if token:
+                  req.add_unredirected_header("Authorization", "Bearer " + token)
+              with urllib.request.urlopen(req, timeout=120) as r:
+                  return r.read()
+
+
+          def git(*args, **kw):
+              return subprocess.run(["git", *args], capture_output=True, **kw)
+
+
+          # 1. Every ref's tree and history: a mirror clone holds every branch, tag and pull-request ref the repository offers.
+          with tempfile.TemporaryDirectory() as d:
+              m = os.path.join(d, "m.git")
+              if git("clone", "--quiet", "--mirror", f"https://github.com/{repo}.git", m).returncode:
+                  gaps.append("repository: the mirror clone failed")
+              else:
+                  refs = git("-C", m, "for-each-ref", "--format=%(refname)", text=True).stdout.split()
+                  tip_blobs = set()
+                  for ref in refs:
+                      tree = git("-C", m, "rev-parse", "--verify", "--quiet", ref + "^{tree}", text=True).stdout.strip()
+                      if tree:
+                          for entry in git("-C", m, "ls-tree", "-r", "-z", tree).stdout.split(b"\0"):
+                              meta = entry.split(b"\t", 1)[0].split()
+                              if len(meta) == 3 and meta[1] == b"blob":
+                                  tip_blobs.add(meta[2])
+                  ids = git("-C", m, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").stdout
+                  ids_path = os.path.join(d, "ids")
+                  with open(ids_path, "wb") as f:
+                      f.write(ids)
+                  n = 0
+                  with open(ids_path, "rb") as fin:
+                      p = subprocess.Popen(["git", "-C", m, "cat-file", "--batch"], stdin=fin, stdout=subprocess.PIPE)
+                      while True:
+                          header = p.stdout.readline()
+                          if not header:
+                              break
+                          sha, kind, size = header.split()
+                          data = p.stdout.read(int(size))
+                          p.stdout.read(1)
+                          n += 1
+                          count("repository: current trees" if kind == b"blob" and sha in tip_blobs else "repository: history",
+                                data)
+                      p.wait()
+                  count("repository: current trees", b"")
+                  count("repository: history", b"")
+                  print(f"repository: {len(refs)} refs, {n} objects read")
+
+          # 2. Issue #6, and the fixture issue of the positive control if one is named, read with the same code.
+          for number in ["6"] + ([os.environ["W03_FIXTURE_ISSUE"]] if os.environ.get("W03_FIXTURE_ISSUE") else []):
+              place = f"issue #{number}"
+              try:
+                  issue = json.loads(get(f"{api}/repos/{repo}/issues/{number}"))
+                  count(place, (issue.get("title") or "").encode() + b"\n" + (issue.get("body") or "").encode())
+                  page = 1
+                  while True:
+                      comments = json.loads(get(f"{api}/repos/{repo}/issues/{number}/comments?per_page=100&page={page}"))
+                      for c in comments:
+                          count(place, (c.get("body") or "").encode())
+                      if len(comments) < 100:
+                          break
+                      page += 1
+              except (urllib.error.URLError, OSError, ValueError) as exc:
+                  gaps.append(f"{place}: could not be read ({type(exc).__name__})")
+
+          # 3. The logs of migrate.yml's earlier runs (the 100 most recent; this run's own log is not complete yet).
+          place = "logs of migrate.yml's earlier runs"
+          try:
+              listing = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?per_page=100"))
+              runs = [r for r in listing.get("workflow_runs", []) if str(r.get("id")) != this_run]
+              total = max(int(listing.get("total_count", 0)) - (1 if this_run else 0), len(runs))
+              read = 0
+              for run in runs:
+                  try:
+                      z = zipfile.ZipFile(io.BytesIO(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/logs")))
+                      for name in z.namelist():
+                          count(place, z.read(name))
+                      read += 1
+                  except (urllib.error.URLError, OSError, zipfile.BadZipFile, KeyError):
+                      pass
+              count(place, b"")
+              print(f"logs: {read} of {total} earlier runs of migrate.yml read")
+              if read < total:
+                  gaps.append(f"logs: {total - read} earlier runs not read")
+          except (urllib.error.URLError, OSError, ValueError) as exc:
+              gaps.append(f"logs: the run list could not be read ({type(exc).__name__})")
+
+          for who in needles:
+              for place in places:
+                  for form in ("plain", "percent"):
+                      print(f"search {who} | {place} | {form}: {counts.get((who, place, form), 0)}")
+          for g in gaps:
+              print("search: could not check: " + g)
+          found = sum(v for (who, _, _), v in counts.items() if who == "credential")
+          if "plant" not in needles:
+              print("search positive control: no plant configured (W03_PLANT_B64 is empty), so a 0 here is not backed by a "
+                    "positive control: could not check")
+          if "credential" not in needles:
+              print("search: could not check (credential present: no)")
+          elif found:
+              print(f"search: the credential was FOUND ({found} matches); it is treated as exposed (EV-C02-001 M30)")
+              raise SystemExit(1)
+          else:
+              print("search: none found by that method" + (" in the places it read" if gaps else ""))
+      - id: report
+        name: "report (names, versions, counts and statuses only)"
+        if: ${{ always() }}
+        env:
+          HEAD_STATE: ${{ steps.head.outputs.head }}
+          PRESENT: ${{ steps.presence.outputs.present }}
+          CONNECTED: ${{ steps.connect.outputs.connected }}
+          RESULT: ${{ steps.compare.outputs.result }}
+          RESULT_JSON: ${{ steps.compare.outputs.result_json }}
+          APPLIED: ${{ steps.compare.outputs.applied }}
+        shell: python
+        run: |
+          import json, os
+          e = os.environ
+          def load(text, default):
+              try:
+                  return json.loads(text) if text else default
+              except ValueError:
+                  return default
+          def project_state(result, result_json, applied):
+              r = load(result_json, {})
+              diffs = r.get("differences") if isinstance(r, dict) and isinstance(r.get("differences"), list) else []
+              return {"result": result or "could_not_check",
+                      "differences": [{k: x[k] for k in ("kind", "version", "slug") if k in x} for x in diffs],
+                      "applied_versions": load(applied, None)}
+          after = e.get("AFTER_RESULT", "")
+          state = project_state(after, e.get("AFTER_JSON", ""), e.get("AFTER_APPLIED", "")) if after else \
+              project_state(e.get("RESULT", ""), e.get("RESULT_JSON", ""), e.get("APPLIED", ""))
+          report = {"project": e["PROJECT"], "event": e["GITHUB_EVENT_NAME"], "run_id": e["GITHUB_RUN_ID"],
+                    "commit": e["GITHUB_SHA"], "head": e.get("HEAD_STATE") or "none",
+                    "credential_present": e.get("PRESENT") or "none", "connection": e.get("CONNECTED") or "none",
+                    "listing_count": e.get("LISTING_COUNT") or None, **state}
+          for k, name in (("GO", "go"), ("APPLY", "apply_step"), ("DECIDE_APPLY", "apply"), ("DECIDE_REASON", "reason"),
+                          ("EXCEPTION", "first_migration_exception"), ("BEFORE_RESULT", "result_before_apply")):
+              if e.get(k) is not None:
+                  report[name] = e.get(k) or "none"
+          line = json.dumps(report, separators=(",", ":"))
+          print("W03REPORT", line)
+          if e.get("GITHUB_STEP_SUMMARY"):
+              with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")
