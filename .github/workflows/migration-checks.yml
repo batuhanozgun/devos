@@ -33,9 +33,14 @@ jobs:
           # calls a reusable workflow (a job-level uses:) and every action is pinned by full commit SHA (EV-C02-001 section 3,
           # "Reusable workflows"). In a workflow that names a migration environment: only migrate.yml may; it starts only on
           # push to main and on schedule; each job runs on the GitHub-hosted label ubuntu-24.04 (M20), with no container and no
-          # services; a step that applies is only in the push jobs, and only when the job's if: admits the push event alone. It
-          # reads the files as data (YAML) and runs nothing from them. A condition it cannot read is "could not check", never a
-          # pass. First it judges wrong copies of the files (its self-check): each must fail on its own rule, the control pass.
+          # services; a step that applies is only in the push jobs, and only when the job's if: admits the push event alone.
+          # Server authentication (security F5): in a job that names an environment, or whose env sets one of libpq's
+          # connection variables, every step's effective PGSSLMODE is verify-full and its PGSSLROOTCERT the pinned root file;
+          # its run text sets sslmode only to verify-full, names another root file only in a step that holds no secret (the
+          # run-time root of negative control (a)), removes neither variable, and no libpq service is set. It reads the files
+          # as data (YAML) and runs nothing from them; a value built at run time is not seen (the class-high review is that
+          # layer). A condition it cannot read is "could not check", never a pass. First it judges wrong copies of the files
+          # (its self-check): each must fail on its own rule, the control pass.
           import copy, glob, os, re
           try:
               import yaml
@@ -50,6 +55,14 @@ jobs:
           STATUS = {"!cancelled()", "always()", "success()"}
           PIN = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(/[^@\s]+)?@[0-9a-f]{40}")
           APPLY = re.compile(r"\bdb\s+(push|reset)\b|\bmigration\s+(up|repair)\b|psql\b[^\n]*\s-f\s[^\n]*migrations")
+          TLS_MODE = "verify-full"
+          TLS_ROOT = "/tmp/w03-supabase-root-2021-ca.crt"
+          LIBPQ = ("PGHOST", "PGHOSTADDR", "PGPASSWORD", "PGSSLMODE", "PGSSLROOTCERT", "PGSERVICE", "PGSERVICEFILE")
+          MODE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLMODE['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")
+          ROOT_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLROOTCERT['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")
+          SERVICE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PGSERVICE(?:FILE)?|service)['\"]?\s*[=:]")
+          UNSET_TEXT = re.compile(r"(?i)(?:\bunset\s+(?:-v\s+)?|(?<!\S)-u\s*|--unset[= ]|\.pop\(\s*['\"]|\bdel\s+[^\n]*?\[\s*['\"])"
+                                  r"(PGSSL(?:MODE|ROOTCERT))\b")
 
 
           def push_alone(cond):
@@ -64,6 +77,41 @@ jobs:
               if terms.count(PUSH) == 1 and all(t == PUSH or t in STATUS for t in terms):
                   return "push"
               return None
+
+
+          def env_of(x):
+              return x.get("env") if isinstance(x, dict) and isinstance(x.get("env"), dict) else {}
+
+
+          def tls_problems(path, wf, jobs, env_jobs, problems):
+              """Security F5, in a job that names an environment or whose env (workflow, job or step) sets a libpq variable."""
+              for jid, job in jobs.items():
+                  job = job if isinstance(job, dict) else {}
+                  steps = [s for s in job.get("steps") or [] if isinstance(s, dict)]
+                  envs = [env_of(wf), env_of(job)] + [env_of(s) for s in steps]
+                  if jid not in env_jobs and not any(k in e for e in envs for k in LIBPQ):
+                      continue
+                  for i, s in enumerate(steps):
+                      where = f"{path}: job {jid} step {s.get('id') or '#' + str(i + 1)}"
+                      eff = {**env_of(wf), **env_of(job), **env_of(s)}
+                      if str(eff.get("PGSSLMODE")) != TLS_MODE:
+                          problems.append(f"{where}: sslmode {eff.get('PGSSLMODE')!r}, not verify-full")
+                      if str(eff.get("PGSSLROOTCERT")) != TLS_ROOT:
+                          problems.append(f"{where}: root file {eff.get('PGSSLROOTCERT')!r}, not the pinned one {TLS_ROOT}")
+                      text = str(s.get("run") or "")
+                      for v in MODE_TEXT.findall(text):
+                          if v != TLS_MODE:
+                              problems.append(f"{where}: its run text sets sslmode {v!r}, not verify-full")
+                      secret = any("secrets." in str(v) for v in eff.values())
+                      for v in ROOT_TEXT.findall(text):
+                          if v != TLS_ROOT and secret:
+                              problems.append(f"{where}: its run text names the root file {v!r}, not the pinned one, in a step "
+                                              f"that holds a secret")
+                      for v in UNSET_TEXT.findall(text):
+                          problems.append(f"{where}: its run text removes {v.upper()} from the environment (libpq's default "
+                                          f"then applies)")
+                      if SERVICE_TEXT.search(text) or "PGSERVICE" in eff or "PGSERVICEFILE" in eff:
+                          problems.append(f"{where}: it sets a libpq service, which could change sslmode or the root file")
 
 
           def check(files):
@@ -86,6 +134,7 @@ jobs:
                       name = e.get("name") if isinstance(e, dict) else e
                       if name:
                           env_jobs[jid] = str(name)
+                  tls_problems(path, wf, jobs, env_jobs, problems)
                   if not env_jobs:
                       continue
                   naming.append(path)
@@ -169,6 +218,30 @@ jobs:
               def step_uses(f):
                   job(f, "devos-test")["steps"][1]["uses"] = "actions/checkout@v6"
 
+              def step(f, jid, sid):
+                  for s in job(f, jid)["steps"]:
+                      if s.get("id") == sid:
+                          return s
+                  raise KeyError(sid)
+
+              def put_env(jid, key, value, sid=None):
+                  def how(f):
+                      (job(f, jid) if sid is None else step(f, jid, sid)).setdefault("env", {})[key] = value
+                  return how
+
+              def drop_env(jid, key):
+                  def how(f):
+                      job(f, jid)["env"].pop(key)
+                  return how
+
+              def edit_run(jid, sid, old, new):
+                  def how(f):
+                      s = step(f, jid, sid)
+                      if old not in s["run"]:
+                          raise KeyError(old)
+                      s["run"] = s["run"].replace(old, new)
+                  return how
+
               hosted = {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}
               copies = [
                   ("migrate.yml on workflow_dispatch", lambda f: on(f).update({"workflow_dispatch": None}), "'workflow_dispatch'"),
@@ -179,7 +252,9 @@ jobs:
                   ("checkout pinned by tag", step_uses, "not an action pinned by full commit SHA"),
                   ("a second workflow naming migrate-devos",
                    add_file("other.yml", {"on": {"push": {"branches": ["main"]}},
-                                          "jobs": {"x": {**hosted, "environment": "migrate-devos"}}}), "only migrate.yml may"),
+                                          "jobs": {"x": {**hosted, "environment": "migrate-devos",
+                                                         "env": {"PGSSLMODE": TLS_MODE, "PGSSLROOTCERT": TLS_ROOT}}}}),
+                   "only migrate.yml may"),
                   ("an apply step in a scheduled job", lambda f: job(f, "check-devos-test")["steps"].append(
                       {"id": "x", "run": "supabase db push"}), "applies, outside the push jobs"),
                   ("migrate.yml calls a reusable workflow", lambda f: f[m]["jobs"].update(
@@ -207,6 +282,32 @@ jobs:
                   ("devos-test on a self-hosted runner", put("devos-test", "runs-on", "self-hosted"), "not the GitHub-hosted label"),
                   ("check-devos on a list of labels", put("check-devos", "runs-on", ["self-hosted", "linux"]),
                    "not the GitHub-hosted label"),
+                  ("devos-test with sslmode require", put_env("devos-test", "PGSSLMODE", "require"), "not verify-full"),
+                  ("devos without PGSSLMODE (libpq's default, prefer)", drop_env("devos", "PGSSLMODE"), "not verify-full"),
+                  ("check-devos-test with sslmode verify-ca", put_env("check-devos-test", "PGSSLMODE", "verify-ca"),
+                   "not verify-full"),
+                  ("devos's compare overriding sslmode", put_env("devos", "PGSSLMODE", "require", "compare"), "not verify-full"),
+                  ("check-devos without a root file", drop_env("check-devos", "PGSSLROOTCERT"), "not the pinned one"),
+                  ("devos-test trusting the system's roots", put_env("devos-test", "PGSSLROOTCERT", "system"),
+                   "not the pinned one"),
+                  ("devos's dry-run URL with sslmode require", edit_run("devos", "dryrun", "mode=verify-full", "mode=" + "require"),
+                   "run text sets sslmode"),
+                  ("devos-test's connect turning verification off",
+                   edit_run("devos-test", "connect", "timeout 60 psql", "PGSSLMODE" + "=disable timeout 60 psql"),
+                   "run text sets sslmode"),
+                  ("devos's connect removing PGSSLMODE from its environment",
+                   edit_run("devos", "connect", "timeout 60 psql", "env -u PGSSLMODE timeout 60 psql"), "removes PGSSLMODE"),
+                  ("devos-test's apply URL naming another root file",
+                   edit_run("devos-test", "apply", TLS_ROOT, "/tmp/w03-other-root.crt"), "in a step that holds a secret"),
+                  ("devos's controls step holding the secret beside its run-time root",
+                   put_env("devos", "PGPASSWORD", "${{ secrets.SUPABASE_DB_PASSWORD }}", "tls"), "in a step that holds a secret"),
+                  ("check-devos-test's compare with a libpq service file",
+                   put_env("check-devos-test", "PGSERVICEFILE", "/tmp/w03-pg_service.conf", "compare"), "libpq service"),
+                  ("a workflow naming no environment that connects with sslmode require",
+                   add_file("connects.yml", {"on": {"push": {"branches": ["main"]}}, "jobs": {"x": {
+                       "runs-on": "ubuntu-24.04", "env": {"PGHOST": "db.example", "PGSSLMODE": "require",
+                                                          "PGSSLROOTCERT": TLS_ROOT},
+                       "steps": [{"run": "psql -X -c 'select 1'"}]}}}), "not verify-full"),
               ]
               base = check(files)
               base = set(base[0]) | set(base[1])
@@ -302,18 +403,39 @@ jobs:
                   print(f"run report: none (no completed run of migrate.yml at main's head {main_head or 'unknown'})")
               else:
                   run = runs[0]
-                  projects = {}
+                  # Each migration job prints exactly one report line, for its own project; every other line a job prints
+                  # from data is escaped, except the test programs' own output in devos-test. So a project is read only from
+                  # its own job (devos-test or check-devos-test; devos or check-devos), and only if that job's log holds
+                  # exactly one report line, for that project, at the run's commit; anything else leaves the project out,
+                  # which pr_decide reads as "could not check". A line cannot replace another.
+                  OWN = {"devos-test": "devos-test", "check-devos-test": "devos-test", "devos": "devos", "check-devos": "devos"}
+                  projects, unusable = {}, set()
                   for job in json.loads(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/jobs?per_page=100")).get("jobs", []):
+                      jname = str(job.get("name") or "").split(" ", 1)[0]
+                      own = OWN.get(jname)
                       log = get(f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs").decode("utf-8", "replace")
+                      found = []
                       for ln in log.splitlines():
                           m = LINE.match(ln)
                           if m:
                               try:
-                                  r = json.loads(m.group(1))
+                                  found.append(json.loads(m.group(1)))
                               except ValueError:
-                                  continue
-                              if r.get("commit") == run.get("head_sha") and r.get("project") in ("devos-test", "devos"):
-                                  projects[r["project"]] = {k: r.get(k) for k in ("result", "applied_versions", "differences")}
+                                  found.append(None)
+                      label = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in jname)
+                      if own is None:
+                          if found:
+                              print(f"run report: job {label} is not a migration job; its {len(found)} report lines are not read")
+                          continue
+                      r = found[0] if len(found) == 1 else None
+                      if own in projects or own in unusable or not isinstance(r, dict) or r.get("project") != own \
+                              or r.get("commit") != run.get("head_sha"):
+                          print(f"run report: job {label}: {len(found)} report lines, not exactly one for {own} at the run's "
+                                f"commit; {own} is not read (could not check)")
+                          unusable.add(own)
+                          projects.pop(own, None)
+                          continue
+                      projects[own] = {k: r.get(k) for k in ("result", "applied_versions", "differences")}
                   report = json.dumps({"commit": run.get("head_sha"), "completed": run.get("status") == "completed",
                                        "run_id": run.get("id"), "event": run.get("event"), "projects": projects},
                                       separators=(",", ":"))
@@ -354,6 +476,10 @@ jobs:
                   return None
 
 
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))
+
+
           def words(result):
               return {"no_difference": "no difference", "differences": "differences",
                       "could_not_check": "could not check"}.get(result, "could not check")
@@ -364,7 +490,7 @@ jobs:
           if not isinstance(report, dict):
               problem = "no readable run report of migrate.yml at main's head"
           elif report.get("commit") != main_head or not main_head:
-              problem = f"the run report is at {report.get('commit')}, not at main's head {main_head or 'unknown'}"
+              problem = f"the run report is at {esc(report.get('commit'))}, not at main's head {esc(main_head or 'unknown')}"
           elif report.get("completed") is not True:
               problem = "the run report's run is not completed"
           elif not isinstance(report.get("projects"), dict):
@@ -381,7 +507,7 @@ jobs:
               if r is None:
                   parts.append(f"{p}: could not check ({problem or 'the report lacks this project or its fields'})")
               else:
-                  listed = ", ".join(f"{d.get('kind')} {d.get('version') or d.get('slug')}" for d in r["differences"]
+                  listed = ", ".join(f"{esc(d.get('kind'))} {esc(d.get('version') or d.get('slug'))}" for d in r["differences"]
                                      if isinstance(d, dict))
                   parts.append(f"{p}: {words(r['result'])}" + (f" ({listed})" if listed else ""))
           state = "; ".join(parts)
@@ -420,9 +546,10 @@ jobs:
               verdict, why = "fail", "the list of changed files could not be read (could not check)"
           elif blocked:
               verdict, why = "fail", ("a merged migration is changed, removed or renamed and the records do not show it "
-                                      "unapplied in both projects: " + ", ".join(blocked))
+                                      "unapplied in both projects: " + ", ".join(esc(p) for p in blocked))
           elif touched:
-              verdict, why = "pass", "each changed migration is shown unapplied in both projects: " + ", ".join(sorted(set(touched)))
+              verdict, why = "pass", "each changed migration is shown unapplied in both projects: " + ", ".join(
+                  esc(p) for p in sorted(set(touched)))
           else:
               verdict, why = "pass", "no merged migration is changed, removed or renamed"
           print(f"migration records at main's head: {state}")

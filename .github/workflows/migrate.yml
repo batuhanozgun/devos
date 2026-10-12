@@ -4,7 +4,9 @@
 # order, with devos applied only on devos-test's go = yes and its own comparison (M07). On the schedule: compare and
 # search only, in each project. The only workflow that names the environments migrate-devos-test and migrate-devos;
 # no other event starts it (M04). The credential reaches only the steps that connect (M21). Nothing reads under
-# supabase/ but supabase/migrations/ (Y-09; supabase/functions/ only for its existence, until N-230).
+# supabase/ but supabase/migrations/ (Y-09; supabase/functions/ only for its existence, until N-230). Every connection
+# authenticates the server (sslmode=verify-full against the pinned Supabase Root 2021 CA), and the password reaches a
+# program only through its environment (PGPASSWORD), never its arguments (security F5, F6; EV-C02-007 section 11).
 name: migrate
 
 on:
@@ -16,13 +18,43 @@ on:
 permissions: {}
 
 concurrency:
-  group: migrate
+  # One group for this workflow's runs (M06), named for its file and the two environments it serves (security F11).
+  # Groups are repository-wide, so another workflow can still name it: the residual is in EV-C02-007 section 11.
+  group: devos-migrate.yml-migrate-devos-test-migrate-devos
   cancel-in-progress: false
   queue: max
 
 env:
   CLI_VERSION: "2.120.0"
   CLI_SHA256: "7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e"
+  # The Supabase Root 2021 CA (prod-ca-2021.crt; self-signed, valid to 2031-04-26), the root of the pooler's chain; its
+  # source and fetch date are in EV-C02-007 section 11. Step rootca writes it to PGSSLROOTCERT only if the SHA-256 of its
+  # DER is W03_ROOT_CA_SHA256.
+  W03_ROOT_CA_SHA256: "807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa"
+  W03_ROOT_CA_PEM: |
+    -----BEGIN CERTIFICATE-----
+    MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+    BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+    dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+    c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+    azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+    YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+    Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+    QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+    DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+    GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+    cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+    O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+    NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+    uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+    aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+    tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+    VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+    jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+    Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+    CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+    o/bKiIz+Fq8=
+    -----END CERTIFICATE-----
   W03_POOLER_CANDIDATES: "aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com"
   W03_EXCLUDED_SCHEMAS: "auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations"
   W03_SCHEMA_ENTRY_ONLY: "public"
@@ -54,7 +86,8 @@ jobs:
       PGPORT: "5432"
       PGUSER: postgres.cqbzxexxwrrbrlszoseg
       PGDATABASE: postgres
-      PGSSLMODE: require
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt  # written by step rootca, after its pin is checked
       PGCONNECT_TIMEOUT: "15"
       PGAPPNAME: devos-migrate
       DO_NOT_TRACK: "1"
@@ -156,6 +189,46 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
           PY
+      - id: rootca
+        name: "server authentication: the pinned root certificate, written only if its SHA-256 matches (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # Every connection of this job uses sslmode=verify-full against the root file PGSSLROOTCERT names (the job's env).
+          # That root is the Supabase Root 2021 CA, kept in this workflow (W03_ROOT_CA_PEM) and pinned by the SHA-256 of its
+          # DER (W03_ROOT_CA_SHA256). The file is written only if the PEM holds exactly one certificate with that SHA-256,
+          # and it is written from that DER, so it holds nothing else. Otherwise no file exists, and nothing connects:
+          # libpq and the command-line tool both refuse a missing root file under verify-full.
+          import hashlib, os, ssl
+          path, pin = os.environ["PGSSLROOTCERT"], os.environ.get("W03_ROOT_CA_SHA256", "")
+          if os.path.lexists(path):
+              os.remove(path)
+          pem = os.environ.get("W03_ROOT_CA_PEM", "").strip()
+          try:
+              if pem.count("-----BEGIN") != 1:
+                  raise ValueError("the PEM does not hold exactly one certificate")
+              der = ssl.PEM_cert_to_DER_cert(pem)
+          except ValueError as exc:
+              print(f"server root certificate: could not check ({exc}); no file is written, and nothing connects")
+              raise SystemExit(1)
+          got = hashlib.sha256(der).hexdigest()
+          if got != pin:
+              print(f"server root certificate: could not check: the SHA-256 of its DER is {got}, not the pin {pin}; "
+                    f"no file is written, and nothing connects")
+              raise SystemExit(1)
+          with open(path, "x", encoding="ascii") as f:
+              f.write(ssl.DER_cert_to_PEM_cert(der))
+          with open(path, encoding="ascii") as f:
+              back = f.read().strip()
+          if back.count("-----BEGIN") != 1 or hashlib.sha256(ssl.PEM_cert_to_DER_cert(back)).hexdigest() != pin:
+              os.remove(path)
+              print("server root certificate: could not check (the file written does not read back as the pinned "
+                    "certificate); it is removed, and nothing connects")
+              raise SystemExit(1)
+          print(f"server root certificate: the SHA-256 of its DER, {got}, matches the pin; written to {path}")
+          PY
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -178,6 +251,82 @@ jobs:
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
+      - id: tls
+        name: "server authentication: two negative controls, without the credential, before it is used (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # The first-run controls of server authentication, before any step that holds the credential connects. Neither
+          # control holds the password (PGPASSWORD removed, psql -w), so one that wrongly connects reaches at most the
+          # server's password request. Each keeps this job's own PGSSLMODE and PGSSLROOTCERT but for the one part it
+          # changes: (a) a root made at run time in place of the pinned one must give "certificate verify failed"; (b) a
+          # host name the certificate does not cover, at the pooler's own address (hostaddr), must give "does not match
+          # host name". The positive control is step connect (select 1, with the credential). If a control is not refused
+          # for its reason, server authentication is not shown: the root file is removed, so no later step can connect,
+          # and this step fails, so the apply does not run. Each control prints one line, holding no secret.
+          import os, socket, subprocess, tempfile
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)
+
+
+          def control(label, change, marker):
+              env = {k: v for k, v in os.environ.items() if k != "PGPASSWORD"}
+              env.update(change)
+              try:
+                  r = subprocess.run(["psql", "-X", "-w", "-A", "-t", "-c", "select 1"], env=env, stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=60)
+                  rc, msg = r.returncode, " ".join((r.stdout + r.stderr).split())
+              except (OSError, subprocess.TimeoutExpired) as exc:
+                  rc, msg = None, type(exc).__name__
+              if rc == 0:
+                  line = "FAIL (it connected)"
+              elif rc is not None and marker in msg:
+                  line = f"pass (refused: {marker})"
+              else:
+                  line = f"FAIL (not refused for that reason: {esc(msg)[:240]})"
+              print(f"server authentication, negative control {label}: {line}", flush=True)
+              return line.startswith("pass")
+
+
+          root, host = os.environ["PGSSLROOTCERT"], os.environ.get("PGHOST", "")
+          a = b = False
+          if not host or not os.path.isfile(root):
+              print("server authentication: could not check (no pooler host, or no pinned root file)")
+          else:
+              with tempfile.TemporaryDirectory() as d:
+                  made = subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",
+                                         "-nodes", "-keyout", d + "/runtime-root.key", "-out", d + "/runtime-root.crt",
+                                         "-days", "1", "-subj", "/CN=w03 run-time root"], capture_output=True).returncode == 0
+                  if made:
+                      a = control("(a), a root made at run time in place of the pinned one",
+                                  {"PGSSLROOTCERT": d + "/runtime-root.crt"}, "certificate verify failed")
+                  else:
+                      print("server authentication, negative control (a): FAIL (openssl could not make the run-time root)")
+              try:
+                  addr = socket.getaddrinfo(host, int(os.environ.get("PGPORT") or 5432), socket.AF_INET,
+                                            socket.SOCK_STREAM)[0][4][0]
+              except (OSError, ValueError, IndexError) as exc:
+                  addr = None
+                  print(f"server authentication, negative control (b): FAIL (the pooler's address: {type(exc).__name__})")
+              if addr:
+                  b = control(f"(b), the host name w03-name-mismatch.invalid at the pooler's address {addr}",
+                              {"PGHOST": "w03-name-mismatch.invalid", "PGHOSTADDR": addr}, "does not match host name")
+          ok = a and b
+          if not ok:
+              if os.path.lexists(root):
+                  os.remove(root)
+              print("server authentication: could not check: server authentication not shown; the root file is removed, "
+                    "so nothing after this step connects, and the apply does not run")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"controls={'pass' if ok else 'fail'}\n")
+          raise SystemExit(0 if ok else 1)
+          PY
       - id: presence
         name: "(2) credential present: yes or no"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -205,9 +354,12 @@ jobs:
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass"
             echo "connected=yes" >> "$GITHUB_OUTPUT"
           else
             echo "connection: failed"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): FAIL"
+            echo "server authentication: could not check: server authentication not shown; the apply does not run"
             sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
             echo "connected=no" >> "$GITHUB_OUTPUT"
             exit 1
@@ -309,14 +461,15 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
         shell: bash
         run: |
           set -uo pipefail
           trap 'echo "dry run: could not check (a command of this step failed, line ${LINENO})"' ERR
-          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          # The URL holds no password: the tool reads it from PGPASSWORD, its environment, never its arguments (security F6).
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s@%s:%s/%s?sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt" % (u.quote(e["PGUSER"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
           "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1 && rc=0 || rc=$?
           python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03dry.out"
           pending="$(python3 -I -c 'import json, re, sys; print(json.dumps(sorted({m.split("_")[0] for m in re.findall(r"[0-9]+_[^ \n]*\.sql", open(sys.argv[1], encoding="utf-8", errors="replace").read())})))' "$RUNNER_TEMP/w03dry.out")"
@@ -329,14 +482,15 @@ jobs:
         if: ${{ steps.head.outputs.head == 'yes' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
         shell: bash
         run: |
           set -uo pipefail
           trap 'echo "apply: could not check (a command of this step failed, line ${LINENO})"' ERR
-          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          # The URL holds no password: the tool reads it from PGPASSWORD, its environment, never its arguments (security F6).
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s@%s:%s/%s?sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt" % (u.quote(e["PGUSER"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
           "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1 && rc=0 || rc=$?
           python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03apply.out"
           echo "working directory after the command-line tool (names only):"
@@ -345,7 +499,7 @@ jobs:
           exit $rc
       - id: compare
         name: "(7) deployment_drift in devos-test, even after a failed apply"
-        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' && steps.tls.outputs.controls == 'pass' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -660,10 +814,10 @@ jobs:
           # an environment built from nothing (env -i's effect) holding PATH, HOME (a new empty directory) and LANG only,
           # unless a line "# w07-needs-database: yes" among its first ten lines declares that it needs the database; then it
           # also gets this step's own connection settings in libpq's variables (PGHOST, PGPORT, PGUSER, PGDATABASE,
-          # PGPASSWORD, and PGSSLMODE so that it connects as this step does), never on a command line. The environment is
-          # passed to the process directly rather than as env -i's NAME=VALUE arguments, so the password is in no process's
-          # arguments. Exit 0 pass, 1 fail, 3 could not check, anything else fail. The report line per program gives its
-          # name and result only; this step prints no token, key or password.
+          # PGPASSWORD, and PGSSLMODE and PGSSLROOTCERT so that it authenticates the server as this step does), never on a
+          # command line. The environment is passed to the process directly rather than as env -i's NAME=VALUE arguments,
+          # so the password is in no process's arguments. Exit 0 pass, 1 fail, 3 could not check, anything else fail. The
+          # report line per program gives its name and result only; this step prints no token, key or password.
           import glob, json, os, re, subprocess, tempfile
           programs = sorted(glob.glob("supabase/migrations/tests/*.py"))
           if not programs:
@@ -686,7 +840,7 @@ jobs:
           print(f"test programs: {len(programs)}; endpoint {endpoint or 'null (not derivable)'}; publishable key "
                 f"{'set' if apikey else 'not set (null)'}; tokens for {sorted(tokens)} and one revoked token", flush=True)
           payload = json.dumps({"endpoint": endpoint, "apikey": apikey, "tokens": tokens, "revoked_token": revoked})
-          DB_VARS = ("PGHOST", "PGPORT", "PGUSER", "PGDATABASE", "PGPASSWORD", "PGSSLMODE")
+          DB_VARS = ("PGHOST", "PGPORT", "PGUSER", "PGDATABASE", "PGPASSWORD", "PGSSLMODE", "PGSSLROOTCERT")
           failed = False
           for p in programs:
               with open(p, encoding="utf-8", errors="replace") as f:
@@ -826,7 +980,8 @@ jobs:
       PGPORT: "5432"
       PGUSER: postgres.zyqgltzfzkdvrmvxlamz
       PGDATABASE: postgres
-      PGSSLMODE: require
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt  # written by step rootca, after its pin is checked
       PGCONNECT_TIMEOUT: "15"
       PGAPPNAME: devos-migrate
       DO_NOT_TRACK: "1"
@@ -926,6 +1081,46 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
           PY
+      - id: rootca
+        name: "server authentication: the pinned root certificate, written only if its SHA-256 matches (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # Every connection of this job uses sslmode=verify-full against the root file PGSSLROOTCERT names (the job's env).
+          # That root is the Supabase Root 2021 CA, kept in this workflow (W03_ROOT_CA_PEM) and pinned by the SHA-256 of its
+          # DER (W03_ROOT_CA_SHA256). The file is written only if the PEM holds exactly one certificate with that SHA-256,
+          # and it is written from that DER, so it holds nothing else. Otherwise no file exists, and nothing connects:
+          # libpq and the command-line tool both refuse a missing root file under verify-full.
+          import hashlib, os, ssl
+          path, pin = os.environ["PGSSLROOTCERT"], os.environ.get("W03_ROOT_CA_SHA256", "")
+          if os.path.lexists(path):
+              os.remove(path)
+          pem = os.environ.get("W03_ROOT_CA_PEM", "").strip()
+          try:
+              if pem.count("-----BEGIN") != 1:
+                  raise ValueError("the PEM does not hold exactly one certificate")
+              der = ssl.PEM_cert_to_DER_cert(pem)
+          except ValueError as exc:
+              print(f"server root certificate: could not check ({exc}); no file is written, and nothing connects")
+              raise SystemExit(1)
+          got = hashlib.sha256(der).hexdigest()
+          if got != pin:
+              print(f"server root certificate: could not check: the SHA-256 of its DER is {got}, not the pin {pin}; "
+                    f"no file is written, and nothing connects")
+              raise SystemExit(1)
+          with open(path, "x", encoding="ascii") as f:
+              f.write(ssl.DER_cert_to_PEM_cert(der))
+          with open(path, encoding="ascii") as f:
+              back = f.read().strip()
+          if back.count("-----BEGIN") != 1 or hashlib.sha256(ssl.PEM_cert_to_DER_cert(back)).hexdigest() != pin:
+              os.remove(path)
+              print("server root certificate: could not check (the file written does not read back as the pinned "
+                    "certificate); it is removed, and nothing connects")
+              raise SystemExit(1)
+          print(f"server root certificate: the SHA-256 of its DER, {got}, matches the pin; written to {path}")
+          PY
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -948,6 +1143,82 @@ jobs:
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
+      - id: tls
+        name: "server authentication: two negative controls, without the credential, before it is used (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # The first-run controls of server authentication, before any step that holds the credential connects. Neither
+          # control holds the password (PGPASSWORD removed, psql -w), so one that wrongly connects reaches at most the
+          # server's password request. Each keeps this job's own PGSSLMODE and PGSSLROOTCERT but for the one part it
+          # changes: (a) a root made at run time in place of the pinned one must give "certificate verify failed"; (b) a
+          # host name the certificate does not cover, at the pooler's own address (hostaddr), must give "does not match
+          # host name". The positive control is step connect (select 1, with the credential). If a control is not refused
+          # for its reason, server authentication is not shown: the root file is removed, so no later step can connect,
+          # and this step fails, so the apply does not run. Each control prints one line, holding no secret.
+          import os, socket, subprocess, tempfile
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)
+
+
+          def control(label, change, marker):
+              env = {k: v for k, v in os.environ.items() if k != "PGPASSWORD"}
+              env.update(change)
+              try:
+                  r = subprocess.run(["psql", "-X", "-w", "-A", "-t", "-c", "select 1"], env=env, stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=60)
+                  rc, msg = r.returncode, " ".join((r.stdout + r.stderr).split())
+              except (OSError, subprocess.TimeoutExpired) as exc:
+                  rc, msg = None, type(exc).__name__
+              if rc == 0:
+                  line = "FAIL (it connected)"
+              elif rc is not None and marker in msg:
+                  line = f"pass (refused: {marker})"
+              else:
+                  line = f"FAIL (not refused for that reason: {esc(msg)[:240]})"
+              print(f"server authentication, negative control {label}: {line}", flush=True)
+              return line.startswith("pass")
+
+
+          root, host = os.environ["PGSSLROOTCERT"], os.environ.get("PGHOST", "")
+          a = b = False
+          if not host or not os.path.isfile(root):
+              print("server authentication: could not check (no pooler host, or no pinned root file)")
+          else:
+              with tempfile.TemporaryDirectory() as d:
+                  made = subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",
+                                         "-nodes", "-keyout", d + "/runtime-root.key", "-out", d + "/runtime-root.crt",
+                                         "-days", "1", "-subj", "/CN=w03 run-time root"], capture_output=True).returncode == 0
+                  if made:
+                      a = control("(a), a root made at run time in place of the pinned one",
+                                  {"PGSSLROOTCERT": d + "/runtime-root.crt"}, "certificate verify failed")
+                  else:
+                      print("server authentication, negative control (a): FAIL (openssl could not make the run-time root)")
+              try:
+                  addr = socket.getaddrinfo(host, int(os.environ.get("PGPORT") or 5432), socket.AF_INET,
+                                            socket.SOCK_STREAM)[0][4][0]
+              except (OSError, ValueError, IndexError) as exc:
+                  addr = None
+                  print(f"server authentication, negative control (b): FAIL (the pooler's address: {type(exc).__name__})")
+              if addr:
+                  b = control(f"(b), the host name w03-name-mismatch.invalid at the pooler's address {addr}",
+                              {"PGHOST": "w03-name-mismatch.invalid", "PGHOSTADDR": addr}, "does not match host name")
+          ok = a and b
+          if not ok:
+              if os.path.lexists(root):
+                  os.remove(root)
+              print("server authentication: could not check: server authentication not shown; the root file is removed, "
+                    "so nothing after this step connects, and the apply does not run")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"controls={'pass' if ok else 'fail'}\n")
+          raise SystemExit(0 if ok else 1)
+          PY
       - id: presence
         name: "(2) credential present: yes or no"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -975,9 +1246,12 @@ jobs:
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass"
             echo "connected=yes" >> "$GITHUB_OUTPUT"
           else
             echo "connection: failed"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): FAIL"
+            echo "server authentication: could not check: server authentication not shown; the apply does not run"
             sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
             echo "connected=no" >> "$GITHUB_OUTPUT"
             exit 1
@@ -1076,7 +1350,7 @@ jobs:
           PY
       - id: compare
         name: "(5) deployment_drift in devos before its apply, with the three reads in one snapshot"
-        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' && steps.tls.outputs.controls == 'pass' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -1451,14 +1725,15 @@ jobs:
         if: ${{ steps.decide.outputs.apply == 'yes' && steps.head.outputs.head == 'yes' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
         shell: bash
         run: |
           set -uo pipefail
           trap 'echo "dry run: could not check (a command of this step failed, line ${LINENO})"' ERR
-          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          # The URL holds no password: the tool reads it from PGPASSWORD, its environment, never its arguments (security F6).
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s@%s:%s/%s?sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt" % (u.quote(e["PGUSER"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
           "$CLI" --workdir "$W" db push --db-url "$url" --dry-run --yes > "$RUNNER_TEMP/w03dry.out" 2>&1 && rc=0 || rc=$?
           python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03dry.out"
           pending="$(python3 -I -c 'import json, re, sys; print(json.dumps(sorted({m.split("_")[0] for m in re.findall(r"[0-9]+_[^ \n]*\.sql", open(sys.argv[1], encoding="utf-8", errors="replace").read())})))' "$RUNNER_TEMP/w03dry.out")"
@@ -1471,14 +1746,15 @@ jobs:
         if: ${{ steps.decide.outputs.apply == 'yes' && steps.head.outputs.head == 'yes' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           CLI: ${{ steps.cli.outputs.path }}
           W: ${{ steps.workdir.outputs.dir }}
         shell: bash
         run: |
           set -uo pipefail
           trap 'echo "apply: could not check (a command of this step failed, line ${LINENO})"' ERR
-          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s:%s@%s:%s/%s?sslmode=require" % (u.quote(e["PGUSER"], safe=""), u.quote(e["SUPABASE_DB_PASSWORD"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
+          # The URL holds no password: the tool reads it from PGPASSWORD, its environment, never its arguments (security F6).
+          url="$(python3 -I -c 'import os, urllib.parse as u; e = os.environ; print("postgresql://%s@%s:%s/%s?sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt" % (u.quote(e["PGUSER"], safe=""), e["PGHOST"], e["PGPORT"], e["PGDATABASE"]))')"
           "$CLI" --workdir "$W" db push --db-url "$url" --yes > "$RUNNER_TEMP/w03apply.out" 2>&1 && rc=0 || rc=$?
           python3 -I -c 'import sys; [print("cli: " + "".join(c if c.isprintable() else ascii(c)[1:-1] for c in ln)) for ln in open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()]' "$RUNNER_TEMP/w03apply.out"
           echo "working directory after the command-line tool (names only):"
@@ -1731,7 +2007,8 @@ jobs:
       PGPORT: "5432"
       PGUSER: postgres.cqbzxexxwrrbrlszoseg
       PGDATABASE: postgres
-      PGSSLMODE: require
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt  # written by step rootca, after its pin is checked
       PGCONNECT_TIMEOUT: "15"
       PGAPPNAME: devos-migrate
       DO_NOT_TRACK: "1"
@@ -1806,6 +2083,46 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
           PY
+      - id: rootca
+        name: "server authentication: the pinned root certificate, written only if its SHA-256 matches (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # Every connection of this job uses sslmode=verify-full against the root file PGSSLROOTCERT names (the job's env).
+          # That root is the Supabase Root 2021 CA, kept in this workflow (W03_ROOT_CA_PEM) and pinned by the SHA-256 of its
+          # DER (W03_ROOT_CA_SHA256). The file is written only if the PEM holds exactly one certificate with that SHA-256,
+          # and it is written from that DER, so it holds nothing else. Otherwise no file exists, and nothing connects:
+          # libpq and the command-line tool both refuse a missing root file under verify-full.
+          import hashlib, os, ssl
+          path, pin = os.environ["PGSSLROOTCERT"], os.environ.get("W03_ROOT_CA_SHA256", "")
+          if os.path.lexists(path):
+              os.remove(path)
+          pem = os.environ.get("W03_ROOT_CA_PEM", "").strip()
+          try:
+              if pem.count("-----BEGIN") != 1:
+                  raise ValueError("the PEM does not hold exactly one certificate")
+              der = ssl.PEM_cert_to_DER_cert(pem)
+          except ValueError as exc:
+              print(f"server root certificate: could not check ({exc}); no file is written, and nothing connects")
+              raise SystemExit(1)
+          got = hashlib.sha256(der).hexdigest()
+          if got != pin:
+              print(f"server root certificate: could not check: the SHA-256 of its DER is {got}, not the pin {pin}; "
+                    f"no file is written, and nothing connects")
+              raise SystemExit(1)
+          with open(path, "x", encoding="ascii") as f:
+              f.write(ssl.DER_cert_to_PEM_cert(der))
+          with open(path, encoding="ascii") as f:
+              back = f.read().strip()
+          if back.count("-----BEGIN") != 1 or hashlib.sha256(ssl.PEM_cert_to_DER_cert(back)).hexdigest() != pin:
+              os.remove(path)
+              print("server root certificate: could not check (the file written does not read back as the pinned "
+                    "certificate); it is removed, and nothing connects")
+              raise SystemExit(1)
+          print(f"server root certificate: the SHA-256 of its DER, {got}, matches the pin; written to {path}")
+          PY
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -1828,6 +2145,82 @@ jobs:
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
+      - id: tls
+        name: "server authentication: two negative controls, without the credential, before it is used (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # The first-run controls of server authentication, before any step that holds the credential connects. Neither
+          # control holds the password (PGPASSWORD removed, psql -w), so one that wrongly connects reaches at most the
+          # server's password request. Each keeps this job's own PGSSLMODE and PGSSLROOTCERT but for the one part it
+          # changes: (a) a root made at run time in place of the pinned one must give "certificate verify failed"; (b) a
+          # host name the certificate does not cover, at the pooler's own address (hostaddr), must give "does not match
+          # host name". The positive control is step connect (select 1, with the credential). If a control is not refused
+          # for its reason, server authentication is not shown: the root file is removed, so no later step can connect,
+          # and this step fails, so the apply does not run. Each control prints one line, holding no secret.
+          import os, socket, subprocess, tempfile
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)
+
+
+          def control(label, change, marker):
+              env = {k: v for k, v in os.environ.items() if k != "PGPASSWORD"}
+              env.update(change)
+              try:
+                  r = subprocess.run(["psql", "-X", "-w", "-A", "-t", "-c", "select 1"], env=env, stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=60)
+                  rc, msg = r.returncode, " ".join((r.stdout + r.stderr).split())
+              except (OSError, subprocess.TimeoutExpired) as exc:
+                  rc, msg = None, type(exc).__name__
+              if rc == 0:
+                  line = "FAIL (it connected)"
+              elif rc is not None and marker in msg:
+                  line = f"pass (refused: {marker})"
+              else:
+                  line = f"FAIL (not refused for that reason: {esc(msg)[:240]})"
+              print(f"server authentication, negative control {label}: {line}", flush=True)
+              return line.startswith("pass")
+
+
+          root, host = os.environ["PGSSLROOTCERT"], os.environ.get("PGHOST", "")
+          a = b = False
+          if not host or not os.path.isfile(root):
+              print("server authentication: could not check (no pooler host, or no pinned root file)")
+          else:
+              with tempfile.TemporaryDirectory() as d:
+                  made = subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",
+                                         "-nodes", "-keyout", d + "/runtime-root.key", "-out", d + "/runtime-root.crt",
+                                         "-days", "1", "-subj", "/CN=w03 run-time root"], capture_output=True).returncode == 0
+                  if made:
+                      a = control("(a), a root made at run time in place of the pinned one",
+                                  {"PGSSLROOTCERT": d + "/runtime-root.crt"}, "certificate verify failed")
+                  else:
+                      print("server authentication, negative control (a): FAIL (openssl could not make the run-time root)")
+              try:
+                  addr = socket.getaddrinfo(host, int(os.environ.get("PGPORT") or 5432), socket.AF_INET,
+                                            socket.SOCK_STREAM)[0][4][0]
+              except (OSError, ValueError, IndexError) as exc:
+                  addr = None
+                  print(f"server authentication, negative control (b): FAIL (the pooler's address: {type(exc).__name__})")
+              if addr:
+                  b = control(f"(b), the host name w03-name-mismatch.invalid at the pooler's address {addr}",
+                              {"PGHOST": "w03-name-mismatch.invalid", "PGHOSTADDR": addr}, "does not match host name")
+          ok = a and b
+          if not ok:
+              if os.path.lexists(root):
+                  os.remove(root)
+              print("server authentication: could not check: server authentication not shown; the root file is removed, "
+                    "so nothing after this step connects, and the apply does not run")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"controls={'pass' if ok else 'fail'}\n")
+          raise SystemExit(0 if ok else 1)
+          PY
       - id: presence
         name: "(2) credential present: yes or no"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -1855,16 +2248,19 @@ jobs:
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass"
             echo "connected=yes" >> "$GITHUB_OUTPUT"
           else
             echo "connection: failed"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): FAIL"
+            echo "server authentication: could not check: server authentication not shown; the apply does not run"
             sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
             echo "connected=no" >> "$GITHUB_OUTPUT"
             exit 1
           fi
       - id: compare
         name: "deployment_drift (also keeps the project active, M17)"
-        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' && steps.tls.outputs.controls == 'pass' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -2267,7 +2663,8 @@ jobs:
       PGPORT: "5432"
       PGUSER: postgres.zyqgltzfzkdvrmvxlamz
       PGDATABASE: postgres
-      PGSSLMODE: require
+      PGSSLMODE: verify-full
+      PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt  # written by step rootca, after its pin is checked
       PGCONNECT_TIMEOUT: "15"
       PGAPPNAME: devos-migrate
       DO_NOT_TRACK: "1"
@@ -2342,6 +2739,46 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")
           PY
+      - id: rootca
+        name: "server authentication: the pinned root certificate, written only if its SHA-256 matches (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # Every connection of this job uses sslmode=verify-full against the root file PGSSLROOTCERT names (the job's env).
+          # That root is the Supabase Root 2021 CA, kept in this workflow (W03_ROOT_CA_PEM) and pinned by the SHA-256 of its
+          # DER (W03_ROOT_CA_SHA256). The file is written only if the PEM holds exactly one certificate with that SHA-256,
+          # and it is written from that DER, so it holds nothing else. Otherwise no file exists, and nothing connects:
+          # libpq and the command-line tool both refuse a missing root file under verify-full.
+          import hashlib, os, ssl
+          path, pin = os.environ["PGSSLROOTCERT"], os.environ.get("W03_ROOT_CA_SHA256", "")
+          if os.path.lexists(path):
+              os.remove(path)
+          pem = os.environ.get("W03_ROOT_CA_PEM", "").strip()
+          try:
+              if pem.count("-----BEGIN") != 1:
+                  raise ValueError("the PEM does not hold exactly one certificate")
+              der = ssl.PEM_cert_to_DER_cert(pem)
+          except ValueError as exc:
+              print(f"server root certificate: could not check ({exc}); no file is written, and nothing connects")
+              raise SystemExit(1)
+          got = hashlib.sha256(der).hexdigest()
+          if got != pin:
+              print(f"server root certificate: could not check: the SHA-256 of its DER is {got}, not the pin {pin}; "
+                    f"no file is written, and nothing connects")
+              raise SystemExit(1)
+          with open(path, "x", encoding="ascii") as f:
+              f.write(ssl.DER_cert_to_PEM_cert(der))
+          with open(path, encoding="ascii") as f:
+              back = f.read().strip()
+          if back.count("-----BEGIN") != 1 or hashlib.sha256(ssl.PEM_cert_to_DER_cert(back)).hexdigest() != pin:
+              os.remove(path)
+              print("server root certificate: could not check (the file written does not read back as the pinned "
+                    "certificate); it is removed, and nothing connects")
+              raise SystemExit(1)
+          print(f"server root certificate: the SHA-256 of its DER, {got}, matches the pin; written to {path}")
+          PY
       - id: pooler
         name: "find the pooler host without the credential (P3)"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -2364,6 +2801,82 @@ jobs:
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
+      - id: tls
+        name: "server authentication: two negative controls, without the credential, before it is used (security F5)"
+        if: ${{ steps.head.outputs.head == 'yes' }}
+        env:
+          PGHOST: ${{ steps.pooler.outputs.host }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          python3 -I - <<'PY' || exit $?
+          # The first-run controls of server authentication, before any step that holds the credential connects. Neither
+          # control holds the password (PGPASSWORD removed, psql -w), so one that wrongly connects reaches at most the
+          # server's password request. Each keeps this job's own PGSSLMODE and PGSSLROOTCERT but for the one part it
+          # changes: (a) a root made at run time in place of the pinned one must give "certificate verify failed"; (b) a
+          # host name the certificate does not cover, at the pooler's own address (hostaddr), must give "does not match
+          # host name". The positive control is step connect (select 1, with the credential). If a control is not refused
+          # for its reason, server authentication is not shown: the root file is removed, so no later step can connect,
+          # and this step fails, so the apply does not run. Each control prints one line, holding no secret.
+          import os, socket, subprocess, tempfile
+
+
+          def esc(s):
+              return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)
+
+
+          def control(label, change, marker):
+              env = {k: v for k, v in os.environ.items() if k != "PGPASSWORD"}
+              env.update(change)
+              try:
+                  r = subprocess.run(["psql", "-X", "-w", "-A", "-t", "-c", "select 1"], env=env, stdin=subprocess.DEVNULL,
+                                     capture_output=True, text=True, timeout=60)
+                  rc, msg = r.returncode, " ".join((r.stdout + r.stderr).split())
+              except (OSError, subprocess.TimeoutExpired) as exc:
+                  rc, msg = None, type(exc).__name__
+              if rc == 0:
+                  line = "FAIL (it connected)"
+              elif rc is not None and marker in msg:
+                  line = f"pass (refused: {marker})"
+              else:
+                  line = f"FAIL (not refused for that reason: {esc(msg)[:240]})"
+              print(f"server authentication, negative control {label}: {line}", flush=True)
+              return line.startswith("pass")
+
+
+          root, host = os.environ["PGSSLROOTCERT"], os.environ.get("PGHOST", "")
+          a = b = False
+          if not host or not os.path.isfile(root):
+              print("server authentication: could not check (no pooler host, or no pinned root file)")
+          else:
+              with tempfile.TemporaryDirectory() as d:
+                  made = subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",
+                                         "-nodes", "-keyout", d + "/runtime-root.key", "-out", d + "/runtime-root.crt",
+                                         "-days", "1", "-subj", "/CN=w03 run-time root"], capture_output=True).returncode == 0
+                  if made:
+                      a = control("(a), a root made at run time in place of the pinned one",
+                                  {"PGSSLROOTCERT": d + "/runtime-root.crt"}, "certificate verify failed")
+                  else:
+                      print("server authentication, negative control (a): FAIL (openssl could not make the run-time root)")
+              try:
+                  addr = socket.getaddrinfo(host, int(os.environ.get("PGPORT") or 5432), socket.AF_INET,
+                                            socket.SOCK_STREAM)[0][4][0]
+              except (OSError, ValueError, IndexError) as exc:
+                  addr = None
+                  print(f"server authentication, negative control (b): FAIL (the pooler's address: {type(exc).__name__})")
+              if addr:
+                  b = control(f"(b), the host name w03-name-mismatch.invalid at the pooler's address {addr}",
+                              {"PGHOST": "w03-name-mismatch.invalid", "PGHOSTADDR": addr}, "does not match host name")
+          ok = a and b
+          if not ok:
+              if os.path.lexists(root):
+                  os.remove(root)
+              print("server authentication: could not check: server authentication not shown; the root file is removed, "
+                    "so nothing after this step connects, and the apply does not run")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"controls={'pass' if ok else 'fail'}\n")
+          raise SystemExit(0 if ok else 1)
+          PY
       - id: presence
         name: "(2) credential present: yes or no"
         if: ${{ steps.head.outputs.head == 'yes' }}
@@ -2391,16 +2904,19 @@ jobs:
         run: |
           if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
             echo "connection: succeeded"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass"
             echo "connected=yes" >> "$GITHUB_OUTPUT"
           else
             echo "connection: failed"
+            echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): FAIL"
+            echo "server authentication: could not check: server authentication not shown; the apply does not run"
             sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"
             echo "connected=no" >> "$GITHUB_OUTPUT"
             exit 1
           fi
       - id: compare
         name: "deployment_drift (also keeps the project active, M17)"
-        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' }}
+        if: ${{ !cancelled() && steps.head.outputs.head == 'yes' && steps.pooler.outputs.host != '' && steps.tls.outputs.controls == 'pass' }}
         env:
           PGHOST: ${{ steps.pooler.outputs.host }}
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}

@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+# The Supabase CLI caches its version check here when run from a checkout (W-C02-03; L-299).
+supabase/.temp/
