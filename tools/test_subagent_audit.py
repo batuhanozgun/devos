@@ -13,7 +13,11 @@ output may contain. The disciplines cases (D-016) plant tasks with and without t
 reports with and without a complete block; the tool reads the block from this checkout's working order, which must
 hold BLOCK as written here. N-110's cases (b) to (e) (25 to 28) kill CHK-C01-001's mutants S14, S12, S1 and S3;
 cases 29 to 33 judge the whole-block task check (CHK-C01-001 finding 6), on a copy of the tool beside a fixture
-working order where a case needs another file. Cases 38 to 46 judge N-149 (PC-24): every agent gets its end status
+working order where a case needs another file. Case 47 (N-127; CHK-C01-009 finding 3) kills mutant Y7 (only the
+first quoted line of the block is read): beside that fixture working order, whose block is quoted over three lines,
+a task carrying only the first quoted line does not carry the block. Case 48 pins D-031: a report answer
+"Dn: no: <text>" fails, since the form of a "no" stays "Dn: no" with nothing after it (W-C02-15). Cases 38 to 46
+judge N-149 (PC-24): every agent gets its end status
 by default (a completion notification in the fake session transcript .claude/projects/x/y.jsonl, or a result in its
 workflow run's journal.jsonl), and the cases plant transcripts without one, statuses that are not an end, and reports
 handed back through a SubagentHandback or StructuredOutput call. Prints one line per case and SUBAGENT_AUDIT_TEST
@@ -360,6 +364,9 @@ def main():
         disc_case(fx, '(26) N-110 (c): a report line "D2: no, <text>" fails', "afxpdisc", 1,
                   [CARRIES, "report: missing or incomplete (line 2 of the block is not a D2 answer)",
                    "DISCIPLINES MISSING"], final=report(ANSWERS[:1] + [f"D2: no, {MARKER}."] + ANSWERS[2:]))
+        disc_case(fx, '(48) D-031: a report line "D9: no: <text>" fails; a "no" stays "Dn: no" with nothing after it',
+                  "afxd031disc", 1, [CARRIES, "report: missing or incomplete (line 9 of the block is not a D9 answer)",
+                                   "DISCIPLINES MISSING"], final=report(ANSWERS[:8] + [f"D9: no: {MARKER}."]))
         disc_case(fx, "(27) N-110 (d): a task without the block, then a later user text message (not a tool result) "
                   "that has it: the task does not carry it", "afxqdisc", 1,
                   [LACKS, "report: nine answers", "DISCIPLINES MISSING"], prompt=f"Prompt text {MARKER}", later=TASK)
@@ -390,6 +397,12 @@ def main():
                   prompt=f"Task {MARKER}.\n{FX_BLOCK}")
         disc_case(fx, "(32b) beside that fixture working order, a task with this checkout's block does not carry it",
                   "afxwdisc", 1, [LACKS, "report: nine answers", "DISCIPLINES MISSING"], tool=copy)
+        quoted = [line[1:] for line in FX_NINE.splitlines() if line.startswith(">")]   # N-127, Y7
+        disc_case(fx, "(47) N-127 Y7: beside that fixture working order, a task carrying only the first of the block's "
+                  "quoted lines does not carry it", "afxy7disc", 1,
+                  [LACKS, "report: nine answers", "DISCIPLINES MISSING"], tool=copy,
+                  prompt=f"Task {MARKER}.\n{quoted[0]}\n\nMore of the task {MARKER}." if len(quoted) > 1
+                  else f"Task {MARKER}.\n{FX_BLOCK}")   # a fixture block on one quoted line would make this pass: BAD
         rs = []
         for body in (None, "Section 9 without the block.", "**Discipline block** (fixture).\n\n>\n> \n",
                      "**Discipline block** (fixture).\n\nA paragraph, not a quotation.\n\n> Too late."):
@@ -501,7 +514,7 @@ def main():
         case("(46) a finished agent with no report call: last prints its last text as before", rc == 0
              and out == PLAIN + "\n", both)
         case("(24) disciplines prints three fixed lines and no prompt or report text",
-             len(DISC_OUT) == 23 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
+             len(DISC_OUT) == 25 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
              "\n".join(DISC_OUT))
 
