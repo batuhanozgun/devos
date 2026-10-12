@@ -59,6 +59,6 @@ If the build uses other ids, the test designer revises the test before its first
 
 ## Depends on R1 to R6
 
-- R1 and R2 (P13): if the first apply to `devos` fails after the tool created the history table, every later `devos` apply is held (EV-C02-001 section 5, residual). That is a stop, which this test would see as "not applied"; it does not change the test.
+- R1 and R2 (P13): P13 is settled. A failed first apply to `devos` leaves the history table empty and without the function. The executor decided on 2026-10-12 that the exception takes that state (T-W03-DEC "Depends on", E05 and E20), so the next run applies again on `go = yes`. A history table holding a row without the function still holds every later `devos` apply (T-W03-DEC E04). That is a stop, which this test would see as "not applied". Neither changes this test.
 - R3 (O2): a change of `deployment_drift`'s interface could make `devos`'s comparison "could not check" and hold `devos`. That is a stop, not a test change.
 - R4, R5 and R6 do not touch this test.

@@ -28,8 +28,12 @@ Output: one line per case ("ok", "BAD", "CNC" for could not check, "n/a"), then 
   W03_DECISION_TEST PASS (n/n) exit 0 | W03_DECISION_TEST FAIL (...) exit 1 | W03_DECISION_TEST COULD NOT CHECK (...) exit 3
   With --impl the final line begins "W03_DECISION_TEST (break-copy run)" and names the files run instead of the
   workflow's code, so it is never a result of the build.
-The report line of `decide` is checked as T-W03-DEC "Interface" item 3 states: "taken" with the three reads' results,
-"not taken" with the name of the state that kept it from being taken.
+The report line of `decide` is checked as T-W03-DEC "Interface" item 3 states: "taken" with the three reads' results
+and the table state it saw (no table, or an empty table), "not taken" with the name of the state that kept it from
+being taken.
+The first-migration exception is tested as EV-C02-001 section 5 states it after its change on P13 (the executor's
+decision of 2026-10-12; T-W03-DEC "Depends on"): taken with the function absent, the history table absent or present
+and holding no row, and a clean listing, all read completely in one snapshot; every other state "could not check".
 """
 import json
 import os
@@ -71,6 +75,7 @@ def reads(function_exists, table, listing, snapshot="one_statement", complete=Tr
 
 PUSHED = reads(True, True, LISTING_DEVOS, rows=1)
 NEVER = reads(False, False, [])
+EMPTY_TABLE = reads(False, True, [], rows=0)  # what a failed first apply leaves (P13): the history table, no row
 
 
 def result(status, diffs, complete=True, drop=None):
@@ -96,19 +101,29 @@ def kind_result(kind, key=V3):
 
 
 # The report line (EV-C02-001 section 5, "The report says when it was taken"; T-W03-DEC "Interface" item 3).
-# "taken" must carry the three reads' results, each as <field>=<value> or "<field>": <value>:
-TAKEN_READS = (("function_exists", r"false"), ("history_table_exists", r"false"), ("listing", r"\[\s*\]"))
+# "taken" must carry the three reads' results, each as <field>=<value> or "<field>": <value> (case-insensitive), and
+# so name which of the two table states it saw (EV-C02-001 section 5 as changed after P13): no table, or an empty one.
+# The check reads the same field names as the "not taken" check below.
+TAKEN_READS = {
+    "no table": (("function_exists", r"false"), ("history_table_exists", r"false"), ("listing", r"\[\s*\]")),
+    "empty table": (("function_exists", r"false"), ("history_table_exists", r"true"), ("history_rows", r"0(?![0-9.])"),
+                    ("listing", r"\[\s*\]")),
+}
+TAKEN_SHOWN = {"no table": "function_exists=false, history_table_exists=false, listing=[]",
+               "empty table": "function_exists=false, history_table_exists=true, history_rows=0, listing=[]"}
+TAKEN_STATE = {"E05": "empty table", "E20": "empty table", "E21": "empty table"}  # the other "taken" cases: no table
 # "not taken" must name the state that kept it from being taken, by the name of the input or read field that shows
 # it (case-insensitive). Cases not listed have the function present (FM_READS says so), so any of the three reads'
 # names is a true account of that state.
 FUNCTION_PRESENT = ("function_exists", "history_table_exists", "listing")
-NOT_TAKEN_STATE = {"E04": ("history_table_exists", "history_rows"), "E05": ("history_table_exists", "history_rows"),
+NOT_TAKEN_STATE = {"E04": ("history_table_exists", "history_rows"),
                    "E06": ("function_exists", "history_table_exists"), "E06b": ("function_exists",
                                                                                 "history_table_exists"),
                    "E07": ("function_exists", "history_table_exists"), "E08": ("listing",), "E09": ("listing",),
                    "E10": ("complete",), "E11": ("snapshot",), "E12": ("snapshot",), "E13": ("fm_reads",),
                    "E14": ("fm_reads",), "E15": ("function_exists",), "E16": ("history_table_exists",),
-                   "E17": ("listing",), "E18": ("drift_call", "drift_result"), "E19": ("expected",)}
+                   "E17": ("listing",), "E18": ("drift_call", "drift_result"), "E19": ("expected",),
+                   "E22": ("history_rows",), "E23": ("history_rows",), "E24": ("listing",)}
 
 
 def report_line_problems(cid, want_exc, stdout):
@@ -118,9 +133,11 @@ def report_line_problems(cid, want_exc, stdout):
     if want_exc == "taken":
         if not taken or not_taken:
             return ["stdout lacks the report line 'first-migration exception: taken' (or also says 'not taken')"]
-        if not any(all(re.search(rf"{f}[\"']?\s*[=:]\s*{v}", ln, re.I) for f, v in TAKEN_READS) for ln in taken):
-            return ["the 'taken' line does not carry the three reads' results "
-                    "(function_exists=false, history_table_exists=false, listing=[])"]
+        state = TAKEN_STATE.get(cid, "no table")
+        if not any(all(re.search(rf"{f}[\"']?\s*[=:]\s*{v}", ln, re.I) for f, v in TAKEN_READS[state])
+                   for ln in taken):
+            return [f"the 'taken' line does not carry the three reads' results for the {state} state "
+                    f"({TAKEN_SHOWN[state]})"]
         return []
     if not not_taken or taken:
         return ["stdout lacks the report line 'first-migration exception: not taken' (or also says 'taken')"]
@@ -189,10 +206,10 @@ def decide_cases():
     add("E02", "positive control: never-pushed state, read-only REPEATABLE READ transaction (R6 form 2)", "yes",
         None, "taken", FM_READS=reads(False, False, [], snapshot="repeatable_read_transaction"), **nc)
     add("E03", "never-pushed state but devos-test go=no", "no", None, "taken", FM_READS=NEVER, GO="no", **nc)
-    add("E04", "history table with rows, no function (break: without the table check)", "no", "could_not_check",
-        "not_taken", FM_READS=reads(False, True, [], rows=1), **nc)
-    add("E05", "history table empty, no function (P13-dependent; current design: could not check)", "no",
-        "could_not_check", "not_taken", FM_READS=reads(False, True, [], rows=0), **nc)
+    add("E04", "history table holding a row, no function (breaks: without the table check; a copy that takes a "
+        "table holding a row)", "no", "could_not_check", "not_taken", FM_READS=reads(False, True, [], rows=1), **nc)
+    add("E05", "positive control: history table empty, no function, listing clean, one statement (section 5 as "
+        "changed after P13)", "yes", None, "taken", FM_READS=EMPTY_TABLE, **nc)
     add("E06", "function present, table absent, listing clean, the function answers 'could not check' "
         "(break: without the function check)", "no", "could_not_check", "not_taken",
         FM_READS=reads(True, False, []), DRIFT_CALL="ok", DRIFT_RESULT=R_CNC)
@@ -223,6 +240,18 @@ def decide_cases():
         "not_taken", FM_READS=NEVER, DRIFT_CALL="ok", DRIFT_RESULT=R_PENDING)
     add("E19", "never-pushed state but expected malformed", "no", "could_not_check", "not_taken",
         FM_READS=NEVER, EXPECTED='{"commit": 1}', **nc)
+    # the empty history table (EV-C02-001 section 5 as changed after P13; T-W03-DEC "Depends on")
+    add("E20", "positive control: history table empty, no function, listing clean, read-only REPEATABLE READ "
+        "transaction (R6 form 2)", "yes", None, "taken",
+        FM_READS=reads(False, True, [], rows=0, snapshot="repeatable_read_transaction"), **nc)
+    add("E21", "history table empty, no function, listing clean, but devos-test go=no", "no", None, "taken",
+        FM_READS=EMPTY_TABLE, GO="no", **nc)
+    add("E22", "history table present, its row count not read (null)", "no", "could_not_check", "not_taken",
+        FM_READS=reads(False, True, [], rows=None), **nc)
+    add("E23", "history table present, the row-count read missing", "no", "could_not_check", "not_taken",
+        FM_READS=reads(False, True, [], rows=0, drop="history_rows"), **nc)
+    add("E24", "history table empty, no function, but a schema in the listing", "no", "could_not_check",
+        "not_taken", FM_READS=reads(False, True, ["schema w03_fixture_schema"], rows=0), **nc)
     return c
 
 
