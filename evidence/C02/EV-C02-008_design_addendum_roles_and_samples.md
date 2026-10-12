@@ -346,5 +346,217 @@ T-W07-5B gains the ten rows of 1.2 and R15's function (1.4). Its "Could not chec
 8. **The ledger transfer and DM-41 [Inf].** EV-C02-005 writes Artifacts and Review copies in separate phases of its manifest (its line 203), each write with its `transferred` event in one transaction (its line 367), so DM-41 does not meet them as designed. If W-C02-14's build wrote a copy and a new revision of its target in one transaction, DM-41 would refuse it, and this exemption does not cover it (a copy has a reviewer).
 9. **The checker's reading of places 1 and 2 and of 3.3.** If the checker finds the exemption loosens N28, alternative B1 is the next best, with the costs 2.4 states; the executor decides before W-C02-10 builds the trigger.
 10. **Not consulted:** the research library (the question is the consistency of DevOS's own rules); Appendix A; PC-42 and PC-43 beyond what EV2 and EV3 carry.
-11. **The exam fact through DM-35's reads** (CHK-C02-025 C1 and F2; added 2026-10-12). EV-C02-002 DM-35 (a) hides an exam task's Work from `devos_calisma` in `affected_entities` and `explain_paths` (a record linked to an exam through EvalRun is outside every class's authority but `devos_sinav`'s; T-W07-F04's F04-c-noleak tests it), while 1.2's `ready_works` row and Rule O let `devos_calisma` see and change the same Work as ordinary work (B:286). The difference tells a working session which tasks are exams: a call on its own exam task's input answers "limited" with that task missing. Owner: the executor. Deadline: before W-C02-09 builds `affected_entities` and `explain_paths`. A fresh checker judges the resolution. Note N-262.
-12. **The sample's position after the draw** (CHK-C02-026 F11; added 2026-10-12). DM-08 (b) relies on the sample's hidden position to keep a writer from timing a meaningless record past the sample, but EV-C02-003 §4.1 lets every class read reviews, so a writer who sees a sample appear in a block knows the rest of that block is unsampled. 2.3's "hidden" covers only the position before the draw. Owner: the executor. Deadline: before W-C02-10 builds the sampling. Note N-263.
+11. **The exam fact through DM-35's reads** (CHK-C02-025 C1 and F2; added 2026-10-12). EV-C02-002 DM-35 (a) hides an exam task's Work from `devos_calisma` in `affected_entities` and `explain_paths` (a record linked to an exam through EvalRun is outside every class's authority but `devos_sinav`'s; T-W07-F04's F04-c-noleak tests it), while 1.2's `ready_works` row and Rule O let `devos_calisma` see and change the same Work as ordinary work (B:286). The difference tells a working session which tasks are exams: a call on its own exam task's input answers "limited" with that task missing. Owner: the executor. Deadline: before W-C02-09 builds `affected_entities` and `explain_paths`. A fresh checker judges the resolution. Note N-262. *Added 2026-10-12:* decided in section 5.1 (DM-35 narrowed to the exam's own records; the two reads walk relations only; every answer to the subject the same), for a fresh checker to judge.
+12. **The sample's position after the draw** (CHK-C02-026 F11; added 2026-10-12). DM-08 (b) relies on the sample's hidden position to keep a writer from timing a meaningless record past the sample, but EV-C02-003 §4.1 lets every class read reviews, so a writer who sees a sample appear in a block knows the rest of that block is unsampled. 2.3's "hidden" covers only the position before the draw. Owner: the executor. Deadline: before W-C02-10 builds the sampling. Note N-263. *Added 2026-10-12:* decided in section 5.2 (a sample, its verdict and its creation event withheld from every class but `devos_denetim` until its block is complete), for a fresh checker to judge.
+
+## 5. N-262 and N-263, decided (2026-10-12)
+
+*Added 2026-10-12, by a third fresh-context producer of the same session (declared, Ek A 5.3), at the executor's task.* These are the builder's technical decisions (Batu's D-033; working order section 8): none needs money, touches Batu's accounts or conflicts with his decisions. A fresh checker judges them before W-C02-09 builds `affected_entities` and `explain_paths`, before W-C02-10 builds the sampling, and before W-C02-07's tests of them get a result. Labels as above; line numbers are at `main` `310e0c4`. **Further sources read for this section, 2026-10-12:** B:26, B:35 to B:41, B:246, B:247, B:266, B:270, B:284, B:286, B:391, B:452 (section 7, "Privacy"), B:478; G2 items 1 to 4 (G:22 to G:25); C:61 to C:68 (F04), C:118 (N01), C:123 (N06), C:125 (N08), C:146 (N29), C:161 (K06); P:566, P:642, P:726, P:813, P:814; EV2 DM-08, DM-24, DM-31, DM-35, DM-36; EV3 §4.1 to §4.5 and §15; CHK-C02-025 F2, F7 and C1; CHK-C02-026 F10 and F11; `plan/work/W-C02-09.md` points 7 and 8, `W-C02-10.md` points 3 and 5, `W-C02-12.md` point 5. Also W-C02-07's unmerged T-W07-F04, T-W07-N08, T-W07-N01 and T-W07-T31 in full, and README section 8.1's lines on reads, read only for what they assume.
+
+### 5.1 N-262: the exam fact through DM-35's reads
+
+**The conflict (Doc).** DM-35 (a) puts "a record linked to an exam through EvalRun" outside every class's authority but `sin`'s. Through DM-24's `work_ref` that record is the exam task's Work, and T-W07-F04's F04-c-noleak tests the Work hidden from `cal`. But B:286 opens exam tasks "in the working environment as ordinary `Work`", and P:813 says the working environment "carries it out like normal work and does not have to know that the task is an exam". 1.2's `ready_works` row and Rule O give `cal` the same Work. So "limited", with the task missing, tells a working session which tasks are exams (CHK-C02-025 F2). The same holds when the task is the root (G2 item 4). P:814 makes the audit roles exam subjects too.
+
+**Decision.**
+
+(a) **What DM-35 hides: the exam's own records, never the Work.** "Outside authority" in DM-35 (a) means, from this record on, the exam records:
+- EvalRun, every field, `work_ref` included;
+- Competence's fields that `competence_summary` does not return;
+- any record of the exam schema that C05 adds, the answer keys among them (P:813).
+
+They are refused to every class but `sin`, as B:35 to B:38, B:286 and EV3 §4.1's exam row (EV3:284) already say. The Work an exam task was opened as is ordinary for every class, with the rights and checks an ordinary work item gets (1.2; Rules O and C). So are its revisions, claims, relations, effort policy, contributions, products and samples.
+
+(b) **The two reads walk relations only, and no relation has an exam record at either end.**
+- `affected_entities` and `explain_paths` follow Relation rows (B 3.4; B:391), never EvalRun's `work_ref`, for every class, `sin` included. `sin` reads the link through R10r's reader (1.4).
+- `relate` refuses, for every class, a relation that names an exam record at either end (B 3.15's rule, as 1.3 reads it for `sin`). For a class other than `sin`, the answer and the recorded reason code are those for an id that names no record.
+- So no walk an application role can make meets an exam record. An exam task's graph gets the result and the completeness flag of the same graph of ordinary work.
+- A root or target that names an exam record gets, for a class other than `sin`, the answer and the recorded reason code of a root that names no record. G2 item 4's check of "the existence of the root record and the authority to access it" thus never tells such a record apart from none.
+- The hidden-node handling that G2 item 4 and F04 (c) require is still built and tested, on a graph only a fault could make (the planted cases below).
+
+(c) **Every answer to the subject the same: property P.** For a class other than `sin`, every C02 function gives the same answer on a work item an EvalRun names as on the same work item with no EvalRun: the same result, status, reason code, completeness flag and refusal. No such call succeeds or fails because of the link. The build keeps these bounds:
+1. No check made for a class other than `sin` reads EvalRun. Rule O already reads nothing about exams for `cal` (1.7.1); this adds the two reads (b), readiness and `claim`.
+2. `record_eval_run` writes no field, revision or event on the Work it names, and changes nothing that a read by another class returns. This extends DM-24's "No exam field on Work" to revisions and events.
+3. `claim` refuses `sin` on a work item that an EvalRun names: the subject claims it (B:286; P:813). `record_eval_run` refuses to name a work item on which `sin` holds an active claim. So Rule C never refuses the working class on an exam task because `sin` holds it (CHK-C02-025 F7). A refusal by Rule C, or by `claim`'s single active claim, never names the claimant's class. This is F7's recommendation; 1.7.1 already says it for the opener.
+4. No read callable by a class other than `sin` returns the `role_class` of a Work's events or the class that opened it. An exam task's creation event carries `devos_sinav` (B:266, "never declared"). C02 builds no such read: B section 4 names none, and R12's four objects are not events (1.4). A later read that returns events to those classes needs its own row and a form under which P holds, judged before it is built.
+5. Out of the database's reach: the task's own text, scope, Mission, labels and its EffortPolicy's `work_class` must look like ordinary work's. `sin` writes them, and C05's exam-set design governs them (N-138). No rule here can check them.
+
+(d) **What stays, with owner and deadline.**
+- **The audit class reads RejectedAttempt.** EV3 §4.1 gives it that read, and the rows keep `role_class` and `target_ref` (B:270). So a refused `sin` call on an exam task tells `den` that `sin` acted on that work item. That matters once an audit role sits an exam (P:814). The working session is not affected. Owner: the executor. Deadline: before C05 opens an exam task for an audit role (carried under N-138; 1.7.5 (b)). A candidate for C05: `sin`'s refusals on work items an EvalRun names are kept where only `sin` reads.
+- **The export.** `bak` reads every record into the private `devos-backup` (P:566). No environment session attaches that repository: P:726, "only `devos` is attached and written". That rests on the guard. C09 designs the export.
+
+**Alternatives weighed.**
+- **(i) Keep DM-35 (a) on the Work and hide the exam task from the working class everywhere** (`ready_works`, `claim`, Rules O and C). Not chosen: the subject could not do its task, against B:38 and B:286 ("as ordinary work") and P:813.
+- **(ii) Keep DM-35 (a) on the Work and hide it only in the two reads.** Not chosen: this is the leak F2 states.
+- **(iii) Walk `work_ref` as an edge, with the EvalRun behind "limited".** Not chosen: "limited" would arise only on exam tasks' graphs, the same leak one step further on.
+- **(iv) Make "limited" carry no signal,** by answering it on every call of another class, or at random. Not chosen: G2 item 2 needs a complete result for a negative verdict, and G5 item 1's review needs one too. A flag that is always or randomly false says nothing.
+- **(v) Take exam tasks out of the working environment.** Not chosen: it goes against B:286 and P:813 as they stand, and it is C05's form (N-138). 1.7.5 (b) reopens this record if C05 chooses it.
+- **(vi) A separate Work table, or shadow rows, for exam tasks.** Not chosen: every read would have to merge them identically, which is more code where a leak can hide, for the result (a) and (b) already give.
+- **From scratch (D1).** With no DM-35, a design that starts from B:286 and P:813 draws the line at the exam's own records, as (a) does.
+
+**Checked against.**
+- **B section 2's "Cannot" lines (Doc).** B:35 refuses `kur` "reading or writing exam records (`EvalRun`, `Competence`, the exam schema, the fact that a task is an exam)"; B:36 and B:37 refuse "reading exam records". All are kept. The Work is not among the exam records (B:286, "ordinary `Work`"). The exam fact stays unreadable, and after (c) no answer carries it.
+- **Appendix C.**
+  - N08 (C:125), "the fact that an exam task is an exam is kept in an area the working environment cannot see": served in C02 by DM-24's form and (c). Its C03 part (what a session sees; N-137, S2) gains P as a testable property.
+  - N06 (C:123): no exam record becomes readable by any class, so none reaches the public repository by this change. The answer keys stay in the exam schema (P:813).
+  - K06 (C:161) and its C03 run: no function's role list changes. R10r and `record_eval_run` stay `sin`-only (T-W07-5B unchanged).
+- **EV3 §4 and S8.**
+  - §4.1's exam row and reads row are unchanged.
+  - S8 line 1 (§4.2: `kur` never reads the exam records or the exam fact) and S8 line 2 are unchanged.
+  - (c) 3 adds a check after the gate to §4.1's `claim` cell "its exam work" (EV3:277), read as work `sin` runs itself, not a subject's task **[Inf]**.
+- **EV2.**
+  - DM-24 is kept and extended by (c) 2.
+  - DM-35 (b) calls its rule "the only visibility rule C02 has beyond role-class writes". 5.2 adds a second one (open samples), so "only" no longer holds. EV2 gets a pointer line.
+- **W-C02-09's and W-C02-12's acceptance blocks.**
+  - W-C02-09 point 7 (completeness at a limit; F04 (d)) is unchanged.
+  - W-C02-09 point 8 ("F04 with K05") is unchanged in its words; T-W07-F04 changes before its first result (below).
+  - W-C02-12 point 5 ("the working token on … reading an exam record") is unchanged: EvalRun stays refused.
+
+**What is inference.**
+- That the two reads walk Relation rows only: B:391 groups them under Relation, and T-W07-F04 assumes `devos_private.relation`.
+- (c) 3's reading of "its exam work".
+- That no C02 read returns events to an application role other than `bak`.
+- That no session reads `devos-backup` by another route.
+
+**Doc:** the ground of the narrowing (B:284, B:286, P:813) and the "Cannot" lines.
+
+**W-C02-07 cases to change.** These are the executor's, through the test designer, before any result (README section 8). IDs are suggestions.
+- **T-W07-F04.**
+  - Header line and clause-table row (c): the node outside authority becomes an exam record, an EvalRun row planted by the owner as a relation end (a graph no function can make; (b)). The row's note "'outside authority' is DM-35's exam link" changes to "DM-35 as narrowed by EV-C02-008 5.1".
+  - **F04-c-noleak**, on that graph: with the working, audit and `devos_kurulum` tokens, no result holds h's id.
+  - **F04-c-flag**: unchanged (`complete = false`), on that graph.
+  - **F04-c-pos**: unchanged.
+  - **"Not covered"**: its line "Visibility beyond DM-35's exam rule" now cites 5.1 and 5.2 (open samples are no relation ends).
+  - New cases, and the breaks that must turn them red, are in the table below.
+- **T-W07-N08.** Gains N08-s3 and N08-s4 (table). N08-s1 and N08-s2 are unchanged.
+- **Rule O's cases (1.7.1, "Tests this asks for"), or a test of their own.** They gain the pair cases EXF-pair-* (table), which also carry 1.7.1's "answers equal" case.
+- **T-W07-5B.** Unchanged: no gate cell changes.
+
+| Case | Planted | Must be observed | Break that turns it red |
+|---|---|---|---|
+| F04-e-exam | r ← x ← h3 ← y, h3 a work item that a planted EvalRun names (DM-24); working token | `affected_entities(r)` gives x, h3 and y, `complete = true`, equal to F04-c-pos's; `explain_paths(r, h3)` gives its path; with h3 as root, the answer has the same form as with F04-c-pos's h2 | B-F04-4: the walk drops a work item an EvalRun names for a class other than `sin` (DM-35's old reading). B-F04-5: the walk follows `work_ref` as an edge and reports the EvalRun behind "limited" |
+| F04-c-sin | F04-c-noleak's graph; exam token | h found, `complete = true`: the filter goes by class and is not a blanket drop | A break that drops exam records for every class: F04-c-sin red |
+| F04-m3 | root = a planted EvalRun's id; working token | The answer and reason code of F04-m1 (a root that names no record) | B-F04-6: the root check answers an exam record with an authority refusal |
+| N08-s3 | `record_eval_run`, exam token, on a planted work item | The Work's rows, revisions and events, counted and compared before and after, are unchanged | B-N08-3: `record_eval_run` also writes an event on the Work |
+| N08-s4 | `claim` with the exam token on a work item an EvalRun names; and `record_eval_run` on a work item `sin` has claimed | Both refused, recorded | B-N08-4: (c) 3's check removed |
+| EXF-pair-* | Work items w_e (an EvalRun names it) and w_o (identical, no EvalRun); working token | `ready_works` lists both, or neither. `claim`, `heartbeat`, `release`, `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `relate`, `retract_relation` and `set_effort_policy` of kind (a) give the same status and reason code on each, accepted and refused (a stale revision, an empty required field, a claim another working session holds); the two reads as F04-e-exam | Rule O reading the exam link for `cal` (1.7.1's break); B-F04-4; B-N08-3; B-N08-4 (with `sin` able to claim w_e, the Rule C pair differs) |
+
+### 5.2 N-263: the sample's position after the draw
+
+**The conflict (Doc, then Inf).** DM-08 (b): "The random position keeps a writer from timing a meaningless record past the sample". B:478 says the position is "not visible to agents". But the audit environment reads the sample as soon as it is opened (B:247: "queued for the audit environment"). EV3's reads row (EV3:286) gives every class "review verdicts", and R12's reader is W-C02-09's to name (1.4). CHK-C02-026 F11 reads that row as letting every class read reviews. Whether an open sample with no verdict would be returned is therefore left to how W-C02-09 builds that reader **[Inf]**, so this section decides it. W-C02-10 point 3 asks the record to show "that nothing a writer can choose decides it".
+
+**Decision.**
+
+(a) **Withheld until the block closes.** While the block of the stream that drew it is still that stream's open block, no read returns any of these to any class but `den`, whose queue holds them at once (B:247):
+- a `sample` Review;
+- any Verdict on it;
+- its creation event.
+
+Once that block is complete (its last record accepted), they are readable as any Review and Verdict are (EV3:286; 1.4's R12).
+- `ci` is withheld like the environments **[Inf]**: its check results can be read in the public repository's pull-request checks.
+- `bak`'s read for the export (B:41; P:566) is not withheld. It writes no stream record, and its output goes to the private `devos-backup` (P:726; 5.1 (d)).
+
+(b) **Nothing else tells.** The drawing call's answer, the sampled record's fields, revision and events, and the RejectedAttempt rows are the same whether the record was drawn or not. No read returns:
+- a stream's block state (`sample_stream`; DM-08 (a): "not visible to agents");
+- a count that changes with open samples;
+- a walk node that is a Review (Reviews are not relation ends; 5.1 (b)).
+
+(c) **A strong random source for the draw.** The block's position is drawn from a cryptographically strong source (for example `gen_random_uuid()` or pgcrypto's `gen_random_bytes`), never from `random()`. Then a closed block's position tells nothing about the next block's. **[Inf: PostgreSQL's documentation as remembered, not read today; W-C02-10's record cites what it reads.]**
+
+(d) **Where it is built.** W-C02-10 builds it with the sampling. It applies (a) to every read function existing then that can return a Review, a Verdict or an Event, R12's reader from W-C02-09 among them. Its record lists those functions, with the cases below, as part of point 3's "shows that nothing a writer can choose decides it".
+
+(e) **What stays, with size, owner and deadline.**
+- **The audit class writes in the EffortPolicy stream.** It writes reductions and standing policies (1.7.4 (b), (c)), and it must read every sample to judge it. So for its own EffortPolicy records the position is not hidden from the writer. Principle 8 draws no line inside the audit environment.
+  - Size: every EffortPolicy record `den` writes. In C02 there are none outside the tests.
+  - Owner: the executor. Deadline: C03's design of the audit environment's sessions, before they write effort policies. Candidates: a block of its own, judged by a session that wrote none of it; or every such record reviewed.
+- **Timing.** A drawn call does one more insert and event, which a writer timing its own Data API calls might detect **[Inf; not measured; the network's variation is likely larger]**. Owner: W-C02-10's record states it. It is read again in C06 with the audit queue (N-214 item 3).
+- **Delay.** In a rare stream (decisions of class `high_impact` or `batu` at `open`) a block may stay open for weeks. Until it closes, the working environment sees no sample verdict on its records. C02 has no route from a sample verdict to a fix (`den` opens no work; §4.1 row 2). C03's design of that route either waits for the close or states the leak it accepts. That reopens this section.
+
+**Alternatives weighed.**
+- **(i) Accept the residual.** Not chosen. The size follows from DM-08 (a): one sample per block of 10, at a uniform position. A writer that sees the sample knows on average 4.5 of the block's 10 records are unsampled. A writer that waits for the sample before writing a meaningless record escapes in 9 blocks of 10, and, if it waits on into the next block, every time. Against a writer that watches, that is DM-08 (d)'s rejected "every tenth", and W-C02-10 point 3 could not be shown, because the writer's choice of moment would decide.
+- **(ii) More than one position per block** (for example 2 in 20). Not chosen. N01's rate without tolerance needs an exact count per block (DM-08 (b)). With an exact count, once the count is reached in view the rest of the block is known; more positions only move that moment.
+- **(iii) A position the writer cannot infer from what it sees.**
+  - An independent draw per record (probability 0.1) tells nothing when seen. But it makes the count inexact (DM-08 (d)), and N01 and T-31 would need a tolerance written after this finding, which changes a criterion. Not chosen.
+  - Block boundaries at a hidden offset: the offset is learned from the gaps between seen samples (a gap of 19 fixes it). Not chosen.
+- **(iv) A deferred draw:** pick the sampled record when the block completes, and open its sample in that call. It needs no read rule. Not chosen:
+  - the audit queue waits for the block, which in a rare stream is long;
+  - the sample would open in another record's call, against 2.2's condition 3 and PC-46's B:246 text ("for the record revision whose accepted write draws it"), which a checker accepted;
+  - its event would carry another writer's class (DM-31).
+- **(v) Withhold samples from the writing classes for good.** Not chosen: once the block closes DM-08 does not need it, and it would take from every class a verdict on its own work that the reads row gives it.
+- **(vi) Withhold only from the class that wrote the sampled record.** Not chosen: a stream has writers of several classes (`cal`, `kur`, `sin`, and `den` in EffortPolicy), and any of them could read another's sample to locate the position.
+
+**Checked against.**
+- **B 3.11 and principle 12** (B:26; B:247: created by the database, queued for the audit environment): unchanged, and the queue is `den`'s at once.
+- **B:478's "not visible to agents"**: until now no rule made it true (see the conflict above); it is made exact for the open block (5.3).
+- **DM-08.**
+  - (a) stands.
+  - (b)'s "hidden" now holds from the draw to the block's end, and after it nothing about the next block follows ((c)).
+  - (d)'s rejection of "every tenth" keeps its reason.
+- **Section 2 of this record**: unchanged, that is 2.2's conditions, DM-41 and the taking. 2.3's last bullet ("The draw is random within each block and hidden") now holds for the open block. 2.5's cases read as the owner and are unchanged.
+- **W-C02-10's acceptance.**
+  - Point 3: no word changes. Its last-but-one bullet can now be shown; T-31's number, rate and tolerance are unchanged.
+  - Point 5 is untouched.
+- **EV3's reads row** (EV3:286): a gate row, unchanged. (a) is a check after the gate, as 1.1 reads §4.1's qualifiers. `ci`'s read of review verdicts (B:40) is delayed for a sample's verdict, not refused.
+
+**What is inference.**
+- (c)'s statement about `random()`.
+- That `ci`'s results are publicly readable.
+- That no session reads `devos-backup`.
+- The size of every residual except (i)'s arithmetic.
+
+**W-C02-07 cases to change** (before any result; README section 8):
+- **T-W07-N01.** Gains the N01 cases of the table. Its "Not covered" item "that the hidden position is random and unseen by agents (shown only in part …)" narrows to the random source ((c), shown by W-C02-10's record). B-N01-1 to B-N01-3 stay, with B-N01-2 revised as 3.4 says (CHK-C02-026 C2).
+- **T-W07-T31.** Its planted numbers, rate 2 in 20 per stream and tolerance 0 are unchanged: it counts samples as the owner. It gains T31-unseen-<stream>. Its "Not covered" gains (e)'s first two items.
+- **T-W07-N29.** Its routine streams (work items and decisions) get the same unseen case, unless the designer puts them in N01.
+- **T-W07-5B, T-W07-N28 and 2.5's cases.** Unchanged.
+
+| Case | Planted | Must be observed | Break that turns it red |
+|---|---|---|---|
+| N01-unseen-<class> (`cal`, `sin`, `kur`, `ci`) | A block opened by alignment, the drawing write accepted, the block not yet complete. Each read function that can return a Review, a Verdict or an Event (found by its text, as T-W07-N08 finds EvalRun's readers), called with that class's token | No result holds the sample's id, its target's sampled state, or any value that changes with it | B-N01-4: the withholding removed (a reader returns open samples) |
+| N01-unseen-den (positive) | The same; audit token | The queue read returns the sample | A break that hides it from `den` too |
+| N01-unseen-after (positive) | The block completed; a Verdict on the sample with the audit token | With the working token, R12's reader returns the verdict | A break that withholds for good |
+| N01-same-answer | One complete block of ten needs | The ten answers differ in nothing but each record's id | B-N01-5: the drawing write answers with a sampled mark |
+| T31-unseen-<stream> | Each of T-31's four streams, inside a planted block, with the writing class's token (`cal`; for EffortPolicy, kind (a)) | As N01-unseen | B-N01-4's patch, applied to T-31 as well |
+
+### 5.3 Plan text, record text and acceptance blocks
+
+**Plan text, for the executor to change through plan Section 14.** Old texts are quoted from `main` `310e0c4`.
+
+**Place 1 (5.1). B:286, Appendix B 3.15, the last sentence of its rules.**
+- Old: "Exam tasks are opened in the working environment as ordinary `Work`; in the `Work` record, the fact that the task is an exam is kept in a field the working environment cannot see."
+- New: "Exam tasks are opened in the working environment as ordinary `Work`. The fact that a task is an exam is kept only in `EvalRun`'s link (above), never in a field of the `Work` record; the exam records stay hidden, and no function answers the working environment differently for an exam task than for ordinary work (`evidence/C02/EV-C02-002_data_model_choices.md` DM-24 and DM-35; `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 5.1)."
+- Why. The old sentence's "field" has disagreed with B:284 ("the link lives only here") since PC-42 and DM-24. The decision states its property where B states the exam's rules. It names the working environment only, since the audit class's RejectedAttempt read stays open until C05 (5.1 (d)).
+
+**Place 2 (5.2). B:247, Appendix B 3.11.**
+- Old: "- A review of kind `sample` is created by the database, never by an agent, for a set share of the records a format gate accepts (principle 12) and of the work items and decisions labelled `routine` (3.3, 3.17); it is queued for the audit environment, which judges the content and the label (PC-08)."
+- New: the same, followed by: "Until the block of its stream that drew it is complete, the sample, any verdict on it and its creation event are read only with `devos_denetim`, and by the backup job for the export (`evidence/C02/EV-C02-002_data_model_choices.md` DM-08; `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 5.2)."
+- Why. B:40 gives `devos_ci` "review verdicts", and EV3's reads row gives them to every class. Without a rule in B, the withholding would rest on a design record that a plan line, read literally, contradicts.
+
+**Place 3 (5.2). B:478, section 8's table, the row "Sample share".**
+- Old: "One record in every block of 10 of a stream, at a position drawn at random when the block opens and not visible to agents."
+- New: "One record in every block of 10 of a stream, at a position drawn from a strong random source when the block opens; until the block is complete, neither the position nor the `sample` Review it opens is visible to any agent but the audit environment's (3.11; `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 5.2)."
+- Why. The audit environment, an agent, sees the sample once it is drawn (B:247). Without (a), writers would see it too. The new text says who sees it and from when.
+
+**Not changed on purpose.**
+- B:26 (principle 12): still true.
+- B:35 to B:41: no "Can" or "Cannot" changes.
+- B:452 and G2 item 4: still true. In C02 no unseen region arises in a walk made through the functions.
+- C:61 to C:68 (F04 (c)): its node outside authority is planted.
+- C:118 (N01) and C:125 (N08): served as they read.
+- P:642, P:813 and P:814: true, and the ground of 5.1.
+
+A search of B, C, G and P for "exam task", "is an exam", "hidden" and "not visible" found no other text these decisions make untrue.
+
+**Record text superseded, not edited (pointer lines instead).**
+- This record's 1.2 row for `affected_entities` ("records linked to an exam are hidden from every class but `sin`").
+- 1.3's row for the two reads ("DM-35 (F04 (c)) has these two functions hide exam-linked records").
+- 1.7.1's dated limitation of its exam-task bullet: 5.1 resolves it.
+- EV2 DM-35 (a) and (b), and DM-08 (b)'s "hidden": each has a dated pointer line.
+
+**Acceptance blocks.**
+- **W-C02-09 point 8 ("F04 with K05").** Its words are unchanged; T-W07-F04 changes before its first result. Not loosened **[Inf]**: (c)'s negative on a hidden node stays, and F04-e-exam, F04-m3 and F04-c-sin are added.
+- **W-C02-09 point 7.** Unchanged.
+- **W-C02-10 point 3.** Its words are unchanged. 5.2 is what lets "shows that nothing a writer can choose decides it" be met. Not loosened: cases are added and none is dropped.
+- **W-C02-10 point 5 (the EvalRun bullet).** Unchanged. N08-s3 and N08-s4 add cases; the designer names the item each serves (`claim` is W-C02-09's).
+- **W-C02-12 point 5.** Unchanged.
+
+No acceptance block needs new words.
