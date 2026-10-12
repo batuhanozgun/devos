@@ -329,7 +329,8 @@ begin
   scrub := array[den, cal] || coalesce(rvk, '');
   pre := left(den, length(den) - 43); rnd := right(den, 43);
   -- A second function whose role list refuses devos_calisma, called with neutral arguments (README 5.1 (a)).
-  select p into fb from unnest(array['revoke_claim', 'record_verdict', 'accept', 'open_review', 'set_effort_policy',
+  -- Phase C4a: set_effort_policy is not on this list: its gate admits devos_calisma (EV-C02-008 1.7.4).
+  select p into fb from unnest(array['revoke_claim', 'record_verdict', 'accept', 'open_review',
                                      'record_eval_run', 'mark_exported', 'open_mission']) p
   where pg_temp.w07_fn(p) is not null limit 1;
   if fb is not null then fbsql := pg_temp.w07_sql_for(pg_temp.w07_fn(fb)); end if;

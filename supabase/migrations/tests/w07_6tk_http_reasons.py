@@ -21,7 +21,7 @@ part plants it (w07_6tk_token_reasons.sql, 6TK-hu0 to hu4).
 Runs: by the migration job's runner inside its devos-test step, from the repository root, as
   python3 -I supabase/migrations/tests/w07_6tk_http_reasons.py < <one JSON object on standard input>
 (README section 5.1 (b); note N-255 on plan/work/C02.md). The input is the job's one JSON object:
-  {"endpoint": "<the project's API base URL>", "apikey": "<the publishable key>" or null,
+  {"endpoint": "<the project's base URL, https://<ref>.supabase.co; the program appends its own path>", "apikey": "<the publishable key>" or null,
    "tokens": {"<role class>": "<token>", ...}, "revoked_token": "<token>"}
 exactly those four keys (N-255, "The key's source, decided"). apikey null means the key is not stored yet: every
 Data API case is then "could not check", exit 3, with that reason. This program declares no need of the database,
@@ -34,6 +34,7 @@ This program uses tokens.devos_denetim and revoked_token. Exit 0 PASS, 1 FAIL, 3
 import json
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 
 sys.dont_write_bytecode = True
@@ -132,14 +133,29 @@ def read_input():
         return None, "tokens is not an object from role class to token (N-255)"
     return cfg, None
 
+def is_base_url(v):
+    """The project's base URL, https://<ref>.supabase.co (README 5.1 (b); N-255): https, a host, no user part, no path
+    beyond "/", no query or fragment. Each program appends its own path (/rest/v1/rpc/<function>, /rest/v1/<table>).
+    The value is never printed."""
+    if not isinstance(v, str) or not v:
+        return False
+    try:
+        u = urllib.parse.urlsplit(v)
+        host = u.hostname
+    except ValueError:
+        return False
+    return (u.scheme == "https" and bool(host) and u.username is None and u.password is None
+            and u.path in ("", "/") and not u.query and not u.fragment)
+
+
 def api_lacks(cfg, classes, revoked=False):
     """What a Data API program lacks in the job's input, by name, or None. apikey null: N-255's key not stored yet."""
     if cfg["apikey"] is None:
         return ("apikey is null: the job holds no publishable key for devos-test yet (N-255, The key's source, "
                 "decided), so no Data API case can run")
     out = [] if cfg["apikey"] else ["apikey (empty)"]
-    if not isinstance(cfg["endpoint"], str) or not cfg["endpoint"]:
-        out.append("endpoint")
+    if not is_base_url(cfg["endpoint"]):
+        out.append("endpoint as the project's base URL (https://<ref>.supabase.co, no path: the program appends its own)")
     out += ["tokens." + c for c in classes if not isinstance(cfg["tokens"].get(c), str) or not cfg["tokens"].get(c)]
     if revoked and (not isinstance(cfg["revoked_token"], str) or not cfg["revoked_token"]):
         out.append("revoked_token")

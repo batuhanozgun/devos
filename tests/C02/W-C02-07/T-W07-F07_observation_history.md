@@ -7,7 +7,7 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f07`, i
 **Time added to W-C02-13's run.** None. Observation times are given as data (`observed_at` two hours and one hour ago); nothing waits.
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1, as `T-W07-F01` states it (the return form, refusals returned, the token, fixture, claim and `prepare_operation` forms, the planted effect class). Also:
 - `devos_api.record_observation(observation jsonb)` with `{operation_ref, source, observed_at, observed_effect}` (`applied` / `not_applied` / `unknown`), called with the working token (B:36, "external-effect intents and their observations"), with no claim token → `{status, id}`.
-- `devos_api.operation_state(operation uuid)`, a read function marked `devos:read` (EV-C02-002 DM-36) → `{status, ever_applied boolean, current_effect text}`. B section 4 names no such read. It is the form this test assumes for "the current-state question", and W-C02-09 must provide it or the test designer revises the test to the build's read before the first result (README section 8).
+- `devos_api.operation_state(operation_id uuid)`, a read function marked `devos:read` (EV-C02-002 DM-36) → `{status, ever_applied boolean, current_effect text}`: the Operation's `status`, whether any of its observations is `applied`, and the latest observation's `observed_effect`. **Fixed, phase C4a:** EV-C02-008 1.7.2 (merged and accepted; CHK-C02-025 F8) names the function, its argument `operation_id` and these three fields, with its row (`cal`, `den`, `sin`, `kur` ✔; `T-W07-5B`'s R26); "The build may add fields of B 3.12 with its reason; it does not rename it." The test calls it by its parameter's name, `operation_id => …`, so the name the Data API binds is the one tested. The operation's identifier is `operation_id` wherever a function takes it as a parameter (README 8.1: `record_attempt(claim_token text, operation_id uuid)`); `operation_ref` is only Observation's field, B 3.12's (B:254), in `record_observation`'s payload.
 - Owner reads of `devos_private.observation` (B 3.12's columns, `id`) and of `devos_private.work.acceptance` (the acceptance axis, B 3.3).
 
 
@@ -17,11 +17,11 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f07`, i
 | Case | Sequence on one operation | Expected |
 |---|---|---|
 | F07-a1 | applied (−2 h), then unknown (−1 h) | both rows present; the first row unchanged, column for column |
-| F07-a2 | the same | `operation_state`: `ever_applied` true, `current_effect` `unknown` |
+| F07-a2 | the same | `operation_state(operation_id)` of that operation: `ever_applied` true, `current_effect` `unknown` |
 | F07-b1 | not_applied (−1 h) recorded first, then applied (−2 h) recorded second (out of order) | both rows; the first row unchanged |
-| F07-b2 | the same | `ever_applied` true, `current_effect` `not_applied` (latest by observation time, not by arrival) |
+| F07-b2 | the same | `operation_state(operation_id)`: `ever_applied` true, `current_effect` `not_applied` (latest by observation time, not by arrival) |
 | F07-c1 | synthetic sequence: "pull request merged" applied (−2 h), then "main reverted" not_applied (−1 h) | both rows; the first unchanged |
-| F07-c2 | the same | `ever_applied` true, `current_effect` `not_applied` |
+| F07-c2 | the same | `operation_state(operation_id)`: `ever_applied` true, `current_effect` `not_applied` |
 | F07-c3 | the same | the work item's acceptance axis is unchanged by the observations |
 
 ## Form C0
@@ -53,9 +53,10 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f07`, i
 Not a format-gate test.
 
 ## Could not check
-COULD NOT CHECK before the build, when a fixture or an observation cannot be recorded, or when `operation_state` is absent or raises (the -a2, -b2 and -c2 cases), never PASS.
+COULD NOT CHECK before the build, when a fixture or an observation cannot be recorded, or when `operation_state(operation_id uuid)` is absent, does not bind `operation_id` by name, or raises (the -a2, -b2 and -c2 cases), never PASS.
 
 ## Not covered
 - Real GitHub (C08).
 - Who may record an observation beyond the working token: `devos_ci`'s "writing observations" is narrowed by EV-C02-003 §5.2 and is the matrix's (T-W07-5B).
 - Direct writes to the observation table: T-W07-5A.
+- Who may call `operation_state`: its row in `T-W07-5B` (R26; EV-C02-008 1.7.2).

@@ -562,10 +562,101 @@ begin
     item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'standing_policy_ref', s2), 'refused', null, 'effort_policy');
 end $f$;
 
+-- Phase C4a: the cases CHK-C02-025 condition C2 asks for, now that set_effort_policy admits devos_calisma,
+-- devos_denetim, devos_sinav and devos_kurulum at the gate (EV-C02-008 1.7.4, and its section 3.4's dated paragraph).
+-- An owner-level statement the build's record names (README section 8): it returns the id of a Mission the build treats
+-- as the installation's under Rule O (CHK-C02-025 F5). Empty until then: N03-pos-default-kurulum gives could_not_check.
+create function pg_temp.n03_hook(p_key text) returns text language sql immutable as $f$
+  select t.v from (values ('installation_mission', '')) t(k, v) where t.k = p_key
+$f$;
+-- An exam task of the exam environment: opened with devos_sinav as ordinary work (B:38; if the build refuses that before
+-- any exam link exists, with devos_calisma), and an exam run naming it, planted at owner level (DM-24; record_eval_run's
+-- payload is not fixed, README 8.1). Rule O reads the link, not the opener (EV-C02-008 1.7.1).
+create function pg_temp.n03_exam_task() returns text language plpgsql as $f$
+declare r jsonb;
+begin
+  r := pg_temp.w07_call('devos_sinav', 'admit_work', pg_temp.w07_args('work', 'complete', nextval('w07_seq')::int, 'high'));
+  if pg_temp.w07_kind(r) <> 'accepted' then
+    r := pg_temp.w07_call('devos_calisma', 'admit_work', pg_temp.w07_args('work', 'complete', nextval('w07_seq')::int, 'high'));
+    if pg_temp.w07_kind(r) <> 'accepted' then
+      raise exception using errcode = 'P0W07', message = 'fixture exam task refused: ' || pg_temp.w07_brief(r); end if;
+  end if;
+  perform pg_temp.w07_plant_row('eval_run', jsonb_build_object('work_ref', r->>'id'));
+  return r->>'id';
+end $f$;
+-- The rule under these cases is after the gate (EV-C02-008 1.7.4 admits the class at the gate): a refusal with the
+-- gate's code is the gate refusing a class it must admit, so the case is bad.
+create function pg_temp.n03_after_gate(p_case text, r jsonb) returns void language plpgsql as $f$
+begin
+  if pg_temp.w07_kind(r) = 'refused' and r->>'reason_code' = 'role_class_not_permitted' then
+    perform pg_temp.w07_rec(p_case, false, 'refused at the role gate (role_class_not_permitted), where EV-C02-008 1.7.4 admits this class');
+  end if;
+end $f$;
+create function pg_temp.n03_kinds() returns void language plpgsql as $f$
+declare red jsonb := '{"level": "medium", "reduction_reason": "SYNTHETIC W-C02-07: a short w07_fixture query needs no full effort"}';
+        st jsonb; ex text; r jsonb; s3 text; row jsonb; h text; im text; x jsonb;
+begin
+  ex := pg_temp.n03_exam_task();
+  -- (b) devos_denetim: kind (a), an item's own policy at the default, is refused; its right is the approval (1.7.4).
+  r := pg_temp.w07_expect('N03-neg-default-denetim', 'devos_denetim', 'set_effort_policy',
+    pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int), 'refused', null, 'effort_policy');
+  perform pg_temp.n03_after_gate('N03-neg-default-denetim', r);
+  -- (a) devos_sinav: its exam task's own policy at the default is accepted (the paired positive); a reduction, a standing
+  -- policy and a retirement are refused (EV-C02-003 §4.1's effort row, sin x).
+  perform pg_temp.w07_expect('N03-pos-default-sinav', 'devos_sinav', 'set_effort_policy',
+    pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int) || jsonb_build_object('work_ref', ex), 'accepted', null, 'effort_policy');
+  r := pg_temp.w07_expect('N03-neg-own-approval-sinav', 'devos_sinav', 'set_effort_policy',
+    pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int) || jsonb_build_object('work_ref', ex) || red,
+    'refused', null, 'effort_policy');
+  perform pg_temp.n03_after_gate('N03-neg-own-approval-sinav', r);
+  st := jsonb_build_object('work_class', 'w07_fixture_class.exam_try: a synthetic class for the exam token',
+    'level', 'medium', 'expert_assessment_ref', 'SYNTHETIC W-C02-07: expert assessment of the w07_fixture exam_try class',
+    'non_removable_steps', '["verification", "alternatives_research", "external_source_research"]'::jsonb,
+    'reduction_reason', 'SYNTHETIC W-C02-07: exam_try items run at medium effort', 'status', 'active');
+  r := pg_temp.w07_expect('N03-neg-standing-sinav', 'devos_sinav', 'set_effort_policy', st, 'refused', null, 'effort_policy');
+  perform pg_temp.n03_after_gate('N03-neg-standing-sinav', r);
+  x := pg_temp.w07_call('devos_denetim', 'set_effort_policy', st || '{"work_class": "w07_fixture_class.third: a third synthetic class"}');
+  if pg_temp.w07_kind(x) <> 'accepted' then
+    perform pg_temp.w07_put('N03-neg-retire-by-sinav', 'could_not_check', 'the standing policy to retire was refused with the audit token: ' || pg_temp.w07_brief(x));
+  else
+    s3 := x->>'id';
+    r := pg_temp.w07_expect('N03-neg-retire-by-sinav', 'devos_sinav', 'set_effort_policy',
+      jsonb_build_object('id', s3, 'status', 'retired'), 'refused', null, null);
+    perform pg_temp.n03_after_gate('N03-neg-retire-by-sinav', r);
+    execute 'select to_jsonb(p) from devos_private.effort_policy p where p.id::text = $1' into row using s3;
+    perform pg_temp.w07_rec('N03-neg-retire-by-sinav', row->>'status' = 'active', 'standing policy status after the refusal: ' || coalesce(row->>'status', 'absent'));
+  end if;
+  -- (c) kind (a) under Rule O (EV-C02-008 1.7.1): devos_sinav on a work item its exam link does not name, and
+  -- devos_kurulum on a work item outside the installation, are refused; devos_kurulum's paired positive is an item under
+  -- the installation's Mission (through the hook).
+  r := pg_temp.w07_expect('N03-neg-rule-o-sinav', 'devos_sinav', 'set_effort_policy',
+    pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int), 'refused', null, 'effort_policy');
+  perform pg_temp.n03_after_gate('N03-neg-rule-o-sinav', r);
+  r := pg_temp.w07_expect('N03-neg-rule-o-kurulum', 'devos_kurulum', 'set_effort_policy',
+    pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int), 'refused', null, 'effort_policy');
+  perform pg_temp.n03_after_gate('N03-neg-rule-o-kurulum', r);
+  h := pg_temp.n03_hook('installation_mission');
+  if coalesce(h, '') = '' then
+    perform pg_temp.w07_put('N03-pos-default-kurulum', 'could_not_check', 'the installation''s Mission is marked by a form '
+      || 'W-C02-09''s record names (CHK-C02-025 F5); pg_temp.n03_hook(''installation_mission'') is empty until then (README section 8)');
+  else
+    execute h into im;
+    x := pg_temp.w07_call('devos_kurulum', 'admit_work', pg_temp.w07_args('work', 'complete', nextval('w07_seq')::int, 'high')
+           || jsonb_build_object('mission_ref', im));
+    if pg_temp.w07_kind(x) <> 'accepted' then
+      perform pg_temp.w07_put('N03-pos-default-kurulum', 'could_not_check', 'the installation''s work item was refused: ' || pg_temp.w07_brief(x));
+    else
+      perform pg_temp.w07_expect('N03-pos-default-kurulum', 'devos_kurulum', 'set_effort_policy',
+        pg_temp.w07_args('effort_policy', 'complete', nextval('w07_seq')::int) || jsonb_build_object('work_ref', x->>'id'),
+        'accepted', null, 'effort_policy');
+    end if;
+  end if;
+end $f$;
+
 do $$
 declare why text;
 begin
-  why := pg_temp.w07_pre(string_to_array('set_effort_policy,admit_work,open_mission,open_decision', ','), string_to_array('effort_policy,work,review,sample_stream,decision,decision_revision,mission', ','));
+  why := pg_temp.w07_pre(string_to_array('set_effort_policy,admit_work,open_mission,open_decision', ','), string_to_array('effort_policy,work,review,sample_stream,decision,decision_revision,mission,eval_run', ','));
   if why is null then
     begin
       perform pg_temp.w07_mission();
@@ -580,6 +671,7 @@ begin
   perform pg_temp.w07_run('N03-steps', $q$select pg_temp.n03_steps()$q$);
   perform pg_temp.w07_run('N03-approval', $q$select pg_temp.n03_approval()$q$);
   perform pg_temp.w07_run('N03-standing', $q$select pg_temp.n03_standing()$q$);
+  perform pg_temp.w07_run('N03-kinds', $q$select pg_temp.n03_kinds()$q$);
   perform pg_temp.w07_run('N03-fbm1', $q$select pg_temp.w07_blocks('N03-fbm1', 'effort_policy', 'effort_policy', 'fbm1', null, 1)$q$);
   perform pg_temp.w07_run('N03-fbm2', $q$select pg_temp.w07_blocks('N03-fbm2', 'effort_policy', 'effort_policy', 'fbm2', null, 1)$q$);
 end $$;

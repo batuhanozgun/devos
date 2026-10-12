@@ -403,6 +403,8 @@ begin
   end if;
 
   -- (C02) the installation token outside the ledger transfer's path, and any approval a rule counts as the audit's.
+  -- Phase C4a: set_effort_policy is not in the list below: its gate admits devos_kurulum (EV-C02-008 1.7.4), and its
+  -- approval (a reduction, a standing policy) is refused to devos_kurulum after the gate: T-W07-N03's -kurulum cases.
   r := pg_temp.w07_call(api, pg_temp.w07_h(kur), sqlv, scrub);
   perform pg_temp.w07_put('N04-k1', pg_temp.w07_is_role_refusal(r, 'record_verdict', 'devos_kurulum'),
     'record_verdict with the devos_kurulum token, outside the transfer: ' || pg_temp.w07_says(r));
@@ -413,7 +415,7 @@ begin
   perform pg_temp.w07_put('N04-k6', pg_temp.w07_is_role_refusal(r, 'record_verdict', 'devos_kurulum'),
     'record_verdict, devos_kurulum token, fake role name and session ID: ' || pg_temp.w07_says(r));
   for c in select p.oid, p.proname from pg_proc p join pg_namespace s on s.oid = p.pronamespace
-           where s.nspname = 'devos_api' and (p.proname in ('open_review', 'set_effort_policy', 'activate_release',
+           where s.nspname = 'devos_api' and (p.proname in ('open_review', 'activate_release',
                  'advance_recovery_stage', 'begin_recovery') or p.proname ~ '(^approve|approval)') order by 2 loop
     r := pg_temp.w07_call(api, pg_temp.w07_h(kur), pg_temp.w07_sql_for(c.oid), scrub);
     perform pg_temp.w07_put('N04-k-' || c.proname, pg_temp.w07_is_role_refusal(r, c.proname, 'devos_kurulum'),

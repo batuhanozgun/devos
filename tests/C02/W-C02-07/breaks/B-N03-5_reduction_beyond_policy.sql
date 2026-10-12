@@ -20,7 +20,11 @@ create function devos_api.set_effort_policy(p jsonb) returns jsonb language plpg
 set search_path = pg_catalog as $f$
 declare lv text; steps jsonb; r jsonb;
 begin
-  if p->>'standing_policy_ref' is not null and p->>'work_ref' is not null then
+  -- Phase C4a (before any result): only for callers other than devos_denetim. The comparison binds an item without the
+  -- audit environment's own approval ("unless it has its own approval"); under EV-C02-008 1.7.4 an audit-token call
+  -- shown "within" its policy would be kind (a), which that token is refused, so the patch must leave it alone.
+  if p->>'standing_policy_ref' is not null and p->>'work_ref' is not null
+     and coalesce((devos_api.token_role_class())->>'role_class', '') <> 'devos_denetim' then
     select level::text, non_removable_steps into lv, steps from devos_private.effort_policy where id::text = p->>'standing_policy_ref';
     update devos_private.effort_policy set level = coalesce(p->>'level', 'high'), non_removable_steps = p->'non_removable_steps'
      where id::text = p->>'standing_policy_ref';

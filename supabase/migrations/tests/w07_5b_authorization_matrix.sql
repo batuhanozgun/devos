@@ -3,8 +3,9 @@
 -- rollback. Text inputs and planted rows read 'w07_fixture SYNTHETIC W-C02-07'. No personal or business data.
 --
 -- T-W07-5B: W-C02-07 point 5 (b) at the database, and W-C02-09 point 8's authorization test: every devos_api function
--- is called with a synthetic token of each of the six role classes; each x cell of EV-C02-003 §4.1 must be a role
--- refusal (recorded per call under the caller's class, nothing else changed) and each v cell must pass the role gate.
+-- is called with a synthetic token of each of the six role classes; each x cell of EV-C02-003 §4.1, with the rows
+-- EV-C02-008 sections 1.2, 1.4 and 1.7 add, must be a role refusal (recorded per call under the caller's class,
+-- nothing else changed) and each v cell must pass the role gate.
 -- The functions are read from the catalogue at run time; one with no row is 'could not check'.
 -- Specification: tests/C02/W-C02-07/T-W07-5B_authorization_matrix.md.
 --
@@ -299,8 +300,9 @@ begin
   return null;
 end $f$;
 
--- EV-C02-003 §4.1, row by row. y = permitted (the call must pass the role gate), n = refused (a role refusal),
--- - = not run here (the cell's test is named in the specification). Columns: calisma, denetim, sinav, kurulum, ci, backup.
+-- EV-C02-003 §4.1, row by row, with the rows EV-C02-008 sections 1.2, 1.4 and 1.7 add (phase C4a). y = permitted (the
+-- call must pass the role gate), n = refused (a role refusal), - = not run here (the cell's test is named in the
+-- specification). Columns: calisma, denetim, sinav, kurulum, ci, backup.
 create temp table w07_matrix (fn text primary key, row_id text not null, cells text not null);
 insert into w07_matrix values
   ('token_role_class', 'R01', 'yyyyyy'),
@@ -312,15 +314,31 @@ insert into w07_matrix values
   ('register_artifact', 'R06', 'ynnynn'), ('record_finding', 'R06', 'ynnynn'), ('prepare_operation', 'R06', 'ynnynn'),
   ('record_attempt', 'R06', 'ynnynn'), ('record_observation', 'R06', 'ynnynn'),
   ('open_review', 'R07', 'nynnnn'), ('record_verdict', 'R07', 'nynnnn'), ('accept', 'R07', 'nynnnn'),
-  ('set_effort_policy', 'R08', 'nynnnn'),
+  -- Phase C4a: set_effort_policy at the gate (EV-C02-008 1.7.4). EV-C02-003 §4.1's row "Effort-reduction approval;
+  -- standing effort policies" (R08) stays an operation row, checked after the gate by T-W07-N03, not here.
+  ('set_effort_policy', 'R08g', 'yyyynn'),
   ('record_eval_run', 'R10', 'nnynnn'),
   ('competence_summary', 'R11', 'yyyynn'),
+  -- Phase C4a: R15's function is named by the design (EV-C02-008 1.4), no longer by the build.
+  ('read_rejected_attempts', 'R15', 'nynnnn'),
   ('deployment_drift', 'R16', '------'),
   ('mark_exported', 'R17', 'nnnnny'),
   ('ingest_source', 'R18', 'nnnnnn'),
-  -- Phase C3: R19 is not an EV-C02-003 section 4.1 row. Appendix B section 4's "Ledger transfer" row (PC-44 place 10,
-  -- main 11feac5): "Only devos_kurulum". Before the ledger_handed_over event every one of them passes the role gate for
-  -- devos_kurulum; no test here plants the hand-over (W-C02-14 point 13's tests do).
+  -- Phase C4a: the ten rows of EV-C02-008 1.2 (N-256) and operation_state's row (1.7.2). A qualifier in a v cell ("its
+  -- review work", "its exam tasks only", "the installation's work items") is a check after the gate (1.1; Rules O and
+  -- C, 1.7.1), tested by T-W07-ROC, not here.
+  ('ready_works', 'R20', 'yyyynn'),
+  ('relate', 'R21', 'ynyynn'), ('retract_relation', 'R21', 'ynyynn'),
+  ('affected_entities', 'R22', 'yyyynn'), ('explain_paths', 'R22', 'yyyynn'),
+  ('revise_work', 'R23', 'ynyynn'), ('mark_stale', 'R23', 'ynyynn'), ('cancel_work', 'R23', 'ynyynn'),
+  ('reopen_for_review', 'R24', 'yyyynn'),
+  ('review_finding', 'R25', 'nynnnn'),
+  ('operation_state', 'R26', 'yyyynn'),
+  -- R19 is not an EV-C02-003 section 4.1 row: Appendix B section 4's "Ledger transfer" row (B:397; PC-44 place 10),
+  -- "Only devos_kurulum", whose row EV-C02-008 1.7.3 writes in §4.1's terms. At the gate the row is devos_kurulum
+  -- only; what follows the hand-over is a check after the gate (state, not role). No test here plants the
+  -- ledger_handed_over event, so every devos_kurulum cell runs before one exists in this transaction (1.7.3's [Inf]);
+  -- if devos-test already holds one, a refusal after the gate still passes the v cell, which judges the gate only.
   ('begin_transfer_run', 'R19', 'nnnynn'),
   ('transfer_mission', 'R19', 'nnnynn'),
   ('transfer_work', 'R19', 'nnnynn'),
@@ -335,24 +353,22 @@ insert into w07_matrix values
   ('end_transfer_run', 'R19', 'nnnynn'),
   ('record_handover', 'R19', 'nnnynn'),
   ('record_ledger_entry', 'R19', 'nnnynn');
--- Rows whose function the design does not name: the build's names go in w07_cfg's fn_R.. keys (README section 8).
+-- Rows whose function the design leaves to W-C02-09's build (EV-C02-008 1.4): the build's names go in w07_fn_cfg's
+-- keys before the first result (README section 8). R15's is named by the design and sits in w07_matrix above.
 create temp table w07_named_rows (row_id text primary key, cells text not null, what text not null);
 insert into w07_named_rows values
-  ('R10r', 'nnynnn', 'reading EvalRun and the exam fact (B 3.15)'),
-  ('R12', 'yyyyyy', 'reading review verdicts, decisions, current authority and epoch (B:40)'),
-  ('R13', 'nnnnyn', 'fingerprint matches (B 3.23: devos_ci reads)'),
-  ('R14', 'nnnnyn', 'recording a check''s result (devos_ci, EV-C02-003 §5.2)'),
-  ('R15', 'nynnnn', 'reading RejectedAttempt (DM-19; EV-C02-004 X-13)');
+  ('R10r', 'nnynnn', 'reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)'),
+  ('R12', 'yyyyyy', 'reading review verdicts, decisions, current authority and epoch (B:40); W-C02-09 names it (EV-C02-008 1.4)'),
+  ('R13', 'nnnnyn', 'fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)'),
+  ('R14', 'nnnnyn', 'recording a check''s result (devos_ci, EV-C02-003 §5.2); W-C02-09 names it or moves it to C03 (EV-C02-008 1.4)');
 create function pg_temp.w07_fn_cfg(p_row text) returns text language sql immutable as $f$
-  select t.v from (values ('R10r', ''), ('R12', ''), ('R13', ''), ('R14', ''), ('R15', '')) t(k, v) where t.k = p_row
+  select t.v from (values ('R10r', ''), ('R12', ''), ('R13', ''), ('R14', '')) t(k, v) where t.k = p_row
 $f$;
 
 do $$
 declare why text; api text := pg_temp.w07_cfg('api_role'); i jsonb; toks jsonb := '{}'; scrub text[] := '{}';
         cls text; c record; m record; cells text; rowid text; j int; r jsonb; cid text; short text[] :=
-        array['cal', 'den', 'sin', 'kur', 'ci', 'bak']; nm text; seen text[] := '{}'; norow text[] :=
-        array['ready_works', 'relate', 'retract_relation', 'affected_entities', 'explain_paths', 'revise_work',
-              'mark_stale', 'cancel_work', 'reopen_for_review', 'review_finding'];
+        array['cal', 'den', 'sin', 'kur', 'ci', 'bak']; nm text; seen text[] := '{}';
 begin
   why := pg_temp.w07_pre_common();
   if why is not null then perform pg_temp.w07_cnc('5B-pre', why); return; end if;
@@ -371,9 +387,8 @@ begin
     end if;
     nm := c.proname || case when c.ov > 1 then '#' || c.ov else '' end;
     if cells is null then
-      perform pg_temp.w07_cnc('5B-unmapped-' || nm, case when c.proname = any(norow)
-        then 'EV-C02-003 §4.1 gives this C02 function no row, so its permitted role classes are not stated (reported as Open)'
-        else 'a devos_api function with no row in this test''s matrix: its row is named before the first result (README section 8)' end);
+      perform pg_temp.w07_cnc('5B-unmapped-' || nm,
+        'a devos_api function with no row in this test''s matrix: its row is named before the first result (README section 8)');
       continue;
     end if;
     seen := seen || rowid;

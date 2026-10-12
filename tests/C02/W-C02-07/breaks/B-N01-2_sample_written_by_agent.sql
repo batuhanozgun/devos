@@ -1,5 +1,11 @@
 -- w07-break: test=w07_n01_need_justification.sql; expect-red=N01-tok-devos_calisma,N01-tok-devos_denetim,N01-tok-devos_sinav,N01-tok-devos_kurulum
--- Break patch for T-W07-N01 (tests/C02/W-C02-07/T-W07-N01_*.md, "Break attempt"). Rule removed: the refusal of a sample Review written with an environment token (B 3.11: created by the database, never by an agent).
+-- Break patch for T-W07-N01 (tests/C02/W-C02-07/T-W07-N01_*.md, "Break attempt"). Rule removed: the refusal of a sample Review written with an environment token (B 3.11: created by the database, never by an agent), at its first layer: open_review's own refusal of kind sample (EV-C02-008 2.2 condition 2: "open_review and the ledger transfer's transfer_review refuse kind sample from every token"). open_review is wrapped so that a call with kind sample writes the row itself instead of refusing it.
+-- Phase C4a (CHK-C02-026 C2, before any result): the build's second layer, the Review table's check of the sampling
+-- path's marker (2.2 condition 2), still refuses the row this patch writes, by an error. N01-tok-* therefore judge the
+-- first layer: they want the function's own refusal, returned and recorded (DM-19 (a)), and count a raised error as
+-- bad. Under this patch the call raises (the table's check) or, if a build had no such check, writes the sample: either
+-- way each N01-tok case turns red. The second layer has its own break and red case: B-N28-3 (the table's check removed),
+-- red S-neg-direct in T-W07-N28 (one break per layer, as CHK-C02-026 C2 allows).
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/ (README 5.2; plan Section 8
 -- item 3 as PC-42 place 3 writes it), never on devos-test or devos; it sits outside supabase/migrations/, so no job applies it.
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
@@ -23,7 +29,8 @@ begin
   if p->>'kind' = 'sample' then
     nid := gen_random_uuid();
     insert into devos_private.review select * from jsonb_populate_record(null::devos_private.review,
-      jsonb_build_object('id', nid, 'kind', 'sample', 'target_ref', p->>'target_ref', 'queue_role_class', 'devos_denetim', 'origin', 'call'));
+      jsonb_build_object('id', nid, 'kind', 'sample', 'target_ref', p->>'target_ref', 'target_revision', p->'target_revision',
+                         'queue_role_class', 'devos_denetim', 'origin', 'call'));
     return jsonb_build_object('status', 'ok', 'id', nid);
   end if;
   return devos_api.open_review_w07_orig(p);

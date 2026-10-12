@@ -8,7 +8,7 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.f08`, i
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it. Also:
 - `devos_api.relate(relation jsonb)` with `{type 'depends_on', from_ref {id, revision}, to_ref {id, revision}, hard true, group_mode 'ALL', scope, method 'recorded', epistemic_status}`, called with the working token.
 - `devos_api.revoke_claim(assignment uuid, reason text)` with the audit token.
-- `devos_api.record_attempt(claim_token text, operation uuid)`: the moment of effect for a prepared operation.
+- `devos_api.record_attempt(claim_token text, operation_id uuid)`: the moment of effect for a prepared operation (README 8.1; phase C4a aligned the argument's name with it; this file calls it by position).
 - `devos_api.revise_work(jsonb)`.
 - `devos_api.register_artifact(claim_token, jsonb)` as the effect on a work item.
 - Owner plants: `devos_private.work.execution` and `.acceptance` (B 3.3 axes on the identity row, DM-02) set to `finished` and `accepted` to resolve a dependency; `devos_private.assignment.lease_expires_at`.

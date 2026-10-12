@@ -17,7 +17,7 @@ Synthetic test data (plan Section 8 item 13): the tokens are synthetic tokens is
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. As `T-W07-IDC` ("Interface assumed"). Beyond it:
 - the six reason codes are spelled as EV-C02-003 §15 spells them;
 - the derivation's own input is `env_tokens`' columns `token_hash`, `revoked_at` and `role_class`;
-- the second function of the `-b` cases is the first that exists of `revoke_claim`, `record_verdict`, `accept`, `open_review`, `set_effort_policy`, `record_eval_run`, `mark_exported` and `open_mission`. Each refuses `devos_calisma` by its role list (EV-C02-003 §4.1).
+- the second function of the `-b` cases is the first that exists of `revoke_claim`, `record_verdict`, `accept`, `open_review`, `record_eval_run`, `mark_exported` and `open_mission`. Each refuses `devos_calisma` by its role list (EV-C02-003 §4.1). `set_effort_policy` was on this list until phase C4a: its gate admits `devos_calisma` (EV-C02-008 1.7.4), so it no longer refuses that class by its role list.
 
 
 **Phase C, the executor's decision.** `header_unreadable` is planted in SQL (part A, cases `6TK-hu*`), not over HTTP, where the Data API always sets `request.headers`: accepted.

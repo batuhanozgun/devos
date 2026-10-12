@@ -38,7 +38,8 @@ If the audit environment's call on those arguments is not accepted, `N04-p3` and
   - `N04-k1` and `N04-k1b`: `record_verdict`, neutral and on the planted review.
   - `N04-k2`: `accept`.
   - `N04-k6`: `record_verdict` with fake role and session headers.
-  - `N04-k-<function>`: every approval or binding act a rule counts as the audit environment's that exists in `devos_api`, each refused under `devos_kurulum`. These are `open_review`, `set_effort_policy`, `activate_release`, `begin_recovery`, `advance_recovery_stage`, and any function whose name starts with `approve` or holds `approval`.
+  - `N04-k-<function>`: every approval or binding act a rule counts as the audit environment's that exists in `devos_api` as a whole function, each refused under `devos_kurulum` by its role list. These are `open_review`, `activate_release`, `begin_recovery`, `advance_recovery_stage`, and any function whose name starts with `approve` or holds `approval`.
+  - `set_effort_policy` is no longer among them (phase C4a; EV-C02-008 1.7.4): its gate admits `devos_kurulum` for kind (a), an item's own policy, and the approval it carries, a reduction or a standing policy, is refused to `devos_kurulum` after the gate. Those refusals are `T-W07-N03`'s `N03-neg-own-approval-kurulum` and `N03-neg-standing-kurulum` (B:35, "effort-reduction approval"), and this clause maps to them.
 - **Positive.**
   - `N04-p1` and `N04-p2`: the audit token passes both functions' role gate.
   - `N04-p3`: on the planted review, the audit environment's `record_verdict` is accepted, with an event under `devos_denetim`.
@@ -65,7 +66,7 @@ If the audit environment's call on those arguments is not accepted, `N04-p3` and
 | **Stage and environment** | C02, in `devos-test` (the job's test step) and on the throwaway database, with synthetic tokens. The real-token run of the same cases is W-C02-12 points 4 to 6 (`T-W07-RT`, cases `RT-n04-*`): N04 with the working and `devos_kurulum` tokens, and N04's positive with the audit environment's real token. |
 | **Independence level** | As `T-W07-IDC`: written by the test designer (fresh-context `test-designer` subagent, phase B, Group D; agent ID in W-C02-07's Record); run by the job, W-C02-10's producer and W-C02-13's prober; judged by a fresh-context checker. Shared: model lineage, the design records and the README. |
 | **Evidence layer** | Structural, at the database (`sql-set-role`). It does not show the separation in `devos` with real tokens (`T-W07-RT`), C05's version activation, or C10's method changes. |
-| **Evidence envelope** | README section 4.<br>Fixed before the run: every case `ok`. On the stand-in, the file had 18 cases: 2 + 2 working, 2 fake role, 1 + 1 fake session, 4 + 2 installation (with `open_review` and `set_effort_policy` present), and 4 positives. A function with role or session arguments, or a database role `devos_denetim`, adds its case. The red cases of each break are as above. Part T's line is CNC until W-C02-06's design is accepted.<br>`transport`: `sql-set-role` or `throwaway`. `observations_ref` and `raw_evidence_ref` as `T-W07-IDC`. |
+| **Evidence envelope** | README section 4.<br>Fixed before the run: every case `ok`. On the stand-in, the file had 18 cases: 2 + 2 working, 2 fake role, 1 + 1 fake session, 4 + 2 installation (with `open_review` and `set_effort_policy` present; phase C4a drops `set_effort_policy` from the list, so the same stand-in now gives 4 + 1), and 4 positives. A function with role or session arguments, or a database role `devos_denetim`, adds its case. The red cases of each break are as above. Part T's line is CNC until W-C02-06's design is accepted.<br>`transport`: `sql-set-role` or `throwaway`. `observations_ref` and `raw_evidence_ref` as `T-W07-IDC`. |
 
 ## Clause table
 
@@ -78,7 +79,7 @@ Appendix C N04, C:121 as PC-43 place 9 writes it.
 | "and so is a version activation from C05, in the form C05 gives release activation (Appendix B 3.14)" | | C05 (Appendix C's stage column; C02 builds no release activation) |
 | "**a fake role name and a fake session ID with the same token** are also rejected" | `N04-c1` to `N04-c4`, `N04-e1-*`, `N04-e2`, `N04-k6` | |
 | "with the installation environment's token (`devos_kurulum`), a verdict or an acceptance written other than through the ledger transfer's path" | `N04-k1`, `N04-k1b`, `N04-k2`, `N04-k6` | |
-| "and any approval that a rule counts as the audit environment's, is rejected too (C02; EV-C02-003 section 4.2)" | `N04-k-<function>`; with `T-W07-5B` rows R07, R08, R10r and R15 for `kur` | |
+| "and any approval that a rule counts as the audit environment's, is rejected too (C02; EV-C02-003 section 4.2)" | `N04-k-<function>`; with `T-W07-5B` rows R07, R10r, R15 and R25 for `kur`; and, for R08's operations after the gate (EV-C02-008 1.7.4), `T-W07-N03`'s `N03-neg-own-approval-kurulum` and `N03-neg-standing-kurulum` | |
 | "The audit environment's record is accepted" | `N04-p1` to `N04-p4` | |
 | "the ledger transfer's copy of an installation checker verdict is written under role class `devos_kurulum` and counts nowhere a rule needs the audit environment's (C02, until C03 …)" | part T (T1 to T4), reported on its own line | W-C02-14 (point 13; the executor's decision 5): needs W-C02-06's design |
 | Stage "C02, C05, C10" | C02: this test | C05 and C10: theirs (W-C02-07 point 2) |

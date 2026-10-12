@@ -307,9 +307,11 @@ begin
       n, case when now_row is null then 'gone' when now_row = p_first_row then 'unchanged' else 'changed' end));
 end $f$;
 
--- One current-state case, from the build's read (operation_state; see the specification's interface).
+-- One current-state case, from the design's read: devos_api.operation_state(operation_id uuid), named with its
+-- argument by EV-C02-008 1.7.2 ("The build may add fields ... it does not rename it"). Phase C4a: called by its
+-- parameter's name, so that the name the Data API binds is the one tested.
 create function pg_temp.w07_cur(p_id text, p_tok text, p_op text, p_current text) returns void language plpgsql as $f$
-declare r jsonb := pg_temp.w07_call(p_tok, 'select devos_api.operation_state($3::uuid)', null, null, p_op);
+declare r jsonb := pg_temp.w07_call(p_tok, 'select devos_api.operation_state(operation_id => $3::uuid)', null, null, p_op);
 begin
   perform pg_temp.w07_judge(p_id, r, 'ok',
     case when (r->'ever_applied') is distinct from 'true'::jsonb then 'applied in the past not answered as true'

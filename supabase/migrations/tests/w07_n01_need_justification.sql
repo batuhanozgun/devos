@@ -502,8 +502,21 @@ begin
   end if;
   perform pg_temp.w07_blocks('N01-writer', 'need', 'need', 'complete', null, 2, steer);
 end $f$;
+-- Phase C4a (CHK-C02-026 C2; EV-C02-008 2.2 condition 2): an agent-written sample is stopped by two layers, open_review's
+-- own refusal of kind sample and, behind it, the Review table's check. The case judges the first: a refusal returned by
+-- the function and recorded under the caller's class (DM-19 (a)), with no sample added. A raised error is bad here,
+-- since then the function did not refuse it and a later layer stopped it (B-N01-2 turns that red); a raised error of
+-- SQLSTATE class 42 (the call could not be formed) is the test's own could_not_check. The second layer is T-W07-N28's
+-- S-neg-direct, with its break B-N28-3.
+create function pg_temp.n01_ra_count(p_fn text, p_class text) returns bigint language plpgsql as $f$
+declare n bigint;
+begin
+  execute 'select count(*) from devos_private.rejected_attempt x where x.function_name::text in ($1, ''devos_api.'' || $1)
+             and x.role_class::text = $2' into n using p_fn, p_class;
+  return n;
+end $f$;
 create function pg_temp.n01_tokens() returns void language plpgsql as $f$
-declare r jsonb; target text; c text; n0 int; n1 int;
+declare r jsonb; target text; c text; n0 int; n1 int; ra0 bigint; ra1 bigint; k text;
 begin
   r := pg_temp.w07_call('devos_calisma', 'record_need', pg_temp.w07_args('need', 'complete', nextval('w07_seq')::int));
   if pg_temp.w07_kind(r) <> 'accepted' then
@@ -511,20 +524,28 @@ begin
   end if;
   target := r->>'id';
   foreach c in array array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum'] loop
-    n0 := pg_temp.w07_samples_all();
-    perform pg_temp.w07_expect('N01-tok-' || c, c, 'open_review', jsonb_build_object('kind', 'sample', 'target_ref', target,
+    n0 := pg_temp.w07_samples_all(); ra0 := pg_temp.n01_ra_count('open_review', c);
+    r := pg_temp.w07_call(c, 'open_review', jsonb_build_object('kind', 'sample', 'target_ref', target,
       'target_revision', 1, 'claim', 'SYNTHETIC W-C02-07 w07_fixture sample review', 'criterion', 'w07_fixture', 'use', 'w07_fixture',
       'basis_refs', jsonb_build_array(target), 'independence_level', 'fresh_context_subagent',
-      'reviewer_declared_session', 'w07_fixture_session'), 'refused');
-    n1 := pg_temp.w07_samples_all();
-    perform pg_temp.w07_rec('N01-tok-' || c, n1 = n0, format('reviews of kind sample %s -> %s (wanted unchanged)', n0, n1));
+      'reviewer_declared_session', 'w07_fixture_session'));
+    n1 := pg_temp.w07_samples_all(); ra1 := pg_temp.n01_ra_count('open_review', c); k := pg_temp.w07_kind(r);
+    if r ? 'w07_cnc' then
+      perform pg_temp.w07_put('N01-tok-' || c, 'could_not_check', r->>'w07_cnc');
+    elsif r ? 'raised' and left(coalesce(r->>'sqlstate', ''), 2) = '42' then
+      perform pg_temp.w07_put('N01-tok-' || c, 'could_not_check', 'open_review could not be called: ' || pg_temp.w07_brief(r));
+    else
+      perform pg_temp.w07_rec('N01-tok-' || c, k = 'refused' and not (r ? 'raised') and ra1 = ra0 + 1 and n1 = n0,
+        format('open_review, kind sample, %s token: %s; recorded under the class %s time(s) (wanted 1); reviews of kind sample %s -> %s (wanted unchanged)',
+               c, pg_temp.w07_brief(r), ra1 - ra0, n0, n1));
+    end if;
   end loop;
 end $f$;
 
 do $$
 declare why text;
 begin
-  why := pg_temp.w07_pre(string_to_array('record_need,open_decision,open_mission,open_review', ','), string_to_array('need,review,sample_stream,decision,decision_revision,mission', ','));
+  why := pg_temp.w07_pre(string_to_array('record_need,open_decision,open_mission,open_review', ','), string_to_array('need,review,sample_stream,decision,decision_revision,mission,rejected_attempt', ','));
   if why is null then
     begin
       perform pg_temp.w07_mission();
