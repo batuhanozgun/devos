@@ -241,13 +241,33 @@ jobs:
           fi
           echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
           found=""
+          answers="$RUNNER_TEMP/w03pooler.answers"
+          : > "$answers"
           for h in $W03_POOLER_CANDIDATES; do
-            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" && rc=0 || rc=$?
+            printf '%s\0%s\0%s\0' "$h" "$rc" "$msg" >> "$answers"
             case "$msg" in
               *"Tenant or user not found"*) ;;
               *password*) found="$h"; break ;;
             esac
           done
+          python3 -I - "$answers" <<'PY' || echo "pooler host (P3): the candidates' answers could not be listed"
+          # The distinct answers the candidates gave (CHK-C02-029 F-2): each once, with how many gave it and the first that did,
+          # the host and its address replaced, escaped. So a run that finds none tells a chain that does not verify against the
+          # pinned root ("certificate verify failed") from no region holding the project ("Tenant or user not found"), from a
+          # timeout (exit 124) and from a name that does not resolve. This step holds no secret.
+          import re, sys
+          fields = open(sys.argv[1], "rb").read().decode("utf-8", "replace").split("\0")
+          kinds = {}
+          for i in range(0, len(fields) - 2, 3):
+              host, rc, msg = fields[i:i + 3]
+              text = re.sub(r"\((?:[0-9]{1,3}\.){3}[0-9]{1,3}\)|\([0-9a-fA-F]*:[0-9a-fA-F:]*\)", "(<address>)",
+                            msg.replace(host, "<host>"))
+              kinds.setdefault(f"exit {rc}: " + (" ".join(text.split()) or "(no message)"), []).append(host)
+          for kind, hosts in kinds.items():
+              shown = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in kind)[:300]
+              print(f"pooler host (P3): {len(hosts)} candidate(s) answered, the first {hosts[0]}: {shown}")
+          PY
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
@@ -1133,13 +1153,33 @@ jobs:
           fi
           echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
           found=""
+          answers="$RUNNER_TEMP/w03pooler.answers"
+          : > "$answers"
           for h in $W03_POOLER_CANDIDATES; do
-            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" && rc=0 || rc=$?
+            printf '%s\0%s\0%s\0' "$h" "$rc" "$msg" >> "$answers"
             case "$msg" in
               *"Tenant or user not found"*) ;;
               *password*) found="$h"; break ;;
             esac
           done
+          python3 -I - "$answers" <<'PY' || echo "pooler host (P3): the candidates' answers could not be listed"
+          # The distinct answers the candidates gave (CHK-C02-029 F-2): each once, with how many gave it and the first that did,
+          # the host and its address replaced, escaped. So a run that finds none tells a chain that does not verify against the
+          # pinned root ("certificate verify failed") from no region holding the project ("Tenant or user not found"), from a
+          # timeout (exit 124) and from a name that does not resolve. This step holds no secret.
+          import re, sys
+          fields = open(sys.argv[1], "rb").read().decode("utf-8", "replace").split("\0")
+          kinds = {}
+          for i in range(0, len(fields) - 2, 3):
+              host, rc, msg = fields[i:i + 3]
+              text = re.sub(r"\((?:[0-9]{1,3}\.){3}[0-9]{1,3}\)|\([0-9a-fA-F]*:[0-9a-fA-F:]*\)", "(<address>)",
+                            msg.replace(host, "<host>"))
+              kinds.setdefault(f"exit {rc}: " + (" ".join(text.split()) or "(no message)"), []).append(host)
+          for kind, hosts in kinds.items():
+              shown = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in kind)[:300]
+              print(f"pooler host (P3): {len(hosts)} candidate(s) answered, the first {hosts[0]}: {shown}")
+          PY
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
@@ -2135,13 +2175,33 @@ jobs:
           fi
           echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
           found=""
+          answers="$RUNNER_TEMP/w03pooler.answers"
+          : > "$answers"
           for h in $W03_POOLER_CANDIDATES; do
-            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" && rc=0 || rc=$?
+            printf '%s\0%s\0%s\0' "$h" "$rc" "$msg" >> "$answers"
             case "$msg" in
               *"Tenant or user not found"*) ;;
               *password*) found="$h"; break ;;
             esac
           done
+          python3 -I - "$answers" <<'PY' || echo "pooler host (P3): the candidates' answers could not be listed"
+          # The distinct answers the candidates gave (CHK-C02-029 F-2): each once, with how many gave it and the first that did,
+          # the host and its address replaced, escaped. So a run that finds none tells a chain that does not verify against the
+          # pinned root ("certificate verify failed") from no region holding the project ("Tenant or user not found"), from a
+          # timeout (exit 124) and from a name that does not resolve. This step holds no secret.
+          import re, sys
+          fields = open(sys.argv[1], "rb").read().decode("utf-8", "replace").split("\0")
+          kinds = {}
+          for i in range(0, len(fields) - 2, 3):
+              host, rc, msg = fields[i:i + 3]
+              text = re.sub(r"\((?:[0-9]{1,3}\.){3}[0-9]{1,3}\)|\([0-9a-fA-F]*:[0-9a-fA-F:]*\)", "(<address>)",
+                            msg.replace(host, "<host>"))
+              kinds.setdefault(f"exit {rc}: " + (" ".join(text.split()) or "(no message)"), []).append(host)
+          for kind, hosts in kinds.items():
+              shown = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in kind)[:300]
+              print(f"pooler host (P3): {len(hosts)} candidate(s) answered, the first {hosts[0]}: {shown}")
+          PY
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1
@@ -2791,13 +2851,33 @@ jobs:
           fi
           echo "pooler host (P3): not recorded in the workflow; looking for it without the credential"
           found=""
+          answers="$RUNNER_TEMP/w03pooler.answers"
+          : > "$answers"
           for h in $W03_POOLER_CANDIDATES; do
-            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" || true
+            msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" && rc=0 || rc=$?
+            printf '%s\0%s\0%s\0' "$h" "$rc" "$msg" >> "$answers"
             case "$msg" in
               *"Tenant or user not found"*) ;;
               *password*) found="$h"; break ;;
             esac
           done
+          python3 -I - "$answers" <<'PY' || echo "pooler host (P3): the candidates' answers could not be listed"
+          # The distinct answers the candidates gave (CHK-C02-029 F-2): each once, with how many gave it and the first that did,
+          # the host and its address replaced, escaped. So a run that finds none tells a chain that does not verify against the
+          # pinned root ("certificate verify failed") from no region holding the project ("Tenant or user not found"), from a
+          # timeout (exit 124) and from a name that does not resolve. This step holds no secret.
+          import re, sys
+          fields = open(sys.argv[1], "rb").read().decode("utf-8", "replace").split("\0")
+          kinds = {}
+          for i in range(0, len(fields) - 2, 3):
+              host, rc, msg = fields[i:i + 3]
+              text = re.sub(r"\((?:[0-9]{1,3}\.){3}[0-9]{1,3}\)|\([0-9a-fA-F]*:[0-9a-fA-F:]*\)", "(<address>)",
+                            msg.replace(host, "<host>"))
+              kinds.setdefault(f"exit {rc}: " + (" ".join(text.split()) or "(no message)"), []).append(host)
+          for kind, hosts in kinds.items():
+              shown = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in kind)[:300]
+              print(f"pooler host (P3): {len(hosts)} candidate(s) answered, the first {hosts[0]}: {shown}")
+          PY
           echo "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"
           echo "host=" >> "$GITHUB_OUTPUT"
           exit 1

@@ -4,7 +4,7 @@ item: W-C02-03
 kind: build
 title: "The migration path's build: the migration workflow, the pull-request checks, the deciding steps, the first migration and the listing of point 10 (W-C02-03, points 5 to 14)"
 date: 2026-10-12
-main_at: 9537194
+main_at: a091ea3
 produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (same session; declared, Ek A 5.3)"
 sources:
   - "evidence/C02/EV-C02-001_migration_path.md (every section; M01 to M32, O1 to O3, sections 4, 5, 6, 10, 12), plan/decisions/PC-41.md, evidence/C02/EV-C02-004_reconciliation_decisions.md (Y-01 to Y-12), EV-C02-002 section 13 A2, EV-C02-003 sections 1.6, 5.3 and 6.3, at main 4da5ef2"
@@ -15,6 +15,7 @@ sources:
   - "Revision of 2026-10-12 (section 9), at the branch head ffe6111 (main 11feac5 merged in), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): tests/C02/W-C02-03/T-W03-DEC_decision_steps.md and test_decision_steps.py as changed after P13 (PR #296); plan/work/C02.md notes N-255 (with 'The key's source, decided', L-295) and N-257, and 'Batu's steps' row 1a; EV-C02-003 sections 1.1, 4.1 and 6.3; local runs on a second throwaway PostgreSQL 16.15 cluster (port 54417, data directory under the postgres user's home, outside the clone, stopped and deleted after)"
   - "Revision of 2026-10-12 (section 10), at the branch head 762640d (main 9537194, PR #298, merged in), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the four checker lenses' results at 762640d (acceptance, security, mechanical, changes since the earlier verdicts); local runs on a third throwaway PostgreSQL 16.15 cluster (port 54461, data directory under the postgres user's home, outside the clone, stopped and deleted after)"
   - "Revision of 2026-10-12 (section 11), at the branch head d4eb7c6 (main 9537194), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the security lens's F5, F6, F8 and F11 at 762640d; the researcher's findings of 2026-10-12 on the pooler's chain, the root certificate, the tool's connection code and GitHub's concurrency; the Supabase Root 2021 CA fetched 2026-10-12T20:43:16Z from https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt; the tool's release v2.120.0 fetched 2026-10-12T20:43:30Z; local runs on a fourth throwaway PostgreSQL 16.15 cluster with TLS (port 54473, data directory under the postgres user's home, outside the clone, stopped and deleted after)"
+  - "Revision of 2026-10-12 (section 12), at the branch head 1903b77 (main a091ea3 merged in at 5cad061), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): CHK-C02-029 (FAIL, conditions 1 to 4, F-2, F-3) and CHK-C02-035 (FAIL, C1 to C5) at 5cad061; GitHub's workflow parser @actions/workflow-parser 0.3.61 (npm, integrity sha512-NBjJrbww…IfKdg==, installed 2026-10-12T21:37:26Z with scripts disabled) and actionlint 1.7.12 (release asset actionlint_1.7.12_linux_amd64.tar.gz, SHA-256 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8 as in the release's checksums file, fetched 2026-10-12T21:41:20Z), both run offline; local runs only, no database cluster"
 claim: "A build, checked offline only. The offline tests pass at this build. Nothing ran against devos or devos-test, and no workflow ran on GitHub: every behaviour of GitHub, of the pooler and of the projects is still documented, inferred or read in source, until the first runs after Batu's step 1. Section 6 lists what stays live-only."
 ---
 
@@ -27,7 +28,7 @@ claim: "A build, checked offline only. The offline tests pass at this build. Not
 | File | Class | What it meets |
 |---|---|---|
 | `.github/workflows/migrate.yml` | high | EV-C02-001 section 5's shape: on `push` to `main` and on a 6-hourly `schedule` only (M04); jobs `devos-test` (environment `migrate-devos-test`) then `devos` (environment `migrate-devos`, `needs: devos-test`, runs in every case), each with steps (1) to (8) of section 5; scheduled jobs `check-devos-test` and `check-devos` (head, presence, connect, comparison, point 9's search); the head check (M05); concurrency (M06); the stop (M07, M16); the working directory (M08, Y-09); the database tests and the test programs (M09, M25, Y-05); the first-migration exception's three reads in one snapshot (section 5; R6; CHK-C02-017 F7 item 2); the listing of point 10 with its printed exclusion list; the report lines (section 5, "Every run writes a report"; M15); pins (M20, P12); the secret only in the `env` of the steps that connect, its percent-encoded form masked (M21); no shell tracing, no tool debug output. (2026-10-12, section 11: every connection authenticates the server, `sslmode=verify-full` against the pinned Supabase Root 2021 CA, with two negative controls before the credential is used; the tool gets the password only as `PGPASSWORD`; the concurrency group is renamed) |
-| `.github/workflows/migration-checks.yml` | high | The pull-request checks: M22's static check (`workflow_check`), the inputs of M15 (`pr_inputs`), M16's rule (`pr_decide`), and W-C02-03's two offline tests (`w03_tests`, the environment T-W03-DEC names). No secret, no environment. (2026-10-12, section 11: M22 also refuses any `sslmode` but `verify-full` and any root file but the pinned one, section 11.2; `pr_inputs` and `pr_decide` changed for F8, section 11.7) |
+| `.github/workflows/migration-checks.yml` | high | The pull-request checks: M22's static check (`workflow_check`), the inputs of M15 (`pr_inputs`), M16's rule (`pr_decide`), and W-C02-03's two offline tests (`w03_tests`, the environment T-W03-DEC names). No secret, no environment. (2026-10-12, section 11: M22 also refuses any `sslmode` but `verify-full` and any root file but the pinned one, section 11.2; `pr_inputs` and `pr_decide` changed for F8, section 11.7). (2026-10-12, section 12: at `d4eb7c6` and `ccd92f2` this file held six `${{` sequences inside `workflow_check`'s body, so GitHub's parser refuses it there and none of its checks would have run on a pull request; it now holds none, and the parser reads both files with 0 errors. `pr_inputs` reads the changed files NUL-separated) |
 | `supabase/migrations/20261012184638_deployment_drift.sql` | high | Y-11: `devos_private` and `devos_api` if absent; `devos_private.function_deployment`, created empty (M12); `devos_api.deployment_drift(jsonb) returns jsonb` with its three outcomes, completeness flag and counts (B:387 as PC-41 words it); "could not check" for missing, malformed, unreadable or partial input (plan Section 8 item 14); the `session_user = postgres` branch before the token check a later migration adds (M13; PC-41 place 8), every other caller refused until then (EV-C02-001 section 10, "Two further points"); EXECUTE removed from `PUBLIC` and from Supabase's API roles where they exist. Nothing of W-C02-08's schema, no grant to a DevOS role class, no `issue_env_token` or `revoke_env_token` (M24). A real UTC timestamp version (CHK-C02-017 F7 item 4) |
 | `evidence/C02/EV-C02-007_migration_path_build.md` | normal | This record |
 | `evidence/C02/EV-C02-001_migration_path.md` (line 220; and, in the revision of section 9, the first-migration exception after P13) | normal | Its example of one snapshot cited OBS query 2, whose `to_regclass` reads the latest committed catalog, not the statement's snapshot; the line now says so, labelled "corrected after CHK-C02-017 F7 item 2". The revision (section 9.1) changes the exception wherever the record states it, each place dated, with a dated line in its section 15 |
@@ -297,6 +298,9 @@ The step exited 1. `test_workflow_order.py` still reads `ON_ERROR_STOP=1` and th
 - each job's `runs-on:` must be the exact label `ubuntu-24.04`, the label M20 names; a list or `self-hosted` is refused;
 - `container:` and `services:` are refused;
 - a job holding an apply step must be `devos-test` or `devos`, and its `if:` must admit the `push` event alone. The check reads `if:` as a conjunction (`&&`) of exactly one `github.event_name == 'push'` and only the status terms `!cancelled()`, `always()` and `success()`. Any other form is "could not check" and the check fails: an `||`, another event such as `schedule`, a negated or `!=` event test, a function such as `contains(…)`. A job holding an apply step with no `if:` admits every event and fails.
+- **What the apply rule matches (dated 2026-10-12, CHK-C02-035 C4).** In a workflow that names an environment, a step counts as an apply only if its id is `apply` or `dryrun`, or its run text holds the tool's `db push` or `db reset`, `migration up` or `migration repair`, or a `psql` line holding ` -f ` with `migrations` after it on the same line. Nothing else is seen. Two forms pass it in a scheduled job [obs, section 12.5]: a loop `for f in supabase/migrations/*.sql; do psql ... -f "$f"; done` (its `-f` names a variable, and `migrations` comes before `psql`), and `psql ... --file=supabase/migrations/...`. The rule is a second layer behind the class-high review of every workflow change, which the merge gate requires for `.github/workflows/` (`tools/merge_gate.py`); it is not extended form by form [the executor's choice, CHK-C02-035 C4's second option].
+
+**Where these results came from (dated 2026-10-12, CHK-C02-029 condition 3).** Every M22 result in this section and in 11.8 came from the body as extracted (read with PyYAML) and run outside GitHub. At `d4eb7c6` and `ccd92f2` that body held six `${{` sequences, which GitHub evaluates before the program receives the body; GitHub's parser refuses the file at both commits (section 12.1), so on GitHub none of `migration-checks.yml`'s checks would have run on any pull request. Section 12.3 re-runs M22 on the body as GitHub hands it to the runner.
 
 **Self-check.** (2026-10-12, section 11.2: now 31 copies, with server authentication's 13; one copy below adjusted.) Before judging the files, the step makes 18 wrong copies of the files at the pull request's head. Each copy changes one place, and each must fail on its own rule and only on it. A control must pass: `migration-checks.yml` with `workflow_dispatch`, since it names no environment. The new copies are:
 - `devos-test` on `push || schedule`;
@@ -507,6 +511,15 @@ A job that neither names an environment nor sets a libpq variable is not judged.
 
 **Limits.** The rule reads the files' text. A value built at run time (for example `"ssl" + "mode"`) is not seen. A test program under `supabase/migrations/tests/` may connect however its own text says. For both, the class-high review is the layer. On files that already break the new rule, the copy that adds a step to `check-devos-test` also reports the new rule for the added step, so the self-check counts it as not shown; the verdict there is FAIL in any case.
 
+**Its reach (dated 2026-10-12, CHK-C02-035 C3).** The rule catches only the literal forms listed above: an effective `PGSSLMODE` or `PGSSLROOTCERT` in a step's `env` (workflow, job and step); `sslmode=`, `PGSSLMODE=` or a `"sslmode":` key in run text set to anything but `verify-full`; another root file named in the run text of a step that holds a secret; `unset` with that variable as its first name, `env -u`, `--unset`, `.pop(` or `del …[` of either variable; and a libpq service. Ordinary literal forms that are not on that list pass it. Each of these five passes in a job that names an environment [obs, section 12.5]:
+- (a) `unset PGAPPNAME PGSSLMODE` (another name before `PGSSLMODE`);
+- (b) `env -i PATH=... PGHOST=... PGPASSWORD=... psql`, which runs psql with no `PGSSLMODE`;
+- (c) `dbprograms`' `DB_VARS` without `PGSSLMODE` and `PGSSLROOTCERT`;
+- (d) `os.environ["PGSSLMODE"] = "disable"` in a Python body;
+- (e) a libpq URI `...?sslmode=verify-full&ssl=true`, where the later `ssl=true` downgrades the mode (CHK-C02-035 F3 observed psql 16.15 connect that way without the root file).
+
+Step `tls`'s run-time controls (11.5) test only the job-level settings, in that step's own environment, so they do not see a change made in another step. The rule is therefore a second layer behind the class-high review of every workflow change, which the merge gate requires for `.github/workflows/`; it is not extended form by form [the executor's choice, CHK-C02-035 C3's option (ii)]. The earlier sentence here, that a value built at run time is the rule's limit, understated it.
+
 ### 11.3 The password only through the environment (F6, first half)
 
 - `dryrun` and `apply` now hold the secret as `PGPASSWORD` in their `env`, in place of `SUPABASE_DB_PASSWORD`. The URL they build holds no password. The tool reads `PGPASSWORD` when the URL has none [src: `db-config.parse.ts` 248 to 268; obs: CPw in 11.4, where with no password anywhere it fails with "client password must be a string"].
@@ -546,7 +559,7 @@ A job that neither names an environment nor sets a libpq variable is not judged.
 - (a) a root made at run time (`openssl req -x509`, P-256) in place of the pinned one. It must be refused with "certificate verify failed".
 - (b) the host name `w03-name-mismatch.invalid` at the pooler's own IPv4 address (`hostaddr`). It must be refused with "does not match host name".
 
-Each prints one line, `server authentication, negative control (a|b), …: pass (refused: …)` or `FAIL (…)`, with psql's message escaped and no secret. If either is not refused for its reason, the step prints "server authentication: could not check: server authentication not shown", removes the root file, writes `controls=fail` and fails. The apply then does not run (implicit `success()`), `compare` is skipped by its `if:`, and with no root file nothing can connect.
+Each prints one line, `server authentication, negative control (a|b), …: pass (refused: …)` or `FAIL (…)`, with psql's message escaped and no secret. If either is not refused for its reason, the step prints "server authentication: could not check: server authentication not shown", removes the root file, writes `controls=fail` and fails. The apply then does not run (implicit `success()`), `compare` is skipped by its `if:`, and with no root file nothing can connect. **Corrected 2026-10-12 (CHK-C02-035 C5): that last clause is false.** Removing the root file stops a connection only under `verify-full` or `verify-ca`. Under `require`, `prefer` or an unset mode, the modes the controls detect, psql connects without the file and does not verify the server (CHK-C02-035 F5, observed on PostgreSQL 16.15). What keeps later steps from connecting is each step's implicit `success()` (`presence`, `connect`, `listing`, `dryrun`, `apply`; `dbtests` and `tokens` hang on `compare`, `compare_after` on an apply that ran; `tokens_revoke` connects only to revoke tokens that `tokens` wrote, and otherwise prints "none to revoke"; `search` connects to no database), `compare`'s `steps.tls.outputs.controls == 'pass'` term, and the tool's own URL, which carries `sslmode=verify-full` and refuses a missing root file.
 
 **The positive control is `connect`** (four copies): verify-full with the pinned root and the credential, `select 1`. It prints `server authentication, positive control (…): pass` or `FAIL`; on a failure also "server authentication: could not check: server authentication not shown; the apply does not run", and it fails. The line "connection: succeeded/failed" that Batu's step text names is kept.
 
@@ -596,7 +609,7 @@ The monitor of 11.3 found the password in no command line in any scenario. At th
 The final lines, verbatim, from the clone's working tree:
 - `python3 -I tests/C02/W-C02-03/test_decision_steps.py`: `W03_DECISION_TEST PASS (69/69)`, exit 0. `--self-check`: `W03_DECISION_SELF_CHECK PASS (7/7)`, exit 0.
 - `python3 -I tests/C02/W-C02-03/test_workflow_order.py`: `ok   .github/workflows/migrate.yml: order and stop present as written`, its 17 copies red ("the copy fails, as it must"), `W03_ORDER_TEST PASS (.github/workflows/migrate.yml)`, exit 0. `--self-check`: `W03_ORDER_TEST PASS (synthetic skeleton)`, exit 0.
-- **M22** (its own body, run on the clone): 31 lines "fails on its own rule, as it must" (18 earlier copies, 13 new), `workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): passes, as it must`, `workflow check: pass`, exit 0.
+- **M22** (its own body, run on the clone): 31 lines "fails on its own rule, as it must" (18 earlier copies, 13 new), `workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): passes, as it must`, `workflow check: pass`, exit 0. **Dated 2026-10-12 (CHK-C02-029 condition 3):** this result, and the next line's, came from the body as extracted and run outside GitHub; GitHub would have refused the file at `d4eb7c6` and at `ccd92f2`, so on GitHub M22 would not have run at all (section 10.5's dated line; section 12).
 - **M22 on wrong copies written to disk** (the real check, not its self-check), each `workflow check: FAIL`, exit 1: the base commit's own `migrate.yml` (`sslmode 'require', not verify-full` and `root file None, not the pinned one …` for every step); one job back on `require`; the dry-run and apply URLs on `require` ("its run text sets sslmode 'require'"); the root file set to `system`; `connect` with `PGSSLMODE=prefer` in its run text; `connect` with `env -u PGSSLMODE` ("its run text removes PGSSLMODE from the environment"); a workflow naming no environment whose job sets `PGHOST` and `PGSSLMODE: require`. The clone as it is: `workflow check: pass`, exit 0.
 - **The repeated bodies** (section 10.10's method: SHA-256 of `run` + "|" + `shell`, first 12 hex digits). Every repeated id is identical across its copies:
   - new: `rootca` ×4 `277fdf1bf7a4`, `tls` ×4 `4054ed494664`;
@@ -614,3 +627,172 @@ The final lines, verbatim, from the clone's working tree:
 4. **The concurrency residual** (11.6) stays. Only who may push workflow files bounds it.
 5. **M22's rule reads text** (11.2, "Limits").
 6. **Guard denial #20600, rule G0.** A shell form that ran psql through `env "$@"` was refused as unreadable. The same cases were written as a Python script with explicit environments (`psql_cases.py`); the denied form was not pursued.
+
+## 12. Revision after CHK-C02-029 and CHK-C02-035 (2026-10-12)
+
+Made at the branch head `1903b77` (the two verdicts filed; `main` `a091ea3` merged in at `5cad061`, touching none of the build's files) by a fresh-context producer subagent of the same working session (declared, Ek A 5.3), offline only. Its inputs are CHK-C02-029 (FAIL: conditions 1 to 4; F-2, F-3) and CHK-C02-035 (FAIL: C1 to C5), both at `5cad061`. Files changed: `.github/workflows/migration-checks.yml` (`workflow_check`'s literals, `pr_inputs`' diff), `.github/workflows/migrate.yml` (step `pooler`, four identical copies), this record (this section; dated lines in sections 1, 10.5, 11.2, 11.5 and 11.8; `main_at`; a source line), and two dated lines of `evidence/C02/EV-C02-001_migration_path.md` (:125, :213). No test, SQL file or plan file changed. Nothing ran against `devos`, `devos-test` or GitHub; the network was used only to fetch the two parsers below. The scripts named here are in the producer's scratch directory, outside the repository.
+
+### 12.1 The cause, as a class (CHK-C02-029 conditions 1 to 3; CHK-C02-035 C1)
+
+**The cause.** GitHub reads every `${{ … }}` in a `run:` value as an expression and evaluates it before the runner receives the body. `workflow_check`'s Python body held six such sequences inside string literals: one from fix 2 (`d4eb7c6`) at :74, four self-check `if:` values at :263 to :269, and from `ccd92f2` the self-check value at :303. **Why it was missed:** every M22 run, the producers' and the lenses', executed the body as PyYAML extracts it, outside GitHub. No check read the files with GitHub's own parser, and `test_decision_steps.py` refuses `${{` only in `decide` and `pr_decide`.
+
+**The change.** The body defines `OPEN = "$" + "{{"` (`migration-checks.yml`:54), with a comment that names the rule without the sequence. The six literals are built from it: :78 `c.startswith(OPEN)`, and :267, :269, :271, :273 and :307 `OPEN + " … }}"`. Nothing else in the body changed (a `diff` of the old and new bodies shows only those lines and the four added ones).
+- [obs] Each new literal evaluates at run time to exactly the old text: 6 of 6 equal, in order (`literals_equal.py`). Among them are `${{ github.event_name == 'push' || github.event_name == 'schedule' }}` and `${{ secrets.SUPABASE_DB_PASSWORD }}`.
+- [obs] Break: a copy with `OPEN = "$" + "[["` gives `workflow check: could not check`, exit 3, because `devos-test`'s and `devos`'s `if:` are no longer read as the push event alone. (A copy with `"$" + "{"` still passes, since `push_alone` slices a fixed three characters; so that copy is not a break.)
+
+**(a) The scan** (`scan_expr.py`, PyYAML, every `run:` value in both files) [obs]:
+```
+.github/workflows/migrate.yml: 53 run: values; with '${{': 0
+.github/workflows/migration-checks.yml: 4 run: values; with '${{': 0
+TOTAL run: values holding '${{': 0
+```
+At `5cad061` the same scan finds `migration-checks.yml`'s six lines, and no line of `migrate.yml`.
+
+**(b) GitHub's workflow parser** [obs]. `@actions/workflow-parser` 0.3.61 from npm, integrity `sha512-NBjJrbwwrEN3LSN0NAISLpCWQLcPSBjmAIkLXHgjGX8Yql4PiD33ifSAvr9sIMU9uIs8wZiGUnvo9yPIMIfKdg==`, which is the registry's `dist.integrity`. It was installed with `npm install --ignore-scripts --save-exact` in a directory of its own, and it pulls in `@actions/expressions` 0.3.61, `yaml` 2.9.1 and `cronstrue` 2.59.0. It is the TypeScript parser of GitHub's `actions/languageservices`. The command was `node --import register.mjs wp_check.mjs validate .github/workflows/migrate.yml .github/workflows/migration-checks.yml`; it calls `parseWorkflow`, then `convertWorkflowTemplate`, and prints every error. `register.mjs` gives the package's own schema import the JSON attribute that Node 22 requires. Raw output at this revision:
+```
+.github/workflows/migrate.yml: 0 errors (parseWorkflow 0, convertWorkflowTemplate 0)
+.github/workflows/migration-checks.yml: 0 errors (parseWorkflow 0, convertWorkflowTemplate 0)
+```
+Control, the same command on `migration-checks.yml` as it was at each commit:
+- `eddab74` and `762640d`: 0 errors.
+- `d4eb7c6`, `ccd92f2` and `5cad061`, each:
+```
+(Line: 31, Col: 14): Unexpected symbol: '"'. Located at position 1 within expression: ") and c.endswith("
+(Line: 31, Col: 14): Unrecognized function: 'cancelled'
+```
+
+**actionlint** 1.7.12: the release asset `actionlint_1.7.12_linux_amd64.tar.gz`, SHA-256 `8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8`, equal to the entry in the release's `actionlint_1.7.12_checksums.txt` (`sha256sum --check`: OK). Both files come from the same release, so they are one source. Command: `actionlint -no-color -shellcheck= -pyflakes= .github/workflows/migrate.yml .github/workflows/migration-checks.yml` (no shellcheck or pyflakes is installed here). Raw output at this revision, exit 1:
+```
+.github/workflows/migrate.yml:25:3: unexpected key "queue" for "concurrency" section. expected one of "cancel-in-progress", "group" [syntax-check]
+   |
+25 |   queue: max
+   |   ^~~~~~
+```
+- GitHub's own parser accepts `queue`: its schema defines `concurrency-queue` with the allowed values `single` and `max`, and its converter reads it [src: `workflow-v1.0.min.json`, `model/converter/concurrency.js`]. So this report is actionlint's schema lagging, not a defect of the file.
+- With that one message ignored (`-ignore 'unexpected key "queue" for "concurrency" section'`), exit 0.
+- Before the change, actionlint also reported `migration-checks.yml:31:2937: got unexpected character '"' while lexing expression …`.
+
+**(c) M22 on the body as GitHub hands it to the runner** [obs].
+- `wp_check.mjs runs` writes each step's `run:` value from the parser's converted template. A literal token is written as it is. An expression token is evaluated in a `pull_request` context with no secret.
+- All 57 `run:` values of the two files are literal tokens, so GitHub hands each to the runner verbatim, with nothing to substitute. All 57 are byte-identical to PyYAML's (`cmp_handed.py`), and `workflow_check`'s body hashes the same both ways (SHA-256 `07cd69b4680f9713…`).
+- M22's body as handed, run with `python3 -I` from the clone's root, exit 0. Its output: 31 lines "workflow check: self-check: …: fails on its own rule, as it must", then
+```
+workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): passes, as it must
+workflow check: workflows naming an environment: .github/workflows/migrate.yml
+workflow check: pass
+```
+- The extracted body gives the identical output (`cmp`).
+- The harness's substitution path, shown on a copy whose `w03_tests` line holds `${{ github.event_name }}` and `${{ secrets.SUPABASE_DB_PASSWORD }}`: that token is an expression, and the handed text holds `event pull_request, secret []`; only that line differs.
+- The package builds a multi-line value's `format(…)` from the indented YAML source (`template-reader.js` 340 to 343), so the harness strips the common indentation before writing.
+- A copy that keeps the four evaluable old literals, and fixes only :74 and :269, parses with 0 errors. But its body becomes one `format(…)` expression of 21994 characters, and `@actions/expressions` refuses any expression over 21000 (`MAX_EXPRESSION_LENGTH`) [src]. On GitHub that step would then fail [inf: the runner's own limit was not read]. CHK-C02-035's simulation, which assumed the expression evaluated, gave "could not check". Neither is a pass.
+
+**The dated lines.** Section 1 (row 2), section 10.5 and section 11.8 now say that their M22 results came from the extracted body, and that GitHub would have refused the file at `d4eb7c6` and `ccd92f2`.
+
+### 12.2 Other constructs GitHub treats differently from a local run (asked of this revision)
+
+| Construct | Found | What it means |
+|---|---|---|
+| `${{` in a `run:` value, a heredoc included | none in either file (12.1 (a)) | Each body runs as written |
+| `if:` | 57 in `migrate.yml`, 3 in `migration-checks.yml`. Each is one whole `${{ … }}` expression (`yaml_cmp.py`), so none is a format string with text around it, which GitHub reads as always true | GitHub evaluates them; the parser accepts each, and status functions are allowed there only. Control: a made-up `if: ${{ a }} && ${{ b }}` is flagged |
+| `env:` and job `outputs:` with expressions | `migrate.yml` 111 and 1; `migration-checks.yml` 4 | GitHub evaluates them. The parser checks their syntax and the contexts allowed at each level (0 errors). Their values are live only; the local runs filled them in (11.5) |
+| `name:`, `concurrency.group` | no expression | Read as written |
+| YAML anchors, aliases, merge keys, tags | none | — |
+| YAML 1.1 (PyYAML, used by M22 and the tests) against YAML 1.2 (`yaml` 2.9.1, used by GitHub's parser) | 0 differences in either file, apart from the `on` key, which PyYAML reads as `True` and M22 handles (`yaml_cmp.py`) | M22 and the tests see the files as GitHub does. Control: a made-up file with `yes`, `0755` and `1:20` gives 3 differences |
+| `shell: python` | `workflow_check`, `pr_inputs`, `pr_decide`; `decide` in `migrate.yml` | GitHub runs `python {0}` [doc, from memory, not re-read]; the local runs used `python3` 3.13 with PyYAML 6.0.1. Whether the runner's `python` has PyYAML is live only. Without it M22 prints "could not check" and exits 3 |
+| `queue: max` | `migrate.yml`:25 | GitHub's parser accepts it; actionlint 1.7.12 does not know it (12.1 (b)) |
+| A future `${{` added to `workflow_check`'s body | — | Its `format(…)` would exceed 21000 characters, so it would fail rather than be substituted quietly (12.1 (c)) |
+| `migrate.yml` on a pull request | not started by `pull_request` | GitHub's own server does not read it at the pull request. Its 0 errors are the TypeScript parser's, until a push reads it |
+
+### 12.3 Quoted file names (CHK-C02-035 C2)
+
+**The change** (`migration-checks.yml`:379 to :401, :463).
+- `pr_inputs` runs `git diff -z --name-status -M HEAD^1 HEAD`, splits its bytes on NUL and decodes them with `surrogateescape`. With `-z`, git gives every path verbatim and never quotes one.
+- Each entry must be one of the status letters `A C D M R T`, followed by its path (two paths for `R` and `C`), none empty. Anything else is "could not be read (git diff's output does not parse)".
+- **A second fail-open, found here:** a diff that failed left `changed` as `[]`, which `pr_decide` read as "no merged migration is changed, removed or renamed", a pass. Now a failed or unparsable diff writes `changed` empty, which `pr_decide` reads as "the list of changed files could not be read (could not check)", a fail.
+- `pr_decide` is unchanged (`89b2b4fc25cc`).
+
+**[obs] The cases** (`c2_cases.py`). `pr_inputs`' and `pr_decide`'s own bodies ran in a scratch git repository against a stub of the REST API on 127.0.0.1. The stub's run report shows every version applied in both projects ("no difference") unless the case says otherwise.
+
+| Case | Without `-z` git prints | This revision | Old body (`5cad061`) |
+|---|---|---|---|
+| **C2's case:** `20261012000000_café.sql` modified, applied in both | `M	"supabase/migrations/20261012000000_caf\303\251.sql"` | **fail**: "a merged migration is changed, removed or renamed and the records do not show it unapplied in both projects: supabase/migrations/20261012000000_café.sql" | pass |
+| a name holding a tab, a quote and a backslash, modified | `M	"supabase/migrations/20261012000002_a\tb\"c\\d.sql"` | fail | pass |
+| the café file removed | quoted | fail | pass |
+| the café file renamed | quoted old path | fail | pass |
+| control: a plain-named file modified | unquoted | fail | fail |
+| positive control: `20261012000003_thé.sql` added | quoted | pass | pass |
+| positive control: the café file modified, shown unapplied in both (`on_main_not_applied`) | quoted | pass | pass |
+| `git diff` fails (no parent commit) | — | fail: "could not be read (git diff failed)" | pass |
+
+Final line, this revision: `C2 CASES PASS (8/8)`. Old body: `C2 CASES FAIL (3/8)`. A permanent case in `test_decision_steps.py` is the test designer's (12.8).
+
+### 12.4 The pooler step's answers (CHK-C02-029 F-2)
+
+**The change** (`migrate.yml`, step `pooler`, four identical copies, `817ff6d76f8e`).
+- The loop also records each candidate's host, exit code and psql message, NUL-separated, in a file under the runner's temporary directory.
+- A Python heredoc then prints each distinct answer once, with how many candidates gave it and the first that did. The host and its address are replaced, and control characters are escaped. The step holds no secret, as before.
+- What it finds and its exit 1 are unchanged.
+
+[obs] `pooler_case.py` ran the step's body, read from `migrate.yml`, under `bash --noprofile --norc -eo pipefail`. The environment was verify-full with a synthetic trusted root, and a minimal PostgreSQL-protocol TLS stub answered on loopback addresses. Its output:
+```
+pooler host (P3): not recorded in the workflow; looking for it without the credential
+pooler host (P3): 1 candidate(s) answered, the first w03-no-such-name.invalid: exit 2: psql: error: could not translate host name "<host>" to address: Name or service not known
+pooler host (P3): 1 candidate(s) answered, the first 127.0.0.6: exit 2: psql: error: connection to server at "<host>", port 37315 failed: Connection refused Is the server running on that host and accepting TCP/IP connections?
+pooler host (P3): 1 candidate(s) answered, the first 127.0.0.2: exit 2: psql: error: connection to server at "<host>", port 37315 failed: FATAL: Tenant or user not found
+pooler host (P3): 2 candidate(s) answered, the first 127.0.0.3: exit 2: psql: error: connection to server at "<host>", port 37315 failed: SSL error: certificate verify failed
+pooler host (P3): 1 candidate(s) answered, the first 127.0.0.8: exit 2: psql: error: connection to server at "<host>", port 37315 failed: FATAL: forged\x1b[31m ::error::forged line
+pooler host (P3): 1 candidate(s) answered, the first 127.0.0.4: exit 2: psql: error: connection to server at "<host>", port 37315 failed: fe_sendauth: no password supplied
+pooler host (P3): found 127.0.0.4; it is not used until it is recorded in the workflow (EV-C02-001 M19)
+```
+The step exited 1, with `host=` empty. So a first run that finds none can tell a chain that does not verify against the pinned root from no region matching. A server message holding an escape character and a newline before `::error::` printed on one prefixed line, escaped. The stub's GSS request was refused, and `PGGSSENCMODE=disable` was set; the runner sets neither.
+
+### 12.5 M22's reach: the forms that pass its TLS and apply rules (CHK-C02-035 C3, C4)
+
+[obs] `m22_reach.py` made disk copies of the clone's two files, each with one edit, and ran M22's handed body in each copy:
+
+| Copy | Result |
+|---|---|
+| C3 (a): `connect` runs `unset PGAPPNAME PGSSLMODE` first | `workflow check: pass`, exit 0 |
+| C3 (b): `connect`'s psql under `env -i PATH=… PGHOST=… PGPASSWORD=…`, no `PGSSLMODE` | pass, 0 |
+| C3 (c): `dbprograms`' `DB_VARS` without `PGSSLMODE` and `PGSSLROOTCERT` | pass, 0 |
+| C3 (d): `tokens`' Python sets `os.environ["PGSSLMODE"] = "disable"` | pass, 0 |
+| C3 (e): the listing's psql given `postgresql://h/postgres?sslmode=verify-full&ssl=true` | pass, 0 |
+| control: `connect` runs `unset PGSSLMODE` | FAIL, 1: "its run text removes PGSSLMODE from the environment" |
+| C4: a step in `check-devos-test` holding `PGPASSWORD`: `for f in supabase/migrations/*.sql; do psql … -f "$f"; done` | pass, 0 |
+| C4: the same step, `psql -X -v ON_ERROR_STOP=1 --file=supabase/migrations/x.sql` | pass, 0 |
+| control: the same step, `psql … -f supabase/migrations/x.sql` | FAIL, 1: "step 'x' applies, outside the push jobs" |
+
+The rules are kept as they are. Sections 11.2 ("Its reach") and 10.5 ("What the apply rule matches") and EV-C02-001:125 now state what each matches, name these forms as passing it, and name the class-high review as the layer in front of it [the executor's choice: option (ii) for C3, the records option for C4].
+
+### 12.6 The record's lines (CHK-C02-035 C5; CHK-C02-029 F-3)
+
+- **11.5** (C5): "with no root file nothing can connect" is marked false where it stands, with what stops later steps instead: each step's implicit `success()`, `compare`'s `controls == 'pass'` term, and the tool's URL with `sslmode=verify-full`. [obs, this revision] After `tls` in each of the four jobs, every step that holds the secret has an `if:` with no status function, except four:
+- `compare` needs `controls == 'pass'`;
+- `compare_after` (job `devos`) needs an `apply` that was not skipped;
+- `tokens_revoke` (`always()`, job `devos-test`) connects only if `tokens`' file exists, and otherwise prints "none to revoke";
+- `search` (the scheduled jobs) connects to no database (11.2).
+- **`main_at`** (F-3) is now `a091ea3`, the `main` merged at `5cad061`. That merge touched none of the build's files (`git diff ccd92f2 5cad061` over `.github`, `supabase`, EV-C02-001, this record, `tests/C02/W-C02-03` and `W-C02-03.md`: empty).
+- **EV-C02-001:213** (F-3): the sentence "Its password part is that masked percent-encoded value" is marked stale from `ccd92f2`, since no connection string holds the password.
+- **Left, not this producer's:** CHK-C02-029 F-4, the "Depends on" text of `tests/C02/W-C02-03/T-W03-DEC_decision_steps.md`. The test designer corrects it.
+
+### 12.7 Outputs of the checks run for this revision
+
+The final lines, verbatim, from the clone's working tree:
+- `python3 -I tests/C02/W-C02-03/test_decision_steps.py`: `W03_DECISION_TEST PASS (69/69)`, exit 0. `--self-check`: `W03_DECISION_SELF_CHECK PASS (7/7)`, exit 0.
+- `python3 -I tests/C02/W-C02-03/test_workflow_order.py`: `ok   .github/workflows/migrate.yml: order and stop present as written`, its 17 copies red, `W03_ORDER_TEST PASS (.github/workflows/migrate.yml)`, exit 0. `--self-check`: `W03_ORDER_TEST PASS (synthetic skeleton)`, exit 0.
+- **M22**, extracted and as handed: identical outputs. Each has 31 lines "fails on its own rule, as it must", the control "passes, as it must", and `workflow check: pass`, exit 0 (12.1 (c)).
+- **The repeated bodies** (SHA-256 of `run` + "|" + `shell`, 12 hex digits). Every repeated id is identical across its copies:
+  - changed: `pooler` ×4 `817ff6d76f8e`;
+  - unchanged since 11.8: `compare` ×5 `1260def3e0a4`, `head` `8da1cee258f9`, `workdir` `39a09b6a79ce`, `rootca` `277fdf1bf7a4`, `tls` `4054ed494664`, `presence` `81c784e3f1f1`, `connect` `2cf8fbc28d78`, `report` `ae92c5b56744` (×4 each), `cli` `9a997b75cce6`, `listing` `b1b058f32c88`, `dryrun` `117defd57d50`, `apply` `1dcb025e4aee`, `search` `af60920e3ead` (×2 each), `decide` `e4e381332519`, `dbprograms` `3fb2926de0d8`.
+  - `migration-checks.yml`: `workflow_check` `a7268e7a127e` (was `22ce6eefcb29`), `pr_inputs` `1a4c390ad8ed` (was `1f9e7111a78a`), `pr_decide` `89b2b4fc25cc` and `w03_tests` `68490ed29189` unchanged.
+- **The SQL tests** were not re-run: no SQL file changed, and `compare` is unchanged (`1260def3e0a4`), as are the tests.
+- `credential_value_scan.py`, `records.py render --check` and `check_service_names.sh`: their final lines are in the producer's report to the executor, run after this record's last edit.
+
+### 12.8 What only GitHub's own run shows, and what stays open
+
+1. **The pull request's own `migration-checks` run** is the platform's reading; everything above is offline. The executor reads that run's log. It must show four things. The workflow loads and its job starts. `workflow_check` prints the 31 lines, the control and `workflow check: pass`; this also shows that the runner's `python` has PyYAML. `pr_inputs` and `pr_decide` run. `migrate.yml` is not on `main`, so `pr_inputs` prints "run report: none …" or, if the API answers 404 for the unknown workflow, "run report: could not be read (HTTPError)" [inf]; either way both projects read "could not check". Since this pull request only adds `20261012184638_deployment_drift.sql` (status `A`), the verdict is "pass: no merged migration is changed, removed or renamed". `w03_tests` passes. If that log cannot be read, the result is "could not check", never a pass (CHK-C02-035 C1).
+2. **This head needs a fresh-context checker's verdict** (CHK-C02-029 condition 4): `migration-checks.yml` and `migrate.yml` are class high.
+3. **No repeatable check holds the class.** Nothing in the repository refuses a `${{` in a `run:` value or runs GitHub's parser; this revision's scan and parser runs are one-off. Adding a rule to M22 or a case to the tests is not asked of this revision. It is the executor's or the test designer's to decide.
+4. **The C2 case as a test.** 12.3's cases are the producer's runs. A case in `test_decision_steps.py`, or a test of `pr_inputs`, is the test designer's.
+5. **CHK-C02-029 F-4** stays with the test designer (12.6).
+6. **Section 11.9's items** stand.

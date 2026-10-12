@@ -48,6 +48,10 @@ jobs:
               print("workflow check: could not check (PyYAML is not installed on the runner)")
               raise SystemExit(3)
 
+          # GitHub evaluates every expression opener (a dollar sign, then two opening braces) in a run: body before this
+          # program receives it, so this body holds none: each expression text it needs is built from OPEN, and at run
+          # time is exactly the text written after it (CHK-C02-029 F-1; EV-C02-007 section 12).
+          OPEN = "$" + "{{"
           ENVIRONMENTS = {"migrate-devos-test", "migrate-devos"}
           RUNNERS = {"ubuntu-24.04"}
           PUSH_JOBS = ("devos-test", "devos")
@@ -71,7 +75,7 @@ jobs:
               if cond is None:
                   return "all"
               c = re.sub(r"\s+", "", str(cond)).replace('"', "'")
-              if c.startswith("${{") and c.endswith("}}"):
+              if c.startswith(OPEN) and c.endswith("}}"):
                   c = c[3:-2]
               terms = c.split("&&")
               if terms.count(PUSH) == 1 and all(t == PUSH or t in STATUS for t in terms):
@@ -260,13 +264,13 @@ jobs:
                   ("migrate.yml calls a reusable workflow", lambda f: f[m]["jobs"].update(
                       {"call": {"uses": f"someone/elsewhere/.github/workflows/w.yml@{sha}"}}), "calls a reusable workflow"),
                   ("devos-test on push || schedule",
-                   setif("devos-test", "${{ github.event_name == 'push' || github.event_name == 'schedule' }}"),
+                   setif("devos-test", OPEN + " github.event_name == 'push' || github.event_name == 'schedule' }}"),
                    "is not a form this check reads"),
-                  ("devos-test on a negated event test", setif("devos-test", "${{ !(github.event_name == 'schedule') }}"),
+                  ("devos-test on a negated event test", setif("devos-test", OPEN + " !(github.event_name == 'schedule') }}"),
                    "is not a form this check reads"),
-                  ("devos-test on any event but schedule", setif("devos-test", "${{ github.event_name != 'schedule' }}"),
+                  ("devos-test on any event but schedule", setif("devos-test", OPEN + " github.event_name != 'schedule' }}"),
                    "is not a form this check reads"),
-                  ("devos on schedule", setif("devos", "${{ !cancelled() && github.event_name == 'schedule' }}"),
+                  ("devos on schedule", setif("devos", OPEN + " !cancelled() && github.event_name == 'schedule' }}"),
                    "is not a form this check reads"),
                   ("devos-test with no if:", setif("devos-test", None), "admits every event"),
                   ("a workflow naming no environment calls a reusable workflow",
@@ -300,7 +304,7 @@ jobs:
                   ("devos-test's apply URL naming another root file",
                    edit_run("devos-test", "apply", TLS_ROOT, "/tmp/w03-other-root.crt"), "in a step that holds a secret"),
                   ("devos's controls step holding the secret beside its run-time root",
-                   put_env("devos", "PGPASSWORD", "${{ secrets.SUPABASE_DB_PASSWORD }}", "tls"), "in a step that holds a secret"),
+                   put_env("devos", "PGPASSWORD", OPEN + " secrets.SUPABASE_DB_PASSWORD }}", "tls"), "in a step that holds a secret"),
                   ("check-devos-test's compare with a libpq service file",
                    put_env("check-devos-test", "PGSERVICEFILE", "/tmp/w03-pg_service.conf", "compare"), "libpq service"),
                   ("a workflow naming no environment that connects with sslmode require",
@@ -372,18 +376,29 @@ jobs:
           def git(*args):
               return subprocess.run(["git", *args], capture_output=True, text=True)
 
-          changed = []
-          diff = git("diff", "--name-status", "-M", "HEAD^1", "HEAD")
+          # The changed files, NUL-separated (git diff -z): git then gives every path verbatim, never quoted, whatever its
+          # name holds (non-ASCII, tab, quote, backslash, control character; CHK-C02-035 C2). A diff that fails, or output
+          # that does not parse, leaves the list unreadable (an empty output), which pr_decide reads as "could not check".
+          changed = None
+          diff = subprocess.run(["git", "diff", "-z", "--name-status", "-M", "HEAD^1", "HEAD"], capture_output=True)
           if diff.returncode:
-              print("changed files: could not be read")
+              print("changed files: could not be read (git diff failed); pr_decide reads that as could not check")
           else:
-              for line in diff.stdout.splitlines():
-                  parts = line.split("\t")
-                  status = parts[0][:1]
-                  if status == "R" and len(parts) == 3:
-                      changed.append({"path": parts[2], "status": "R", "old_path": parts[1]})
-                  elif len(parts) >= 2:
-                      changed.append({"path": parts[-1], "status": status})
+              fields, changed, i = diff.stdout.decode("utf-8", "surrogateescape").split("\0"), [], 0
+              if fields[-1] == "":
+                  fields.pop()
+              while i < len(fields):
+                  status = fields[i][:1]
+                  n = 2 if status in ("R", "C") else 1
+                  paths = fields[i + 1:i + 1 + n]
+                  if status not in ("A", "C", "D", "M", "R", "T") or len(paths) != n or not all(paths):
+                      print("changed files: could not be read (git diff's output does not parse); pr_decide reads that "
+                            "as could not check")
+                      changed = None
+                      break
+                  changed.append({"path": paths[1], "status": status, "old_path": paths[0]} if n == 2
+                                 else {"path": paths[0], "status": status})
+                  i += 1 + n
           main_head = git("ls-remote", "origin", "refs/heads/main").stdout.split("\t")[0].strip()
           repo, api = os.environ["GITHUB_REPOSITORY"], os.environ.get("GITHUB_API_URL", "https://api.github.com")
 
@@ -445,7 +460,8 @@ jobs:
               print(f"run report: could not be read ({type(exc).__name__})")
               report = ""
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-              for k, v in (("changed", json.dumps(changed)), ("run_report", report), ("main_head", main_head)):
+              for k, v in (("changed", "" if changed is None else json.dumps(changed)), ("run_report", report),
+                           ("main_head", main_head)):
                   f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")
       - id: pr_decide
         name: "M16: what this pull request's migration changes may do"
