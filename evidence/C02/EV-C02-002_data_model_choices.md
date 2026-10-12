@@ -303,6 +303,8 @@ Each: (a) decision; (b) reason; (c) evidence; (d) alternatives weighed. The init
 
 **DM-41 (d11) How N28's "same transaction" is caught. Decided.** (a) A trigger refuses a `Review` (or `Verdict`) and a new revision of its target in the same transaction, whichever comes first, by the transaction id. (b) The rule (B:239) is about one transaction, whatever roles act in it; a client on a direct connection can call two functions in one transaction, which the throwaway test database (section 5) lets the test do (R2 5 (d) 11). (c) Doc: B:239; C N28. (d) **Rely on role separation alone** (the audit role cannot write products): leaves the same transaction open to a caller holding two tokens, or to a later role with both rights.
 
+*Added 2026-10-12:* how this trigger treats the `sample` Review the database itself opens in the same transaction as the revision that draws it (DM-08), and the transaction that takes such a review, is decided in `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 2; the text above is unchanged.
+
 **DM-42 (d12) N29's missing negative. Decided.** (a) C N29's negative gains "a link from a work item labelled routine to a decision of class `high_impact` or `batu` is rejected" (PC-42 place 39). (b) B:134 enforces it and no test checked it (R2 5 (d) 12). Adding a case strengthens the test (point 10). The database copy of the path list is DM-47.
 
 ### 2.5 R1 section 3's other rows, and PC-08's open point 3
