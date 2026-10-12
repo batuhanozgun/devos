@@ -40,16 +40,16 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 | M04 | `migrate.yml` starts on `push` to `main` (applies) and on `schedule` every 6 hours (compares only). No other event. No other workflow names either environment | Decided |
 | M05 | Head check: a run applies or connects only if its commit is `main`'s current head; otherwise it ends as "superseded" before any step receives the secret | Decided |
 | M06 | Concurrency: one group for `migrate.yml`, `cancel-in-progress: false`, `queue: max` | Decided; provisional (P4), with a fallback (section 5) |
-| M07 | Order and stop: `devos-test` apply, comparison, database tests; then `devos`'s comparison before its apply, in every case; the `devos` apply only if all three succeeded in `devos-test` and `devos`'s comparison listed only migrations "on `main`, not applied" (any other result, "could not check" included, skips it, and the report says why); `devos`'s comparison runs again after an apply | Decided (Y-01; the comparison before the `devos` apply after CHK-C02-008 C2) |
+| M07 | Order and stop: `devos-test` apply, comparison, database tests; then `devos`'s comparison before its apply, in every case; the `devos` apply only if all three succeeded in `devos-test` and `devos`'s comparison listed only migrations "on `main`, not applied" (any other result, "could not check" included, skips it, and the report says why), with one exception: before the first migration, when `deployment_drift` does not yet exist in `devos`, section 5's first-migration exception decides instead, and only the never-pushed state takes it; `devos`'s comparison runs again after an apply | Decided (Y-01; the comparison before the `devos` apply after CHK-C02-008 C2; the first-migration exception after CHK-C02-011 C9) |
 | M08 | The CLI runs in a working directory the job builds: an empty directory, a configuration the workflow itself writes, and copies of the top-level migration files only. Nothing else under `supabase/` is read | Decided (Y-09); provisional (P1, P2); if the CLI cannot run so, a new item before the first migration merges |
 | M09 | The database tests the job runs in `devos-test` live under `supabase/migrations/tests/`, a class-high path today; the CLI never sees them (M08) | Decided; an interface for W-C02-07 (section 12) |
 | M10 | The role in Appendix B section 2: a row for Supabase's `postgres` as the migration job holds it; not a DevOS role class | Decided (PC-41) |
 | M11 | Record of applied migrations: Supabase's `supabase_migrations.schema_migrations`, written by the CLI | Provisional (P1, P2) |
-| M12 | Record of deployed function versions: `devos_private.function_deployment`, created empty by the first migration with `deployment_drift` (Y-11); written by the job from the first Edge Function | Decided; the deploy step is carried by N-230 |
+| M12 | Record of deployed function versions: `devos_private.function_deployment`, created empty by the first migration with `deployment_drift` (Y-11); written by the job from the first Edge Function. The change that first deploys a function also decides which function states the `devos` job's comparison before its apply (section 5) treats as pending, as it treats migrations "on `main`, not applied", so that a normal function change does not hold `devos` | Decided; the deploy step is carried by N-230 |
 | M13 | `deployment_drift` admits a direct login whose session user is `postgres` before the token check; every other caller passes W-C02-05's token check | Decided (Y-02; PC-41 words B:45, B:387) |
 | M14 | `expected` is computed by the caller from a checkout of `main`'s head: each top-level migration file's version and name; each function's slug and source hash | Decided |
 | M15 | The pull-request checks: until `devos_ci` exists, they read the migration job's report of its last completed run at `main`'s head; from then, `deployment_drift` on `devos` through `devos_ci`, and the report for `devos-test` | Decided (Y-03) |
-| M16 | What a difference or "could not check" stops: the `devos` apply (in the job: on any such result in `devos-test`, or on any result of `devos`'s own comparison before its apply other than migrations "on `main`, not applied", M07); a pull request that changes or removes a merged migration file not shown unapplied in both projects; the use of a result read from a project that relies on the project holding exactly `main`'s migrations, without "no difference" there at that commit (an observation of the applied state, or of a planted difference, records the comparison's result beside it instead). A pull request that only adds migrations, and every other pull request, is not stopped; the check shows the state | Decided |
+| M16 | What a difference or "could not check" stops: the `devos` apply (in the job: on any such result in `devos-test`, or on any result of `devos`'s own comparison before its apply other than migrations "on `main`, not applied", M07, except that before the first migration section 5's first-migration exception decides, and only the never-pushed state takes it); a pull request that changes or removes a merged migration file not shown unapplied in both projects; the use of a result read from a project that relies on the project holding exactly `main`'s migrations, without "no difference" there at that commit (an observation of the applied state, or of a planted difference, records the comparison's result beside it instead). A pull request that only adds migrations, and every other pull request, is not stopped; the check shows the state | Decided |
 | M17 | Keeping both projects active: the scheduled runs connect to each project every 6 hours | Provisional (P9); on a pause, a one-off step; a paid plan only if a more frequent schedule fails, as Batu's decision |
 | M18 | GitHub's disabling of scheduled workflows after 60 days without repository activity: a stated residual | Decided |
 | M19 | Network: the session pooler, port 5432, user `postgres.<project ref>`, no IPv4 add-on | Decided; each project's pooler host found at the build (P3) |
@@ -67,6 +67,8 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 | M31 | Applying a migration to `devos-test` before its merge | Rejected (section 6 (a)) |
 | M32 | Until C03's required checks exist, the executor does not merge a pull request that touches `supabase/` or `.github/workflows/` while its checks at the head are red or missing, and the merge's log entry records their state. This is the executor's merge procedure; the merge gate does not read check results | Decided (Y-10) |
 | O1 | A migration that applied in `devos-test`, failed there, and cannot be repaired forward: the stop keeps it from `devos`; a path that resets `devos-test` is not designed here | Open: designed when first needed, through plan Section 14 |
+| O2 | A change to `deployment_drift`'s interface or to `expected`'s form (M14). `devos`'s comparison before its apply runs the function `devos` already holds, which would answer "could not check" to a new form and hold `devos` until the owner's one-off step. So such a change keeps the old form accepted until `devos` holds the new function. A change to the body only (such as W-C02-05's token check) is unaffected | Open: a rule for the change that first alters either (CHK-C02-011) |
+| O3 | A cross-check before the `devos` apply: apply only if (6)'s dry-run list (section 5) equals (5)'s list of migrations "on `main`, not applied", otherwise skip as "could not check". The stop rests on `deployment_drift`'s list, while the CLI decides what it applies | Open: a refinement for the build to decide with the test designer (CHK-C02-011); not a change of the design now |
 
 ## 2. Point 1 (a): the credential's form and its role
 
@@ -95,7 +97,7 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 - **(D) Supabase's GitHub integration**, which keeps any migration credential out of GitHub [doc R5 S8]. Not chosen:
   1. no ordering between two projects is documented, nor that one repository serves two projects [doc R6a 1.2: absence after the searches it describes]; an order would need a second Git branch advanced after `devos-test` succeeds, and whoever can push it then applies to `devos` [inf R6a 1.2];
   2. it has documented routes to production other than a merge into `main`: dashboard merges with Branching, changing the production Git branch (Owner or Admin), and the Management API's merge and push endpoints [doc R6a 1.5], which point 14 (b) would need closed one by one;
-  3. its result is documented as read through the Management API's action runs or Supabase's notifications [doc R6a 1.7]; whether a production deploy posts a GitHub check run is not stated [R6a 1.7 and its Open list], so whether point 14's observation (GitHub's record shows the `devos-test` step failed and the `devos` step never started) could be made from GitHub's record is not known [cnc];
+  3. the places documented for reading its results are the Management API's action runs and a webhook "when an action run completes on a persistent branch" [doc R6a 1.7]; whether production deploys appear in action runs, and whether a production deploy posts a GitHub check run, are not stated [R6a 1.7 and its Open list], so whether point 14's observation (GitHub's record shows the `devos-test` step failed and the `devos` step never started) could be made from GitHub's record is not known [cnc];
   4. it installs a GitHub App whose permission list is not stated in the pages read [doc R6a 1.6: absence], a new effect channel into `devos`;
   5. 6.2's comparison would still need its own job and credential [inf R5 S8];
   6. **reopen if** Supabase documents an ordering between two projects and the other routes can be closed.
@@ -157,7 +159,7 @@ claim: "A design. Nothing here is probed. Every GitHub and Supabase behaviour is
 - **a list of differences**, each one of: on `main` and not applied; applied and not on `main`; name differs; function missing, extra or differing;
 - **"could not check"** otherwise: `expected` missing or malformed; the history table or the function record absent or unreadable; any error.
 
-The result carries a completeness flag and the counts compared. The caller treats an error, a timeout, a cut connection, a missing or malformed result, or an unset flag as "could not check" [design]. The three outcomes are counted apart.
+The result carries a completeness flag and the counts compared. The caller treats an error, a timeout, a cut connection, a missing or malformed result, or an unset flag as "could not check" [design]. The one exception is the `devos` job's step before its apply, before the first migration: `deployment_drift` does not exist in `devos` yet, so that step decides by section 5's first-migration exception, which only the never-pushed state takes; every other state there stays "could not check". The three outcomes are counted apart.
 
 **How it authenticates when the migration job calls it (M13; R3 G6; B:45; Y-02).**
 - The job calls it over its direct database login as `postgres`. Before W-C02-05's token check, the function admits a caller whose `session_user` is `postgres`; every other caller passes the token check.
@@ -182,6 +184,8 @@ The result carries a completeness flag and the counts compared. The caller treat
 - A migration whose SQL fails in `devos-test`: applied nowhere [inf; P2], so M16 lets a pull request change or remove it.
 - A migration that applied in `devos-test` and failed its tests there: a forward fix (a new file); `devos` then receives both in one run, after `devos-test` passes.
 - An out-of-band change (applied and not on `main`; a name that differs; a function difference): no automatic path; the executor investigates while the stop holds `devos`. Found in `devos-test`, its comparison after the apply stops `devos` (M07). Found in `devos`, the `devos` job's comparison before its apply skips every later `devos` apply while it lasts (M07), so nothing is applied on top of it. The repair either brings `main` to what was applied, through a pull request judged as any migration, or brings the project back to `main` by its owner's one-off step in Appendix E §7's form; in `devos` a repair migration cannot do it, since the stop holds the `devos` apply.
+- A run report that shows the first-migration exception taken (section 5) at any run after the one that first applied to `devos` means DevOS's objects, the history table and the function were all removed from `devos`. The exception has then re-applied `main`'s migrations, but the executor investigates it as an out-of-band change all the same.
+- No comparison runs before `devos-test`'s apply, so a migration can be applied there on top of an out-of-band difference. That is an accepted residual risk: `devos-test` is the test project, its comparison after the apply holds `devos` (M07), and the scheduled check sees a difference there within about 6 hours.
 
 ## 5. Point 1 (d): network, concurrency, pausing, pins, and the job's shape
 
@@ -211,10 +215,16 @@ The result carries a completeness flag and the counts compared. The caller treat
 **The job's shape** (for the build; every name non-secret).
 - **On a push to `main`:**
   - `devos-test` (environment `migrate-devos-test`), in order: (1) head check; (2) "credential present: yes/no"; (3) connect; (4) the listing of point 10; (5) a dry run naming the pending versions (`--dry-run`, "Print the migrations that would be applied" [doc R6a 5]); (6) the apply; (7) `deployment_drift`, which runs even when the apply failed; (8) the database tests from `supabase/migrations/tests/`, only after a clean comparison. Output `go = yes` only when (1) found the head and (6), (7) and (8) all succeeded.
-  - `devos` (environment `migrate-devos`), `needs: devos-test`, runs in every case: (1) to (4) as above; (5) `deployment_drift` before the apply; (6) the dry run and (7) the apply, only if `devos-test`'s `go` is `yes` and (5) listed only migrations "on `main`, not applied". Any other result of (5) skips (6) and (7): a migration applied and not on `main`, a name that differs, a function difference, or "could not check"; so does "no difference", which leaves nothing to apply. (8) `deployment_drift` again after an apply. The report gives the reason for a skip: `devos-test`'s `go`, or (5)'s result by kind and count. So when `devos-test` stops, or `devos` differs from `main` other than by pending migrations, the run still reports `devos`'s state and applies nothing on top of the difference.
-  - **Before the first migration** `deployment_drift` does not exist in `devos`, so (5) cannot run. Only then, the job counts (5)'s result as every version on `main` "not applied" when, in one read-only snapshot, `deployment_drift` and `supabase_migrations.schema_migrations` are both absent and (4)'s listing shows nothing outside Supabase's own; any other state (the table present without the function, an object in the listing, a failed read) is "could not check" and skips the apply [design]. Without this, the stop would hold the migration that creates `deployment_drift` in `devos` for ever.
+  - `devos` (environment `migrate-devos`), `needs: devos-test`, runs in every case: (1) to (4) as above; (5) `deployment_drift` before the apply; (6) the dry run and (7) the apply, only if `devos-test`'s `go` is `yes` and (5) listed only migrations "on `main`, not applied". Any other result of (5) skips (6) and (7): a migration applied and not on `main`, a name that differs, a function difference (until the change that first deploys a function decides which function states count as pending, M12), or "could not check", except where the first-migration exception below decides; so does "no difference", which leaves nothing to apply. (8) `deployment_drift` again after an apply. The report gives the reason for a skip: `devos-test`'s `go`, or (5)'s result by kind and count. So when `devos-test` stops, or `devos` differs from `main` other than by pending migrations, the run still reports `devos`'s state and applies nothing on top of the difference.
+  - **The first-migration exception** [design]. Before the first migration `deployment_drift` does not exist in `devos`, so (5) cannot call it. Without an exception, "could not check" would hold for ever the migration that creates it, and point 5 could never be met. So, only while the function does not exist, (5) is made as follows.
+    - **What it reads.** Three reads in one read-only snapshot (for example one statement, as OBS query 2 reads schemas, roles and the history table together): whether `deployment_drift` exists; whether `supabase_migrations.schema_migrations` exists; and point 10's listing, the same query as (4).
+    - **When it is taken.** Only if all three reads complete and show the function absent, the table absent and nothing in the listing outside Supabase's own. (5)'s result is then every version on `main` "on `main`, not applied", and (6) and (7) run on `go = yes`.
+    - **Every other state is "could not check"** and skips the apply: the history table present without the function; the function present without the table; an object in the listing; a failed or partial read (any of the three failing, cut or incomplete, or not taken in one snapshot). Once the function exists, (5) calls it as usual.
+    - **Why it stays within the texts it seems to depart from.** These are plan line 631 ("A difference, or a comparison that could not run, stops … at least the apply to `devos`"), plan Section 8 item 14 (missing, unreadable or partial input gives "could not check") and section 4's "could not check" for an absent history table. The CLI creates the history table at its first push [doc R5 S3: "a migration history table will be created under supabase_migrations.schema_migrations … Subsequent pushes will skip migrations that have already been applied"; that the first push creates it is inferred from "subsequent"]; P1's fallback writes the same table (section 2). The first migration creates `deployment_drift` (Y-11). So the table's absence, together with the function's absence and a clean listing, all read completely in one snapshot, is the observed never-pushed state [inf]. It is not missing, unreadable or partial input, which is what Section 8 item 14 makes "could not check". It is a comparison that ran, not one that "could not run" (line 631): `main`'s versions against an applied record that the CLI has not yet created. Section 4's rule is `deployment_drift`'s own: once the function exists, the push that created it has created the table, so an absent table can then only mean a removal or an unreadable state. Plan line 631 and PC-41 are therefore not changed.
+    - **The report says when it was taken.** The `devos` job's report line for (5) reads "first-migration exception: taken" with the three reads' results, or "not taken" with the state that kept it from being taken. It is expected once, in the run that first applies to `devos`; a later use is investigated under section 4, "Repair paths".
+    - **Residual.** Whether the CLI's creation of the history table falls inside the first file's transaction is not read [cnc]. If the first apply to `devos` fails and leaves the table without the function, (5) gives "could not check" in every later run. Every later `devos` apply is then held until the owner's one-off step brings the project back to the never-pushed state (section 4, "Repair paths") [inf]. Probe P13 (section 10) reads it before the first apply to `devos` [design]: if the CLI creates the table outside the first file's transaction, then before that apply a change to this record, judged as any change to it, decides whether the exception also takes a table that holds no version (with the function absent and the listing clean, read in one snapshot); otherwise the residual stands as stated.
 - **On the schedule:** `check-devos-test` and `check-devos`, independent, each: head check, presence, connect, `deployment_drift`; and point 9's search for its own project's value.
-- **Every run writes a report** in fixed-form lines in its log and summary: per project, the result, the versions recorded as applied, superseded or not. It holds names, versions, counts and statuses only. The pull-request checks read it (M15).
+- **Every run writes a report** in fixed-form lines in its log and summary: per project, the result, the versions recorded as applied, superseded or not; for `devos`, whether the first-migration exception was taken (above). It holds names, versions, counts and statuses only. The pull-request checks read it (M15).
 
 ## 6. Point 14: the test project first, and the verdict before `devos`
 
@@ -230,7 +240,7 @@ The result carries a completeness flag and the counts compared. The caller treat
 - The builder's Supabase connection is read-only (EV-C00-002 item 7, observed at the database layer) and reaches `devos` only (EV-C00-002 item 8, documented only: the connector shows no project list or selector; not tested further).
 - Batu's SQL screen is the project owner's own act, outside DevOS's routes; W-C02-08 point 1's ✘ look would show an object that came that way.
 - **Not closed by this design:**
-  - (i) a merge or push into `main` that bypasses the gate. By a person: `main` has no required approval (working order section 10, G-015); nothing in this design bounds it, and it shows only afterwards, in `main`'s history and in the comparison. By a session without the guard, such as one opened with several repositories (N-048; working order section 10): bounded by DevOS's sessions attaching one repository each (PC-21 item 5), a platform behaviour documented and not independently tested (N-048's closing note). By an installed App with Contents write, or an account able to bypass the rule of `main` (N-175; section 3's table, last row): bounded by the rule of `main` only once N-175 settles who can change or bypass it, and by P8's inspection.
+  - (i) a merge or push into `main` that bypasses the gate. By a person: `main` has no required approval (working order section 10, G-015); nothing in this design bounds it, and it shows only afterwards, in `main`'s history (a merge without the gate's verdict). It does not show in the comparison: the job applies a migration pushed that way, so the comparison then reports "no difference". By a session without the guard, such as one opened with several repositories (N-048; working order section 10): bounded by DevOS's sessions attaching one repository each (PC-21 item 5), a platform behaviour documented and not independently tested (N-048's closing note). By an installed App with Contents write, or an account able to bypass the rule of `main` (N-175; section 3's table, last row): bounded by the rule of `main` only once N-175 settles who can change or bypass it, and by P8's inspection.
   - (ii) any database connector in a session's environment other than the read-only one: only the guard's allow list denies it (working order section 10, rules M1 to M7), within D-003's residual.
 - So 14 (b) is claimed only at the level of the layers section 10 point 9 names (the merge gate's class-high verdict, the guard, the rule of `main` once N-175 settles it, P8's result), with D-003's residual.
 
@@ -241,7 +251,7 @@ The result carries a completeness flag and the counts compared. The caller treat
 
 **(d) The order and its stop (M07; Y-01).**
 - The order is section 5's push shape: `devos-test` (apply, comparison, tests), then `devos`'s comparison in every case, then the `devos` apply only on `go = yes` and only if that comparison listed only migrations "on `main`, not applied" (section 5 also gives the case before the first migration), then `devos`'s comparison again after an apply.
-- `devos` is never applied after: an apply failure in `devos-test`; a difference there; "could not check" there (`devos-test` paused or unreachable, or the read cut); a failed test; a superseded run; nor when `devos`'s own comparison before the apply gives anything else (a migration applied and not on `main`, a name that differs, a function difference, or "could not check" in `devos`). Applying on top of an out-of-band difference would compound it (plan 0.3 item 1: quality is not lowered for convenience).
+- `devos` is never applied after: an apply failure in `devos-test`; a difference there; "could not check" there (`devos-test` paused or unreachable, or the read cut); a failed test; a superseded run; nor when `devos`'s own comparison before the apply gives anything else (a migration applied and not on `main`, a name that differs, a function difference, or "could not check" in `devos`, except where section 5's first-migration exception decides). Applying on top of an out-of-band difference would compound it (plan 0.3 item 1: quality is not lowered for convenience).
 - **A paused or unreachable `devos-test`** holds every later migration from `devos` until it is reachable and clean again. Time added on the critical path: the pause's length, that is Batu's response to a resume step plus one run (minutes) [est]. The keep-alive makes a pause unexpected. Reason: plan C02 task 1 and W-C02-03 point 14 (eba94b1); R6a 4 (2026-10-12). Against Batu's later decisions: none touches it (section 7).
 - **Weighed against other orders:** both projects at once loses the stop (rejected); `devos` by a second merge after a verdict on `devos-test`'s effect doubles every migration's class-high verdict and merge, while the job's tests and comparison give the same "before `devos`" judgment automatically (rejected; reopen if a migration's effect needs a checker's judgment, not a test, before `devos`); Supabase's integration (M02).
 
@@ -272,7 +282,7 @@ Plan 6.12 item 1 (PC-23): the time each adds on the critical path, its reason's 
 
 ## 9. Point 4: Batu's step 1 (row 1), in Appendix E §7's form
 
-Asked on issue #6 as soon as this design is accepted, in one sitting for both projects, batched with any other step then due (working order sections 7 and 8). No value is ever written in chat, on the issue, in a record or in a repository (Appendix E §6); the builder never sees it. No cost. Exposing `devos_api` is not in this step (M26). In each project the environment and its rule are made before the password exists, so the secret is never held by an environment without its rule. The menu paths and most screen labels below are not in the readings; where a label is not quoted in a reading, the step says what to look for, gives the name it probably has as such ("büyük olasılıkla", "probably"), and the text asks for a screenshot whenever what a step names is not found (Appendix E §7 item 2). The only labels given as certain are those the readings quote ("Selected branches and tags", R5 G3; "Allow administrators to bypass configured protection rules", R6b 3). Each numbered step is one action and says what he sees at its end (Appendix E §7 items 1 and 3); step 27 repeats steps 3 to 26 for the second project.
+Asked on issue #6 as soon as this design is accepted, in one sitting for both projects, batched with any other step then due (working order sections 7 and 8). No value is ever written in chat, on the issue, in a record or in a repository (Appendix E §6); the builder never sees it. No cost. Exposing `devos_api` is not in this step (M26). In each project the environment and its rule are made before the password exists, so the secret is never held by an environment without its rule. The menu paths and most screen labels below are not in the readings; where a label is not quoted in a reading, the step says what to look for, gives the name it probably has as such ("büyük olasılıkla", "probably"), and the text asks for a screenshot whenever what a step names is not found (Appendix E §7 item 2). The only labels given as certain are those the readings quote ("Selected branches and tags", R5 G3; "Allow administrators to bypass configured protection rules", R6b 3). Each numbered step is one action and says what he sees at its end (Appendix E §7 items 1 and 3). The steps for `devos` (27 to 50) are written out as their own steps, not as a repeat of 3 to 26: each is one action, and each end state names `migrate-devos` or `devos`, so that he always sees which project he is in. Steps 1 and 2 open the repository's settings once, and step 51 closes. There are 51 steps.
 
 **Turkish (as it would be sent):**
 
@@ -291,7 +301,7 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 6. Adı onaylayan düğmeyi tıklayın. Sonunda başlığında `migrate-devos-test` yazan ortam ayarları sayfası açılır.
 > 7. Bu sayfada, işin hangi dallardan çalışabileceğini belirleyen bölümdeki (büyük olasılıkla **Deployment branches and tags**) seçim listesinden **Selected branches and tags**'i seçin. Sonunda dal kuralı eklemeye yarayan bir düğme görünür.
 > 8. Dal kuralı ekleyen düğmeyi tıklayın. Sonunda kural için bir ad ya da desen soran küçük bir pencere açılır.
-> 9. Pencerede bir tür seçimi (dal ya da etiket) varsa dalı (büyük olasılıkla **Branch**) seçin; yoksa bu adımı geçin. Sonunda dal seçili görünür.
+> 9. Pencerede bir tür seçimi (dal ya da etiket) varsa dalı (büyük olasılıkla **Branch**) seçin; yoksa bu adımı geçin. Sonunda dal seçili görünür; seçim yoksa pencere ad ya da desen alanıyla açık kalır.
 > 10. Ad ya da desen alanına `main` yazın. Sonunda alanda `main` görünür.
 > 11. Penceredeki ekleme düğmesini tıklayın. Sonunda pencere kapanır ve kural listesinde yalnızca `main` görünür.
 > 12. **Allow administrators to bypass configured protection rules** kutusunun işaretini kaldırın. Sonunda kutu boştur.
@@ -304,7 +314,7 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 17. Ayarlarda veritabanı bölümünü (büyük olasılıkla **Database**) tıklayın. Sonunda veritabanı ayarları açılır ve orada veritabanı şifresini sıfırlayan bir düğme görürsünüz (üzerinde büyük olasılıkla "Reset database password" yazar).
 > 18. Bu düğmeyi tıklayın. Sonunda yeni şifre soran bir pencere açılır.
 > 19. Penceredeki şifre üreten seçeneği tıklayın. Sonunda alanda uzun, rastgele bir şifre görünür.
-> 20. Bu şifreyi kopyalayın. Sonunda şifre panonuzdadır; ekranda bir "kopyalandı" işareti görünebilir.
+> 20. Bu şifreyi kopyalayın. Sonunda ekranda bir "kopyalandı" işareti görebilirsiniz; görmezseniz kopyalamanın olduğunu 25. adımda, alan dolduğunda görürsünüz.
 > 21. Sıfırlamayı onaylayan düğmeyi tıklayın. Sonunda şifrenin değiştiğini söyleyen bir bildirim görmeyi bekliyoruz.
 >
 > **C. `devos-test` için: şifreyi GitHub'a girmek**
@@ -314,17 +324,44 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 25. Değer alanına (büyük olasılıkla **Value**) kopyaladığınız şifreyi yapıştırın. Sonunda alan doludur; şifre noktalarla gizlenmiş olabilir.
 > 26. Formu kaydeden düğmeyi tıklayın. Sonunda listede `SUPABASE_DB_PASSWORD` adı görünür; değeri görünmez.
 >
-> **D. `devos` için**
-> 27. 3–26. adımları `devos` için tekrarlayın: 5. adımda `migrate-devos` yazın, 15. adımda `devos` projesini tıklayın. Sonunda `migrate-devos` ortamının sayfasında `SUPABASE_DB_PASSWORD` adı görünür.
+> **D. `devos` için: GitHub'da ortamı kurmak**
+> 27. Bu sayfanın solundaki menüde ortamlar bağlantısını (büyük olasılıkla **Environments**) tıklayın. Sonunda ortamları listeleyen sayfa açılır; listede `migrate-devos-test` vardır, `migrate-devos` henüz yoktur.
+> 28. Yeni ortam ekleyen düğmeyi (büyük olasılıkla **New environment**) tıklayın. Sonunda yeni ortamın adını soran bir alan görürsünüz; bu ortamın adı `migrate-devos` olacak.
+> 29. Bu alana `migrate-devos` yazın (sonunda `-test` olmadan). Sonunda alanda `migrate-devos` görünür.
+> 30. Adı onaylayan düğmeyi tıklayın. Sonunda başlığında `migrate-devos` yazan ortam ayarları sayfası açılır.
+> 31. Bu sayfada, işin hangi dallardan çalışabileceğini belirleyen bölümdeki (büyük olasılıkla **Deployment branches and tags**) seçim listesinden **Selected branches and tags**'i seçin. Sonunda `migrate-devos` sayfasında dal kuralı eklemeye yarayan bir düğme görünür.
+> 32. Dal kuralı ekleyen düğmeyi tıklayın. Sonunda `migrate-devos`'un kuralı için bir ad ya da desen soran küçük bir pencere açılır.
+> 33. Pencerede bir tür seçimi (dal ya da etiket) varsa dalı (büyük olasılıkla **Branch**) seçin; yoksa bu adımı geçin. Sonunda `migrate-devos`'un kural penceresinde dal seçili görünür; seçim yoksa pencere ad ya da desen alanıyla açık kalır.
+> 34. Ad ya da desen alanına `main` yazın. Sonunda `migrate-devos`'un kural penceresindeki alanda `main` görünür.
+> 35. Penceredeki ekleme düğmesini tıklayın. Sonunda pencere kapanır ve `migrate-devos`'un kural listesinde yalnızca `main` görünür.
+> 36. **Allow administrators to bypass configured protection rules** kutusunun işaretini kaldırın. Sonunda `migrate-devos` sayfasındaki bu kutu boştur.
+> 37. Bu bölümdeki değişiklikleri kaydeden düğmeyi tıklayın. Sonunda `migrate-devos` sayfası `main` kuralını ve boş kutuyu kaydedilmiş olarak gösterir.
+>
+> **E. `devos` için: Supabase'de şifreyi sıfırlamak**
+> 38. Yeni bir tarayıcı sekmesinde Supabase panelini açın. Sonunda projelerinizin listesini görürsünüz; listede `devos` vardır.
+> 39. `devos` projesini tıklayın (`devos-test`'i değil). Sonunda `devos` projesinin ana sayfası açılır.
+> 40. Projenin ayarlarını açan bağlantıyı (büyük olasılıkla sol menünün altında, **Project Settings** ya da bir dişli simgesi) tıklayın. Sonunda `devos` projesinin ayarlar sayfası açılır.
+> 41. Ayarlarda veritabanı bölümünü (büyük olasılıkla **Database**) tıklayın. Sonunda `devos`'un veritabanı ayarları açılır ve orada veritabanı şifresini sıfırlayan bir düğme görürsünüz (üzerinde büyük olasılıkla "Reset database password" yazar).
+> 42. Bu düğmeyi tıklayın. Sonunda `devos` için yeni şifre soran bir pencere açılır.
+> 43. Penceredeki şifre üreten seçeneği tıklayın. Sonunda `devos`'un penceresindeki alanda uzun, rastgele bir şifre görünür.
+> 44. Bu şifreyi kopyalayın. Sonunda ekranda bir "kopyalandı" işareti görebilirsiniz; görmezseniz `devos`'un şifresinin kopyalandığını 49. adımda, alan dolduğunda görürsünüz.
+> 45. Sıfırlamayı onaylayan düğmeyi tıklayın. Sonunda `devos`'un şifresinin değiştiğini söyleyen bir bildirim görmeyi bekliyoruz.
+>
+> **F. `devos` için: şifreyi GitHub'a girmek**
+> 46. GitHub sekmesine dönün. Sonunda `migrate-devos` ortamının ayarlar sayfasını yeniden görürsünüz.
+> 47. Bu sayfada ortamın gizli değerleri bölümünde (büyük olasılıkla **Environment secrets**) gizli değer ekleyen düğmeyi tıklayın. Sonunda `migrate-devos` için ad ve değer soran bir form açılır.
+> 48. Ad alanına (büyük olasılıkla **Name**) `SUPABASE_DB_PASSWORD` yazın. Sonunda `migrate-devos` formunun ad alanında bu ad görünür.
+> 49. Değer alanına (büyük olasılıkla **Value**) kopyaladığınız `devos` şifresini yapıştırın. Sonunda `migrate-devos` formunun değer alanı doludur; şifre noktalarla gizlenmiş olabilir.
+> 50. Formu kaydeden düğmeyi tıklayın. Sonunda `migrate-devos` sayfasının listesinde `SUPABASE_DB_PASSWORD` adı görünür; değeri görünmez.
 >
 > **Bitiş**
-> 28. Bu issue'ya yalnızca "Adım 1 tamam" yazın; şifreyi yazmayın. Sonunda yorumunuz issue'da görünür.
+> 51. Bu issue'ya yalnızca "Adım 1 tamam" yazın; şifreyi yazmayın. Sonunda yorumunuz issue'da görünür.
 >
 > **Sonunda görecekleriniz:** GitHub'da deponun ayarlarındaki ortamlar sayfasında iki ortam: `migrate-devos-test` ve `migrate-devos`. Her birinde tek bir gizli değer vardır ve dağıtım dalı yalnızca `main`'dir.
 >
 > **Sistem nasıl kontrol eder:** Göç işi `main` üzerinde ilk çalıştığında her proje için yalnızca "anahtar var: evet/hayır" ve "bağlantı: başarılı/başarısız" yazar; değeri hiçbir zaman yazmaz. Ayrıca başka bir daldan başlatılan bir işin anahtarı alamadığını deneriz. Sonucu bu issue'da size bildiririz.
 >
-> **Bilmeniz gereken:** Şifreyi sıfırlamanın eski şifreyi geçersiz kılmasını bekliyoruz (bunu belgelerde okumadık); eski şifreyi başka bir yerde kullanıyorsanız orası büyük olasılıkla artık bağlanamaz. Şifreyi yanlışlıkla bir yere yazarsanız, o proje için 14–26. adımları yeniden yapın.
+> **Bilmeniz gereken:** Şifreyi sıfırlamanın eski şifreyi geçersiz kılmasını bekliyoruz (bunu belgelerde okumadık); eski şifreyi başka bir yerde kullanıyorsanız orası büyük olasılıkla artık bağlanamaz. Şifreyi yanlışlıkla bir yere yazarsanız, o proje için şu adımları yeniden yapın: `devos-test` için 14–26. adımları, `devos` için 38–50. adımları. 25. ya da 49. adımda değer alanı boş kalırsa kopyalama olmamıştır: formu kaydetmeyin ve o proje için şu adımları yeniden yapın: `devos-test` için 18–26. adımları, `devos` için 42–50. adımları.
 
 **English rendering:**
 
@@ -343,7 +380,7 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 6. Click the button that confirms the name. At the end the environment's settings page opens, with `migrate-devos-test` in its title.
 > 7. On this page, in the section that sets which branches the job may run from (probably **Deployment branches and tags**), choose **Selected branches and tags** from its list. At the end a button for adding a branch rule appears.
 > 8. Click the button that adds a branch rule. At the end a small window opens asking for a name or pattern for the rule.
-> 9. If the window offers a choice of type (branch or tag), choose branch (probably **Branch**); otherwise skip this step. At the end branch is shown as chosen.
+> 9. If the window offers a choice of type (branch or tag), choose branch (probably **Branch**); otherwise skip this step. At the end branch is shown as chosen; if there was no choice, the window stays open with its name or pattern field.
 > 10. Type `main` in the name or pattern field. At the end the field shows `main`.
 > 11. Click the window's add button. At the end the window closes and only `main` is in the list of rules.
 > 12. Untick the box **Allow administrators to bypass configured protection rules**. At the end the box is empty.
@@ -356,7 +393,7 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 17. In the settings, click the database section (probably **Database**). At the end the database settings open, and there you see a button that resets the database password (probably labelled "Reset database password").
 > 18. Click this button. At the end a window opens asking for a new password.
 > 19. Click the window's option that generates a password. At the end a long, random password is shown in the field.
-> 20. Copy this password. At the end the password is on your clipboard; a "copied" mark may appear on the screen.
+> 20. Copy this password. At the end you may see a "copied" mark on the screen; if you do not, you see that the copy worked at step 25, when the field fills.
 > 21. Click the button that confirms the reset. At the end we expect a notice saying that the password changed.
 >
 > **C. For `devos-test`: enter the password on GitHub**
@@ -366,17 +403,44 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 > 25. Paste the password you copied into the value field (probably **Value**). At the end the field is filled; the password may be hidden as dots.
 > 26. Click the button that saves the form. At the end the name `SUPABASE_DB_PASSWORD` is listed; its value is not shown.
 >
-> **D. For `devos`**
-> 27. Repeat steps 3 to 26 for `devos`: in step 5 type `migrate-devos`, in step 15 click the project `devos`. At the end the name `SUPABASE_DB_PASSWORD` is listed on the page of the environment `migrate-devos`.
+> **D. For `devos`: set up the environment on GitHub**
+> 27. In the menu on the left of this page, click the environments link (probably **Environments**). At the end the page listing environments opens; it lists `migrate-devos-test`, and `migrate-devos` is not there yet.
+> 28. Click the button that adds a new environment (probably **New environment**). At the end you see a field asking for the new environment's name; this environment will be `migrate-devos`.
+> 29. Type `migrate-devos` in this field (without `-test` at the end). At the end the field shows `migrate-devos`.
+> 30. Click the button that confirms the name. At the end the environment's settings page opens, with `migrate-devos` in its title.
+> 31. On this page, in the section that sets which branches the job may run from (probably **Deployment branches and tags**), choose **Selected branches and tags** from its list. At the end a button for adding a branch rule appears on the `migrate-devos` page.
+> 32. Click the button that adds a branch rule. At the end a small window opens asking for a name or pattern for `migrate-devos`'s rule.
+> 33. If the window offers a choice of type (branch or tag), choose branch (probably **Branch**); otherwise skip this step. At the end branch is shown as chosen in the window for `migrate-devos`'s rule; if there was no choice, the window stays open with its name or pattern field.
+> 34. Type `main` in the name or pattern field. At the end the field in the window for `migrate-devos`'s rule shows `main`.
+> 35. Click the window's add button. At the end the window closes and only `main` is in `migrate-devos`'s list of rules.
+> 36. Untick the box **Allow administrators to bypass configured protection rules**. At the end this box on the `migrate-devos` page is empty.
+> 37. Click the button that saves this section's changes. At the end the `migrate-devos` page shows the `main` rule and the empty box as saved.
+>
+> **E. For `devos`: reset the password in Supabase**
+> 38. In a new browser tab, open the Supabase dashboard. At the end you see the list of your projects; `devos` is in it.
+> 39. Click the project `devos` (not `devos-test`). At the end the home page of the project `devos` opens.
+> 40. Click the link that opens the project's settings (probably at the bottom of the left menu, **Project Settings** or a gear icon). At the end the settings page of the project `devos` opens.
+> 41. In the settings, click the database section (probably **Database**). At the end `devos`'s database settings open, and there you see a button that resets the database password (probably labelled "Reset database password").
+> 42. Click this button. At the end a window opens asking for a new password for `devos`.
+> 43. Click the window's option that generates a password. At the end a long, random password is shown in the field of `devos`'s window.
+> 44. Copy this password. At the end you may see a "copied" mark on the screen; if you do not, you see that `devos`'s password was copied at step 49, when the field fills.
+> 45. Click the button that confirms the reset. At the end we expect a notice saying that `devos`'s password changed.
+>
+> **F. For `devos`: enter the password on GitHub**
+> 46. Go back to the GitHub tab. At the end you see the settings page of the environment `migrate-devos` again.
+> 47. On this page, in the environment's secrets section (probably **Environment secrets**), click the button that adds a secret. At the end a form opens asking for a name and a value for `migrate-devos`.
+> 48. Type `SUPABASE_DB_PASSWORD` in the name field (probably **Name**). At the end the name field of the `migrate-devos` form shows this name.
+> 49. Paste the `devos` password you copied into the value field (probably **Value**). At the end the value field of the `migrate-devos` form is filled; the password may be hidden as dots.
+> 50. Click the button that saves the form. At the end the name `SUPABASE_DB_PASSWORD` is listed on the `migrate-devos` page; its value is not shown.
 >
 > **To finish**
-> 28. Write only "Adım 1 tamam" ("step 1 done") on this issue; do not write the password. At the end your comment shows on the issue.
+> 51. Write only "Adım 1 tamam" ("step 1 done") on this issue; do not write the password. At the end your comment shows on the issue.
 >
 > **What you see at the end:** on the environments page of the repository's settings, two environments, `migrate-devos-test` and `migrate-devos`, each with one secret and deployment branch `main` only.
 >
 > **How the system checks it:** when the migration job first runs on `main`, it writes for each project only "credential present: yes/no" and "connection: succeeded/failed", never the value. We also try that a job started from another branch does not get the key, and tell you the result on this issue.
 >
-> **Good to know:** we expect resetting the password to make the old one invalid (we did not read this in the documentation); if you use the old password anywhere else, that place will probably no longer connect. If you write the password somewhere by mistake, redo steps 14 to 26 for that project.
+> **Good to know:** we expect resetting the password to make the old one invalid (we did not read this in the documentation); if you use the old password anywhere else, that place will probably no longer connect. If you write the password somewhere by mistake, redo that project's steps: steps 14 to 26 for `devos-test`, steps 38 to 50 for `devos`. If the value field stays empty at step 25 or 49, the copy did not work: do not save the form, and redo that project's steps: steps 18 to 26 for `devos-test`, steps 42 to 50 for `devos`.
 
 **Why each action is his.** On a personal-account repository only the owner creates or configures an environment and its secrets [doc R6b 3; R5 G8]. Resetting a project's database password is a setting in his Supabase account; who else may do it is not stated in the pages read [cnc], and no part of DevOS has dashboard access. That a reset makes the old password invalid is inferred, not read [inf].
 
@@ -393,7 +457,13 @@ Asked on issue #6 as soon as this design is accepted, in one sitting for both pr
 - (ii) one project and not the other: a fixture that applies in `devos-test` but is stopped before `devos` (point 14's second example);
 - (iii) a deployed function differs: only if C02 deploys a function (N-230); otherwise the record says that form is not reached in C02 and names the stage that adds the first function.
 
-What each stops, and what to observe not going on: the `devos` apply (its steps skipped; the report gives the reason, `go` not `yes` or the result of `devos`'s comparison before the apply); a pull request that changes a merged migration file shown applied, or not shown unapplied (its check red); a result read from a project that relies on its holding `main`'s migrations (counted "could not check"), while the reads of the planted difference itself record the comparison's result beside them (M16). The stop on a result of another kind in `devos`'s comparison before the apply (M07: a migration applied and not on `main`, a name that differs, a function difference, "could not check") is shown by a test of the step that decides the apply, fed each kind of result, with a break (a copy that applies on "applied and not on `main`" turns it red); it is not planted live in `devos`, because the stop would then hold the migration that removes it and only Batu's one-off step could clear it [design]. A paused `devos`, if it happens, is its live case ("could not check"). Positive control: everything applied, "no difference", and a pull request that only adds a file passing its check. Break: a copy of the comparison that answers "no difference" without comparing, skips a project, or skips the function record turns each form's test red. If the pull-request checks run the direct comparison only from `devos_ci`, that part is shown at the first pull request after it, and the record names the item (W-C02-12 or the one that stores the key).
+What each stops, and what to observe not going on: the `devos` apply (its steps skipped; the report gives the reason, `go` not `yes` or the result of `devos`'s comparison before the apply); a pull request that changes a merged migration file shown applied, or not shown unapplied (its check red); a result read from a project that relies on its holding `main`'s migrations (counted "could not check"), while the reads of the planted difference itself record the comparison's result beside them (M16). The stop on a result of another kind in `devos`'s comparison before the apply (M07: a migration applied and not on `main`, a name that differs, a function difference, "could not check") is shown by a test of the step that decides the apply, fed each kind of result, with a break (a copy that applies on "applied and not on `main`" turns it red). The test runs that step's own decision code, the code the workflow runs, not a copy of its logic; if the build can only read the workflow instead, the record says so, as point 14's break does. The same test covers the first-migration exception (section 5), fed the three reads' results as independent inputs:
+- positive control: the never-pushed state (function absent, table absent, listing clean, all read in one snapshot) takes the exception, and the apply follows on `go = yes`;
+- each of these gives "could not check" and skips the apply: the history table present without the function; the function present without the table; an object in the listing; a failed or partial read;
+- break: three copies, each taking the exception while leaving out one of its three checks, each turn the test red: without the table check, on the table present without the function; without the function check, on the function present without the table; without the listing check, on an object in the listing;
+- each case's report line says whether the exception was taken.
+
+None of these results or states is planted live in `devos`. The stop would then hold every later `devos` apply until a repair. For a migration applied and not on `main`, the repair may be a pull request that adds a file with that version, though how the CLI treats an applied version it has no file for was not read [cnc]; otherwise it is Batu's one-off step. The test of the deciding step shows the same without that cost [design]. A paused `devos`, if it happens, is its live case ("could not check"). Positive control: everything applied, "no difference", and a pull request that only adds a file passing its check. Break: a copy of the comparison that answers "no difference" without comparing, skips a project, or skips the function record turns each form's test red. If the pull-request checks run the direct comparison only from `devos_ci`, that part is shown at the first pull request after it, and the record names the item (W-C02-12 or the one that stores the key).
 
 **Point 7 (✘ could not check).** In `devos-test`, inside rolled-back transactions run by the job's test step, or as the comparison's own unit tests: `expected` absent and malformed; the history table unreadable (for example renamed inside the transaction); a partial read (the caller's connection cut by a client-side timeout shorter than a delay planted in a test copy, or a result without its completeness flag). Each gives "could not check", never "no difference", counted apart in the report; where it guards something (the `devos` apply; a pull request under M16) it is observed to block.
 
@@ -441,6 +511,7 @@ What each stops, and what to observe not going on: the `devos` apply (its steps 
 | P10 | How the job runs SQL tests in `devos-test`, as which role, with `set role` (Y-05) | W-C02-08's first test run |
 | P11 | A per-project property a fixture can test | Before point 14's fixture is written |
 | P12 | The CLI binary's checksum matches the release's published one; the checkout action's SHA is a commit of its own repository | The workflow's build |
+| P13 | Whether the CLI creates `supabase_migrations.schema_migrations` inside the first migration file's transaction, so that a failed first apply leaves no table (section 5, the first-migration exception's residual) | Read in the pinned CLI version's source, or observed on a throwaway database, before the first apply to `devos` |
 
 ## 11. How EV-C02-004's decisions are met
 
@@ -475,7 +546,7 @@ What each stops, and what to observe not going on: the `devos` apply (its steps 
 
 ## 14. Changes after CHK-C02-008 (2026-10-12)
 
-The verdict `evidence/C02/checks/CHK-C02-008.md` (PASS-WITH-CONDITIONS, at `8b24c99`) set conditions C1 to C8; the executor chose option (a) for C2. Line numbers are this version's. C2 changes the design's substance, so a fresh-context checker judges the whole design again before the build relies on it. Nothing else changed; the labels of the changed text follow the legend above.
+The verdict `evidence/C02/checks/CHK-C02-008.md` (PASS-WITH-CONDITIONS, at `8b24c99`) set conditions C1 to C8; the executor chose option (a) for C2. Line numbers in this section are those of the version at `d7e5894`; section 15 gives the current ones. C2 changes the design's substance, so a fresh-context checker judges the whole design again before the build relies on it. Nothing else changed; the labels of the changed text follow the legend above.
 
 **Conditions.**
 - **C1 (the results rule's scope).** The rule now applies to a result that relies on the project holding exactly `main`'s migrations; an observation of the applied state, or of a planted difference, records the comparison's result beside it instead (before the first migration, that `deployment_drift` does not exist yet). Where: M16 (:52); section 4, "Results read from a project" (:177); section 10 point 6, what each stops (:396), and point 10, the listing (:404); PC-41 place 1's New text (`plan/decisions/PC-41.md`:26) and plan line 631, kept identical.
@@ -491,3 +562,51 @@ The verdict `evidence/C02/checks/CHK-C02-008.md` (PASS-WITH-CONDITIONS, at `8b24
 - Taken: point 9's search treats what it reads as data only, and a value is planted in each kind of place searched (:402); P2 covers the restore fixture's order (:412; P2's row, :433); `deployment_drift` refuses every caller but `postgres` until W-C02-05's token check exists, and why a test using `set role` cannot show it (:425); `psql` meta-commands (:426).
 - Not taken: a separate non-success job for a pull request whose comparison is not "no difference". A GitHub Actions job ends green or red (a neutral result would need a check run written through the Checks API [inf; not read]). A red job on the pull requests M16 deliberately does not stop (those that only add migrations, the forward repair among them, and unrelated work) would, under M32 and later C03's required checks, either stop that work or teach merges past a red check. The state stays in the check's summary (M16), and a result read from a project is used only under the results rule.
 - Not taken here, outside this change's list: :247's "D-002 … bear[s] on point 9's level"; D-017 item 2 (b) and D-020's caveat on how points 8 and 9's attempts are made; Y-06's conditional move into row 1 not restated. They are left for the executor.
+
+## 15. Changes after CHK-C02-011 (2026-10-12)
+
+The verdict `evidence/C02/checks/CHK-C02-011.md` (PASS-WITH-CONDITIONS, at `d7e5894`) set conditions C9 and C10. Its line numbers are those of `d7e5894`; the line numbers below are this version's, and section 14's are now marked as `d7e5894`'s (:548). C9 states, tests and reports the first-migration exception, which the design already had; C10 rewrites the step text's repeat. Nothing else changed in substance. `plan/decisions/PC-41.md` and plan line 631 are not changed (C9 (ii)).
+
+**Conditions.**
+- **C9 (i) (the exception wherever the stop is stated).** M07 (:43), M16 (:52) and the caller rule (:162) each name the first-migration exception and point to section 5. So do two further statements of the stop: the `devos` job's step (:218) and section 6 (d) (:254). Section 4, "Repair paths" (:187), and point 6 (:460) refer to it too.
+- **C9 (ii) (why it stays within the three texts).** Section 5, "The first-migration exception" (:219 to :225), is now a block: what it reads, when it is taken, every other state, the reason, the report and a residual.
+  - The reason (:223): the CLI creates the history table at its first push [doc R5 S3; "first" is inferred from "subsequent"], and the first migration creates `deployment_drift`. So the three absences, read completely in one snapshot, are the never-pushed state.
+  - That state is not missing, unreadable or partial input (plan Section 8 item 14). It is a comparison that ran, not one that "could not run" (plan line 631).
+  - Section 4's "could not check" for an absent history table (:160) is the function's own rule, and it holds once the function exists.
+  - So PC-41 place 1 and plan line 631 are not changed.
+  - The three reads, the listing included, are now taken in one snapshot (:220; the verdict's non-blocking point on :215).
+- **C9 (iii) (tested).** Point 6 (:460 to :464): the test of the deciding step covers the exception, fed the three reads' results as independent inputs.
+  - Positive control: the never-pushed state.
+  - The four "could not check" states: the table without the function; the function without the table; an object in the listing; a failed or partial read.
+  - The break: three copies, each leaving out one check, each red on its own state.
+  - Each case's report line.
+- **C9 (iv) (reported).** Section 5 (:224) and the report (:227): the `devos` job's report line for (5) says whether the exception was taken, with the three reads' results; it is expected once. Section 4, "Repair paths" (:187): a later use means DevOS's objects, the history table and the function were all removed, and the executor investigates it as an out-of-band change.
+- **C10 (the step text).** Turkish (:327 to :358) and English (:406 to :437).
+  - The `devos` steps are written out as steps 27 to 50, in three parts (D, E, F) that match A, B and C.
+  - Each is one action, and each end state names `migrate-devos` or `devos`. Steps 30 and 46, the copies of 6 and 22, now name `migrate-devos`.
+  - Step 51 closes.
+  - The closing note (:364, :443) names the steps for each project: 14 to 26 for `devos-test`, 38 to 50 for `devos`.
+  - :285's sentence about step 27 now says the `devos` steps are written out, and gives the count.
+  - The step text has 51 steps (it had 28).
+
+**Non-blocking findings taken.**
+- **Functions under C2 (a).** M12 (:48) and the `devos` job's step (:218) say that the change that first deploys a function decides which function states the comparison before the `devos` apply treats as pending, so that a normal function change does not hold `devos`. The same is added to N-230 (`plan/work/C03.md`:120).
+- **O2 (:70).** A change to `deployment_drift`'s interface or to `expected`'s form keeps the old form accepted until `devos` holds the new function.
+- **O3 (:71).** The cross-check before the apply (the dry-run list equals the comparison's pending list, otherwise "could not check") is recorded as an open refinement for the build to decide with the test designer. It is not a change of the design now.
+- **:243 (was :233).** A migration pushed past the gate shows in `main`'s history, not in the comparison, since the job applies it.
+- **:100 (was :98), item (D) 3.** The documented places for reading results are action runs and a webhook for persistent branches; whether production deploys appear in action runs is not stated [R6a 1.7].
+- **:466 (was :396's reason).** A live plant would hold every later `devos` apply until a repair. For "applied and not on `main`", that repair may be a pull request adding a file with that version [cnc: how the CLI treats an applied version without a file was not read]; otherwise it is Batu's one-off step.
+- **:220 (was :215).** The three reads are taken in one snapshot.
+- **:188 (was :184).** No comparison runs before `devos-test`'s apply; this is stated as an accepted residual risk, with its reason.
+- **Steps 9 and 20, and their copies 33 and 44, in both languages.**
+  - Step 9's end state covers the skip case.
+  - Step 20's end state is something he can see: a possible "copied" mark, and otherwise the filled field at step 25 (49 for `devos`).
+  - The closing note says what to redo if that field stays empty.
+- **Point 6 (:460).** The test runs the deciding step's own decision code; if the build can only read the workflow, the record says so.
+
+**Found while meeting C9; stated as a residual (:225), not a change of the rule.** If the first apply to `devos` fails after the CLI has created the history table, `devos` is left with the table and without the function. C9 requires that state to be "could not check", so every later `devos` apply is held until the owner's one-off step. Whether the table's creation falls inside the first file's transaction was not read [cnc].
+
+**Not taken here, outside this change's list.** They are left for the executor:
+- the wording "a result read from a project that relies on…" at :52 and plan line 631;
+- the note on `SET SESSION AUTHORIZATION` and on a temporary login role for reaching the token branch;
+- a warning annotation for a check whose result is not "no difference".
