@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-032` (C02 sonunda defter veritabanına taşınınca kurulum kayıtlarının asıl yeri: (a) veritabanı; main her tamamlanan işten sonra ve her duruştan önce güncellenen kopyayı tutar (önerim); (b) tek doğru kaynak main kalır; veritabanı ondan doldurulan kopyayı tutar). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 12 Ekim 2026, 22:16 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 12 Ekim 2026, 22:38 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C02 (Veri modeli, kural kapısı ve kimlik zinciri).
 
