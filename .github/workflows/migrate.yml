@@ -61,7 +61,7 @@ env:
   W03_SCHEMA_ENTRY_ONLY: "public"
   W03_EXCLUDED_ROLES: "postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role"
   W03_TOKEN_CLASSES: "devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup"  # EV-C02-003 section 4.1's columns; the first also gives the revoked token
-  W03_PLANT_B64: ""  # T-W03-09's plant, base64; while set, every scheduled run prints it once (step plant; EV-C02-007 section 14)
+  W03_PLANT_B64: "dzAzLWZpeHR1cmUvcGxhbnQrdmFsdWVAMjAyNjEwMTNUMDIxM1o9eA=="  # T-W03-09's plant, base64; while set, every scheduled run prints it once (step plant; EV-C02-007 section 14)
   W03_FIXTURE_ISSUE: "308"
   W03_CLI_CONFIG: |
     # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).

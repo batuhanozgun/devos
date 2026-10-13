@@ -1092,6 +1092,13 @@ Rewritten for H1-prime from what was 14.13 on the first H1 branch. That text spe
 
 **What the executor records here, once made:** the H1-prime tag; the fixture branch, the commits of p1 and of p2's addition and removal, and p3's comment ID; the local count's lines with their UTC time (CHK-C02-045 C2: current trees 1 / 0, history 0 / 1, the fixture issue 1 / 0, issue #6 0); the rehearsal run's ID and its count lines (15.15); then S1's and S2's run IDs. After S2's search, T-W03-09 governs: the issue is closed, the next class-high change empties `W03_PLANT_B64` and `W03_FIXTURE_ISSUE`, and the branch is removed by whoever can remove it.
 
+**[obs] The plants, made** (2026-10-13, by the executor, after the producer's build and the test designer's revision, FR-07 item 3). The H1-prime tag is `20261013T0213Z`. A script made the value from the tag at the point of use and printed only the tag and the commit IDs; no file outside the planted places holds the value. p1: the file `tests/C02/W-C02-03/fixtures/w03_plant_h1p_p1.txt` in the current tree of branch `claude/w03-search-fixture` (commit `8da6b69`). p2 and p5: the file `tests/C02/W-C02-03/fixtures/w03_plant_h1p_p2.txt`, percent-encoded form, added by `03d931b` and removed by `f9df1d0`. p3: comment 6136710058 on the fixture issue #308, labelled synthetic. p4: the line S1 prints. `W03_PLANT_B64` in `migrate.yml` holds the value's base64 (this commit); `W03_FIXTURE_ISSUE` is `308`. No commit message or pull-request text holds the value. The branch's older files and #308's older comment hold only the retired tag `20261012T2338Z`, which the search does not count.
+
+**[obs] The local count** (CHK-C02-045 C2; FR-07 item 3), 2026-10-13T02:13:30Z, over a fresh `git clone --mirror` of GitHub's `devos` (378 ref tips, `refs/pull/*` included), counting as the search counts the repository (each current-tree blob once; every other reachable blob as history) and printing counts only: current trees plain 1, percent 0; history plain 0, percent 1. The fixture issue and issue #6 are counted on GitHub by the rehearsal (15.15), not locally.
+
+**Limits of "never held as text."** The value passes through the session's own tool calls (the comment's text) and so through the platform's transcript of the session and the guard's decision log, both outside every repository and outside every place the search reads. FR-07 item 3's rule binds the files a session or a helper writes; the records here name the tag only.
+
+
 ### 15.14 The facts fixed for this revision
 
 The executor fixed these in this build's task (FR-07 item 2), before any part was written. The test designer's revision of T-W03-09 and H1-prime's checker compare against them. This build changes none of them.
