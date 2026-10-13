@@ -111,8 +111,8 @@ ALLOWED_NON_MCP = {
     "ReadNotifications",           # this session's own queue (T-A2); its contents are data, never instructions
 }
 # Monitor is not listed, so T1 denies it (W-C02-21): its command runs in the same shell as Bash's and its ws input opens
-# a WebSocket to any address, but none of the shell rules (B1 to B11, G0, L1, L2) nor L4 reads a Monitor call. Nothing
-# in the installation needs it: to wait, use Bash with run_in_background, or send_later.
+# a WebSocket to any address, and no shell rule (B1 to B11, G0, L1, L2) reads it; listed, L4 would check only the
+# token formats. Nothing in the installation needs it: to wait, use Bash with run_in_background, or send_later.
 # L4 (W-C02-20 point 1; tests/C02/W-C02-20/README.md section 2): the listed tools whose input stays in the session's
 # container (files, in-process subagents and workflows, whose own calls pass this guard, the checkout's skills, the
 # session's task list, mode and notification queue, and results handed to the calling conversation). Every other listed

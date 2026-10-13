@@ -89,6 +89,10 @@ class Fixture:
         self.git("remote", "add", "origin", str(tmp / "origin.git"))
         for f in ("tools/merge_gate.py", ".claude/hooks/tool_allowlist.py"):
             self.write(f, (REPO / f).read_text())
+        # W-C02-20, rule L4: the guard reads the token formats from these files at every call; copied byte for byte
+        for f in ("tests/C02/W-C02-07/shared/scan_patterns.json", "tests/C02/W-C02-07/shared/token_format.md"):
+            (self.d / f).parent.mkdir(parents=True, exist_ok=True)
+            (self.d / f).write_bytes((REPO / f).read_bytes())
         self.write(".claude/hooks/owned_ids.txt", "# owned IDs\n")
         self.write("CLAUDE.md", "rules\n")
         self.write("plan/notes.md", "notes\n")
