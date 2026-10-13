@@ -12,7 +12,7 @@ base) with X..head class normal; has verdict PASS or PASS-WITH-CONDITIONS; has t
 fields; and repeats no key. Anything else fails closed, with the reason.
 
 Class high: .claude/**, tools/**, .github/workflows/**, methods/**, supabase/migrations/**, supabase/functions/**,
-pipelines/**, CLAUDE.md, .gitattributes, plan/Installation_Working_Order.md (successor of the retired
+pipelines/**, tests/C02/W-C02-07/shared/** (the token formats guard rule L4 reads at every call; N-270), CLAUDE.md, .gitattributes, plan/Installation_Working_Order.md (successor of the retired
 plan/Builder_Operating_Model.md), plan/Ek_A_Rol_Sozlesmeleri.md, plan/Ek_D_Dusunme_Protokolleri.md and
 .github/CODEOWNERS; any path whose file name is CLAUDE.md or that has a .claude/ component; a file or symbolic link
 at the path methods, pipelines, supabase, supabase/migrations, supabase/functions, .github or .github/workflows, or
@@ -33,7 +33,7 @@ import sys
 sys.dont_write_bytecode = True
 
 HIGH_PREFIXES = (".claude/", "tools/", ".github/workflows/", "methods/", "supabase/migrations/", "supabase/functions/",
-                 "pipelines/")
+                 "pipelines/", "tests/C02/W-C02-07/shared/")   # the last: the token formats guard rule L4 reads (N-270)
 HIGH_FILES = {"CLAUDE.md", ".gitattributes", "plan/Installation_Working_Order.md", "plan/Ek_A_Rol_Sozlesmeleri.md",
               "plan/Ek_D_Dusunme_Protokolleri.md", ".github/CODEOWNERS"}
 # A file or symbolic link standing at one of these paths (a listed directory or its parent) redirects what the list

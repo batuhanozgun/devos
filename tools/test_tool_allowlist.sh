@@ -886,6 +886,200 @@ done
 for m in "$matcher" "$pmatcher"; do
   python3 -c "import re,sys; sys.exit(0 if re.fullmatch(sys.argv[1], sys.argv[2]) else 1)" "$m" Monitor && echo "ok   W21-ok-matcher $m covers Monitor, so the guard decides every Monitor call" || { echo "BAD  W21-ok-matcher $m misses Monitor"; fail=1; }
 done
+# --- N-269 (plan/work/C02.md, note N-269; form C0, the breaks and what is not covered: tests/C02/N-269_N-270/README.md):
+# a tool_input that is not an object is denied by rule G0, for every tool, on PreToolUse and on PermissionRequest. The
+# answer is the guard's own denial in the event's form, naming G0 and carrying every part of a denial; it is not the
+# settings wrapper's fail-closed answer, and not an exit 2 with no rule. The call gets its record in the decision log
+# like any other decision. The call's text is shown only as other G0 denials show it: the planted texts of the
+# N269-x-shown-* cases reach neither the answer nor the log. Those texts are a REDACT match, a credential path, a
+# made-up service name, and a string of each DevOS token format. The format strings are made at run time from
+# tests/C02/W-C02-07/shared/scan_patterns.json and are never printed; no label prints any input.
+# N269-x-*: each is BAD against main f39c96f, where summary() raises on such an input. N269-ok-*: the controls, an object
+# input for the same four tools, decided and logged as today. Each call has a decision log of its own, apart from $OUTS
+# and the suite's log, so each case counts that call's records exactly. W-C02-21's W21-c-input-* cases above are left
+# as written (README section 1, R3). The empty forms ("", [], 0, false, null) are read today as an empty object; they
+# are not judged here (README section 5).
+python3 - "$hook" "$cmd" "$pcmd" "$W" "$PASS" <<'EOF' || fail=1
+import importlib.util, json, os, re, secrets, shutil, string, subprocess, sys, tempfile
+hook, pre, perm, W, PASS = sys.argv[1:6]
+EV = {"pre": "PreToolUse", "perm": "PermissionRequest"}
+PARTS = ("What was attempted:", "What matched:", "Why this rule exists:", "Where it is written:", "What to do instead:",
+         "Decision log: #")
+NEED = {"n", "prev", "time", "event", "session", "tool_use_id", "tool", "decision", "rule", "summary", "detail", "reason"}
+G0_HEAD = "DevOS guard: DENIED by rule G0 ("
+tmp = tempfile.mkdtemp(prefix="n269-")
+bad = 0
+
+
+def say(ok, label, why=()):
+    global bad
+    bad += not ok
+    print(("ok   " if ok else "BAD  ") + label + ("" if ok else " [" + "; ".join(why) + "]"))
+
+
+def call(ev, tool, inp, env=None):
+    """(answer, text, records, raw): the answer read only in the event's own form (allow, deny, pass, block or ?), its
+    reason text, the records the call appended to a decision log of its own, and stdout, stderr and the log's text."""
+    log = tempfile.mkdtemp(dir=tmp)
+    data = {"hook_event_name": EV[ev], "session_id": "n269-synthetic", "tool_use_id": "toolu_n269_synthetic",
+            "cwd": W, "tool_name": tool, "tool_input": inp}
+    p = subprocess.run(["sh", "-c", perm if ev == "perm" else pre], input=json.dumps(data), capture_output=True,
+                       text=True, timeout=300, env={**os.environ, "CLAUDE_PROJECT_DIR": os.getcwd(),
+                                                    "DEVOS_GUARD_LOG_DIR": log, **(env or {})})
+    out, ans, text = p.stdout.strip(), "?", ""
+    if p.returncode == 2:
+        ans = "block"
+    elif p.returncode == 0 and out == PASS:
+        ans = "pass"
+    elif p.returncode == 0:
+        try:
+            d = json.loads(out)["hookSpecificOutput"]
+            if ev == "perm":
+                form = d.get("hookEventName") == "PermissionRequest" and "permissionDecision" not in d
+                a, text = (d.get("decision") or {}).get("behavior"), (d.get("decision") or {}).get("message") or ""
+            else:
+                form = d.get("hookEventName") == "PreToolUse" and "decision" not in d
+                a, text = d.get("permissionDecision"), d.get("permissionDecisionReason") or ""
+            ans = a if form and a else "?"
+        except (ValueError, KeyError, TypeError, AttributeError):
+            pass
+    recs, logtext = [], ""
+    for f in sorted(os.listdir(log)):
+        with open(os.path.join(log, f), encoding="utf-8", errors="replace") as fh:
+            t = fh.read()
+        logtext += t
+        for line in t.splitlines():
+            try:
+                recs.append(json.loads(line))
+            except ValueError:
+                recs.append({})
+    return ans, text, recs, p.stdout + p.stderr + logtext
+
+
+def rule_of(text):
+    m = re.search(r"(?:DENIED by rule|allowed by rule) (\w+)", text)
+    return m.group(1) if m else "none"
+
+
+def not_g0(ev, tool, inp, env=None):
+    """(why, raw): why the answer is not N-269's (empty when it is), and the raw output and log for the leak checks.
+    Nothing of the input or the answer's text is put in why."""
+    ans, text, recs, raw = call(ev, tool, inp, env)
+    why = []
+    if ans != "deny":
+        why.append(f"got={ans}")
+    elif "failing closed" in text:
+        why.append("got=deny, the settings wrapper's fail-closed answer, no rule")
+    elif not text.startswith(G0_HEAD):
+        why.append(f"got=deny by {rule_of(text)}, not the guard's own G0 denial")
+    else:
+        why += [f"the denial lacks '{x}'" for x in PARTS if x not in text]
+    if len(recs) != 1:
+        why.append(f"{len(recs)} decision log records for the call, not 1")
+    else:
+        r = recs[0]
+        if not NEED <= set(r):
+            why.append(f"the record lacks {sorted(NEED - set(r))}")
+        got = (r.get("event"), r.get("tool"), r.get("decision"), r.get("rule"))
+        if got != (EV[ev], tool, "deny", "G0"):
+            why.append(f"the record holds event, tool, decision, rule {list(got)}")
+        if not str(r.get("reason") or "").startswith(G0_HEAD):
+            why.append("the record's reason is not the G0 denial")
+        if ans == "deny" and f"Decision log: #{r.get('n')} in " not in text:
+            why.append("the denial does not name the call's record")
+    return why, raw
+
+
+def run_case(cid, tool, inp, label, env=None, planted=()):
+    """One N269-x case on both events. planted: (name, test) pairs; test(raw) is True when the planted text shows."""
+    for ev in ("pre", "perm"):
+        why, raw = not_g0(ev, tool, inp, env)
+        why += [f"{name} reached the answer or the log" for name, shows in planted if shows(raw)]
+        say(not why, f"N269-x-{cid} {tool} exp=deny by G0, logged {EV[ev]}: {label}", why)
+
+
+try:
+    spec = importlib.util.spec_from_file_location("n269_guard_under_test", hook)
+    g = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(g)
+    redact_rx = list(g.REDACT)
+    # one string of each DevOS token format, from the finders of the shared pattern file, with no sequence REDACT
+    # masks, so that only withholding it keeps it out of the answer and the log
+    with open(os.path.join("tests", "C02", "W-C02-07", "shared", "scan_patterns.json"), encoding="utf-8") as f:
+        tp = json.load(f)["token_patterns"]
+    fmt = {}
+    for kind in ("env", "claim"):
+        find = tp[kind + "_token_find"]
+        m = re.fullmatch(r"\(\?i:([A-Za-z0-9]+_)\)\[([^\]]+)\]\{(\d+),\}", find)
+        alphabet = [c for c in string.ascii_letters + string.digits if re.fullmatch("[" + m.group(2) + "]", c)]
+        for _ in range(200):
+            s = m.group(1) + secrets.choice(string.ascii_letters) + "".join(
+                secrets.choice(alphabet) for _ in range(int(m.group(3)) + 7))
+            if re.search(find, s) and not any(r.search(s) for r in redact_rx):
+                fmt[kind] = s
+                break
+    finders = [re.compile(tp[k + "_token_find"]) for k in ("env", "claim")]
+    if set(fmt) != {"env", "claim"}:
+        raise ValueError("no string of each format could be made")
+except Exception as e:   # never ok: the planted cases cannot be built
+    print(f"BAD  N269-build the N-269 cases cannot be built ({type(e).__name__}); the guard or the shared pattern file "
+          "cannot be read")
+    shutil.rmtree(tmp, ignore_errors=True)
+    raise SystemExit(1)
+
+LOGF = "/tmp/n269-synthetic.log"
+TOOLS = (("Bash", "listed; its summary reads the command", {"command": "git status"}, "allow", "B0"),
+         ("Read", "listed; its summary reads the file path", {"file_path": LOGF}, "allow", "T1"),
+         ("Monitor", "not listed; its summary reads every field", {"command": f"tail -n 20 {LOGF}"}, "deny", "T1"),
+         ("mcp__github__get_me", "an allowed MCP server's tool; its summary reads every field", {}, "allow", "M2"))
+try:
+    # the class: an input that is not an object, in four forms, for tools whose summaries read the input three ways
+    for tool, what, obj, _, _ in TOOLS:
+        run_case("string", tool, f"tail -n 20 {LOGF}", f"a tool_input that is a string ({what})")
+        run_case("list", tool, ["tail", "-n", "20", LOGF], f"a tool_input that is a list ({what})")
+        run_case("number", tool, 42, f"a tool_input that is a number ({what})")
+        run_case("json-string", tool, json.dumps(obj), "a tool_input that is a string holding the JSON of the "
+                 f"N269-ok-{tool} control's object: read as a string, not decoded ({what})")
+    # the call's text, shown only as other G0 denials show it
+    pw = "n269" + "".join(secrets.choice(string.ascii_lowercase + string.digits) for _ in range(16))
+    run_case("shown-redact", "Bash", f"echo password={pw}",
+             "a string input holding a value REDACT's generic pattern masks: the value is not shown",
+             planted=(("the masked value", lambda raw: pw in raw),))
+    cp = os.path.join(tmp, "n269-synthetic-ingress-" + secrets.token_hex(8))
+    run_case("shown-credpath", "Bash", f"cat {cp}",
+             "a string input holding the session's token file path (set for this call only): the path is not shown",
+             env={"CLAUDE_SESSION_INGRESS_TOKEN_FILE": cp}, planted=(("the credential path", lambda raw: cp in raw),))
+    svc = os.path.join(tmp, "svc.json")
+    with open(svc, "w") as f:
+        json.dump({"permissions": {"deny": ["mcp__Quorvantel_Ledgerline"]}}, f)
+    run_case("shown-service", "Monitor", ["notify", "Quorvantel ledger sync"],
+             "a list input naming a made-up service (DEVOS_SERVICE_NAMES_EXTRA, for this call only): not shown",
+             env={"DEVOS_SERVICE_NAMES_EXTRA": svc},
+             planted=(("the service name", lambda raw: "quorvantel" in raw.lower()),))
+    for kind in ("env", "claim"):
+        tok = fmt[kind]
+        shows = (("a string of either token format", lambda raw: any(x.search(raw) for x in finders)),)
+        run_case(f"shown-{kind}-string", "Bash", f"echo {tok}", f"a string input holding a synthetic {kind} token "
+                 "format string (made at run time, not printed): no string of either format is shown", planted=shows)
+        run_case(f"shown-{kind}-list", "Read", [tok], f"a list input holding a synthetic {kind} token format "
+                 "string (made at run time, not printed): no string of either format is shown", planted=shows)
+    # the controls: an object input for the same tools, decided and logged as today
+    for tool, what, obj, dec, rule in TOOLS:
+        for ev in ("pre", "perm"):
+            ans, text, recs, _ = call(ev, tool, obj)
+            why = [] if ans == dec else [f"got={ans}"]
+            if text and rule_of(text) != rule:
+                why.append(f"by {rule_of(text)}")
+            if ev == "pre" and not text:
+                why.append("no reason text")
+            if len(recs) != 1 or (recs[0].get("decision"), recs[0].get("rule")) != (dec, rule):
+                why.append(f"{len(recs)} decision log records, or not {dec} by {rule}")
+            say(not why, f"N269-ok-{tool} {tool} exp={dec} by {rule}, logged {EV[ev]}: an object input, as today "
+                         f"({what})", why)
+finally:
+    shutil.rmtree(tmp, ignore_errors=True)
+raise SystemExit(1 if bad else 0)
+EOF
 br=$(git rev-parse --abbrev-ref HEAD)
 # Branch controls need this branch on the remote; the guard fetches it (not hermetic, R-C00-BOM-5 m2).
 if git ls-remote --exit-code --heads origin "$br" >/dev/null 2>&1; then bok=allow; else bok=deny; echo "info branch $br is not on the remote: branch controls expect a deny, and the devos-x URL and outcome_branch main controls are SKIPPED; T-H4 counts only on a pushed branch"; fi
