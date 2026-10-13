@@ -62,7 +62,7 @@ Selection among ready items: critical path first, one logged sentence of reason 
 |---|---|---|---|---|
 | `C00` | Start, function comparison and independent review of the plan | accepted | accepted 15, cancelled 6 | 0 |
 | `C01` | Platform verification | accepted | accepted 38, cancelled 10 | 4 |
-| `C02` | Data model, rule gate and identity chain | running | accepted 9, blocked 9, running 2 | 32 |
+| `C02` | Data model, rule gate and identity chain | running | accepted 9, blocked 9, running 2 | 33 |
 | `C03` | Trust boundaries and effect channels | planned | no items | 23 |
 | `C04` | Knowledge, search and context | planned | no items | 18 |
 | `C05` | Common rules, roles and methods | planned | no items | 13 |
@@ -319,6 +319,7 @@ Open items became notes attached to the item or stage they concern (M-R3); OI-01
 | `N-263` | `C02` | CHK-C02-026 | open | **Decided (2026-10-12).** In `evidence/C02/EV-C02-008_design_addendum_roles_and_samples.md` section 5.2: a `sample` Review, any verdict o... |
 | `N-264` | `C02` | CHK-C02-037 | open | **A frame review of the sample's hidden position** (plan 6.12 item 2; EV-C02-008 section 5.2 (e), its dated paragraph after CHK-C02-037; ... |
 | `N-265` | `C02` | CHK-C02-038 | open | **Nothing repeatable guards the workflows against the class of W-C02-03's first FAIL** (CHK-C02-038 F-11; `evidence/C02/EV-C02-007_migrat... |
+| `N-267` | `C02` | CHK-C02-046 | open | **The build items' acceptance blocks carry the copy of W-C02-07's staged tests** (CHK-C02-046 C1, route (b); CHK-C02-030 C1; `tests/C02/W... |
 | `N-033` | `C03` | 06#3a-g | open | **Counter-design hand-over note** (`plan/builder/w-c00-12/06_counter_design_comparison.md` section 3a row g, adopted; that file is retire... |
 | `N-039` | `C03` | OI-011#20 | open | **Design reference for this stage** from OI-011 item 20 (N-022 on `W-C00-12`, verbatim there): agent governance and activity monitoring (... |
 | `N-065` | `C03` | EV-C00-012 | open | **Open items from the counter-design comparison** (W-C00-09, `evidence/C00/EV-C00-012_counter_design_comparison.md`, 2026-10-05, L-145). ... |
