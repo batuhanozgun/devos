@@ -1,0 +1,50 @@
+# Synthetic test data for T-W03-08 (tests/C02/W-C02-03/T-W03-08_branch_refused.md): lives only on claude/w03-branch-probe; never to be merged.
+# W-C02-03 point 8. Each job names a migration environment as migrate.yml does, and its one step reports only whether
+# the credential reached it: it never prints the value, its length or any part of it, and runs no other command.
+# On this branch each job is expected to be refused by the environment's deployment-branch rule.
+name: w03-fixture-branch-probe
+
+on:
+  push:
+    # Only this branch, so that a push to main would not start it were the file ever merged (it must not be).
+    branches: [claude/w03-branch-probe]
+  pull_request:
+  workflow_dispatch:
+  issue_comment:
+
+permissions: {}
+
+jobs:
+  probe-devos-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: migrate-devos-test
+    steps:
+      - id: presence
+        name: "credential present: yes or no"
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+          else
+            echo "credential present: yes"
+          fi
+
+  probe-devos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: migrate-devos
+    steps:
+      - id: presence
+        name: "credential present: yes or no"
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "credential present: no"
+          else
+            echo "credential present: yes"
+          fi
