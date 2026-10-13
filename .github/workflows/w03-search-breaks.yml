@@ -1,0 +1,198 @@
+# Synthetic test data (plan Section 8 item 13) for T-W03-09's break attempt; never to be merged.
+# tests/C02/W-C02-03/T-W03-09_credential_search.md, "Break attempt". Five copies of migrate.yml's search step (job
+# check-devos-test, step search), read from the checked-out commit and run in one job: copy 0 unchanged (the positive control), then copies 1 to 4, each with one part removed (history, the
+# percent-encoded form, the issue, the logs). The planted synthetic value is given in place of the secret: this file
+# holds it only as base64 (W03_PLANT_B64, copied from migrate.yml), decoded at run time into each copy's process
+# environment only. It names no environment and no secret, and grants no write permission. The executor runs it on the
+# branch claude/w03-search-breaks, based on main, through a pull request into main that is never merged, after S2's
+# search and before the plants are removed. Each copy's verdict is read from its count lines, not from its exit status.
+name: w03-search-breaks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  breaks:
+    name: breaks (T-W03-09; five copies of migrate.yml's search; the plant in place of the secret)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+    steps:
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, the commit migrate.yml pins
+        with:
+          persist-credentials: false
+      - id: copies
+        name: "run the five copies of check-devos-test's step search, the unbroken one first"
+        env:
+          # T-W03-09's plant, base64, copied from migrate.yml's workflow-level W03_PLANT_B64; W03_FIXTURE_ISSUE likewise.
+          W03_PLANT_B64: "dzAzLWZpeHR1cmUvcGxhbnQrdmFsdWVAMjAyNjEwMTNUMDIxM1o9eA=="
+          W03_FIXTURE_ISSUE: "308"
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          # T-W03-09's break attempt. Synthetic test data (plan Section 8 item 13): the plant is a value made up for that
+          # test, never a credential. The step search of job check-devos-test is read from this commit's
+          # .github/workflows/migrate.yml by job and step id, as the rehearsal read it (EV-C02-007 section 15.15, "The run
+          # step"): exactly one such step, its shell python or bash, no expression in its body. The SHA-256 of run|shell
+          # must equal main's (EXPECTED); otherwise nothing runs. Then five copies of the body run in order, each as GitHub
+          # runs its shell (python FILE): copy 0 unchanged, the positive control; copies 1 to 4 each made by one textual
+          # change that must apply exactly once (otherwise that copy is not run, with a line that says so). Each copy's
+          # environment is this step's, plus the plant decoded here and given to its process alone as SUPABASE_DB_PASSWORD,
+          # in place of the secret. Names, hashes, each copy's own lines (counts and statuses only) prefixed by its label,
+          # and a summary of the plant's counts read from those lines are printed, never a value. A copy's verdict is read
+          # from its count lines, not from its exit status: with the plant in place of the secret, each copy reports the
+          # "credential" found. This step exits 0 when all five copies were made and run, 1 otherwise.
+          import base64, hashlib, json, os, re, subprocess, sys
+          import yaml
+
+          sys.stdout.reconfigure(line_buffering=True)
+          EXPR = "$" + "{{"  # written in two parts, so that this body holds no expression opener itself
+          JOB, STEP = "check-devos-test", "search"
+          # SHA-256 of run|shell of that step at main 1f6f9a2 (190 lines). EV-C02-007 sections 15.15 and 15.16 give its
+          # first 12 hex digits, 2ef72520eefd. Another value means the copies would not be the search S2 runs.
+          EXPECTED = "2ef72520eefdfc1407925d2742f6a5db12c8622548518f582f2aea18e832aebe"
+          # (label, old text, new text): each broken copy removes one part named by T-W03-09's break attempt, and only it.
+          COPIES = [
+              ("copy 0 unbroken", None, None),
+              # 1: only the current trees' blobs are read; no other object (the history) is read.
+              ("copy 1 no history",
+               'ids = git("-C", m, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").stdout',
+               r'ids = b"".join(s + b"\n" for s in sorted(tip_blobs))'),
+              # 2: only the plain form is searched, in every place; the percent-encoded form is never counted.
+              ("copy 2 plain only",
+               'return {"plain": v.encode(), "percent": urllib.parse.quote(v, safe="").encode()}',
+               'return {"plain": v.encode()}'),
+              # 3: the issues are not read (issue #6 and the fixture issue share this code); each place still prints 0.
+              ("copy 3 no issue",
+               'place = f"issue #{number}"',
+               'place = f"issue #{number}"; count(place, b""); continue'),
+              # 4: the run list is not read, so no earlier run's log is read; the logs place still prints 0, no gap.
+              ("copy 4 no logs",
+               'runs, seen, listed, page, more = [], set(), 0, 0, True',
+               'runs, seen, listed, page, more = [], set(), 0, 0, False'),
+          ]
+
+          sha, event = os.environ.get("GITHUB_SHA", "?"), os.environ.get("GITHUB_EVENT_NAME", "?")
+          try:
+              with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:
+                  pr = json.load(f).get("pull_request") or {}
+          except (KeyError, OSError, ValueError):
+              pr = {}
+          base, head = pr.get("base") or {}, pr.get("head") or {}
+          print(f"breaks: event {event}, checked-out commit {sha}"
+                + (f" (pull request #{pr.get('number')}: head {head.get('ref')} {head.get('sha')} into base "
+                   f"{base.get('ref')} {base.get('sha')})" if pr else ""))
+
+          with open(".github/workflows/migrate.yml", encoding="utf-8") as f:
+              wf = yaml.safe_load(f)
+          jobdef = (wf.get("jobs") or {}).get(JOB) or {}
+          found = [s for s in jobdef.get("steps") or [] if isinstance(s, dict) and s.get("id") == STEP]
+          if len(found) != 1:
+              print(f"breaks: could not check: migrate.yml's job {JOB} has {len(found)} steps with id {STEP}; no copy is run")
+              raise SystemExit(1)
+          step = found[0]
+          run, shell = step.get("run"), step.get("shell")
+          cmd = {"python": [sys.executable], "bash": ["bash", "--noprofile", "--norc", "-eo", "pipefail"]}.get(shell)
+          if not isinstance(run, str) or cmd is None or EXPR in run:
+              print(f"breaks: could not check: step {STEP} is not a run body, in shell python or bash, free of expressions; "
+                    "no copy is run")
+              raise SystemExit(1)
+          digest = hashlib.sha256((run + "|" + shell).encode()).hexdigest()
+          print(f"breaks: migrate.yml at {sha}, job {JOB}, step {STEP}: shell {shell}, {len(run.splitlines())} lines, "
+                f"SHA-256 of run|shell {digest}; run as: {' '.join(cmd)} FILE")
+          if digest != EXPECTED:
+              print(f"breaks: could not check: that is not main's search body (SHA-256 of run|shell {EXPECTED}); "
+                    "no copy is run")
+              raise SystemExit(1)
+          print(f"breaks: that equals main's search body ({EXPECTED[:12]}, EV-C02-007 section 15.15)")
+
+          env = dict(os.environ)
+          for scope, block in (("workflow", wf.get("env") or {}), ("job", jobdef.get("env") or {})):
+              for k, v in block.items():
+                  if re.search(r"(?<![A-Za-z0-9_])" + re.escape(k) + r"(?![A-Za-z0-9_])", run):
+                      v = str(v)
+                      if k in os.environ:
+                          print(f"breaks: env {k}: this workflow's value, "
+                                f"{'the same as' if os.environ[k] == v else 'NOT the same as'} migrate.yml's {scope}-level "
+                                f"value at this commit ({'set' if v else 'empty'} there)")
+                      elif EXPR in v:
+                          print(f"breaks: could not check: migrate.yml's {scope}-level {k} holds an expression; no copy is run")
+                          raise SystemExit(1)
+                      else:
+                          env[k] = v
+                          print(f"breaks: env {k}: migrate.yml's {scope}-level value ({'set' if v else 'empty'})")
+          for k, v in (step.get("env") or {}).items():
+              v = str(v)
+              if k == "SUPABASE_DB_PASSWORD":
+                  print(f"breaks: env {k}: the plant, decoded here from W03_PLANT_B64, in place of migrate.yml's value")
+              elif EXPR not in v:
+                  env[k] = v
+                  print(f"breaks: env {k}: the step's own value")
+              elif k in os.environ:
+                  print(f"breaks: env {k}: an expression in migrate.yml; this job's own value")
+              else:
+                  print(f"breaks: env {k}: an expression in migrate.yml; not set here")
+          try:
+              plant = base64.b64decode(os.environ.get("W03_PLANT_B64", ""), validate=True).decode("ascii")
+          except ValueError:
+              plant = ""
+          if not plant:
+              print("breaks: could not check: W03_PLANT_B64 is empty, or not base64 of ASCII text; no copy is run")
+              raise SystemExit(1)
+          env["SUPABASE_DB_PASSWORD"] = plant  # the process environment only: never a command line, a file or a line
+
+          results = []
+          for i, (label, old, new) in enumerate(COPIES):
+              body = run
+              if old is not None:
+                  n = body.count(old)
+                  if n != 1:
+                      print(f"[{label}] breaks: could not check: its change applies {n} times, not exactly once; "
+                            "this copy is not run")
+                      results.append((label, None, []))
+                      continue
+                  body = body.replace(old, new)
+              h = hashlib.sha256((body + "|" + shell).encode()).hexdigest()
+              print(f"[{label}] breaks: SHA-256 of run|shell {h}"
+                    + (" (unchanged)" if old is None else f"; its one change: {old!r} -> {new!r}"))
+              path = os.path.join(os.environ["RUNNER_TEMP"], f"w03b-copy{i}.body")
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write(body)
+              p = subprocess.run(cmd + [path], env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                                 errors="replace")
+              lines = p.stdout.splitlines()
+              for line in lines:
+                  print(f"[{label}] {line}")
+              print(f"[{label}] breaks: exit {p.returncode} (not its verdict; read its count lines)")
+              results.append((label, p.returncode, lines))
+          del plant, env["SUPABASE_DB_PASSWORD"]
+
+          LINE = re.compile(r"search plant \| (.+) \| (plain|percent): ([0-9]+)")
+          places, table = [], []
+          for label, rc, lines in results:
+              got = {}
+              for line in lines:
+                  m = LINE.fullmatch(line)
+                  if m:
+                      got[(m.group(1), m.group(2))] = int(m.group(3))
+                      if m.group(1) not in places:
+                          places.append(m.group(1))
+              table.append((label, rc, got))
+          print("breaks: summary: the plant's counts per copy and place, read from each copy's own lines (plain, percent)")
+          for label, rc, got in table:
+              if rc is None:
+                  print(f"summary: {label}: not run (its change did not apply exactly once)")
+                  continue
+              for place in places:
+                  pl, pc = got.get((place, "plain")), got.get((place, "percent"))
+                  print(f"summary: {label} | {place} | plain {'no line' if pl is None else pl}, "
+                        f"percent {'no line' if pc is None else pc}")
+          raise SystemExit(0 if all(rc is not None for _, rc, _ in table) else 1)
