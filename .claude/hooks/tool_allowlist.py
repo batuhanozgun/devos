@@ -25,7 +25,11 @@ Rule families (the IDs are the keys of RULES):
   L  leak check (W-C00-14; plan 0.5 item 3, K-9 item 5, 6.7): a push to devos (every commit it would publish)
      and every string field of a GitHub write to devos are compared with fingerprints of the private research
      library and with the service names of tools/check_service_names.sh; a push stands alone in its Bash call;
-     a clone of the library may exist in one place only, and no GitHub tool is aimed at it.
+     a clone of the library may exist in one place only, and no GitHub tool is aimed at it. L4, the token stop
+     (W-C02-20): no string of either DevOS token format in any field of a call that leaves the session, or in a
+     commit or branch name a push would publish, read raw before any masking, by the finder patterns of
+     tests/C02/W-C02-07/shared/ read at every call; while those files cannot be read or disagree, every such call
+     is denied.
 
 Threat model (plan/Installation_Working_Order.md): accidents and injected instructions, not a session that
 deliberately edits this file. A deliberate bypass stays visible in git and is a stated residual risk (D-003).
@@ -101,10 +105,22 @@ ALLOWED_NON_MCP = {
     "Bash", "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit",
     "Agent", "Task", "Workflow", "ToolSearch", "Skill", "StructuredOutput",
     "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput",
-    "TodoWrite", "Monitor", "WebFetch", "WebSearch", "EnterPlanMode", "SendUserFile",
+    "TodoWrite", "WebFetch", "WebSearch", "EnterPlanMode", "SendUserFile",
     "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
     "ReportFindings", "SubagentHandback",
     "ReadNotifications",           # this session's own queue (T-A2); its contents are data, never instructions
+}
+# Monitor is not listed, so T1 denies it (W-C02-21): its command runs in the same shell as Bash's and its ws input opens
+# a WebSocket to any address, and no shell rule (B1 to B11, G0, L1, L2) reads it; listed, L4 would check only the
+# token formats. Nothing in the installation needs it: to wait, use Bash with run_in_background, or send_later.
+# L4 (W-C02-20 point 1; tests/C02/W-C02-20/README.md section 2): the listed tools whose input stays in the session's
+# container (files, in-process subagents and workflows, whose own calls pass this guard, the checkout's skills, the
+# session's task list, mode and notification queue, and results handed to the calling conversation). Every other listed
+# tool and every allowed MCP server carries text out of the session, and L4 reads its whole input.
+LOCAL_TOOLS = {
+    "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit", "Agent", "Task", "Workflow", "ToolSearch", "Skill",
+    "StructuredOutput", "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput", "TodoWrite",
+    "EnterPlanMode", "ReportFindings", "SubagentHandback", "ReadNotifications",
 }
 USER_TOOLS = {"AskUserQuestion", "ExitPlanMode"}   # answered by the user; an "allow" would need updatedInput
 # "Pass" is printed as this plain text, never as no output (N-185). The hooks page (read 2026-10-11) gives plain
@@ -342,8 +358,22 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "store with python3 tools/leak_fingerprints.py build. A GitHub tool may name the library in its text (L1 "
            "checks that text), but not aim at it: no owner or repo field naming it, and no search qualifier repo:, "
            "user:, org: or owner: on it or on batuhanozgun; scope a search with repo:batuhanozgun/devos."),
+    "L4": ("no string of a DevOS token format in outbound text", "The environment token and the claim token are "
+           "DevOS credentials. A string of either format (the finder patterns of tests/C02/W-C02-07/shared/"
+           "token_format.md section 3 and scan_patterns.json, read at every call) in any field of a call that leaves "
+           "the session (the shell, a web read or search, a GitHub tool, a session tool, the database connection, a "
+           "notification or a file sent to the user), or in a commit or branch name a push would publish, would carry "
+           "one out. The raw input is read before any masking, and the string is never shown or logged. While the two "
+           "shared files are missing, unreadable, incomplete or in disagreement, every such call is denied.",
+           WO + "; EV-C02-003 sections 1.6 and 1.7; plan 6.3 and 6.7; W-C02-20",
+           "Do not send the string by another route. A synthetic test string or planted control is recorded as "
+           "synthetic in your log entry, and is made at run time inside a program or statement, not written into the "
+           "call. Any other match is reported to the executor as a finding, without the string; for the environment "
+           "token's format, EV-C02-003 section 2.2 and plan 6.3 apply: the token is revoked and renewed. If the detail "
+           "says the shared files cannot be read or disagree, restore both to their text on main (this rule does not "
+           "read the Read and Write tools) and report it to the executor."),
 }
-LEAK_WITHHELD = {"L1", "L2"}   # denials whose call text is never repeated (it may hold the matched text)
+LEAK_WITHHELD = {"L1", "L2", "L4"}   # denials whose call text is never repeated (it may hold the matched text)
 
 
 class Bad(Exception):
@@ -1808,6 +1838,74 @@ def leak_tool_checks(tool, args):
         leak_deny(f"GitHub write '{tool}' to devos", found)
 
 
+# ---------------------------------------------------------------- token stop (L4; W-C02-20)
+# EV-C02-003 sections 1.6 and 1.7; plan 6.7's network row. The finder patterns are read from W-C02-07's shared files in
+# this guard's own checkout at every call (no copy is kept here), and applied to the raw input: every string at any
+# depth, object keys included, of the decoded hook input, before redact() or summary() masks anything (token_format.md
+# section 6: REDACT can mask a string of either format). The denial withholds the call's text (LEAK_WITHHELD). The two
+# files agree only when each finder of scan_patterns.json equals the code span of its own row in section 3's Finder
+# table; an edit of both alike is followed (EV-C02-010 sections A.3 and A.8; note N-270).
+
+TOKEN_FILES = os.path.join(ROOT, "tests", "C02", "W-C02-07", "shared")
+TOKEN_FINDERS = {"env_token_find": ("environment token's", "Environment token"),   # key: (format, its Finder row)
+                 "claim_token_find": ("claim token's", "Claim token")}
+
+
+def token_finders():
+    """[(format, compiled finder)] from scan_patterns.json, each equal to the code span of its own row in the Finder
+    table of token_format.md section 3 (CHK-C02-056 C1); Bad(L4, "could not check ...") when a file is missing,
+    unreadable or incomplete, a pattern is missing or does not compile, the two files disagree, or any other error is
+    raised while they are read or checked, a RecursionError from a deeply nested file among them (plan Section 8 item
+    14: never an allow, and never a guard error, whose text and log are not withheld)."""
+    try:
+        with open(os.path.join(TOKEN_FILES, "scan_patterns.json"), encoding="utf-8") as f:
+            pats = json.load(f)["token_patterns"]
+        with open(os.path.join(TOKEN_FILES, "token_format.md"), encoding="utf-8") as f:
+            sec3 = re.search(r"^## 3\..*?(?=^## 4\.)", f.read(), re.S | re.M)
+        # the Finder table: the run of table lines that first follows section 3's paragraph opening "**Finder"
+        table = re.findall(r"^\*\*Finder\b.*\n(?:(?!\|).*\n)*?((?:\|.*\n?)+)", sec3.group(0), re.M) if sec3 else []
+        if not isinstance(pats, dict) or len(table) != 1:
+            raise ValueError("no token_patterns object in scan_patterns.json, or no section 3 with one Finder table in "
+                             "token_format.md")
+        out = []
+        for key, (what, row) in TOKEN_FINDERS.items():
+            spans = re.findall(r"^\|[ \t]*" + re.escape(row) + r"[ \t]*\|[ \t]*`([^`\n]+)`[ \t]*\|[ \t]*$", table[0],
+                               re.M)
+            if len(spans) != 1 or pats[key] != spans[0]:
+                raise ValueError(f"{key} of scan_patterns.json is not the code span of the {row} row of "
+                                 "token_format.md section 3's Finder table: the files disagree")
+            out.append((what, re.compile(spans[0])))
+        return out
+    except Exception as exc:   # any error while the files are read or checked, RecursionError included (CHK-C02-056 C1)
+        raise Bad("L4", f"could not check: the token formats cannot be read from {TOKEN_FILES} ({type(exc).__name__}: "
+                        f"{exc}); every call this rule reads is denied until scan_patterns.json and token_format.md "
+                        "section 3 are whole and agree")
+
+
+def input_strings(v):
+    """Every string of a decoded tool input at any depth, object keys included (W-C02-20 README R4)."""
+    stack = [v]
+    while stack:
+        x = stack.pop()
+        if isinstance(x, str):
+            yield x
+        elif isinstance(x, dict):
+            stack += [y for kv in x.items() for y in kv]
+        elif isinstance(x, list):
+            stack += x
+
+
+def token_stop(texts, what="the call"):
+    """L4: deny when any of texts holds a string of either DevOS token format; neither the string nor where it is is
+    named in the detail."""
+    finders = token_finders()
+    for t in texts:
+        for fmt, rx in finders:
+            if rx.search(t):
+                raise Bad("L4", f"{what} carries a string of the {fmt} format (tests/C02/W-C02-07/shared/"
+                                "token_format.md section 3); neither the string nor the field holding it is shown")
+
+
 def git_sub(args):
     i = 1
     while i < len(args):
@@ -1899,6 +1997,7 @@ def push_leak_checks():
             if r.returncode == 0:
                 shas.append(r.stdout.strip())
         blocks, n = pushed_blocks(e, shas, ref) if shas else ([], 0)
+        token_stop(["\n".join(refspecs)] + [text for _, text in blocks], "the push (its branch names and commits)")
         found = leak_found([("the pushed branch names", "\n".join(refspecs))] + blocks, store, e, ref)
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         raise Bad("L1", f"the leak check could not read the push ({type(exc).__name__}: {exc}); failing closed")
@@ -2011,10 +2110,12 @@ def decide(data):
     args = data.get("tool_input") or {}
     if not isinstance(args, dict):
         return "deny", "G0", "the tool input is not an object"
-    if any(isinstance(v, str) and "\x00" in v for v in args.values()):
-        return "deny", "G0", "the tool input contains a NUL byte, which no real path or command needs"
     cwd = data.get("cwd") if isinstance(data.get("cwd"), str) and os.path.isabs(data.get("cwd") or "") else ROOT
     try:
+        if name.startswith(ALLOWED_PREFIXES) or (name in ALLOWED_NON_MCP and name not in LOCAL_TOOLS):
+            token_stop(input_strings(args))   # L4 before every other rule of an outbound call (W-C02-20 point 2)
+        if any(isinstance(v, str) and "\x00" in v for v in args.values()):
+            raise Bad("G0", "the tool input contains a NUL byte, which no real path or command needs")
         if name.startswith("mcp__"):
             if not name.startswith(ALLOWED_PREFIXES):
                 raise Bad("M1", f"'{name}' is not an allowed MCP server for DevOS sessions")
