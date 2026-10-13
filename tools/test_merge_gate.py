@@ -16,6 +16,9 @@ merge_pull_request call. Cases (20) to (27) plant, for each path of plan 6.7's h
 that touch it in different forms; (28) reads that list from plan/DevOS_Kurulum_Plani.md beside this file and checks
 that the gate classes every path it names, and that it names those eight, printing what it found ("plan 6.7:"
 lines) or that it could not check; (29) near misses stay class normal; (30) a name that is not UTF-8 fails closed.
+Cases (N270*) (note N-270 on plan/work/C02.md; tests/C02/N-269_N-270/README.md): tests/C02/W-C02-07/shared/, whose
+two files guard rule L4 reads at every call, is class high in every form a change touches it, and the rest of
+tests/C02/W-C02-07/ stays class normal. Their pull requests are 700 up and their verdicts CHK-C00-070 up.
 Prints one line per case and MERGE_GATE_TEST PASS only if every case behaves as written.
 """
 import json
@@ -435,6 +438,96 @@ def listed_paths(s):
              rc in (1, 2) and ("GATE FAIL" in out or "GATE ERROR" in out) and "GATE PASS" not in out, out)
 
 
+def shared_token_files(s):
+    """Cases (N270a) to (N270n5): note N-270 (plan/work/C02.md), in W-C02-19's form. Pull requests 700 up, verdicts
+    CHK-C00-070 up. The fixture's base holds the two shared files byte for byte (Fixture.__init__)."""
+    prs, verdicts = iter(range(700, 800)), iter(range(70, 100))
+    sh = "tests/C02/W-C02-07/shared"
+    pat, fmt = f"{sh}/scan_patterns.json", f"{sh}/token_format.md"
+    # Form C0 (Appendix C), for (N270a) to (N270n5); the breaks and what is not covered: tests/C02/N-269_N-270/README.md.
+    # - Claim: tests/C02/W-C02-07/shared/ is class high: a pull request that adds, changes or deletes a file under it
+    #   merges only with a covering checker verdict; a file elsewhere under tests/C02/W-C02-07/ stays class normal.
+    # - Failure class: a pull request changes what guard rule L4 reads at every call (its finder patterns and the
+    #   Finder table they must equal) and merges with no fresh-context verdict: a change to either file, a new file
+    #   there, a deletion, a rename out (the gate reads diffs with --no-renames), or the folder replaced by a symbolic
+    #   link (its files deleted).
+    # - Examples: (N270a) scan_patterns.json changed (the original finding, EV-C02-010 section A.8); (N270b)
+    #   token_format.md changed; (N270c) a new file there; (N270d) scan_patterns.json deleted; (N270e) token_format.md
+    #   renamed out; (N270f) the folder replaced by a symbolic link.
+    # - Negative control: each lettered case: no verdict, so GATE FAIL, exit 1 and a "class high:" line naming the
+    #   touched file. (N270g): the fixture's guard denies (N270c)'s merge_pull_request by rule M7.
+    # - Positive control: (N270ap) to (N270fp): the same pull request with a PASS verdict it adds naming its head gives
+    #   GATE PASS, exit 0 and "covered by"; (N270h): the guard then allows (N270c)'s merge by rule M7. (N270n1) to
+    #   (N270n5): the rest of tests/C02/W-C02-07/ and near misses stay class normal with no verdict.
+    # - Break: in a copy of the gate, the folder's class rule removed (the gate at main f39c96f): every lettered case,
+    #   its verdict case, (N270g) and (N270h) print BAD; a rule without the path boundary, for the whole of
+    #   tests/C02/W-C02-07/, for any component named shared, or by substring: the matching (N270n*) case prints BAD.
+    # - Stage and environment: C02; the fixture repository with a local bare origin, the gate run as M7 runs it.
+    # - Independence: written by a test designer (a fresh-context subagent) before the gate change; run by the
+    #   producer, and again by a fresh-context checker that builds the breaks itself.
+    # - Evidence layer: structural (the gate's class rules); (N270g) and (N270h) behavioural, at the guard's M7 call.
+    # - Evidence envelope: the commit, the command and the raw output of each run, in the change's record.
+
+    def high(cid, label, path, *steps, guard=False):
+        """Negative control, then positive: a pull request made by steps, with no verdict GATE FAIL, exit 1 and a
+        "class high:" line naming path; with a PASS verdict it adds naming its head, GATE PASS, exit 0, "covered by"."""
+        pr = next(prs)
+        head = s.planted(pr, *steps)
+        rc, out = s.gate(pr, head)
+        case(f"(N270{cid}) {label}, no verdict: GATE FAIL naming {path}",
+             rc == 1 and "GATE FAIL" in out and high_named(out, path), out)
+        if guard:
+            dec, why = s.guard(pr, head)
+            case(f"(N270g) the guard denies (N270{cid})'s merge by rule M7", dec == "deny" and "rule M7" in why, why)
+        h = s.verdict(next(verdicts), head)
+        s.push(pr)
+        rc, out = s.gate(pr, h)
+        case(f"(N270{cid}p) {label}, with a covering verdict it adds: GATE PASS, covered by",
+             rc == 0 and "GATE PASS" in out and "covered by" in out, out)
+        if guard:
+            dec, why = s.guard(pr, h)
+            case(f"(N270h) the guard allows (N270{cid})'s merge by rule M7 once its verdict is added",
+                 dec == "allow" and "rule M7" in why and "covered by" in why, why)
+
+    def normal(cid, label, *steps):
+        """A pull request made by steps, no verdict: GATE PASS, exit 0, class normal."""
+        pr = next(prs)
+        rc, out = s.gate(pr, s.planted(pr, *steps))
+        case(f"(N270{cid}) {label}, no verdict: GATE PASS, class normal",
+             rc == 0 and "GATE PASS" in out and "class normal" in out, out)
+
+    # Main also holds a made-up README beside the shared folder (merged in the fixture without the gate), so that a
+    # change to another file of tests/C02/W-C02-07/ can be planted.
+    s.branch("seed-w07")
+    s.write("tests/C02/W-C02-07/README.md", "# a fixture README of the test folder\n")
+    s.commit("a made-up README under tests/C02/W-C02-07/")
+    s.merge("seed-w07")
+    patterns = json.loads((s.d / pat).read_text(encoding="utf-8"))
+    patterns["n270_fixture_note"] = "a fixture change beside the token patterns, which stay as they are"
+    high("a", "tests/C02/W-C02-07/shared/: scan_patterns.json changed (a key added)", pat,
+         ("write", pat, json.dumps(patterns, indent=2) + "\n"))
+    high("b", "tests/C02/W-C02-07/shared/: token_format.md changed (a line appended)", fmt,
+         ("append", fmt, "A fixture line after the last section."))
+    p = f"{sh}/n270_fixture_note.md"
+    high("c", f"tests/C02/W-C02-07/shared/: a new file ({p})", p, ("write", p, "a fixture note\n"), guard=True)
+    high("d", "tests/C02/W-C02-07/shared/: scan_patterns.json deleted", pat, ("remove", pat))
+    high("e", "tests/C02/W-C02-07/shared/: token_format.md renamed out (to tests/C02/W-C02-07/token_format_old.md)",
+         fmt, ("move", fmt, "tests/C02/W-C02-07/token_format_old.md"))
+    high("f", "tests/C02/W-C02-07/shared/: the folder replaced by a symbolic link (to archive/w07-shared-old, where "
+              "its files moved)", pat, ("move", sh, "archive/w07-shared-old"),
+         ("link", sh, "../../../archive/w07-shared-old"))
+    normal("n1", "tests/C02/W-C02-07/README.md changed (another file of the test folder)",
+           ("append", "tests/C02/W-C02-07/README.md", "a fixture change"))
+    normal("n2", "a new file under tests/C02/W-C02-07/job/ (another folder of the test folder)",
+           ("write", "tests/C02/W-C02-07/job/n270_fixture_case.sql", "select 1;\n"))
+    normal("n3", "near miss tests/C02/W-C02-07/shared-old/scan_patterns.json (the folder's name without its boundary)",
+           ("write", "tests/C02/W-C02-07/shared-old/scan_patterns.json", "{}\n"))
+    normal("n4", "near miss tests/C02/W-C02-08/shared/scan_patterns.json (a folder named shared under another item)",
+           ("write", "tests/C02/W-C02-08/shared/scan_patterns.json", "{}\n"))
+    normal("n5", "near miss docs/tests/C02/W-C02-07/shared/token_format.md (the folder's path below another directory)",
+           ("write", "docs/tests/C02/W-C02-07/shared/token_format.md", "a fixture near miss\n"))
+
+
 def main():
     with tempfile.TemporaryDirectory() as tmp:
         s = Fixture(Path(tmp))
@@ -582,6 +675,7 @@ def main():
         case("(19b) a verdict the pull request adds for a commit already on main does not cover", rc == 1 and
              "is an ancestor of the merge base" in out, out)
         listed_paths(s)
+        shared_token_files(s)
     ok = bool(RESULTS) and all(RESULTS)
     print(f"MERGE_GATE_TEST {'PASS' if ok else 'FAIL'} ({sum(RESULTS)}/{len(RESULTS)})")
     return 0 if ok else 1
