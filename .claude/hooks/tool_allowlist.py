@@ -458,20 +458,27 @@ def redact(s):
 
 def summary(name, args, rule=None):
     """The call as logged and shown in a denial. Text that matches the library fingerprints or names a service
-    is never repeated there, nor is the call text of a leak denial (W-C00-14)."""
+    is never repeated there, nor is the call text of a leak denial (W-C00-14), nor a tool input that is not an
+    object, which G0 denies before any rule (L4 included) has read it (N-269). It never raises: a text it cannot
+    read is not shown, so that the denial built from it keeps its rule and the call keeps its log record (N-269)."""
     if rule in LEAK_WITHHELD:
         return f"[withheld: a {rule} denial does not repeat the call's text]"
-    if name == "Bash":
-        s = str(args.get("command", ""))
-    elif name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
-        s = str(args.get(FILE_WRITE_TOOLS.get(name) or FILE_READ_TOOLS.get(name)) or "")
-    else:
-        keep = {k: v for k, v in args.items() if k not in ("content", "files", "prompt", "message", "body",
-                                                             "new_string", "old_string", "script")}
-        s = json.dumps(keep, ensure_ascii=False, sort_keys=True)
-    if withheld(s):
-        return "[withheld: the call's text matches the library fingerprints or names a service]"
-    s = redact(s.replace("\n", " ⏎ "))
+    if not isinstance(args, dict):
+        return f"[not shown: the tool input is a {type(args).__name__} value, not an object]"
+    try:
+        if name == "Bash":
+            s = str(args.get("command", ""))
+        elif name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
+            s = str(args.get(FILE_WRITE_TOOLS.get(name) or FILE_READ_TOOLS.get(name)) or "")
+        else:
+            keep = {k: v for k, v in args.items() if k not in ("content", "files", "prompt", "message", "body",
+                                                                 "new_string", "old_string", "script")}
+            s = json.dumps(keep, ensure_ascii=False, sort_keys=True)
+        if withheld(s):
+            return "[withheld: the call's text matches the library fingerprints or names a service]"
+        s = redact(s.replace("\n", " ⏎ "))
+    except Exception as exc:   # never lose the denial's rule and the log record to the text shown (N-269)
+        return f"[not shown: the call's text could not be read ({type(exc).__name__})]"
     return s if len(s) <= 300 else s[:297] + "..."
 
 
@@ -2230,17 +2237,19 @@ def deny_text(data, rule, detail):
 
 
 def main():
-    data, event = {}, "PreToolUse"
+    data, event, unread = {}, "PreToolUse", "the hook input is not JSON"
     raw = sys.stdin.read()
     try:
         data = json.loads(raw)
     except ValueError:
         data = None
+    except RecursionError:   # nested deeper than the JSON reader reads: denied by G0 and logged like any other (N-269)
+        data, unread = None, "the hook input is nested deeper than the guard's JSON reader reads"
     if sys.argv[1:] == ["PermissionRequest"] or (isinstance(data, dict)
                                                  and data.get("hook_event_name") == "PermissionRequest"):
         event = "PermissionRequest"    # the command names its event, for input that cannot be read (N-173)
     if data is None:
-        decision, rule, detail = "deny", "G0", "the hook input is not JSON"
+        decision, rule, detail = "deny", "G0", unread
     else:
         DEADLINE[0] = time.monotonic() + CALL_BUDGET   # the decision's slow steps share one budget (W-C00-14)
         try:
