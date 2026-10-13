@@ -119,6 +119,7 @@ Then `pr_decide`'s own body runs with its `env:` filled through its wiring (each
 - **Scheduled run: derived, not observed.** The list used by D3, D4, D6 and E2 is derived from `migrate.yml`'s `if:` lines, put in the push run's order. Those lines are 76, 990, 2035 and 2711 at this branch's head: `check-devos-test` and `check-devos` run only on `schedule`, `devos-test` and `devos` only on `push`.
   - The first scheduled run of `migrate.yml` will observe it.
   - Until then, those four cases rest on that derivation.
+- **The order varies between runs: observed** (added 2026-10-13, CHK-C02-052 F-8; no case or expected result changed). Run 38319371450 listed `check-devos-test` before `check-devos`; runs 38328877217 and 38332726619 listed `check-devos` before `check-devos-test`. G2's cases replay one observed order, and the fix does not depend on the order (CHK-C02-052 F-5).
 
 **What is checked, and why.**
 - **The verdict** is `pr_decide`'s `verdict` output.
