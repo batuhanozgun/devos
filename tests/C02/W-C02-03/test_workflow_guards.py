@@ -5,14 +5,16 @@
 # repositories, the report lines, the log lines and the planted workflow text. Not made up, because the rules under test
 # name them: DevOS's workflow paths, job and step ids, the path supabase/migrations/, the report line's form (migrate.yml,
 # step `report`), deployment_drift's result kinds, and the job list's shape as GitHub gave it (the executor's observation
-# of 2026-10-13, run 38319371450 of migrate.yml; a skipped job's log answering 404, job 115043525608).
+# of 2026-10-13, run 38319371450 of migrate.yml; a skipped job's log answering 404, job 115043525608). The scheduled
+# run's job list is derived from migrate.yml's `if:` lines, not observed (SHAPES below).
 """test_workflow_guards.py: N-265's two guards; tests/C02/W-C02-03/T-W03-15_workflow_guards.md.
 
-G1 (W03_RUN_EXPR_TEST) READS every workflow file at the top of .github/workflows/ with PyYAML and refuses any
-   expression opener (a dollar sign, then two opening braces) in a step's `run:` value: GitHub evaluates it before the
-   runner receives the body, so the body that runs is not the text every offline check runs (CHK-C02-029 F-1). Its
-   break: copies of the folder with one opener planted, each of which must fail on that file, job and step; and
-   controls that must not (the opener outside `run:`, or split by a space).
+G1 (W03_RUN_EXPR_TEST) READS every workflow file at the top of .github/workflows/ (a .yml or .yaml suffix in any case)
+   with PyYAML's safe loader, refusing a key twice in one mapping, and refuses any expression opener (a dollar sign,
+   then two opening braces) in a step's `run:` value: GitHub evaluates it before the runner receives the body, so the
+   body that runs is not the text every offline check runs (CHK-C02-029 F-1). Its break: copies of the folder with one
+   opener planted, each of which must fail on that file, job and step; and controls that must not (the opener outside
+   `run:`, or split by a space). A file it could not check is copied as it is and never parsed again.
 G2 (W03_PR_INPUTS_TEST) RUNS step `pr_inputs`' own body, read from migration-checks.yml at the head, as a program in
    scratch git repositories against a stub of GitHub's REST API on 127.0.0.1, then feeds its outputs to `pr_decide`'s
    own body through pr_decide's `env:` wiring, and checks the verdict and the records' state per case: (a) quoted
@@ -28,6 +30,8 @@ Output: one line per case, copy and break ("ok", "BAD", "CNC" for could not chec
    test: W03_RUN_EXPR_TEST and W03_PR_INPUTS_TEST, each PASS, FAIL or COULD NOT CHECK. Exit 1 if either fails, else 3
    if either could not check, else 0. --self-check ends with W03_GUARDS_SELF_CHECK PASS (exit 0) or FAIL (exit 1).
 """
+import contextlib
+import io
 import json
 import os
 import re
@@ -78,10 +82,89 @@ def yaml_module():
         return None
 
 
+_STRICT = {}
+
+
+def strict_load(text):
+    """PyYAML's safe loader, refusing a mapping that holds one key twice (CHK-C02-049 F-2), either as written (the same
+    scalar text, quoted or not) or as PyYAML reads the keys (two texts it reads as one key, such as `on` and `yes`).
+    PyYAML would keep the last value, which could hide an opener in the first; GitHub is recalled to refuse such a file
+    (not verified here). Either way the file is could not check, never a pass. Keys merged in by `<<` are PyYAML's."""
+    yaml = yaml_module()
+    if not _STRICT:
+        class DuplicateKey(yaml.YAMLError):
+            pass
+
+        class StrictLoader(yaml.SafeLoader):
+            def get_single_data(self):
+                node = self.get_single_node()  # composed, not yet constructed: every mapping holds its keys as written
+                if node is None:
+                    return None
+                seen, stack = set(), [node]
+                while stack:
+                    n = stack.pop()
+                    if id(n) in seen:
+                        continue
+                    seen.add(id(n))
+                    if isinstance(n, yaml.MappingNode):
+                        written, read = {}, {}
+                        for k, val in n.value:
+                            stack += [k, val]
+                            if not isinstance(k, yaml.ScalarNode) or k.tag == "tag:yaml.org,2002:merge":
+                                continue
+                            line = k.start_mark.line + 1
+                            if k.value in written:
+                                raise DuplicateKey(f"the key {k.value!r} twice in one mapping, on lines "
+                                                   f"{written[k.value]} and {line}")
+                            written[k.value] = line
+                            try:
+                                key = self.construct_object(k)
+                                hash(key)
+                            except Exception:
+                                continue  # PyYAML refuses such a key itself, below
+                            if key in read:
+                                raise DuplicateKey(f"the keys {read[key][0]!r} (line {read[key][1]}) and {k.value!r} "
+                                                   f"(line {line}) in one mapping, which PyYAML reads as one key")
+                            read[key] = (k.value, line)
+                    elif isinstance(n, yaml.SequenceNode):
+                        stack += n.value
+                return self.construct_document(node)
+
+        _STRICT["loader"], _STRICT["duplicate"] = StrictLoader, DuplicateKey
+    return yaml.load(text, Loader=_STRICT["loader"])
+
+
+def load_error(exc):
+    """How a file that strict_load could not read is named: the exception's class, and for a duplicate key its place."""
+    if _STRICT and isinstance(exc, _STRICT["duplicate"]):
+        return f"{type(exc).__name__}: {exc}"
+    return type(exc).__name__
+
+
 # ==== G1: no expression opener in a run: value ======================================================================
 
 def step_label(s, i):
     return str(s.get("id") or s.get("name") or f"#{i + 1}")
+
+
+def workflow_files(folder):
+    """The top-level .yml and .yaml files of folder, the suffix in any case (CHK-C02-049 F-2: how GitHub treats `.YML`
+    is not verified here, and reading more is the safe side)."""
+    return sorted(p for p in folder.iterdir() if p.suffix.lower() in (".yml", ".yaml") and p.is_file())
+
+
+def read_workflow(p):
+    """(workflow, None) for a file G1 reads, or (None, could-not-check reason). g1_scan and g1_copies both read through
+    here, so the copies never parse a file again that the scan could not check (CHK-C02-049 C2)."""
+    rel = f"{WORKFLOWS}/{p.name}"
+    try:
+        wf = strict_load(p.read_text(encoding="utf-8"))
+    except Exception as exc:  # unreadable, not UTF-8, not YAML, or a key twice: could not check, never a pass
+        return None, f"{rel}: not readable as YAML ({load_error(exc)})"
+    jobs = wf.get("jobs") if isinstance(wf, dict) else None
+    if not isinstance(jobs, dict):
+        return None, f"{rel}: not a workflow this test reads (no mapping of jobs)"
+    return wf, None
 
 
 def g1_scan(folder):
@@ -91,21 +174,17 @@ def g1_scan(folder):
         return [], ["PyYAML is not installed"], 0, 0
     if not folder.is_dir():
         return [], [f"{WORKFLOWS} is absent"], 0, 0
-    paths = sorted(p for p in folder.iterdir() if p.suffix in (".yml", ".yaml") and p.is_file())
+    paths = workflow_files(folder)
     if not paths:
         return [], [f"{WORKFLOWS} holds no .yml or .yaml file"], 0, 0
     problems, cnc, runs = [], [], 0
     for p in paths:
         rel = f"{WORKFLOWS}/{p.name}"
-        try:
-            wf = yaml.safe_load(p.read_text(encoding="utf-8"))
-        except Exception as exc:  # unreadable, not UTF-8, or not YAML: could not check, never a pass
-            cnc.append(f"{rel}: not readable as YAML ({type(exc).__name__})")
+        wf, why = read_workflow(p)
+        if wf is None:
+            cnc.append(why)
             continue
-        jobs = wf.get("jobs") if isinstance(wf, dict) else None
-        if not isinstance(jobs, dict):
-            cnc.append(f"{rel}: not a workflow this test reads (no mapping of jobs)")
-            continue
+        jobs = wf["jobs"]
         for jid, job in jobs.items():
             if not isinstance(job, dict):
                 cnc.append(f"{rel}: job {jid} is not a mapping")
@@ -203,14 +282,39 @@ jobs:
       w03_fixture_input: OPEN github.sha }}
 """.replace("OPEN", OPEN)
 
+DUP_RUN = """name: w03-fixture-duplicate-run
+on:
+  pull_request:
+jobs:
+  w03-fixture-job:
+    runs-on: ubuntu-24.04
+    steps:
+      - id: w03_fixture_duplicate
+        run: echo "OPEN github.sha }}"
+        run: echo w03 fixture
+""".replace("OPEN", OPEN)
+
+DUP_READ = """name: w03-fixture-duplicate-read
+on:
+  pull_request:
+jobs:
+  on:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "OPEN github.sha }}"
+  yes:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo w03 fixture
+""".replace("OPEN", OPEN)
+
 
 def g1_copies(folder):
-    """The break and the controls on copies of the head's folder: (label, 'ok'|'BAD'|'CNC', detail)."""
-    yaml = yaml_module()
+    """The break and the controls on copies of the head's folder: (label, 'ok'|'BAD'|'CNC'|'n/a', detail)."""
     base_p, base_c, _, _ = g1_scan(folder)
     base = set(base_p)
     out = []
-    paths = sorted(p for p in folder.iterdir() if p.suffix in (".yml", ".yaml") and p.is_file())
+    paths = workflow_files(folder)
     with tempfile.TemporaryDirectory(prefix="w03g1-") as d:
         n = [0]
 
@@ -236,19 +340,27 @@ def g1_copies(folder):
                 out.append((label, "BAD", f"does NOT fail on {want!r} ({sorted(new) or 'it passes'})"))
 
         for p in paths:  # the break: one opener planted in a head file, in its last job's last run: value
-            wf = yaml.safe_load(p.read_text(encoding="utf-8"))
-            target = None
-            for jid, job in (wf.get("jobs") or {}).items() if isinstance(wf, dict) else []:
-                for i, s in enumerate((job or {}).get("steps") or [] if isinstance(job, dict) else []):
-                    if isinstance(s, dict) and isinstance(s.get("run"), str):
-                        target = (jid, i, s)
-            if target is None:
-                out.append((f"planted copy of {p.name}", "CNC", "no run: value to plant in"))
+            wf, _ = read_workflow(p)
+            if wf is None:  # g1_scan's could-not-check line names this file; it is copied as it is, never parsed again
+                out.append((f"planted copy of {p.name}", "n/a", "not made: the file could not be checked (above)"))
                 continue
-            jid, i, s = target
-            s["run"] = s["run"] + ("" if s["run"].endswith("\n") else "\n") + f'echo "w03 fixture {OPEN} github.event_name }}}}"\n'
-            dst = copy_folder()
-            (dst / p.name).write_text(dump_yaml(wf), encoding="utf-8")
+            try:
+                target = None
+                for jid, job in wf["jobs"].items():
+                    steps = job.get("steps") if isinstance(job, dict) else None
+                    for i, s in enumerate(steps if isinstance(steps, list) else []):
+                        if isinstance(s, dict) and isinstance(s.get("run"), str):
+                            target = (jid, i, s)
+                if target is None:
+                    out.append((f"planted copy of {p.name}", "CNC", "no run: value to plant in"))
+                    continue
+                jid, i, s = target
+                s["run"] = s["run"] + ("" if s["run"].endswith("\n") else "\n") + f'echo "w03 fixture {OPEN} github.event_name }}}}"\n'
+                dst = copy_folder()
+                (dst / p.name).write_text(dump_yaml(wf), encoding="utf-8")
+            except Exception as exc:  # a copy that cannot be made is could not check, never a pass
+                out.append((f"planted copy of {p.name}", "CNC", f"the copy could not be made ({type(exc).__name__})"))
+                continue
             judge(f"planted copy of {p.name} (job {jid}, step {step_label(s, i)}, a block scalar)", dst,
                   f"{WORKFLOWS}/{p.name}: job {jid} step {step_label(s, i)}:")
         for name, text, want in (
@@ -308,7 +420,9 @@ DISPLAY_AT_FROZEN = {"devos-test": "devos-test (apply, compare, test)", "devos":
 SHAPES = {  # "ran" is not a shape GitHub gives: (a) to (c) use it so that they do not depend on (d)'s rule
     "ran": (("devos-test", "success"), ("devos", "success")),
     "push": (("devos-test", "success"), ("check-devos-test", "skipped"), ("check-devos", "skipped"),
-             ("devos", "success")),
+             ("devos", "success")),  # observed: run 38319371450
+    # derived, not observed (CHK-C02-049 F-5): from migrate.yml's `if:` lines (the check jobs run only on schedule,
+    # devos-test and devos only on push), in the push run's order; the first scheduled run of migrate.yml observes it
     "schedule": (("devos-test", "skipped"), ("check-devos-test", "success"), ("check-devos", "success"),
                  ("devos", "skipped")),
 }
@@ -893,10 +1007,10 @@ def wiring_of(repo):
         if not (repo / rel).is_file():
             return None, f"{rel} is absent"
     try:
-        checks = yaml.safe_load((repo / CHECKS).read_text(encoding="utf-8"))
-        migrate = yaml.safe_load((repo / MIGRATE).read_text(encoding="utf-8"))
+        checks = strict_load((repo / CHECKS).read_text(encoding="utf-8"))
+        migrate = strict_load((repo / MIGRATE).read_text(encoding="utf-8"))
     except Exception as exc:
-        return None, f"a workflow does not parse ({type(exc).__name__})"
+        return None, f"a workflow does not parse ({load_error(exc)})"
     steps = {}
     for job in ((checks or {}).get("jobs") or {}).values():
         for s in (job or {}).get("steps") or []:
@@ -1069,6 +1183,38 @@ def self_check():
         results.append(("G1 break and controls on a clean synthetic folder",
                         all(tag == "ok" for _, tag, _ in planted) and len(planted) == 4,
                         "; ".join(f"{label}: {tag}" for label, tag, _ in planted)[:200]))
+        # g1() itself on a folder holding a file that parses and one it could not check (CHK-C02-049 C2): no exception,
+        # the final line COULD NOT CHECK, return 3
+        for kind, bad in (("not YAML", b"jobs: [w03 fixture\n"), ("not UTF-8", b"name: w03 fixture \xff\njobs: {}\n"),
+                          ("jobs: a list", b"name: w03-fixture\non: push\njobs: [1, 2]\n"),
+                          ("steps: not a list", b"name: w03-fixture\non: push\njobs:\n  j:\n    steps: 5\n")):
+            f = folder("g1mixed" + str(len(results)), {"a.yml": CONTROL})
+            (f / "b.yml").write_bytes(bad)
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf):
+                    rc = g1(f.parents[1], Tally("G1", quiet=True))
+                last = (buf.getvalue().strip().splitlines() or ["-"])[-1]
+                good = rc == 3 and last.startswith("W03_RUN_EXPR_TEST COULD NOT CHECK")
+                detail = f"returned {rc}: {last[:100]}"
+            except Exception as exc:
+                good, detail = False, f"g1 raised {type(exc).__name__}"
+            results.append((f"G1 g1() on a file that parses and one whose content is {kind}: could not check", good,
+                            detail))
+        # a key twice (CHK-C02-049 F-2): as written, PyYAML would keep the clean last value; as read, `on` and `yes`
+        # are one key to PyYAML; both could not check, naming the file
+        for label, text in (("G1 a step holding run: twice, the first with an opener: could not check", DUP_RUN),
+                            ("G1 job ids `on` and `yes` (one key to PyYAML), the first with an opener: could not check",
+                             DUP_READ)):
+            p, c, _, _ = g1_scan(folder("g1dup" + str(len(results)), {"a.yml": CONTROL, "w03-fixture-dup.yml": text}))
+            good = (not p and len(c) == 1 and c[0].startswith(f"{WORKFLOWS}/w03-fixture-dup.yml: ")
+                    and "DuplicateKey" in c[0])
+            results.append((label, good, (p or c or ["pass"])[0][:110]))
+        # the suffix in any case (CHK-C02-049 F-2): an opener in .YML and .Yaml files is refused, naming each
+        p, c, _, _ = g1_scan(folder("g1case", {"A.YML": PLANT_BLOCK, "b.Yaml": PLANT_ESCAPED}))
+        results.append(("G1 openers in files named .YML and .Yaml: fail on both", not c and len(p) == 2 and
+                        p[0].startswith(f"{WORKFLOWS}/A.YML: ") and p[1].startswith(f"{WORKFLOWS}/b.Yaml: "),
+                        "; ".join(x[:60] for x in p + c) or "pass"))
         # G2
         if yaml is None:
             results.append(("G2", False, "PyYAML is not installed"))

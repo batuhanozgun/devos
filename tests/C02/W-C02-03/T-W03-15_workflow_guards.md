@@ -19,9 +19,27 @@
 - **G2's breaks on `main`:** BRK-a, BRK-b, BRK-c1 and BRK-c2 are shown (each turns its own cases red). BRK-d and BRK-e are "not shown", because the head already fails D2, D4, E1 and E2.
 - **Combined.** `test_workflow_order.py` therefore exits 1 on this branch, and so does its pull-request check. That red is expected and stated here.
 
+## Reading the pull-request check until `main`'s `pr_inputs` is fixed (CHK-C02-049 C1)
+
+- **(a) The red window.** From this test's merge until W-C02-03's fix of `pr_inputs` merges, every pull request's `migration-checks` job is red at step `w03_tests`, with `W03_PR_INPUTS_TEST FAIL (6 of 21 cases red: D1, D2, D3, D4, E1, E2; …)`. That is the known fault in `main`'s `pr_inputs` (above), not a finding about the pull request. In that window the job's conclusion says nothing about the pull request. A reader reads instead:
+  - `pr_decide`'s `pr check: <verdict>: <reason>` line, which gives the pull request's migration verdict. A real fail there no longer shows in the job's conclusion, because the job is red anyway;
+  - each test's own final line in `w03_tests`: `W03_DECISION_TEST`, `W03_ORDER_TEST`, `W03_RUN_EXPR_TEST` and `W03_PR_INPUTS_TEST`. Only `W03_PR_INPUTS_TEST`'s FAIL on exactly D1, D2, D3, D4, E1 and E2 is the known fault. Any other result is read as on any other day. That includes another case red, a break BAD, or a could not check.
+  - On the pull request that changes `pr_inputs`, G2 runs that pull request's own body, so its line is that change's result.
+  - The window ends when that change merges. From then on the job's conclusion counts again.
+- **(b) The echo line.** `w03_tests` prints `W-C02-03 tests: decision steps exit A, workflow order exit B`. B is `test_workflow_order.py`'s exit code. Since this test's merge, that code is the worse of the T-W03-14 and T-W03-15 results (1 over 3 over 0), not T-W03-14's alone.
+  - T-W03-14's own result is its `W03_ORDER_TEST` line. T-W03-15's results are its two lines.
+  - The label lives in `migration-checks.yml`, so it changes only with the next change of that workflow. This test makes no workflow change.
+- **(c) BRK-d and BRK-e.** On `main`'s body both are "not shown", because the head already fails their targets: D2 and D4 for BRK-d, E1 and E2 for BRK-e.
+  - They are shown for the first time on the first head whose body passes D2, D4, E1 and E2. A head that passes only some of them shows BRK-d once it passes D2 or D4, and BRK-e once it passes E1 or E2, but G2 still fails on the rest.
+  - Until then, the only evidence that they turn a correct body red is scratch runs outside this test (CHK-C02-049 F-8), not this test's run.
+  - No `W03_PR_INPUTS_TEST PASS` line can appear while a break is not shown. A break is "not shown" only when one of its target cases is red, or could not check, on the head itself. That makes G2 FAIL or COULD NOT CHECK. So a PASS line always reads "breaks: 6 shown, 0 not shown, of 6".
+
 ## Guard 1 (`W03_RUN_EXPR_TEST`)
 
-**The rule.** In every `.yml` and `.yaml` file at the top of `.github/workflows/` (GitHub reads no subfolder), for every job and every step: a `run:` value, as YAML parses it, holds no expression opener (a dollar sign followed by two opening braces). A value that holds one is a FAIL naming the file, job and step, with the count and the first line.
+**The rule.** In every `.yml` and `.yaml` file at the top of `.github/workflows/`, for every job and every step: a `run:` value, as YAML parses it, holds no expression opener (a dollar sign followed by two opening braces). A value that holds one is a FAIL naming the file, job and step, with the count and the first line.
+- GitHub reads no subfolder.
+- The suffix is read in any case, so `.YML` and `.Yaml` files are read too (CHK-C02-049 F-2). Whether GitHub runs such a file is not verified here, and reading more is the safe side.
+- Each file is read once, with PyYAML's safe loader, which here also refuses a key written twice in one mapping (under "Could not check").
 
 **What counts, and why** (asked of this test):
 - **A multi-line block scalar counts.** The rule reads the parsed value, so every line of a `|` or `>` block counts, heredocs included. That is where the class arose: the opener sat in Python string literals inside a `run: |` body (EV-C02-007 12.1).
@@ -30,9 +48,17 @@
 - **`defaults.run` (workflow or job) does not count.** Its values are the `shell` and `working-directory` settings, not a body. GitHub reads expressions there by design, and the offline runs never execute them as script. Neither file uses `defaults`. Stated under "Not covered".
 - **Places where expressions are meant are not refused.** These are `if:`, `env:`, `with:`, `name:`, job `outputs:`, `concurrency:`, and the inputs of a job that calls a reusable workflow. The rule is the step's `run:` only.
 
-**Could not check:** the folder is absent or holds no `.yml` or `.yaml` file; a file is unreadable, not UTF-8 or not YAML; a file has no mapping of jobs; a job or step is not a mapping, or its steps are not a list; a `run:` value is a list or a mapping. None of these is ever a pass.
+**Could not check:** None of these is ever a pass.
+- the folder is absent or holds no `.yml` or `.yaml` file;
+- a file is unreadable, not UTF-8 or not YAML;
+- a file holds one key twice in one mapping, naming the file and the lines (CHK-C02-049 F-2). This covers a key written twice (quoted or not), and two keys PyYAML reads as one, such as the job ids `on` and `yes`, which both read as true. PyYAML would keep the last value, which can hide an opener in the first. GitHub is recalled to refuse such a file, which is not verified here; either way the file is not a pass.
+- a file has no mapping of jobs;
+- a job or step is not a mapping, or its steps are not a list;
+- a `run:` value is a list or a mapping.
 
-**Break (run on every run, on copies of the head's folder).** Each break must fail on its own file, job and step, and nothing else may change:
+A file that could not be checked does not stop the rest (CHK-C02-049 C2). The other files are still read, and their copies are still made. G1 ends `W03_RUN_EXPR_TEST COULD NOT CHECK`, unless a value fails, and G2 still runs and prints its final line. The program then exits 3, or 1 if anything fails.
+
+**Break (run on every run, on copies of the head's folder).** Each break must fail on its own file, job and step, and nothing else may change. Copies are made only from files G1 read. A file it could not check is copied as it is, never parsed again, and its line reads "n/a … not made". A copy that cannot be made is could not check.
 - for each workflow file at the head, a copy whose last job's last `run:` value gains one line with the opener, re-written as a block scalar;
 - a planted file whose one-line `run:` writes the opener as a YAML escape;
 - a planted file whose block `run:` holds the opener inside a Python heredoc.
@@ -80,13 +106,19 @@ Then `pr_decide`'s own body runs with its `env:` filled through its wiring (each
 | **(d) the job list as GitHub gives it** | | | |
 | D1 | push run: `devos-test` success, `check-devos-test` skipped, `check-devos` skipped, `devos` success, in that order, each `status: completed` | C1's addition | as C1 |
 | D2 | push run | C2's removal | as C2 |
-| D3 | scheduled run: `devos-test` skipped, `check-devos-test` success, `check-devos` success, `devos` skipped | C1's addition | as C1 |
+| D3 | scheduled run (derived, not observed; below the table): `devos-test` skipped, `check-devos-test` success, `check-devos` success, `devos` skipped | C1's addition | as C1 |
 | D4 | scheduled run | C2's removal | as C2 |
 | D5 (negative control) | push run | a migration applied in both modified | fail |
 | D6 (negative control) | scheduled run | the same | fail |
 | **(e) a ran job's log answers 404** | | | |
 | E1 | push run; `devos-test`'s own log answers 404 | C2's removal | fail. The state reads `devos-test` "could not check", and reads `devos` from its job, naming `…08` |
 | E2 | scheduled run; `check-devos`'s own log answers 404 | C2's removal | fail. The state reads `devos` "could not check", and reads `devos-test` from its job, naming `…08` |
+
+**The two job lists are not equally grounded** (CHK-C02-049 F-5).
+- **Push run: observed.** The list used by D1, D2, D5 and E1 is GitHub's own, observed in run 38319371450.
+- **Scheduled run: derived, not observed.** The list used by D3, D4, D6 and E2 is derived from `migrate.yml`'s `if:` lines, put in the push run's order. Those lines are 76, 990, 2035 and 2711 at this branch's head: `check-devos-test` and `check-devos` run only on `schedule`, `devos-test` and `devos` only on `push`.
+  - The first scheduled run of `migrate.yml` will observe it.
+  - Until then, those four cases rest on that derivation.
 
 **What is checked, and why.**
 - **The verdict** is `pr_decide`'s `verdict` output.
@@ -111,7 +143,10 @@ Then `pr_decide`'s own body runs with its `env:` filled through its wiring (each
   - the control file passes;
   - the heredoc and escape plants fail;
   - a file that is not YAML, a `run:` that is a list, and a missing folder each give "could not check";
-  - the break and the control on a clean synthetic folder behave as above.
+  - the break and the control on a clean synthetic folder behave as above;
+  - `g1()` itself on a folder holding the control file and one file it could not check gives `W03_RUN_EXPR_TEST COULD NOT CHECK` and returns 3, with no exception (CHK-C02-049 C2). This is run four times, once for each kind of file: not YAML, not UTF-8, `jobs:` a list, `steps:` not a list;
+  - a step holding `run:` twice, the first with an opener, gives "could not check" naming the file. So do the job ids `on` and `yes` (one key to PyYAML) with the opener in the first. With PyYAML's plain reading, both would pass;
+  - openers in files named `.YML` and `.Yaml` fail on both files.
 - **G2**, with the frozen `pr_decide` of `d33c8e9`:
   - the frozen `pr_inputs` of `d33c8e9`, a known-faulty body of class (d) and (e), gives (a), (b), (c), D5 and D6 green, and D1 to D4, E1 and E2 red;
   - a body that always writes no change and no report gives (a), (b) and (c) red;
@@ -131,14 +166,14 @@ Then `pr_decide`'s own body runs with its `env:` filled through its wiring (each
 | **Break attempt** | G1: the planted copies (above). Each must fail on its own file, job and step, and the control must not.<br>G2: BRK-a to BRK-e (above), run on the head's body on every run. Each must turn its own cases red and leave the cases it cannot touch as they were. |
 | **Stage and environment** | C02, from N-265's merge on.<br>• On every pull request, in `migration-checks`' step `w03_tests` (through `test_workflow_order.py`), on GitHub's `ubuntu-24.04` runner.<br>• Anywhere with Python 3, PyYAML and git ≥ 2.32, with loopback networking.<br>• No credential, no database, no request to GitHub. |
 | **Independence level** | Written by the test designer (a fresh-context subagent of the working session) before the results it judges. Run by the pull-request check, by the producer of the change that next touches `pr_inputs` (H1), and again by its fresh-context checker, who reads the raw output.<br>Shared: model lineage and the design record. The expected results above were stated by the executor (decision 4) and by this test's designer from reading `main`'s code, before any run. |
-| **Evidence layer** | G1: structural (the files' text as parsed). It shows the rule holds for what PyYAML reads. That GitHub's own parser reads the same is EV-C02-007 12.2's observation (0 differences), not this test's.<br>G2: behavioural, offline. It shows what `pr_inputs`' body does with git's real output and with a stub shaped like GitHub's answers as observed. What GitHub's API answers on a later day is live only. |
+| **Evidence layer** | G1: structural (the files' text as parsed). It shows the rule holds for what PyYAML reads. That GitHub's own parser reads the same is EV-C02-007 12.2's observation (0 differences), not this test's.<br>G2: behavioural, offline. It shows what `pr_inputs`' body does with git's real output and with a stub shaped like GitHub's answers as observed. The scheduled run's job list is derived (under the case table). What GitHub's API answers on a later day is live only. |
 | **Evidence envelope** | As in the README.<br>• `target_commit`: the head the check ran on (the pull request's merge commit).<br>• `deployment_config_ref`: `migration-checks.yml`'s and `migrate.yml`'s blob SHAs at that commit.<br>• `criterion_version`: the commit that merged this file and `test_workflow_guards.py`, which must precede `target_commit`.<br>• `inputs_ref`: case and break ids.<br>• `observations_ref`: the check's run and job ids and its `w03_tests` log lines.<br>• `raw_evidence_ref`: the full output. |
 
 ## Could not check
 
 - G1: as listed under Guard 1.
 - G2:
-  - `migration-checks.yml` or `migrate.yml` absent or unparsable;
+  - `migration-checks.yml` or `migrate.yml` absent or unparsable (a key twice in one mapping included, as G1 reads it);
   - no step `pr_inputs` or `pr_decide`;
   - a body that is neither `shell: python` nor a one-line `python3 [-I] <class-high file>`;
   - a body holding an opener;
@@ -163,6 +198,8 @@ Then `pr_decide`'s own body runs with its `env:` filled through its wiring (each
 - **`migrate.yml`'s steps.** They run only live: they need the projects and their credentials (T-W03-05 to T-W03-14). G1 reads their `run:` values. G2 stubs their report lines in the form step `report` prints, not their content.
 - **`pr_decide`'s own rules.** These are T-W03-DEC's (`test_decision_steps.py`). G2 runs `pr_decide` only to turn `pr_inputs`' outputs into the verdict and state a reader sees.
 - **GitHub's own reading of the files.** G1 is PyYAML's reading. A pinned copy of GitHub's parser (N-265's alternative) was not chosen, because the runner has none and adding one is a workflow change. Constructs where GitHub's reading differs beyond the opener (EV-C02-007 12.2) are not re-checked here.
+  - Not verified offline (CHK-C02-049 F-2): whether GitHub refuses a key twice, whether it runs a `.YML` file, and how it treats merge keys (`<<`). G1 takes the safe side of the first two: it gives "could not check" for a key twice, and it reads the file.
+  - A value merged in by `<<` and then overridden in the same mapping is read as PyYAML reads it.
 - **Expressions outside `run:`.** These are `defaults.run`'s `shell` and `working-directory`, an action's script input (for example `actions/github-script`'s `script:` through `with:`), and composite actions' `run:` outside `.github/workflows/`. They are not refused. None exists in the repository at `d33c8e9`. A future one is the class-high review's.
 - **The API's live answers.** Status codes, redirects, pagination beyond one page, rate limits, and whether the token is accepted are GitHub's on the day (the pull request's own check log shows them). The stub does not check the `Authorization` header, nor that it is withheld on the redirect.
 - **Runs at another commit.** The stub serves one completed run at `main`'s head. A body that ignores `head_sha` would read it too, and `pr_decide`'s commit check (T-W03-DEC P09) is the guard there.
