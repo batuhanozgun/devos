@@ -15,7 +15,9 @@ Run, from the repository root (python3 -I; standard library only):
       line)
   ... --rows-file F   rows already read, one path per line
   ... --self-test     its own could-not-check cases (point 6)
-With no input, no psql or no libpq settings it gives COULD NOT CHECK. It takes no publishable key and no token. Last line:
+The same bytes also run staged, as tests/C02/W-C02-07/job/w07_dm47_merge_gate_list.py (the harness's run); either way
+the repository root is the folder that holds that folder path, whatever the working directory (CHK-C02-046 C2).
+With no input, no psql or no libpq settings, or in neither folder without --repo, it gives COULD NOT CHECK. It takes no publishable key and no token. Last line:
 W07_DM47_MERGE_GATE_LIST PASS (n/n), FAIL (...) or COULD NOT CHECK (...) (README section 3); exit 0, 1 or 3.
 The gate's high paths beyond plan 6.7's list are printed as notes, never a failure (the executor's decision on Group
 C's open 1).
@@ -32,7 +34,21 @@ import sys
 import tempfile
 
 sys.dont_write_bytecode = True
-REPO = pathlib.Path(__file__).resolve().parents[3]
+# The repository root, found from this file's own folder (CHK-C02-046 C2). The same bytes run from two places (README
+# 5.1 (c)): staged, at tests/C02/W-C02-07/job/ (the harness's run), and as the build item's copy, at
+# supabase/migrations/tests/ (the migration job's run). The root is the folder above whichever of the two this is; in
+# any other place there is none, and with no --repo the program gives COULD NOT CHECK rather than read another tree.
+LOCATIONS = (("tests", "C02", "W-C02-07", "job"), ("supabase", "migrations", "tests"))
+
+
+def find_repo(here):
+    for tail in LOCATIONS:
+        if len(here.parts) > len(tail) and tuple(here.parts[-len(tail):]) == tail:
+            return here.parents[len(tail) - 1]
+    return None
+
+
+REPO = find_repo(pathlib.Path(__file__).resolve().parent)
 PLAN = "plan/DevOS_Kurulum_Plani.md"
 NULL = "<w07-null-row>"
 QUERY = ("select case when path is null then '" + NULL + "' else path::text end "
@@ -189,7 +205,7 @@ SYN_PLAN = NL.join(["# W07 synthetic plan", "", "### 6.7 Trust boundaries", "",
 SYN_ROWS = ["CLAUDE.md", ".claude/", "w07_fixture/"]
 
 
-def self_test():
+def self_test(repo):
     """Point 6: missing, unreadable and partial inputs give could not check, apart from clean and from fail."""
     def run(name, want, plan_text, rows, plan_as_dir=False):
         with tempfile.TemporaryDirectory(prefix="w07_dm47_") as d:
@@ -200,7 +216,7 @@ def self_test():
             elif plan_text is not None:
                 (root / PLAN).write_text(plan_text, encoding="utf-8")
             (root / "tools").mkdir()
-            shutil.copy(REPO / "tools" / "merge_gate.py", root / "tools" / "merge_gate.py")
+            shutil.copy(repo / "tools" / "merge_gate.py", root / "tools" / "merge_gate.py")
 
             def get_rows():
                 if isinstance(rows, Exception):
@@ -244,10 +260,17 @@ def main(argv=None):
     src.add_argument("--psql", action="store_true", help="read the table with psql in the step's libpq environment (the default)")
     src.add_argument("--rows-file", help="read the table's rows from a file, one path per line")
     src.add_argument("--self-test", action="store_true", help="run the could-not-check self-test")
-    ap.add_argument("--repo", default=str(REPO), help="the repository root (default: this file's repository)")
+    ap.add_argument("--repo", default=None if REPO is None else str(REPO),
+                    help="the repository root (default: the folder above this file's tests/C02/W-C02-07/job/ or "
+                         "supabase/migrations/tests/)")
     a = ap.parse_args(argv)
+    if a.repo is None:
+        print("DM47-repo | could_not_check | this file is neither at tests/C02/W-C02-07/job/ nor at "
+              "supabase/migrations/tests/, and no --repo was given: the repository root is unknown")
+        print("W07_DM47_MERGE_GATE_LIST COULD NOT CHECK (1 of 1 could not be checked)")
+        return 3
     if a.self_test:
-        return self_test()
+        return self_test(pathlib.Path(a.repo))
     if a.rows_file:
         def get_rows():
             return rows_file(a.rows_file)

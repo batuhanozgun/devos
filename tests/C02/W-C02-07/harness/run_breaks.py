@@ -232,7 +232,7 @@ def parse_patch(path, repo, w03_dir):
         raise Refused(f"{path}: the first line is not a w07-break header")
     # A bare name is a staged file of tests/C02/W-C02-07/job/, else a file of supabase/migrations/tests/ (README
     # sections 1 and 5.1 (c)), else the canary's own file; a path is from the repository root.
-    # A path to a W-C02-07 file under supabase/migrations/tests/ (twelve patches name their file so, from before the
+    # A path to a W-C02-07 file under supabase/migrations/tests/ (thirteen patches name their file so, from before the
     # staging) means the staged file: the copy there is byte for byte the staged one, or not yet made.
     def resolve(t):
         if t.startswith(JOB_DIR + "/w07_") and t.count("/") == JOB_DIR.count("/") + 1:

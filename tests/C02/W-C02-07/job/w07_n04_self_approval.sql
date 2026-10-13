@@ -5,8 +5,9 @@
 -- T-W07-N04: N04's C02 part (Appendix C line 121 as PC-43 place 9 writes it): a binding verdict or an acceptance with
 -- the working token is refused, and so are a fake role name and a fake session ID with the same token; with the
 -- devos_kurulum token, a verdict or acceptance outside the ledger transfer's path and any approval a rule counts as the
--- audit environment's are refused too; the audit environment's record is accepted. Part T (the transfer's copy) is
--- W-C02-14's and is reported on its own line. Specification: tests/C02/W-C02-07/T-W07-N04_self_approval.md.
+-- audit environment's are refused too; the audit environment's record is accepted. Part T (the transfer's copy:
+-- N04-T1, N04-T2, N04-T2-pos) is inside this file's result and is counted by W-C02-10 point 7 (phase C5; CHK-C02-046
+-- C5 (b)). Specification: tests/C02/W-C02-07/T-W07-N04_self_approval.md.
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',

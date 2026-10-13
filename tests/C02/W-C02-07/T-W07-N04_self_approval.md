@@ -97,7 +97,7 @@ Not a format-gate test.
 
 On 2026-10-12, on PostgreSQL 16.15, with the scratch stand-in:
 - without the build: COULD NOT CHECK;
-- with the stand-in: PASS (18/18), and part T's line printed;
+- with the stand-in: PASS (18/18), and part T's line printed (part T then had a line of its own; since phase C5 it is inside the file's result, and no file prints a separate part line: CHK-C02-046 C5 (b));
 - B-5B-1 and B-N04-1 turned exactly their listed cases red.
 
 ## Not covered

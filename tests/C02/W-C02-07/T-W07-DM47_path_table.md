@@ -49,7 +49,7 @@ Self-test (point 6), each with its wanted answer: `DM47-st-control` clean; `DM47
 | Point 6: the comparison with missing, unreadable and partial input | `DM47-st-*` | — |
 
 ## Could not check
-COULD NOT CHECK when the table is absent (`DM47-pre`), the plan file or its bullet cannot be read, the rows cannot be read (`psql` absent or failing, no rows source given), a row has no path, or `tools/merge_gate.py` cannot be loaded. An empty table is a readable difference: FAIL, not "could not check".
+COULD NOT CHECK when the table is absent (`DM47-pre`), the plan file or its bullet cannot be read, the rows cannot be read (`psql` absent or failing, no rows source given), a row has no path, or `tools/merge_gate.py` cannot be loaded. The program finds the repository root from its own folder, so the same bytes work staged (`tests/C02/W-C02-07/job/`, the harness's run) and as the copy (`supabase/migrations/tests/`, the job's run) (CHK-C02-046 C2). In any other folder, with no `--repo`, it gives COULD NOT CHECK (`DM47-repo`) rather than read another tree. An empty table is a readable difference: FAIL, not "could not check".
 
 ## Not covered
 Whether 6.7's list is the right list (a plan question); `.github/CODEOWNERS`' content (C03); `devos` (its copy is compared when the job's `devos` step runs the same program, which W-C02-03's job does not do: README 5.1 "What it cannot show").
