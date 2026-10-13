@@ -1183,6 +1183,7 @@ for bad in session_FOREIGN session_PARENTX session_AMBIG5 session_AMBIG6 session
   grep -qx "$bad" "$rd/owned_ids.txt" && { echo "BAD  recorder recorded $bad"; fail=1; } || echo "ok   recorder ignores $bad"
 done
 if [ "$r1" = "0" ] && grep -qx session_TESTREC123 "$rd/owned_ids.txt" && grep -qx trig_TESTREC456 "$rd/owned_ids.txt" && ! grep -q SHOULDNOT "$rd/owned_ids.txt" && ! grep -q session_PARENT "$rd/owned_ids.txt"; then echo "ok   recorder appends created IDs only"; else echo "BAD  recorder"; fail=1; fi
+python3 tools/test_token_stop.py "$hook" || fail=1   # W-C02-20: the stop of both token formats (tests/C02/W-C02-20/README.md)
 rm -rf "$rd" "$DEVOS_GUARD_LOG_DIR" "$lkroot"
 [ $fail -eq 0 ] && echo "ALLOWLIST_TEST PASS" || echo "ALLOWLIST_TEST FAIL"
 exit $fail
