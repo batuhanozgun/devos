@@ -1842,31 +1842,41 @@ def leak_tool_checks(tool, args):
 # EV-C02-003 sections 1.6 and 1.7; plan 6.7's network row. The finder patterns are read from W-C02-07's shared files in
 # this guard's own checkout at every call (no copy is kept here), and applied to the raw input: every string at any
 # depth, object keys included, of the decoded hook input, before redact() or summary() masks anything (token_format.md
-# section 6: REDACT can mask a string of either format). The denial withholds the call's text (LEAK_WITHHELD).
+# section 6: REDACT can mask a string of either format). The denial withholds the call's text (LEAK_WITHHELD). The two
+# files agree only when each finder of scan_patterns.json equals the code span of its own row in section 3's Finder
+# table; an edit of both alike is followed (EV-C02-010 sections A.3 and A.8; note N-270).
 
 TOKEN_FILES = os.path.join(ROOT, "tests", "C02", "W-C02-07", "shared")
-TOKEN_FINDERS = {"env_token_find": "environment token's", "claim_token_find": "claim token's"}
+TOKEN_FINDERS = {"env_token_find": ("environment token's", "Environment token"),   # key: (format, its Finder row)
+                 "claim_token_find": ("claim token's", "Claim token")}
 
 
 def token_finders():
-    """[(format, compiled finder)] from scan_patterns.json, each also written in token_format.md section 3; Bad(L4,
-    "could not check ...") when a file is missing, unreadable or incomplete, a pattern is missing or does not compile,
-    or the two files disagree (plan Section 8 item 14: never an allow)."""
+    """[(format, compiled finder)] from scan_patterns.json, each equal to the code span of its own row in the Finder
+    table of token_format.md section 3 (CHK-C02-056 C1); Bad(L4, "could not check ...") when a file is missing,
+    unreadable or incomplete, a pattern is missing or does not compile, the two files disagree, or any other error is
+    raised while they are read or checked, a RecursionError from a deeply nested file among them (plan Section 8 item
+    14: never an allow, and never a guard error, whose text and log are not withheld)."""
     try:
         with open(os.path.join(TOKEN_FILES, "scan_patterns.json"), encoding="utf-8") as f:
             pats = json.load(f)["token_patterns"]
         with open(os.path.join(TOKEN_FILES, "token_format.md"), encoding="utf-8") as f:
             sec3 = re.search(r"^## 3\..*?(?=^## 4\.)", f.read(), re.S | re.M)
-        if not isinstance(pats, dict) or not sec3:
-            raise ValueError("no token_patterns object in scan_patterns.json, or no section 3 in token_format.md")
+        # the Finder table: the run of table lines that first follows section 3's paragraph opening "**Finder"
+        table = re.findall(r"^\*\*Finder\b.*\n(?:(?!\|).*\n)*?((?:\|.*\n?)+)", sec3.group(0), re.M) if sec3 else []
+        if not isinstance(pats, dict) or len(table) != 1:
+            raise ValueError("no token_patterns object in scan_patterns.json, or no section 3 with one Finder table in "
+                             "token_format.md")
         out = []
-        for key, what in TOKEN_FINDERS.items():
-            p = pats[key]
-            if not isinstance(p, str) or "`" + p + "`" not in sec3.group(0):
-                raise ValueError(f"{key} of scan_patterns.json is not in token_format.md section 3: the files disagree")
-            out.append((what, re.compile(p)))
+        for key, (what, row) in TOKEN_FINDERS.items():
+            spans = re.findall(r"^\|[ \t]*" + re.escape(row) + r"[ \t]*\|[ \t]*`([^`\n]+)`[ \t]*\|[ \t]*$", table[0],
+                               re.M)
+            if len(spans) != 1 or pats[key] != spans[0]:
+                raise ValueError(f"{key} of scan_patterns.json is not the code span of the {row} row of "
+                                 "token_format.md section 3's Finder table: the files disagree")
+            out.append((what, re.compile(spans[0])))
         return out
-    except (OSError, ValueError, KeyError, TypeError, re.error) as exc:
+    except Exception as exc:   # any error while the files are read or checked, RecursionError included (CHK-C02-056 C1)
         raise Bad("L4", f"could not check: the token formats cannot be read from {TOKEN_FILES} ({type(exc).__name__}: "
                         f"{exc}); every call this rule reads is denied until scan_patterns.json and token_format.md "
                         "section 3 are whole and agree")
