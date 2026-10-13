@@ -1,0 +1,238 @@
+# W-C02-03's rehearsal for revision H1-prime (plan/decisions/FR-07.md item 1; evidence/C02/EV-C02-007_migration_path_build.md
+# section 15.15). Never merged: it runs only on a push to the branch claude/w03-rehearsal, which the executor bases on
+# H1-prime's final head after the plants exist. It names no environment and holds no secret. It is exploratory and is
+# never T-W03-09's result.
+# - search: migrate.yml's own search step (job check-devos-test, step id search), read from this commit with PyYAML and
+#   run unchanged, with migrate.yml's W03_PLANT_B64 and W03_FIXTURE_ISSUE and this job's token. With no credential, the
+#   credential's line reads "could not check"; the plant is counted in every place.
+# - fixture: main's migration, the fixture and every file of supabase/migrations/tests/ on PostgreSQL 17 (a service
+#   container, pinned by digest), with Supabase's roles and tables stubbed as CHK-C02-044 F4 did; the tests are run by
+#   migrate.yml's own dbtests step (job devos-test), read and run the same way.
+name: w03-rehearsal
+
+on:
+  push:
+    branches: [claude/w03-rehearsal]
+
+permissions: {}
+
+jobs:
+  search:
+    name: search (migrate.yml's search step, unchanged; no credential)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+    steps:
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, the commit migrate.yml pins
+        with:
+          persist-credentials: false
+      - id: run_step
+        name: "run migrate.yml's check-devos-test step search, its body unchanged"
+        env:
+          W03R_JOB: check-devos-test
+          W03R_STEP: search
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          # Runs one step of migrate.yml as GitHub runs it, its body unchanged (FR-07 item 1; EV-C02-007 section 15.15). The
+          # body is read with PyYAML from this commit's .github/workflows/migrate.yml by job and step id, written to a file
+          # and run with the command GitHub uses for its shell. Its environment is this step's, plus each workflow-level
+          # and job-level env entry of migrate.yml whose name the body names. A step-level env entry of migrate.yml that
+          # holds an expression is not evaluated: one that names a secret is withheld (this workflow holds none); any
+          # other comes from this job, if this job sets it. Names and counts are printed, never a value.
+          import hashlib, os, re, subprocess, sys
+          import yaml
+
+          sys.stdout.reconfigure(line_buffering=True)
+          EXPR = "$" + "{{"  # written in two parts, so that this body holds no expression marker itself
+          job, step_id = os.environ["W03R_JOB"], os.environ["W03R_STEP"]
+          with open(".github/workflows/migrate.yml", encoding="utf-8") as f:
+              wf = yaml.safe_load(f)
+          jobdef = (wf.get("jobs") or {}).get(job) or {}
+          found = [s for s in jobdef.get("steps") or [] if isinstance(s, dict) and s.get("id") == step_id]
+          if len(found) != 1:
+              print(f"rehearsal: could not check: migrate.yml's job {job} has {len(found)} steps with id {step_id}")
+              raise SystemExit(1)
+          step = found[0]
+          run, shell = step.get("run"), step.get("shell")
+          cmd = {"python": [sys.executable], "bash": ["bash", "--noprofile", "--norc", "-eo", "pipefail"]}.get(shell)
+          if not isinstance(run, str) or cmd is None or EXPR in run:
+              print(f"rehearsal: could not check: step {step_id} is not a run body, in shell python or bash, free of "
+                    "expressions")
+              raise SystemExit(1)
+          digest = hashlib.sha256((run + "|" + shell).encode()).hexdigest()[:12]
+          print(f"rehearsal: migrate.yml at {os.environ.get('GITHUB_SHA', '?')}, job {job}, step {step_id}: shell {shell}, "
+                f"{len(run.splitlines())} lines, SHA-256 of run|shell {digest}; run as: {' '.join(cmd)} FILE")
+          env = {k: v for k, v in os.environ.items() if k not in ("W03R_JOB", "W03R_STEP")}
+          for scope, block in (("workflow", wf.get("env") or {}), ("job", jobdef.get("env") or {})):
+              for k, v in block.items():
+                  if re.search(r"(?<![A-Za-z0-9_])" + re.escape(k) + r"(?![A-Za-z0-9_])", run):
+                      if EXPR in str(v):
+                          print(f"rehearsal: could not check: migrate.yml's {scope}-level {k} holds an expression")
+                          raise SystemExit(1)
+                      env[k] = str(v)
+                      print(f"rehearsal: env {k}: migrate.yml's {scope}-level value ({'set' if str(v) else 'empty'})")
+          for k, v in (step.get("env") or {}).items():
+              v = str(v)
+              if EXPR not in v:
+                  env[k] = v
+                  print(f"rehearsal: env {k}: the step's own value")
+              elif "secrets." in v:
+                  env.pop(k, None)
+                  print(f"rehearsal: env {k}: withheld (it names a secret; this workflow holds none)")
+              elif k in os.environ:
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; this job's own value")
+              else:
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; not set here")
+          path = os.path.join(os.environ["RUNNER_TEMP"], f"w03r-{step_id}.body")
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(run)
+          r = subprocess.run(cmd + [path], env=env)
+          print(f"rehearsal: step {step_id}: exit {r.returncode}")
+          raise SystemExit(r.returncode)
+
+  fixture:
+    name: fixture (main's migration, the fixture and the database tests on PostgreSQL 17)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    services:
+      postgres:
+        # postgres:17, pinned by its image index digest as Docker Hub's registry served it on 2026-10-13T01:42Z (the
+        # docker-library repo-info page for postgres:17 gives the same digest and PG_VERSION 17.11-1.pgdg13+2).
+        image: postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust  # a throwaway server reached only from this job; no password exists
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      # libpq's settings for the service container. They replace devos-test's (the pooler, verify-full): the pooler and
+      # TLS are not rehearsed here.
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGSSLMODE: disable
+      PGCONNECT_TIMEOUT: "15"
+    steps:
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, the commit migrate.yml pins
+        with:
+          persist-credentials: false
+      - id: stub
+        name: "Supabase's objects, stubbed as CHK-C02-044 F4 did"
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo "server: $(psql -X -A -t -c 'select version()')"
+          echo "client: $(psql --version)"
+          psql -X -q -v ON_ERROR_STOP=1 -1 -f - <<'SQL'
+          create role anon nologin;
+          create role authenticated nologin;
+          create role service_role nologin;
+          create schema auth;
+          create table auth.users (id uuid primary key);
+          create schema supabase_migrations;
+          create table supabase_migrations.schema_migrations (version text primary key, statements text[], name text);
+          SQL
+          echo "stub: roles anon, authenticated, service_role; auth.users(id uuid primary key);" \
+            "supabase_migrations.schema_migrations(version text primary key, statements text[], name text)"
+      - id: migrations
+        name: "every migration of supabase/migrations/, in name order, each with its history row in one transaction"
+        shell: bash
+        run: |
+          set -uo pipefail
+          n=0
+          for f in supabase/migrations/*.sql; do
+            name="$(basename "$f")"
+            if [[ ! "$name" =~ ^([0-9]{14})_([a-z0-9_]+)\.sql$ ]]; then
+              echo "migration ${name}: could not check (not 14 digits, an underscore, a lower-case name, .sql); stopped"
+              exit 1
+            fi
+            version="${BASH_REMATCH[1]}"
+            slug="${BASH_REMATCH[2]}"
+            if psql -X -q -v ON_ERROR_STOP=1 -1 -f "$f" \
+                -c "insert into supabase_migrations.schema_migrations (version, name) values ('${version}', '${slug}')"; then
+              echo "migration ${version} ${slug}: applied, with its history row, in one transaction"
+            else
+              echo "migration ${version} ${slug}: failed; stopped"
+              exit 1
+            fi
+            n=$((n + 1))
+          done
+          echo "migrations applied: ${n}"
+      - id: run_step
+        name: "run migrate.yml's devos-test step dbtests, its body unchanged"
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dbtests
+        shell: python
+        run: |
+          # Runs one step of migrate.yml as GitHub runs it, its body unchanged (FR-07 item 1; EV-C02-007 section 15.15). The
+          # body is read with PyYAML from this commit's .github/workflows/migrate.yml by job and step id, written to a file
+          # and run with the command GitHub uses for its shell. Its environment is this step's, plus each workflow-level
+          # and job-level env entry of migrate.yml whose name the body names. A step-level env entry of migrate.yml that
+          # holds an expression is not evaluated: one that names a secret is withheld (this workflow holds none); any
+          # other comes from this job, if this job sets it. Names and counts are printed, never a value.
+          import hashlib, os, re, subprocess, sys
+          import yaml
+
+          sys.stdout.reconfigure(line_buffering=True)
+          EXPR = "$" + "{{"  # written in two parts, so that this body holds no expression marker itself
+          job, step_id = os.environ["W03R_JOB"], os.environ["W03R_STEP"]
+          with open(".github/workflows/migrate.yml", encoding="utf-8") as f:
+              wf = yaml.safe_load(f)
+          jobdef = (wf.get("jobs") or {}).get(job) or {}
+          found = [s for s in jobdef.get("steps") or [] if isinstance(s, dict) and s.get("id") == step_id]
+          if len(found) != 1:
+              print(f"rehearsal: could not check: migrate.yml's job {job} has {len(found)} steps with id {step_id}")
+              raise SystemExit(1)
+          step = found[0]
+          run, shell = step.get("run"), step.get("shell")
+          cmd = {"python": [sys.executable], "bash": ["bash", "--noprofile", "--norc", "-eo", "pipefail"]}.get(shell)
+          if not isinstance(run, str) or cmd is None or EXPR in run:
+              print(f"rehearsal: could not check: step {step_id} is not a run body, in shell python or bash, free of "
+                    "expressions")
+              raise SystemExit(1)
+          digest = hashlib.sha256((run + "|" + shell).encode()).hexdigest()[:12]
+          print(f"rehearsal: migrate.yml at {os.environ.get('GITHUB_SHA', '?')}, job {job}, step {step_id}: shell {shell}, "
+                f"{len(run.splitlines())} lines, SHA-256 of run|shell {digest}; run as: {' '.join(cmd)} FILE")
+          env = {k: v for k, v in os.environ.items() if k not in ("W03R_JOB", "W03R_STEP")}
+          for scope, block in (("workflow", wf.get("env") or {}), ("job", jobdef.get("env") or {})):
+              for k, v in block.items():
+                  if re.search(r"(?<![A-Za-z0-9_])" + re.escape(k) + r"(?![A-Za-z0-9_])", run):
+                      if EXPR in str(v):
+                          print(f"rehearsal: could not check: migrate.yml's {scope}-level {k} holds an expression")
+                          raise SystemExit(1)
+                      env[k] = str(v)
+                      print(f"rehearsal: env {k}: migrate.yml's {scope}-level value ({'set' if str(v) else 'empty'})")
+          for k, v in (step.get("env") or {}).items():
+              v = str(v)
+              if EXPR not in v:
+                  env[k] = v
+                  print(f"rehearsal: env {k}: the step's own value")
+              elif "secrets." in v:
+                  env.pop(k, None)
+                  print(f"rehearsal: env {k}: withheld (it names a secret; this workflow holds none)")
+              elif k in os.environ:
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; this job's own value")
+              else:
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; not set here")
+          path = os.path.join(os.environ["RUNNER_TEMP"], f"w03r-{step_id}.body")
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(run)
+          r = subprocess.run(cmd + [path], env=env)
+          print(f"rehearsal: step {step_id}: exit {r.returncode}")
+          raise SystemExit(r.returncode)
