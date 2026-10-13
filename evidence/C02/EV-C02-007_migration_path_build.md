@@ -1177,3 +1177,310 @@ These were run from the clone's working tree after this build's last edit of `mi
 - **Bodies**: `search` `2ef72520eefd` in both copies, `plant` `b049a11f5998` and `dbtests` `08eedf39e196`, all unchanged; `migrate.yml` differs from `376a123` in `W03_FIXTURE_ISSUE` only (at the producer's build; at H1-prime's head also in `W03_PLANT_B64`, set by the executor with the plants, 15.13).
 - `records.py render --check`, `check_service_names.sh` and `git status --short`: their final lines are in the producer's report to the executor, run after this record's last edit.
 
+### 15.17 A3: H2 to H5 rehearsed on PostgreSQL 17 with the pinned CLI
+
+**Why.** FR-07 item 1: "Before H2, H2 to H5's sequence is rehearsed with the pinned CLI on a throwaway PostgreSQL of the projects' major version where reachable (for example a service container in a never-merged workflow with no environment), the gap stated where not." Its principle is that code needing no secret meets GitHub before its verdict, and that a model of GitHub written from belief is never evidence. H2 to H5 are T-W03-14's fixture changes, also T-W03-06's forms (i) and (ii): H2 adds `w03_fixture_fail`, which fails in both projects; H3 removes H2's file; H4 adds `w03_fixture_name_differs`; H5 adds `w03_fixture_restore_name`. Their design rests on P2, which the test designer settled offline (T-W03-14, "P2, settled offline before the fixtures were written") with the pinned tool on PostgreSQL 16.15. P2 found four things:
+- a failed file leaves nothing;
+- a missing row below a recorded version holds every later push, which is why H4 renames rather than deletes;
+- a name that differs does not hold the tool;
+- each fixture's own guard refuses as written.
+
+The projects run Supabase's 17.6 build. This rehearsal runs the same sequence on GitHub's runner, with the pinned tool run as `migrate.yml` runs it, on PostgreSQL 17, before H2's verdict. It shows whether P2 holds there. It is exploratory and is never T-W03-14's or T-W03-06's result, which stay the live runs. Its log is read against the lines below before H2's task goes out. A line that differs is a finding, read before then, and never a pass.
+
+**Its form.** The workflow file is `.github/workflows/w03-a3-rehearsal.yml`, on the branch `claude/w03-a3-rehearsal`. The executor bases that branch on H1-prime's head `1fe8365053739b18eed94dc879d3c4289a0e0042` and adds this file and the three fixtures, nothing else.
+- **What it is not allowed to do.** It is never merged, and no pull request is opened from its branch: M22 would refuse its `PGSSLMODE: disable`, as it refused H1-prime's rehearsal (15.15). M22's body was not run over this file.
+- **Trigger and permissions.** `name: w03-a3-rehearsal`, with `on: push` limited to `claude/w03-a3-rehearsal`. Top-level `permissions: {}`, and the one job has `contents: read`.
+- **No environment, no secret, no expression in `run:`.** It names no environment and holds no secret. No `run:` value holds an expression: values reach the steps through `env`.
+- **Checkout.** `actions/checkout` is pinned to the commit `migrate.yml` pins (`d23441a48e516b6c34aea4fa41551a30e30af803`, v6.1.0), with `persist-credentials: false`.
+- **The fixtures.** The three files are copied unchanged from the executor's texts, with their intended names, under `.github/w03-a3/fixtures/`, outside `supabase/migrations/`, with these SHA-256 values:
+  - `20261012232111_w03_fixture_fail.sql` `0d439a148f88c3d2067d45a85c1e273ae4bb99d6cbb2a952287ae340e976e0c7`;
+  - `20261012232112_w03_fixture_name_differs.sql` `4379e988e313281880fbb141b84703f1bfc5b63892a7b5287760d9f98a589dbe`;
+  - `20261012232113_w03_fixture_restore_name.sql` `a8b350363845be0b89d7b83fa37dec188f08c83bf073441e15d87fd909115506`.
+
+  Each version is later than both of the base's (`20261012184638`, `20261012231841`), so none is renamed (T-W03-14: the tool refuses an earlier version).
+
+The workflow has one job, `sequence`. Its server is a service container `postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3`, PostgreSQL 17.11, the digest H1-prime's rehearsal used (15.15). The server uses trust authentication on `localhost` (no password exists) and is health-checked with `pg_isready`. libpq's settings are the local server's: host `localhost`, port 5432, user `postgres`, `sslmode=disable`, and a database named by each step. The steps:
+- **`stub`.** It prints the server's and the client's versions. It creates, as CHK-C02-044 F4 did, the roles `anon`, `authenticated` and `service_role` (nologin), and three databases, each with `auth.users(id uuid primary key)`:
+  - `w03a3_devos_test` plays `devos-test`;
+  - `w03a3_devos` plays `devos`;
+  - `w03a3_scratch` is for the guards.
+
+  It does not make `supabase_migrations`. In the first two databases the command-line tool makes its own history table, as in a never-pushed project. That differs from H1-prime's rehearsal, whose stub made the table because no tool ran there. In `w03a3_scratch`, step `guards` makes the table in the stub's form. **One server, three databases, rather than two service containers:** nothing in the sequence makes or changes a role. What it touches is per database: the history table, the schemas, the function. So separate databases keep the two orders apart where they can differ, under one image and one server line.
+- **`runner`.** It writes the run step's program to the runner's temporary directory and prints its line count and SHA-256. Each later step that runs `migrate.yml` is `python "$RUNNER_TEMP/w03a3-run.py"`, the runner's `python`, which has PyYAML (12.9). The program is 15.15's run step, with these changes:
+  1. It runs only `shell: bash` bodies, as GitHub's shell does (`bash --noprofile --norc -eo pipefail FILE`).
+  2. Its environment is GitHub's for that step: every workflow-level and job-level `env` entry of `migrate.yml`, whether or not the body names it. 15.15 took only the named ones, but GitHub gives a step all of them, and the tool and `psql` read some that no body names. Telemetry is off through `migrate.yml`'s own `DO_NOT_TRACK` and `SUPABASE_TELEMETRY_DISABLED`, and libpq gets its `PGAPPNAME` and `PGCONNECT_TIMEOUT`.
+  3. `W03_PLANT_B64` is dropped as soon as the file is parsed. No process gets it, and nothing prints or decodes it.
+  4. libpq's `PGHOST`, `PGPORT`, `PGUSER`, `PGDATABASE`, `PGSSLMODE` and `PGSSLROOTCERT` are the step's own: the local server's, or unset.
+  5. A step-level entry holding an expression is not evaluated. One that names a secret is withheld, which leaves `PGPASSWORD` unset. Any other entry takes the step's own value: `CLI`, `W` and `EXPECTED` are wired to the outputs of this workflow's own `cli` and workdir steps, as `migrate.yml` wires them.
+  6. `W03R_TREE` runs the body in one of step `trees`' trees instead of the checkout.
+  7. `W03R_LOCAL_URL: "yes"` makes the body's one change, below.
+  8. It exits 0 only if the body's exit code is `W03R_EXPECT`, which the workflow states before any run (0 unless named).
+- **`trees`.** Each state of `main` in the sequence becomes a tree under the runner's temporary directory. The step checks that this commit's `supabase/migrations/` holds exactly H1-prime's two top-level files, and that each fixture's version is later than both. The trees are:
+  - `m0`: `main` before H1-prime, the first migration only;
+  - `m1`: H1-prime, adding T-W03-05's fixture;
+  - `m2`: H2, `m1` plus `w03_fixture_fail`;
+  - `m3`: H3, the same as `m1`;
+  - `m4`: H4, `m1` plus `w03_fixture_name_differs`;
+  - `m5`: H5, `m4` plus `w03_fixture_restore_name`.
+
+  `migrate.yml`'s own `workdir` step, run in a tree, copies its files into the tool's working directory and computes `expected` from them, as on every push.
+- **`cli`.** `migrate.yml`'s step `cli`, unchanged: the download from the URL `migrate.yml` names, its SHA-256 checked against `CLI_SHA256`, then extracted.
+- **`devos-test`'s order**, in `w03a3_devos_test`, with `migrate.yml`'s `devos-test` steps in that job's order:
+  - `t0`, `main` before H1-prime: `workdir`, `dryrun`, `apply`, `compare`. This matches the projects' history, where run 38316669047 applied the first migration alone.
+  - `t1` to `t5` (H1-prime, H2, H3, H4, H5): `workdir`, `listing`, `dryrun`, `apply`, `compare`, then `dbtests` at `t1`, `t3` and `t5`, where the workflow runs it after a clean comparison.
+  - At `t4`, `dbtests` also runs, labelled: the workflow would skip it on a difference.
+  - At `t2`, `dbtests` is not run. The workflow skips it, and nothing is rehearsed by running it.
+  - After `t2`'s apply, step `t2_left` reads directly what the failed file left. This read is the rehearsal's own, not `migrate.yml`'s; `migrate.yml`'s own read of it is `t3`'s listing and comparison.
+- **`devos`'s order**, in `w03a3_devos`, with `migrate.yml`'s `devos` steps. `devos` is applied only on `devos-test`'s `go = yes`, so it gets three pushes:
+  - `d0`, `main` before H1-prime: `workdir`, `dryrun`, `apply`;
+  - `d1`, H1-prime: `workdir`, `dryrun`, `apply`, `compare_after`;
+  - `d2`, H5's push run, in which H4 and H5 arrive together: `workdir`, `compare` (before the apply), `dryrun`, `apply`, `compare_after`.
+
+  H2 never reaches `devos`, and H3's and H4's runs apply nothing there. `decide` is not run; its code is T-W03-DEC's. Each body of these steps is byte-identical to `devos-test`'s step of the same id, and `compare_after`'s to `compare`'s, but the `devos` job's entries are taken, so the lines say `devos`.
+- **`guards`.** The rehearsal's own step, in `w03a3_scratch`. Each fixture file runs unchanged with `psql -X -v ON_ERROR_STOP=1 -1 -f`, not with the tool. The guard is the file's own statement, and the tool would add only its history row on success. The sequence:
+  1. One row, `20261012231841` `w03_fixture_apply`.
+  2. H4: the control, which renames it.
+  3. H4 again: the guard, on the row already renamed.
+  4. H5: the control, which restores the name.
+  5. Every row deleted, then H5: the guard, with no row of the version.
+
+**What differs from `migrate.yml`'s run, exactly** (each is printed in the log where it applies):
+- **The URL.** In the dry run's and the apply's body, the one string `sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt` becomes `sslmode=disable`, because the service container has no TLS. The program checks that the string occurs exactly once and prints both hashes: `dryrun` `117defd57d50` becomes `da054443e48c`, and `apply` `1dcb025e4aee` becomes `37a27a479153`. These are the same in `devos-test` and `devos`.
+- **libpq's settings.** The host is `localhost`, not the pooler from step `pooler`. The user is `postgres`, not `postgres.<project ref>`. The database is `w03a3_devos_test` or `w03a3_devos`, not `postgres`. `sslmode` is `disable`, not `verify-full`, with no root file. The port, 5432, is the same.
+- **No password.** `PGPASSWORD` is withheld and the server trusts `localhost`. The URL holds no password in either workflow.
+- **Steps not run.** These need the pooler, TLS or the secret: `head`, `rootca`, `pooler`, `tls`, `presence` and `connect`. These are the gate and its records: `decide`, `tokens`, `dbprograms`, `tokens_revoke`, `go` and `report`. Here each stage runs its steps in order whatever the last result. The order and the stop are T-W03-14's static test's and the live runs' to show.
+- **`expected`'s commit** is the rehearsal's commit (`GITHUB_SHA`), not a `main` commit. `workdir` reads a tree, not a checkout of `main` at that stage; the database tests are read from the checkout, which the fixtures do not change.
+
+**What its log must show.** These lines were written before any run, from P2, the fixtures' texts and `migrate.yml`'s code; `<sha>` is the rehearsal's commit.
+- **The job.**
+  - `GITHUB_TOKEN Permissions: Contents: read; Metadata: read`;
+  - the service container's log `starting PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)`.
+- **`stub`.**
+  - `server: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) …`;
+  - `client: psql (PostgreSQL) 16.15 …`. This is the runner's client, as 15.15 saw it. Another 16.x is noted, not a failure.
+  - the roles line, one line per database, and the line naming which database plays which project.
+- **`runner`.** `the run step's program: 107 lines, SHA-256 f0e63940530362fb232f62b272925e8a12df822f0ab788abd4bb8067083b4570`. Another hash means the program run is not this file's.
+- **`trees`.**
+  - `trees: each fixture's version is later than every version at this commit (20261012184638, 20261012231841); none is renamed`;
+  - the three SHA-256 values above;
+  - one line per tree, `m0` to `m5`, listing the files above.
+- **Every run step prints:**
+  - its hash line, `rehearsal: migrate.yml at <sha>, job <job>, step <id>: shell bash, <n> lines, SHA-256 of run|shell <h>`. The values are:
+
+    | step | lines | hash |
+    |---|---|---|
+    | `cli` | 20 | `9a997b75cce6` |
+    | `workdir` | 43 | `39a09b6a79ce` |
+    | `listing` | 84 | `b1b058f32c88` |
+    | `dryrun` | 11 | `117defd57d50` |
+    | `apply` | 10 | `1dcb025e4aee` |
+    | `compare` and `compare_after` | 169 | `1260def3e0a4` |
+    | `dbtests` | 47 | `08eedf39e196` |
+
+    These are H1-prime's bodies. Another hash means the body rehearsed is not this base's.
+  - then `rehearsal: the body runs unchanged`, or, for `dryrun` and `apply` only, the changed line with the second hash above;
+  - `rehearsal: env from migrate.yml's workflow level: CLI_VERSION CLI_SHA256 W03_ROOT_CA_SHA256 W03_ROOT_CA_PEM W03_POOLER_CANDIDATES W03_EXCLUDED_SCHEMAS W03_SCHEMA_ENTRY_ONLY W03_EXCLUDED_ROLES W03_TOKEN_CLASSES W03_FIXTURE_ISSUE W03_CLI_CONFIG; never taken: W03_PLANT_B64`;
+  - `rehearsal: env from migrate.yml's job level: PROJECT PROJECT_REF POOLER_HOST PGCONNECT_TIMEOUT PGAPPNAME DO_NOT_TRACK SUPABASE_TELEMETRY_DISABLED; not taken (the local server's instead): PGPORT PGUSER PGDATABASE PGSSLMODE PGSSLROOTCERT`;
+  - one line per step-level entry:
+    - `PGHOST`: "the local server's instead";
+    - `PGPASSWORD`: "withheld";
+    - `CLI`, `W` and `EXPECTED`: "this step's own value";
+  - `rehearsal: the local server: PGHOST=localhost PGPORT=5432 PGUSER=postgres PGDATABASE=<db> PGSSLMODE=disable PGSSLROOTCERT=(unset)`;
+  - last, `rehearsal: step <id>: exit <n>; expected <n>: as expected`.
+- **`cli`.** `command-line tool v2.120.0: checksum matches the release's published SHA-256 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e`, then exit 0.
+- **Every `workdir`.**
+  - `rehearsal: run in tree m<k> …`;
+  - `working directory of the command-line tool (names only):`, then `supabase/config.toml` and one `supabase/migrations/<file>` line per file of that tree;
+  - `expected: <K> migrations on main at <sha>: [...]`;
+  - exit 0.
+- **Every `listing`.**
+  - its five header lines;
+  - one `listing: <object>` line per object;
+  - `listing: <N> objects outside Supabase's own`;
+  - `listing control: the same query without the exclusion list shows <n> objects; auth.users among them: yes`. The count `<n>` depends on what the tool adds under `supabase_migrations` and is not fixed here.
+  - exit 0.
+- **Every `compare` and `compare_after`.**
+  - `reads in <project> (one read-only REPEATABLE READ transaction): function_exists=True history_table_exists=True history_rows=<R> listing=<L> objects complete=True`;
+  - `comparison in <project>: result=<result> call=ok`;
+  - one line per difference;
+  - exit 0.
+- **Every `dbtests` that passes.** Each file's NOTICE line, in name order, each followed by `database test <file>: passed`:
+  - `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`;
+  - `W03_DRIFT_DETECTS PASS (10/10)`;
+  - `W03_FIXTURE_APPLY_READ PASS (12/12 fields as the fixture file; positive control 2/2; breaks 2/2)`.
+
+  The fixture's read names its server `PostgreSQL 17.11 …`, the database `w03a3_devos_test` and the session user `postgres`. Then exit 0.
+
+Stage by stage (the K, R, L, results and differences):
+
+| Stage | Step | Must show |
+|---|---|---|
+| `t0`, `main` before H1-prime | `workdir` | `expected: 1 migrations on main at <sha>: ['20261012184638']` |
+| | `dryrun` | `dry run: pending versions: ["20261012184638"]`, `dry run: exit 0` |
+| | `apply` | `apply: exit 0` |
+| | `compare` | `history_rows=1 listing=4 objects complete=True`; `comparison in devos-test: result=no_difference call=ok` |
+| `t1`, H1-prime | `workdir` | `expected: 2 migrations on main at <sha>: ['20261012184638', '20261012231841']` |
+| | `listing` | `listing: function devos_api.deployment_drift(expected jsonb)`, `listing: schema devos_api`, `listing: schema devos_private`, `listing: table devos_private.function_deployment`, then `listing: 4 objects outside Supabase's own` |
+| | `dryrun` | `dry run: pending versions: ["20261012231841"]` (the fixture only, as H1-prime's push run will list it), exit 0 |
+| | `apply` | `apply: exit 0` |
+| | `compare` | `history_rows=2 listing=7 objects`; `result=no_difference call=ok` |
+| | `dbtests` | the three PASS lines, each `passed`; exit 0 |
+| `t2`, H2 | `workdir` | `expected: 3 migrations …: ['20261012184638', '20261012231841', '20261012232111']` |
+| | `listing` | the 4 objects above, plus `listing: schema w03_fixture`, `listing: table w03_fixture.apply_check`, `listing: view w03_fixture.apply_check_view`; `listing: 7 objects outside Supabase's own` |
+| | `dryrun` | `dry run: pending versions: ["20261012232111"]`, exit 0 |
+| | `apply` | A `cli:` line holding the fixture's message `W-C02-03 T-W03-14 item 1: synthetic failing fixture (plan Section 8 item 13); it fails on purpose`, and a `cli:` line naming statement 2 (P2: "printed the raise at statement 2"; the wording is the tool's). Then `apply: exit 1`, and `rehearsal: step apply: exit 1; expected 1: as expected` |
+| | `t2_left` | `after H2's failed apply: schema w03_fixture_fail: absent`, `… table w03_fixture_fail.attempt: absent`, `… history rows of 20261012232111: 0`, `… history versions: 20261012184638 20261012231841`, `… nothing left, as P2 observed on PostgreSQL 16.15`; exit 0 |
+| | `compare` | `history_rows=2 listing=7 objects`; `comparison in devos-test: result=differences call=ok`, then exactly one difference: `comparison in devos-test: on_main_not_applied 20261012232111` |
+| `t3`, H3 | `workdir` | `expected: 2 migrations …` as at `t1` |
+| | `listing` | the same 7 objects as at `t2`, and none of `w03_fixture_fail`. This is T-W03-14 item 1's "listing before its apply" |
+| | `dryrun` | `cli: Remote database is up to date.` (P2's line), `dry run: pending versions: []`, exit 0 |
+| | `apply` | `cli: Remote database is up to date.`, `apply: exit 0` |
+| | `compare` | `history_rows=2 listing=7 objects`; `result=no_difference call=ok` |
+| | `dbtests` | the three PASS lines; exit 0 |
+| `t4`, H4 | `workdir` | `expected: 3 migrations …: ['20261012184638', '20261012231841', '20261012232112']` |
+| | `listing` | the 7 objects |
+| | `dryrun` | `dry run: pending versions: ["20261012232112"]` (H4 only), exit 0 |
+| | `apply` | `apply: exit 0` |
+| | `compare` | `history_rows=3 listing=7 objects`; `result=differences call=ok`, then exactly one difference: `comparison in devos-test: name_differs 20261012231841` |
+| | `dbtests`, labelled: the workflow skips it here | `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)` and `W03_DRIFT_DETECTS PASS (10/10)`, each `passed`. Each rewrites the history inside its own rolled-back transaction, so the renamed row does not reach them. Then `W03_FIXTURE_READ history_name: ["w03_fixture_apply_renamed"]`, `W03_FIXTURE_READ differs: history_name read ["w03_fixture_apply_renamed"] expected ["w03_fixture_apply"]`, `W03_FIXTURE_APPLY_READ FAIL (1 of 12 fields differ from the fixture file: {history_name})` and `database test w03_fixture_apply_read.sql: not passed (psql exit 3)`. Exit 1; `expected 1: as expected` |
+| `t5`, H5 | `workdir` | `expected: 4 migrations …: ['20261012184638', '20261012231841', '20261012232112', '20261012232113']` |
+| | `listing` | the 7 objects |
+| | `dryrun` | `dry run: pending versions: ["20261012232113"]` (H5 only), exit 0 |
+| | `apply` | `apply: exit 0` |
+| | `compare` | `history_rows=4 listing=7 objects`; `result=no_difference call=ok` |
+| | `dbtests` | the three PASS lines (T-W03-05's read with `history_name` back to `["w03_fixture_apply"]`); exit 0 |
+| `d0`, `devos`, `main` before H1-prime | `workdir`, `dryrun`, `apply` | `expected: 1 migrations …`; `dry run: pending versions: ["20261012184638"]`; `apply: exit 0` |
+| `d1`, `devos`, H1-prime | `workdir`, `dryrun`, `apply` | `expected: 2 migrations …`; `dry run: pending versions: ["20261012231841"]`; `apply: exit 0` |
+| | `compare_after` | `reads in devos …: … history_rows=2 listing=7 objects complete=True`; `comparison in devos: result=no_difference call=ok` |
+| `d2`, `devos`, H5's push run | `workdir` | `expected: 4 migrations …` as at `t5` |
+| | `compare` (before the apply) | `history_rows=2`; `comparison in devos: result=differences call=ok`, then exactly two differences: `comparison in devos: on_main_not_applied 20261012232112` and `comparison in devos: on_main_not_applied 20261012232113` |
+| | `dryrun` | `dry run: pending versions: ["20261012232112", "20261012232113"]`, exit 0 |
+| | `apply` | the tool's `cli:` lines apply `20261012232112_w03_fixture_name_differs.sql` before `20261012232113_w03_fixture_restore_name.sql`; `apply: exit 0` |
+| | `compare_after` | `history_rows=4 listing=7 objects`; `comparison in devos: result=no_difference call=ok` |
+| `guards` | | `guards: database w03a3_scratch; …; one row: 20261012231841 w03_fixture_apply`, then four checks, each ending `as expected`: |
+| | | `guards: (control) H4 on the row named w03_fixture_apply: psql exit 0; the row of 20261012231841 after: w03_fixture_apply_renamed; …` |
+| | | a `psql:` line `… ERROR:  W-C02-03 T-W03-14 item 2a: expected one history row of 20261012231841 named w03_fixture_apply; renamed 0`, then `guards: (guard) H4 on the row already renamed: psql exit 3; the row of 20261012231841 after: w03_fixture_apply_renamed; …` (the name is unchanged: the refusal changed nothing) |
+| | | `guards: (control) H5 on the renamed row: psql exit 0; the row of 20261012231841 after: w03_fixture_apply; …` |
+| | | `guards: every history row deleted`, a `psql:` line `… ERROR:  W-C02-03 T-W03-14 item 2a repair: expected one history row of 20261012231841; found 0`, then `guards: (guard) H5 with no row of 20261012231841: psql exit 3; the row of 20261012231841 after: (none); …` |
+| | | the step exits 0 |
+
+The job's conclusion is success only if every step's exit code is the one the workflow states, `t2_left` reads nothing left, and every guard case is as expected. That shows the exit codes only. Every other line above is read in the log, and a green job alone is not the reading. A line that differs is recorded as it reads.
+
+**The tool's own lines** (added after the PostgreSQL 16.15 hint below and before any GitHub run; the wording is the pinned binary's, taken from that hint, not from a source). These are not part of the table above.
+- **A dry run that lists:** `cli: DRY RUN: migrations will *not* be pushed to the database.`, `cli: Connecting to remote database...`, `cli: Would push these migrations:`, one `cli:  • <file>` line per pending file, then `cli: Finished supabase db push.`.
+- **An apply:** `cli: Connecting to remote database...`, `cli: Do you want to push these migrations to the remote database?`, the same bullet lines, `cli:  [Y/n] y`, one `cli: Applying migration <file>...` per file in version order, then `cli: Finished supabase db push.`.
+- **H2's apply:** after its `Applying migration` line, `cli: ERROR: W-C02-03 T-W03-14 item 1: synthetic failing fixture (plan Section 8 item 13); it fails on purpose (SQLSTATE P0001)`, `cli: At statement: 2`, the statement's five lines, then `cli: Try rerunning the command with --debug to troubleshoot the error.`.
+- **Up to date (`t3`):** `cli: Remote database is up to date.` after `Connecting to remote database...`.
+- **After every apply,** the working-directory listing also holds `./supabase/.temp/cli-latest`, a file the tool writes.
+- **The output's form depends on the environment.** In the first hint, whose environment held an AI agent's variables, the tool printed each result as one JSON line instead: `{"upToDate":…,"message":"Remote database is up to date."}`, and the H2 error inside `{"_tag":"Error",…}`. A clean environment, with or without `CI=true` and `GITHUB_ACTIONS=true`, gave the plain lines above. Which variable switches it was not found: the guard refuses reading or reassigning the session's environment (rules B8, B11). GitHub's runner is expected to set none of them [inf]. If the log shows the JSON form, its content is read in that form, and the difference is recorded.
+
+**What it does not show.** These are stated gaps, not passes:
+- **Supabase's server.** The image is PostgreSQL 17.11 from Docker Hub; the projects run Supabase's 17.6 build (CHK-C02-045 F-7 (a)). It has none of Supabase's extensions and none of its event triggers. Those triggers fire on DDL, which H2's file and T-W03-05's fixture hold, and what they do on that DDL, or on its failure, is not seen here. It has none of Supabase's roles beyond the stub.
+- **The superuser.** Here `postgres` is a superuser; Supabase's `postgres` is not. So these are not shown under Supabase's privileges: the tool making its history table, the migrations, the security-definer function's owner, and the fixtures' updates of the history.
+- **The pooler and TLS.** There is no pooler and no TLS. The tool's connection through Supavisor in session mode on port 5432, with `verify-full` against the pinned root, is not rehearsed. Nor is any path the tool takes only for a Supabase host: here its host is `localhost`.
+- **The projects' real history.** Here the tool makes each database's history table fresh, with v2.120.0's columns. The projects hold tables the tool made in run 38316669047, and possibly whatever else Supabase keeps in `supabase_migrations`. Rows other than DevOS's would show at the live runs' comparisons, not here.
+- **The tool against Supabase's own server.** That is H1-prime's push run (T-W03-05) and the live runs of H2 to H5.
+- **The gate.** Not rehearsed:
+  - the head check;
+  - `decide` and `go`, and so the stop before `devos` (T-W03-14's static test and the live runs show it);
+  - the first-migration exception;
+  - the pull-request checks of H3 and H5 (M15, M16);
+  - the queued runs (P4).
+- **What the tool would do with the guards.** The guard cases run with `psql`, not the tool, which would add its history row only on success.
+- **The client and the commit.** The runner's `psql` is the client, not the image's. `expected`'s commit is the rehearsal's.
+
+**Hints run before it.** These are not evidence: FR-07 item 1 says no model of GitHub written from belief is evidence.
+- **How the hints ran.** The workflow's job `sequence` was read from the file and its `run:` steps run in order as GitHub's bash shell runs them, by the producer's `hint_run.py`. It took each `steps.<id>.outputs.<name>` from that step's `GITHUB_OUTPUT` and skipped the checkout: the scratch clone at `1fe8365` held the workflow and the three fixtures in its working tree. The server was a throwaway PostgreSQL 16.15 cluster under `/var/tmp`, with trust auth on `localhost:55433` (`PGPORT` replaced), stopped and deleted after. The tool v2.120.0 was downloaded by `migrate.yml`'s own `cli` body, its SHA-256 matching `CLI_SHA256`.
+- **[obs, PostgreSQL 16.15, a hint] With the session's environment:** every step exited as the workflow states. 50 checks were "as expected" and none "NOT as expected". Every line of the table matched but the tool's own: it printed its JSON form (above).
+- **[obs, PostgreSQL 16.15, a hint] With the steps' base environment cut to `PATH`, `HOME`, the proxy and CA settings, `CI` and `GITHUB_ACTIONS`:** the same result. The tool printed the plain lines above, which match the table's `cli:` rows as written before either run. Apart from the tool's lines and the read times, the two logs are identical. Further values observed:
+  - the program's line `107 lines, SHA-256 f0e63940…`;
+  - the hashes `da054443e48c` and `37a27a479153`;
+  - `listing control` counts of 13 at `t1` (before the fixture) and 16 after, so the tool made no table under `supabase_migrations` but `schema_migrations`.
+- **[obs, PostgreSQL 16.15, a hint] Break.** The same run with H2's copy changed in one place (`raise exception` to `raise notice`, so that H2 applies) turned the job red at nine steps:
+  - `t2_apply` printed `exit 0; expected 1: NOT as expected`;
+  - `t2_left` printed `schema w03_fixture_fail: w03_fixture_fail`, `history rows of 20261012232111: 1` and `NOT as P2 observed: something was left or lost`;
+  - `t2`'s comparison read `no_difference`;
+  - `t3`'s comparison named `applied_not_on_main 20261012232111`;
+  - the tool refused every later dry run and apply (exit 1);
+  - `t4`'s `dbtests` passed where it was expected to fail.
+
+  The fixture was restored from the executor's text after, its SHA-256 as above. So the rehearsal's own checks turn red when P2's first finding does not hold.
+
+**[obs] The rehearsal on GitHub** (2026-10-13, read by the executor through GitHub's job-log tool). Branch `claude/w03-a3-rehearsal` at `6c05b84e82f1e832ac97079ddeaf16c3c3226e2d`: H1-prime's head `1fe8365` plus the workflow and the three fixtures (SHA-256 as above), nothing else; never merged, no pull request. Run 38338911054 (event `push`):
+- **Attempt 1**, job 115105250039, 02:51:44Z to 02:52:26Z, conclusion success (log 2609 lines). The service container's server `PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)`; the client the runner's `psql` 16.15. Every line of the table above appeared as written, in each stage and step: the `expected:` lines (1, 2, 3, 2, 3 and 4 migrations at `6c05b84…`); the dry runs' pending versions (`["20261012184638"]`, `["20261012231841"]`, `["20261012232111"]`, `[]` with `cli: Remote database is up to date.`, `["20261012232112"]`, `["20261012232113"]`); H2's apply with `cli: ERROR: W-C02-03 T-W03-14 item 1: synthetic failing fixture … (SQLSTATE P0001)` and `cli: At statement: 2`, exit 1; `after H2's failed apply: … nothing left, as P2 observed on PostgreSQL 16.15` (schema and table absent, 0 history rows of `20261012232111`, history versions `20261012184638 20261012231841`); the comparisons (`no_difference`; at H2 `on_main_not_applied 20261012232111`; at H3 `no_difference`; at H4 `name_differs 20261012231841` with `history_rows=3`; at H5 `no_difference` with `history_rows=4`); the database tests (three PASS lines at H1-prime, H3 and H5; at H4, run here although the workflow skips them, the two drift tests PASS and `W03_FIXTURE_APPLY_READ FAIL (1 of 12 fields differ from the fixture file: {history_name})`, exit 1, as expected); `devos`'s order (the first migration, then T-W03-05's fixture, `compare_after` `no_difference`; then H4 and H5 together: the comparison before the apply names both `on_main_not_applied`, the dry run lists both, the tool applies `20261012232112_w03_fixture_name_differs.sql` before `20261012232113_w03_fixture_restore_name.sql`, `compare_after` `no_difference` with `history_rows=4`); and the four guard cases, each `as expected`. 50 lines `as expected`, none `NOT as expected`. The tool printed its plain lines, not the JSON form the hint saw under a session's environment.
+- **Attempt 2**, made by the executor through the GitHub tool's re-run (2026-10-13 about 02:52:50Z; the answer `201`, "queued for re-run"), job 115105566091, 02:53:01Z to about 02:53:40Z, conclusion success (log 2611 lines): the same 50 lines `as expected`, none `NOT as expected`; every pending-version, comparison, test and guard line identical to attempt 1's apart from times and a server process number. This also shows that the session's GitHub credential can re-run a workflow run in `devos` (GitHub's Actions write), which T-W03-08 (d) and (e) need.
+- **What this adds, and what it does not.** P2's findings, settled on PostgreSQL 16.15 offline, hold on PostgreSQL 17.11 on GitHub's runner with the pinned tool run through `migrate.yml`'s own bodies: a failed file leaves nothing; a name that differs does not hold the tool and the comparison names it; H5 repairs it; `devos`'s order applies H4 and H5 in one push. This is exploratory, never T-W03-14's or T-W03-06's result. The gaps under "What it does not show" stand, above all Supabase's own server (its 17.6 build, event triggers, roles and pooler), the gate (`decide`, `go` and the stop before `devos`) and the projects' real history, which the live runs of H2 to H5 show.
+
+## 16. Live results: T-W03-05 at H1-prime's push run, and T-W03-08's attempts (a) to (d) and (f) (2026-10-13)
+
+Raw observations, each labelled with its source. Who judges is point 13's checker (README, "Who runs, who judges"); the prober's analysis (16.3) and the executor's readings here are not that verdict.
+
+### 16.1 T-W03-05: the fixture applied to both projects (run 38363215668)
+
+**GitHub's run record.** H1-prime's merge commit `1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9` (PR #315) started push run 38363215668 of `migrate.yml` (run number 15, attempt 1, event `push`), created 2026-10-13T07:31:41Z, conclusion `success` at 07:32:13Z. Jobs: `devos-test (apply, compare, test)` 115182093582, success, 07:31:45Z to 07:32:00Z; `check-devos-test` 115182094986 and `check-devos` 115182095628, skipped (a push run); `devos (compare, decide, apply)` 115182202196, success, 07:32:03Z to 07:32:13Z. Every step of both applying jobs concluded `success`; the step times are in the job records.
+
+**The `devos-test` job's own lines** (job 115182093582; quoted from its log):
+- `head check: yes (this run's commit 1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9 is main's head)`
+- `expected: 2 migrations on main at 1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9: ['20261012184638', '20261012231841']`
+- the server-authentication controls: negative (a) and (b) `pass (refused: …)`, then `credential present: yes`, `connection: succeeded`, positive control `pass`
+- `listing: 4 objects outside Supabase's own` (before the apply), with `listing control: the same query without the exclusion list shows 121 objects; auth.users among them: yes`
+- `dry run: pending versions: ["20261012231841"]`, `dry run: exit 0`
+- `cli: Applying migration 20261012231841_w03_fixture_apply.sql...`, `cli: Finished supabase db push.`, `apply: exit 0`
+- `reads in devos-test (one read-only REPEATABLE READ transaction): function_exists=True history_table_exists=True history_rows=2 listing=7 objects complete=True`; `comparison in devos-test: result=no_difference call=ok`
+- `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, and the job's own read of the fixture, `w03_fixture_apply_read.sql` (step `dbtests`): `server: PostgreSQL 17.6, database postgres, session user postgres, read at 2026-10-13T07:31:57Z UTC`; positive controls `table auth.users present` and `table devos_private.function_deployment present`; the twelve fields, each as the fixture file (`schema: "w03_fixture"`, `table_kind: "r"`, `table_columns: [["id", "integer", true, null], ["note", "text", true, "'synthetic'::text"]]`, `table_primary_key: ["PRIMARY KEY (id)"]`, `table_other_constraints: 0`, `table_comment: "Synthetic test fixture (plan Section 8 item 13), W-C02-03 T-W03-05"`, `view_kind: "v"`, `view_columns: [["id", "integer"], ["note", "text"]]`, `view_options: ["security_invoker=true"]`, `view_reads: ["w03_fixture.apply_check"]`, `history_rows: 1`, `history_name: ["w03_fixture_apply"]`); `break (a), the default planted as 'w03_other': fields found different: {table_columns}`; `break (b), the history read with version 29990101000009: 0 rows`; `W03_FIXTURE_APPLY_READ PASS (12/12 fields as the fixture file; positive control 2/2; breaks 2/2)`; `database test w03_fixture_apply_read.sql: passed`
+- `synthetic tokens: none issued (no test program)`, `test programs: none`, `synthetic tokens: none to revoke`
+- `devos-test go=yes (head=yes apply=success comparison=no_difference tests=success programs=success revocation=success)`
+- the report: `W03REPORT {"project":"devos-test","event":"push","run_id":"38363215668","commit":"1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9","head":"yes","credential_present":"yes","connection":"yes","listing_count":"4","result":"no_difference","differences":[],"applied_versions":["20261012184638","20261012231841"],"go":"yes","apply_step":"success"}`
+
+**The `devos` job's own lines** (job 115182202196):
+- `head check: yes (…)`; `expected: 2 migrations on main at 1c0dbcf…: ['20261012184638', '20261012231841']`; the server-authentication controls as above; `credential present: yes`; `connection: succeeded`; `listing: 4 objects outside Supabase's own`
+- before the apply: `reads in devos (…): function_exists=True history_table_exists=True history_rows=1 listing=4 objects complete=True`; `comparison in devos: result=differences call=ok`; `comparison in devos: on_main_not_applied 20261012231841`
+- `first-migration exception: not taken (function_exists=true: deployment_drift exists, so step (5) uses its result)`; `decide: apply=yes result_kind=differences exception=not_taken; only migrations on main, not applied: 1`
+- `dry run: pending versions: ["20261012231841"]`, `dry run: exit 0`; `cli: Applying migration 20261012231841_w03_fixture_apply.sql...`; `apply: exit 0` (the apply step started 07:32:10Z)
+- after the apply: `reads in devos (…): … history_rows=2 listing=7 objects complete=True`; `comparison in devos: result=no_difference call=ok`
+- the report `W03REPORT {"project":"devos",…,"result":"no_difference","differences":[],…}`
+
+**The order** (also T-W03-14's positive control): the `devos-test` job ended 07:32:00Z; the `devos` job started 07:32:03Z and its apply step at 07:32:10Z.
+
+**In `devos`, through the builder's read-only connection** (EV-C00-002 item 8): `tests/C02/W-C02-03/T-W03-05_devos_read.sql`, run unchanged as one statement at 2026-10-13T07:35:14Z. Its row: `server_version` `17.6`, `database` `postgres`, `control_auth_users` true, `control_function_deployment` true, `differs` `[]`, `break_a_differs` `["table_columns"]`, `break_b_rows` 0; `actual` equal to `expected` in all twelve fields (the same values as the job's read above). By the file's own reading rule that is a pass.
+
+**What the fixture left in each project:** schema `w03_fixture` with table `w03_fixture.apply_check` and view `w03_fixture.apply_check_view`, and the history row `20261012231841` named `w03_fixture_apply`; point 10's listing now shows 7 objects outside Supabase's own in each project (the 4 before, and these 3).
+
+**The run record at job and step level** (every step's conclusion and times, the runners): `evidence/C02/raw/EV-C02-007_T-W03-05_run38363215668_jobs.md`, copied field for field from the GitHub tool's response. **The `devos` read's project:** the read-only connection's own project URL, read at about 07:48Z, names `devos`'s ref (EV-C00-002 item 5); the row is `evidence/C02/raw/EV-C02-007_T-W03-05_devos_read_20261013T0735Z.json`.
+
+**How the logs are kept.** Both job logs are saved unedited in the executor's scratch directory (`h1p_push_run38363215668_devos-test_job115182093582.log`, 2167 lines; `h1p_push_run38363215668_devos_job115182202196.log`, 2056 lines), and GitHub keeps them for its retention (90 days by default, 15.6). Every step's environment block in them shows `W03_PLANT_B64`, the base64 form that `migrate.yml` holds by design and the search does not match (T-W03-09). FR-07 item 3 lets the plant into no other file, so the repository holds copies in which that value, and only it, is replaced by a fixed marker (19 and 16 lines; line counts unchanged): `evidence/C02/raw/EV-C02-007_T-W03-05_run38363215668_devos-test_job115182093582_redacted.log` and `…_devos_job115182202196_redacted.log`. Neither log holds the plain plant: a push run skips `check-devos-test`, whose step `plant` is the only one that prints it.
+
+### 16.2 T-W03-08: attempts (a) to (d) and (f)
+
+The probe workflow `.github/workflows/w03-fixture-branch-probe.yml` (written by producer `a3c1922e1393e3161`, labelled synthetic, never merged) was pushed on branch `claude/w03-branch-probe` at `6683a8b2f0c4ffe54ceb008170d3df860d91452f` (one commit on `d33c8e9`). Its two jobs name environments `migrate-devos-test` and `migrate-devos`; each job's one step prints only whether `SUPABASE_DB_PASSWORD` is non-empty.
+
+| # | Made (UTC) | Run, attempt, event | Jobs (ID: conclusion, created → completed) | Observed |
+|---|---|---|---|---|
+| a | push, about 07:36:20Z | 38363721373, attempt 1, `push` | `probe-devos-test` 115183743279 and `probe-devos` 115183743459: `failure`, 07:36:26Z → 07:36:27Z | each job `waiting`, then `failure` within a second; `runner_id` 0 and no runner name; no step listed; the job log answers HTTP 404 (no log exists); the check run's output is empty |
+| b | pull request #321 opened 07:37:18Z, closed unmerged after the reads | 38363816211, attempt 1, `pull_request` | `probe-devos` 115184055768 and `probe-devos-test` 115184055954: `failure`, 07:37:19Z → 07:37:20Z/21Z | as (a) |
+| c | `workflow_dispatch` against the branch, 07:37:26Z (the API answered 204) | 38363830176, attempt 1, `workflow_dispatch` | `probe-devos-test` 115184106381 and `probe-devos` 115184106632: `failure`, 07:37:27Z → 07:37:29Z | as (a) |
+| d | re-run of (a)'s run, 07:37:38Z (the API answered 201) | 38363721373, attempt 2, `push` | `probe-devos-test` 115184174360 and `probe-devos` 115184174710: `failure`, 07:37:39Z → 07:37:41Z | as (a): refused again (P6: the rule is evaluated again on a re-run) |
+| f | `issue_comment` on fixture issue #322 (created for this attempt, labelled synthetic in its body; comment 6140709703 at 07:38:00Z; the issue closed after the reads) | none | none | the probe workflow's run list after the comment: the three runs above only; repository-wide run lists with event `issue_comment` and with event `issues`: 0 runs each |
+
+The same pull request also started `migration-checks` run 38363816205 (event `pull_request`, `failure`): its M22 step ended `workflow check: FAIL`, naming the probe file (`names an environment (['migrate-devos', 'migrate-devos-test']); only migrate.yml may`; events `pull_request`, `workflow_dispatch` and `issue_comment` refused for a workflow naming an environment; `push must be on branch main only`; each probe step without `sslmode verify-full` and the pinned root). So the pull-request check also refuses the probe, independently of GitHub's environment rule. Its log is saved unedited in the executor's scratch directory.
+
+**Positive control:** 16.1 (H1-prime's push run on `main`: `credential present: yes` in both jobs, and both applies succeeded).
+
+**Not read.** GitHub shows a refused job's protection-rule message as an annotation on the run's page. The session's GitHub tools return no annotations (the check runs' output is empty), so the message's text is not recorded here; what is recorded is that no runner was assigned, no step ran and no log exists, in each job of (a) to (d).
+
+**Records of these runs.** The run and job records, copied field for field from the GitHub tools' responses: `evidence/C02/raw/EV-C02-007_T-W03-08_attempts_runs.md`. All eight probe jobs show `runner_id` 0, no runner name and no steps; the logs asked for (four jobs, one or more per run) answer HTTP 404. The blobs (`deployment_config_ref`): the probe workflow `78412f822ca96247af6f08edf76032d47589ef70` at `6683a8b`, and `migrate.yml` `de936c9e7270b94a05c4bbbc2a9355f2efb9d100` at `1c0dbcf`. The pull request's `migration-checks` log: `evidence/C02/raw/EV-C02-007_T-W03-08_pr321_migration-checks_run38363816205.log` (unedited; it holds no plant form). GitHub keeps the runs.
+
+**Still to come.** (e), the re-run of run 38363215668, after S2's search (T-W03-09's windows). The break (a synthetic environment `w03-fixture-unprotected` with no branch rule, created by Batu) is not made: the test asks it only batched with another step of Batu's; until then it is "could not check". The branch `claude/w03-branch-probe` is left: the guard refuses a session's branch deletion and no GitHub tool here deletes a branch; its deletion goes to Batu with his next batched step.
+
+### 16.3 The prober's analysis
+
+A prober (agent `aec4059aa1d8434f3`, fresh context, declared; DISCIPLINES OK) analysed the saved logs, the `devos` row and the attempts' records against both tests; its report is filed verbatim as `evidence/C02/raw/EV-C02-007_T-W03-05_T-W03-08_prober_report.md`. Its reading: T-W03-05 passes in `devos-test` and in `devos` on all five observed items and examples (a) to (d), the twelve fields equal to the fixture file in both, controls and breaks as required, the order as required; T-W03-08 (f) passes and the positive control is met; for (a) "the presence step does not run" is observed, for (b) to (d) inferred from the jobs' failure within one to two seconds; the protection-rule message is unread, so that part is "could not check"; the break is "could not check"; (e) is pending. Its gaps and what was done about each:
+- G1 (the step-level run record unsaved) and G5 (runner fields and logs for (b) to (d)): read and filed after the report (16.1, 16.2).
+- G2 (the `devos` row names no project): the connection's own project URL (16.1); that the connection reaches only `devos` stays EV-C00-002 item 8's documented claim.
+- G3 (the logs cannot be committed unedited): the redacted copies (16.1).
+- G4 (the message unread), G6 (the probe run's own `GITHUB_REF` for (b), shown only for the sibling run), G9 (approximate read times for (f)): stay as stated.
+- G7 (the break) and G11 ((e)): to come (16.2, "Still to come").
+- G8 (the probe file's blob): added (16.2).
+- G10 (the "Afterwards" steps): pull request #321 closed unmerged and issue #322 closed (GitHub shows both); the branch is left (16.2).
+- G12 (the fixture's revoke statements are observed by no field): the test does not ask for them; recorded as not covered.
+These are the prober's and the executor's readings; point 13's checker judges from the raw outputs.
