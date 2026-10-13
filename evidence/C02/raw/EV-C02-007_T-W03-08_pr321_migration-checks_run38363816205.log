@@ -1,0 +1,1106 @@
+﻿2026-10-13T07:37:22.2032923Z Current runner version: '2.337.0'
+2026-10-13T07:37:22.2057552Z ##[group]Runner Image Provisioner
+2026-10-13T07:37:22.2058510Z Hosted Compute Agent
+2026-10-13T07:37:22.2059102Z Version: 20261002.596
+2026-10-13T07:37:22.2059778Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-13T07:37:22.2060597Z Build Date: 2026-10-02T22:28:27Z
+2026-10-13T07:37:22.2061527Z Worker ID: {e0460fdb-c5b2-41c2-af38-aa7daf482b67}
+2026-10-13T07:37:22.2062337Z Region: westus3
+2026-10-13T07:37:22.2062885Z Cloud: Azure
+2026-10-13T07:37:22.2063450Z ##[endgroup]
+2026-10-13T07:37:22.2065338Z ##[group]Operating System
+2026-10-13T07:37:22.2065992Z Ubuntu
+2026-10-13T07:37:22.2066612Z 24.04.5
+2026-10-13T07:37:22.2067132Z LTS
+2026-10-13T07:37:22.2067630Z ##[endgroup]
+2026-10-13T07:37:22.2068274Z ##[group]Runner Image
+2026-10-13T07:37:22.2068915Z Image: ubuntu-24.04
+2026-10-13T07:37:22.2069536Z Version: 20261004.327.1
+2026-10-13T07:37:22.2070812Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-13T07:37:22.2072777Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-13T07:37:22.2073801Z ##[endgroup]
+2026-10-13T07:37:22.2075067Z ##[group]GITHUB_TOKEN Permissions
+2026-10-13T07:37:22.2077238Z Actions: read
+2026-10-13T07:37:22.2077966Z Contents: read
+2026-10-13T07:37:22.2078532Z Metadata: read
+2026-10-13T07:37:22.2079076Z ##[endgroup]
+2026-10-13T07:37:22.2081521Z Secret source: Actions
+2026-10-13T07:37:22.2082537Z Cache mode: write
+2026-10-13T07:37:22.2083338Z Prepare workflow directory
+2026-10-13T07:37:22.2430997Z Prepare all required actions
+2026-10-13T07:37:22.2480507Z Getting action download info
+2026-10-13T07:37:22.5706138Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-13T07:37:22.7595972Z Complete job name: migration checks (M15, M16, M22)
+2026-10-13T07:37:22.8388781Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-13T07:37:22.8390047Z with:
+2026-10-13T07:37:22.8390539Z   fetch-depth: 0
+2026-10-13T07:37:22.8391055Z   persist-credentials: false
+2026-10-13T07:37:22.8391943Z   repository: batuhanozgun/devos
+2026-10-13T07:37:22.8396081Z   token: ***
+2026-10-13T07:37:22.8396529Z   ssh-strict: true
+2026-10-13T07:37:22.8396985Z   ssh-user: git
+2026-10-13T07:37:22.8397430Z   clean: true
+2026-10-13T07:37:22.8397890Z   sparse-checkout-cone-mode: true
+2026-10-13T07:37:22.8398444Z   fetch-tags: false
+2026-10-13T07:37:22.8398915Z   show-progress: true
+2026-10-13T07:37:22.8399370Z   lfs: false
+2026-10-13T07:37:22.8399794Z   submodules: false
+2026-10-13T07:37:22.8400259Z   set-safe-directory: true
+2026-10-13T07:37:22.8400775Z   allow-unsafe-pr-checkout: false
+2026-10-13T07:37:22.8401790Z ##[endgroup]
+2026-10-13T07:37:22.9432995Z Syncing repository: batuhanozgun/devos
+2026-10-13T07:37:22.9435043Z ##[group]Getting Git version info
+2026-10-13T07:37:22.9435756Z Working directory is '/home/runner/work/devos/devos'
+2026-10-13T07:37:22.9436752Z [command]/usr/bin/git version
+2026-10-13T07:37:22.9526755Z git version 2.55.0
+2026-10-13T07:37:22.9557995Z ##[endgroup]
+2026-10-13T07:37:22.9575345Z Temporarily overriding HOME='/home/runner/work/_temp/412793e0-2ed1-4e6a-b3ee-6da69477464e' before making global git config changes
+2026-10-13T07:37:22.9578064Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T07:37:22.9592812Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-13T07:37:22.9640292Z Deleting the contents of '/home/runner/work/devos/devos'
+2026-10-13T07:37:22.9646325Z ##[group]Determining repository object format
+2026-10-13T07:37:22.9649333Z ##[endgroup]
+2026-10-13T07:37:22.9650512Z ##[group]Initializing the repository
+2026-10-13T07:37:22.9656207Z [command]/usr/bin/git init /home/runner/work/devos/devos
+2026-10-13T07:37:22.9767763Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-13T07:37:22.9770400Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-13T07:37:22.9772806Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-13T07:37:22.9774224Z hint: call:
+2026-10-13T07:37:22.9775239Z hint:
+2026-10-13T07:37:22.9775967Z hint: 	git config --global init.defaultBranch <name>
+2026-10-13T07:37:22.9776770Z hint:
+2026-10-13T07:37:22.9777520Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-13T07:37:22.9778668Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-13T07:37:22.9779572Z hint:
+2026-10-13T07:37:22.9780222Z hint: 	git branch -m <name>
+2026-10-13T07:37:22.9781377Z hint:
+2026-10-13T07:37:22.9782948Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-13T07:37:22.9784631Z Initialized empty Git repository in /home/runner/work/devos/devos/.git/
+2026-10-13T07:37:22.9786944Z [command]/usr/bin/git remote add origin https://github.com/batuhanozgun/devos
+2026-10-13T07:37:22.9841810Z ##[endgroup]
+2026-10-13T07:37:22.9843114Z ##[group]Disabling automatic garbage collection
+2026-10-13T07:37:22.9845879Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-13T07:37:22.9881367Z ##[endgroup]
+2026-10-13T07:37:22.9882725Z ##[group]Setting up auth
+2026-10-13T07:37:22.9883553Z Removing SSH command configuration
+2026-10-13T07:37:22.9889421Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T07:37:22.9927671Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T07:37:23.0379308Z Removing HTTP extra header
+2026-10-13T07:37:23.0386847Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T07:37:23.0424189Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T07:37:23.0648182Z Removing includeIf entries pointing to credentials config files
+2026-10-13T07:37:23.0654523Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T07:37:23.0693512Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T07:37:23.0924991Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-13T07:37:23.0968174Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:23.1003365Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:23.1048164Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:23.1105140Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:23.1138091Z ##[endgroup]
+2026-10-13T07:37:23.1147200Z ##[group]Fetching the repository
+2026-10-13T07:37:23.1150038Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +6398a81d9a8a0ea5ffe7942a6745b0080c834d8e:refs/remotes/pull/321/merge
+2026-10-13T07:37:25.5000956Z From https://github.com/batuhanozgun/devos
+2026-10-13T07:37:25.5003569Z  * [new branch]      claude/affectionate-bardeen-8aw91a       -> origin/claude/affectionate-bardeen-8aw91a
+2026-10-13T07:37:25.5006166Z  * [new branch]      claude/c00-12-6-closure                  -> origin/claude/c00-12-6-closure
+2026-10-13T07:37:25.5007405Z  * [new branch]      claude/c00-12-6-finish                   -> origin/claude/c00-12-6-finish
+2026-10-13T07:37:25.5008522Z  * [new branch]      claude/c00-batu-batch                    -> origin/claude/c00-batu-batch
+2026-10-13T07:37:25.5010038Z  * [new branch]      claude/c00-d011-library-access           -> origin/claude/c00-d011-library-access
+2026-10-13T07:37:25.5012003Z  * [new branch]      claude/c00-history-scan-passb            -> origin/claude/c00-history-scan-passb
+2026-10-13T07:37:25.5013557Z  * [new branch]      claude/c00-n051-translation-start        -> origin/claude/c00-n051-translation-start
+2026-10-13T07:37:25.5015634Z  * [new branch]      claude/c00-n084-history-scan             -> origin/claude/c00-n084-history-scan
+2026-10-13T07:37:25.5017113Z  * [new branch]      claude/c00-oi012-redact                  -> origin/claude/c00-oi012-redact
+2026-10-13T07:37:25.5018277Z  * [new branch]      claude/c00-opening-L136                  -> origin/claude/c00-opening-L136
+2026-10-13T07:37:25.5019657Z  * [new branch]      claude/c00-pc07-pc10                     -> origin/claude/c00-pc07-pc10
+2026-10-13T07:37:25.5021457Z  * [new branch]      claude/c00-pc13                          -> origin/claude/c00-pc13
+2026-10-13T07:37:25.5022645Z  * [new branch]      claude/c00-pc14                          -> origin/claude/c00-pc14
+2026-10-13T07:37:25.5023851Z  * [new branch]      claude/c00-starts-w08-w13                -> origin/claude/c00-starts-w08-w13
+2026-10-13T07:37:25.5025158Z  * [new branch]      claude/c00-subagent-audit                -> origin/claude/c00-subagent-audit
+2026-10-13T07:37:25.5026446Z  * [new branch]      claude/c00-tools-workflow-audit          -> origin/claude/c00-tools-workflow-audit
+2026-10-13T07:37:25.5027948Z  * [new branch]      claude/c00-w03-final                     -> origin/claude/c00-w03-final
+2026-10-13T07:37:25.5029423Z  * [new branch]      claude/c00-w04-premise-revision          -> origin/claude/c00-w04-premise-revision
+2026-10-13T07:37:25.5030703Z  * [new branch]      claude/c00-w06-translation               -> origin/claude/c00-w06-translation
+2026-10-13T07:37:25.5032206Z  * [new branch]      claude/c00-w07-accept                    -> origin/claude/c00-w07-accept
+2026-10-13T07:37:25.5033433Z  * [new branch]      claude/c00-w09-counter-design            -> origin/claude/c00-w09-counter-design
+2026-10-13T07:37:25.5034641Z  * [new branch]      claude/c00-w10-round1                    -> origin/claude/c00-w10-round1
+2026-10-13T07:37:25.5035789Z  * [new branch]      claude/c00-w13-summary                   -> origin/claude/c00-w13-summary
+2026-10-13T07:37:25.5036967Z  * [new branch]      claude/c00-w14-accepted                  -> origin/claude/c00-w14-accepted
+2026-10-13T07:37:25.5038168Z  * [new branch]      claude/c00-w14-leak-check                -> origin/claude/c00-w14-leak-check
+2026-10-13T07:37:25.5039334Z  * [new branch]      claude/c00-w15-accept                    -> origin/claude/c00-w15-accept
+2026-10-13T07:37:25.5040606Z  * [new branch]      claude/c00-w15-check3                    -> origin/claude/c00-w15-check3
+2026-10-13T07:37:25.5042145Z  * [new branch]      claude/c00-w15-chk44                     -> origin/claude/c00-w15-chk44
+2026-10-13T07:37:25.5043382Z  * [new branch]      claude/c00-w15-prereg                    -> origin/claude/c00-w15-prereg
+2026-10-13T07:37:25.5044631Z  * [new branch]      claude/c00-w15-results                   -> origin/claude/c00-w15-results
+2026-10-13T07:37:25.5045755Z  * [new branch]      claude/c00-w15-rev0                      -> origin/claude/c00-w15-rev0
+2026-10-13T07:37:25.5046851Z  * [new branch]      claude/c00-w15-rev1                      -> origin/claude/c00-w15-rev1
+2026-10-13T07:37:25.5047971Z  * [new branch]      claude/c00-w15-rev2                      -> origin/claude/c00-w15-rev2
+2026-10-13T07:37:25.5049077Z  * [new branch]      claude/c00-w15-rev2b                     -> origin/claude/c00-w15-rev2b
+2026-10-13T07:37:25.5050387Z  * [new branch]      claude/c00-w15-start                     -> origin/claude/c00-w15-start
+2026-10-13T07:37:25.5051933Z  * [new branch]      claude/c01-probe-design                  -> origin/claude/c01-probe-design
+2026-10-13T07:37:25.5053178Z  * [new branch]      claude/c01-records-batch                 -> origin/claude/c01-records-batch
+2026-10-13T07:37:25.5054347Z  * [new branch]      claude/c01-row4-docs                     -> origin/claude/c01-row4-docs
+2026-10-13T07:37:25.5055458Z  * [new branch]      claude/c02-n269-n270                     -> origin/claude/c02-n269-n270
+2026-10-13T07:37:25.5056586Z  * [new branch]      claude/c02-w03-live-h1                   -> origin/claude/c02-w03-live-h1
+2026-10-13T07:37:25.5057829Z  * [new branch]      claude/conv-brief-customer-role          -> origin/claude/conv-brief-customer-role
+2026-10-13T07:37:25.5059199Z  * [new branch]      claude/conv-handover-lessons-12-15       -> origin/claude/conv-handover-lessons-12-15
+2026-10-13T07:37:25.5060563Z  * [new branch]      claude/conv-handover-thinking            -> origin/claude/conv-handover-thinking
+2026-10-13T07:37:25.5062221Z  * [new branch]      claude/conv-rec-017bQA                   -> origin/claude/conv-rec-017bQA
+2026-10-13T07:37:25.5063406Z  * [new branch]      claude/conv-rec-0191az                   -> origin/claude/conv-rec-0191az
+2026-10-13T07:37:25.5064586Z  * [new branch]      claude/conv-rec-01SsLS                   -> origin/claude/conv-rec-01SsLS
+2026-10-13T07:37:25.5065880Z  * [new branch]      claude/counter-design-builder-model      -> origin/claude/counter-design-builder-model
+2026-10-13T07:37:25.5067248Z  * [new branch]      claude/counter-design-w-c00-12           -> origin/claude/counter-design-w-c00-12
+2026-10-13T07:37:25.5068463Z  * [new branch]      claude/d008-records                      -> origin/claude/d008-records
+2026-10-13T07:37:25.5069757Z  * [new branch]      claude/dispatcher                        -> origin/claude/dispatcher
+2026-10-13T07:37:25.5070975Z  * [new branch]      claude/epic-hamilton-9tisc4              -> origin/claude/epic-hamilton-9tisc4
+2026-10-13T07:37:25.5072438Z  * [new branch]      claude/fr-02-routing                     -> origin/claude/fr-02-routing
+2026-10-13T07:37:25.5074351Z  * [new branch]      claude/l135-merge-denial                 -> origin/claude/l135-merge-denial
+2026-10-13T07:37:25.5075620Z  * [new branch]      claude/lease-016nBe                      -> origin/claude/lease-016nBe
+2026-10-13T07:37:25.5077555Z  * [new branch]      claude/lease-01T3iF                      -> origin/claude/lease-01T3iF
+2026-10-13T07:37:25.5079692Z  * [new branch]      claude/lease-01XBdY                      -> origin/claude/lease-01XBdY
+2026-10-13T07:37:25.5082102Z  * [new branch]      claude/modest-feynman-9ewdke             -> origin/claude/modest-feynman-9ewdke
+2026-10-13T07:37:25.5084148Z  * [new branch]      claude/opening-mode-fix                  -> origin/claude/opening-mode-fix
+2026-10-13T07:37:25.5086274Z  * [new branch]      claude/probe-T-H6                        -> origin/claude/probe-T-H6
+2026-10-13T07:37:25.5088199Z  * [new branch]      claude/probe-c01-cs1-20261012T0604Z      -> origin/claude/probe-c01-cs1-20261012T0604Z
+2026-10-13T07:37:25.5090315Z  * [new branch]      claude/probe-c01-cs2-20261012T0808Z      -> origin/claude/probe-c01-cs2-20261012T0808Z
+2026-10-13T07:37:25.5092733Z  * [new branch]      claude/probe-c01-p1-20261011T1337Z       -> origin/claude/probe-c01-p1-20261011T1337Z
+2026-10-13T07:37:25.5095014Z  * [new branch]      claude/probe-c01-p2-20261011T1354Z       -> origin/claude/probe-c01-p2-20261011T1354Z
+2026-10-13T07:37:25.5097314Z  * [new branch]      claude/probe-c01-p3-20261011T1420Z       -> origin/claude/probe-c01-p3-20261011T1420Z
+2026-10-13T07:37:25.5099636Z  * [new branch]      claude/probe-c01-p3-20261011T1448Z       -> origin/claude/probe-c01-p3-20261011T1448Z
+2026-10-13T07:37:25.5102214Z  * [new branch]      claude/probe-c01-p4-20261011T1914Z       -> origin/claude/probe-c01-p4-20261011T1914Z
+2026-10-13T07:37:25.5104755Z  * [new branch]      claude/probe-c01-r1a-20261011T0808Z      -> origin/claude/probe-c01-r1a-20261011T0808Z
+2026-10-13T07:37:25.5107030Z  * [new branch]      claude/probe-c01-r1b-20261011T0913Z      -> origin/claude/probe-c01-r1b-20261011T0913Z
+2026-10-13T07:37:25.5109202Z  * [new branch]      claude/probe-hook                        -> origin/claude/probe-hook
+2026-10-13T07:37:25.5111425Z  * [new branch]      claude/probe-hook-report                 -> origin/claude/probe-hook-report
+2026-10-13T07:37:25.5113369Z  * [new branch]      claude/probe-t-g3                        -> origin/claude/probe-t-g3
+2026-10-13T07:37:25.5115260Z  * [new branch]      claude/probe-w12-imports                 -> origin/claude/probe-w12-imports
+2026-10-13T07:37:25.5117220Z  * [new branch]      claude/probe-w12-loading                 -> origin/claude/probe-w12-loading
+2026-10-13T07:37:25.5119190Z  * [new branch]      claude/probe-w12-workflow                -> origin/claude/probe-w12-workflow
+2026-10-13T07:37:25.5121469Z  * [new branch]      claude/quirky-ride-4be939                -> origin/claude/quirky-ride-4be939
+2026-10-13T07:37:25.5123364Z  * [new branch]      claude/rec-016nBe                        -> origin/claude/rec-016nBe
+2026-10-13T07:37:25.5125448Z  * [new branch]      claude/rec-01SzsP                        -> origin/claude/rec-01SzsP
+2026-10-13T07:37:25.5127317Z  * [new branch]      claude/rec-R-D008-11                     -> origin/claude/rec-R-D008-11
+2026-10-13T07:37:25.5129178Z  * [new branch]      claude/rec-R-D008-12                     -> origin/claude/rec-R-D008-12
+2026-10-13T07:37:25.5131011Z  * [new branch]      claude/rec-R-D008-13                     -> origin/claude/rec-R-D008-13
+2026-10-13T07:37:25.5133138Z  * [new branch]      claude/rec-R-D008-14                     -> origin/claude/rec-R-D008-14
+2026-10-13T07:37:25.5135161Z  * [new branch]      claude/rec-R-D008-15                     -> origin/claude/rec-R-D008-15
+2026-10-13T07:37:25.5136961Z  * [new branch]      claude/rec-R-D008-16                     -> origin/claude/rec-R-D008-16
+2026-10-13T07:37:25.5138819Z  * [new branch]      claude/rec-r-d008-1                      -> origin/claude/rec-r-d008-1
+2026-10-13T07:37:25.5140654Z  * [new branch]      claude/rec-r-d008-10                     -> origin/claude/rec-r-d008-10
+2026-10-13T07:37:25.5142702Z  * [new branch]      claude/rec-r-d008-2                      -> origin/claude/rec-r-d008-2
+2026-10-13T07:37:25.5144513Z  * [new branch]      claude/rec-r-d008-3                      -> origin/claude/rec-r-d008-3
+2026-10-13T07:37:25.5146291Z  * [new branch]      claude/rec-r-d008-4                      -> origin/claude/rec-r-d008-4
+2026-10-13T07:37:25.5148124Z  * [new branch]      claude/rec-r-d008-5                      -> origin/claude/rec-r-d008-5
+2026-10-13T07:37:25.5149966Z  * [new branch]      claude/rec-r-d008-6                      -> origin/claude/rec-r-d008-6
+2026-10-13T07:37:25.5152071Z  * [new branch]      claude/rec-r-d008-7                      -> origin/claude/rec-r-d008-7
+2026-10-13T07:37:25.5153873Z  * [new branch]      claude/rec-r-d008-8                      -> origin/claude/rec-r-d008-8
+2026-10-13T07:37:25.5155612Z  * [new branch]      claude/rec-r-d008-9                      -> origin/claude/rec-r-d008-9
+2026-10-13T07:37:25.5157447Z  * [new branch]      claude/rec-succ-01T3iF                   -> origin/claude/rec-succ-01T3iF
+2026-10-13T07:37:25.5159351Z  * [new branch]      claude/rec-succ-01Ve2me                  -> origin/claude/rec-succ-01Ve2me
+2026-10-13T07:37:25.5161905Z  * [new branch]      claude/record-review-R-TRANS-1           -> origin/claude/record-review-R-TRANS-1
+2026-10-13T07:37:25.5164060Z  * [new branch]      claude/record-run-01LMPa                 -> origin/claude/record-run-01LMPa
+2026-10-13T07:37:25.5166058Z  * [new branch]      claude/record-run-01XBdY                 -> origin/claude/record-run-01XBdY
+2026-10-13T07:37:25.5168036Z  * [new branch]      claude/revert-w12-1b-i                   -> origin/claude/revert-w12-1b-i
+2026-10-13T07:37:25.5170330Z  * [new branch]      claude/revert-w12-1b-ii                  -> origin/claude/revert-w12-1b-ii
+2026-10-13T07:37:25.5172617Z  * [new branch]      claude/review-R-C00-BOM-1                -> origin/claude/review-R-C00-BOM-1
+2026-10-13T07:37:25.5174682Z  * [new branch]      claude/review-R-C00-BOM-2                -> origin/claude/review-R-C00-BOM-2
+2026-10-13T07:37:25.5176761Z  * [new branch]      claude/review-R-C00-BOM-3                -> origin/claude/review-R-C00-BOM-3
+2026-10-13T07:37:25.5178847Z  * [new branch]      claude/review-R-C00-BOM-4                -> origin/claude/review-R-C00-BOM-4
+2026-10-13T07:37:25.5180908Z  * [new branch]      claude/review-R-C00-BOM-5                -> origin/claude/review-R-C00-BOM-5
+2026-10-13T07:37:25.5183252Z  * [new branch]      claude/review-R-C00-BOM-6                -> origin/claude/review-R-C00-BOM-6
+2026-10-13T07:37:25.5185310Z  * [new branch]      claude/review-R-C00-BOM-7                -> origin/claude/review-R-C00-BOM-7
+2026-10-13T07:37:25.5187354Z  * [new branch]      claude/review-R-D008-1                   -> origin/claude/review-R-D008-1
+2026-10-13T07:37:25.5189336Z  * [new branch]      claude/review-R-D008-10                  -> origin/claude/review-R-D008-10
+2026-10-13T07:37:25.5191579Z  * [new branch]      claude/review-R-D008-11                  -> origin/claude/review-R-D008-11
+2026-10-13T07:37:25.5193527Z  * [new branch]      claude/review-R-D008-12                  -> origin/claude/review-R-D008-12
+2026-10-13T07:37:25.5195450Z  * [new branch]      claude/review-R-D008-13                  -> origin/claude/review-R-D008-13
+2026-10-13T07:37:25.5197468Z  * [new branch]      claude/review-R-D008-14                  -> origin/claude/review-R-D008-14
+2026-10-13T07:37:25.5199446Z  * [new branch]      claude/review-R-D008-15                  -> origin/claude/review-R-D008-15
+2026-10-13T07:37:25.5202016Z  * [new branch]      claude/review-R-D008-16                  -> origin/claude/review-R-D008-16
+2026-10-13T07:37:25.5204039Z  * [new branch]      claude/review-R-D008-2                   -> origin/claude/review-R-D008-2
+2026-10-13T07:37:25.5205967Z  * [new branch]      claude/review-R-D008-3                   -> origin/claude/review-R-D008-3
+2026-10-13T07:37:25.5208019Z  * [new branch]      claude/review-R-D008-4                   -> origin/claude/review-R-D008-4
+2026-10-13T07:37:25.5209970Z  * [new branch]      claude/review-R-D008-5                   -> origin/claude/review-R-D008-5
+2026-10-13T07:37:25.5212198Z  * [new branch]      claude/review-R-D008-6                   -> origin/claude/review-R-D008-6
+2026-10-13T07:37:25.5214075Z  * [new branch]      claude/review-R-D008-7                   -> origin/claude/review-R-D008-7
+2026-10-13T07:37:25.5215938Z  * [new branch]      claude/review-R-D008-8                   -> origin/claude/review-R-D008-8
+2026-10-13T07:37:25.5217849Z  * [new branch]      claude/review-R-D008-9                   -> origin/claude/review-R-D008-9
+2026-10-13T07:37:25.5219840Z  * [new branch]      claude/review-R-FR02-1                   -> origin/claude/review-R-FR02-1
+2026-10-13T07:37:25.5222105Z  * [new branch]      claude/review-R-FR02-2                   -> origin/claude/review-R-FR02-2
+2026-10-13T07:37:25.5224104Z  * [new branch]      claude/review-R-FR02-3                   -> origin/claude/review-R-FR02-3
+2026-10-13T07:37:25.5226126Z  * [new branch]      claude/review-R-TRANS-1                  -> origin/claude/review-R-TRANS-1
+2026-10-13T07:37:25.5228129Z  * [new branch]      claude/review-R-W12-1                    -> origin/claude/review-R-W12-1
+2026-10-13T07:37:25.5230134Z  * [new branch]      claude/review-R-W12-2                    -> origin/claude/review-R-W12-2
+2026-10-13T07:37:25.5232398Z  * [new branch]      claude/review-R-W12-3                    -> origin/claude/review-R-W12-3
+2026-10-13T07:37:25.5234368Z  * [new branch]      claude/review-R-W12-4                    -> origin/claude/review-R-W12-4
+2026-10-13T07:37:25.5236300Z  * [new branch]      claude/review-R-W12-5                    -> origin/claude/review-R-W12-5
+2026-10-13T07:37:25.5238541Z  * [new branch]      claude/review-R-W12-6                    -> origin/claude/review-R-W12-6
+2026-10-13T07:37:25.5240387Z  * [new branch]      claude/run-0143r8                        -> origin/claude/run-0143r8
+2026-10-13T07:37:25.5242442Z  * [new branch]      claude/run-017bQA                        -> origin/claude/run-017bQA
+2026-10-13T07:37:25.5244246Z  * [new branch]      claude/run-01P9JQ                        -> origin/claude/run-01P9JQ
+2026-10-13T07:37:25.5246083Z  * [new branch]      claude/run-01Ve2m                        -> origin/claude/run-01Ve2m
+2026-10-13T07:37:25.5247973Z  * [new branch]      claude/run-01Ve2m-s4                     -> origin/claude/run-01Ve2m-s4
+2026-10-13T07:37:25.5249854Z  * [new branch]      claude/run-01WcVu                        -> origin/claude/run-01WcVu
+2026-10-13T07:37:25.5252054Z  * [new branch]      claude/run-01Wj4J                        -> origin/claude/run-01Wj4J
+2026-10-13T07:37:25.5253982Z  * [new branch]      claude/run-01Wj4J-cp1                    -> origin/claude/run-01Wj4J-cp1
+2026-10-13T07:37:25.5255931Z  * [new branch]      claude/run-01Wj4J-cp2                    -> origin/claude/run-01Wj4J-cp2
+2026-10-13T07:37:25.5257924Z  * [new branch]      claude/run-01XBdY-boot                   -> origin/claude/run-01XBdY-boot
+2026-10-13T07:37:25.5259867Z  * [new branch]      claude/run-01XBdY-cp1                    -> origin/claude/run-01XBdY-cp1
+2026-10-13T07:37:25.5262082Z  * [new branch]      claude/run-01XBdY-d009                   -> origin/claude/run-01XBdY-d009
+2026-10-13T07:37:25.5264056Z  * [new branch]      claude/run-01XBdY-fr03                   -> origin/claude/run-01XBdY-fr03
+2026-10-13T07:37:25.5266208Z  * [new branch]      claude/run-01XBdY-stop                   -> origin/claude/run-01XBdY-stop
+2026-10-13T07:37:25.5268550Z  * [new branch]      claude/run-01XBdY-stop2                  -> origin/claude/run-01XBdY-stop2
+2026-10-13T07:37:25.5270663Z  * [new branch]      claude/run-01XUsV                        -> origin/claude/run-01XUsV
+2026-10-13T07:37:25.5273004Z  * [new branch]      claude/run-01XUsV-rec                    -> origin/claude/run-01XUsV-rec
+2026-10-13T07:37:25.5275048Z  * [new branch]      claude/run-w12-1b-i                      -> origin/claude/run-w12-1b-i
+2026-10-13T07:37:25.5277254Z  * [new branch]      claude/run-w12-1b-i-rec                  -> origin/claude/run-w12-1b-i-rec
+2026-10-13T07:37:25.5279813Z  * [new branch]      claude/run-w12-1b-i-rec2                 -> origin/claude/run-w12-1b-i-rec2
+2026-10-13T07:37:25.5282723Z  * [new branch]      claude/run-w12-1b-i-rec3                 -> origin/claude/run-w12-1b-i-rec3
+2026-10-13T07:37:25.5285185Z  * [new branch]      claude/run-w12-1b-ii                     -> origin/claude/run-w12-1b-ii
+2026-10-13T07:37:25.5287705Z  * [new branch]      claude/run-w12-1b-ii-accept              -> origin/claude/run-w12-1b-ii-accept
+2026-10-13T07:37:25.5290333Z  * [new branch]      claude/run-w12-1b-ii-lease5              -> origin/claude/run-w12-1b-ii-lease5
+2026-10-13T07:37:25.5293157Z  * [new branch]      claude/run-w12-1b-ii-rec                 -> origin/claude/run-w12-1b-ii-rec
+2026-10-13T07:37:25.5295660Z  * [new branch]      claude/run-w12-1b-ii-rec2                -> origin/claude/run-w12-1b-ii-rec2
+2026-10-13T07:37:25.5298149Z  * [new branch]      claude/run-w12-1b-ii-rec3                -> origin/claude/run-w12-1b-ii-rec3
+2026-10-13T07:37:25.5300576Z  * [new branch]      claude/run-w12-1b-ii-rec4                -> origin/claude/run-w12-1b-ii-rec4
+2026-10-13T07:37:25.5303329Z  * [new branch]      claude/run-w12-1b-ii-rec5                -> origin/claude/run-w12-1b-ii-rec5
+2026-10-13T07:37:25.5305869Z  * [new branch]      claude/run-w12-1b-ii-rec6                -> origin/claude/run-w12-1b-ii-rec6
+2026-10-13T07:37:25.5308545Z  * [new branch]      claude/run-w12-1b-ii-rec7                -> origin/claude/run-w12-1b-ii-rec7
+2026-10-13T07:37:25.5310898Z  * [new branch]      claude/run-w12-1c                        -> origin/claude/run-w12-1c
+2026-10-13T07:37:25.5314011Z  * [new branch]      claude/run-w12-1c-lease                  -> origin/claude/run-w12-1c-lease
+2026-10-13T07:37:25.5316423Z  * [new branch]      claude/run-w12-1c-rec                    -> origin/claude/run-w12-1c-rec
+2026-10-13T07:37:25.5318765Z  * [new branch]      claude/run-w12-1c-rec1                   -> origin/claude/run-w12-1c-rec1
+2026-10-13T07:37:25.5321023Z  * [new branch]      claude/run-w12-1c-rec2                   -> origin/claude/run-w12-1c-rec2
+2026-10-13T07:37:25.5323474Z  * [new branch]      claude/run-w12-1c-stop                   -> origin/claude/run-w12-1c-stop
+2026-10-13T07:37:25.5325632Z  * [new branch]      claude/stop-01SzsP                       -> origin/claude/stop-01SzsP
+2026-10-13T07:37:25.5327906Z  * [new branch]      claude/transition-bundle                 -> origin/claude/transition-bundle
+2026-10-13T07:37:25.5330392Z  * [new branch]      claude/transition-handover               -> origin/claude/transition-handover
+2026-10-13T07:37:25.5411576Z  * [new branch]      claude/transition-step0                  -> origin/claude/transition-step0
+2026-10-13T07:37:25.5414066Z  * [new branch]      claude/w03-a3-rehearsal                  -> origin/claude/w03-a3-rehearsal
+2026-10-13T07:37:25.5415773Z  * [new branch]      claude/w03-branch-probe                  -> origin/claude/w03-branch-probe
+2026-10-13T07:37:25.5417195Z  * [new branch]      claude/w03-rehearsal                     -> origin/claude/w03-rehearsal
+2026-10-13T07:37:25.5418576Z  * [new branch]      claude/w03-search-fixture                -> origin/claude/w03-search-fixture
+2026-10-13T07:37:25.5420158Z  * [new branch]      claude/w12-6-guard                       -> origin/claude/w12-6-guard
+2026-10-13T07:37:25.5421654Z  * [new branch]      main                                     -> origin/main
+2026-10-13T07:37:25.5423601Z  * [new ref]         6398a81d9a8a0ea5ffe7942a6745b0080c834d8e -> pull/321/merge
+2026-10-13T07:37:25.5427022Z ##[endgroup]
+2026-10-13T07:37:25.5428449Z ##[group]Determining the checkout info
+2026-10-13T07:37:25.5430235Z ##[endgroup]
+2026-10-13T07:37:25.5431494Z [command]/usr/bin/git sparse-checkout disable
+2026-10-13T07:37:25.5434533Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-13T07:37:25.5437533Z ##[group]Checking out the ref
+2026-10-13T07:37:25.5438499Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/321/merge
+2026-10-13T07:37:25.6384989Z Note: switching to 'refs/remotes/pull/321/merge'.
+2026-10-13T07:37:25.6386031Z 
+2026-10-13T07:37:25.6386829Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-13T07:37:25.6388684Z changes and commit them, and you can discard any commits you make in this
+2026-10-13T07:37:25.6390482Z state without impacting any branches by switching back to a branch.
+2026-10-13T07:37:25.6391842Z 
+2026-10-13T07:37:25.6392592Z If you want to create a new branch to retain commits you create, you may
+2026-10-13T07:37:25.6394251Z do so (now or later) by using -c with the switch command. Example:
+2026-10-13T07:37:25.6395236Z 
+2026-10-13T07:37:25.6395628Z   git switch -c <new-branch-name>
+2026-10-13T07:37:25.6396348Z 
+2026-10-13T07:37:25.6396750Z Or undo this operation with:
+2026-10-13T07:37:25.6397360Z 
+2026-10-13T07:37:25.6397722Z   git switch -
+2026-10-13T07:37:25.6398186Z 
+2026-10-13T07:37:25.6398972Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-13T07:37:25.6400200Z 
+2026-10-13T07:37:25.6401664Z HEAD is now at 6398a81 Merge 6683a8b2f0c4ffe54ceb008170d3df860d91452f into 1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9
+2026-10-13T07:37:25.6409940Z ##[endgroup]
+2026-10-13T07:37:25.6459872Z [command]/usr/bin/git log -1 --format=%H
+2026-10-13T07:37:25.6487105Z 6398a81d9a8a0ea5ffe7942a6745b0080c834d8e
+2026-10-13T07:37:25.6497379Z ##[group]Removing auth
+2026-10-13T07:37:25.6498079Z Removing SSH command configuration
+2026-10-13T07:37:25.6501204Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T07:37:25.6536972Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T07:37:25.6766822Z Removing HTTP extra header
+2026-10-13T07:37:25.6768208Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T07:37:25.6808146Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T07:37:25.7034648Z Removing includeIf entries pointing to credentials config files
+2026-10-13T07:37:25.7039199Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T07:37:25.7070214Z includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-13T07:37:25.7072340Z includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-13T07:37:25.7074214Z includeif.gitdir:/github/workspace/.git.path
+2026-10-13T07:37:25.7075859Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-13T07:37:25.7084471Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-13T07:37:25.7111045Z /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7122354Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7159447Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-13T07:37:25.7184331Z /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7193970Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7234585Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-13T07:37:25.7259938Z /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7277088Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7313732Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-13T07:37:25.7339547Z /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7355771Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config
+2026-10-13T07:37:25.7393327Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T07:37:25.7617778Z Removing credentials config '/home/runner/work/_temp/git-credentials-51f6e1a7-7f09-4f2d-b3cc-ea5faa52b21e.config'
+2026-10-13T07:37:25.7626667Z ##[endgroup]
+2026-10-13T07:37:25.7866836Z ##[group]Run # M22 (EV-C02-001): a static check of the workflow files at this pull request's head. In every workflow file: no job
+2026-10-13T07:37:25.7869851Z [36;1m# M22 (EV-C02-001): a static check of the workflow files at this pull request's head. In every workflow file: no job[0m
+2026-10-13T07:37:25.7872034Z [36;1m# calls a reusable workflow (a job-level uses:) and every action is pinned by full commit SHA (EV-C02-001 section 3,[0m
+2026-10-13T07:37:25.7874059Z [36;1m# "Reusable workflows"). In a workflow that names a migration environment: only migrate.yml may; it starts only on[0m
+2026-10-13T07:37:25.7876049Z [36;1m# push to main and on schedule; each job runs on the GitHub-hosted label ubuntu-24.04 (M20), with no container and no[0m
+2026-10-13T07:37:25.7878242Z [36;1m# services; a step that applies is only in the push jobs, and only when the job's if: admits the push event alone.[0m
+2026-10-13T07:37:25.7880154Z [36;1m# Server authentication (security F5): in a job that names an environment, or whose env sets one of libpq's[0m
+2026-10-13T07:37:25.7882485Z [36;1m# connection variables, every step's effective PGSSLMODE is verify-full and its PGSSLROOTCERT the pinned root file;[0m
+2026-10-13T07:37:25.7884471Z [36;1m# its run text sets sslmode only to verify-full, names another root file only in a step that holds no secret (the[0m
+2026-10-13T07:37:25.7886377Z [36;1m# run-time root of negative control (a)), removes neither variable, and no libpq service is set. It reads the files[0m
+2026-10-13T07:37:25.7888298Z [36;1m# as data (YAML) and runs nothing from them; a value built at run time is not seen (the class-high review is that[0m
+2026-10-13T07:37:25.7890158Z [36;1m# layer). A condition it cannot read is "could not check", never a pass. First it judges wrong copies of the files[0m
+2026-10-13T07:37:25.7891863Z [36;1m# (its self-check): each must fail on its own rule, the control pass.[0m
+2026-10-13T07:37:25.7892832Z [36;1mimport copy, glob, os, re[0m
+2026-10-13T07:37:25.7893469Z [36;1mtry:[0m
+2026-10-13T07:37:25.7893964Z [36;1m    import yaml[0m
+2026-10-13T07:37:25.7894544Z [36;1mexcept ImportError:[0m
+2026-10-13T07:37:25.7895537Z [36;1m    print("workflow check: could not check (PyYAML is not installed on the runner)")[0m
+2026-10-13T07:37:25.7896612Z [36;1m    raise SystemExit(3)[0m
+2026-10-13T07:37:25.7897216Z [36;1m[0m
+2026-10-13T07:37:25.7898296Z [36;1m# GitHub evaluates every expression opener (a dollar sign, then two opening braces) in a run: body before this[0m
+2026-10-13T07:37:25.7900163Z [36;1m# program receives it, so this body holds none: each expression text it needs is built from OPEN, and at run[0m
+2026-10-13T07:37:25.7901903Z [36;1m# time is exactly the text written after it (CHK-C02-029 F-1; EV-C02-007 section 12).[0m
+2026-10-13T07:37:25.7902958Z [36;1mOPEN = "$" + "{{"[0m
+2026-10-13T07:37:25.7903720Z [36;1mENVIRONMENTS = {"migrate-devos-test", "migrate-devos"}[0m
+2026-10-13T07:37:25.7904588Z [36;1mRUNNERS = {"ubuntu-24.04"}[0m
+2026-10-13T07:37:25.7905278Z [36;1mPUSH_JOBS = ("devos-test", "devos")[0m
+2026-10-13T07:37:25.7906047Z [36;1mPUSH = "github.event_name=='push'"[0m
+2026-10-13T07:37:25.7906876Z [36;1mSTATUS = {"!cancelled()", "always()", "success()"}[0m
+2026-10-13T07:37:25.7907944Z [36;1mPIN = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(/[^@\s]+)?@[0-9a-f]{40}")[0m
+2026-10-13T07:37:25.7909443Z [36;1mAPPLY = re.compile(r"\bdb\s+(push|reset)\b|\bmigration\s+(up|repair)\b|psql\b[^\n]*\s-f\s[^\n]*migrations")[0m
+2026-10-13T07:37:25.7910671Z [36;1mTLS_MODE = "verify-full"[0m
+2026-10-13T07:37:25.7911532Z [36;1mTLS_ROOT = "/tmp/w03-supabase-root-2021-ca.crt"[0m
+2026-10-13T07:37:25.7912869Z [36;1mLIBPQ = ("PGHOST", "PGHOSTADDR", "PGPASSWORD", "PGSSLMODE", "PGSSLROOTCERT", "PGSERVICE", "PGSERVICEFILE")[0m
+2026-10-13T07:37:25.7914540Z [36;1mMODE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLMODE['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")[0m
+2026-10-13T07:37:25.7916248Z [36;1mROOT_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PG)?SSLROOTCERT['\"]?\s*[=:]\s*['\"]?([^\s'\"&;)]*)")[0m
+2026-10-13T07:37:25.7917788Z [36;1mSERVICE_TEXT = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:PGSERVICE(?:FILE)?|service)['\"]?\s*[=:]")[0m
+2026-10-13T07:37:25.7919426Z [36;1mUNSET_TEXT = re.compile(r"(?i)(?:\bunset\s+(?:-v\s+)?|(?<!\S)-u\s*|--unset[= ]|\.pop\(\s*['\"]|\bdel\s+[^\n]*?\[\s*['\"])"[0m
+2026-10-13T07:37:25.7920732Z [36;1m                        r"(PGSSL(?:MODE|ROOTCERT))\b")[0m
+2026-10-13T07:37:25.7921858Z [36;1m[0m
+2026-10-13T07:37:25.7922320Z [36;1m[0m
+2026-10-13T07:37:25.7922810Z [36;1mdef push_alone(cond):[0m
+2026-10-13T07:37:25.7923986Z [36;1m    """A job's if: as this check reads it: 'push' (the push event alone), 'all' (no if: every event) or None (a form[0m
+2026-10-13T07:37:25.7925868Z [36;1m    this check does not read: an ||, another event, a negation of the event test, or anything else)."""[0m
+2026-10-13T07:37:25.7927043Z [36;1m    if cond is None:[0m
+2026-10-13T07:37:25.7927658Z [36;1m        return "all"[0m
+2026-10-13T07:37:25.7928363Z [36;1m    c = re.sub(r"\s+", "", str(cond)).replace('"', "'")[0m
+2026-10-13T07:37:25.7929261Z [36;1m    if c.startswith(OPEN) and c.endswith("}}"):[0m
+2026-10-13T07:37:25.7930026Z [36;1m        c = c[3:-2][0m
+2026-10-13T07:37:25.7930611Z [36;1m    terms = c.split("&&")[0m
+2026-10-13T07:37:25.7931696Z [36;1m    if terms.count(PUSH) == 1 and all(t == PUSH or t in STATUS for t in terms):[0m
+2026-10-13T07:37:25.7932694Z [36;1m        return "push"[0m
+2026-10-13T07:37:25.7933292Z [36;1m    return None[0m
+2026-10-13T07:37:25.7933835Z [36;1m[0m
+2026-10-13T07:37:25.7934290Z [36;1m[0m
+2026-10-13T07:37:25.7934759Z [36;1mdef env_of(x):[0m
+2026-10-13T07:37:25.7935703Z [36;1m    return x.get("env") if isinstance(x, dict) and isinstance(x.get("env"), dict) else {}[0m
+2026-10-13T07:37:25.7936750Z [36;1m[0m
+2026-10-13T07:37:25.7937194Z [36;1m[0m
+2026-10-13T07:37:25.7937826Z [36;1mdef tls_problems(path, wf, jobs, env_jobs, problems):[0m
+2026-10-13T07:37:25.7939243Z [36;1m    """Security F5, in a job that names an environment or whose env (workflow, job or step) sets a libpq variable."""[0m
+2026-10-13T07:37:25.7940942Z [36;1m    for jid, job in jobs.items():[0m
+2026-10-13T07:37:25.7942422Z [36;1m        job = job if isinstance(job, dict) else {}[0m
+2026-10-13T07:37:25.7944043Z [36;1m        steps = [s for s in job.get("steps") or [] if isinstance(s, dict)][0m
+2026-10-13T07:37:25.7945833Z [36;1m        envs = [env_of(wf), env_of(job)] + [env_of(s) for s in steps][0m
+2026-10-13T07:37:25.7947843Z [36;1m        if jid not in env_jobs and not any(k in e for e in envs for k in LIBPQ):[0m
+2026-10-13T07:37:25.7949474Z [36;1m            continue[0m
+2026-10-13T07:37:25.7950599Z [36;1m        for i, s in enumerate(steps):[0m
+2026-10-13T07:37:25.7952465Z [36;1m            where = f"{path}: job {jid} step {s.get('id') or '#' + str(i + 1)}"[0m
+2026-10-13T07:37:25.7954258Z [36;1m            eff = {**env_of(wf), **env_of(job), **env_of(s)}[0m
+2026-10-13T07:37:25.7955873Z [36;1m            if str(eff.get("PGSSLMODE")) != TLS_MODE:[0m
+2026-10-13T07:37:25.7957620Z [36;1m                problems.append(f"{where}: sslmode {eff.get('PGSSLMODE')!r}, not verify-full")[0m
+2026-10-13T07:37:25.7958850Z [36;1m            if str(eff.get("PGSSLROOTCERT")) != TLS_ROOT:[0m
+2026-10-13T07:37:25.7960200Z [36;1m                problems.append(f"{where}: root file {eff.get('PGSSLROOTCERT')!r}, not the pinned one {TLS_ROOT}")[0m
+2026-10-13T07:37:25.7961850Z [36;1m            text = str(s.get("run") or "")[0m
+2026-10-13T07:37:25.7962655Z [36;1m            for v in MODE_TEXT.findall(text):[0m
+2026-10-13T07:37:25.7963425Z [36;1m                if v != TLS_MODE:[0m
+2026-10-13T07:37:25.7964498Z [36;1m                    problems.append(f"{where}: its run text sets sslmode {v!r}, not verify-full")[0m
+2026-10-13T07:37:25.7965766Z [36;1m            secret = any("secrets." in str(v) for v in eff.values())[0m
+2026-10-13T07:37:25.7966902Z [36;1m            for v in ROOT_TEXT.findall(text):[0m
+2026-10-13T07:37:25.7967713Z [36;1m                if v != TLS_ROOT and secret:[0m
+2026-10-13T07:37:25.7968959Z [36;1m                    problems.append(f"{where}: its run text names the root file {v!r}, not the pinned one, in a step "[0m
+2026-10-13T07:37:25.7970265Z [36;1m                                    f"that holds a secret")[0m
+2026-10-13T07:37:25.7971384Z [36;1m            for v in UNSET_TEXT.findall(text):[0m
+2026-10-13T07:37:25.7972760Z [36;1m                problems.append(f"{where}: its run text removes {v.upper()} from the environment (libpq's default "[0m
+2026-10-13T07:37:25.7974052Z [36;1m                                f"then applies)")[0m
+2026-10-13T07:37:25.7975327Z [36;1m            if SERVICE_TEXT.search(text) or "PGSERVICE" in eff or "PGSERVICEFILE" in eff:[0m
+2026-10-13T07:37:25.7976888Z [36;1m                problems.append(f"{where}: it sets a libpq service, which could change sslmode or the root file")[0m
+2026-10-13T07:37:25.7978074Z [36;1m[0m
+2026-10-13T07:37:25.7978534Z [36;1m[0m
+2026-10-13T07:37:25.7979019Z [36;1mdef check(files):[0m
+2026-10-13T07:37:25.7980191Z [36;1m    """files: {path: the parsed workflow, or the exception it raised}. Returns (problems, could-not-check, naming)."""[0m
+2026-10-13T07:37:25.7981745Z [36;1m    problems, cnc, naming = [], [], [][0m
+2026-10-13T07:37:25.7982551Z [36;1m    for path, wf in sorted(files.items()):[0m
+2026-10-13T07:37:25.7983812Z [36;1m        if isinstance(wf, Exception) or not isinstance(wf, dict) or not isinstance(wf.get("jobs") or {}, dict):[0m
+2026-10-13T07:37:25.7985236Z [36;1m            problems.append(f"{path}: does not parse as a workflow")[0m
+2026-10-13T07:37:25.7986126Z [36;1m            continue[0m
+2026-10-13T07:37:25.7986770Z [36;1m        jobs = wf.get("jobs") or {}[0m
+2026-10-13T07:37:25.7987455Z [36;1m        env_jobs = {}[0m
+2026-10-13T07:37:25.7988132Z [36;1m        for jid, job in jobs.items():[0m
+2026-10-13T07:37:25.7988948Z [36;1m            job = job if isinstance(job, dict) else {}[0m
+2026-10-13T07:37:25.7989718Z [36;1m            if "uses" in job:[0m
+2026-10-13T07:37:25.7990750Z [36;1m                problems.append(f"{path}: job {jid} calls a reusable workflow ({job['uses']!r})")[0m
+2026-10-13T07:37:25.7991993Z [36;1m            for s in job.get("steps") or []:[0m
+2026-10-13T07:37:25.7993104Z [36;1m                if isinstance(s, dict) and "uses" in s and not PIN.fullmatch(str(s["uses"]).strip()):[0m
+2026-10-13T07:37:25.7994680Z [36;1m                    problems.append(f"{path}: job {jid} uses {s['uses']!r}, not an action pinned by full commit SHA")[0m
+2026-10-13T07:37:25.7995891Z [36;1m            e = job.get("environment")[0m
+2026-10-13T07:37:25.7996733Z [36;1m            name = e.get("name") if isinstance(e, dict) else e[0m
+2026-10-13T07:37:25.7997545Z [36;1m            if name:[0m
+2026-10-13T07:37:25.7998177Z [36;1m                env_jobs[jid] = str(name)[0m
+2026-10-13T07:37:25.7999028Z [36;1m        tls_problems(path, wf, jobs, env_jobs, problems)[0m
+2026-10-13T07:37:25.7999829Z [36;1m        if not env_jobs:[0m
+2026-10-13T07:37:25.8000431Z [36;1m            continue[0m
+2026-10-13T07:37:25.8001040Z [36;1m        naming.append(path)[0m
+2026-10-13T07:37:25.8001930Z [36;1m        if os.path.basename(path) != "migrate.yml":[0m
+2026-10-13T07:37:25.8003281Z [36;1m            problems.append(f"{path}: names an environment ({sorted(set(env_jobs.values()))}); only migrate.yml may")[0m
+2026-10-13T07:37:25.8004606Z [36;1m        for jid, name in env_jobs.items():[0m
+2026-10-13T07:37:25.8005370Z [36;1m            if name not in ENVIRONMENTS:[0m
+2026-10-13T07:37:25.8006624Z [36;1m                problems.append(f"{path}: job {jid} names environment {name!r}, not one of the migration environments")[0m
+2026-10-13T07:37:25.8007898Z [36;1m        on = wf.get("on", wf.get(True))[0m
+2026-10-13T07:37:25.8008783Z [36;1m        events = [on] if isinstance(on, str) else list(on or [])[0m
+2026-10-13T07:37:25.8009760Z [36;1m        for ev in events:[0m
+2026-10-13T07:37:25.8010452Z [36;1m            if ev not in ("push", "schedule"):[0m
+2026-10-13T07:37:25.8012069Z [36;1m                problems.append(f"{path}: event {ev!r}; a workflow naming an environment starts only on push and schedule")[0m
+2026-10-13T07:37:25.8013500Z [36;1m        push = on.get("push") if isinstance(on, dict) else None[0m
+2026-10-13T07:37:25.8014944Z [36;1m        if "push" in events and (not isinstance(push, dict) or push.get("branches") != ["main"] or set(push) != {"branches"}):[0m
+2026-10-13T07:37:25.8016601Z [36;1m            problems.append(f"{path}: push must be on branch main only, with no other filter")[0m
+2026-10-13T07:37:25.8017708Z [36;1m        for jid, job in jobs.items():[0m
+2026-10-13T07:37:25.8018676Z [36;1m            job = job if isinstance(job, dict) else {}[0m
+2026-10-13T07:37:25.8019446Z [36;1m            if "uses" in job:[0m
+2026-10-13T07:37:25.8020080Z [36;1m                continue[0m
+2026-10-13T07:37:25.8021003Z [36;1m            if not isinstance(job.get("runs-on"), str) or job["runs-on"] not in RUNNERS:[0m
+2026-10-13T07:37:25.8022703Z [36;1m                problems.append(f"{path}: job {jid} runs on {job.get('runs-on')!r}, not the GitHub-hosted label ubuntu-24.04")[0m
+2026-10-13T07:37:25.8024014Z [36;1m            for key in ("container", "services"):[0m
+2026-10-13T07:37:25.8024771Z [36;1m                if key in job:[0m
+2026-10-13T07:37:25.8025902Z [36;1m                    problems.append(f"{path}: job {jid} has {key}:, which a workflow naming an environment may not")[0m
+2026-10-13T07:37:25.8027372Z [36;1m            applies = [s.get("id") for s in job.get("steps") or [] if isinstance(s, dict) and ([0m
+2026-10-13T07:37:25.8029104Z [36;1m                s.get("id") in ("apply", "dryrun") or APPLY.search(str(s.get("run", ""))))][0m
+2026-10-13T07:37:25.8030103Z [36;1m            if not applies:[0m
+2026-10-13T07:37:25.8030738Z [36;1m                continue[0m
+2026-10-13T07:37:25.8031558Z [36;1m            form = push_alone(job.get("if"))[0m
+2026-10-13T07:37:25.8032329Z [36;1m            if jid not in PUSH_JOBS:[0m
+2026-10-13T07:37:25.8033455Z [36;1m                problems.append(f"{path}: job {jid} step {applies[0]!r} applies, outside the push jobs")[0m
+2026-10-13T07:37:25.8034592Z [36;1m            elif form == "all":[0m
+2026-10-13T07:37:25.8035737Z [36;1m                problems.append(f"{path}: job {jid} holds an apply step and has no if:, so it admits every event")[0m
+2026-10-13T07:37:25.8036914Z [36;1m            elif form is None:[0m
+2026-10-13T07:37:25.8038053Z [36;1m                cnc.append(f"{path}: job {jid} holds an apply step and its if: {job.get('if')!r} is not a form this "[0m
+2026-10-13T07:37:25.8039656Z [36;1m                           f"check reads as the push event alone (an ||, another event or a negation is refused)")[0m
+2026-10-13T07:37:25.8040798Z [36;1m    return problems, cnc, naming[0m
+2026-10-13T07:37:25.8041587Z [36;1m[0m
+2026-10-13T07:37:25.8042047Z [36;1m[0m
+2026-10-13T07:37:25.8042509Z [36;1mdef load():[0m
+2026-10-13T07:37:25.8043033Z [36;1m    files = {}[0m
+2026-10-13T07:37:25.8044062Z [36;1m    for path in sorted(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")):[0m
+2026-10-13T07:37:25.8045191Z [36;1m        try:[0m
+2026-10-13T07:37:25.8045957Z [36;1m            files[path] = yaml.safe_load(open(path, encoding="utf-8")) or {}[0m
+2026-10-13T07:37:25.8046909Z [36;1m        except Exception as exc:[0m
+2026-10-13T07:37:25.8047594Z [36;1m            files[path] = exc[0m
+2026-10-13T07:37:25.8048233Z [36;1m    return files[0m
+2026-10-13T07:37:25.8048781Z [36;1m[0m
+2026-10-13T07:37:25.8049232Z [36;1m[0m
+2026-10-13T07:37:25.8049707Z [36;1mdef self_check(files):[0m
+2026-10-13T07:37:25.8050847Z [36;1m    """Wrong copies of the files at this head, each changed in one place; (label, how, the text its message holds).[0m
+2026-10-13T07:37:25.8052931Z [36;1m    Returns the number of copies that did not fail on their own rule (or could not be made)."""[0m
+2026-10-13T07:37:25.8054382Z [36;1m    m, c = ".github/workflows/migrate.yml", ".github/workflows/migration-checks.yml"[0m
+2026-10-13T07:37:25.8055500Z [36;1m    sha = "d23441a48e516b6c34aea4fa41551a30e30af803"[0m
+2026-10-13T07:37:25.8056240Z [36;1m[0m
+2026-10-13T07:37:25.8056701Z [36;1m    def job(f, jid):[0m
+2026-10-13T07:37:25.8057301Z [36;1m        return f[m]["jobs"][jid][0m
+2026-10-13T07:37:25.8057929Z [36;1m[0m
+2026-10-13T07:37:25.8058396Z [36;1m    def on(f, path=m):[0m
+2026-10-13T07:37:25.8059191Z [36;1m        return f[path]["on"] if "on" in f[path] else f[path][True][0m
+2026-10-13T07:37:25.8060021Z [36;1m[0m
+2026-10-13T07:37:25.8060501Z [36;1m    def setif(jid, value):[0m
+2026-10-13T07:37:25.8061397Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8061998Z [36;1m            if value is None:[0m
+2026-10-13T07:37:25.8062669Z [36;1m                job(f, jid).pop("if")[0m
+2026-10-13T07:37:25.8063346Z [36;1m            else:[0m
+2026-10-13T07:37:25.8063966Z [36;1m                job(f, jid)["if"] = value[0m
+2026-10-13T07:37:25.8064666Z [36;1m        return how[0m
+2026-10-13T07:37:25.8065216Z [36;1m[0m
+2026-10-13T07:37:25.8065688Z [36;1m    def put(jid, key, value):[0m
+2026-10-13T07:37:25.8066330Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8066937Z [36;1m            job(f, jid)[key] = value[0m
+2026-10-13T07:37:25.8067610Z [36;1m        return how[0m
+2026-10-13T07:37:25.8068161Z [36;1m[0m
+2026-10-13T07:37:25.8068641Z [36;1m    def add_file(name, wf):[0m
+2026-10-13T07:37:25.8069268Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8069903Z [36;1m            f[".github/workflows/" + name] = wf[0m
+2026-10-13T07:37:25.8070613Z [36;1m        return how[0m
+2026-10-13T07:37:25.8071353Z [36;1m[0m
+2026-10-13T07:37:25.8071825Z [36;1m    def step_uses(f):[0m
+2026-10-13T07:37:25.8072635Z [36;1m        job(f, "devos-test")["steps"][1]["uses"] = "actions/checkout@v6"[0m
+2026-10-13T07:37:25.8073491Z [36;1m[0m
+2026-10-13T07:37:25.8073974Z [36;1m    def step(f, jid, sid):[0m
+2026-10-13T07:37:25.8074639Z [36;1m        for s in job(f, jid)["steps"]:[0m
+2026-10-13T07:37:25.8075352Z [36;1m            if s.get("id") == sid:[0m
+2026-10-13T07:37:25.8076013Z [36;1m                return s[0m
+2026-10-13T07:37:25.8076628Z [36;1m        raise KeyError(sid)[0m
+2026-10-13T07:37:25.8077235Z [36;1m[0m
+2026-10-13T07:37:25.8077764Z [36;1m    def put_env(jid, key, value, sid=None):[0m
+2026-10-13T07:37:25.8078474Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8079406Z [36;1m            (job(f, jid) if sid is None else step(f, jid, sid)).setdefault("env", {})[key] = value[0m
+2026-10-13T07:37:25.8080427Z [36;1m        return how[0m
+2026-10-13T07:37:25.8081002Z [36;1m[0m
+2026-10-13T07:37:25.8081597Z [36;1m    def drop_env(jid, key):[0m
+2026-10-13T07:37:25.8082215Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8082824Z [36;1m            job(f, jid)["env"].pop(key)[0m
+2026-10-13T07:37:25.8083514Z [36;1m        return how[0m
+2026-10-13T07:37:25.8084063Z [36;1m[0m
+2026-10-13T07:37:25.8084570Z [36;1m    def edit_run(jid, sid, old, new):[0m
+2026-10-13T07:37:25.8085245Z [36;1m        def how(f):[0m
+2026-10-13T07:37:25.8085843Z [36;1m            s = step(f, jid, sid)[0m
+2026-10-13T07:37:25.8086523Z [36;1m            if old not in s["run"]:[0m
+2026-10-13T07:37:25.8087221Z [36;1m                raise KeyError(old)[0m
+2026-10-13T07:37:25.8087973Z [36;1m            s["run"] = s["run"].replace(old, new)[0m
+2026-10-13T07:37:25.8088731Z [36;1m        return how[0m
+2026-10-13T07:37:25.8089279Z [36;1m[0m
+2026-10-13T07:37:25.8089953Z [36;1m    hosted = {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}[0m
+2026-10-13T07:37:25.8090824Z [36;1m    copies = [[0m
+2026-10-13T07:37:25.8092073Z [36;1m        ("migrate.yml on workflow_dispatch", lambda f: on(f).update({"workflow_dispatch": None}), "'workflow_dispatch'"),[0m
+2026-10-13T07:37:25.8093889Z [36;1m        ("push on a claude/** branch too", lambda f: on(f)["push"].update({"branches": ["main", "claude/**"]}),[0m
+2026-10-13T07:37:25.8095086Z [36;1m         "push must be on branch main only"),[0m
+2026-10-13T07:37:25.8096175Z [36;1m        ("push with a path filter", lambda f: on(f)["push"].update({"paths": ["supabase/**"]}),[0m
+2026-10-13T07:37:25.8097269Z [36;1m         "push must be on branch main only"),[0m
+2026-10-13T07:37:25.8098321Z [36;1m        ("checkout pinned by tag", step_uses, "not an action pinned by full commit SHA"),[0m
+2026-10-13T07:37:25.8099424Z [36;1m        ("a second workflow naming migrate-devos",[0m
+2026-10-13T07:37:25.8100374Z [36;1m         add_file("other.yml", {"on": {"push": {"branches": ["main"]}},[0m
+2026-10-13T07:37:25.8101567Z [36;1m                                "jobs": {"x": {**hosted, "environment": "migrate-devos",[0m
+2026-10-13T07:37:25.8102884Z [36;1m                                               "env": {"PGSSLMODE": TLS_MODE, "PGSSLROOTCERT": TLS_ROOT}}}}),[0m
+2026-10-13T07:37:25.8103899Z [36;1m         "only migrate.yml may"),[0m
+2026-10-13T07:37:25.8104962Z [36;1m        ("an apply step in a scheduled job", lambda f: job(f, "check-devos-test")["steps"].append([0m
+2026-10-13T07:37:25.8106287Z [36;1m            {"id": "x", "run": "supabase db push"}), "applies, outside the push jobs"),[0m
+2026-10-13T07:37:25.8107512Z [36;1m        ("migrate.yml calls a reusable workflow", lambda f: f[m]["jobs"].update([0m
+2026-10-13T07:37:25.8108977Z [36;1m            {"call": {"uses": f"someone/elsewhere/.github/workflows/w.yml@{sha}"}}), "calls a reusable workflow"),[0m
+2026-10-13T07:37:25.8110215Z [36;1m        ("devos-test on push || schedule",[0m
+2026-10-13T07:37:25.8111490Z [36;1m         setif("devos-test", OPEN + " github.event_name == 'push' || github.event_name == 'schedule' }}"),[0m
+2026-10-13T07:37:25.8112668Z [36;1m         "is not a form this check reads"),[0m
+2026-10-13T07:37:25.8113869Z [36;1m        ("devos-test on a negated event test", setif("devos-test", OPEN + " !(github.event_name == 'schedule') }}"),[0m
+2026-10-13T07:37:25.8115123Z [36;1m         "is not a form this check reads"),[0m
+2026-10-13T07:37:25.8116349Z [36;1m        ("devos-test on any event but schedule", setif("devos-test", OPEN + " github.event_name != 'schedule' }}"),[0m
+2026-10-13T07:37:25.8117588Z [36;1m         "is not a form this check reads"),[0m
+2026-10-13T07:37:25.8118733Z [36;1m        ("devos on schedule", setif("devos", OPEN + " !cancelled() && github.event_name == 'schedule' }}"),[0m
+2026-10-13T07:37:25.8119889Z [36;1m         "is not a form this check reads"),[0m
+2026-10-13T07:37:25.8120886Z [36;1m        ("devos-test with no if:", setif("devos-test", None), "admits every event"),[0m
+2026-10-13T07:37:25.8122188Z [36;1m        ("a workflow naming no environment calls a reusable workflow",[0m
+2026-10-13T07:37:25.8123274Z [36;1m         add_file("caller.yml", {"on": {"push": {"branches": ["main"]}},[0m
+2026-10-13T07:37:25.8124488Z [36;1m                                 "jobs": {"x": {"uses": "someone/elsewhere/.github/workflows/w.yml@main"}}}),[0m
+2026-10-13T07:37:25.8125558Z [36;1m         "calls a reusable workflow"),[0m
+2026-10-13T07:37:25.8126445Z [36;1m        ("a workflow naming no environment uses an action by tag",[0m
+2026-10-13T07:37:25.8127483Z [36;1m         add_file("tagged.yml", {"on": {"pull_request": None},[0m
+2026-10-13T07:37:25.8128700Z [36;1m                                 "jobs": {"x": {"runs-on": "ubuntu-24.04", "steps": [{"uses": "actions/checkout@v4"}]}}}),[0m
+2026-10-13T07:37:25.8129870Z [36;1m         "not an action pinned by full commit SHA"),[0m
+2026-10-13T07:37:25.8131265Z [36;1m        ("devos-test in a container", put("devos-test", "container", "someorg/someimage:latest"), "has container:"),[0m
+2026-10-13T07:37:25.8132899Z [36;1m        ("devos with services", put("devos", "services", {"db": {"image": "postgres"}}), "has services:"),[0m
+2026-10-13T07:37:25.8134709Z [36;1m        ("devos-test on a self-hosted runner", put("devos-test", "runs-on", "self-hosted"), "not the GitHub-hosted label"),[0m
+2026-10-13T07:37:25.8136382Z [36;1m        ("check-devos on a list of labels", put("check-devos", "runs-on", ["self-hosted", "linux"]),[0m
+2026-10-13T07:37:25.8137508Z [36;1m         "not the GitHub-hosted label"),[0m
+2026-10-13T07:37:25.8138711Z [36;1m        ("devos-test with sslmode require", put_env("devos-test", "PGSSLMODE", "require"), "not verify-full"),[0m
+2026-10-13T07:37:25.8140402Z [36;1m        ("devos without PGSSLMODE (libpq's default, prefer)", drop_env("devos", "PGSSLMODE"), "not verify-full"),[0m
+2026-10-13T07:37:25.8142201Z [36;1m        ("check-devos-test with sslmode verify-ca", put_env("check-devos-test", "PGSSLMODE", "verify-ca"),[0m
+2026-10-13T07:37:25.8143508Z [36;1m         "not verify-full"),[0m
+2026-10-13T07:37:25.8144713Z [36;1m        ("devos's compare overriding sslmode", put_env("devos", "PGSSLMODE", "require", "compare"), "not verify-full"),[0m
+2026-10-13T07:37:25.8146417Z [36;1m        ("check-devos without a root file", drop_env("check-devos", "PGSSLROOTCERT"), "not the pinned one"),[0m
+2026-10-13T07:37:25.8147992Z [36;1m        ("devos-test trusting the system's roots", put_env("devos-test", "PGSSLROOTCERT", "system"),[0m
+2026-10-13T07:37:25.8149106Z [36;1m         "not the pinned one"),[0m
+2026-10-13T07:37:25.8150321Z [36;1m        ("devos's dry-run URL with sslmode require", edit_run("devos", "dryrun", "mode=verify-full", "mode=" + "require"),[0m
+2026-10-13T07:37:25.8151689Z [36;1m         "run text sets sslmode"),[0m
+2026-10-13T07:37:25.8152495Z [36;1m        ("devos-test's connect turning verification off",[0m
+2026-10-13T07:37:25.8153720Z [36;1m         edit_run("devos-test", "connect", "timeout 60 psql", "PGSSLMODE" + "=disable timeout 60 psql"),[0m
+2026-10-13T07:37:25.8154869Z [36;1m         "run text sets sslmode"),[0m
+2026-10-13T07:37:25.8155739Z [36;1m        ("devos's connect removing PGSSLMODE from its environment",[0m
+2026-10-13T07:37:25.8157119Z [36;1m         edit_run("devos", "connect", "timeout 60 psql", "env -u PGSSLMODE timeout 60 psql"), "removes PGSSLMODE"),[0m
+2026-10-13T07:37:25.8158434Z [36;1m        ("devos-test's apply URL naming another root file",[0m
+2026-10-13T07:37:25.8159732Z [36;1m         edit_run("devos-test", "apply", TLS_ROOT, "/tmp/w03-other-root.crt"), "in a step that holds a secret"),[0m
+2026-10-13T07:37:25.8161264Z [36;1m        ("devos's controls step holding the secret beside its run-time root",[0m
+2026-10-13T07:37:25.8162792Z [36;1m         put_env("devos", "PGPASSWORD", OPEN + " secrets.SUPABASE_DB_PASSWORD }}", "tls"), "in a step that holds a secret"),[0m
+2026-10-13T07:37:25.8164214Z [36;1m        ("check-devos-test's compare with a libpq service file",[0m
+2026-10-13T07:37:25.8165573Z [36;1m         put_env("check-devos-test", "PGSERVICEFILE", "/tmp/w03-pg_service.conf", "compare"), "libpq service"),[0m
+2026-10-13T07:37:25.8167013Z [36;1m        ("a workflow naming no environment that connects with sslmode require",[0m
+2026-10-13T07:37:25.8168269Z [36;1m         add_file("connects.yml", {"on": {"push": {"branches": ["main"]}}, "jobs": {"x": {[0m
+2026-10-13T07:37:25.8169549Z [36;1m             "runs-on": "ubuntu-24.04", "env": {"PGHOST": "db.example", "PGSSLMODE": "require",[0m
+2026-10-13T07:37:25.8170657Z [36;1m                                                "PGSSLROOTCERT": TLS_ROOT},[0m
+2026-10-13T07:37:25.8171778Z [36;1m             "steps": [{"run": "psql -X -c 'select 1'"}]}}}), "not verify-full"),[0m
+2026-10-13T07:37:25.8172657Z [36;1m    ][0m
+2026-10-13T07:37:25.8173161Z [36;1m    base = check(files)[0m
+2026-10-13T07:37:25.8173808Z [36;1m    base = set(base[0]) | set(base[1])[0m
+2026-10-13T07:37:25.8174478Z [36;1m    bad = 0[0m
+2026-10-13T07:37:25.8175049Z [36;1m    for label, how, why in copies:[0m
+2026-10-13T07:37:25.8175750Z [36;1m        f = copy.deepcopy(files)[0m
+2026-10-13T07:37:25.8176401Z [36;1m        try:[0m
+2026-10-13T07:37:25.8176924Z [36;1m            how(f)[0m
+2026-10-13T07:37:25.8177869Z [36;1m        except (KeyError, IndexError, TypeError, AttributeError):[0m
+2026-10-13T07:37:25.8179158Z [36;1m            print(f"workflow check: self-check: {label}: could not be made from the files at this head")[0m
+2026-10-13T07:37:25.8180251Z [36;1m            bad += 1[0m
+2026-10-13T07:37:25.8180819Z [36;1m            continue[0m
+2026-10-13T07:37:25.8181534Z [36;1m        p, n, _ = check(f)[0m
+2026-10-13T07:37:25.8182221Z [36;1m        new = (set(p) | set(n)) - base[0m
+2026-10-13T07:37:25.8182990Z [36;1m        if new and all(why in x for x in new):[0m
+2026-10-13T07:37:25.8184071Z [36;1m            print(f"workflow check: self-check: {label}: fails on its own rule, as it must")[0m
+2026-10-13T07:37:25.8185201Z [36;1m        elif not new and any(why in x for x in base):[0m
+2026-10-13T07:37:25.8186613Z [36;1m            print(f"workflow check: self-check: {label}: not shown, the files at this head already break that rule")[0m
+2026-10-13T07:37:25.8187775Z [36;1m        else:[0m
+2026-10-13T07:37:25.8188885Z [36;1m            print(f"workflow check: self-check: {label}: does NOT fail on its own rule ({sorted(new) or 'it passes'})")[0m
+2026-10-13T07:37:25.8190073Z [36;1m            bad += 1[0m
+2026-10-13T07:37:25.8190658Z [36;1m    f = copy.deepcopy(files)[0m
+2026-10-13T07:37:25.8191398Z [36;1m    try:[0m
+2026-10-13T07:37:25.8191997Z [36;1m        on(f, c).update({"workflow_dispatch": None})[0m
+2026-10-13T07:37:25.8192752Z [36;1m        p, n, _ = check(f)[0m
+2026-10-13T07:37:25.8193406Z [36;1m        ok = (set(p) | set(n)) == base[0m
+2026-10-13T07:37:25.8194195Z [36;1m    except (KeyError, TypeError, AttributeError):[0m
+2026-10-13T07:37:25.8194967Z [36;1m        ok = False[0m
+2026-10-13T07:37:25.8196172Z [36;1m    print("workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): "[0m
+2026-10-13T07:37:25.8197628Z [36;1m          + ("passes, as it must" if ok else "does NOT pass"))[0m
+2026-10-13T07:37:25.8198431Z [36;1m    return bad + (not ok)[0m
+2026-10-13T07:37:25.8199028Z [36;1m[0m
+2026-10-13T07:37:25.8199477Z [36;1m[0m
+2026-10-13T07:37:25.8199935Z [36;1mfiles = load()[0m
+2026-10-13T07:37:25.8200458Z [36;1mtry:[0m
+2026-10-13T07:37:25.8200956Z [36;1m    bad = self_check(files)[0m
+2026-10-13T07:37:25.8201760Z [36;1m    problems, cnc, naming = check(files)[0m
+2026-10-13T07:37:25.8202478Z [36;1mexcept Exception as exc:[0m
+2026-10-13T07:37:25.8203611Z [36;1m    print(f"workflow check: could not check (the check itself failed on these files: {type(exc).__name__})")[0m
+2026-10-13T07:37:25.8204797Z [36;1m    raise SystemExit(3)[0m
+2026-10-13T07:37:25.8205807Z [36;1mprint("workflow check: workflows naming an environment: " + (", ".join(naming) or "none"))[0m
+2026-10-13T07:37:25.8206900Z [36;1mfor p in problems:[0m
+2026-10-13T07:37:25.8207509Z [36;1m    print("workflow check: " + p)[0m
+2026-10-13T07:37:25.8208170Z [36;1mfor p in cnc:[0m
+2026-10-13T07:37:25.8208820Z [36;1m    print("workflow check: could not check: " + p)[0m
+2026-10-13T07:37:25.8209575Z [36;1mif bad:[0m
+2026-10-13T07:37:25.8210354Z [36;1m    print(f"workflow check: could not check: the self-check failed ({bad})")[0m
+2026-10-13T07:37:25.8211857Z [36;1mprint("workflow check: " + ("FAIL" if problems else "could not check" if cnc or bad else "pass"))[0m
+2026-10-13T07:37:25.8213140Z [36;1mraise SystemExit(1 if problems else 3 if cnc or bad else 0)[0m
+2026-10-13T07:37:25.8360073Z shell: /usr/bin/python {0}
+2026-10-13T07:37:25.8360700Z ##[endgroup]
+2026-10-13T07:37:27.1107661Z workflow check: self-check: migrate.yml on workflow_dispatch: fails on its own rule, as it must
+2026-10-13T07:37:27.1109235Z workflow check: self-check: push on a claude/** branch too: fails on its own rule, as it must
+2026-10-13T07:37:27.1110617Z workflow check: self-check: push with a path filter: fails on its own rule, as it must
+2026-10-13T07:37:27.1112399Z workflow check: self-check: checkout pinned by tag: fails on its own rule, as it must
+2026-10-13T07:37:27.1114362Z workflow check: self-check: a second workflow naming migrate-devos: fails on its own rule, as it must
+2026-10-13T07:37:27.1115467Z workflow check: self-check: an apply step in a scheduled job: fails on its own rule, as it must
+2026-10-13T07:37:27.1116414Z workflow check: self-check: migrate.yml calls a reusable workflow: fails on its own rule, as it must
+2026-10-13T07:37:27.1117308Z workflow check: self-check: devos-test on push || schedule: fails on its own rule, as it must
+2026-10-13T07:37:27.1118221Z workflow check: self-check: devos-test on a negated event test: fails on its own rule, as it must
+2026-10-13T07:37:27.1119062Z workflow check: self-check: devos-test on any event but schedule: fails on its own rule, as it must
+2026-10-13T07:37:27.1120017Z workflow check: self-check: devos on schedule: fails on its own rule, as it must
+2026-10-13T07:37:27.1125228Z workflow check: self-check: devos-test with no if:: fails on its own rule, as it must
+2026-10-13T07:37:27.1126182Z workflow check: self-check: a workflow naming no environment calls a reusable workflow: fails on its own rule, as it must
+2026-10-13T07:37:27.1127214Z workflow check: self-check: a workflow naming no environment uses an action by tag: fails on its own rule, as it must
+2026-10-13T07:37:27.1128111Z workflow check: self-check: devos-test in a container: fails on its own rule, as it must
+2026-10-13T07:37:27.1128783Z workflow check: self-check: devos with services: fails on its own rule, as it must
+2026-10-13T07:37:27.1129455Z workflow check: self-check: devos-test on a self-hosted runner: fails on its own rule, as it must
+2026-10-13T07:37:27.1130119Z workflow check: self-check: check-devos on a list of labels: fails on its own rule, as it must
+2026-10-13T07:37:27.1130766Z workflow check: self-check: devos-test with sslmode require: fails on its own rule, as it must
+2026-10-13T07:37:27.1132235Z workflow check: self-check: devos without PGSSLMODE (libpq's default, prefer): fails on its own rule, as it must
+2026-10-13T07:37:27.1133089Z workflow check: self-check: check-devos-test with sslmode verify-ca: fails on its own rule, as it must
+2026-10-13T07:37:27.1133814Z workflow check: self-check: devos's compare overriding sslmode: fails on its own rule, as it must
+2026-10-13T07:37:27.1134527Z workflow check: self-check: check-devos without a root file: fails on its own rule, as it must
+2026-10-13T07:37:27.1135236Z workflow check: self-check: devos-test trusting the system's roots: fails on its own rule, as it must
+2026-10-13T07:37:27.1135966Z workflow check: self-check: devos's dry-run URL with sslmode require: fails on its own rule, as it must
+2026-10-13T07:37:27.1136701Z workflow check: self-check: devos-test's connect turning verification off: fails on its own rule, as it must
+2026-10-13T07:37:27.1137527Z workflow check: self-check: devos's connect removing PGSSLMODE from its environment: fails on its own rule, as it must
+2026-10-13T07:37:27.1138329Z workflow check: self-check: devos-test's apply URL naming another root file: fails on its own rule, as it must
+2026-10-13T07:37:27.1139180Z workflow check: self-check: devos's controls step holding the secret beside its run-time root: fails on its own rule, as it must
+2026-10-13T07:37:27.1140092Z workflow check: self-check: check-devos-test's compare with a libpq service file: fails on its own rule, as it must
+2026-10-13T07:37:27.1141012Z workflow check: self-check: a workflow naming no environment that connects with sslmode require: fails on its own rule, as it must
+2026-10-13T07:37:27.1142223Z workflow check: self-check control: migration-checks.yml on workflow_dispatch (it names no environment): passes, as it must
+2026-10-13T07:37:27.1143137Z workflow check: workflows naming an environment: .github/workflows/migrate.yml, .github/workflows/w03-fixture-branch-probe.yml
+2026-10-13T07:37:27.1144096Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: job probe-devos-test step presence: sslmode None, not verify-full
+2026-10-13T07:37:27.1145432Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: job probe-devos-test step presence: root file None, not the pinned one /tmp/w03-supabase-root-2021-ca.crt
+2026-10-13T07:37:27.1146508Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: job probe-devos step presence: sslmode None, not verify-full
+2026-10-13T07:37:27.1147570Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: job probe-devos step presence: root file None, not the pinned one /tmp/w03-supabase-root-2021-ca.crt
+2026-10-13T07:37:27.1148852Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: names an environment (['migrate-devos', 'migrate-devos-test']); only migrate.yml may
+2026-10-13T07:37:27.1149952Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: event 'pull_request'; a workflow naming an environment starts only on push and schedule
+2026-10-13T07:37:27.1151568Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: event 'workflow_dispatch'; a workflow naming an environment starts only on push and schedule
+2026-10-13T07:37:27.1152731Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: event 'issue_comment'; a workflow naming an environment starts only on push and schedule
+2026-10-13T07:37:27.1153743Z workflow check: .github/workflows/w03-fixture-branch-probe.yml: push must be on branch main only, with no other filter
+2026-10-13T07:37:27.1154327Z workflow check: FAIL
+2026-10-13T07:37:27.1178134Z ##[error]Process completed with exit code 1.
+2026-10-13T07:37:27.1266573Z ##[group]Run # The inputs of pr_decide (M15): this pull request's changed files, main's head, and the report of the latest
+2026-10-13T07:37:27.1267585Z [36;1m# The inputs of pr_decide (M15): this pull request's changed files, main's head, and the report of the latest[0m
+2026-10-13T07:37:27.1268396Z [36;1m# completed run of migrate.yml at main's head, read from that run's job logs with this job's own GITHUB_TOKEN[0m
+2026-10-13T07:37:27.1269213Z [36;1m# (actions: read). No database credential. The logs are read as data: only lines of the report's fixed form are parsed.[0m
+2026-10-13T07:37:27.1269891Z [36;1mimport json, os, re, subprocess, urllib.error, urllib.request[0m
+2026-10-13T07:37:27.1270288Z [36;1m[0m
+2026-10-13T07:37:27.1270525Z [36;1mdef git(*args):[0m
+2026-10-13T07:37:27.1270922Z [36;1m    return subprocess.run(["git", *args], capture_output=True, text=True)[0m
+2026-10-13T07:37:27.1271761Z [36;1m[0m
+2026-10-13T07:37:27.1272339Z [36;1m# The changed files, NUL-separated (git diff -z): git then gives every path verbatim, never quoted, whatever its[0m
+2026-10-13T07:37:27.1273177Z [36;1m# name holds (non-ASCII, tab, quote, backslash, control character; CHK-C02-035 C2). A diff that fails, or output[0m
+2026-10-13T07:37:27.1273986Z [36;1m# that does not parse, leaves the list unreadable (an empty output), which pr_decide reads as "could not check".[0m
+2026-10-13T07:37:27.1274545Z [36;1mchanged = None[0m
+2026-10-13T07:37:27.1275031Z [36;1mdiff = subprocess.run(["git", "diff", "-z", "--name-status", "-M", "HEAD^1", "HEAD"], capture_output=True)[0m
+2026-10-13T07:37:27.1275561Z [36;1mif diff.returncode:[0m
+2026-10-13T07:37:27.1276054Z [36;1m    print("changed files: could not be read (git diff failed); pr_decide reads that as could not check")[0m
+2026-10-13T07:37:27.1276562Z [36;1melse:[0m
+2026-10-13T07:37:27.1276983Z [36;1m    fields, changed, i = diff.stdout.decode("utf-8", "surrogateescape").split("\0"), [], 0[0m
+2026-10-13T07:37:27.1277485Z [36;1m    if fields[-1] == "":[0m
+2026-10-13T07:37:27.1277784Z [36;1m        fields.pop()[0m
+2026-10-13T07:37:27.1278079Z [36;1m    while i < len(fields):[0m
+2026-10-13T07:37:27.1278388Z [36;1m        status = fields[i][:1][0m
+2026-10-13T07:37:27.1278729Z [36;1m        n = 2 if status in ("R", "C") else 1[0m
+2026-10-13T07:37:27.1279084Z [36;1m        paths = fields[i + 1:i + 1 + n][0m
+2026-10-13T07:37:27.1279534Z [36;1m        if status not in ("A", "C", "D", "M", "R", "T") or len(paths) != n or not all(paths):[0m
+2026-10-13T07:37:27.1280184Z [36;1m            print("changed files: could not be read (git diff's output does not parse); pr_decide reads that "[0m
+2026-10-13T07:37:27.1280725Z [36;1m                  "as could not check")[0m
+2026-10-13T07:37:27.1281076Z [36;1m            changed = None[0m
+2026-10-13T07:37:27.1299429Z [36;1m            break[0m
+2026-10-13T07:37:27.1299924Z [36;1m        changed.append({"path": paths[1], "status": status, "old_path": paths[0]} if n == 2[0m
+2026-10-13T07:37:27.1300507Z [36;1m                       else {"path": paths[0], "status": status})[0m
+2026-10-13T07:37:27.1300895Z [36;1m        i += 1 + n[0m
+2026-10-13T07:37:27.1301514Z [36;1mmain_head = git("ls-remote", "origin", "refs/heads/main").stdout.split("\t")[0].strip()[0m
+2026-10-13T07:37:27.1302264Z [36;1mrepo, api = os.environ["GITHUB_REPOSITORY"], os.environ.get("GITHUB_API_URL", "https://api.github.com")[0m
+2026-10-13T07:37:27.1303083Z [36;1m[0m
+2026-10-13T07:37:27.1303315Z [36;1mdef get(url):[0m
+2026-10-13T07:37:27.1303870Z [36;1m    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "devos-checks",[0m
+2026-10-13T07:37:27.1304538Z [36;1m                                               "X-GitHub-Api-Version": "2022-11-28"})[0m
+2026-10-13T07:37:27.1305113Z [36;1m    req.add_unredirected_header("Authorization", "Bearer " + os.environ["GH_TOKEN"])[0m
+2026-10-13T07:37:27.1305665Z [36;1m    with urllib.request.urlopen(req, timeout=60) as r:[0m
+2026-10-13T07:37:27.1306237Z [36;1m        return r.read()[0m
+2026-10-13T07:37:27.1306526Z [36;1m[0m
+2026-10-13T07:37:27.1306753Z [36;1mreport = ""[0m
+2026-10-13T07:37:27.1307065Z [36;1mLINE = re.compile(r"^\S+ W03REPORT (\{.*\})\s*$")[0m
+2026-10-13T07:37:27.1307417Z [36;1mtry:[0m
+2026-10-13T07:37:27.1307913Z [36;1m    runs = json.loads(get(f"{api}/repos/{repo}/actions/workflows/migrate.yml/runs?branch=main&status=completed"[0m
+2026-10-13T07:37:27.1308655Z [36;1m                          f"&head_sha={main_head}&per_page=20")).get("workflow_runs", []) if main_head else [][0m
+2026-10-13T07:37:27.1309149Z [36;1m    if not runs:[0m
+2026-10-13T07:37:27.1309648Z [36;1m        print(f"run report: none (no completed run of migrate.yml at main's head {main_head or 'unknown'})")[0m
+2026-10-13T07:37:27.1310169Z [36;1m    else:[0m
+2026-10-13T07:37:27.1310422Z [36;1m        run = runs[0][0m
+2026-10-13T07:37:27.1310952Z [36;1m        # Each migration job prints exactly one report line, for its own project; every other line a job prints[0m
+2026-10-13T07:37:27.1311887Z [36;1m        # from data is escaped, except the test programs' own output in devos-test. So a project is read only from[0m
+2026-10-13T07:37:27.1312668Z [36;1m        # its own job (devos-test or check-devos-test; devos or check-devos), and only if that job's log holds[0m
+2026-10-13T07:37:27.1313432Z [36;1m        # exactly one report line, for that project, at the run's commit; anything else leaves the project out,[0m
+2026-10-13T07:37:27.1314098Z [36;1m        # which pr_decide reads as "could not check". A line cannot replace another.[0m
+2026-10-13T07:37:27.1314784Z [36;1m        OWN = {"devos-test": "devos-test", "check-devos-test": "devos-test", "devos": "devos", "check-devos": "devos"}[0m
+2026-10-13T07:37:27.1315352Z [36;1m        projects, unusable = {}, set()[0m
+2026-10-13T07:37:27.1315908Z [36;1m        for job in json.loads(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/jobs?per_page=100")).get("jobs", []):[0m
+2026-10-13T07:37:27.1316526Z [36;1m            jname = str(job.get("name") or "").split(" ", 1)[0][0m
+2026-10-13T07:37:27.1316913Z [36;1m            own = OWN.get(jname)[0m
+2026-10-13T07:37:27.1317343Z [36;1m            label = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in jname)[0m
+2026-10-13T07:37:27.1317961Z [36;1m            # A skipped job never ran and has no log (GitHub answers 404 for it: run 38319371450's skipped[0m
+2026-10-13T07:37:27.1318663Z [36;1m            # check-devos-test, 2026-10-13), and every run skips two of the four jobs; it printed no report[0m
+2026-10-13T07:37:27.1319358Z [36;1m            # line, so it is passed over. Any other job whose log cannot be read leaves its own project[0m
+2026-10-13T07:37:27.1319922Z [36;1m            # unread ("could not check"), not the whole report.[0m
+2026-10-13T07:37:27.1320384Z [36;1m            if job.get("conclusion") == "skipped":[0m
+2026-10-13T07:37:27.1320834Z [36;1m                print(f"run report: job {label} was skipped; it has no log")[0m
+2026-10-13T07:37:27.1321396Z [36;1m                continue[0m
+2026-10-13T07:37:27.1321682Z [36;1m            try:[0m
+2026-10-13T07:37:27.1322124Z [36;1m                log = get(f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs").decode("utf-8", "replace")[0m
+2026-10-13T07:37:27.1322813Z [36;1m            except urllib.error.HTTPError as exc:[0m
+2026-10-13T07:37:27.1323314Z [36;1m                print(f"run report: job {label}: its log could not be read (HTTP {exc.code})"[0m
+2026-10-13T07:37:27.1323867Z [36;1m                      + (f"; {own} is not read (could not check)" if own else ""))[0m
+2026-10-13T07:37:27.1324273Z [36;1m                if own:[0m
+2026-10-13T07:37:27.1324578Z [36;1m                    unusable.add(own)[0m
+2026-10-13T07:37:27.1324924Z [36;1m                    projects.pop(own, None)[0m
+2026-10-13T07:37:27.1325253Z [36;1m                continue[0m
+2026-10-13T07:37:27.1325540Z [36;1m            found = [][0m
+2026-10-13T07:37:27.1325982Z [36;1m            for ln in log.splitlines():[0m
+2026-10-13T07:37:27.1326328Z [36;1m                m = LINE.match(ln)[0m
+2026-10-13T07:37:27.1326648Z [36;1m                if m:[0m
+2026-10-13T07:37:27.1326920Z [36;1m                    try:[0m
+2026-10-13T07:37:27.1327252Z [36;1m                        found.append(json.loads(m.group(1)))[0m
+2026-10-13T07:37:27.1327650Z [36;1m                    except ValueError:[0m
+2026-10-13T07:37:27.1327995Z [36;1m                        found.append(None)[0m
+2026-10-13T07:37:27.1328323Z [36;1m            if own is None:[0m
+2026-10-13T07:37:27.1328628Z [36;1m                if found:[0m
+2026-10-13T07:37:27.1329139Z [36;1m                    print(f"run report: job {label} is not a migration job; its {len(found)} report lines are not read")[0m
+2026-10-13T07:37:27.1329676Z [36;1m                continue[0m
+2026-10-13T07:37:27.1330000Z [36;1m            r = found[0] if len(found) == 1 else None[0m
+2026-10-13T07:37:27.1330545Z [36;1m            if own in projects or own in unusable or not isinstance(r, dict) or r.get("project") != own \[0m
+2026-10-13T07:37:27.1331260Z [36;1m                    or r.get("commit") != run.get("head_sha"):[0m
+2026-10-13T07:37:27.1331848Z [36;1m                print(f"run report: job {label}: {len(found)} report lines, not exactly one for {own} at the run's "[0m
+2026-10-13T07:37:27.1332453Z [36;1m                      f"commit; {own} is not read (could not check)")[0m
+2026-10-13T07:37:27.1332846Z [36;1m                unusable.add(own)[0m
+2026-10-13T07:37:27.1333183Z [36;1m                projects.pop(own, None)[0m
+2026-10-13T07:37:27.1333506Z [36;1m                continue[0m
+2026-10-13T07:37:27.1333951Z [36;1m            projects[own] = {k: r.get(k) for k in ("result", "applied_versions", "differences")}[0m
+2026-10-13T07:37:27.1334609Z [36;1m        report = json.dumps({"commit": run.get("head_sha"), "completed": run.get("status") == "completed",[0m
+2026-10-13T07:37:27.1335265Z [36;1m                             "run_id": run.get("id"), "event": run.get("event"), "projects": projects},[0m
+2026-10-13T07:37:27.1335750Z [36;1m                            separators=(",", ":"))[0m
+2026-10-13T07:37:27.1336249Z [36;1m        print(f"run report: run {run.get('id')} ({run.get('event')}) at {run.get('head_sha')}: "[0m
+2026-10-13T07:37:27.1336768Z [36;1m              f"projects reported: {sorted(projects)}")[0m
+2026-10-13T07:37:27.1337252Z [36;1mexcept (urllib.error.URLError, OSError, ValueError, KeyError) as exc:[0m
+2026-10-13T07:37:27.1337770Z [36;1m    print(f"run report: could not be read ({type(exc).__name__}"[0m
+2026-10-13T07:37:27.1338297Z [36;1m          + (f" {exc.code}" if isinstance(exc, urllib.error.HTTPError) else "") + ")")[0m
+2026-10-13T07:37:27.1338740Z [36;1m    report = ""[0m
+2026-10-13T07:37:27.1339114Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-13T07:37:27.1339723Z [36;1m    for k, v in (("changed", "" if changed is None else json.dumps(changed)), ("run_report", report),[0m
+2026-10-13T07:37:27.1340234Z [36;1m                 ("main_head", main_head)):[0m
+2026-10-13T07:37:27.1340597Z [36;1m        f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")[0m
+2026-10-13T07:37:27.1390449Z shell: /usr/bin/python {0}
+2026-10-13T07:37:27.1390754Z env:
+2026-10-13T07:37:27.1394633Z   GH_TOKEN: ***
+2026-10-13T07:37:27.1394941Z ##[endgroup]
+2026-10-13T07:37:29.9680135Z run report: job check-devos-test was skipped; it has no log
+2026-10-13T07:37:29.9680829Z run report: job check-devos was skipped; it has no log
+2026-10-13T07:37:29.9682206Z run report: run 38363215668 (push) at 1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9: projects reported: ['devos', 'devos-test']
+2026-10-13T07:37:29.9810558Z ##[group]Run # What the pull-request check stops (EV-C02-001 M15, M16; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). A pull
+2026-10-13T07:37:29.9811705Z [36;1m# What the pull-request check stops (EV-C02-001 M15, M16; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). A pull[0m
+2026-10-13T07:37:29.9812470Z [36;1m# request that changes, removes or renames a merged migration file fails unless the run report shows that version[0m
+2026-10-13T07:37:29.9813232Z [36;1m# unapplied in both projects; "could not check" cannot show that. Every other pull request passes, with the state[0m
+2026-10-13T07:37:29.9813866Z [36;1m# written. Inputs only through env; outputs to GITHUB_OUTPUT.[0m
+2026-10-13T07:37:29.9814226Z [36;1mimport json, os, re[0m
+2026-10-13T07:37:29.9814450Z [36;1m[0m
+2026-10-13T07:37:29.9814659Z [36;1mPROJECTS = ("devos-test", "devos")[0m
+2026-10-13T07:37:29.9815019Z [36;1mRESULTS = ("no_difference", "differences", "could_not_check")[0m
+2026-10-13T07:37:29.9815478Z [36;1mMIGRATION = re.compile(r"supabase/migrations/[^/]+\.sql")[0m
+2026-10-13T07:37:29.9815852Z [36;1mVERSION = re.compile(r"([0-9]+)_.*\.sql")[0m
+2026-10-13T07:37:29.9816125Z [36;1m[0m
+2026-10-13T07:37:29.9816296Z [36;1m[0m
+2026-10-13T07:37:29.9816473Z [36;1mdef load(name):[0m
+2026-10-13T07:37:29.9816714Z [36;1m    text = os.environ.get(name, "")[0m
+2026-10-13T07:37:29.9816981Z [36;1m    try:[0m
+2026-10-13T07:37:29.9817223Z [36;1m        return json.loads(text) if text else None[0m
+2026-10-13T07:37:29.9817530Z [36;1m    except ValueError:[0m
+2026-10-13T07:37:29.9817770Z [36;1m        return None[0m
+2026-10-13T07:37:29.9817996Z [36;1m[0m
+2026-10-13T07:37:29.9818161Z [36;1m[0m
+2026-10-13T07:37:29.9818335Z [36;1mdef esc(s):[0m
+2026-10-13T07:37:29.9818654Z [36;1m    return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))[0m
+2026-10-13T07:37:29.9819019Z [36;1m[0m
+2026-10-13T07:37:29.9819183Z [36;1m[0m
+2026-10-13T07:37:29.9819359Z [36;1mdef words(result):[0m
+2026-10-13T07:37:29.9819705Z [36;1m    return {"no_difference": "no difference", "differences": "differences",[0m
+2026-10-13T07:37:29.9820213Z [36;1m            "could_not_check": "could not check"}.get(result, "could not check")[0m
+2026-10-13T07:37:29.9820597Z [36;1m[0m
+2026-10-13T07:37:29.9820765Z [36;1m[0m
+2026-10-13T07:37:29.9821337Z [36;1mchanged, report, main_head = load("CHANGED"), load("RUN_REPORT"), os.environ.get("MAIN_HEAD", "")[0m
+2026-10-13T07:37:29.9821809Z [36;1mproblem = None[0m
+2026-10-13T07:37:29.9822043Z [36;1mif not isinstance(report, dict):[0m
+2026-10-13T07:37:29.9822417Z [36;1m    problem = "no readable run report of migrate.yml at main's head"[0m
+2026-10-13T07:37:29.9822872Z [36;1melif report.get("commit") != main_head or not main_head:[0m
+2026-10-13T07:37:29.9823439Z [36;1m    problem = f"the run report is at {esc(report.get('commit'))}, not at main's head {esc(main_head or 'unknown')}"[0m
+2026-10-13T07:37:29.9823980Z [36;1melif report.get("completed") is not True:[0m
+2026-10-13T07:37:29.9824329Z [36;1m    problem = "the run report's run is not completed"[0m
+2026-10-13T07:37:29.9824702Z [36;1melif not isinstance(report.get("projects"), dict):[0m
+2026-10-13T07:37:29.9825063Z [36;1m    problem = "the run report has no projects"[0m
+2026-10-13T07:37:29.9825357Z [36;1mprojects = {}[0m
+2026-10-13T07:37:29.9825578Z [36;1mfor p in PROJECTS:[0m
+2026-10-13T07:37:29.9825916Z [36;1m    r = (report or {}).get("projects", {}).get(p) if problem is None else None[0m
+2026-10-13T07:37:29.9826509Z [36;1m    ok = isinstance(r, dict) and r.get("result") in RESULTS and isinstance(r.get("applied_versions"), list) \[0m
+2026-10-13T07:37:29.9827218Z [36;1m        and isinstance(r.get("differences"), list)[0m
+2026-10-13T07:37:29.9827544Z [36;1m    projects[p] = r if ok else None[0m
+2026-10-13T07:37:29.9827814Z [36;1mparts = [][0m
+2026-10-13T07:37:29.9828021Z [36;1mfor p in PROJECTS:[0m
+2026-10-13T07:37:29.9828256Z [36;1m    r = projects[p][0m
+2026-10-13T07:37:29.9828634Z [36;1m    if r is None:[0m
+2026-10-13T07:37:29.9829078Z [36;1m        parts.append(f"{p}: could not check ({problem or 'the report lacks this project or its fields'})")[0m
+2026-10-13T07:37:29.9829542Z [36;1m    else:[0m
+2026-10-13T07:37:29.9829972Z [36;1m        listed = ", ".join(f"{esc(d.get('kind'))} {esc(d.get('version') or d.get('slug'))}" for d in r["differences"][0m
+2026-10-13T07:37:29.9830476Z [36;1m                           if isinstance(d, dict))[0m
+2026-10-13T07:37:29.9830903Z [36;1m        parts.append(f"{p}: {words(r['result'])}" + (f" ({listed})" if listed else ""))[0m
+2026-10-13T07:37:29.9831442Z [36;1mstate = "; ".join(parts)[0m
+2026-10-13T07:37:29.9831683Z [36;1m[0m
+2026-10-13T07:37:29.9831936Z [36;1mtouched, unusable = [], not isinstance(changed, list)[0m
+2026-10-13T07:37:29.9832334Z [36;1mfor c in changed if isinstance(changed, list) else []:[0m
+2026-10-13T07:37:29.9832758Z [36;1m    if not isinstance(c, dict) or not isinstance(c.get("path"), str):[0m
+2026-10-13T07:37:29.9833140Z [36;1m        unusable = True[0m
+2026-10-13T07:37:29.9833380Z [36;1m        continue[0m
+2026-10-13T07:37:29.9833628Z [36;1m    status = str(c.get("status", ""))[:1][0m
+2026-10-13T07:37:29.9833921Z [36;1m    if status in ("A", "C"):[0m
+2026-10-13T07:37:29.9834166Z [36;1m        continue[0m
+2026-10-13T07:37:29.9834445Z [36;1m    old = c.get("old_path") if status == "R" else c["path"][0m
+2026-10-13T07:37:29.9834889Z [36;1m    for path in {old, c["path"]} if status not in ("M", "D", "T", "R") else {old}:[0m
+2026-10-13T07:37:29.9835352Z [36;1m        if isinstance(path, str) and MIGRATION.fullmatch(path):[0m
+2026-10-13T07:37:29.9835724Z [36;1m            touched.append(path)[0m
+2026-10-13T07:37:29.9835976Z [36;1m[0m
+2026-10-13T07:37:29.9836142Z [36;1m[0m
+2026-10-13T07:37:29.9836333Z [36;1mdef unapplied_in_both(version):[0m
+2026-10-13T07:37:29.9836602Z [36;1m    for p in PROJECTS:[0m
+2026-10-13T07:37:29.9836844Z [36;1m        r = projects[p][0m
+2026-10-13T07:37:29.9837236Z [36;1m        if r is None or r["result"] == "could_not_check" or version in r["applied_versions"]:[0m
+2026-10-13T07:37:29.9837651Z [36;1m            return False[0m
+2026-10-13T07:37:29.9838101Z [36;1m        if not any(isinstance(d, dict) and d.get("kind") == "on_main_not_applied" and d.get("version") == version[0m
+2026-10-13T07:37:29.9838608Z [36;1m                   for d in r["differences"]):[0m
+2026-10-13T07:37:29.9838891Z [36;1m            return False[0m
+2026-10-13T07:37:29.9839122Z [36;1m    return True[0m
+2026-10-13T07:37:29.9839328Z [36;1m[0m
+2026-10-13T07:37:29.9839496Z [36;1m[0m
+2026-10-13T07:37:29.9839672Z [36;1mblocked = [][0m
+2026-10-13T07:37:29.9839902Z [36;1mfor path in sorted(set(touched)):[0m
+2026-10-13T07:37:29.9840222Z [36;1m    m = VERSION.fullmatch(path.rsplit("/", 1)[1])[0m
+2026-10-13T07:37:29.9840578Z [36;1m    if not m or not unapplied_in_both(m.group(1)):[0m
+2026-10-13T07:37:29.9840896Z [36;1m        blocked.append(path)[0m
+2026-10-13T07:37:29.9841290Z [36;1mif unusable:[0m
+2026-10-13T07:37:29.9841658Z [36;1m    verdict, why = "fail", "the list of changed files could not be read (could not check)"[0m
+2026-10-13T07:37:29.9842076Z [36;1melif blocked:[0m
+2026-10-13T07:37:29.9842514Z [36;1m    verdict, why = "fail", ("a merged migration is changed, removed or renamed and the records do not show it "[0m
+2026-10-13T07:37:29.9843140Z [36;1m                            "unapplied in both projects: " + ", ".join(esc(p) for p in blocked))[0m
+2026-10-13T07:37:29.9843543Z [36;1melif touched:[0m
+2026-10-13T07:37:29.9843957Z [36;1m    verdict, why = "pass", "each changed migration is shown unapplied in both projects: " + ", ".join([0m
+2026-10-13T07:37:29.9844592Z [36;1m        esc(p) for p in sorted(set(touched)))[0m
+2026-10-13T07:37:29.9844877Z [36;1melse:[0m
+2026-10-13T07:37:29.9845190Z [36;1m    verdict, why = "pass", "no merged migration is changed, removed or renamed"[0m
+2026-10-13T07:37:29.9845756Z [36;1mprint(f"migration records at main's head: {state}")[0m
+2026-10-13T07:37:29.9846107Z [36;1mprint(f"pr check: {verdict}: {why}")[0m
+2026-10-13T07:37:29.9846494Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-13T07:37:29.9846906Z [36;1m    f.write(f"verdict={verdict}\nstate={state}\n")[0m
+2026-10-13T07:37:29.9847252Z [36;1mif os.environ.get("GITHUB_STEP_SUMMARY"):[0m
+2026-10-13T07:37:29.9847661Z [36;1m    with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:[0m
+2026-10-13T07:37:29.9848178Z [36;1m        f.write(f"### Migration records\n\n- {state}\n- check: {verdict}: {why}\n")[0m
+2026-10-13T07:37:29.9848620Z [36;1mraise SystemExit(0 if verdict == "pass" else 1)[0m
+2026-10-13T07:37:29.9895812Z shell: /usr/bin/python {0}
+2026-10-13T07:37:29.9896060Z env:
+2026-10-13T07:37:29.9896397Z   CHANGED: [{"path": ".github/workflows/w03-fixture-branch-probe.yml", "status": "A"}]
+2026-10-13T07:37:29.9897786Z   RUN_REPORT: {"commit":"1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9","completed":true,"run_id":38363215668,"event":"push","projects":{"devos-test":{"result":"no_difference","applied_versions":["20261012184638","20261012231841"],"differences":[]},"devos":{"result":"no_difference","applied_versions":["20261012184638","20261012231841"],"differences":[]}}}
+2026-10-13T07:37:29.9899060Z   MAIN_HEAD: 1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9
+2026-10-13T07:37:29.9899354Z ##[endgroup]
+2026-10-13T07:37:30.0161043Z migration records at main's head: devos-test: no difference; devos: no difference
+2026-10-13T07:37:30.0162448Z pr check: pass: no merged migration is changed, removed or renamed
+2026-10-13T07:37:30.0243423Z ##[group]Run set -uo pipefail
+2026-10-13T07:37:30.0243755Z [36;1mset -uo pipefail[0m
+2026-10-13T07:37:30.0244135Z [36;1mpython3 -I tests/C02/W-C02-03/test_decision_steps.py && a=0 || a=$?[0m
+2026-10-13T07:37:30.0244659Z [36;1mpython3 -I tests/C02/W-C02-03/test_workflow_order.py && b=0 || b=$?[0m
+2026-10-13T07:37:30.0245172Z [36;1mecho "W-C02-03 tests: decision steps exit ${a}, workflow order exit ${b}"[0m
+2026-10-13T07:37:30.0245607Z [36;1mif [ "$a" -eq 0 ] && [ "$b" -eq 0 ]; then[0m
+2026-10-13T07:37:30.0245887Z [36;1m  exit 0[0m
+2026-10-13T07:37:30.0246077Z [36;1mfi[0m
+2026-10-13T07:37:30.0246255Z [36;1mexit 1[0m
+2026-10-13T07:37:30.0411885Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-13T07:37:30.0412305Z ##[endgroup]
+2026-10-13T07:37:32.0728407Z ok   decide (devos job) wiring: env names ['GO', 'FM_READS', 'DRIFT_CALL', 'DRIFT_RESULT', 'EXPECTED']; no secret
+2026-10-13T07:37:32.0729580Z ok   D01 positive control: only 'on main, not applied', go=yes: exit 0; reason: only migrations on main, not applied: 1
+2026-10-13T07:37:32.0730672Z ok   D02 only pending, devos-test go=no: exit 0; reason: devos-test go=no
+2026-10-13T07:37:32.0731934Z ok   D03 only pending, devos-test go empty (job failed before setting it): exit 0; reason: devos-test go=absent
+2026-10-13T07:37:32.0733016Z ok   D04 only pending, devos-test go=superseded: exit 0; reason: devos-test go=superseded
+2026-10-13T07:37:32.0733929Z ok   D05 no difference: nothing to apply: exit 0; reason: no difference: nothing to apply
+2026-10-13T07:37:32.0735247Z ok   D06 applied and not on main (break target: a copy that applies on it): exit 0; reason: devos differs from main other than by pending migrations: 1 (applied_not_on_main
+2026-10-13T07:37:32.0736480Z ok   D07 name differs: exit 0; reason: devos differs from main other than by pending migrations: 1 (name_differs)
+2026-10-13T07:37:32.0737269Z ok   D08 function missing: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_missing)
+2026-10-13T07:37:32.0738274Z ok   D09 function extra: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_extra)
+2026-10-13T07:37:32.0739017Z ok   D10 function differs: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_differs)
+2026-10-13T07:37:32.0739864Z ok   D11 pending plus applied-not-on-main: exit 0; reason: devos differs from main other than by pending migrations: 1 (applied_not_on_main
+2026-10-13T07:37:32.0740631Z ok   D12 an unknown difference kind: exit 0; reason: DRIFT_RESULT holds a difference of unknown form
+2026-10-13T07:37:32.0741580Z ok   D13 result 'could not check': exit 0; reason: deployment_drift answered could_not_check
+2026-10-13T07:37:32.0742138Z ok   D14 the call raised an error: exit 0; reason: DRIFT_CALL=error: no usable result
+2026-10-13T07:37:32.0742721Z ok   D15 the call timed out or the connection was cut: exit 0; reason: DRIFT_CALL=timeout: no usable result
+2026-10-13T07:37:32.0743286Z ok   D16 call ok, result empty: exit 0; reason: DRIFT_RESULT is absent
+2026-10-13T07:37:32.0743713Z ok   D17 result not JSON: exit 0; reason: DRIFT_RESULT is not JSON
+2026-10-13T07:37:32.0744144Z ok   D18 result not an object: exit 0; reason: DRIFT_RESULT is not an object
+2026-10-13T07:37:32.0744708Z ok   D19 completeness flag absent: exit 0; reason: DRIFT_RESULT's completeness flag is absent or not true
+2026-10-13T07:37:32.0745372Z ok   D20 completeness flag false: exit 0; reason: DRIFT_RESULT's completeness flag is absent or not true
+2026-10-13T07:37:32.0746080Z ok   D21 'no difference' with a non-empty list: exit 0; reason: DRIFT_RESULT's status and its list of differences disagree
+2026-10-13T07:37:32.0746820Z ok   D22 'differences' with an empty list: exit 0; reason: DRIFT_RESULT's status and its list of differences disagree
+2026-10-13T07:37:32.0747440Z ok   D23 status absent: exit 0; reason: DRIFT_RESULT's status is absent or unknown
+2026-10-13T07:37:32.0748258Z ok   D24 function exists but the call was not made: exit 0; reason: DRIFT_CALL=not_called: no usable result
+2026-10-13T07:37:32.0749195Z ok   E01 positive control: never-pushed state, one statement (R6 form 1): exit 0; reason: first-migration exception, no history table (the never-pushed state): every vers
+2026-10-13T07:37:32.0750453Z ok   E02 positive control: never-pushed state, read-only REPEATABLE READ transaction (R6 form 2): exit 0; reason: first-migration exception, no history table (the never-pushed state): every vers
+2026-10-13T07:37:32.0751791Z ok   E03 never-pushed state but devos-test go=no: exit 0; reason: devos-test go=no
+2026-10-13T07:37:32.0752682Z ok   E04 history table holding a row, no function (breaks: without the table check; a copy that takes a table holding a row): exit 0; reason: the history table holds 1 rows without deployment_drift
+2026-10-13T07:37:32.0754001Z ok   E05 positive control: history table empty, no function, listing clean, one statement (section 5 as changed after P13): exit 0; reason: first-migration exception, the history table present and holding no row: every v
+2026-10-13T07:37:32.0755437Z ok   E06 function present, table absent, listing clean, the function answers 'could not check' (break: without the function check): exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+2026-10-13T07:37:32.0757087Z ok   E06b function present, table absent, listing clean, no call made (break: without the function check, even where another guard refuses a call made while the reads say 'no function'): exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+2026-10-13T07:37:32.0758512Z ok   E07 function present, table absent, listing clean, the call errors: exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+2026-10-13T07:37:32.0759460Z ok   E08 a schema in the listing (break: without the listing check): exit 0; reason: the listing holds 1 objects outside Supabase's own
+2026-10-13T07:37:32.0760167Z ok   E09 a role in the listing: exit 0; reason: the listing holds 1 objects outside Supabase's own
+2026-10-13T07:37:32.0761011Z ok   E10 reads incomplete: exit 0; reason: the three reads are not usable (complete is not true: the reads did not all fini
+2026-10-13T07:37:32.0762134Z ok   E11 reads not taken in one snapshot: exit 0; reason: the three reads are not usable (snapshot=None is not one of the two allowed form
+2026-10-13T07:37:32.0762946Z ok   E12 snapshot form unknown: exit 0; reason: the three reads are not usable (snapshot='w03_fixture_other' is not one of the t
+2026-10-13T07:37:32.0763620Z ok   E13 reads absent: exit 0; reason: the three reads are not usable (FM_READS is absent)
+2026-10-13T07:37:32.0764173Z ok   E14 reads not JSON: exit 0; reason: the three reads are not usable (FM_READS is not JSON)
+2026-10-13T07:37:32.0764840Z ok   E15 the function read missing: exit 0; reason: the three reads are not usable (function_exists is missing or not a boolean)
+2026-10-13T07:37:32.0765635Z ok   E16 the table read missing: exit 0; reason: the three reads are not usable (history_table_exists is missing or not a boolean
+2026-10-13T07:37:32.0766412Z ok   E17 the listing failed (null): exit 0; reason: the three reads are not usable (listing is missing, failed or malformed)
+2026-10-13T07:37:32.0767268Z ok   E18 reads say no function but a call returned a result (contradiction): exit 0; reason: the reads say deployment_drift is absent, but a call was made
+2026-10-13T07:37:32.0768063Z ok   E19 never-pushed state but expected malformed: exit 0; reason: EXPECTED has no valid commit
+2026-10-13T07:37:32.0769099Z ok   E20 positive control: history table empty, no function, listing clean, read-only REPEATABLE READ transaction (R6 form 2): exit 0; reason: first-migration exception, the history table present and holding no row: every v
+2026-10-13T07:37:32.0770190Z ok   E21 history table empty, no function, listing clean, but devos-test go=no: exit 0; reason: devos-test go=no
+2026-10-13T07:37:32.0771499Z ok   E22 history table present, its row count not read (null): exit 0; reason: the three reads are not usable (history_table_exists=true but history_rows=null:
+2026-10-13T07:37:32.0772583Z ok   E23 history table present, the row-count read missing: exit 0; reason: the three reads are not usable (history_rows is missing: the row-count read is a
+2026-10-13T07:37:32.0773505Z ok   E24 history table empty, no function, but a schema in the listing: exit 0; reason: the listing holds 1 objects outside Supabase's own
+2026-10-13T07:37:32.0774768Z ok   E25 reads disagree: history table reported absent with a row count of 3, no function, listing clean (break: a copy that ignores the row count when the table is absent): exit 0; reason: the three reads are not usable (history_table_exists=false but history_rows=3: t
+2026-10-13T07:37:32.0776230Z ok   E26 reads disagree: history table reported absent with a row count of 0, no function, listing clean: exit 0; reason: the three reads are not usable (history_table_exists=false but history_rows=0: t
+2026-10-13T07:37:32.0777106Z n/a  crosscheck (O3): no step 'crosscheck': O3 not adopted, nothing to test
+2026-10-13T07:37:32.0777689Z ok   pr_decide (pull-request check) wiring: env names ['CHANGED', 'RUN_REPORT', 'MAIN_HEAD']; no secret
+2026-10-13T07:37:32.0778262Z ok   P01 positive control: adds a migration, records clean: exit 0
+2026-10-13T07:37:32.0778764Z ok   P02 adds a migration, no completed run (could not check is shown, not blocking): exit 0
+2026-10-13T07:37:32.0779282Z ok   P03 adds a migration while devos lacks V2: the state names it: exit 0
+2026-10-13T07:37:32.0779689Z ok   P04 changes a migration applied in both: exit 1
+2026-10-13T07:37:32.0780059Z ok   P05 changes a migration applied in devos-test only: exit 1
+2026-10-13T07:37:32.0780507Z ok   P06 positive control: changes a migration shown unapplied in both: exit 0
+2026-10-13T07:37:32.0780929Z ok   P07 changes a migration, no run report: exit 1
+2026-10-13T07:37:32.0781744Z ok   P08 changes a migration, report lacks devos (break: skips a project): exit 1
+2026-10-13T07:37:32.0782213Z ok   P09 changes a migration, report at another commit: exit 1
+2026-10-13T07:37:32.0782793Z ok   P10 changes a migration, run not completed: exit 1
+2026-10-13T07:37:32.0783134Z ok   P11 deletes a migration applied in both: exit 1
+2026-10-13T07:37:32.0783454Z ok   P12 renames a migration applied in both: exit 1
+2026-10-13T07:37:32.0783849Z ok   P13 positive control: changes a database test, not a migration: exit 0
+2026-10-13T07:37:32.0784388Z ok   P14 positive control: unrelated change while devos differs: passes and names it: exit 0
+2026-10-13T07:37:32.0784883Z ok   P15 changes a migration, report not JSON: exit 1
+2026-10-13T07:37:32.0785320Z ok   P16 changes a migration unapplied in both, but devos-test could not check: exit 1
+2026-10-13T07:37:32.0785748Z W03_DECISION_TEST PASS (69/69)
+2026-10-13T07:37:32.2779820Z note: this test reads the workflow and does not run it; the live run of point 14 is the observation
+2026-10-13T07:37:32.2780798Z ok   .github/workflows/migrate.yml: order and stop present as written
+2026-10-13T07:37:32.2782252Z ok   break 'devos without needs (both at once)': the copy fails, as it must (devos does not need devos-test (the two could run at once))
+2026-10-13T07:37:32.2783674Z ok   break 'apply runs after any decide result': the copy fails, as it must (devos's apply does not require steps.decide.outputs.apply=='yes' alone)
+2026-10-13T07:37:32.2785097Z ok   break 'dryrun without the decide gate': the copy fails, as it must (devos's dryrun does not require steps.decide.outputs.apply=='yes' alone)
+2026-10-13T07:37:32.2786552Z ok   break 'GO forced to yes': the copy fails, as it must (devos's decide does not take GO from needs.devos-test.outputs.go)
+2026-10-13T07:37:32.2787821Z ok   break 'apply before decide': the copy fails, as it must (devos lacks steps decide, dryrun, apply in that order)
+2026-10-13T07:37:32.2789116Z ok   break 'compare skipped after a failed apply': the copy fails, as it must (devos-test's compare does not run after a failed apply)
+2026-10-13T07:37:32.2791639Z ok   break 'dbtests without the clean-comparison condition': the copy fails, as it must (devos-test's dbtests does not require steps.compare.outputs.<x> == 'no_difference' (alone: not negated, not or-ed))
+2026-10-13T07:37:32.2794118Z ok   break 'dbtests condition inverted (runs on a comparison that is not clean)': the copy fails, as it must (devos-test's dbtests does not require steps.compare.outputs.<x> == 'no_difference' (alone: not negated, not or-ed))
+2026-10-13T07:37:32.2796880Z ok   break 'dbtests runner without errors stopping the file': the copy fails, as it must (devos-test's dbtests runner does not run psql with errors stopping the file (ON_ERROR_STOP set true; if the build uses another client, the test designer revises this check first))
+2026-10-13T07:37:32.2799262Z ok   break 'dbtests runner not looking for the PASS notice': the copy fails, as it must (devos-test's dbtests runner does not look for the files' PASS notice)
+2026-10-13T07:37:32.2800728Z ok   break 'go ignores dbtests': the copy fails, as it must (devos-test's go does not depend on dbtests)
+2026-10-13T07:37:32.2802869Z ok   break 'devos skipped when devos-test fails': the copy fails, as it must (devos does not run in every case (its comparison and report would be skipped))
+2026-10-13T07:37:32.2804345Z ok   break 'another job applies to devos': the copy fails, as it must (job w03-fixture-extra holds an apply step)
+2026-10-13T07:37:32.2805735Z ok   break 'devos without its own comparison step': the copy fails, as it must (devos has no comparison step (id compare) of its own before decide)
+2026-10-13T07:37:32.2807277Z ok   break 'devos's comparison after decide': the copy fails, as it must (devos has no comparison step (id compare) of its own before decide)
+2026-10-13T07:37:32.2809529Z ok   break 'decide's DRIFT_RESULT taken from needs.devos-test.outputs (skips a project)': the copy fails, as it must (devos's decide does not take DRIFT_RESULT from steps.compare.outputs (job devos's own comparison, before decide; never needs.*))
+2026-10-13T07:37:32.2812404Z ok   break 'decide's FM_READS taken from needs.devos-test.outputs (skips a project)': the copy fails, as it must (devos's decide does not take FM_READS from steps of job devos before decide (never needs.*))
+2026-10-13T07:37:32.2814188Z W03_ORDER_TEST PASS (.github/workflows/migrate.yml)
+2026-10-13T07:37:51.3873718Z note: G1 reads the workflows and does not run them; G2 runs pr_inputs' and pr_decide's own bodies against scratch git repositories and a stub of GitHub's REST API on 127.0.0.1
+2026-10-13T07:37:51.3874680Z ok   G1 .github/workflows: 60 run: values in 3 files, none holding an expression opener
+2026-10-13T07:37:51.3875800Z ok   G1 planted copy of migrate.yml (job check-devos, step report, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migrate.yml: job check-devos step report: its run: value holds 1 expression opener(s), the f...)
+2026-10-13T07:37:51.3877591Z ok   G1 planted copy of migration-checks.yml (job migration-checks, step w03_tests, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migration-checks.yml: job migration-checks step w03_tests: its run: value holds 1 expression...)
+2026-10-13T07:37:51.3879394Z ok   G1 planted copy of w03-fixture-branch-probe.yml (job probe-devos, step presence, a block scalar): fails on its own file, job and step, as it must (.github/workflows/w03-fixture-branch-probe.yml: job probe-devos step presence: its run: value holds 1 expressi...)
+2026-10-13T07:37:51.3881281Z ok   G1 planted file: the opener written as a YAML escape (\x24): fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-escape.yml: job w03-fixture-job step w03_fixture_escaped: its run: value...)
+2026-10-13T07:37:51.3882975Z ok   G1 planted file: the opener inside a heredoc in a block scalar: fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-block.yml: job w03-fixture-job step w03_fixture_block: its run: value ho...)
+2026-10-13T07:37:51.3884415Z ok   G1 control: openers in name:, env:, if:, with: only, and '$ {{' split by a space in run:: passes, as it must
+2026-10-13T07:37:51.3885171Z W03_RUN_EXPR_TEST PASS (no run: value holds an expression opener: 60 values in 3 files; 5 planted copies red, 1 control passes)
+2026-10-13T07:37:51.3886256Z ok   G2 A0 control: a plain-named migration modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3887520Z ok   G2 A1 a non-ASCII name modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3888719Z ok   G2 A2 a non-ASCII name removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3889913Z ok   G2 A3 a non-ASCII name renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3894019Z ok   G2 A4 a name holding a tab modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3895325Z ok   G2 A5 a name holding a double quote removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3896589Z ok   G2 A6 a name holding a backslash renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3897843Z ok   G2 A7 a name holding a newline modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3899303Z ok   G2 A8 a name holding a byte that is not UTF-8 modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3900729Z ok   G2 B1 git diff fails: the checked-out commit has no parent (an added migration and a document): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3902382Z ok   G2 B2 git diff fails: a depth-1 checkout lacks the merge commit's parent (the same change): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3903837Z ok   G2 C1 positive control: a new migration added; the records' state is stated: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3905307Z ok   G2 C2 positive control: a merged migration removed while the report shows it unapplied in both (M16): verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3906706Z ok   G2 D1 push run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3907947Z ok   G2 D2 push run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3909333Z ok   G2 D3 scheduled run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3910622Z ok   G2 D4 scheduled run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3912200Z ok   G2 D5 negative control: push run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3913677Z ok   G2 D6 negative control: scheduled run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3915128Z ok   G2 E1 push run: devos-test ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: could not check (the report lacks this project or its fields); devos: differences (on_main_not_applied 29990101000008)'
+2026-10-13T07:37:51.3916556Z ok   G2 E2 scheduled run: check-devos ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: could not check (the report lacks this project or its fields)'
+2026-10-13T07:37:51.3918072Z ok   G2 break BRK-a (a copy that reads the changed files from git's line output, where git quotes such names (the class of CHK-C02-035 C2)): turns ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] red, as it must, and leaves the 13 cases it cannot touch as they were
+2026-10-13T07:37:51.3919310Z ok   G2 break BRK-b (a copy that reads a failed git diff as an empty list of changes): turns ['B1', 'B2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+2026-10-13T07:37:51.3920301Z ok   G2 break BRK-c1 (a copy that reports an added migration as modified): turns ['C1', 'D1', 'D3'] red, as it must, and leaves the 18 cases it cannot touch as they were
+2026-10-13T07:37:51.3921786Z ok   G2 break BRK-c2 (a copy that reads each job's report without its list of differences): turns ['C2', 'D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+2026-10-13T07:37:51.3923009Z ok   G2 break BRK-d (a copy that does not tell a skipped job from one that ran, and reads a skipped job's 404 as an empty clean report): turns ['D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+2026-10-13T07:37:51.3924202Z ok   G2 break BRK-e (a copy that folds a ran job's 404 into an empty clean report ('no difference')): turns ['E1', 'E2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+2026-10-13T07:37:51.3924978Z W03_PR_INPUTS_TEST PASS (21/21 cases; breaks: 6 shown, 0 not shown, of 6)
+2026-10-13T07:37:51.4049888Z W-C02-03 tests: decision steps exit 0, workflow order exit 0
+2026-10-13T07:37:51.4228833Z Post job cleanup.
+2026-10-13T07:37:51.5082039Z [command]/usr/bin/git version
+2026-10-13T07:37:51.5118914Z git version 2.55.0
+2026-10-13T07:37:51.5164412Z Temporarily overriding HOME='/home/runner/work/_temp/37305c93-5d2c-447c-8a98-bc06992f77dc' before making global git config changes
+2026-10-13T07:37:51.5165675Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T07:37:51.5171734Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-13T07:37:51.5208551Z Removing SSH command configuration
+2026-10-13T07:37:51.5215993Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T07:37:51.5260275Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T07:37:51.5520886Z Removing HTTP extra header
+2026-10-13T07:37:51.5522127Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T07:37:51.5560013Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T07:37:51.5820573Z Removing includeIf entries pointing to credentials config files
+2026-10-13T07:37:51.5830616Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T07:37:51.5874851Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T07:37:51.6280012Z Cleaning up orphan processes
