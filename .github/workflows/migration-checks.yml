@@ -428,7 +428,23 @@ jobs:
                   for job in json.loads(get(f"{api}/repos/{repo}/actions/runs/{run['id']}/jobs?per_page=100")).get("jobs", []):
                       jname = str(job.get("name") or "").split(" ", 1)[0]
                       own = OWN.get(jname)
-                      log = get(f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs").decode("utf-8", "replace")
+                      label = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in jname)
+                      # A skipped job never ran and has no log (GitHub answers 404 for it: run 38319371450's skipped
+                      # check-devos-test, 2026-10-13), and every run skips two of the four jobs; it printed no report
+                      # line, so it is passed over. Any other job whose log cannot be read leaves its own project
+                      # unread ("could not check"), not the whole report.
+                      if job.get("conclusion") == "skipped":
+                          print(f"run report: job {label} was skipped; it has no log")
+                          continue
+                      try:
+                          log = get(f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs").decode("utf-8", "replace")
+                      except urllib.error.HTTPError as exc:
+                          print(f"run report: job {label}: its log could not be read (HTTP {exc.code})"
+                                + (f"; {own} is not read (could not check)" if own else ""))
+                          if own:
+                              unusable.add(own)
+                              projects.pop(own, None)
+                          continue
                       found = []
                       for ln in log.splitlines():
                           m = LINE.match(ln)
@@ -437,7 +453,6 @@ jobs:
                                   found.append(json.loads(m.group(1)))
                               except ValueError:
                                   found.append(None)
-                      label = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in jname)
                       if own is None:
                           if found:
                               print(f"run report: job {label} is not a migration job; its {len(found)} report lines are not read")
@@ -457,7 +472,8 @@ jobs:
                   print(f"run report: run {run.get('id')} ({run.get('event')}) at {run.get('head_sha')}: "
                         f"projects reported: {sorted(projects)}")
           except (urllib.error.URLError, OSError, ValueError, KeyError) as exc:
-              print(f"run report: could not be read ({type(exc).__name__})")
+              print(f"run report: could not be read ({type(exc).__name__}"
+                    + (f" {exc.code}" if isinstance(exc, urllib.error.HTTPError) else "") + ")")
               report = ""
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               for k, v in (("changed", "" if changed is None else json.dumps(changed)), ("run_report", report),
