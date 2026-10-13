@@ -316,8 +316,15 @@ begin
     return;
   end if;
   insert into w07_answers values (substr(split_part(p_id, ' ', 1), 1, 5), pg_temp.w07_answer_kind(r));
+  -- Phase C6 (CHK-C02-030 C7): a could-not-check answer returns nothing through it: no key that names or carries a
+  -- record, an operation, a claim or a list (the keys are interface v1's choice, README 8.1; revised with it).
   perform pg_temp.w07_judge(p_id, r, p_want,
-    case when p_want <> 'ok' and s1 <> s0 then 'the write went through (state changed)' end);
+    case when p_want <> 'ok' and s1 <> s0 then 'the write went through (state changed)'
+         when p_want = 'could_not_check' and r ?| array['id', 'operation_id', 'claim_token', 'assignment_id', 'revision',
+                                                          'records', 'works', 'paths', 'rows']
+           then 'returned through the could-not-check answer: '
+                || (select string_agg(k, ', ' order by k) from jsonb_object_keys(r) k
+                     where k not in ('status', 'reason_code', 'reason')) end);
 end $f$;
 
 -- Phase C5 (CHK-C02-030 C8): one answer's kind for the per-check counts, in interface v1's terms (README 8.1): a
@@ -462,7 +469,8 @@ begin
   -- the mandatory elements of the read set, read by prepare_operation from the effect-class table). The same call as
   -- 6RG-s0 (its positive pair), with the synthetic class's row missing, the table unreadable, or irreversible null.
   perform pg_temp.w07_planted('6RG-c1 effect class row missing',
-    'delete from devos_private.effect_class where effect_class = ''w07_fixture_effect''',
+    'alter table devos_private.effect_class disable trigger user; '
+    || 'delete from devos_private.effect_class where effect_class = ''w07_fixture_effect''',
     w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c1',
       jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');
   perform pg_temp.w07_planted('6RG-c2 effect class table unreadable',
@@ -470,7 +478,8 @@ begin
     w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c2',
       jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');
   perform pg_temp.w07_planted('6RG-c3 effect class partial (irreversible null)',
-    'alter table devos_private.effect_class alter column irreversible drop not null; '
+    'alter table devos_private.effect_class disable trigger user; '
+    || 'alter table devos_private.effect_class alter column irreversible drop not null; '
     || 'update devos_private.effect_class set irreversible = null where effect_class = ''w07_fixture_effect''',
     w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c3',
       jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');

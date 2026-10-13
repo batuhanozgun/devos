@@ -556,6 +556,233 @@ begin
     pg_temp.w07_effect_args(c, 'w07_fixture_reversible', 'docs/w07_fixture_f.md'), 'operation');
   perform pg_temp.st6_judge('6ST-path-op-missing', r, 'could_not_check', null, 'operation');
 end $f$;
+-- Phase C6 (CHK-C02-030 C7 (a); gap G24): the withholding of an open sample, which reads its stream's block state
+-- (EV-C02-008 5.2 (a) and (b), as merged; W-C02-10 builds it, 5.2 (d)). With that state missing, unreadable or partial,
+-- a read by any class but devos_denetim answers interface v1's could not check and returns nothing through it: not the
+-- sample, not a Verdict on it, not their events, no value that changes with them, and it writes nothing. If W-C02-10's
+-- record gives another fail-closed form, or N-264 changes the draw so that no read depends on the block state, these
+-- cases are revised before the first result (README section 8; TABLES G23 and G24).
+create function pg_temp.st6_digest() returns text language plpgsql as $f$
+declare t record; h text; acc text := '';
+begin
+  for t in select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+           where n.nspname = 'devos_private' and c.relkind in ('r', 'p') and c.relname not like '%rejected%'
+             and c.relname not like '%token%' order by c.relname loop
+    execute format('select md5(coalesce(string_agg(x, %L order by x), %L)) from (select w07t::text x from devos_private.%I w07t) s',
+                   '|', '', t.relname) into h;
+    acc := acc || t.relname || ':' || h || ';';
+  end loop;
+  return md5(acc);
+end $f$;
+-- The read functions that can return a Review, a Verdict or an Event, found by their text (README 8.1, "The open
+-- sample"; as T-W07-N01 part B finds them), the two walks among them where their text names those tables.
+create function pg_temp.st6_readers() returns table (oid oid, name text) language sql stable as $f$
+  select p.oid, p.proname::text from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+   where s.nspname = 'devos_api' and coalesce(obj_description(p.oid, 'pg_proc'), '') like 'devos:read%'
+     and p.prosrc ~* '[[:<:]](review|verdict|event)[[:>:]]'
+   order by p.proname
+$f$;
+-- One read with a token held in the caller's variable: every uuid argument is p_id, other arguments a neutral value by
+-- type. A function returning one jsonb gives that object; a set gives {"status": "w07_rows", "w07_rows": [...]}.
+create function pg_temp.st6_read(p_tok text, p_oid oid, p_id text) returns jsonb language plpgsql as $f$
+declare pr record; parts text[] := '{}'; i int; t record; v text; nm text; named boolean := true; q text; r jsonb; err text;
+begin
+  select p.*, s.nspname into pr from pg_proc p join pg_namespace s on s.oid = p.pronamespace where p.oid = p_oid;
+  for i in 1 .. pr.pronargs - pr.pronargdefaults loop
+    if coalesce(pr.proargnames[i], '') = '' then named := false; end if;
+  end loop;
+  for i in 1 .. pr.pronargs - pr.pronargdefaults loop
+    select * into t from pg_type where oid = pr.proargtypes[i - 1];
+    nm := coalesce(pr.proargnames[i], '');
+    v := case when t.typname = 'uuid' then quote_literal(p_id) || '::uuid'
+              when t.typname in ('json', 'jsonb') then '''{}''::' || t.typname
+              when t.typname in ('timestamptz', 'timestamp', 'date') then '(now() - interval ''1 day'')::' || t.typname
+              when t.typcategory = 'N' then '100::' || format_type(t.oid, null)
+              when t.typcategory = 'B' then 'false'
+              when t.typcategory = 'S' then quote_literal('w07_fixture SYNTHETIC W-C02-07')
+              else 'null::' || format_type(t.oid, null) end;
+    parts := parts || case when named then format('%I => %s', nm, v) else v end;
+  end loop;
+  q := format('select coalesce(jsonb_agg(to_jsonb(w07x)), ''[]'') from %I.%I(%s) as w07x', pr.nspname, pr.proname,
+              array_to_string(parts, ', '));
+  perform set_config('request.headers', json_build_object('x-devos-env-token', p_tok)::text, true);
+  begin
+    execute 'set local role anon';
+    execute q into r;
+    execute 'reset role';
+  exception when others then err := sqlstate || ' ' || left(sqlerrm, 120);
+  end;
+  perform set_config('request.headers', '{}', true);
+  if err is not null then
+    if p_tok is not null and position(p_tok in err) > 0 then err := 'error text withheld: it contained the token'; end if;
+    return jsonb_build_object('w07_cnc', pr.proname || ' raised ' || err);
+  end if;
+  if jsonb_array_length(r) = 1 and jsonb_typeof(r->0) = 'object' then return r->0; end if;
+  return jsonb_build_object('status', 'w07_rows', 'w07_rows', r);
+end $f$;
+-- Does an answer hold one of the withheld ids, as any string or number in it?
+create function pg_temp.st6_holds(j jsonb, p_ids text[]) returns boolean language sql immutable as $f$
+  select exists (select 1 from jsonb_path_query(j, 'strict $.**') x
+                  where jsonb_typeof(x) in ('string', 'number') and (x #>> '{}') = any(p_ids)) $f$;
+-- The partial block state: the stream's row present, every column of its state but stream and block_size null.
+create function pg_temp.st6_wh_partial() returns text language plpgsql as $f$
+declare c record; s text := pg_temp.st6_dropc('sample_stream'); u text := '';
+begin
+  for c in select column_name from information_schema.columns where table_schema = 'devos_private' and table_name = 'sample_stream'
+             and column_name not in ('stream', 'block_size') order by ordinal_position loop
+    s := s || format('; alter table devos_private.sample_stream alter column %I drop not null', c.column_name);
+    u := u || format(', %I = null', c.column_name);
+  end loop;
+  if u = '' then return null; end if;
+  return s || '; alter table devos_private.sample_stream disable trigger user; update devos_private.sample_stream set '
+           || substr(u, 3) || ' where stream::text = ''finding''';
+end $f$;
+create function pg_temp.st6_withheld() returns void language plpgsql as $f$
+declare why text; bs int; b int; i int; r jsonb; ids text[]; t text; s text; v text; tk jsonb := '{}'; c text; rd record;
+        a text; rel jsonb := '[]'; sub jsonb; p jsonb; f text; plant text; d0 text; d1 text; nok int; nbad int; ncnc int;
+        det text; pe text; extra text;
+        cls text[] := array['devos_calisma', 'devos_sinav', 'devos_kurulum', 'devos_ci'];
+        short jsonb := '{"devos_calisma": "cal", "devos_sinav": "sin", "devos_kurulum": "kur", "devos_ci": "ci"}';
+begin
+  -- 1. An open block with a drawn record (as T-W07-N01 part B's transaction 1): records until the database draws one;
+  -- if the draw falls on the block's last record the block is complete, and the next block is tried (at most six).
+  why := pg_temp.w07_align('finding', 'finding', null);
+  if why is null then
+    bs := (pg_temp.w07_state('finding')->>'block_size')::int;
+    if bs < 2 then why := format('the stream''s block is %s, so no block can stay open', bs); end if;
+  end if;
+  if why is null then
+    for b in 1 .. 6 loop
+      t := null;
+      for i in 1 .. bs loop
+        r := pg_temp.w07_call('devos_calisma', 'record_finding', pg_temp.w07_args('finding', 'complete', nextval('w07_seq')::int));
+        if pg_temp.w07_kind(r) <> 'accepted' then why := 'a finding was not accepted: ' || pg_temp.w07_brief(r); exit; end if;
+        if pg_temp.w07_samples(r->>'id', false) > 0 then t := r->>'id'; exit; end if;
+      end loop;
+      exit when why is not null or (t is not null and (pg_temp.w07_state('finding')->>'block_seen')::int <> 0);
+    end loop;
+    if why is null and (t is null or (pg_temp.w07_state('finding')->>'block_seen')::int = 0) then
+      why := 'no open block with a drawn record in six blocks'; end if;
+  end if;
+  if why is null then
+    select x.id::text into s from devos_private.review x where x.kind::text = 'sample' and strpos(to_jsonb(x)::text, t) > 0 limit 1;
+    -- 2. A Verdict on the open sample, planted at owner level with the table's user triggers off for that insert only
+    -- (README 5.1 (a): the rule under test is the withholding; DM-41 (a) refuses a Verdict in its target's transaction).
+    v := gen_random_uuid()::text;
+    begin
+      execute 'alter table devos_private.verdict disable trigger user';
+      perform pg_temp.w07_plant_row('verdict', jsonb_build_object('id', v, 'review_ref', s, 'result', 'fail'));
+      execute 'alter table devos_private.verdict enable trigger user';
+    exception when others then why := 'the Verdict on the open sample could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 120);
+    end;
+  end if;
+  if why is null then
+    execute 'select array[$1, $2] || coalesce(array_agg(e.id::text), ''{}'') from devos_private.event e where e.aggregate_id::text in ($1, $2)'
+      into ids using s, v;
+    -- 3. One synthetic token per class, issued before any digest and kept in this variable only (README section 6).
+    foreach c in array cls || 'devos_denetim'::text loop
+      begin
+        execute 'select devos_private.issue_env_token($1)::text' into a using c;
+        if left(a, 1) = '{' then a := (a::jsonb)->>'token'; end if;
+        tk := tk || jsonb_build_object(c, a);
+      exception when others then why := 'a token of class ' || c || ' could not be issued: ' || sqlstate;
+      end;
+    end loop;
+    a := null;
+  end if;
+  if why is not null then
+    foreach c in array cls loop
+      perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-clean', 'could_not_check', why);
+      foreach f in array array['missing', 'unreadable', 'partial'] loop
+        perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-' || f, 'could_not_check', why);
+      end loop;
+    end loop;
+    perform pg_temp.w07_put('6ST-wh-den-clean', 'could_not_check', why);
+    return;
+  end if;
+  -- 4. The reads that return the withheld records to devos_denetim (its queue holds them at once, 5.2 (a)), with the
+  -- sampled target t, the sample s and the Verdict v as the uuid argument: these are the reads the cases judge.
+  for rd in select * from pg_temp.st6_readers() loop
+    foreach a in array array[t, s, v] loop
+      r := pg_temp.st6_read(tk->>'devos_denetim', rd.oid, a);
+      if pg_temp.st6_holds(r, ids) then rel := rel || jsonb_build_object('oid', rd.oid, 'name', rd.name, 'arg', a); end if;
+    end loop;
+  end loop;
+  perform pg_temp.w07_put('6ST-wh-den-clean', case when jsonb_array_length(rel) > 0 then 'ok' else 'could_not_check' end,
+    format('block state intact: %s read(s) return the open sample, its Verdict or their events to devos_denetim (wanted at least 1); readers found: %s',
+           jsonb_array_length(rel), coalesce((select string_agg(x.name, ', ') from pg_temp.st6_readers() x), 'none')));
+  foreach c in array cls loop
+    -- 5. Positive pair: the same reads with the block state intact are answered clean and hold no withheld record.
+    -- A read the class's gate does not admit (any refusal with the state intact) is no case for that class.
+    sub := '[]'; nbad := 0; det := '';
+    for p in select * from jsonb_array_elements(rel) loop
+      r := pg_temp.st6_read(tk->>c, (p->>'oid')::oid, p->>'arg');
+      if pg_temp.w07_kind(r) = 'accepted' or r->>'status' = 'w07_rows' then
+        sub := sub || p;
+        if pg_temp.st6_holds(r, ids) then nbad := nbad + 1; det := det || format(' %s(%s) returned a withheld record;', p->>'name', p->>'arg'); end if;
+      else
+        det := det || format(' %s(%s) not admitted: %s;', p->>'name', p->>'arg', pg_temp.w07_kind(r));
+      end if;
+    end loop;
+    perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-clean',
+      case when jsonb_array_length(sub) = 0 then 'could_not_check' when nbad > 0 then 'bad' else 'ok' end,
+      format('block state intact, %s: %s read(s) answered clean, %s holding a withheld record (wanted 0); wanted at least 1 read;%s',
+             c, jsonb_array_length(sub), nbad, det));
+    -- 6. The block state missing, unreadable, partial: each admitted read answers could not check, returns nothing
+    -- through it and writes nothing.
+    foreach f in array array['missing', 'unreadable', 'partial'] loop
+      plant := case f
+        when 'missing' then 'alter table devos_private.sample_stream disable trigger user; delete from devos_private.sample_stream where stream::text = ''finding'''
+        when 'unreadable' then 'alter table devos_private.sample_stream rename to sample_stream_w07_hidden'
+        else pg_temp.st6_wh_partial() end;
+      nok := 0; nbad := 0; ncnc := 0; det := ''; pe := null;
+      if jsonb_array_length(sub) = 0 then
+        perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-' || f, 'could_not_check', 'no read is admitted to ' || c || ' (see its -clean case)');
+        continue;
+      end if;
+      begin
+        begin
+          if plant is null then raise exception 'the stream table has no state column to make partial'; end if;
+          execute plant;
+        exception when others then
+          pe := sqlstate || ' ' || left(sqlerrm, 160);
+          raise exception using errcode = 'P0W7U', message = 'w07: plant failed';
+        end;
+        for p in select * from jsonb_array_elements(sub) loop
+          d0 := pg_temp.st6_digest();
+          r := pg_temp.st6_read(tk->>c, (p->>'oid')::oid, p->>'arg');
+          d1 := pg_temp.st6_digest();
+          extra := (select string_agg(k, ', ' order by k) from jsonb_object_keys(case when jsonb_typeof(r) = 'object' then r else '{}' end) k
+                     where k not in ('status', 'reason_code', 'reason'));
+          if r ? 'w07_cnc' or r ? 'raised' then
+            ncnc := ncnc + 1; det := det || format(' %s(%s): %s (not an answer of interface v1);', p->>'name', p->>'arg', coalesce(r->>'w07_cnc', 'raised'));
+          elsif pg_temp.st6_holds(r, ids) then
+            nbad := nbad + 1; det := det || format(' %s(%s): a withheld record returned;', p->>'name', p->>'arg');
+          elsif d1 <> d0 then
+            nbad := nbad + 1; det := det || format(' %s(%s): the read wrote (state changed);', p->>'name', p->>'arg');
+          elsif pg_temp.w07_kind(r) <> 'could_not_check' then
+            nbad := nbad + 1; det := det || format(' %s(%s): answered %s, wanted could not check (folded into %s);', p->>'name', p->>'arg',
+              coalesce(r->>'status', '?') || ' ' || coalesce(r->>'reason_code', ''), case when pg_temp.w07_kind(r) = 'refused' then 'fail' else 'clean' end);
+          elsif extra is not null then
+            nbad := nbad + 1; det := det || format(' %s(%s): returned through the could-not-check answer: %s;', p->>'name', p->>'arg', extra);
+          else
+            nok := nok + 1;
+          end if;
+        end loop;
+        raise exception using errcode = 'P0W7U', message = 'w07: undo the planted state';
+      exception when sqlstate 'P0W7U' then null;
+      end;
+      if pe is not null then
+        perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-' || f, 'could_not_check', 'the block state could not be planted ' || f || ': ' || pe);
+      else
+        perform pg_temp.w07_put('6ST-wh-' || (short->>c) || '-' || f,
+          case when nbad > 0 then 'bad' when ncnc > 0 then 'could_not_check' else 'ok' end,
+          format('block state %s, %s: %s read(s) answered could not check with nothing returned or written, %s bad, %s not judged (of %s);%s',
+                 f, c, nok, nbad, ncnc, jsonb_array_length(sub), det));
+      end if;
+    end loop;
+  end loop;
+end $f$;
 create function pg_temp.st6_counts() returns void language plpgsql as $f$
 declare d text; n int;
 begin
@@ -588,6 +815,7 @@ begin
   perform pg_temp.w07_run('6ST-share-finding', $q$select pg_temp.st6_share('finding')$q$);
   perform pg_temp.w07_run('6ST-pos', $q$select pg_temp.st6_position()$q$);
   perform pg_temp.w07_run('6ST-path', $q$select pg_temp.st6_path()$q$);
+  perform pg_temp.w07_run('6ST-wh', $q$select pg_temp.st6_withheld()$q$);
   perform pg_temp.w07_run('6ST-counts', $q$select pg_temp.st6_counts()$q$);
 end $$;
 

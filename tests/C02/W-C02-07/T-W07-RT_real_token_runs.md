@@ -93,6 +93,7 @@ No Appendix C entry of its own. It carries the real-token runs of N04's C02 part
 | N04 "a fake role name and a fake session ID with the same token" | `RT-cal-n5` |
 | N04, the `devos_kurulum` token outside the transfer | `RT-kur-n2`, `RT-kur-n5` |
 | N04's positive | `RT-den-p2` |
+| W-C02-07 point 5 (b): `devos_kurulum`'s "Cannot" row as W-C02-05 gives it, effort-reduction approval (EV-C02-003 §4.2; CHK-C02-030 C9; N03's "the working environment's own approval of a reduction is rejected" with N-136's `devos_kurulum` extension) | `RT-kur-n6`, with its pair `RT-kur-p3` (phase C5); database cases `N03-neg-own-approval-kurulum`, `N03-neg-standing-kurulum`, B-N03-3 |
 | N17 "An effect attempt with another session's claim or without a token is rejected" | `RT-cal-n8` (labelled within one session), `RT-cal-n6` |
 | N17 "a claim token … when the caller's environment token gives a role class other than the claim's" | `RT-s8l2`: not made with real tokens, reason stated; `T-W07-N17` |
 | N17's positive | `RT-cal-p2` |

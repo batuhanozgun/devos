@@ -1,4 +1,7 @@
--- w07-break: test=w07_n28_sample_exemption.sql; expect-red=S-ccc,S-neg-direct
+-- w07-break: test=w07_n28_sample_exemption.sql; expect-red=S-ccc,S-ccc-partial,S-neg-direct
+-- Phase C6 (CHK-C02-030 C7 (d); K22): S-ccc-partial, the marker present but incomplete through the hook
+-- sample_marker_partial, turns red too (the drawn write accepted), for the same reason as S-ccc; with both hooks filled
+-- the prober may narrow the patch to one case at a time.
 -- Break patch for T-W07-N28 (tests/C02/W-C02-07/T-W07-N28_verifier_does_not_repair.md, "Break attempt"; phase C4a). EV-C02-008
 -- 2.5's B-S4: the exemption granted when the marker is unreadable. The marker is read at two places, DM-41's trigger
 -- (conditions 1 to 4) and the Review table's check (condition 2), and both fail closed, so a break at one of them is

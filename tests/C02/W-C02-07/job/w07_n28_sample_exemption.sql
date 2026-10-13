@@ -489,6 +489,10 @@ create function pg_temp.s_hook(p_key text) returns text language sql immutable a
     -- An owner-level statement that makes the sampling path's marker unreadable (EV-C02-008 2.2 condition 2: "W-C02-10's
     -- build chooses its form ... records it, and section 2.5's cases test it"); it runs inside an undone subtransaction.
     ('sample_marker_unreadable', ''),
+    -- Phase C6 (CHK-C02-030 C7 (d); K22): an owner-level statement that leaves the sampling path's marker present but
+    -- incomplete (for example a value of the right name with no content), in the form W-C02-10 records; it runs inside
+    -- an undone subtransaction. Empty until then: S-ccc-partial gives could_not_check with the reason.
+    ('sample_marker_partial', ''),
     -- Taking a sample by setting its reviewer fields, if W-C02-10's build gives taking that form: an owner-level or
     -- devos_api statement with $1 = the sample's id. 'none' when the build takes a sample only through record_verdict
     -- (then the case is not applicable, and the specification and a notice say so: EV-C02-008 2.5, B-S3).
@@ -639,17 +643,28 @@ begin
         format('the owner''s sample row without the marker: %s; sample rows naming its target: %s (wanted refused, 0)', coalesce('refused: ' || e, 'written'), n));
     end if;
   end if;
-  -- S-ccc: the marker's source made unreadable, then a block of gated writes: the write whose draw falls on it is
+  -- S-ccc (the marker unreadable) and, phase C6 (CHK-C02-030 C7 (d); K22), S-ccc-partial (the marker partial), each
+  -- through its hook: pg_temp.s_ccc below.
+  perform pg_temp.s_ccc('S-ccc', 'sample_marker_unreadable', 'unreadable');
+  perform pg_temp.s_ccc('S-ccc-partial', 'sample_marker_partial', 'partial');
+end $f$;
+
+create function pg_temp.s_ccc(p_case text, p_hook text, p_what text) returns void language plpgsql as $f$
+declare r jsonb; e text; h text; bs int; i int; ans jsonb := '[]';
+        nacc int := 0; nccc int := 0; nother int := 0; ra0 bigint; ra1 bigint; ns0 int; ns1 int; pe text;
+begin
+  -- p_case: the marker's source made p_what (unreadable, or partial: present but incomplete) through the hook p_hook,
+  -- then a block of gated writes: the write whose draw falls on it is
   -- refused and recorded as could not check; no other is refused; no sample is written (EV-C02-008 2.2's fail-closed
   -- rule; 2.5).
-  h := pg_temp.s_hook('sample_marker_unreadable');
+  h := pg_temp.s_hook(p_hook);
   if coalesce(h, '') = '' then
-    perform pg_temp.w07_put('S-ccc', 'could_not_check', 'the marker''s form is W-C02-10''s to choose and record (EV-C02-008 2.2 condition 2); '
-      || 'pg_temp.s_hook(''sample_marker_unreadable'') is empty until then (README section 8)');
+    perform pg_temp.w07_put(p_case, 'could_not_check', 'the marker''s form is W-C02-10''s to choose and record (EV-C02-008 2.2 condition 2); '
+      || 'pg_temp.s_hook(''' || p_hook || ''') is empty until then (README section 8)');
     return;
   end if;
   e := pg_temp.w07_align('need', 'need', null);
-  if e is not null then perform pg_temp.w07_put('S-ccc', 'could_not_check', e); return; end if;
+  if e is not null then perform pg_temp.w07_put(p_case, 'could_not_check', e); return; end if;
   bs := (pg_temp.w07_state('need')->>'block_size')::int;
   begin
     begin
@@ -669,12 +684,12 @@ begin
     raise exception using errcode = 'P0W7U', message = 'w07: undo the case';
   exception when sqlstate 'P0W7U' then null;
   end;
-  if pe is not null then perform pg_temp.w07_put('S-ccc', 'could_not_check', 'the unreadable marker could not be planted: ' || pe); return; end if;
+  if pe is not null then perform pg_temp.w07_put(p_case, 'could_not_check', 'the ' || p_what || ' marker could not be planted: ' || pe); return; end if;
   -- The drawn write is refused; a refused write is rolled back, so the stream need not advance past it, and the writes
   -- after it may land on the same draw and be refused too. So: at least one could-not-check refusal, each recorded, no
   -- other answer, and no sample written (neither the drawn write accepted with its sample nor accepted unsampled).
-  perform pg_temp.w07_rec('S-ccc', nccc >= 1 and nother = 0 and ns1 = ns0 and ra1 - ra0 >= nccc,
-    format('a block of %s needs with the marker unreadable: %s accepted, %s refused as could not check (wanted at least 1), %s other answers %s (wanted 0); sample Reviews %s -> %s (wanted unchanged); refusals recorded %s (wanted at least %s)',
+  perform pg_temp.w07_rec(p_case, nccc >= 1 and nother = 0 and ns1 = ns0 and ra1 - ra0 >= nccc,
+    format('a block of %s needs with the marker ' || p_what || ': %s accepted, %s refused as could not check (wanted at least 1), %s other answers %s (wanted 0); sample Reviews %s -> %s (wanted unchanged); refusals recorded %s (wanted at least %s)',
            bs, nacc, nccc, nother, ans, ns0, ns1, ra1 - ra0, nccc));
 end $f$;
 
