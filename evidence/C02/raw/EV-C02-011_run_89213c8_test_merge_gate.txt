@@ -1,0 +1,101 @@
+ok   (1) a class-normal head passes without a verdict
+ok   (1g) the guard allows that merge by rule M7, which runs tools/merge_gate.py
+ok   (2) a class-high head without a verdict fails
+ok   (2g) the guard denies that merge by rule M7
+ok   (3) the same change with a PASS verdict naming the reviewed commit passes
+ok   (4) a SHA that is no longer the pull request's head fails
+ok   (5) a verdict for an older X passes when X..head is class normal
+ok   (6) a verdict for an older X fails when X..head touches a class-high path
+ok   (7) a FAIL verdict does not cover
+ok   (8) a verdict without the independence field does not cover
+ok   (9) a verdict naming a short SHA does not cover
+ok   (10) a short head SHA fails in the gate and is denied by the guard's M6
+ok   (11) a change that only adds recorder lines to owned_ids.txt is class normal
+ok   (11b) any other change to owned_ids.txt is class high
+ok   (12) a pull request number the remote does not hold fails
+ok   (13) a change to plan/Installation_Working_Order.md is class high
+ok   (14) changing the text of an existing acceptance block is class high
+ok   (14b) removing an existing acceptance block is class high
+ok   (15) deleting a plan/work/*.md file is class high
+ok   (16) adding a block where none existed, and editing outside a block, stay class normal
+ok   (17) a verdict file with a repeated key does not cover
+ok   (18) a nested CLAUDE.md and a nested .claude/ path are class high
+ok   (19) a pull request that reverts a reviewed change, adding no verdict, is not covered by an older verdict on main
+ok   (19b) a verdict the pull request adds for a commit already on main does not cover
+ok   (20a) CLAUDE.md: deleted, no verdict: GATE FAIL naming CLAUDE.md
+ok   (20p) CLAUDE.md: (20a) with a covering verdict it adds: GATE PASS, covered by
+ok   (20b) CLAUDE.md: renamed out (to archive/rules-old.md), no verdict: GATE FAIL naming CLAUDE.md
+ok   (21a) .claude/: a new file one level down (.claude/protocols/D10.md), no verdict: GATE FAIL naming it
+ok   (21p) .claude/: (21a) with a covering verdict it adds: GATE PASS, covered by
+ok   (21b) .claude/: plan/notes.md renamed into it (.claude/notes.md), no verdict: GATE FAIL naming .claude/notes.md
+ok   (21c) .claude/: a symbolic link at a nested .claude path (docs/.claude -> ../.claude), no verdict: GATE FAIL naming docs/.claude
+ok   (22a) methods/: a new file one level down (methods/review/checklist.md), no verdict: GATE FAIL naming it
+ok   (22p) methods/: (22a) with a covering verdict it adds: GATE PASS, covered by
+ok   (22b) methods/: a new file with a non-ASCII name (methods/ölçüm-yöntemi.md), no verdict: GATE FAIL naming it
+ok   (22c) methods/: a symbolic link at its own path (methods -> docs), no verdict: GATE FAIL naming methods
+ok   (23a) supabase/migrations/: a new migration (supabase/migrations/20261012000001_fixture_item.sql), no verdict: GATE FAIL naming it
+ok   (23g) supabase/migrations/: the guard denies (23a)'s merge by rule M7
+ok   (23p) supabase/migrations/: (23a) with a covering verdict it adds: GATE PASS, covered by
+ok   (23h) supabase/migrations/: the guard allows that merge by rule M7 once (23p)'s verdict is added
+ok   (23b) supabase/migrations/: a new file whose name has a space (supabase/migrations/20261012000002 fixture index.sql), no verdict: GATE FAIL naming it
+ok   (23c) supabase/migrations/: a symbolic link at its own path (supabase/migrations -> ../docs), no verdict: GATE FAIL naming supabase/migrations
+ok   (23d) supabase/migrations/: a pull request mixing a new migration (supabase/migrations/20261012000003_fixture_mixed.sql) with a class-normal change (plan/notes.md), no verdict: GATE FAIL naming the migration
+ok   (24a) supabase/functions/: a new function one level down (supabase/functions/fixture-hello/index.ts), no verdict: GATE FAIL naming it
+ok   (24p) supabase/functions/: (24a) with a covering verdict it adds: GATE PASS, covered by
+ok   (24b) supabase/functions/: a symbolic link at its own path (supabase/functions -> ../docs), no verdict: GATE FAIL naming supabase/functions
+ok   (24c) supabase/functions/ and supabase/migrations/: a symbolic link at their parent's path (supabase -> docs), no verdict: GATE FAIL naming supabase
+ok   (25a) pipelines/: a new file one level down (pipelines/embedding/embed.py), no verdict: GATE FAIL naming it
+ok   (25p) pipelines/: (25a) with a covering verdict it adds: GATE PASS, covered by
+ok   (25b) pipelines/: a regular file at its own path (pipelines), no verdict: GATE FAIL naming pipelines
+ok   (25c) pipelines/: a symbolic link at its own path (pipelines -> docs), no verdict: GATE FAIL naming pipelines
+ok   (26a) .github/workflows/: a new workflow whose name has a space (.github/workflows/nightly fixture.yml), no verdict: GATE FAIL naming it
+ok   (26p) .github/workflows/: (26a) with a covering verdict it adds: GATE PASS, covered by
+ok   (26b) .github/workflows/: a symbolic link at its own path (.github/workflows -> ../docs), no verdict: GATE FAIL naming .github/workflows
+ok   (27a) .github/CODEOWNERS: a new file, no verdict: GATE FAIL naming .github/CODEOWNERS
+ok   (27p) .github/CODEOWNERS: (27a) with a covering verdict it adds: GATE PASS, covered by
+ok   (27b) .github/CODEOWNERS and .github/workflows/: a symbolic link at their parent's path (.github -> docs), no verdict: GATE FAIL naming .github
+ok   (27c) .github/CODEOWNERS and .github/workflows/: a regular file at their parent's path (.github), no verdict: GATE FAIL naming .github
+ok   (23e) supabase/migrations/: a migration deleted (supabase/migrations/20261001000000_fixture_init.sql), no verdict: GATE FAIL naming it
+ok   (24d) supabase/functions/: a function changed (supabase/functions/fixture-hello/index.ts), no verdict: GATE FAIL naming it
+ok   (25d) pipelines/: a file changed (pipelines/ingest/run.py), no verdict: GATE FAIL naming it
+ok   (25e) pipelines/: a file renamed out (pipelines/ingest/run.py to archive/run.py), no verdict: GATE FAIL naming pipelines/ingest/run.py
+ok   (26c) .github/workflows/: a workflow deleted (.github/workflows/ci.yml), no verdict: GATE FAIL naming it
+ok   (27d) .github/CODEOWNERS: changed, no verdict: GATE FAIL naming .github/CODEOWNERS
+ok   (27e) .github/CODEOWNERS: renamed out (to archive/CODEOWNERS.old), no verdict: GATE FAIL naming .github/CODEOWNERS
+     plan 6.7: 8 backticked paths found: .github/CODEOWNERS, CLAUDE.md, .claude/, methods/, supabase/migrations/, supabase/functions/, pipelines/, .github/workflows/
+     plan 6.7: skipped, as it names no path: 'the code of the decision channel once C06 writes it'
+     plan 6.7: not class high: none; of the eight, not in the list: none; in the list, not of the eight: none
+ok   (28) every path that plan 6.7's "High-impact path list" names (read from plan/DevOS_Kurulum_Plani.md) is class high, and the list names the eight of (20) to (27)
+ok   (29a) near miss supabase/config.toml, no verdict: GATE PASS, class normal
+ok   (29b) near miss supabase/seed.sql, no verdict: GATE PASS, class normal
+ok   (29c) near miss supabase/migrations-notes.md, no verdict: GATE PASS, class normal
+ok   (29d) near miss methods.md, no verdict: GATE PASS, class normal
+ok   (29e) near miss pipelines-old/x.py, no verdict: GATE PASS, class normal
+ok   (29f) near miss .github/CODEOWNERS.md, no verdict: GATE PASS, class normal
+ok   (29g) near miss docs/methods/x.md, no verdict: GATE PASS, class normal
+ok   (29h) near miss tests/supabase/migrations/x.sql, no verdict: GATE PASS, class normal
+ok   (29i) near miss tests/pipelines/x.py, no verdict: GATE PASS, class normal
+ok   (29j) near miss .github/ISSUE_TEMPLATE/x.md, no verdict: GATE PASS, class normal
+ok   (29k) near miss tests/methods, a symbolic link named like a listed directory below another directory, no verdict: GATE PASS, class normal
+ok   (30a) a file name that is not valid UTF-8 under supabase/migrations/: GATE FAIL or GATE ERROR, never GATE PASS
+ok   (30b) a file name that is not valid UTF-8 under .github/workflows/: GATE FAIL or GATE ERROR, never GATE PASS
+ok   (N270a) tests/C02/W-C02-07/shared/: scan_patterns.json changed (a key added), no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/scan_patterns.json
+ok   (N270ap) tests/C02/W-C02-07/shared/: scan_patterns.json changed (a key added), with a covering verdict it adds: GATE PASS, covered by
+ok   (N270b) tests/C02/W-C02-07/shared/: token_format.md changed (a line appended), no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/token_format.md
+ok   (N270bp) tests/C02/W-C02-07/shared/: token_format.md changed (a line appended), with a covering verdict it adds: GATE PASS, covered by
+ok   (N270c) tests/C02/W-C02-07/shared/: a new file (tests/C02/W-C02-07/shared/n270_fixture_note.md), no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/n270_fixture_note.md
+ok   (N270g) the guard denies (N270c)'s merge by rule M7
+ok   (N270cp) tests/C02/W-C02-07/shared/: a new file (tests/C02/W-C02-07/shared/n270_fixture_note.md), with a covering verdict it adds: GATE PASS, covered by
+ok   (N270h) the guard allows (N270c)'s merge by rule M7 once its verdict is added
+ok   (N270d) tests/C02/W-C02-07/shared/: scan_patterns.json deleted, no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/scan_patterns.json
+ok   (N270dp) tests/C02/W-C02-07/shared/: scan_patterns.json deleted, with a covering verdict it adds: GATE PASS, covered by
+ok   (N270e) tests/C02/W-C02-07/shared/: token_format.md renamed out (to tests/C02/W-C02-07/token_format_old.md), no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/token_format.md
+ok   (N270ep) tests/C02/W-C02-07/shared/: token_format.md renamed out (to tests/C02/W-C02-07/token_format_old.md), with a covering verdict it adds: GATE PASS, covered by
+ok   (N270f) tests/C02/W-C02-07/shared/: the folder replaced by a symbolic link (to archive/w07-shared-old, where its files moved), no verdict: GATE FAIL naming tests/C02/W-C02-07/shared/scan_patterns.json
+ok   (N270fp) tests/C02/W-C02-07/shared/: the folder replaced by a symbolic link (to archive/w07-shared-old, where its files moved), with a covering verdict it adds: GATE PASS, covered by
+ok   (N270n1) tests/C02/W-C02-07/README.md changed (another file of the test folder), no verdict: GATE PASS, class normal
+ok   (N270n2) a new file under tests/C02/W-C02-07/job/ (another folder of the test folder), no verdict: GATE PASS, class normal
+ok   (N270n3) near miss tests/C02/W-C02-07/shared-old/scan_patterns.json (the folder's name without its boundary), no verdict: GATE PASS, class normal
+ok   (N270n4) near miss tests/C02/W-C02-08/shared/scan_patterns.json (a folder named shared under another item), no verdict: GATE PASS, class normal
+ok   (N270n5) near miss docs/tests/C02/W-C02-07/shared/token_format.md (the folder's path below another directory), no verdict: GATE PASS, class normal
+MERGE_GATE_TEST PASS (97/97)
