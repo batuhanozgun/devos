@@ -1,0 +1,3 @@
+Synthetic test data for T-W03-09 (W-C02-03, revision H1-prime; frame review FR-07). Not a credential. Tag 20261013T0213Z. Never merged.
+p1, the plain form, in this branch's current tree:
+w03-fixture/plant+value@20261013T0213Z=x
