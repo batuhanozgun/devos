@@ -5,7 +5,7 @@ Synthetic test data (plan Section 8 item 13): this file holds no token, no marke
 ## 0. What this is
 
 - **Serves** `plan/work/W-C02-20.md`: point 1's channel list (section 2 here), points 2, 4, 5 and 6 (section 3), point 3's cases that change 1 already denies (section 3, T-W20-3c1), point 7's breaks (section 4), point 2's residuals (section 5) and point 6's list (section 6). Change 2's cases (point 3's exception) are specified in section 7 and written once the client script is on `main`.
-- **Written** by the test designer (a fresh-context `test-designer` subagent that does not produce the change) on 2026-10-13, from the guard at `main` `c09797ff630ab357cb33b0ed9fe8c503bede86ac`, before any change to the guard exists (point 7). **Revised** on 2026-10-13 by W-C02-21's test designer, another fresh-context `test-designer` subagent, before any run against a stop. `Monitor` is no longer a channel the stop reads, and R3 records the executor's reading. Section 11 says what changed and why this does not loosen anything.
+- **Written** by the test designer (a fresh-context `test-designer` subagent that does not produce the change) on 2026-10-13, from the guard at `main` `c09797ff630ab357cb33b0ed9fe8c503bede86ac`, before any change to the guard exists (point 7). **Revised** on 2026-10-13 by W-C02-21's test designer, another fresh-context `test-designer` subagent, before any run against a stop. `Monitor` is no longer a channel the stop reads, and R3 records the executor's reading. Section 11 says what changed and why this does not loosen anything. **Extended** on 2026-10-13 by a third fresh-context `test-designer` subagent, on CHK-C02-056's condition C1 and before the fix: point 4's cases T-W20-4e (section 3), which add cases and change none.
 - **Files.** `tools/test_token_stop.py` holds every case (Python 3, standard library only). One added line in `tools/test_tool_allowlist.sh` runs it, so that its final line (`ALLOWLIST_TEST PASS` or `FAIL`) counts these cases. This file holds their form-C0 text.
 - **How to run.** At a checkout's root: `bash tools/test_tool_allowlist.sh` (the whole guard suite), or `python3 tools/test_token_stop.py [hook-path]` alone. Each case prints one line: `ok   `, `BAD  ` or `info `, then `W20-<case ID>`, the channel in brackets, the format (`env`, `claim`, or `-` for none), what the call carries (with the word "synthetic"), and the event (`PreToolUse` or `PermissionRequest`). No line prints a case's input. The program's last line is `TOKEN_STOP_TEST PASS` or `FAIL` with its counts; it exits 1 on any `BAD`.
 - **Expected against a guard without the stop** (the guard at `c09797f`): every ✘ case of points 2, 3 (change 1), 4 and 5, and point 6's two ✘ cases, are `BAD`. Every ✔ control is `ok`. Point 7's scan is `ok`. Residuals and records are `info`. The executor's record carries that run.
@@ -133,6 +133,55 @@ Synthetic test data (plan Section 8 item 13): this file holds no token, no marke
 
 Where the markers may appear: `token_format.md` section 7 is unchanged by these tests. Case `P7-markers` checks it as it stands (both markers only in the two shared files).
 
+### T-W20-4e · Point 4: a single-file disagreement, and a pattern file too deep to read (added on CHK-C02-056 C1, before the fix)
+
+**Why and when.** CHK-C02-056 (the verdict on change 1 at `c3a1498`, findings F-7 and F-8, condition C1) and CHK-C02-054 (lens A, F-6 and F-7, whose C1 adds the state e3) found two gaps in point 4's ✘:
+- `token_finders()` takes the two files as agreeing when each finder of `scan_patterns.json` appears as some code span anywhere in `token_format.md` section 3. Section 3 has six such spans: two exact patterns, two PostgreSQL patterns and two finders. So one edit of one file can make the files disagree while the stop reads with a wrong finder and never says "could not check".
+- A `scan_patterns.json` nested very deep raises `RecursionError`. The `except` tuple does not catch it, so the call is denied by G0 ("guard error"), whose text and log are not withheld, and not by the stop as "could not check".
+
+These cases were added on 2026-10-13 by a third test designer: a fresh-context `test-designer` subagent that is neither the producer of change 1 or of its C1 fix, nor one of this file's earlier designers. They were written and run before the fix exists. They add 18 cases (36 lines) and change no earlier case, control, expectation or input. They loosen nothing (ledger rule 3; Appendix G G8 item 3). Two lines of the run loop change, so that a case can give the guard a decision-log directory of its own. Only e4's cases use one. Every other case keeps the shared log directory, as before. One judging branch is added (`cnc5`: T-W20-4's could-not-check judgement, plus T-W20-5's search), and only e4's cases use it. The new code is `c1_faults()` and `repeats()`.
+
+| Field | Content |
+|---|---|
+| **ID and claim** | T-W20-4e (`P4-e1-*` to `P4-e6-*`). The two shared files agree only when each finder of `scan_patterns.json` equals the code span of its own row in section 3's Finder table (CHK-C02-056 C1). In any other state, every call the stop reads is denied as "could not check" (R2), never allowed and never denied as a match. This holds even when every JSON finder is still quoted somewhere in section 3. So is any exception raised while the two files are read or checked. A pattern file too deep for `json.load` gets the stop's own "could not check", not a guard error, and the denial's text, the decision log and `tools/guard_report.py` repeat no format string (point 5). |
+| **Failure class rule** | An agreement check by membership: a copy is accepted because it appears somewhere in its source, not where the source defines it. One file then drifts and the stop silently reads with a wrong finder (an allow, or a match's denial where "could not check" is due). Or a fault while reading the files escapes the "could not check" path (plan Section 8 item 14) and lands in a guard error, whose text and log are not withheld. |
+| **Examples** | Six states, each in its own scratch tree made by `make_tree` (as T-W20-4's), each one edit of one file. Every value is read from the two files at run time, never typed. (e1) `env_token_find` in `scan_patterns.json` set to that file's `claim_token_find`. (e2) `env_token_find` set to that file's `env_token_exact`. (e3) `token_format.md` only: in the Finder table's environment row, the finder's minimum is lowered by four. A sentence quoting the old finder is added at the end of section 3, and `scan_patterns.json` is byte for byte unchanged. (e4) `scan_patterns.json` keeps its whole content and gains one key whose value is a list nested 100000 deep. Python 3.13's `json.load`, the guard's Python here, parsed 8000 levels and raised `RecursionError` from 10000, so 100000 leaves a tenfold margin. (e5) `claim_token_find` set to `env_token_find`. (e6) `env_token_find` set to section 3's PostgreSQL pattern of the environment token (the third column of the well-formed table's environment row). Each tree is self-checked before the run, and a tree not in its state answers `BAD`. For e1 to e3, e5 and e6, the tree holds its one edit and nothing else, the files disagree by the Finder table's rows, and every JSON finder is still a code span of section 3, which is the state a membership check passes. For e4, the file is the whole original plus the deep key, `token_format.md` is unchanged, and `json.load` raises `RecursionError` in the test's own Python. In each tree, T-W20-4's three fault calls run on both events: an ordinary WebFetch, an ordinary comment, and a `curl` holding a whole environment-format string. Their R1 twins are not used, as in T-W20-4. |
+| **Negative control** (C0: the wrong is caught) | Every `P4-e*` call is denied, its text holding "could not check" and not "guard error" (R2), on both events. For `P4-e4-*`, also: each call logs to its own directory, and the denial's text, that log and `guard_report.py`'s output, searched with both finder patterns, hold no format string (T-W20-5's search). Against the guard at `1276d5b`, every one of the 36 lines is `BAD` (self-check below). |
+| **Positive control** (C0: the right is allowed) | T-W20-4's own, unchanged, and run in the same suite. `P4-whole-*`: with whole files the controls are allowed, and a format string is denied as a match, not as "could not check". `P4-follow-min` and `P4-follow-stop`: both files changed alike, so the Finder rows still agree with the JSON, and the stop follows them without "could not check". A fix that answers "could not check" too widely, for example when section 3 changes anywhere or the files are merely edited, turns these `BAD`. |
+| **Break attempt** | (C1-a) and (C1-b), specified below. Breaks (a), (d), (g), (h) and (k) of section 4 also reach these cases (section 4). |
+| **Stage and environment** | As T-W20-4. |
+| **Independence level** | Written by a test designer that is not the producer (a fresh-context subagent). Shared with the producer: the acceptance block, CHK-C02-054 and CHK-C02-056, the model lineage, and the guard at `1276d5b` as it stands. Not shared: the fix, which did not exist when these cases were written and run. Judged by C5's fresh-context checker, who builds both breaks. |
+| **Evidence layer** | Structural: the guard's decision on synthetic hook inputs in scratch trees. |
+| **Evidence envelope** | As T-W20-2. |
+
+**Breaks of CHK-C02-056 C1, as specifications** (the checker builds them as section 4 says, in a scratch copy of the fixed head, each on its own):
+
+| Break | The edit | Lines that turn `BAD` | Lines that stay `ok` |
+|---|---|---|---|
+| (C1-a) the agreement check put back to membership | `token_finders()` accepts a JSON finder that appears in any code span of section 3 (the test at `c3a1498`, G:1865), with the rest of the fix kept | Every `P4-e1-*`, `P4-e2-*`, `P4-e3-*`, `P4-e5-*`, `P4-e6-*`: 15 cases, 30 lines | `P4-e4-*` and every other line |
+| (C1-b) the `except` narrowed back | The `except` around the reading of the two files narrowed back to `(OSError, ValueError, KeyError, TypeError, re.error)`, with the rest of the fix kept | Every `P4-e4-*`: 3 cases, 6 lines (a guard error, and for `curl-string` the string repeated) | `P4-e1-*` to `-e3-*`, `-e5-*`, `-e6-*` and every other line, provided the fix's agreement check raises one of those five types. If it raises another type, (C1-b) also turns those lines `BAD`, and the checker states which type |
+
+**What these cases do not cover, and why.**
+- **Both files edited alike.** Two equal edits that, for example, set the environment finder to the claim finder in the Finder row and in the JSON leave the files agreeing, and the stop then reads with that finder. No agreement check can see two equal edits (EV-C02-010 A.8; CHK-C02-056 C2). CHK-C02-054's C1 also asks that "the two finders differ", and CHK-C02-056's C1 does not. This file therefore has no case for that clause. It is reported to the executor, not decided here.
+- **The claim row's mirror of e3**, and edits of section 3 other than a Finder row: they are one state class with e3. Only e3 is a case, as C1 lists it.
+- **Other exceptions while reading** (a file too large for memory, a read past the guard's time limit): not cases. C1's "every exception" is shown by e4 only. A read past the time limit is point 8's third property.
+- **The rule ID.** "Could not check" is recognised by its words (R2), not by the rule's ID (R1). At `1276d5b`, the guard's only text holding these words is L4's (`grep -n "could not check"` gives G:1853 and G:1870 only). So the words identify the stop there, and the checker repeats that search at the fixed head. A denial from another rule whose text holds the words would pass this word check. That is a format gate's "filled but meaningless" case, and it lands in the checker's reading of the decision log's rule.
+
+**Self-check by this test designer** (not a result: the executor's record and C5's checker carry the runs that count).
+- **Against the guard at `1276d5b`** (2026-10-13, 05:42 to 05:46Z, in the executor's scratch clone `cw90`, with these two files uncommitted). Blobs: guard `1fe3010b10b1`, settings `c6907ccf4609`, shared files `b548c8cea2c4` and `175c68c75602`, suite `8974d71e36c7`.
+  - `bash tools/test_tool_allowlist.sh` gave 1349 lines: 1284 `ok`, 36 `BAD`, 26 `info`. The final lines were `TOKEN_STOP_TEST FAIL (ok 387, BAD 36, info 25)` and `ALLOWLIST_TEST FAIL`.
+  - The 36 `BAD` lines are exactly the `P4-e*` lines, and none failed its input self-check.
+  - Observed: in e1 and e6 every call was allowed. In e2, e3 and e5 the ordinary calls were allowed and the `curl` string was denied as a match. In e4 every call was denied by a guard error, and for `curl-string` the denial's text, the log and the report held the string (CHK-C02-056 F-8).
+  - The other 1313 lines match the same suite's run in a copy of the clone before these cases were added (1284 `ok`, 0 `BAD`, 26 `info`): the same status and, with temporary paths normalised, the same text, apart from the final lines.
+- **Against a throwaway stand-in of the fix.** This was a full copy of that clone outside every repository. Its `token_finders()` compared each JSON finder with the code span of its own row in section 3's Finder table, and caught every exception while the files were read. It is not handed over, shares nothing with the producer's fix, and was deleted after.
+  - Every `P4-e*` line was `ok`. The whole suite gave 1349 lines: 1320 `ok`, 0 `BAD`, 26 `info`, then `TOKEN_STOP_TEST PASS (ok 423, BAD 0, info 25)` and `ALLOWLIST_TEST PASS`.
+  - Every other line had the status and text of the run before these cases.
+- **Breaks on the stand-in.** Each break was made with one edit on its own copy and run with `python3 tools/test_token_stop.py` alone.
+  - (C1-a): `TOKEN_STOP_TEST FAIL (ok 393, BAD 30, info 25)`. The 30 lines are exactly `P4-e1-*`, `-e2-*`, `-e3-*`, `-e5-*` and `-e6-*` on both events.
+  - (C1-b): `FAIL (ok 417, BAD 6, info 25)`. The 6 lines are exactly `P4-e4-*`.
+  - Section 4's (h) (L4 taken out of `LEAK_WITHHELD`): `FAIL (ok 413, BAD 10, info 25)`. The 10 lines are the eight `P5-*` lines and `P4-e4-curl-string` on both events.
+  - Not run on the stand-in: (a), (d), (g) and (k). Their `P4-e*` sets in section 4 are derived from the code path.
+
 ### T-W20-5 · Point 5: nothing repeated
 
 | Field | Content |
@@ -200,6 +249,14 @@ Where the markers may appear: `token_format.md` section 7 is unchanged by these 
 
 A stop that crashes on a match (a guard error) also turns every `P2-*` ✘ case `BAD` (R2).
 
+**T-W20-4e's cases under these breaks** (added with them, on CHK-C02-056 C1; their own breaks (C1-a) and (C1-b) are in T-W20-4e). Each row adds lines to the set above. The set is derived from the code path; the designer's stand-in check is in T-W20-4e's self-check.
+- (a) the stop removed: every `P4-e*` line (36). The calls with no format string are allowed, and the `curl` string is allowed.
+- (d) a channel left out: that channel's `P4-e*` call in each of the six trees. WebFetch: `P4-e*-plain-webfetch`. GitHub writes: `P4-e*-plain-comment`. Bash's command: `P4-e*-curl-string`.
+- (g) "could not check" taken as no match: every `P4-e*` line (36).
+- (h) the stop's denial not withheld: `P4-e4-curl-string` on both events (2). The denial's text and log then repeat the string. The other `P4-e*` lines do not search for repeats and stay `ok`.
+- (k) a copy of the patterns: every `P4-e*` line (36). The trees' files are no longer read.
+- (b), (c), (i) and (j) do not reach them: the stop answers "could not check" before it reads any string.
+
 ## 5. Point 2's residuals (`P2R-*`, each for both formats)
 
 Expected result for every row: **allowed**, labelled residual, never counted as stopped. The finder patterns do not match the raw input; each case's input self-check confirms it before the run.
@@ -261,7 +318,7 @@ Not written now: the script, its path, the merge commit that adds it, and how it
 | 2 ✔ near-misses | `P2N-*` (T-W20-2, Positive control) |
 | 2: encoded, split, built at run time | `P2R-*` (section 5) |
 | 3 (change 1's part) | `P3c1-*`; the rest in section 7 |
-| 4 ✘ and ✔ | `P4-*` |
+| 4 ✘ and ✔ | `P4-*`; "the two shared files disagreeing" by a single-file edit, and a pattern file too deep to read: `P4-e*` (T-W20-4e) |
 | 4: "Where the markers may appear … stays as `token_format.md` section 7 states it" | `P7-markers` |
 | 5 | `P5-*` |
 | 6 | `P6-*`; section 6 |

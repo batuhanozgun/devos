@@ -575,6 +575,134 @@ def _not_json(path):
         return True
 
 
+# ---------------------------------------------------------------- point 4: CHK-C02-056 C1's states (added before the fix)
+
+DEEP = 100000   # e4's nesting depth. Python 3.13's json.load parsed 8000 levels and raised RecursionError from 10000
+
+
+def code_spans(text):
+    return re.findall(r"`([^`\n]+)`", text)
+
+
+def c1_faults(K, tp, root):
+    """CHK-C02-056 C1 (with CHK-C02-054 C1's E3; README T-W20-4e): one edit of one shared file that makes the two
+    files disagree, while every finder of scan_patterns.json is still some code span of token_format.md section 3 (the
+    state a check of 'appears anywhere in section 3' misses); and a pattern file nested so deep that json.load raises
+    RecursionError. (id, what, mutate, verify), as faults() gives them. Every value is read from the two files here,
+    never typed; each verify confirms the tree holds exactly its edit and never raises."""
+    keys = ("env_token_find", "claim_token_find")
+    with open(os.path.join(root, MD_REL), encoding="utf-8") as f:
+        md0 = f.read()
+    with open(os.path.join(root, PAT_REL), encoding="utf-8") as f:
+        js0 = f.read()
+    m3 = re.search(r"^## 3\..*?(?=^## 4\.)", md0, re.S | re.M)
+    if not m3:
+        raise Unusable("section 3 of token_format.md is not found")
+    lines0 = md0.splitlines()
+    sec = range(md0[:m3.start()].count("\n"), md0[:m3.end()].count("\n"))
+    ef, cf, ex = tp["env_token_find"], tp["claim_token_find"], tp["env_token_exact"]
+
+    def quoting(p):
+        return [i for i in sec if "`" + p + "`" in lines0[i]]
+    rows = [quoting(p) for p in (ef, cf, ex)]
+    if any(len(r) != 1 or not lines0[r[0]].startswith("|") for r in rows):
+        raise Unusable("token_format.md section 3 does not quote each finder and the environment exact pattern in one "
+                       "table row each")
+    ie, ic, ix = (r[0] for r in rows)   # the Finder table's two rows, and the well-formed table's environment row
+    pg = [s for s in code_spans(lines0[ix]) if s != ex and ex in s]   # that row's PostgreSQL pattern
+    n = K["env"]["min"]
+    lower = ef.replace("{%d,}" % n, "{%d,}" % (n - 4))
+    if code_spans(lines0[ie]) != [ef] or code_spans(lines0[ic]) != [cf] or len(pg) != 1 or n <= 4 or lower == ef:
+        raise Unusable("section 3's Finder rows, its PostgreSQL environment pattern or the finder's minimum are not "
+                       "where this test reads them")
+    pg = pg[0]
+    # e3: the Finder table's environment row asks four characters fewer; the old finder is quoted below it in section 3
+    old_row = lines0[ie]
+    md_e3 = (md0[:m3.start()] + m3.group(0).replace(old_row, old_row.replace("`" + ef + "`", "`" + lower + "`"), 1)
+             + "The environment finder before this edit was `" + ef + "`.\n\n" + md0[m3.end():])
+    # e4: the pattern file whole, with one more key nested DEEP levels deep
+    js4 = (json.dumps(json.loads(js0), indent=2)[:-1].rstrip() + ',\n  "_w20_deep": ' + "[" * DEEP + "]" * DEEP
+           + "\n}\n")
+
+    def text(t, rel):
+        with open(os.path.join(t, rel), encoding="utf-8") as f:
+            return f.read()
+
+    def write(rel, s):
+        def f(t):
+            with open(os.path.join(t, rel), "w", encoding="utf-8") as g:
+                g.write(s)
+        return f
+
+    def set_json(key, val):
+        d = json.loads(js0)
+        d["token_patterns"][key] = val
+        return write(PAT_REL, json.dumps(d, indent=2) + "\n")
+
+    def state(key=None, val=None, md=md0):
+        """The tree holds this edit only; the files disagree by the Finder rows; each JSON finder is a span of
+        section 3."""
+        def v(t):
+            try:
+                tpj, mdt = json.loads(text(t, PAT_REL))["token_patterns"], text(t, MD_REL)
+                want = dict(json.loads(js0)["token_patterns"], **({key: val} if key else {}))
+                lines, s3 = mdt.splitlines(), re.search(r"^## 3\..*?(?=^## 4\.)", mdt, re.S | re.M)
+                rows_agree = code_spans(lines[ie]) == [tpj[keys[0]]] and code_spans(lines[ic]) == [tpj[keys[1]]]
+                return (tpj == want and mdt == md and (key or text(t, PAT_REL) == js0) and bool(s3)
+                        and all("`" + tpj[k] + "`" in s3.group(0) for k in keys) and not rows_agree)
+            except Exception:
+                return False
+        return v
+
+    def deep(t):
+        try:
+            with open(os.path.join(t, PAT_REL), encoding="utf-8") as f:
+                json.load(f)
+            return False
+        except RecursionError:
+            return text(t, PAT_REL) == js4 and text(t, MD_REL) == md0
+        except Exception:
+            return False
+
+    return [
+        ("e1", "the pattern file's env_token_find set to its claim_token_find (token_format.md unchanged)",
+         set_json(keys[0], cf), state(keys[0], cf)),
+        ("e2", "the pattern file's env_token_find set to its env_token_exact (token_format.md unchanged)",
+         set_json(keys[0], ex), state(keys[0], ex)),
+        ("e3", f"token_format.md's Finder row of the environment token asking {n - 4} characters, the old finder still "
+               "quoted below it in section 3 (the pattern file unchanged)", write(MD_REL, md_e3), state(md=md_e3)),
+        ("e4", f"the pattern file whole but for one more key nested {DEEP} deep (json.load raises RecursionError)",
+         write(PAT_REL, js4), deep),
+        ("e5", "the pattern file's claim_token_find set to its env_token_find (token_format.md unchanged)",
+         set_json(keys[1], ef), state(keys[1], ef)),
+        ("e6", "the pattern file's env_token_find set to section 3's PostgreSQL environment pattern (token_format.md "
+               "unchanged)", set_json(keys[0], pg), state(keys[0], pg)),
+    ]
+
+
+def repeats(K, text, logdir, root):
+    """Point 5's search for one call (as point5() makes it): the denial's text, the decision log's record and
+    guard_report.py's output, each searched with both finder patterns. Returns what failed, never the text."""
+    fails = []
+    if finds(K, text):
+        fails.append("the denial's text holds a format string")
+    log = ""
+    for name in os.listdir(logdir):
+        with open(os.path.join(logdir, name), encoding="utf-8", errors="replace") as f:
+            log += f.read()
+    if not log:
+        fails.append("no decision log record was written")
+    if finds(K, log):
+        fails.append("the decision log's record holds a format string")
+    rep = subprocess.run([sys.executable, os.path.join(root, "tools", "guard_report.py"), "--session", "",
+                          "--dir", logdir], capture_output=True, text=True)
+    if rep.returncode != 0 or not rep.stdout.startswith("GUARD REPORT"):
+        fails.append("guard_report.py did not report")
+    if finds(K, rep.stdout + rep.stderr):
+        fails.append("guard_report.py's output holds a format string")
+    return fails
+
+
 # ---------------------------------------------------------------- the run
 
 class Out:
@@ -832,19 +960,36 @@ def run(root, hook, tmp, out):
                           "inp_p": tool("Read", {"file_path": "/tmp/w20/notes.md"}),
                           "tree": (t, os.path.join(t, HOOK_REL)), "okin": state_ok,
                           "label": f"[Read] a Read (point 1: not outbound); {what}: recorded, not judged"})
+    # CHK-C02-056 C1, added before the fix (README T-W20-4e): the same three calls in each tree, on both events. e4's
+    # calls each log to their own directory, which point 5's search then reads.
+    for fid, what, mutate, verify in c1_faults(K, tp, root):
+        t = make_tree(trees, fid, hook, root, mutate)
+        state_ok = bool(verify(t))
+        for cid, cl, ip in fault_calls:
+            c = {"id": f"P4-{fid}-{cid}", "channel": "-", "fmt": "-", "kind": "cnc", "inp_p": ip,
+                 "tree": (t, os.path.join(t, HOOK_REL)), "okin": state_ok,
+                 "label": f"{cl}; {what}: denied as could not check"}
+            if fid == "e4":
+                c["kind"] = "cnc5"
+                c["logdirs"] = {e: os.path.join(tmp, "p4e-log", f"{cid}-{e}") for e in ("pre", "perm")}
+                for d in c["logdirs"].values():
+                    os.makedirs(d)
+                c["label"] += (", and the denial's text, the decision log and guard_report.py searched with both "
+                               "finder patterns (point 5)")
+            cases.append(c)
 
     # -- run every decision, in parallel, then judge in order
     jobs = {}
     for i, c in enumerate(cases):
         for e in c.get("events", ("pre", "perm")):
             proj, hk = c.get("tree") or (root, hook)
-            jobs[(i, e, "p")] = (c["inp_p"], e, hk, proj, None, c.get("raw_p"))
+            jobs[(i, e, "p")] = (c["inp_p"], e, hk, proj, (c.get("logdirs") or {}).get(e), c.get("raw_p"))
             if c.get("inp_t"):
                 jobs[(i, e, "t")] = (c["inp_t"], e, hk, proj, None, c.get("raw_t"))
     keys = list(jobs)
     with ThreadPoolExecutor(max_workers=8) as ex:
         res = dict(zip(keys, ex.map(lambda k: G.decide(jobs[k][0], jobs[k][1], hook=jobs[k][2], project=jobs[k][3],
-                                                        raw=jobs[k][5]), keys)))
+                                                        logdir=jobs[k][4], raw=jobs[k][5]), keys)))
 
     for i, c in enumerate(cases):
         for e in c.get("events", ("pre", "perm")):
@@ -872,6 +1017,13 @@ def run(root, hook, tmp, out):
                 out.line("ok" if good else "BAD", f"{label}: " + ("denied as could not check" if good else
                          ("allowed" if dec == "allow" else f"{dec} without the words 'could not check'") +
                          ", expected a could-not-check denial"))
+            elif c["kind"] == "cnc5":   # could not check, and nothing repeated (T-W20-4e, e4)
+                fails = [] if dec == "deny" and CNC in text.lower() and "guard error" not in text else [
+                    ("allowed" if dec == "allow" else "denied by a guard error" if "guard error" in text else
+                     f"{dec} without the words 'could not check'") + ", expected a could-not-check denial"]
+                fails += repeats(K, text, c["logdirs"][e], root)
+                out.line("BAD" if fails else "ok", f"{label}: " + ("; ".join(fails) if fails else
+                                                                   "denied as could not check; nothing repeated"))
             elif c["kind"] == "residual":
                 out.line("info", f"{label}: observed {dec} (a residual, not counted as stopped)")
             else:
