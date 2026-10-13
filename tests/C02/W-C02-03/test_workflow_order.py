@@ -23,10 +23,13 @@ Then, as the break, it makes copies of the same workflow in memory with one part
 each copy fails, and fails on the rule that copy removes. Options: --repo PATH; --self-check (runs all of this on a
 synthetic skeleton instead of the build's workflow). Final line: W03_ORDER_TEST PASS (exit 0) | FAIL (exit 1) |
 COULD NOT CHECK (exit 3).
+After that line it runs T-W03-15 (test_workflow_guards.py; N-265), whose own final lines follow, and exits with the
+worse of the two results (1 over 3 over 0), so that step w03_tests runs both with no workflow change.
 """
 import copy
 import re
 import shlex
+import subprocess
 import sys
 from pathlib import Path
 
@@ -438,5 +441,22 @@ def main(argv):
     return 0
 
 
+def guards(argv):
+    """T-W03-15 (T-W03-15_workflow_guards.md; N-265): run here so that the pull-request check's step w03_tests runs it
+    with no workflow change (the executor's decision of 2026-10-13). Its own final lines are its result; this file's
+    exit code is the worse of the two (1 over 3 over 0). --repo and --self-check are passed on."""
+    prog = Path(__file__).resolve().parent / "test_workflow_guards.py"
+    if not prog.is_file():
+        print("W03_GUARDS COULD NOT CHECK (test_workflow_guards.py is absent)")
+        return 3
+    args = ["--self-check"] if "--self-check" in argv else []
+    if "--repo" in argv and argv.index("--repo") + 1 < len(argv):
+        args += ["--repo", argv[argv.index("--repo") + 1]]
+    sys.stdout.flush()
+    r = subprocess.run([sys.executable, "-I", str(prog), *args])
+    return r.returncode if r.returncode in (0, 1, 3) else 1
+
+
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    order, guarded = main(sys.argv[1:]), guards(sys.argv[1:])
+    sys.exit(1 if 1 in (order, guarded) else 3 if 3 in (order, guarded) else 0)
