@@ -1,0 +1,794 @@
+# W-C02-03's A3 rehearsal: H2 to H5's sequence with the pinned command-line tool on PostgreSQL 17 (plan/decisions/FR-07.md
+# item 1: "Before H2, H2 to H5's sequence is rehearsed with the pinned CLI on a throwaway PostgreSQL of the projects' major
+# version where reachable"; its record is the subsection "A3: H2 to H5 rehearsed on PostgreSQL 17 with the pinned CLI" of
+# evidence/C02/EV-C02-007_migration_path_build.md). Never merged, and no pull request is opened from its branch: it runs
+# only on a push to the branch claude/w03-a3-rehearsal, based on revision H1-prime. It names no environment and holds no
+# secret. It is exploratory: it is never T-W03-14's or T-W03-06's result, which stay the live runs.
+# - The fixtures H2, H4 and H5 are kept outside supabase/migrations/, under .github/w03-a3/fixtures/ with their intended
+#   file names. Each state of main in the sequence is a tree under the runner's temporary directory (step trees) holding
+#   this commit's top-level migration files and that stage's fixtures; migrate.yml's own workdir step copies them into
+#   the tool's working directory, as on every push.
+# - Each step that runs the tool, compares or tests runs a step of migrate.yml, read from this commit with PyYAML (step
+#   runner): its body unchanged, except the dry run's and the apply's URL, whose TLS part becomes sslmode=disable (the
+#   service container has no TLS), printed with both hashes. libpq's settings are the local server's.
+# - migrate.yml's W03_PLANT_B64 is dropped as soon as the file is read: no process here gets it, and nothing prints or
+#   decodes it.
+name: w03-a3-rehearsal
+
+on:
+  push:
+    branches: [claude/w03-a3-rehearsal]
+
+permissions: {}
+
+jobs:
+  sequence:
+    name: "H2 to H5 with the pinned command-line tool on PostgreSQL 17: devos-test's order, devos's order, the fixtures' guards"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    services:
+      postgres:
+        # postgres:17, pinned by the image index digest H1-prime's rehearsal used (EV-C02-007 section 15.15: 17.11).
+        image: postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust  # a throwaway server reached only from this job; no password exists
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      # The local server's libpq settings. They replace the projects' (the pooler, its user, verify-full with the pinned
+      # root): the pooler and TLS are not rehearsed here. Each step names its database.
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGSSLMODE: disable
+      PGCONNECT_TIMEOUT: "15"
+    steps:
+      - id: checkout
+        name: "check out this commit (no credential kept)"
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0, the commit migrate.yml pins
+        with:
+          persist-credentials: false
+
+      - id: stub
+        name: "Supabase's objects, stubbed as CHK-C02-044 F4 did, in three databases"
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "server: $(psql -X -A -t -c 'select version()')"
+          echo "client: $(psql --version)"
+          psql -X -q -v ON_ERROR_STOP=1 -f - <<'SQL'
+          create role anon nologin;
+          create role authenticated nologin;
+          create role service_role nologin;
+          create database w03a3_devos_test;
+          create database w03a3_devos;
+          create database w03a3_scratch;
+          SQL
+          echo "stub: roles anon, authenticated, service_role (nologin; a role belongs to the server, so the three databases share them)"
+          for db in w03a3_devos_test w03a3_devos w03a3_scratch; do
+            psql -X -q -v ON_ERROR_STOP=1 -1 -d "$db" -c 'create schema auth' -c 'create table auth.users (id uuid primary key)'
+            echo "stub: database ${db}: auth.users(id uuid primary key); no supabase_migrations schema"
+          done
+          echo "stub: w03a3_devos_test plays devos-test and w03a3_devos plays devos; the command-line tool makes each one's history table" \
+            "itself, as in a never-pushed project; step guards makes w03a3_scratch's"
+
+      - id: runner
+        name: "the run step's program: one step of migrate.yml, read from this commit, run as GitHub's shell bash runs it"
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/w03a3-run.py" <<'PY'
+          # The A3 rehearsal's run step (W-C02-03; FR-07 item 1; EV-C02-007 section 15.15's run step, changed as this
+          # program says). It runs one step of migrate.yml as GitHub runs it: the body is read with PyYAML from this commit's
+          # .github/workflows/migrate.yml by job and step id, written to a file and run as GitHub's shell bash runs it
+          # (bash --noprofile --norc -eo pipefail FILE). The body is unchanged, except, where W03R_LOCAL_URL is yes, the one
+          # TLS part of its URL (the service container has no TLS); both hashes are printed. Its environment is GitHub's for
+          # that step: this step's own, then every workflow-level and job-level env entry of migrate.yml (GitHub gives a step
+          # all of them, named in its body or not), then the step's own entries; except that (a) W03_PLANT_B64 is dropped as
+          # soon as the file is read, so no process here gets it and nothing prints or decodes it; (b) libpq's PGHOST, PGPORT,
+          # PGUSER, PGDATABASE, PGSSLMODE and PGSSLROOTCERT are this step's (the local server's), or unset; (c) a step-level
+          # entry holding an expression is not evaluated: one that names a secret is withheld (this workflow holds none), any
+          # other takes this step's value if this step sets it. Names are printed, and the local server's settings; no other
+          # value. W03R_TREE runs the body in a tree of step trees (main's files at that stage) instead of the checkout. The
+          # program exits 0 only if the body's exit code is W03R_EXPECT, which the workflow states before any run; every
+          # other line is read against the record.
+          import hashlib, os, re, subprocess, sys
+          import yaml
+
+          sys.stdout.reconfigure(line_buffering=True)
+          EXPR = "$" + "{{"  # written in two parts, so that this program holds no expression marker itself
+          PLANT = "W03_PLANT_B64"
+          LOCAL = ("PGHOST", "PGPORT", "PGUSER", "PGDATABASE", "PGSSLMODE", "PGSSLROOTCERT")
+          TLS_PART = "sslmode=verify-full&sslrootcert=/tmp/w03-supabase-root-2021-ca.crt"
+          LOCAL_PART = "sslmode=disable"
+
+
+          def stop(why):
+              print("rehearsal: could not check: " + why)
+              raise SystemExit(1)
+
+
+          def digest(text, shell):
+              return hashlib.sha256((text + "|" + shell).encode()).hexdigest()[:12]
+
+
+          job, step_id = os.environ["W03R_JOB"], os.environ["W03R_STEP"]
+          expect = int(os.environ.get("W03R_EXPECT", "0"))
+          with open(".github/workflows/migrate.yml", encoding="utf-8") as f:
+              wf = yaml.safe_load(f)
+          wf_env = dict(wf.get("env") or {})
+          wf_env.pop(PLANT, None)
+          jobdef = (wf.get("jobs") or {}).get(job) or {}
+          found = [s for s in jobdef.get("steps") or [] if isinstance(s, dict) and s.get("id") == step_id]
+          if len(found) != 1:
+              stop(f"migrate.yml's job {job} has {len(found)} steps with id {step_id}")
+          step = found[0]
+          run, shell = step.get("run"), step.get("shell")
+          if shell != "bash" or not isinstance(run, str) or EXPR in run or PLANT in run:
+              stop(f"step {step_id} is not a run body in shell bash, free of expressions and of {PLANT}")
+          print(f"rehearsal: migrate.yml at {os.environ.get('GITHUB_SHA', '?')}, job {job}, step {step_id}: shell bash, "
+                f"{len(run.splitlines())} lines, SHA-256 of run|shell {digest(run, shell)}")
+          if os.environ.get("W03R_LOCAL_URL") == "yes":
+              if run.count(TLS_PART) != 1:
+                  stop(f"step {step_id} does not hold '{TLS_PART}' exactly once")
+              run = run.replace(TLS_PART, LOCAL_PART)
+              print(f"rehearsal: changed for the local server, in 1 place: '{TLS_PART}' -> '{LOCAL_PART}' (the service "
+                    f"container has no TLS); SHA-256 of the changed run|shell {digest(run, shell)}")
+          else:
+              print("rehearsal: the body runs unchanged")
+          env = {k: v for k, v in os.environ.items() if not k.startswith("W03R_")}
+          for scope, block in (("workflow", wf_env), ("job", jobdef.get("env") or {})):
+              taken, local = [], []
+              for k, v in block.items():
+                  if k in LOCAL:
+                      local.append(k)
+                      continue
+                  if EXPR in str(v):
+                      stop(f"migrate.yml's {scope}-level {k} holds an expression")
+                  env[k] = str(v)
+                  taken.append(k)
+              print(f"rehearsal: env from migrate.yml's {scope} level: {' '.join(taken) or '(none)'}"
+                    + (f"; not taken (the local server's instead): {' '.join(local)}" if local else "")
+                    + (f"; never taken: {PLANT}" if scope == "workflow" else ""))
+          for k, v in (step.get("env") or {}).items():
+              v = str(v)
+              if k in LOCAL:
+                  print(f"rehearsal: env {k}: migrate.yml's step-level entry; the local server's instead")
+              elif EXPR not in v:
+                  env[k] = v
+                  print(f"rehearsal: env {k}: the step's own value")
+              elif "secrets." in v:
+                  env.pop(k, None)
+                  print(f"rehearsal: env {k}: withheld (it names a secret; this workflow holds none)")
+              elif k in os.environ:
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; this step's own value")
+              else:
+                  env.pop(k, None)
+                  print(f"rehearsal: env {k}: an expression in migrate.yml; not set here")
+          for k in LOCAL:
+              if os.environ.get(k):
+                  env[k] = os.environ[k]
+              else:
+                  env.pop(k, None)
+          print("rehearsal: the local server: " + " ".join(f"{k}={os.environ.get(k) or '(unset)'}" for k in LOCAL))
+          tree = os.environ.get("W03R_TREE", "")
+          cwd = os.getcwd()
+          if tree:
+              cwd = os.path.join(os.environ["RUNNER_TEMP"], "w03a3-main", tree)
+              if not re.fullmatch(r"m[0-9]", tree) or not os.path.isdir(os.path.join(cwd, "supabase", "migrations")):
+                  stop(f"no tree {tree} from step trees")
+              print(f"rehearsal: run in tree {tree} (main's files at that stage), not in the checkout")
+          path = os.path.join(os.environ["RUNNER_TEMP"], f"w03a3-{job}-{step_id}.body")
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(run)
+          r = subprocess.run(["bash", "--noprofile", "--norc", "-eo", "pipefail", path], env=env, cwd=cwd)
+          ok = r.returncode == expect
+          print(f"rehearsal: step {step_id}: exit {r.returncode}; expected {expect}: {'as expected' if ok else 'NOT as expected'}")
+          raise SystemExit(0 if ok else 1)
+          PY
+          echo "the run step's program: $(wc -l < "$RUNNER_TEMP/w03a3-run.py") lines, SHA-256 $(sha256sum "$RUNNER_TEMP/w03a3-run.py" | cut -c1-64)"
+
+      - id: trees
+        name: "main's states in the sequence: this commit's migration files and each stage's fixtures"
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="$RUNNER_TEMP/w03a3-main"
+          fx=.github/w03-a3/fixtures
+          first=20261012184638_deployment_drift.sql
+          fixture=20261012231841_w03_fixture_apply.sql
+          h2=20261012232111_w03_fixture_fail.sql
+          h4=20261012232112_w03_fixture_name_differs.sql
+          h5=20261012232113_w03_fixture_restore_name.sql
+          have="$(find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' | LC_ALL=C sort | tr '\n' ' ')"
+          if [ "$have" != "$first $fixture " ]; then
+            echo "trees: could not check: this commit's supabase/migrations/ holds [${have}], not H1-prime's two files"
+            exit 1
+          fi
+          for f in "$h2" "$h4" "$h5"; do
+            if [ ! -f "$fx/$f" ]; then
+              echo "trees: could not check: ${fx}/${f} is missing"
+              exit 1
+            fi
+            if [[ ! "${f%%_*}" > "${fixture%%_*}" ]]; then
+              echo "trees: could not check: ${f}'s version is not later than every version at this commit"
+              exit 1
+            fi
+          done
+          echo "trees: each fixture's version is later than every version at this commit (${first%%_*}, ${fixture%%_*}); none is renamed"
+          echo "trees: the fixtures, SHA-256 of each file in ${fx}:"
+          (cd "$fx" && sha256sum "$h2" "$h4" "$h5" | sed 's/^/  /')
+          mk() {
+            local stage="$1" label="$2"
+            shift 2
+            local d="$base/$stage/supabase/migrations"
+            mkdir -p "$d"
+            for f in "$@"; do
+              if [ -f "supabase/migrations/$f" ]; then cp "supabase/migrations/$f" "$d/"; else cp "$fx/$f" "$d/"; fi
+            done
+            echo "trees: ${stage} (${label}): $(cd "$d" && ls -1 | tr '\n' ' ')"
+          }
+          mk m0 "main before H1-prime" "$first"
+          mk m1 "H1-prime" "$first" "$fixture"
+          mk m2 "H2: w03_fixture_fail added" "$first" "$fixture" "$h2"
+          mk m3 "H3: H2's file removed" "$first" "$fixture"
+          mk m4 "H4: w03_fixture_name_differs added" "$first" "$fixture" "$h4"
+          mk m5 "H5: w03_fixture_restore_name added" "$first" "$fixture" "$h4" "$h5"
+
+      - id: cli
+        name: "migrate.yml's step cli: the command-line tool v2.120.0, its checksum checked"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: cli
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      # devos-test's order: each state of main as one push run's devos-test job runs it (listing, dry run, apply,
+      # comparison, tests), in database w03a3_devos_test.
+      - id: t0_workdir
+        name: "devos-test, main before H1-prime (m0): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m0
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t0_dryrun
+        name: "devos-test, main before H1-prime (m0): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t0_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t0_apply
+        name: "devos-test, main before H1-prime (m0): migrate.yml's step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t0_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t0_compare
+        name: "devos-test, main before H1-prime (m0): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t0_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: t1_workdir
+        name: "devos-test, H1-prime (m1): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m1
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t1_listing
+        name: "devos-test, H1-prime (m1): migrate.yml's step listing"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: listing
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t1_dryrun
+        name: "devos-test, H1-prime (m1): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t1_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t1_apply
+        name: "devos-test, H1-prime (m1): migrate.yml's step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t1_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t1_compare
+        name: "devos-test, H1-prime (m1): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t1_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t1_dbtests
+        name: "devos-test, H1-prime (m1): migrate.yml's step dbtests"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dbtests
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: t2_workdir
+        name: "devos-test, H2 (m2): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m2
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t2_listing
+        name: "devos-test, H2 (m2): migrate.yml's step listing"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: listing
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t2_dryrun
+        name: "devos-test, H2 (m2): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t2_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t2_apply
+        name: "devos-test, H2 (m2): migrate.yml's step apply; expected to fail (exit 1)"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_EXPECT: "1"
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t2_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t2_left
+        name: "devos-test, H2 (m2): what the failed apply left (a read of this rehearsal's own, not migrate.yml's)"
+        if: ${{ !cancelled() }}
+        env:
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: |
+          set -euo pipefail
+          q() { psql -X -q -A -t -v ON_ERROR_STOP=1 -c "$1"; }
+          schema="$(q "select coalesce(to_regnamespace('w03_fixture_fail')::text, 'absent')")"
+          table="$(q "select coalesce(to_regclass('w03_fixture_fail.attempt')::text, 'absent')")"
+          rows="$(q "select count(*) from supabase_migrations.schema_migrations where version = '20261012232111'")"
+          versions="$(q "select string_agg(version, ' ' order by version) from supabase_migrations.schema_migrations")"
+          echo "after H2's failed apply: schema w03_fixture_fail: ${schema}"
+          echo "after H2's failed apply: table w03_fixture_fail.attempt: ${table}"
+          echo "after H2's failed apply: history rows of 20261012232111: ${rows}"
+          echo "after H2's failed apply: history versions: ${versions}"
+          if [ "$schema" = absent ] && [ "$table" = absent ] && [ "$rows" = 0 ] \
+             && [ "$versions" = "20261012184638 20261012231841" ]; then
+            echo "after H2's failed apply: nothing left, as P2 observed on PostgreSQL 16.15"
+          else
+            echo "after H2's failed apply: NOT as P2 observed: something was left or lost"
+            exit 1
+          fi
+      - id: t2_compare
+        name: "devos-test, H2 (m2): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t2_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: t3_workdir
+        name: "devos-test, H3 (m3): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m3
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t3_listing
+        name: "devos-test, H3 (m3): migrate.yml's step listing"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: listing
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t3_dryrun
+        name: "devos-test, H3 (m3): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t3_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t3_apply
+        name: "devos-test, H3 (m3): migrate.yml's step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t3_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t3_compare
+        name: "devos-test, H3 (m3): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t3_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t3_dbtests
+        name: "devos-test, H3 (m3): migrate.yml's step dbtests"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dbtests
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: t4_workdir
+        name: "devos-test, H4 (m4): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m4
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t4_listing
+        name: "devos-test, H4 (m4): migrate.yml's step listing"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: listing
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t4_dryrun
+        name: "devos-test, H4 (m4): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t4_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t4_apply
+        name: "devos-test, H4 (m4): migrate.yml's step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t4_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t4_compare
+        name: "devos-test, H4 (m4): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t4_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t4_dbtests
+        name: "devos-test, H4 (m4): migrate.yml's step dbtests, run here although the workflow skips it on a difference; expected to fail (exit 1)"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dbtests
+          W03R_EXPECT: "1"
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: t5_workdir
+        name: "devos-test, H5 (m5): migrate.yml's step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: workdir
+          W03R_TREE: m5
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t5_listing
+        name: "devos-test, H5 (m5): migrate.yml's step listing"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: listing
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t5_dryrun
+        name: "devos-test, H5 (m5): migrate.yml's step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t5_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t5_apply
+        name: "devos-test, H5 (m5): migrate.yml's step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos_test
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.t5_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t5_compare
+        name: "devos-test, H5 (m5): migrate.yml's step compare"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos_test
+          EXPECTED: ${{ steps.t5_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: t5_dbtests
+        name: "devos-test, H5 (m5): migrate.yml's step dbtests"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos-test
+          W03R_STEP: dbtests
+          PGDATABASE: w03a3_devos_test
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      # devos's order: devos is applied only on devos-test's go = yes, so it gets main before H1-prime, then H1-prime,
+      # then H4 and H5 together (in H5's push run); H2 never reaches it, and H3 and H4's runs apply nothing there. The
+      # devos job's own steps, in database w03a3_devos. Its decide step is not run here (T-W03-DEC's).
+      - id: d0_workdir
+        name: "devos, main before H1-prime (m0): migrate.yml's devos step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: workdir
+          W03R_TREE: m0
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d0_dryrun
+        name: "devos, main before H1-prime (m0): migrate.yml's devos step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d0_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d0_apply
+        name: "devos, main before H1-prime (m0): migrate.yml's devos step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d0_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: d1_workdir
+        name: "devos, H1-prime (m1): migrate.yml's devos step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: workdir
+          W03R_TREE: m1
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d1_dryrun
+        name: "devos, H1-prime (m1): migrate.yml's devos step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d1_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d1_apply
+        name: "devos, H1-prime (m1): migrate.yml's devos step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d1_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d1_compare_after
+        name: "devos, H1-prime (m1): migrate.yml's devos step compare_after"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: compare_after
+          PGDATABASE: w03a3_devos
+          EXPECTED: ${{ steps.d1_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: d2_workdir
+        name: "devos, H5's push run, H4 and H5 together (m5): migrate.yml's devos step workdir"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: workdir
+          W03R_TREE: m5
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d2_compare
+        name: "devos, H5's push run (m5): migrate.yml's devos step compare, before the apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: compare
+          PGDATABASE: w03a3_devos
+          EXPECTED: ${{ steps.d2_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d2_dryrun
+        name: "devos, H5's push run (m5): migrate.yml's devos step dryrun"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: dryrun
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d2_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d2_apply
+        name: "devos, H5's push run (m5): migrate.yml's devos step apply"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: apply
+          W03R_LOCAL_URL: "yes"
+          PGDATABASE: w03a3_devos
+          CLI: ${{ steps.cli.outputs.path }}
+          W: ${{ steps.d2_workdir.outputs.dir }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+      - id: d2_compare_after
+        name: "devos, H5's push run (m5): migrate.yml's devos step compare_after"
+        if: ${{ !cancelled() }}
+        env:
+          W03R_JOB: devos
+          W03R_STEP: compare_after
+          PGDATABASE: w03a3_devos
+          EXPECTED: ${{ steps.d2_workdir.outputs.expected }}
+        shell: bash
+        run: python "$RUNNER_TEMP/w03a3-run.py"
+
+      - id: guards
+        name: "the fixtures' own guards, in a scratch database (this rehearsal's own; each file run with psql, not the tool)"
+        if: ${{ !cancelled() }}
+        env:
+          PGDATABASE: w03a3_scratch
+        shell: bash
+        run: |
+          set -euo pipefail
+          fx=.github/w03-a3/fixtures
+          h4="$fx/20261012232112_w03_fixture_name_differs.sql"
+          h5="$fx/20261012232113_w03_fixture_restore_name.sql"
+          q() { psql -X -q -A -t -v ON_ERROR_STOP=1 -c "$1"; }
+          q "create schema supabase_migrations"
+          q "create table supabase_migrations.schema_migrations (version text primary key, statements text[], name text)"
+          q "insert into supabase_migrations.schema_migrations (version, name) values ('20261012231841', 'w03_fixture_apply')"
+          echo "guards: database w03a3_scratch; history table as H1-prime's rehearsal stubbed it; one row: 20261012231841 w03_fixture_apply"
+          bad=0
+          check() {  # label, file, expected psql exit, expected name(s) of 20261012231841's row after, text the output must hold
+            local out rc names verdict
+            out="$(psql -X -q -v ON_ERROR_STOP=1 -1 -f "$2" 2>&1)" && rc=0 || rc=$?
+            if [ -n "$out" ]; then printf '%s\n' "$out" | sed 's/^/  psql: /'; fi
+            names="$(q "select coalesce(string_agg(name, ',' order by name), '(none)') from supabase_migrations.schema_migrations where version = '20261012231841'")"
+            if [ "$rc" = "$3" ] && [ "$names" = "$4" ] && [[ "$out" == *"$5"* ]]; then verdict="as expected"; else verdict="NOT as expected"; bad=1; fi
+            echo "guards: $1: psql exit ${rc}; the row of 20261012231841 after: ${names}; expected exit $3, ${4}${5:+ and '$5'}: ${verdict}"
+          }
+          check "(control) H4 on the row named w03_fixture_apply" "$h4" 0 w03_fixture_apply_renamed ""
+          check "(guard) H4 on the row already renamed" "$h4" 3 w03_fixture_apply_renamed "renamed 0"
+          check "(control) H5 on the renamed row" "$h5" 0 w03_fixture_apply ""
+          q "delete from supabase_migrations.schema_migrations"
+          echo "guards: every history row deleted"
+          check "(guard) H5 with no row of 20261012231841" "$h5" 3 "(none)" "found 0"
+          exit $bad
