@@ -7,7 +7,7 @@ Synthetic test data (plan Section 8 item 13): every need, finding, work item, cl
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
 **Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (README section 8):
 - A "could not check" refusal is returned in README 8.1's form, `{"status": "refused", "reason_code": "could_not_check", "reason": …}` (phase C5, CHK-C02-030 C8: any other form, `status = could_not_check` or a raised error among them, is the test's own could not check, as `w07_kind` reads it), distinct from the gate's refusal (naming its field) and from the impact-class refusal (naming `impact`), and from an acceptance.
-- `devos_private.sample_stream` (`stream`, `block_size`, `block_seen`, `block_position`); `devos_private.high_impact_path` (`path`); `devos_private.effect_class` (`name`, `irreversible`; one synthetic reversible class planted at owner level).
+- `devos_private.sample_stream` (`stream`, `block_size`, `block_seen`, `block_position`); `devos_private.high_impact_path` (`path`); `devos_private.effect_class` (`effect_class`, the key; `irreversible`; `mandatory_read_set`: README section 8.1's columns; the helper plants one synthetic reversible and one irreversible class at owner level, and this test uses the reversible one).
 - `devos_api.record_need`, `record_finding`, `admit_work`, `claim`, `register_artifact`, `prepare_operation`, `open_decision`, `open_mission`, jsonb in and out; calls run as `anon` with the header `x-devos-env-token` from `devos_private.issue_env_token(text)`; fixtures: a Mission on an answered `batu` decision, opened with the `devos_kurulum` token.
 
 

@@ -443,12 +443,12 @@ end $f$;
 create function pg_temp.w07_effect_classes() returns void language plpgsql as $f$
 begin
   if (select count(*) from information_schema.columns where table_schema = 'devos_private' and table_name = 'effect_class'
-        and column_name in ('name', 'irreversible')) <> 2 then
-    raise exception using errcode = 'P0W07', message = 'devos_private.effect_class lacks name or irreversible'; end if;
-  if not exists (select 1 from devos_private.effect_class where name::text = 'w07_fixture_reversible') then
-    perform pg_temp.w07_plant_row('effect_class', '{"name": "w07_fixture_reversible", "irreversible": "false"}'); end if;
-  if not exists (select 1 from devos_private.effect_class where name::text = 'w07_fixture_irreversible') then
-    perform pg_temp.w07_plant_row('effect_class', '{"name": "w07_fixture_irreversible", "irreversible": "true"}'); end if;
+        and column_name in ('effect_class', 'irreversible', 'mandatory_read_set')) <> 3 then
+    raise exception using errcode = 'P0W07', message = 'devos_private.effect_class lacks effect_class, irreversible or mandatory_read_set (README section 8.1)'; end if;
+  if not exists (select 1 from devos_private.effect_class where effect_class::text = 'w07_fixture_reversible') then
+    perform pg_temp.w07_plant_row('effect_class', '{"effect_class": "w07_fixture_reversible", "irreversible": "false", "mandatory_read_set": "{work,hard_dependencies,claim,authority_epoch,expected_base,inputs}"}'); end if;
+  if not exists (select 1 from devos_private.effect_class where effect_class::text = 'w07_fixture_irreversible') then
+    perform pg_temp.w07_plant_row('effect_class', '{"effect_class": "w07_fixture_irreversible", "irreversible": "true", "mandatory_read_set": "{work,hard_dependencies,claim,authority_epoch,expected_base,inputs}"}'); end if;
 end $f$;
 -- The arguments of an effect under a claimed work item (README section 8: the build's names are assumed).
 create function pg_temp.w07_effect_args(p_claim jsonb, p_class text, p_target text) returns jsonb language sql as $f$

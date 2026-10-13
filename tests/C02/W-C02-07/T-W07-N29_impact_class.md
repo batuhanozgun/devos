@@ -7,7 +7,7 @@ Synthetic test data (plan Section 8 item 13): every work item, artifact path (`d
 **Time added to W-C02-13's run.** None: it waits on no schedule or limit.
 **Interface assumed** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. (README section 8):
 - `devos_api.admit_work`, `claim` (returns `claim_token`), `register_artifact` (`work_ref`, `claim_token`, `path`), `prepare_operation` (`work_ref`, `claim_token`, `effect_class`, `target`, idempotency fields), `relate` (`type`, `from_ref`, `to_ref`, revisions), `open_decision` (`class`, `work_ref`), `open_mission` and `revise_mission` (`owner_authority`; `revise_mission` takes the Mission's `id` and a wider `scope`); each takes and returns jsonb. An impact-class refusal names the rule (its reason contains `impact`). Calls run as `anon` with the header `x-devos-env-token` holding a token from `devos_private.issue_env_token(text)` (EV-C02-003 §1.6, §6.3).
-- `devos_private.high_impact_path(path)`, read at run time: one case per listed path. `devos_private.effect_class` with `name` and `irreversible`: the test plants its two synthetic classes there at owner level inside the rolled-back transaction (DM-37 fills the table by migration and C02 prepares no real effect; nothing is committed).
+- `devos_private.high_impact_path(path)`, read at run time: one case per listed path. `devos_private.effect_class` with `effect_class` (the key), `irreversible` and `mandatory_read_set` (README section 8.1's columns): the test plants its two synthetic classes there at owner level inside the rolled-back transaction (DM-37 fills the table by migration and C02 prepares no real effect; nothing is committed).
 - Decisions answered at owner level (`devos_private.decision`, `devos_private.decision_revision`; C02 builds no answering function, B:390). Sample streams in `devos_private.sample_stream` (`stream`, `block_size`, `block_seen`, `block_position`); sample reviews in `devos_private.review` (`kind = sample`, naming the target's `id`, one field holding `devos_denetim`).
 
 
@@ -56,7 +56,7 @@ Other cases:
 | Break | `B-N29-1` to `B-N29-6` | — |
 
 ## Could not check
-COULD NOT CHECK when an object is absent (`N29-pre`), the effect class table lacks `name` or `irreversible`, the path table is empty (`N29-art`), a fixture or claim cannot be made, or a stream cannot be aligned.
+COULD NOT CHECK when an object is absent (`N29-pre`), the effect class table lacks `effect_class`, `irreversible` or `mandatory_read_set`, the path table is empty (`N29-art`), a fixture or claim cannot be made, or a stream cannot be aligned.
 
 ## Not covered
 The Constraint case (C05); triggers the database cannot read (declared, sampled); whether the audit environment judges the label rightly (C03 onward); `devos`. Phase C4b (EV-C02-008 5.2, N-263): the routine streams' sample is withheld while its block is open; EV-C02-008 5.2 gives these streams the same unseen case as N01's "unless the designer puts them in N01", and the designer did: `T-W07-N01` part B's `N01-unseen-routine-work` and `N01-unseen-routine-decision`, so this test is unchanged.
