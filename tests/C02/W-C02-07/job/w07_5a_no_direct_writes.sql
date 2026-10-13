@@ -1,12 +1,14 @@
--- Synthetic test data (plan Section 8 item 13): the work items and the token used by the positive control are made
--- up inside this transaction (text 'w07_fixture SYNTHETIC W-C02-07', scope 'synthetic.w07fixture'); the direct write
+-- Synthetic test data (plan Section 8 item 13): the direct write
 -- attempts carry no data of their own (DEFAULT VALUES, or a column set to itself). No personal or business data, no
 -- credential; the token is kept in a PL/pgSQL variable only. Nothing is committed.
 --
 -- Claim: no application role can read or write the devos_private tables directly; the same change through its
 -- devos_api function succeeds (plan C02 Acceptance "No role can write directly to the tables"; B principle 1;
 -- W-C02-08 point 4; W-C02-07 point 5 (a)). Specification: tests/C02/W-C02-07/T-W07-5A_no_direct_writes.md.
--- Serves: negative cases W-C02-08 points 4 and 6; positive control (5A-pos) W-C02-09 point 8.
+-- Serves: W-C02-08 points 4 and 6 (the negative cases). Phase C5 (CHK-C02-030 C1, the executor's staging decision):
+-- the positive control 5A-pos is in w07_5a_positive_control.sql, which needs W-C02-09's devos_api.relate and serves
+-- W-C02-09 point 8, so that this file can pass, and be copied, on W-C02-08's build alone (README 5.1 (c)); T-W07-5A
+-- is PASS only when both files are.
 -- Runs: in devos-test by the migration job's test step as postgres, each attempt with set local role (README 5.1 (a));
 -- with its break on the throwaway database. The tables are read from the catalogue at run time, so a table a later
 -- migration adds is covered without editing this file. Safety: no psql meta-command; stops at its first error.
@@ -363,26 +365,6 @@ begin
         where cfg like 'pgrst.db_schemas=%'));
   end if;
 
-  -- 5A-pos: the same kind of change (a new relation row) through devos_api.relate, as anon with a working token.
-  begin
-    t_cal := pg_temp.w07_token('devos_calisma');
-    a := pg_temp.w07_plant('devos_private.work_revision', '{}');
-    b := pg_temp.w07_plant('devos_private.work_revision', '{}');
-  exception when others then
-    perform pg_temp.w07_rec('5A-pos', 'could_not_check', 'fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200));
-    return;
-  end;
-  execute 'select count(*) from devos_private.relation' into n0;
-  c := pg_temp.w07_call('relate', jsonb_build_object('type', 'about', 'from_ref', a->'work_id', 'from_revision', a->'revision',
-         'to_ref', b->'work_id', 'to_revision', b->'revision', 'scope', 'synthetic.w07fixture', 'hard', false,
-         'method', 'recorded', 'epistemic_status', 'inference'), t_cal);
-  execute 'select count(*) from devos_private.relation' into n1;
-  if c ? 'interface' then
-    perform pg_temp.w07_rec('5A-pos', 'could_not_check', pg_temp.w07_show(c));
-  else
-    perform pg_temp.w07_check('5A-pos', not pg_temp.w07_refused(c) and n1 = n0 + 1,
-      pg_temp.w07_show(c) || format('; relation rows %s -> %s', n0, n1));
-  end if;
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

@@ -18,7 +18,7 @@ Synthetic test data (plan Section 8 item 13): every string the scan's controls p
 
 ## What it scans, and how a hit is classed
 
-- **Subject.** Every file under `tests/C02/W-C02-07/` and every `supabase/migrations/tests/w07_*` file: all four groups' files.
+- **Subject.** Every file under `tests/C02/W-C02-07/`, the staged SQL files and programs in `job/` among them, and every `supabase/migrations/tests/w07_*` copy, once a build item has made one (README 5.1 (c); phase C5): all four groups' files.
 - **Patterns.**
   - the two token finders of `shared/token_format.md` section 3;
   - the guard's five `REDACT` patterns;
@@ -37,7 +37,7 @@ Synthetic test data (plan Section 8 item 13): every string the scan's controls p
   - `7SCAN-pf3`: its token patterns equal `shared/token_format.md` section 3.
   - `7SCAN-pf4`: its guard patterns equal the guard file's, re-read at run time.
   - A failure of any gives COULD NOT CHECK, and the scan does not run.
-  - `7SCAN-pf5` (phase C3; C1's open 5): the class-high program `supabase/migrations/tests/w07_idc_real_path.py` embeds the environment token's exact pattern as `ENV_TOKEN_EXACT_PARTS` (the marker split, so that only the two shared files hold it literally). Read with `ast`, never run, the parts joined must equal the pattern file's `env_token_exact`: `ok` when equal, `bad` when they differ, `could_not_check` when the program or the name cannot be read. Its own controls, in the scratch copy: `7SCAN-ec-same` (an equal copy answers equal), `7SCAN-ec-diff` (one character added answers differ) and `7SCAN-ec-missing` (no such name answers could not check).
+  - `7SCAN-pf5` (phase C3; C1's open 5): the program `w07_idc_real_path.py` (staged at `tests/C02/W-C02-07/job/`, class high once copied to `supabase/migrations/tests/`, byte for byte; phase C5 reads the staged file) embeds the environment token's exact pattern as `ENV_TOKEN_EXACT_PARTS` (the marker split, so that only the two shared files hold it literally). Read with `ast`, never run, the parts joined must equal the pattern file's `env_token_exact`: `ok` when equal, `bad` when they differ, `could_not_check` when the program or the name cannot be read. Its own controls, in the scratch copy: `7SCAN-ec-same` (an equal copy answers equal), `7SCAN-ec-diff` (one character added answers differ) and `7SCAN-ec-missing` (no such name answers could not check).
 - **Positive controls, in a scratch copy** (planted, must be found as VALUE, answer fail):
   - `7SCAN-p1`: an environment token;
   - `-p2`: a claim token;

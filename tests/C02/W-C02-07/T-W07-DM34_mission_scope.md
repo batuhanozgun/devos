@@ -3,7 +3,7 @@
 Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.dm34` and the scopes tried (`synthetic.w07.other`, `synthetic.w07.dm34x`, `synthetic.w07`, malformed forms) are made up and labelled SYNTHETIC W-C02-07.
 
 **Serves.** W-C02-09 point 8 ("every other test W-C02-07's record assigns to this item"); EV-C02-002 DM-34 and section 6 ("a scope outside the Mission refused at `admit_work`"); B principle 4 (PC-42: a dotted path of lower-case labels; a work item's scope lies within its Mission's) and B 3.1 ("Opening internal work cannot widen the mission's scope").
-**Command.** `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm34_mission_scope.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-DM34-1`.
+**Command.** Staged in `tests/C02/W-C02-07/job/` (phase C5; README 5.1 (c)): W-C02-09 copies each of its files byte for byte into `supabase/migrations/tests/` once the file can pass, and the job runs that copy, under the path named below; the harness runs the staged file. `psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm34_mission_scope.sql`, run by the migration job's `devos-test` step as `postgres`; on the throwaway database by the harness with `breaks/B-DM34-1`.
 **Time added to W-C02-13's run.** None.
 **Interface assumed.** README section 8.1 (the assumed interface, version 1, phase C) holds for this test; where anything here differs from it, section 8.1 holds. The Group A common interface v1 as `T-W07-F01` states it (the fixture Mission, `admit_work`'s payload, the return form). Also `devos_api.revise_work(jsonb)` with `{id, base_revision, scope, reason}`. A malformed scope is refused, not normalised.
 
@@ -33,7 +33,7 @@ Synthetic test data (plan Section 8 item 13): the Mission `synthetic.w07.dm34` a
 | **Negative control** | DM34-n1 to -n7 refused, with nothing changed. |
 | **Positive control** | DM34-pos1 to -pos3 accepted. DM34-pos2 differs from DM34-n2 only by the dot. |
 | **Break attempt** | `breaks/B-DM34-1_admit_scope_check_removed.sql` removes admit_work's scope check. A wrapper presents the Mission's own scope to the build's function, then writes the requested scope. DM34-n1 to -n6 must turn red. DM34-n7 stays green (revise_work keeps its check). Designer's self-check, never a result, on PostgreSQL 16.15 against a scratch stub: unpatched PASS (10/10); patched, exactly n1 to n6 red. |
-| **Stage and environment** | C02. `devos-test`, in the migration job's step, with synthetic tokens. The throwaway PostgreSQL 17 database for the break. Never `devos`. |
+| **Stage and environment** | C02. `devos-test`, in the migration job's step, with synthetic tokens. The throwaway PostgreSQL 17 database for the break. Never `devos`. The migration job runs a file of this test only once W-C02-09 has copied it (README 5.1 (c); phase C5). |
 | **Independence level** | As README section 10. Written by the test designer (fresh-context `test-designer` subagent; agent ID in the Record). Run by the job, by W-C02-09's producer, and by W-C02-13's prober with the break. Assessed by a fresh-context checker that wrote no test. Shared: model lineage and the design records. |
 | **Evidence layer** | Structural. It does not show that a scope is the right one for the work (sample review), or the Mission's own rule (N29's class part, Group C). |
 | **Evidence envelope** | README section 4. Fixed before the run: the outcomes above; PASS at 10/10; the break's six red cases. Raw evidence `W07-DM34-<run_at>`. |

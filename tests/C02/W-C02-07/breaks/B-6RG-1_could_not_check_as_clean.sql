@@ -1,4 +1,4 @@
--- w07-break: test=w07_6rg_rule_gate_could_not_check.sql; expect-red=6RG-e1,6RG-e2,6RG-e3,6RG-e4,6RG-r1,6RG-r2,6RG-r3,6RG-r4,6RG-s1,6RG-s2,6RG-s3,6RG-g3,6RG-l1,6RG-l2,6RG-l3,6RG-l4
+-- w07-break: test=w07_6rg_rule_gate_could_not_check.sql; expect-red=6RG-e1,6RG-e2,6RG-e3,6RG-e4,6RG-r1,6RG-r2,6RG-r3,6RG-r4,6RG-s1,6RG-s2,6RG-s3,6RG-c1,6RG-c2,6RG-c3,6RG-g3,6RG-l1,6RG-l2,6RG-l3,6RG-l4
 -- Rule removed: a rule-gate check's "could not check" is never counted as clean (plan Section 8 item 14; PC-16;
 -- W-C02-09 point 7). Specification: tests/C02/W-C02-07/T-W07-6RG_rule_gate_could_not_check.md. How: register_artifact,
 -- relate, prepare_operation and claim are renamed and wrappers take their names; a wrapper returns the build's answer,

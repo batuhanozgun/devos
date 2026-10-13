@@ -8,7 +8,8 @@ paths, line numbers, pattern keys, classes and counts.
 
 Order (README section 6): (1) the pattern file and its agreement with shared/token_format.md and the guard file;
 (2) the positive and negative controls in a scratch copy, with point 6's missing, unreadable and partial inputs;
-(3) the scan of the subject: tests/C02/W-C02-07/** and supabase/migrations/tests/w07_* under --root;
+(3) the scan of the subject: tests/C02/W-C02-07/** (with the staged job files under job/) and any copy
+    supabase/migrations/tests/w07_* under --root;
 (4) tools/credential_value_scan.py over the same directories, recording only its exit code and match counts.
 Result wording: "none found by the scanned patterns", never "no secret".
 Usage: python3 -I tests/C02/W-C02-07/bin/7scan_test_files.py --root <repository root>
@@ -30,14 +31,15 @@ sys.dont_write_bytecode = True
 TEST_ID = "7SCAN_TEST_FILES"  # README section 3: the file name, upper case
 MAX_BYTES = 8 * 1024 * 1024  # a file larger than this is read only in part: "could not check" (partial)
 SUBJECT_DIR = os.path.join("tests", "C02", "W-C02-07")
-SQL_DIR = os.path.join("supabase", "migrations", "tests")
+SQL_DIR = os.path.join("supabase", "migrations", "tests")  # the build items' byte-for-byte copies, once made
+STAGED_DIR = os.path.join(SUBJECT_DIR, "job")  # README 5.1 (c): the staged SQL files and programs (phase C5)
 PATTERN_FILE = os.path.join(SUBJECT_DIR, "shared", "scan_patterns.json")
 FORMAT_FILE = os.path.join(SUBJECT_DIR, "shared", "token_format.md")
 GUARD_FILE = os.path.join(".claude", "hooks", "tool_allowlist.py")
 VALUE_SCAN = os.path.join("tools", "credential_value_scan.py")
 # Phase C3 (C1's open 5): the class-high IDC program embeds the environment token's exact pattern; 7SCAN-pf5 checks
 # that the embedded copy, read with ast and never run, equals the pattern file's.
-IDC_PROGRAM = os.path.join(SQL_DIR, "w07_idc_real_path.py")
+IDC_PROGRAM = os.path.join(STAGED_DIR, "w07_idc_real_path.py")
 EMBED_NAME = "ENV_TOKEN_EXACT_PARTS"
 STRIP = "\"'`,;.()[]{}"
 

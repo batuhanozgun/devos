@@ -496,18 +496,25 @@ begin
     end;
   end loop;
   ct := null; op := null; cl := null;
-  -- deployment_drift's arguments (T-W07-IDC's form), used only if the build marks it a read (F06-read-accepted).
+  -- deployment_drift's arguments (T-W07-IDC's form, with a well-formed synthetic commit). Phase C5 (CHK-C02-030 C2): it
+  -- is judged on every build by its marker. It writes nothing (Appendix B section 4's Deployment row; main's migration
+  -- 20261012184638), so a build that meets DM-36 (a) marks it devos:read, W-C02-09's migration setting the comment
+  -- (W-C02-09 point 1: DM-36 and F06's list as decided), and F06-read-refused and F06-read-accepted judge it here (under
+  -- set role the session user postgres is admitted before the token check, which a read's "no table changed" does not
+  -- depend on). Unmarked, it counts as state-changing (F06-e2) and F06-event:deployment_drift is judged, and fails,
+  -- since it changes nothing and makes no event.
   recipes := recipes || jsonb_build_object('deployment_drift', jsonb_build_object('class', 'devos_ci', 'args',
-    jsonb_build_object('expected', jsonb_build_object('commit', 'w07fixture', 'migrations', '[]'::jsonb, 'functions', '[]'::jsonb))));
+    jsonb_build_object('expected', jsonb_build_object('commit', repeat('a7', 20), 'migrations', '[]'::jsonb, 'functions', '[]'::jsonb))));
   -- Functions this file cannot form, each listed with its reason (could_not_check, never a pass).
   unformable := jsonb_build_object(
     'mark_exported', 'its arguments (the range of events it marks, B 3.13) are named by no source and by no rule of README section 8.1',
-    'link_prior_decisions', 'its arguments are named by no source, and README section 8.1''s rules (one record''s fields; one record''s identifier and new values) do not decide them',
-    'deployment_drift', 'under set role the session user stays postgres, which deployment_drift admits before the token check (Appendix B section 4), so an accepted call here carries no token''s role class; its accepted call is the Data API''s (T-W07-IDC IDC-dd-devos_ci; W-C02-03''s tests)')
+    'link_prior_decisions', 'its arguments are named by no source, and README section 8.1''s rules (one record''s fields; one record''s identifier and new values) do not decide them')
     || (select jsonb_object_agg(z, 'a ledger transfer function (Appendix B section 4; PC-44 place 10): README section 8.1 gives it p jsonb, but no source names its payload''s keys (EV-C02-005 section 12 names the functions only), and its order (a run begun and not ended, no hand-over) is set by W-C02-14 point 13''s tests; could not check until W-C02-09 names the payload and the recipe is added')
           from unnest(array['begin_transfer_run', 'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision', 'transfer_review', 'transfer_acceptance', 'transfer_need', 'transfer_finding', 'transfer_artifact', 'transfer_event', 'end_transfer_run', 'record_handover', 'record_ledger_entry']) z);
   -- A repeat that is not an exact repeat of the same change: a call that creates a new record (no idempotency key), or
-  -- one whose every call is a new change by design. Not judged (could_not_check), with the reason.
+  -- one whose every call is a new change by design. Phase C5 (CHK-C02-030 C2): outside F06-r3's and F06-p1's subject
+  -- (an exact repeat of the same change), so not a case and not in the verdict count; listed in one notice with the
+  -- reason (T-W07-F06, "Not covered").
   no_repeat := (select jsonb_object_agg(z, 'a repeat of a creating call with no idempotency key makes a new record, not the same change (B principle 2)')
                   from unnest(array['record_need', 'open_decision', 'record_finding', 'open_review', 'open_mission', 'admit_work',
                                     'register_artifact', 'record_observation', 'record_eval_run', 'record_verdict', 'set_effort_policy']) z)
@@ -579,9 +586,11 @@ begin
           and jsonb_array_length(m->'events') >= 1
           and not exists (select 1 from jsonb_array_elements(m->'events') e where e->>'role_class' is distinct from recipes->f.proname->>'class'
                             or e->>'origin' not in ('call', 'rule') or (e->>'this_tx')::boolean is not true),
-        pg_temp.w07_show(m->'call') || '; tables changed: ' || (m->'changed')::text || '; new events ' || (m->'events')::text);
+        pg_temp.w07_show(m->'call') || '; tables changed: ' || (m->'changed')::text || '; new events ' || (m->'events')::text
+        || case when f.proname = 'deployment_drift' then '; deployment_drift carries no devos:read marker, so F06 counts it '
+                || 'state-changing (F06-e2); a read changes nothing, so the build marks it (DM-36 (a); W-C02-09''s migration)' else '' end);
       if no_repeat ? f.proname then
-        perform pg_temp.w07_rec('F06-repeat:' || f.proname, 'could_not_check', 'not judged here: ' || (no_repeat->>f.proname));
+        raise notice 'W07_F06 not a case (outside F06-r3 and F06-p1): F06-repeat:%: %', f.proname, no_repeat->>f.proname;
         continue;
       end if;
       m2 := pg_temp.w07_measure(f.proname, recipes->f.proname->'args', tok);

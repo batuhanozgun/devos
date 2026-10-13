@@ -1,4 +1,4 @@
--- w07-break: test=w07_roc_ownership_and_claim_class.sql; expect-red=ROC-c-revise_work,ROC-c-cancel_work,ROC-c-relate,ROC-c-retract_relation
+-- w07-break: test=w07_roc_ownership_and_claim_class.sql; expect-red=ROC-c-revise_work,ROC-c-cancel_work,ROC-c-relate,ROC-c-retract_relation,ROC-x-c-claims-partial
 -- Break patch for T-W07-ROC (tests/C02/W-C02-07/T-W07-ROC_ownership_and_claim_class.md, "Break attempt"; phase C4a). Rule
 -- removed: Rule C (EV-C02-008 1.7.1: refused while an active claim of a role class other than the caller's is on the work
 -- item). revise_work, cancel_work, relate and retract_relation are wrapped so that, for the call, every claim on the work

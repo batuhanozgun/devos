@@ -464,10 +464,157 @@ begin
     perform pg_temp.w07_put('N04-b2', pg_temp.w07_is_role_refusal(r, 'accept', 'devos_calisma'),
       'the same acceptance call with the working token: ' || pg_temp.w07_says(r));
   end if;
-  -- Part T (W-C02-14; the executor's decision 5): the ledger transfer's copy, written through W-C02-06's path under
-  -- devos_kurulum, counting as no audit verdict. Not a case of this file's result; reported on its own line.
-  raise notice 'W07_N04_SELF_APPROVAL_PART_T COULD NOT CHECK (W-C02-14; W-C02-06''s transfer path is not accepted yet; its interface is named in the specification)';
   cal := null; den := null; kur := null; scrub := null;
+end $$;
+
+-- Part T (phase C5, CHK-C02-030 C5; Ek_C:121's C02 clause "the ledger transfer's copy of an installation checker
+-- verdict is written under role class devos_kurulum and counts nowhere a rule needs the audit environment's"), cases of
+-- this file's result, counted by W-C02-10 point 7 ("N04 (its C02 part)"). W-C02-06's design is accepted (CHK-C02-024):
+-- the copy is written through transfer_review with devos_kurulum (EV-C02-005 2.4; B:397), and accept refuses it
+-- (EV-C02-005 2.4 and 12: the copies "count nowhere a rule needs devos_denetim"). (a) The transfer's functions refuse
+-- every token but devos_kurulum: T-W07-5B's row R19, not repeated here. The payload keys are CHOSEN by README 8.1's rule
+-- (no source names them, EV-C02-005 section 12): B 3.11's Review fields, a verdict object with B 3.11's Verdict fields,
+-- run_id and transfer_source (EV-C02-005 section 15 S1); revised before the first result if W-C02-09 names others.
+create function pg_temp.n04t_call(p_class text, p_sql text, p_args jsonb) returns jsonb language plpgsql as $f$
+declare i jsonb := pg_temp.w07_issue(p_class); r jsonb; st text; msg text;
+begin
+  if i ? 'why' then return jsonb_build_object('w07_cnc', i->>'why'); end if;
+  perform set_config('request.headers', jsonb_build_object('x-devos-env-token', i->>'tok')::text, true);
+  begin
+    execute format('set local role %I', pg_temp.w07_cfg('api_role'));
+    execute p_sql into r using p_args;
+    execute 'reset role';
+  exception when others then
+    get stacked diagnostics st = returned_sqlstate, msg = message_text;
+    r := jsonb_build_object('raised', true, 'sqlstate', st, 'message', left(replace(msg, i->>'tok', '[w07: presented value]'), 160));
+  end;
+  i := null;
+  perform set_config('request.headers', '{}', true);
+  return coalesce(r, '{"status": "absent"}'::jsonb);
+end $f$;
+create function pg_temp.n04t_kind(r jsonb) returns text language sql immutable as $f$
+  select case when r ? 'w07_cnc' then 'test' when r ? 'raised' then 'unknown'
+              when r->>'status' = 'refused' and r->>'reason_code' = 'could_not_check' then 'could_not_check'
+              when r->>'status' = 'refused' then 'refused' when r->>'status' = 'ok' then 'accepted' else 'unknown' end $f$;
+create function pg_temp.n04t_brief(r jsonb) returns text language sql immutable as $f$
+  select pg_temp.n04t_kind(r) || coalesce(' [' || nullif(concat_ws(' ', r->>'reason_code', r->>'reason', r->>'message'), '') || ']', '') $f$;
+-- An owner-level row with the keys its table has, the table's triggers off for this one insert (DM-41 (a) would refuse
+-- a Review of a target planted in this same transaction); returns its id, or raises.
+create function pg_temp.n04t_plant(p_tbl text, p_base jsonb) returns text language plpgsql as $f$
+declare b jsonb := p_base; cols text; vals text; id text;
+begin
+  -- an id without a default gets a new uuid; a defaulted one is left to its default and read back
+  if exists (select 1 from information_schema.columns where table_schema = 'devos_private' and table_name = p_tbl
+               and column_name = 'id' and column_default is null and is_identity = 'NO') then
+    b := b || jsonb_build_object('id', gen_random_uuid()::text);
+  end if;
+  select string_agg(quote_ident(k), ', '), string_agg(quote_literal(b->>k) || '::' || format_type(a.atttypid, a.atttypmod), ', ')
+    into cols, vals from jsonb_object_keys(b) k
+    join pg_attribute a on a.attrelid = ('devos_private.' || p_tbl)::regclass and a.attname = k and not a.attisdropped
+   where b->>k is not null;
+  execute format('alter table devos_private.%I disable trigger user', p_tbl);
+  execute format('insert into devos_private.%I (%s) values (%s) returning id::text', p_tbl, cols, vals) into id;
+  execute format('alter table devos_private.%I enable trigger user', p_tbl);
+  return id;
+end $f$;
+create function pg_temp.n04t_src(p_kind text, p_id text) returns jsonb language sql as $f$
+  select jsonb_build_object('kind', p_kind, 'source_id', p_id, 'path', 'evidence/C02/checks/' || p_id || '.md',
+    'input_commit', repeat('a7', 20), 'last_commit', repeat('a7', 20), 'sha256', repeat('5e', 32)) $f$;
+create function pg_temp.n04t_acc(p_work text) returns text language plpgsql as $f$
+declare s text;
+begin
+  execute format('select to_jsonb(x)->>''acceptance'' from %s x where x.id::text = $1', pg_temp.w07_cfg('work_table')) into s using p_work;
+  return coalesce(s, 'absent');
+end $f$;
+
+do $$
+declare why text; run text := 'w07_fixture_run_n04t'; r jsonb; w text; w2 text; rk text; vk text; ra text; va text;
+        rc text; ev text; a0 text; a1 text;
+begin
+  why := pg_temp.w07_pre_common();
+  if why is null and (pg_temp.w07_fn('transfer_review') is null or pg_temp.w07_fn('begin_transfer_run') is null
+                      or pg_temp.w07_fn('accept') is null) then
+    why := 'the ledger transfer''s functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)';
+  end if;
+  if why is null then
+    r := pg_temp.n04t_call('devos_kurulum', 'select devos_api.begin_transfer_run($1)', jsonb_build_object('run_id', run,
+           'input_commit', repeat('a7', 20), 'manifest_sha256', repeat('5e', 32), 'counts', '{}'::jsonb, 'phase', 'begun', 'mode', 'verdict_copies'));
+    if pg_temp.n04t_kind(r) <> 'accepted' then
+      why := 'begin_transfer_run was not accepted with the chosen keys (revised when W-C02-09 names them): ' || pg_temp.n04t_brief(r);
+    end if;
+  end if;
+  if why is not null then
+    perform pg_temp.w07_cnc(c, why) from unnest(array['N04-T1', 'N04-T2', 'N04-T2-pos']) c;
+    return;
+  end if;
+  -- (b) N04-T1: a copy written in the transfer's form carries role class devos_kurulum (the Review copy's
+  -- reviewer_role_class, B 3.11, "from the token"; and its creation event's role_class, B 3.13).
+  begin
+    w := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    r := pg_temp.n04t_call('devos_kurulum', 'select devos_api.transfer_review($1)', jsonb_build_object('run_id', run, 'kind', 'review',
+      'claim', 'SYNTHETIC W-C02-07 w07_fixture installation verdict copy', 'target_ref', w,
+      'criterion', 'plan/work/W-W07-FIXTURE.md', 'basis_refs', jsonb_build_array('w07_fixture_tree'),
+      'reviewer_declared_session', 'w07_fixture_checker_run SYNTHETIC W-C02-07', 'independence_level', 'fresh_context_subagent',
+      'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', 'pass', 'objections', '[]'::jsonb,
+      'evidence_refs', '[]'::jsonb, 'limits', ''), 'transfer_source', pg_temp.n04t_src('verdict', 'CHK-W07-FIXTURE-1')));
+  exception when others then
+    r := jsonb_build_object('w07_cnc', 'the target work item could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 120));
+  end;
+  if pg_temp.n04t_kind(r) <> 'accepted' then
+    perform pg_temp.w07_cnc('N04-T1', 'transfer_review was not accepted with the chosen keys (revised when W-C02-09 names them): '
+      || pg_temp.n04t_brief(r));
+  else
+    rk := coalesce(r->>'id', r->>'review_id');
+    execute format('select coalesce(to_jsonb(x)->>''reviewer_role_class'', to_jsonb(x)->>''role_class'') from %s x where x.id::text = $1',
+                   pg_temp.w07_cfg('review_table')) into rc using rk;
+    execute format('select string_agg(distinct to_jsonb(e)->>''role_class'', '','') from %s e where to_jsonb(e)->>''aggregate_id'' = $1',
+                   pg_temp.w07_cfg('events')) into ev using rk;
+    perform pg_temp.w07_put('N04-T1', rk is not null and rc = 'devos_kurulum' and coalesce(ev, 'devos_kurulum') = 'devos_kurulum',
+      format('transfer_review with devos_kurulum: accepted; the copy''s role class %s, its events'' role classes %s (wanted '
+             || 'devos_kurulum in both)', coalesce(rc, 'absent'), coalesce(ev, 'none')));
+  end if;
+  -- (c) N04-T2: accept, the rule that needs the audit environment's verdict (B:244), does not count such a copy. Two
+  -- Review and Verdict rows planted at owner level, result pass, use installation_acceptance, differing only in their
+  -- role class: devos_kurulum with a transferred creation event (the copy), devos_denetim (the audit's, N04-T2-pos).
+  begin
+    w := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    w2 := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    rk := pg_temp.n04t_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture copy',
+      'target_ref', w, 'reviewer_role_class', 'devos_kurulum', 'role_class', 'devos_kurulum', 'use', 'installation_acceptance'));
+    vk := pg_temp.n04t_plant('verdict', jsonb_build_object('review_ref', rk, 'result', 'pass', 'role_class', 'devos_kurulum'));
+    perform pg_temp.n04t_plant('event', jsonb_build_object('aggregate_type', 'review', 'aggregate_id', rk, 'event_type', 'transferred',
+      'role_class', 'devos_kurulum', 'origin', 'call', 'payload', jsonb_build_object('transfer_source', pg_temp.n04t_src('verdict', 'CHK-W07-FIXTURE-2'))));
+    ra := pg_temp.n04t_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture audit review',
+      'target_ref', w2, 'reviewer_role_class', 'devos_denetim', 'role_class', 'devos_denetim', 'use', 'installation_acceptance'));
+    va := pg_temp.n04t_plant('verdict', jsonb_build_object('review_ref', ra, 'result', 'pass', 'role_class', 'devos_denetim'));
+  exception when others then
+    perform pg_temp.w07_cnc(c, 'the Review and Verdict fixtures could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 120))
+      from unnest(array['N04-T2', 'N04-T2-pos']) c;
+    return;
+  end;
+  a0 := pg_temp.n04t_acc(w2);
+  r := pg_temp.n04t_call('devos_denetim', 'select devos_api.accept(($1->>''verdict_ref'')::uuid, $1->>''accepted_use'')',
+         jsonb_build_object('verdict_ref', va, 'accepted_use', 'installation_acceptance'));
+  a1 := pg_temp.n04t_acc(w2);
+  if pg_temp.n04t_kind(r) <> 'accepted' then
+    perform pg_temp.w07_cnc('N04-T2-pos', 'accept of the audit environment''s planted verdict was not accepted (revised when W-C02-09 '
+      || 'names accept''s form): ' || pg_temp.n04t_brief(r));
+    perform pg_temp.w07_cnc('N04-T2', 'its positive pair was not accepted, so a refusal here would show nothing about the copy');
+    return;
+  end if;
+  perform pg_temp.w07_put('N04-T2-pos', a1 = 'accepted' or a0 = 'absent',
+    format('accept of a devos_denetim verdict, with the audit token: accepted; the target''s acceptance %s -> %s', a0, a1));
+  a0 := pg_temp.n04t_acc(w);
+  r := pg_temp.n04t_call('devos_denetim', 'select devos_api.accept(($1->>''verdict_ref'')::uuid, $1->>''accepted_use'')',
+         jsonb_build_object('verdict_ref', vk, 'accepted_use', 'installation_acceptance'));
+  a1 := pg_temp.n04t_acc(w);
+  if pg_temp.n04t_kind(r) in ('refused', 'accepted') then
+    perform pg_temp.w07_put('N04-T2', pg_temp.n04t_kind(r) = 'refused' and a1 = a0,
+      format('accept of the transfer''s devos_kurulum copy, with the audit token: %s (wanted refused, the target unchanged); '
+             || 'acceptance %s -> %s', pg_temp.n04t_brief(r), a0, a1));
+  else
+    perform pg_temp.w07_cnc('N04-T2', 'not a refusal or an acceptance of interface v1: ' || pg_temp.n04t_brief(r));
+  end if;
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

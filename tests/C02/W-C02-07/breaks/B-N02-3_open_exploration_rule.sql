@@ -1,4 +1,4 @@
--- w07-break: test=w07_n02_decision_alternatives.sql; expect-red=N02-oe-answer-hi,N02-oe-accept-hi,N02-oe-answer-batu,N02-oe-accept-batu
+-- w07-break: test=w07_n02_decision_alternatives.sql; expect-red=N02-oe-answer-hi,N02-oe-accept-hi,N02-oe-answer-batu,N02-oe-accept-batu,N02-oe-transfer-decision,N02-oe-transfer-accept
 -- Break patch for T-W07-N02 (tests/C02/W-C02-07/T-W07-N02_*.md, "Break attempt"). Rule removed: the rule that a decision in open_exploration cannot be answered or accepted (B 3.17; DM-46): its trigger or check is disabled.
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/ (README 5.2; plan Section 8
 -- item 3 as PC-42 place 3 writes it), never on devos-test or devos; it sits outside supabase/migrations/, so no job applies it.

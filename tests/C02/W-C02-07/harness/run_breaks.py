@@ -9,7 +9,13 @@ switched off (listen_addresses = '') and connects only through its own abstract-
 For each break patch: (1) positive control: a fresh cluster with supabase/migrations/ applied runs the patch's test
 files, each of which must PASS (or, before the build exists, give COULD NOT CHECK); (2) break: a fresh cluster, the
 same migrations plus exactly this patch, the same files: the cases that turn bad must equal the patch's expect-red
-list and each file must end in FAIL; (3) restore: a fresh unpatched cluster runs the files again.
+list, every named file that holds an expected red case must end in FAIL, and every other named file must end as it
+did in the positive control (phase C5, CHK-C02-030 C3: a break may leave a named file green, as W-C02-03's B3 and B4
+leave one of their two files); (3) restore: a fresh unpatched cluster runs the files again.
+
+W-C02-07's SQL files and programs are staged in tests/C02/W-C02-07/job/ (README 5.1 (c); phase C5, the executor's
+decision on CHK-C02-030 C1); a bare name in a patch's header is looked for there first, then in
+supabase/migrations/tests/ (W-C02-03's files), so the harness always runs the staged file.
 
 Exit 0: every break shown and every control passed. 1: a break not shown, or a control that failed. 3: could not
 check (no build yet, a server that could not start, a refused input). The last line says which.
@@ -35,6 +41,8 @@ W03 = {  # W-C02-03's breaks (T-W03-06, T-W03-07, "Break attempt"), run with w03
     "B4_could_not_check_as_clean.sql": [f"C{i:02d}" for i in range(2, 14)],
 }
 W03_TESTS = ["supabase/migrations/tests/w03_drift_detects.sql", "supabase/migrations/tests/w03_drift_could_not_check.sql"]
+STAGED = "tests/C02/W-C02-07/job"  # W-C02-07's staged SQL files and programs (README 5.1 (c))
+JOB_DIR = "supabase/migrations/tests"  # the migration job's folder: W-C02-03's files, and the build items' copies
 
 
 class Refused(Exception):
@@ -195,6 +203,22 @@ def control_state(ph):
     return "fail"
 
 
+def files_as_shown(pos, brk):
+    """CHK-C02-030 C3: under the break, every named file that holds a red case ends in FAIL, and every other named
+    file ends as it did in the positive control. The files are in the same order in both phases. A red case is always
+    an expected one here, since the caller has already required the red set to equal expect-red."""
+    pf, bf = pos.get("files", []), brk.get("files", [])
+    if len(pf) != len(bf):
+        return False
+    for p, b in zip(pf, bf):
+        if b["bad"]:
+            if b["result"] != "FAIL":
+                return False
+        elif b["result"] != p["result"]:
+            return False
+    return True
+
+
 def parse_patch(path, repo, w03_dir):
     text = check_sql_file(path)
     if "supabase/migrations" in str(path.resolve().relative_to(repo.resolve())) if path.resolve().is_relative_to(repo.resolve()) else False:
@@ -206,20 +230,28 @@ def parse_patch(path, repo, w03_dir):
     m = HEADER.match(text.splitlines()[0])
     if not m:
         raise Refused(f"{path}: the first line is not a w07-break header")
-    # A bare name is a file of supabase/migrations/tests/ (README section 1), or the canary's own file; a path is
-    # from the repository root.
+    # A bare name is a staged file of tests/C02/W-C02-07/job/, else a file of supabase/migrations/tests/ (README
+    # sections 1 and 5.1 (c)), else the canary's own file; a path is from the repository root.
+    # A path to a W-C02-07 file under supabase/migrations/tests/ (twelve patches name their file so, from before the
+    # staging) means the staged file: the copy there is byte for byte the staged one, or not yet made.
     def resolve(t):
+        if t.startswith(JOB_DIR + "/w07_") and t.count("/") == JOB_DIR.count("/") + 1:
+            return repo / STAGED / t.rsplit("/", 1)[1]
         if "/" in t:
             return repo / t
-        p = repo / "supabase/migrations/tests" / t
-        return p if p.is_file() else repo / t
+        for d in (STAGED, JOB_DIR):
+            p = repo / d / t
+            if p.is_file():
+                return p
+        return repo / t
     tests = [resolve(t.strip()) for t in m.group(1).split(",") if t.strip()]
     for t in tests:
         if not t.is_file():
             raise Refused(f"{path}: test file {t} not found")
         if t.suffix == ".py":
-            if t.parent.resolve() != (repo / "supabase/migrations/tests").resolve():
-                raise Refused(f"{path}: a program it runs must be one the migration job runs (supabase/migrations/tests/)")
+            if t.parent.resolve() not in ((repo / STAGED).resolve(), (repo / JOB_DIR).resolve()):
+                raise Refused(f"{path}: a program it runs must be one the migration job runs, staged ({STAGED}/) "
+                              f"or copied ({JOB_DIR}/)")
         else:
             check_sql_file(t)
     return tests, sorted(x.strip() for x in m.group(2).split(",") if x.strip())
@@ -276,7 +308,7 @@ def main():
             verdict = "not shown (" + brk["error"] + ")"
         elif pos_s != "pass" or res_s != "pass":
             verdict = "control failed"
-        elif all(f["result"] == "FAIL" for f in brk["files"]) and red == expect:
+        elif red == expect and red and files_as_shown(pos, brk):
             verdict = "shown"
         else:
             verdict = "not shown"

@@ -539,9 +539,133 @@ begin
   perform pg_temp.w07_rec('N02-oe-pos-options', e is null and st like 'status accepted %',
     'after a revision that enters compared options, the acceptance: ' || coalesce('refused (' || e || ')', 'accepted') || '; then ' || st);
 end $f$;
+-- Phase C5 (CHK-C02-030 C6; W-C02-07 point 4; W-C02-10 point 6): the two transitions C02 builds that answer or
+-- accept a decision are the ledger transfer's (B:308; EV-C02-005 sections 2.2 and 2.4; Appendix B section 4's row
+-- "Ledger transfer"): transfer_decision writes a decision directly in its recorded status, never passing through open,
+-- and transfer_acceptance sets a Decision's status to accepted. Only devos_kurulum calls them (B:397). Both take p jsonb
+-- (README 8.1). The payload keys are CHOSEN, since no source names them (EV-C02-005 section 12 names the functions
+-- only): B 3.17's Decision fields as w07_args gives them, with status; run_id and transfer_source (the keys of
+-- EV-C02-005 section 15 S1's transfer_run and transferred payloads); for an acceptance target_ref, review_ref,
+-- accepted_use, scope and current_evidence (EV-C02-005 2.4). If W-C02-09 names other keys, these cases are revised
+-- before the first result (README section 8). Each refusal has a positive pair that differs from it only in
+-- single_viable_path_reason being entered. If the pair is not accepted, a refusal shows nothing about the rule, and
+-- both cases are could_not_check with the reason.
+create function pg_temp.n02_src(p_kind text, p_id text) returns jsonb language sql as $f$
+  select jsonb_build_object('kind', p_kind, 'source_id', p_id, 'path', 'w07_fixture/' || p_id || '.md',
+    'input_commit', repeat('a7', 20), 'last_commit', repeat('a7', 20), 'sha256', repeat('5e', 32)) $f$;
+-- An owner-level row with the keys its table has (README 5.1 (a): the rule under test is the decision's, not who writes
+-- a Review copy); returns its id, or raises. The table's own triggers are off for this one insert only: DM-41 (a)
+-- would refuse a Review of a decision revised in this same transaction, and every devos-test file is one transaction.
+create function pg_temp.n02_plant(p_tbl text, p_base jsonb) returns text language plpgsql as $f$
+declare id text := gen_random_uuid()::text; b jsonb := p_base || jsonb_build_object('id', id); base jsonb;
+begin
+  select coalesce(jsonb_object_agg(k, b->k), '{}') into base from jsonb_object_keys(b) k
+   where exists (select 1 from information_schema.columns where table_schema = 'devos_private' and table_name = p_tbl and column_name = k);
+  execute format('alter table devos_private.%I disable trigger user', p_tbl);
+  perform pg_temp.w07_plant_row(p_tbl, base);
+  execute format('alter table devos_private.%I enable trigger user', p_tbl);
+  return id;
+end $f$;
+create function pg_temp.n02_transfer() returns void language plpgsql as $f$
+declare run text := 'w07_fixture_run_n02_' || nextval('w07_seq'); r jsonb; why text; i int; pos jsonb; neg jsonb;
+        n0 bigint; n1 bigint; kp text; kn text; dp text; dn text; rp text; rn text; s0 text; s1 text; sp text;
+begin
+  if to_regprocedure('devos_api.transfer_decision(jsonb)') is null or to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null
+     or to_regprocedure('devos_api.begin_transfer_run(jsonb)') is null then
+    why := 'the ledger transfer''s functions are not all there (begin_transfer_run, transfer_decision, transfer_acceptance; '
+      || 'W-C02-09 builds them, EV-C02-005 section 15 S5)';
+  else
+    r := pg_temp.w07_call('devos_kurulum', 'begin_transfer_run', jsonb_build_object('run_id', run, 'input_commit', repeat('a7', 20),
+           'manifest_sha256', repeat('5e', 32), 'counts', '{}'::jsonb, 'phase', 'begun', 'mode', 'ahead'));
+    if pg_temp.w07_kind(r) <> 'accepted' then
+      why := 'begin_transfer_run was not accepted with the chosen keys (revised when W-C02-09 names them): ' || pg_temp.w07_brief(r);
+    end if;
+  end if;
+  if why is not null then
+    perform pg_temp.w07_put(c, 'could_not_check', why) from unnest(array['N02-oe-transfer-decision', 'N02-oe-transfer-decision-pos',
+      'N02-oe-transfer-accept', 'N02-oe-transfer-accept-pos']) c;
+    return;
+  end if;
+  -- (a) transfer_decision: a decision written answered while in open_exploration with no options and no reason.
+  i := nextval('w07_seq')::int;
+  pos := pg_temp.w07_args('decision', 'open_exploration', i, 'high_impact') || jsonb_build_object('status', 'answered',
+    'single_viable_path_reason', 'SYNTHETIC W-C02-07: only form A fits the existing w07_fixture foreign keys',
+    'run_id', run, 'transfer_source', pg_temp.n02_src('decision', 'W07-FIXTURE-DP-' || i));
+  neg := (pos - 'single_viable_path_reason') || jsonb_build_object('transfer_source', pg_temp.n02_src('decision', 'W07-FIXTURE-DN-' || i));
+  n0 := pg_temp.w07_count('decision');
+  r := pg_temp.w07_call('devos_kurulum', 'transfer_decision', pos); kp := pg_temp.w07_kind(r);
+  n1 := pg_temp.w07_count('decision');
+  sp := case when r ? 'id' then pg_temp.w07_dec_state(r->>'id') end;
+  if kp <> 'accepted' then
+    perform pg_temp.w07_put('N02-oe-transfer-decision-pos', 'could_not_check', 'transfer_decision with the reason entered was not '
+      || 'accepted with the chosen keys (revised when W-C02-09 names them): ' || pg_temp.w07_brief(r));
+    perform pg_temp.w07_put('N02-oe-transfer-decision', 'could_not_check', 'its positive pair was not accepted, so a refusal here '
+      || 'would show nothing about the open_exploration rule');
+  else
+    perform pg_temp.w07_rec('N02-oe-transfer-decision-pos', n1 = n0 + 1 and (sp is null or sp like 'status answered %'),
+      format('transfer_decision, open_exploration with single_viable_path_reason, status answered: %s; decision rows %s -> %s; %s',
+             pg_temp.w07_brief(r), n0, n1, coalesce(sp, 'no id returned')));
+    n0 := pg_temp.w07_count('decision');
+    r := pg_temp.w07_call('devos_kurulum', 'transfer_decision', neg); kn := pg_temp.w07_kind(r);
+    n1 := pg_temp.w07_count('decision');
+    if kn in ('refused', 'accepted') then
+      perform pg_temp.w07_rec('N02-oe-transfer-decision', kn = 'refused' and n1 = n0,
+        format('transfer_decision, open_exploration with no options and no single_viable_path_reason, status answered: %s '
+               || '(wanted refused, nothing written); decision rows %s -> %s', pg_temp.w07_brief(r), n0, n1));
+    else
+      perform pg_temp.w07_put('N02-oe-transfer-decision', 'could_not_check', 'not a refusal or an acceptance of interface v1: '
+        || pg_temp.w07_brief(r));
+    end if;
+  end if;
+  -- (b) transfer_acceptance: a decision in open_exploration with no options and no reason set accepted. The decisions
+  -- are opened through open_decision; the positive's reason is entered by a revision (as N02-oe-pos-reason); the Review
+  -- and Verdict copies it names are planted at owner level, result pass.
+  begin
+    dn := pg_temp.w07_decision('high_impact', 'open_exploration');
+    dp := pg_temp.w07_decision('high_impact', 'open_exploration');
+    why := pg_temp.w07_new_revision(dp, jsonb_build_object('alternatives_state', 'open_exploration',
+      'single_viable_path_reason', 'SYNTHETIC W-C02-07: only form A fits the existing w07_fixture foreign keys'));
+    if why is not null then raise exception using errcode = 'P0W07', message = 'the revision entering the reason was refused: ' || why; end if;
+    rp := pg_temp.n02_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture acceptance copy',
+      'target_ref', dp, 'reviewer_role_class', 'devos_kurulum', 'use', 'installation_acceptance', 'status', 'closed'));
+    perform pg_temp.n02_plant('verdict', jsonb_build_object('review_ref', rp, 'result', 'pass'));
+    rn := pg_temp.n02_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture acceptance copy',
+      'target_ref', dn, 'reviewer_role_class', 'devos_kurulum', 'use', 'installation_acceptance', 'status', 'closed'));
+    perform pg_temp.n02_plant('verdict', jsonb_build_object('review_ref', rn, 'result', 'pass'));
+  exception when others then
+    perform pg_temp.w07_put(c, 'could_not_check', 'the acceptance''s fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200))
+      from unnest(array['N02-oe-transfer-accept', 'N02-oe-transfer-accept-pos']) c;
+    return;
+  end;
+  r := pg_temp.w07_call('devos_kurulum', 'transfer_acceptance', jsonb_build_object('run_id', run, 'target_ref', dp, 'review_ref', rp,
+         'accepted_use', 'installation_acceptance', 'scope', 'installation', 'current_evidence', jsonb_build_array(rp),
+         'transfer_source', pg_temp.n02_src('acceptance', 'W07-FIXTURE-AP-' || i)));
+  kp := pg_temp.w07_kind(r); sp := pg_temp.w07_dec_state(dp);
+  if kp <> 'accepted' then
+    perform pg_temp.w07_put('N02-oe-transfer-accept-pos', 'could_not_check', 'transfer_acceptance of a decision with the reason entered '
+      || 'was not accepted with the chosen keys (revised when W-C02-09 names them): ' || pg_temp.w07_brief(r));
+    perform pg_temp.w07_put('N02-oe-transfer-accept', 'could_not_check', 'its positive pair was not accepted, so a refusal here '
+      || 'would show nothing about the open_exploration rule');
+    return;
+  end if;
+  perform pg_temp.w07_rec('N02-oe-transfer-accept-pos', sp like 'status accepted %',
+    format('transfer_acceptance, open_exploration with single_viable_path_reason: %s; then %s (wanted accepted)', pg_temp.w07_brief(r), sp));
+  s0 := pg_temp.w07_dec_state(dn);
+  r := pg_temp.w07_call('devos_kurulum', 'transfer_acceptance', jsonb_build_object('run_id', run, 'target_ref', dn, 'review_ref', rn,
+         'accepted_use', 'installation_acceptance', 'scope', 'installation', 'current_evidence', jsonb_build_array(rn),
+         'transfer_source', pg_temp.n02_src('acceptance', 'W07-FIXTURE-AN-' || i)));
+  kn := pg_temp.w07_kind(r); s1 := pg_temp.w07_dec_state(dn);
+  if kn in ('refused', 'accepted') then
+    perform pg_temp.w07_rec('N02-oe-transfer-accept', kn = 'refused' and s1 = s0,
+      format('transfer_acceptance, open_exploration with no options and no single_viable_path_reason: %s (wanted refused, '
+             || 'its state unchanged); %s -> %s', pg_temp.w07_brief(r), s0, s1));
+  else
+    perform pg_temp.w07_put('N02-oe-transfer-accept', 'could_not_check', 'not a refusal or an acceptance of interface v1: '
+      || pg_temp.w07_brief(r));
+  end if;
+end $f$;
 create function pg_temp.n02_paths() returns void language plpgsql as $f$
 begin
-  perform pg_temp.w07_put('N02-oe-transfer', 'could_not_check', 'the ledger transfer''s path, which writes answered decisions in C02 (EV-C02-002 DM-11), is W-C02-06''s and not designed yet: this case is written against it once that design is accepted (W-C02-07 executor decision 5)');
   if to_regprocedure('devos_api.answer_decision(jsonb)') is not null then
     perform pg_temp.w07_put('N02-oe-answer-decision', 'could_not_check', 'devos_api.answer_decision exists in this build (B:390 gives it to C06): the open_exploration case must be written against it before a result counts (W-C02-07 point 4)');
   end if;
@@ -565,6 +689,7 @@ begin
   perform pg_temp.w07_run('N02-gate', $q$select pg_temp.n02_gate()$q$);
   perform pg_temp.w07_run('N02-oe', $q$select pg_temp.n02_oe()$q$);
   perform pg_temp.w07_run('N02-paths', $q$select pg_temp.n02_paths()$q$);
+  perform pg_temp.w07_run('N02-oe-transfer', $q$select pg_temp.n02_transfer()$q$);
   perform pg_temp.w07_run('N02-fbm1', $q$select pg_temp.w07_blocks('N02-fbm1', 'decision', 'decision', 'fbm1', 'high_impact', 1)$q$);
   perform pg_temp.w07_run('N02-fbm2', $q$select pg_temp.w07_blocks('N02-fbm2', 'decision', 'decision', 'fbm2', 'high_impact', 1)$q$);
 end $$;

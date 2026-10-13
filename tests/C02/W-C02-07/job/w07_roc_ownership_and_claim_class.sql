@@ -719,6 +719,44 @@ begin
   end loop;
 end $f$;
 
+-- Phase C5 (CHK-C02-030 C4): an active devos_denetim claim on a work item, planted at owner level (README 5.1 (a)),
+-- with Appendix B 3.5's fields where the table has them: the next generation, the current global authority epoch,
+-- the item's current revision, a lease of 30 minutes (EV-C02-002 DM-07). No token is issued for it: its claim token
+-- hash is random characters, the hash of no token, never read or compared. Returns null, or why it failed.
+create function pg_temp.roc_plant_audit_claim(p_work text) returns text language plpgsql as $f$
+begin
+  return pg_temp.roc_plant_claim(p_work, 'devos_denetim', 'w07_fixture_session_audit SYNTHETIC W-C02-07');
+end $f$;
+create function pg_temp.roc_plant_claim(p_work text, p_class text, p_session text) returns text language plpgsql as $f$
+declare base jsonb := '{}'; v text;
+begin
+  if to_regclass('devos_private.assignment') is null then return 'devos_private.assignment does not exist'; end if;
+  base := jsonb_build_object('work_ref', p_work, 'role_class', p_class, 'status', 'active',
+                             'declared_session_id', p_session,
+                             'lease_expires_at', (now() + interval '30 minutes')::text, 'last_heartbeat_at', now()::text);
+  execute 'select (coalesce(max((to_jsonb(a)->>''generation'')::bigint), 0) + 1)::text from devos_private.assignment a
+             where to_jsonb(a)->>''work_ref'' = $1' into v using p_work;
+  base := base || jsonb_build_object('generation', v);
+  if to_regclass('devos_private.global_authority_epoch') is not null then
+    execute 'select max(epoch)::text from devos_private.global_authority_epoch' into v;
+    if v is not null then base := base || jsonb_build_object('authority_epoch', v); end if;
+  end if;
+  execute 'select to_jsonb(w)->>''revision'' from devos_private.work w where w.id::text = $1' into v using p_work;
+  if v is not null then base := base || jsonb_build_object('work_revision', v); end if;
+  -- random characters, the hash of no token (read as text, or as bytea's escape form, which needs no backslash)
+  base := base || jsonb_build_object('claim_token_hash', md5(random()::text) || md5(random()::text));
+  -- only the keys the table has
+  select coalesce(jsonb_object_agg(k, base->k), '{}') into base from jsonb_object_keys(base) k
+   where exists (select 1 from information_schema.columns
+                  where table_schema = 'devos_private' and table_name = 'assignment' and column_name = k);
+  begin
+    perform pg_temp.w07_plant_row('assignment', base);
+  exception when others then
+    return sqlstate || ' ' || left(sqlerrm, 200);
+  end;
+  return null;
+end $f$;
+
 -- Rule C: with an audit claim on a working item, devos_calisma's revision, cancellation and hard relations are refused,
 -- and mark_stale and a descriptive relation are accepted (1.7.1).
 create function pg_temp.roc_rule_c() returns void language plpgsql as $f$
@@ -730,8 +768,14 @@ begin
   if why is null then
     r := pg_temp.w07_call('devos_denetim', 'claim', jsonb_build_object('work_id', wc, 'declared_session_id', 'w07_fixture_session_audit'));
     if pg_temp.w07_kind(r) <> 'accepted' then
-      why := 'devos_denetim''s claim on a working item was not accepted, so Rule C''s cases cannot be planted (its claim row''s '
-        || '"its review work" is C03''s design, EV-C02-008 1.7.5 (a)): ' || pg_temp.w07_brief(r - 'claim_token');
+      -- Phase C5 (CHK-C02-030 C4; README 5.1 (a)): the rule under test is Rule C, not who may claim (devos_denetim's
+      -- claim row's "its review work" is C03's design, EV-C02-008 1.7.5 (a)), so the audit claim is planted, active,
+      -- at owner level inside this rolled-back transaction, and Rule C's six cases are judged in C02.
+      why := pg_temp.roc_plant_audit_claim(wc);
+      if why is not null then
+        why := 'devos_denetim''s claim was refused (' || pg_temp.w07_brief(r - 'claim_token')
+          || '), and the owner-level plant of an active devos_denetim claim failed: ' || why;
+      end if;
     end if;
     r := null;
   end if;
@@ -748,6 +792,178 @@ begin
   perform pg_temp.roc_case('ROC-c-retract_relation', 'devos_calisma', 'retract_relation', pg_temp.roc_args('retract_relation', null, rc), 'refused');
   perform pg_temp.roc_case('ROC-c-mark_stale-pos', 'devos_calisma', 'mark_stale', pg_temp.roc_args('mark_stale', wc, null), 'accepted');
   perform pg_temp.roc_case('ROC-c-relate-soft-pos', 'devos_calisma', 'relate', pg_temp.roc_rel_args(wc, wo, false), 'accepted');
+end $f$;
+
+-- Phase C5 (CHK-C02-030 C7 (b); W-C02-07 point 6; W-C02-09 point 7; README section 3 (i)). Rules O and C read inputs
+-- that can be missing, unreadable or partial: the work item's Mission reference (Rule O), the relation's creation event
+-- (Rule O's "transferred" check, read for every relation retract_relation is given) and the active claims (Rule C).
+-- Each is planted at owner level, one at a time, inside an undone subtransaction, on a call the unplanted file accepts
+-- (ROC-o-revise_work-cal-cal and ROC-o-retract_relation-cal-cal are the positive pairs). Wanted: interface v1's could
+-- not check (status refused, reason_code could_not_check), kept apart from clean (accepted) and from fail (refused with
+-- another code), with no table changed, no event on the target and no record returned. The forms are the designer's
+-- (T-W07-ROC, "Could not check"):
+--   missing    the Mission reference null; the relation's creation event deleted; the claims table absent (renamed);
+--   unreadable every privilege on the table that holds the input (mission, event, assignment) revoked from the called
+--              function's owner for the call, and given back before the observation;
+--   partial    the Mission reference naming no Mission; the creation event with its event_type null; an active claim on
+--              the item with its role_class null.
+create function pg_temp.roc_x_owner(p_fn text) returns text language plpgsql as $f$
+declare o text; su boolean;
+begin
+  select pg_get_userbyid(p.proowner), r.rolsuper into o, su from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    join pg_roles r on r.oid = p.proowner where n.nspname = 'devos_api' and p.proname = p_fn limit 1;
+  if o is null then raise exception using errcode = 'P0W07', message = 'devos_api.' || p_fn || ' does not exist'; end if;
+  if su then raise exception using errcode = 'P0W07', message = 'devos_api.' || p_fn || '''s owner is a superuser, '
+    || 'so no privilege can make a table unreadable to it'; end if;
+  return o;
+end $f$;
+-- The data part of a plant (before the "before" snapshot).
+create function pg_temp.roc_x_prep(p_kind text, p_id text) returns void language plpgsql as $f$
+declare t text; c record; n bigint; tot bigint := 0;
+begin
+  if p_kind in ('mission-missing', 'mission-partial') then
+    for t in select table_name from information_schema.columns where table_schema = 'devos_private'
+              and table_name in ('work', 'work_revision') and column_name = 'mission_ref' loop
+      execute format('alter table devos_private.%I alter column mission_ref drop not null', t);
+      if p_kind = 'mission-partial' then
+        for c in select con.conname from pg_constraint con where con.conrelid = ('devos_private.' || t)::regclass
+                   and con.contype = 'f' and exists (select 1 from pg_attribute a where a.attrelid = con.conrelid
+                   and a.attnum = any(con.conkey) and a.attname = 'mission_ref') loop
+          execute format('alter table devos_private.%I drop constraint %I', t, c.conname);
+        end loop;
+      end if;
+      execute format('update devos_private.%I x set mission_ref = %s where (%L = ''work'' and to_jsonb(x)->>''id'' = $1) '
+                     || 'or to_jsonb(x)->>''work_id'' = $1 or to_jsonb(x)->>''work_ref'' = $1', t,
+                     case when p_kind = 'mission-missing' then 'null'
+                          else quote_literal(md5('w07_fixture SYNTHETIC W-C02-07 no such mission')::uuid::text) end, t)
+        using p_id;
+      get diagnostics n = row_count; tot := tot + n;
+    end loop;
+    if tot = 0 then raise exception using errcode = 'P0W07', message = 'no mission_ref of the work item was found to plant'; end if;
+  elsif p_kind in ('event-missing', 'event-partial') then
+    execute 'alter table devos_private.event disable trigger user';
+    if p_kind = 'event-missing' then
+      execute 'delete from devos_private.event e where to_jsonb(e)->>''aggregate_id'' = $1' using p_id;
+    else
+      execute 'alter table devos_private.event alter column event_type drop not null';
+      execute 'update devos_private.event e set event_type = null where e.ctid = (select x.ctid from devos_private.event x
+                 where to_jsonb(x)->>''aggregate_id'' = $1 order by to_jsonb(x)->>''created_at'' limit 1)' using p_id;
+    end if;
+    get diagnostics n = row_count;
+    execute 'alter table devos_private.event enable trigger user';
+    if n = 0 then raise exception using errcode = 'P0W07', message = 'the relation has no creation event to plant on'; end if;
+  elsif p_kind = 'claims-partial' then
+    t := pg_temp.roc_plant_claim(p_id, 'devos_denetim', 'w07_fixture_session_partial SYNTHETIC W-C02-07');
+    if t is not null then raise exception using errcode = 'P0W07', message = 'the claim could not be planted: ' || t; end if;
+    execute 'alter table devos_private.assignment alter column role_class drop not null';
+    execute 'update devos_private.assignment a set role_class = null where to_jsonb(a)->>''work_ref'' = $1
+               and to_jsonb(a)->>''declared_session_id'' = ''w07_fixture_session_partial SYNTHETIC W-C02-07''' using p_id;
+    get diagnostics n = row_count;
+    if n = 0 then raise exception using errcode = 'P0W07', message = 'the planted claim was not found'; end if;
+  end if;
+end $f$;
+-- The access part of a plant (after the "before" snapshot), and its reversal (before the "after" snapshot).
+create function pg_temp.roc_x_access(p_kind text, p_fn text, p_on boolean) returns void language plpgsql as $f$
+declare t text := case split_part(p_kind, '-', 1) when 'mission' then 'mission' when 'event' then 'event' else 'assignment' end;
+begin
+  if p_kind like '%-unreadable' then
+    if to_regclass('devos_private.' || t) is null then
+      raise exception using errcode = 'P0W07', message = 'devos_private.' || t || ' does not exist'; end if;
+    execute format(case when p_on then 'revoke all on devos_private.%I from %I' else 'grant all on devos_private.%I to %I' end,
+                   t, pg_temp.roc_x_owner(p_fn));
+  elsif p_kind = 'claims-missing' then
+    if p_on then execute 'alter table devos_private.assignment rename to assignment_w07_missing';
+    else execute 'alter table devos_private.assignment_w07_missing rename to assignment'; end if;
+  end if;
+end $f$;
+create function pg_temp.roc_x_events(p_target text) returns bigint language plpgsql as $f$
+declare n bigint;
+begin
+  execute 'select count(*) from devos_private.event e where to_jsonb(e)->>''aggregate_id'' = $1' into n using p_target;
+  return n;
+exception when others then return null;
+end $f$;
+create function pg_temp.roc_x_case(p_case text, p_fn text, p_args jsonb, p_kind text, p_id text, p_target text)
+returns text language plpgsql as $f$
+declare r jsonb; s0 jsonb; s1 jsonb; e0 bigint; e1 bigint; pe text; k text; ret text;
+begin
+  begin
+    begin
+      perform pg_temp.roc_x_prep(p_kind, p_id);
+      s0 := pg_temp.roc_snap(); e0 := pg_temp.roc_x_events(p_target);
+      perform pg_temp.roc_x_access(p_kind, p_fn, true);
+    exception when others then
+      pe := sqlstate || ' ' || left(sqlerrm, 160);
+      raise exception using errcode = 'P0W7U', message = 'w07: plant failed';
+    end;
+    r := pg_temp.w07_call('devos_calisma', p_fn, p_args);
+    perform pg_temp.roc_x_access(p_kind, p_fn, false);
+    s1 := pg_temp.roc_snap(); e1 := pg_temp.roc_x_events(p_target);
+    raise exception using errcode = 'P0W7U', message = 'w07: undo the case';
+  exception when sqlstate 'P0W7U' then null;
+  end;
+  if pe is not null then
+    perform pg_temp.w07_put(p_case, 'could_not_check', 'the ' || p_kind || ' input could not be planted: ' || pe); return 'test';
+  end if;
+  k := pg_temp.w07_kind(r);
+  if k = 'refused' and r->>'reason_code' = any(array['missing', 'empty', 'malformed', 'unknown', 'revoked', 'header_unreadable']) then
+    perform pg_temp.w07_put(p_case, 'could_not_check', 'the synthetic token was refused (' || (r->>'reason_code') || ')'); return 'test';
+  elsif k in ('unknown', 'test_cnc') then
+    perform pg_temp.w07_put(p_case, 'could_not_check', format('%s, %s planted: not an answer of interface v1: %s', p_fn, p_kind,
+      pg_temp.w07_brief(r))); return 'test';
+  elsif k = 'accepted' then
+    perform pg_temp.w07_rec(p_case, false, format('%s, %s planted: answered clean (accepted), wanted could not check: %s',
+      p_fn, p_kind, pg_temp.w07_brief(r))); ret := 'clean';
+  elsif k = 'refused' then
+    perform pg_temp.w07_rec(p_case, false, format('%s, %s planted: refused with %s, wanted could_not_check (could not check '
+      || 'folded into fail)', p_fn, p_kind, coalesce(r->>'reason_code', '(no reason code)'))); ret := 'fail';
+  else
+    perform pg_temp.w07_rec(p_case, s0 is not distinct from s1 and e0 is not distinct from e1
+        and not (r ?| array['id', 'records', 'works', 'paths', 'revision']),
+      format('%s, %s planted: could not check (%s); tables changed: %s; events on the target %s -> %s; record keys returned: %s',
+        p_fn, p_kind, left(coalesce(r->>'reason', ''), 120), s0 is distinct from s1, coalesce(e0::text, '?'), coalesce(e1::text, '?'),
+        r ?| array['id', 'records', 'works', 'paths', 'revision'])); ret := 'could_not_check';
+  end if;
+  return ret;
+end $f$;
+create function pg_temp.roc_x() returns void language plpgsql as $f$
+declare w text := pg_temp.roc_fx('w_cal'); rel text := pg_temp.roc_fx('r_cal'); kind text; form text; ans text;
+        n jsonb := '{}'; chk text;
+begin
+  if coalesce(w, '') = '' then
+    foreach kind in array array['o-mission', 'o-event', 'c-claims'] loop
+      foreach form in array array['missing', 'unreadable', 'partial'] loop
+        perform pg_temp.w07_put('ROC-x-' || kind || '-' || form, 'could_not_check', 'the fixture w_cal was not made');
+      end loop;
+    end loop;
+    return;
+  end if;
+  foreach form in array array['missing', 'unreadable', 'partial'] loop
+    ans := pg_temp.roc_x_case('ROC-x-o-mission-' || form, 'revise_work', pg_temp.roc_args('revise_work', w, null),
+                              'mission-' || form, w, w);
+    n := jsonb_set(n, array['Rule O, the Mission reference (revise_work)'], coalesce(n->'Rule O, the Mission reference (revise_work)', '[]') || to_jsonb(ans));
+    if coalesce(rel, '') = '' then
+      perform pg_temp.w07_put('ROC-x-o-event-' || form, 'could_not_check', 'the fixture relation r_cal was not made: '
+        || coalesce(pg_temp.roc_fx('r_cal_why'), ''));
+      ans := 'test';
+    else
+      ans := pg_temp.roc_x_case('ROC-x-o-event-' || form, 'retract_relation', pg_temp.roc_args('retract_relation', null, rel),
+                                'event-' || form, rel, rel);
+    end if;
+    n := jsonb_set(n, array['Rule O, the creation event (retract_relation)'], coalesce(n->'Rule O, the creation event (retract_relation)', '[]') || to_jsonb(ans));
+    ans := pg_temp.roc_x_case('ROC-x-c-claims-' || form, 'revise_work', pg_temp.roc_args('revise_work', w, null),
+                              'claims-' || form, w, w);
+    n := jsonb_set(n, array['Rule C, the active claims (revise_work)'], coalesce(n->'Rule C, the active claims (revise_work)', '[]') || to_jsonb(ans));
+  end loop;
+  -- README section 3: per check, the counts of clean, fail and could-not-check answers, with the denominator.
+  for chk in select jsonb_object_keys(n) loop
+    raise notice 'W07_ROC per-check answers, %: clean %, fail %, could not check %, the test''s own could not check %, of %', chk,
+      (select count(*) from jsonb_array_elements_text(n->chk) x where x = 'clean'),
+      (select count(*) from jsonb_array_elements_text(n->chk) x where x = 'fail'),
+      (select count(*) from jsonb_array_elements_text(n->chk) x where x = 'could_not_check'),
+      (select count(*) from jsonb_array_elements_text(n->chk) x where x = 'test'),
+      jsonb_array_length(n->chk);
+  end loop;
 end $f$;
 
 -- Rule C within one class: another working session's claim does not stop devos_calisma's cancellation, and the
@@ -809,6 +1025,7 @@ begin
   perform pg_temp.w07_run('ROC-o', $q$select pg_temp.roc_rule_o()$q$);
   perform pg_temp.w07_run('ROC-c', $q$select pg_temp.roc_rule_c()$q$);
   perform pg_temp.w07_run('ROC-c-same-class', $q$select pg_temp.roc_same_class()$q$);
+  perform pg_temp.w07_run('ROC-x', $q$select pg_temp.roc_x()$q$);
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

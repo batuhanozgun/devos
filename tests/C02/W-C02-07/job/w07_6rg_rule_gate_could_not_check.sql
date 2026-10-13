@@ -315,11 +315,19 @@ begin
     perform pg_temp.w07_cnc(p_id, 'the input state could not be planted: ' || coalesce(perr, 'no result'));
     return;
   end if;
-  insert into w07_answers values (substr(split_part(p_id, ' ', 1), 1, 5),
-    case when r ? 'w07_raised' then 'raised' else coalesce(r->>'status', 'absent') end);
+  insert into w07_answers values (substr(split_part(p_id, ' ', 1), 1, 5), pg_temp.w07_answer_kind(r));
   perform pg_temp.w07_judge(p_id, r, p_want,
     case when p_want <> 'ok' and s1 <> s0 then 'the write went through (state changed)' end);
 end $f$;
+
+-- Phase C5 (CHK-C02-030 C8): one answer's kind for the per-check counts, in interface v1's terms (README 8.1): a
+-- could-not-check answer (status refused, reason_code could_not_check) is counted as could_not_check, never as refused;
+-- refused is any other refusal (fail); ok is clean; a raised error or any other form is counted apart as other.
+create function pg_temp.w07_answer_kind(r jsonb) returns text language sql immutable as $f$
+  select case when r ? 'w07_raised' then 'raised'
+              when r->>'status' = 'refused' and r->>'reason_code' = 'could_not_check' then 'could_not_check'
+              when r->>'status' in ('ok', 'refused') then r->>'status'
+              else 'other: ' || coalesce(r->>'status', 'absent') end $f$;
 
 -- One readiness case through ready_works(): is the work item listed? A could_not_check answer counts as not listed.
 create function pg_temp.w07_ready_case(p_id text, p_plant text, p_tok text, p_work text, p_listed boolean)
@@ -335,16 +343,21 @@ begin
     when sqlstate 'P0W07' then null;
     when others then perr := sqlstate || ' ' || left(sqlerrm, 160);
   end;
-  if not planted or r is null or r ? 'w07_raised' or coalesce(r->>'status', '') not in ('ok', 'could_not_check') then
-    perform pg_temp.w07_cnc(p_id, 'no readable answer: ' || coalesce(perr, r->>'w07_raised', r->>'status', 'none'));
+  -- Phase C5 (CHK-C02-030 C8): interface v1's could not check (status refused, reason_code could_not_check) is a
+  -- readable answer here, taken as "not listed", as the comment above says; any other refusal, a raised error or
+  -- another form is no readable answer, the test's own could not check.
+  if not planted or r is null or r ? 'w07_raised'
+     or pg_temp.w07_answer_kind(r) not in ('ok', 'could_not_check') then
+    perform pg_temp.w07_cnc(p_id, 'no readable answer: ' || coalesce(perr, r->>'w07_raised',
+      nullif(concat_ws(' ', r->>'status', r->>'reason_code'), ''), 'none'));
     return;
   end if;
-  insert into w07_answers values (substr(split_part(p_id, ' ', 1), 1, 5), r->>'status');
+  insert into w07_answers values (substr(split_part(p_id, ' ', 1), 1, 5), pg_temp.w07_answer_kind(r));
   listed := r->>'status' = 'ok' and exists (select 1 from jsonb_array_elements(coalesce(r->'works', '[]')) e
                                              where e->>'id' = p_work);
   insert into w07_results values (split_part(p_id, ' ', 1), case when listed = p_listed then 'ok' else 'bad' end,
     substr(p_id, length(split_part(p_id, ' ', 1)) + 2) || format(': answered %s, work item %s (wanted %s)',
-      r->>'status', case when listed then 'listed' else 'not listed' end, case when p_listed then 'listed' else 'not listed' end));
+      pg_temp.w07_answer_kind(r), case when listed then 'listed' else 'not listed' end, case when p_listed then 'listed' else 'not listed' end));
 end $f$;
 
 create function pg_temp.w07_op6(p_work jsonb, p_key text, p_read jsonb) returns jsonb language sql as $f$
@@ -445,6 +458,23 @@ begin
       jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1), jsonb_build_object('ref', wr5->>'id', 'revision', 1))),
     null, 'could_not_check');
 
+  -- 3b. Phase C5 (CHK-C02-030 C7 (c)): the effect-class read (EV-C02-002 DM-37: whether the effect is irreversible and
+  -- the mandatory elements of the read set, read by prepare_operation from the effect-class table). The same call as
+  -- 6RG-s0 (its positive pair), with the synthetic class's row missing, the table unreadable, or irreversible null.
+  perform pg_temp.w07_planted('6RG-c1 effect class row missing',
+    'delete from devos_private.effect_class where effect_class = ''w07_fixture_effect''',
+    w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c1',
+      jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');
+  perform pg_temp.w07_planted('6RG-c2 effect class table unreadable',
+    'alter table devos_private.effect_class rename to w07_hidden_effect_class',
+    w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c2',
+      jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');
+  perform pg_temp.w07_planted('6RG-c3 effect class partial (irreversible null)',
+    'alter table devos_private.effect_class alter column irreversible drop not null; '
+    || 'update devos_private.effect_class set irreversible = null where effect_class = ''w07_fixture_effect''',
+    w, 'select devos_api.prepare_operation($1, $2)', cr1->>'claim_token', pg_temp.w07_op6(wr1, 'w07_fixture_key_rg_c3',
+      jsonb_build_array(jsonb_build_object('ref', wr1->>'id', 'revision', 1))), null, 'could_not_check');
+
   -- 4. Readiness: an ALL group whose member is unknown is not ready (B principle 6).
   perform pg_temp.w07_ready_case('6RG-g0 positive control: a group whose member is true is ready', null, w, wg1->>'id', true);
   perform pg_temp.w07_ready_case('6RG-g1 member''s state partial (null): not ready',
@@ -475,10 +505,12 @@ begin
   perform pg_temp.w07_ready_case('6RG-l5 lease missing: ready_works() does not offer the work item', plant, w, wl->>'id', false);
 
   -- Per check: the answers seen, with the denominator (README section 3).
+  -- Interface v1's kinds (w07_answer_kind; phase C5, CHK-C02-030 C8): clean (ok), fail (any other refusal) and could
+  -- not check are counted apart; a raised error or another form is "other", the test's own could not check.
   for g in select grp, count(*) filter (where answer = 'ok') ok, count(*) filter (where answer = 'refused') refused,
                   count(*) filter (where answer = 'could_not_check') cnc, count(*) filter (where answer not in ('ok', 'refused', 'could_not_check')) other,
                   count(*) n from w07_answers group by grp order by grp loop
-    raise notice 'W07_6RG answers % : ok %, refused %, could_not_check %, other %, of %', g.grp, g.ok, g.refused, g.cnc, g.other, g.n;
+    raise notice 'W07_6RG answers % : clean (ok) %, fail (refused) %, could not check %, other %, of %', g.grp, g.ok, g.refused, g.cnc, g.other, g.n;
   end loop;
 end $$;
 
