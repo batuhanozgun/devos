@@ -1,0 +1,8 @@
+listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own
+  exclusion list, kept as data in this workflow:
+  schemas excluded with their contents (Supabase's own): auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+  schema entries excluded, their contents still listed: public (the default schema every project is created with)
+  roles excluded (Supabase's own), besides every pg_* role: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+  objects that belong to an extension are listed as that extension
+listing: 0 objects outside Supabase's own
+listing control: the same query without the exclusion list shows 0 objects; auth.users among them: no

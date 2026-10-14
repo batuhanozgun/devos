@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-038` (T-W03-08'in kırma denemesi ve iki test dalının silinmesi, tek seferde: (a) GitHub'da sahte bir ortam açarsın, ben denemeyi yaparım, sonra ortamı ve üç dalı silersin (önerim); (b) hiçbiri: kırma denemesi 'kontrol edilemedi' kalır, dallar durur). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 14 Ekim 2026, 18:15 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 14 Ekim 2026, 18:29 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C02 (Veri modeli, kural kapısı ve kimlik zinciri).
 
