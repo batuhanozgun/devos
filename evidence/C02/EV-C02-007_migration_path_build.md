@@ -2057,3 +2057,11 @@ Its labels and lengths are not copied. The migration passwords are never in a se
 - Several things rest on records, not raw output: the readings that stand for unfiled reports (19.11 item 1), the head check's lines in (e), the re-run window of T-W03-09, the SQL breaks' and c2's offline runs, and the T-W03-DEC break copies that were made.
 - Some things are not recorded at all: the merge commits of four pull-request checks, the run URLs, P8's result, part of T-W03-DEC's required break copies, and the T-W03-10 prober's agent ID.
 - Two raw files, C1's and C2's, wait for an assessor.
+
+### 19.15 T-W03-08's break, made (D-038 answered (a), 2026-10-14; supersedes 19.12's branch (b))
+
+Batu created `w03-fixture-unprotected` (D-038 (a); L-326). The branch probe's step, pointed at it from branch `claude/w03-t08-break`
+(`a27ec45`), ran in run 38599265620, job 115973952227, at 16:34:45Z and printed "credential present: yes". Raw:
+`evidence/C02/raw/EV-C02-007_T-W03-08_break_run38599265620_job115973952227.md`. T-W03-08's break: **pass** (the test turns red on the
+line that would print `yes` were the branch rule absent). Point 8 stays met; CHK-C02-065 C4 branch (a) holds: run and job IDs, the
+probe step's line, and the environment's deletion, which is Batu's step 4 and is recorded when he reports it.
