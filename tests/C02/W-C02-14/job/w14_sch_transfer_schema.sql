@@ -5,9 +5,11 @@
 --
 -- Claim: the ledger transfer's own schema, as EV-C02-005 section 15 gives it (S1 to S4), is in the database: the
 -- idempotency index admits one `transferred` creation event per (kind, source ID) and refuses a second; no
--- `transferred` event escapes that key (its `transfer_source` is required, with its six fields, `input_commit` 40
--- hexadecimal characters); at most one `ledger_handed_over` event exists; and the event types S1 names, Decision's
--- status `declined` (S3) and S4's values are admitted.
+-- `transferred` event escapes that key (its `transfer_source` is required, an object with its six fields, `kind` and
+-- `source_id` not JSON null, `input_commit` 40 hexadecimal characters); at most one `ledger_handed_over` event exists;
+-- and the event types S1 names, Decision's status `declined` (S3) and S4's values are admitted.
+-- Revised before any result for CHK-C02-066 C2 and C3 (cases SCH-S1-null-kind, -null-source_id, -commit-nonhex, and
+-- the designer's -commit-null and -src-array; 38 cases): see the specification's "Revision before any result".
 -- Specification: tests/C02/W-C02-14/T-W14-SCH_transfer_schema.md. Serves W-C02-08 point 9: the part of W-C02-14
 -- point 13's tests that judges W-C02-08's transfer schema.
 -- Runs: in devos-test by the migration job's test step as postgres, once W-C02-08's pull request copies this file
@@ -260,7 +262,7 @@ do $$
 declare why text; t text; r text; r2 text; tag text := pg_temp.w14_tag(); k text; n0 bigint; n1 bigint;
         accepted_any boolean := false; types text[] := array['transferred', 'transfer_run', 'ledger_entry', 'note_line',
         'record_line', 'usage_reading', 'batu_step', 'ledger_state_row']; res jsonb := '{}'; p jsonb; s jsonb;
-        base text; v text; idx text; acc jsonb;
+        base text; v text; idx text; acc jsonb; src0 jsonb;
 begin
   why := pg_temp.w14_pre();
   if why is not null then
@@ -346,11 +348,14 @@ begin
       || 'transfer_source kind and source_id with a predicate naming transferred'));
 
   -- S1: a transferred event needs its transfer_source, with every field, input_commit 40 hexadecimal characters.
-  r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(pg_temp.w14_src('decision', tag || '_R0')), 'decision');
+  src0 := pg_temp.w14_src('decision', tag || '_R0');
+  r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0), 'decision');
   if r <> 'accepted' then
     perform pg_temp.w14_rec(c, 'could_not_check', 'the well-formed transferred event (the positive control) was not accepted: ' || r)
       from unnest(array['SCH-S1-nosrc', 'SCH-S1-miss-kind', 'SCH-S1-miss-source_id', 'SCH-S1-miss-path',
-                        'SCH-S1-miss-input_commit', 'SCH-S1-miss-last_commit', 'SCH-S1-miss-sha256', 'SCH-S1-commit']) c;
+                        'SCH-S1-miss-input_commit', 'SCH-S1-miss-last_commit', 'SCH-S1-miss-sha256', 'SCH-S1-commit',
+                        'SCH-S1-null-kind', 'SCH-S1-null-source_id', 'SCH-S1-commit-nonhex', 'SCH-S1-commit-null',
+                        'SCH-S1-src-array']) c;
   else
     r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(pg_temp.w14_src('decision', tag || '_R1')) - 'transfer_source', 'decision');
     perform pg_temp.w14_check('SCH-S1-nosrc', r like 'refused%', 'a transferred event with no transfer_source: ' || r);
@@ -361,6 +366,34 @@ begin
     r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(pg_temp.w14_src('decision', tag || '_R3')
            || jsonb_build_object('input_commit', pg_temp.w14_hex('w14 input commit', 7))), 'decision');
     perform pg_temp.w14_check('SCH-S1-commit', r like 'refused%', 'input_commit of 7 hexadecimal characters: ' || r);
+    -- Revision before any result (CHK-C02-066 C2 and C3): each case below is the well-formed event's own transfer_source
+    -- (src0, accepted above) changed in one thing, so that event is its positive control. A key field that is JSON null
+    -- gives the index's expression SQL NULL, and NULL keys are distinct, so the event would escape S2's key; a check of
+    -- key existence alone (?&) admits it.
+    foreach t in array array['kind', 'source_id'] loop
+      r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0 || jsonb_build_object(t, null)), 'decision');
+      perform pg_temp.w14_check('SCH-S1-null-' || t, r like 'refused%',
+        'transfer_source with ' || t || ' JSON null, the other five fields well formed: ' || r);
+    end loop;
+    -- input_commit of 40 characters that are not hexadecimal, the length of the well-formed one, so a rule on length
+    -- alone admits it: (a) none hexadecimal; (b) 39 hexadecimal and the 20th not. Both attempts under one case ID
+    -- (w14_rec keeps the worse), so each must be refused.
+    v := translate(src0 ->> 'input_commit', '0123456789abcdef', 'ghijklmnopqrstuv');
+    r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0 || jsonb_build_object('input_commit', v)), 'decision');
+    perform pg_temp.w14_check('SCH-S1-commit-nonhex', case when char_length(v) = 40 and v !~ '[0-9a-fA-F]' then r like 'refused%' end,
+      format('input_commit of %s characters, none hexadecimal: %s', char_length(v), r));
+    v := overlay(src0 ->> 'input_commit' placing 'z' from 20 for 1);
+    r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0 || jsonb_build_object('input_commit', v)), 'decision');
+    perform pg_temp.w14_check('SCH-S1-commit-nonhex', case when char_length(v) = 40 then r like 'refused%' end,
+      format('input_commit of %s characters, the 20th not hexadecimal: %s', char_length(v), r));
+    -- The designer's additions, same class (a value S1 requires that a check of existence or of NULL-tolerant form lets
+    -- through): input_commit JSON null; transfer_source an array of the six field names instead of the object (?& is
+    -- true for an array of those strings, and every ->> on it is SQL NULL, so it too escapes the key).
+    r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0 || jsonb_build_object('input_commit', null)), 'decision');
+    perform pg_temp.w14_check('SCH-S1-commit-null', r like 'refused%', 'input_commit JSON null, the other five fields well formed: ' || r);
+    r := pg_temp.w14_try_event('transferred', pg_temp.w14_tpayload(src0) || jsonb_build_object('transfer_source',
+           (select jsonb_agg(x order by x) from jsonb_object_keys(src0) x)), 'decision');
+    perform pg_temp.w14_check('SCH-S1-src-array', r like 'refused%', 'transfer_source an array of its six field names, not an object: ' || r);
   end if;
 
   -- S1: at most one ledger_handed_over event (on the installation's Mission). Outcomes collected as for S2.

@@ -67,7 +67,7 @@ Phase C4b (2026-10-12, PostgreSQL 16.15, never a result): `T-W07-F04`'s phase C4
 - Breaks in `devos`: none are run there.
 - The meaning of the result.
 
-## Revision under ledger rule 3 (2026-10-14; written by: test-designer, agent ID filled by the executor at filing)
+## Revision under ledger rule 3 (2026-10-14; written by: test-designer, agent `a033d27a36478231f`)
 - **Why.** Each node of part A's ladder is a work item planted as the owner in `devos_private.work_revision`, with its synthetic label in a column `title`. Appendix B 3.3 gives Work no `title`, and W-C02-04's record adds none (EV-C02-002 DM-02); on a build that follows B the planting fails and the file gives `could_not_check` (K05-pre, "fixtures could not be made"). Found by W-C02-08's build (the executor's account, 2026-10-14; the test designer read no file of that build).
 - **What changed.** The node planter `pg_temp.w07_n` in `job/w07_k05_many_paths.sql` gives the same label in `purpose`, Work's own text field (B 3.3); this file's synthetic-data line says so. No case ID, expected outcome, break or red list changed.
 - **Cases changed** (every part A case rests on the planted ladder): K05-graph, K05-rows, K05-found, K05-complete, K05-time, K05-paths, and K05-pre (its "fixtures could not be made" reason). Part B's cases (K05-B-*) are written through `devos_api` in `devos` and are unchanged.
