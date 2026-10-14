@@ -1,7 +1,7 @@
 -- Synthetic test data (plan Section 8 item 13): every graph below is made up inside this transaction: random uuids
 -- named by role in the graph (m0..m18, a1..b18, c1..c3, n1..n40), relation rows of type derived_from with scope
 -- 'synthetic.w07fixture'; synthetic exam runs (EvalRun rows) planted by the owner, one of them a relation end whose
--- results carry the marker 'w07_fixture_hidden_node SYNTHETIC W-C02-07', and work items titled 'w07_fixture_* SYNTHETIC
+-- results carry the marker 'w07_fixture_hidden_node SYNTHETIC W-C02-07', and work items whose purpose is 'w07_fixture_* SYNTHETIC
 -- W-C02-07'. No personal or business data; tokens are kept in PL/pgSQL variables only. Nothing is committed.
 --
 -- Claim: affected_entities returns each affected record once; the path explanation is separate and bounded; a result
@@ -252,7 +252,7 @@ declare r uuid;
 begin
   select ref into r from w07_nodes where g = p_g and name = p_name;
   if r is null then
-    r := (pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title',
+    r := (pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose',
             'w07_fixture_node_' || p_g || '_' || p_name || ' SYNTHETIC W-C02-07')) ->> 'work_id')::uuid;
     insert into w07_nodes values (p_g, p_name, r);
   end if;
@@ -474,17 +474,17 @@ begin
     -- owner as a relation end (DM-35 as narrowed by EV-C02-008 5.1 (a): the exam's own records, never the Work; a graph
     -- no function can make, 5.1 (b)). Its work_ref names a planted work item hw that is on no relation. (c2) the same
     -- shape with h2, an ordinary work item (the positive control).
-    hw := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_exam_task_of_h SYNTHETIC W-C02-07'));
+    hw := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_exam_task_of_h SYNTHETIC W-C02-07'));
     h := pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', hw->'work_id',
            'results', jsonb_build_object('w07_fixture', 'w07_fixture_hidden_node SYNTHETIC W-C02-07')));
     insert into w07_nodes values ('c', 'h', (h->>'id')::uuid);
     perform pg_temp.w07_edge('c', 'x', 'r'); perform pg_temp.w07_edge('c', 'h', 'x'); perform pg_temp.w07_edge('c', 'y', 'h');
-    h2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_visible_node SYNTHETIC W-C02-07'));
+    h2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_visible_node SYNTHETIC W-C02-07'));
     insert into w07_nodes values ('c2', 'h', (h2->>'work_id')::uuid);
     perform pg_temp.w07_edge('c2', 'x', 'r'); perform pg_temp.w07_edge('c2', 'h', 'x'); perform pg_temp.w07_edge('c2', 'y', 'h');
     -- (e) phase C4b, EV-C02-008 5.1's F04-e-exam: r <- x <- h3 <- y, h3 a work item a planted EvalRun names (DM-24): an
     -- exam task's Work, ordinary for every class (5.1 (a)).
-    h3 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_exam_task SYNTHETIC W-C02-07'));
+    h3 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_exam_task SYNTHETIC W-C02-07'));
     perform pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', h3->'work_id',
       'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07')));
     insert into w07_nodes values ('e', 'h', (h3->>'work_id')::uuid);
@@ -598,7 +598,7 @@ begin
   -- the recorded reason code of a root that names no record (F04-m1's call), in affected_entities and explain_paths.
   begin
     em3 := (pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', (pg_temp.w07_plant('devos_private.work_revision',
-             jsonb_build_object('title', 'w07_fixture_exam_task_m3 SYNTHETIC W-C02-07')))->'work_id',
+             jsonb_build_object('purpose', 'w07_fixture_exam_task_m3 SYNTHETIC W-C02-07')))->'work_id',
              'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07'))))->>'id';
   exception when others then
     em3 := null; det := sqlstate || ' ' || left(sqlerrm, 160);
@@ -627,14 +627,14 @@ begin
   -- F04-m4 (EV-C02-008 5.1's table, CHK-C02-032 condition 3; the work item named per token, CHK-C02-037 F4).
   begin
     e := pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', (pg_temp.w07_plant('devos_private.work_revision',
-           jsonb_build_object('title', 'w07_fixture_exam_task_m4 SYNTHETIC W-C02-07')))->'work_id',
+           jsonb_build_object('purpose', 'w07_fixture_exam_task_m4 SYNTHETIC W-C02-07')))->'work_id',
            'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07')));
     -- devos_calisma: ordinary work items (Rule O: any not under the installation's Mission).
-    wc := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_cal SYNTHETIC W-C02-07'));
-    wc2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_cal2 SYNTHETIC W-C02-07'));
+    wc := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal SYNTHETIC W-C02-07'));
+    wc2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal2 SYNTHETIC W-C02-07'));
     -- devos_sinav: exam tasks, work items an EvalRun names (Rule O's reading for devos_sinav, EV-C02-008 1.7.1).
-    ws := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_sin SYNTHETIC W-C02-07'));
-    ws2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_sin2 SYNTHETIC W-C02-07'));
+    ws := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_sin SYNTHETIC W-C02-07'));
+    ws2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_sin2 SYNTHETIC W-C02-07'));
     perform pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', ws->'work_id', 'results', '{"w07_fixture": "SYNTHETIC W-C02-07"}'::jsonb));
     perform pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', ws2->'work_id', 'results', '{"w07_fixture": "SYNTHETIC W-C02-07"}'::jsonb));
   exception when others then
@@ -653,9 +653,9 @@ begin
     else
       begin
         execute im into im;
-        wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_kur SYNTHETIC W-C02-07'));
+        wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur SYNTHETIC W-C02-07'));
         execute 'update devos_private.work set mission_ref = $1::uuid where id::text = $2' using im, wk->>'work_id';
-        wk2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title', 'w07_fixture_m4_kur2 SYNTHETIC W-C02-07'));
+        wk2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur2 SYNTHETIC W-C02-07'));
         execute 'update devos_private.work set mission_ref = $1::uuid where id::text = $2' using im, wk2->>'work_id';
         perform pg_temp.f04_m4('F04-m4-kur', 'devos_kurulum', tok_kur, e->>'id', gen_random_uuid()::text, wk->>'work_id', wk2->>'work_id');
       exception when others then

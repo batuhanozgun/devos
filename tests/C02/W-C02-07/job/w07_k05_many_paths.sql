@@ -248,7 +248,7 @@ declare r uuid;
 begin
   select ref into r from w07_nodes where g = p_g and name = p_name;
   if r is null then
-    r := (pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('title',
+    r := (pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose',
             'w07_fixture_node_' || p_g || '_' || p_name || ' SYNTHETIC W-C02-07')) ->> 'work_id')::uuid;
     insert into w07_nodes values (p_g, p_name, r);
   end if;
