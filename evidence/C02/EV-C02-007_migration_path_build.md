@@ -1637,3 +1637,423 @@ stands in place of the secret. The unbroken copy (copy 0) read the logs of every
 counts are current trees plain 1, history percent 1, issue #308 plain 1, logs plain 3; each broken copy's line is in the
 redacted log. The copies were run without the checker that L-315's resume plan step (2) put before them (the executor's
 decision, L-317): their outputs are judged by point 13's checker from the raw log, with the producer's open points 1 to 6.
+
+## 19. Results of W-C02-03's tests, with their evidence envelopes (2026-10-14; CHK-C02-065 C3 and C4)
+
+**What this section is.** CHK-C02-065 (point 13's verdict at `cfc67f7`, PASS-WITH-CONDITIONS) asks in C3 for one results section. For each of T-W03-05 to T-W03-10, T-W03-14, T-W03-DEC and T-W03-15 it gives the README's evidence envelope and the status of each part. It gives the README's hygiene checks for every raw file filed with sections 16 to 18 and with L-317 to L-323, and five statements; C4 asks for T-W03-08's break. Written at the branch head `22cff96` (`claude/c02-w03-accept`) by a fresh-context producer subagent of the same working session (declared, Ek A 5.3), from the repository's files and git only: it had no GitHub and no database access. A value that no file holds is written "not recorded", with the reason. Statuses: **pass**, **fail**, **could not check**, **not observed**. A "could not check" is never a pass, and it counts in the denominator (README, "Results"). A row that rests on a reading of a log that is not filed says so. This is the producer's account; point 13's checker judges it.
+
+Raw files are under `evidence/C02/raw/`, and every name below drops their common prefix `EV-C02-007_`: `T-W03-05_run38363215668_jobs.md` stands for `evidence/C02/raw/EV-C02-007_T-W03-05_run38363215668_jobs.md`. "The `devos-test` log" and "the `devos` log" are run 38363215668's redacted logs `T-W03-05_run38363215668_devos-test_job115182093582_redacted.log` and `T-W03-05_run38363215668_devos_job115182202196_redacted.log`. "The H2, H3, H4, H5 files" are `T-W03-14_item1_H2_push_run38584684190.md`, `T-W03-14_itemR_H3_check_run38585006585_push_run38585268400.md`, `T-W03-14_item2a_H4_check_run38585636705_push_run38585846651.md` and `T-W03-14_itemR_H5_check_run38586227086_push_run38586438580.md`. "The #336 file" is `T-W03-06_live_example_pr336_run38593814637.md`. Other short names used in the tables:
+- "the jobs file": `T-W03-05_run38363215668_jobs.md`;
+- "the attempts file": `T-W03-08_attempts_runs.md`;
+- "the (e) file": `T-W03-08_e_run38363215668_attempt2_jobs.md`;
+- "the #321 log": `T-W03-08_pr321_migration-checks_run38363816205.log`;
+- "the schedule file": `T-W03-09_schedule_runs_S1_S3_20261014.md`;
+- "the head raw file" (C1's): `T-W03-09_S2_check-devos-test_search_lines_and_S1_count.md`;
+- "the S2 `check-devos` file": `T-W03-09_S2_run38516392605_devos_job115696047003_search_lines.md` ("both S2 files" are these two);
+- "the copies' log": `T-W03-09_breaks_pr327_run38578385204_job115901434489_redacted.log`;
+- "the `devos` read file": `T-W03-10_devos_read_20261014T1512Z.md`.
+
+No raw file holds a run's URL, so `observations_ref` gives run and job IDs, which identify each run.
+
+### 19.1 Fields common to every result
+
+**`deployment_config_ref`.** The command-line tool is Supabase CLI v2.120.0, `CLI_SHA256` `7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e` (section 4; the same two lines are in `migrate.yml` at every commit below). The environments are `migrate-devos-test` and `migrate-devos`. The blobs, from `git rev-parse <commit>:<path>`:
+
+| Commit | What ran there | `migrate.yml` | `migration-checks.yml` |
+|---|---|---|---|
+| `1c0dbcf` (H1-prime's merge, PR #315), and `29d5def`, `1f6f9a2`, `9986709`, `44b37ab` (`main`'s first-parent commits after it, before H2) | run 38363215668 and its attempt 2 (T-W03-08 (e)); S1 to S3 (at `44b37ab`) | `de936c9e7270b94a05c4bbbc2a9355f2efb9d100` | `1ef13c629c9811e31308a2fe781af97a4828d14f` |
+| `eec732c` (H2), `4611fd5` (H3), `5f5b29b` (H4), `67e7b7c` (H5), `421f6e7`, `c9c46ac`, `cfc67f7`, `22cff96`; the pull-request heads `99cb280` (#329), `e318049` (#330), `4d26227` (#331), `09e065c` (#336) | H2 to H5's push runs; the checks of #329, #330, #331 and #336; T-W03-10's `devos` read; CHK-C02-065's runs | `e47f2327dd13c79b1bb6c907c6852eb6fb293ed4` | `1ef13c629c9811e31308a2fe781af97a4828d14f` |
+| `6683a8b` (the probe branch, one commit on `d33c8e9`) | T-W03-08 (a) to (d) | `58bd19a1194e0beadaeb84dc2f350056ae2361a5`; the probe workflow `78412f822ca96247af6f08edf76032d47589ef70` (16.2) | `942072629f232112c238e9077b7930add9df2be8` |
+| `d5c4dbf` (the break copies' branch, on `1f6f9a2`) | T-W03-09's break copies (PR #327) | `de936c9e7270b94a05c4bbbc2a9355f2efb9d100`; the copies' `w03-search-breaks.yml` `5ba13ec2e68ca731c666f251df2d9d4eabbeef72` | `1ef13c629c9811e31308a2fe781af97a4828d14f` |
+
+A pull request's check runs on GitHub's merge of its head into `main`. Two of those merge commits are in raw files: `6398a81d9a8a0ea5ffe7942a6745b0080c834d8e` for #321 (the #321 log) and `f8fb8fc8dbedddade26bc684b0701f9e22fd7182` for #327 (the copies' log). For #329, #330, #331 and #336 the merge commit is not recorded: their raw files give the check's run, job and lines, not the commit it checked out. Each of those heads had `main`'s head of its time merged in or as its base (L-318 to L-320; the #336 file), and each holds the blobs above.
+
+**`criterion_version`.** The last change of each test's files is from `git log -- <files>`; the commit that merged it into `main` is from `git log --first-parent`:
+
+| Test | Its files' last change | Merged into `main` by |
+|---|---|---|
+| README (the envelope's and the hygiene's rules) | `dd1b1da`, 2026-10-13T02:12:25Z | `1c0dbcf` (PR #315), 2026-10-13T07:31:37Z |
+| T-W03-05 | specification `dd1b1da`; the fixture, `w03_fixture_apply_read.sql` and `T-W03-05_devos_read.sql` `ac6e3cd` (01:37:10Z) | `1c0dbcf` |
+| T-W03-06 | specification `ac6e3cd`; `w03_drift_detects.sql` and B1 to B3 `ceb206b` (2026-10-12T18:19:29Z) | `1c0dbcf`; the SQL and breaks `4da5ef2` (PR #291), 2026-10-12T18:29:30Z |
+| T-W03-07 | specification `ac6e3cd`; `w03_drift_could_not_check.sql` and B4 `ceb206b`; part A's `test_decision_steps.py` `7d7730b` | `1c0dbcf`; `4da5ef2`; `9537194` (PR #298), 2026-10-12T19:52:02Z |
+| T-W03-08 | `dd1b1da`, which changed (e), the positive control's run, "Afterwards" and the observers; rows (a) to (d) are unchanged since `4da5ef2` (`git diff d33c8e9 1c0dbcf`) | `1c0dbcf`; rows (a) to (d) `4da5ef2` |
+| T-W03-09 | `dd1b1da` | `1c0dbcf` |
+| T-W03-10 | specification and `T-W03-10_devos_listing.sql` `ac6e3cd` | `1c0dbcf` |
+| T-W03-14 | specification `dd1b1da`; `test_workflow_order.py` `e90cd5c` | `1c0dbcf`; `458491f` (PR #310), 2026-10-13T01:51:24Z |
+| T-W03-DEC | specification and `test_decision_steps.py` `7d7730b` | `9537194` |
+| T-W03-15 | specification `dd1b1da`; `test_workflow_guards.py` `652488f`; the frozen copies `e90cd5c` | `1c0dbcf`; `458491f` |
+
+**Where it does not precede `target_commit`.** `1c0dbcf` merged the revised T-W03-05, T-W03-08, T-W03-10 and T-W03-14, and it is also the target commit of four results: T-W03-05, T-W03-08 (e) (the re-run ran `1c0dbcf`), T-W03-10's job listings (run 38363215668) and T-W03-14 P. For those four results, `criterion_version` equals `target_commit` and does not precede it. Two things do precede it. The test files' own commits `ac6e3cd` and `dd1b1da` are ancestors of `1c0dbcf` and of `1fe8365`, which CHK-C02-053 judged before the merge; they were committed five to six hours before the merge (01:37:10Z and 02:12:25Z). And the run was created at 07:31:41Z, after the merge at 07:31:37Z. So git order shows the tests' text before the results, but the tests were not merged into `main` before the commit judged. For T-W03-08 (a) to (d), the rows that judge them are on `main` from `4da5ef2`, an ancestor of `6683a8b`. `1c0dbcf` revised only other rows, and it is not an ancestor of `6683a8b`; it was merged (07:31:37Z) before the attempts (from 07:36:20Z). Every other result's criterion precedes its target commit in git.
+
+**`independence_level`, the common part.** Each test was written by a test designer (fresh-context subagent of the working session, declared, Ek A 5.3) before its results (README). The executor made the live actions (pushes, pull requests, dispatches, re-runs, merges, comments). It also read GitHub and read `devos` through the builder's read-only connection. Probers (fresh-context subagents, declared) analysed T-W03-05, T-W03-08 and T-W03-10. Producers wrote the probe workflow, the break copies and H2's workflow part. The assessor is **CHK-C02-065** (agent `a51f7b3a2ff28af42`, same session, fresh-context subagent, declared), working from the raw files. It re-ran the static programs, the SQL tests and their four breaks on its own PostgreSQL 16.15 cluster, and it recomputed PR #315's class-high set (its F8, F9, F12). Two raw files came after its reviewed head and are not yet assessed by it: C1's (`T-W03-09_S2_check-devos-test_search_lines_and_S1_count.md`) and C2's (the #336 file). Every role shares the model lineage (Claude Opus 5.5) and EV-C02-001; no second model family reviewed the item.
+
+### 19.2 T-W03-05 (point 5)
+
+- **claim** (its "ID and claim"): "A migration merged into `main` through the gate is applied by the CI job to `devos-test` and then to `devos`. In each project its objects exist with the file's definitions, its version and name are in the record of applied migrations, and `deployment_drift` reports "no difference" at that commit."
+- **target_commit**: `1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9`, which is also the run's `head_sha` (`T-W03-05_run38363215668_jobs.md`).
+- **deployment_config_ref**: `1c0dbcf`'s row of 19.1. **criterion_version**: `1c0dbcf`, equal to `target_commit` (19.1).
+- **inputs_ref**: the fixture `supabase/migrations/20261012231841_w03_fixture_apply.sql`; its reads `supabase/migrations/tests/w03_fixture_apply_read.sql` (`devos-test`) and `tests/C02/W-C02-03/T-W03-05_devos_read.sql` (`devos`); examples (a) to (d); the breaks' planted default `'w03_other'` and version `29990101000009`.
+- **observations_ref**: run 38363215668 (run number 15, attempt 1, event push). Job 115182093582 `devos-test (apply, compare, test)`, steps 13 "(6) apply to devos-test", 14 "(7) deployment_drift in devos-test, even after a failed apply" and 15 "(8) database tests, only after a clean comparison". Job 115182202196 `devos (compare, decide, apply)`, steps 12 (compare), 13 (decide), 14 (dry run), 15 (apply) and 16 (compare after). The `devos` read, one statement, at 2026-10-13T07:35:14Z.
+- **raw_evidence_ref**: `T-W03-05_run38363215668_jobs.md`; the `devos-test` and `devos` logs; `T-W03-05_devos_read_20261013T0735Z.json`; the prober's report `T-W03-05_T-W03-08_prober_report.md`.
+- **independence_level**: 19.1. The test designer also wrote the fixture and both reads. The run is GitHub's and the `devos` read the executor's. Analysed by prober `aec4059aa1d8434f3`, assessed by CHK-C02-065.
+- **evidence_layer**: "Structural, observed live on the platform: the CI's mechanism and the database catalog. The migration's meaning is not in scope."
+- **run_at**: 2026-10-13T07:31:41Z to 07:32:13Z (the run); 07:35:14Z (the `devos` read).
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| 1. The run record, in order | pass | `devos-test` steps 13 to 15 success, 07:31:53Z to 07:31:57Z; `credential present: yes` (`devos-test` log line 838); `decide: apply=yes …` (`devos` log line 1545); the dry run lists `20261012231841`; `devos`'s apply ran 07:32:10Z to 07:32:11Z, after the `devos-test` job completed at 07:32:00Z | jobs file; both logs |
+| 2. `devos-test`'s own read | pass | `W03_FIXTURE_APPLY_READ PASS (12/12 fields as the fixture file; positive control 2/2; breaks 2/2)` on PostgreSQL 17.6 (`devos-test` log line 1653) | `devos-test` log |
+| 3. `devos` through the read-only connection | pass | `differs` `[]`, `break_a_differs` `["table_columns"]`, `break_b_rows` 0, both controls true, server 17.6. The connection's project URL names `devos`'s ref. That the connection reaches only `devos` is EV-C00-002 item 8's documented claim | `T-W03-05_devos_read_20261013T0735Z.json`; jobs file, last section |
+| 4. `deployment_drift` after each apply | pass | `comparison in devos-test: result=no_difference call=ok` (line 1459); `comparison in devos: result=no_difference call=ok` (line 1938) | both logs |
+| 5. The versions in the run's report | pass | both `W03REPORT` lines list `applied_versions` `["20261012184638","20261012231841"]` (lines 2149 and 2040) | both logs |
+| What the fixture left | stated | schema `w03_fixture`, its table and its view, and the history row, in each project (16.1) | as above |
+
+### 19.3 T-W03-06 (point 6)
+
+- **claim**: "When a migration merged into `main` is not applied in a project, `deployment_drift`, run by the migration job and by the checks of the next pull request, names it. The work M16 stops does not go on until both projects are back to "no difference"."
+- **target_commit**:
+  - Form (i): `eec732c9c66c7007db08b4583f39f0b9927f8d5e` (H2), the `commit` of run 38584684190's report lines; its next pull request #329 (head `99cb280`) read that run's report at `main` `eec732c`.
+  - Form (ii): `5f5b29b01e988299986098cff02ce2b71be01178` (H4), run 38585846651; its next pull request #331 (head `4d26227`) checked with `main` at `5f5b29b` (L-320; the H5 file does not copy its report's commit).
+  - The live example: #336 (head `09e065c`) read run 38590055312's report at `c9c46ac13b5c9113957360ba871bcc22f7d78f98`.
+  - The positive control is at `1c0dbcf`; the repairs are at `4611fd5` (run 38585268400) and `67e7b7c` (run 38586438580).
+- **deployment_config_ref**: 19.1, the rows of these commits. **criterion_version**: `1c0dbcf` (specification) and `4da5ef2` (SQL, breaks). Both precede every target here except the positive control, where the specification's merge equals it.
+- **inputs_ref**: H2 `supabase/migrations/20261012232111_w03_fixture_fail.sql`; H3, its removal; H4 `20261012232112_w03_fixture_name_differs.sql`; H5 `20261012232113_w03_fixture_restore_name.sql`; #336's commit `09e065c` (one comment line appended to `20261012231841_w03_fixture_apply.sql`); part B's cases S01 to S10; B1 to B3.
+- **observations_ref**:
+  - H2: run 38584684190, jobs 115923392694 (`devos-test`) and 115923546783 (`devos`).
+  - #329's check: run 38585006585, job 115924514944.
+  - `devos` reads at 14:55:28Z and 15:04:25Z.
+  - H4: run 38585846651, jobs 115927517602 and 115927715935.
+  - #331's check: run 38586227086, job 115928845980.
+  - #336's check: run 38593814637, job 115955251370, step `pr_decide`.
+  - The repairs' runs: 38585268400 (jobs 115925457178, 115925627091) and 38586438580 (jobs 115929571144, 115929701148).
+  - Part B: run 38363215668, job 115182093582, step 15.
+- **raw_evidence_ref**: the H2, H3, H4, H5 files; the #336 file; for part B, the `devos-test` log.
+- **independence_level**: 19.1. Part B was also run by the build producer on its throwaway cluster (9.4) and by CHK-C02-065 on its own (F9). No prober's analysis of H2 to H5 or of #336 is filed, though the test's independence line names one. The #336 file is not yet assessed by CHK-C02-065 (19.1).
+- **evidence_layer**: "Structural: the database function's results and the CI's mechanism, observed live. Not semantic: whether a migration's effect is right is W-C02-07's and W-C02-08's concern."
+- **run_at**: 2026-10-14. H2's run was created 14:54:24Z and completed 14:55:04Z; #329's check ran 14:56:36Z to 14:56:57Z. H4's run ran 15:02:36Z to 15:03:16Z and #331's check 15:05:17Z to 15:05:46Z. The `devos` reads were at 14:55:28Z and 15:04:25Z, and #336's check ran 15:56:56Z to 15:57:23Z.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| (i) The run: named, and the work stopped | pass | `devos-test`'s apply failed (14:54:37Z to 14:54:38Z); its compare ran; its report gives `differences`, `on_main_not_applied 20261012232111`, and `go` `no`; its database tests were skipped. `devos`'s compare names the version, with `DECIDE_APPLY: no` and `DECIDE_REASON: devos-test go=no`; its dry run, apply and second comparison were skipped | H2 file |
+| (i) The next pull request's check | pass | "devos-test: differences (on_main_not_applied 20261012232111); devos: differences (on_main_not_applied 20261012232111)", then "pr check: pass: each changed migration is shown unapplied in both projects" | H3 file |
+| (i) `devos`'s history | pass | at 14:55:28Z: 20261012184638 and 20261012231841 only, and no schema `w03_fixture_fail` | H2 file |
+| (ii) One project and not the other | pass | `devos-test`: `name_differs 20261012231841`, 20261012232112 added to `applied_versions`, tests skipped, `go` `no`. `devos`: `on_main_not_applied 20261012232112`, `apply` `no`, reason `devos-test go=no`, dry run and apply skipped | H4 file |
+| (ii) The next pull request's check | pass | "devos-test: differences (name_differs 20261012231841); devos: differences (on_main_not_applied 20261012232112)" | H5 file |
+| (ii) `devos`'s history | pass | at 15:04:25Z: H4's version absent, and T-W03-05's row named `w03_fixture_apply` | H4 file |
+| (iii) | could not check (not reached in C02) | 19.11 item 2 | — |
+| (iv) | not observed | 19.11 item 2 | — |
+| A pull request that edits an applied migration is stopped (line 42's live example) | pass | #336: `CHANGED` the fixture file (`M`); `RUN_REPORT` at `c9c46ac` gives `no_difference` in both projects; then "pr check: fail: a merged migration is changed, removed or renamed and the records do not show it unapplied in both projects: supabase/migrations/20261012231841_w03_fixture_apply.sql"; the check concluded failure, and the pull request was closed unmerged | #336 file |
+| The other pull-request cases | pass (offline) | T-W03-DEC's `pr_decide` cases (19.9) | — |
+| Positive control | pass | T-W03-05's run (19.2). A pull request that only adds a file passed and stated the records' state (#331: "pr check: pass: no merged migration is changed, removed or renamed", with the state line above). After each repair, both projects gave `no_difference` (runs 38585268400 and 38586438580) | H3, H5 files |
+| Part B in the job (S01 to S10) | pass | `W03_DRIFT_DETECTS PASS (10/10)` on 17.6 (`devos-test` log line 1628). The later push runs' `dbtests` steps concluded success (H3, H5 files); their lines are not filed | `devos-test` log; H3, H5 files |
+| B1 to B3 on a throwaway database | pass | each red on exactly its named cases, on PostgreSQL 16.15 (9.4, the producer; CHK-C02-065 F9, the checker's own run). Supporting, not 17.6; the raw output is not filed | — |
+| The caller's breaks | pass (static) | the copies of `test_workflow_order.py` (19.8) and T-W03-DEC's P08 (19.9) | — |
+| The pull-request half through `devos_ci`'s direct call | could not check (not reached in this item) | 19.11 item 3; note N-275 | — |
+
+### 19.4 T-W03-07 (point 7)
+
+- **claim**: "Missing, unreadable or partial input to the comparison, in the function or at its caller, gives "could not check", never "no difference". That result is kept apart from the other two, and it blocks the `devos` apply and a pull request that changes a merged migration."
+- **target_commit**:
+  - Part A: the commits of 19.9's runs.
+  - Part B: `1c0dbcf`, which is also run 38363215668's `head_sha`.
+  - c2: the build's revisions `eddab74` (section 8) and `d4eb7c6` (10.6), offline.
+  - c3: each run's own commit, where a file records it (19.11 item 1).
+- **deployment_config_ref**: 19.1. For c3's runs before `1c0dbcf`, the commit of most runs is not recorded (19.11 item 1), so their blobs are not given.
+- **criterion_version**:
+  - The specification: `1c0dbcf`.
+  - Part B's SQL and B4: `4da5ef2`.
+  - Part A: `9537194`.
+  - c3's text: unchanged since `4da5ef2`. `git diff 4da5ef2 1c0dbcf` touches only part A's list, the examples, the independence line and "Depends on", and `4da5ef2` precedes the first run's commit `9798946` (2026-10-12T22:13:44Z).
+- **inputs_ref**: A: D13 to D24, E09 to E17, E22, E23, E25, E26, P02, P07 to P10, P15, P16; B: C01 to C13 and B4; c1; c2's sleeping test copy of the function; c3's runs (19.11 item 1).
+- **observations_ref**: A: 19.9; B: job 115182093582, step 15 (`devos-test` log line 1597); c2: sections 8 and 10.6; c3: 19.11 item 1's run IDs.
+- **raw_evidence_ref**: B: the `devos-test` log; c3: the files 19.11 item 1 names; c2: none filed (the producer's runs were kept outside the repository).
+- **independence_level**: 19.1. A producer makes c3's tally here, from the filed reports; the test names a prober for it.
+- **evidence_layer**: "Structural (function and caller behaviour on planted input; the CI's stop observed live)."
+- **run_at**:
+  - B: 2026-10-13T07:31:57Z.
+  - c2: 2026-10-12 (section 8's runs, 18:46Z to 19:05Z by this record's sources; 10.6's time not recorded).
+  - c3: the runs, 2026-10-12T22:13:47Z to 2026-10-14T15:07:13Z.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| A, the caller's half | pass (offline) | inside `W03_DECISION_TEST PASS (69/69)` (19.9) | H3, H5, #336 files |
+| B, the function's half, in the job | pass | `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)` on 17.6 (line 1597) | `devos-test` log |
+| B4 | pass | red on C02 to C13, with the other file 10/10 (9.4; CHK-C02-065 F9); on 16.15, supporting | — |
+| c1 | could not check | 19.11 item 1 | — |
+| c2 | pass (offline) | 19.11 item 1 | — |
+| c3 | tallied; 20 of 26 runs could not check (report not read) | 19.11 item 1 | the files there |
+
+### 19.5 T-W03-08 (point 8)
+
+- **claim**: "No run whose `GITHUB_REF` is not `main` receives either environment's secret, whatever event starts it. The run on `main` receives it."
+- **target_commit**: (a) to (d): `6683a8b2f0c4ffe54ceb008170d3df860d91452f`, the probe branch's head and each run's `head_sha`. (e): `1c0dbcf51ad4079f7f3a67ed7646bac42e6bd6d9`, the run re-run (attempt 2), with `main` at `44b37ab`. (f): no run.
+- **deployment_config_ref**: the probe workflow `78412f822ca96247af6f08edf76032d47589ef70` and `migrate.yml` on `main` at `1c0dbcf` `de936c9e7270b94a05c4bbbc2a9355f2efb9d100` (as the test names them; 16.2); the environments `migrate-devos-test` and `migrate-devos`.
+- **criterion_version**: rows (a) to (d) `4da5ef2`; the rest `1c0dbcf`, which for (e) equals the target commit (19.1).
+- **inputs_ref**: the probe workflow (producer `a3c1922e1393e3161`); pull request #321; fixture issue #322 and comment 6140709703; run 38363215668.
+- **observations_ref**:
+  - (a): run 38363721373 attempt 1, jobs 115183743279 and 115183743459.
+  - (b): run 38363816211, jobs 115184055768 and 115184055954; `migration-checks` run 38363816205, job 115184056302.
+  - (c): run 38363830176, jobs 115184106381 and 115184106632.
+  - (d): run 38363721373 attempt 2, jobs 115184174360 and 115184174710.
+  - (e): run 38363215668 attempt 2, jobs 115900506370 (`devos-test`) and 115900597246 (`devos`), with 115900508646 and 115900508853 skipped.
+  - (f): the run lists read at about 07:38:30Z.
+- **raw_evidence_ref**: `T-W03-08_attempts_runs.md`, `T-W03-08_pr321_migration-checks_run38363816205.log`, `T-W03-08_e_run38363215668_attempt2_jobs.md`, `T-W03-05_T-W03-08_prober_report.md`; for the positive control, the `devos-test` and `devos` logs.
+- **independence_level**: 19.1. The refusal is GitHub's. Prober `aec4059aa1d8434f3` analysed (a) to (d) and (f); no prober analysed (e).
+- **evidence_layer**: "Structural, observed live: the platform's refusal, as GitHub records it."
+- **run_at**: (a) 2026-10-13T07:36:25Z to 07:36:28Z; (b) 07:37:18Z to 07:37:21Z; (c) 07:37:26Z to 07:37:30Z; (d) 07:37:38Z to 07:37:51Z; (f) the comment at 07:38:00Z; (e) 2026-10-14T14:10:14Z to 14:10:35Z.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| (a) to (d): each job refused before any step | pass | all eight jobs were `waiting`, then `failure` within one to two seconds, with `runner_id` 0, no runner name and no `steps`; the logs asked for answer HTTP 404 | attempts file |
+| (a) to (d): GitHub's protection-rule message | could not check | the session's tools return no annotations, and the check runs' output is empty | attempts file |
+| (b): the run's `GITHUB_REF` is `refs/pull/321/merge` | could not check for the probe's own run | it is shown only for the sibling `migration-checks` run (`6398a81… -> pull/321/merge`; prober G6) | #321 log |
+| M22 on the probe file | pass | `workflow check: FAIL` naming the file: environments, events, branch filter, `sslmode`, root | #321 log |
+| (e): every secret step skipped after the head check | pass | `devos-test` steps 3 to 18 and `devos` steps 3 to 12 and 14 to 16 were skipped; `go`, `decide` and `report` ran | (e) file |
+| (e): the head check's "superseded" line, and no `***` in the logs' environment blocks | could not check | the logs were read at about 14:12Z and not saved (the (e) file's last paragraph). CHK-C02-065 F10 judged the step conclusions enough, reading `migrate.yml` at `1c0dbcf` | (e) file |
+| (f) | pass | the probe's run list held the three runs above only; repository-wide runs with event `issue_comment` or `issues`: 0 | attempts file |
+| (g) | documented, not independently tested | R6b 1 (read 2026-10-12) and M22's static check | — |
+| Positive control | pass | run 38363215668: `credential present: yes` in both jobs (line 838 of each log), and both applies gave `apply: exit 0` | both logs |
+| Break | could not check | 19.12 | — |
+
+### 19.6 T-W03-09 (point 9)
+
+- **claim**: "By the stated method, neither project's migration credential (plain or percent-encoded) is found in `devos`'s refs and history, in issue #6, or in `migrate.yml`'s logs, while the same method finds a planted synthetic value in each kind of place. That a session has no other route is documented, not independently tested. The ✘ is claimed only at the level of the layers named."
+- **target_commit**: S2's `head_sha` `44b37abfc9f629f2a7ac7854aa99ac6e93fdf2e3` (`T-W03-09_schedule_runs_S1_S3_20261014.md`).
+- **deployment_config_ref**: `44b37ab`'s row of 19.1: `migrate.yml` `de936c9…`, the same blob at every first-parent commit from `1c0dbcf` to `44b37ab`. The copies' workflow is `5ba13ec…` at `d5c4dbf`.
+- **criterion_version**: `1c0dbcf` (specification `dd1b1da`), an ancestor of `44b37ab`: precedes.
+- **inputs_ref**:
+  - The tag 20261013T0213Z (never the value).
+  - Branch `claude/w03-search-fixture`: p1 `8da6b69`; p2 added by `03d931b` and removed by `f9df1d0`.
+  - p3: comment 6136710058 on #308.
+  - H1-prime's merge `1c0dbcf`.
+  - S1: run 38455614435 and its `check-devos-test` job 115497430283. S2: run 38516392605 (15.13).
+- **observations_ref**: S2's jobs 115696046711 (`check-devos-test`) and 115696047003 (`check-devos`), step `search`: their count lines, per-run lines and paging lines; S1's printed line; the windows (below); the copies' run: PR #327, run 38578385204, job 115901434489.
+- **raw_evidence_ref**: `T-W03-09_S2_run38516392605_devos_job115696047003_search_lines.md`, `T-W03-09_S2_check-devos-test_search_lines_and_S1_count.md`, `T-W03-09_schedule_runs_S1_S3_20261014.md`, `T-W03-09_breaks_pr327_run38578385204_job115901434489_redacted.log`, `T-W03-09_break_copies_producer_report.md`.
+- **independence_level**: 19.1.
+  - The search is the job's own; the executor made the plants and saved the lines.
+  - No prober's analysis is filed, though the test names one.
+  - The copies' workflow is producer `a89df8f26f6dcc72c`'s. It ran without the checker that L-315 planned before it (L-317), and CHK-C02-065 F16 judged its outputs.
+  - C1's raw file is not yet assessed (19.1).
+- **evidence_layer**: "Structural, observed live. The search method's coverage is shown by the plants, not assumed."
+- **run_at**: S2 2026-10-14T05:23:41Z to 05:24:12Z (search lines at 05:24:05Z and 05:24:07Z); S1 2026-10-13T19:32:14Z to 19:32:43Z (its printed line at 19:32:40Z); the copies 2026-10-14T14:12:07Z to 14:13:11Z.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| Negative control: the credential, each place and form, both jobs | pass | in each job all ten `search credential` lines read 0, and the last line is "search: none found by that method in: …" | both S2 files |
+| Positive control: the plant counts | pass | in each job: history percent 1, current trees plain 1, issue #308 plain 1, logs plain 1, the other six 0. These are the table's numbers | both S2 files |
+| S1's printed line, exactly once | pass | one line at 2026-10-13T19:32:40Z, in the last 19 lines of job 115497430283's log. The count 1 is S2's own fixed-string count over S1's archive (`logs … plain: 1` over 20 runs, and S1 is the only run with step `plant`). No separate count was made over S1's log alone, and no copy of the line was made (FR-07 item 3) | head raw file, (c) |
+| S2's line for S1 is not "(0 top-level, 0 in folders)" | pass | `logs: run 38455614435: … (2 top-level, 2 in folders)` in both jobs; "20 of 20 earlier runs of migrate.yml read" in both | head raw file, (a) and (b) |
+| The windows | pass for the two parts git shows; the third rests on the record | (1) `migrate.yml`'s blob is `de936c9…` at `1c0dbcf` and at each first-parent commit after it up to `44b37ab` (computed here), so neither `W03_PLANT_B64` nor step `plant` changed. (2) `main` has no first-parent commit between `44b37ab` (2026-10-13T08:43:46Z) and `eec732c` (2026-10-14T14:54:20Z), so nothing merged between S2's creation and the end of its search. (3) That no run was re-run in the window is the executor's record (18.1; T-W03-08 (e) came at 14:10Z on 2026-10-14), not a filed listing of attempts | schedule file; git |
+| P7 | pass for S2 | both of S2's report lines give `credential_present` `yes`; S1's presence line is not filed | both S2 files |
+| The break copies | pass | copy 0's body hash equals `main`'s (`2ef72520eefd`), and its counts are trees 1, history percent 1, #308 1, logs 3 (S1 to S3 printed). Copies 1 to 4 each give "could not check" on their own place (log lines 425 to 426, 474 to 475, 523 to 524, 550) | copies' log |
+| The documentation, the layers and D-003's residual | stated | 19.11 item 4 | — |
+
+### 19.7 T-W03-10 (point 10)
+
+- **claim**: "In each project, every schema, table or view, function and role outside Supabase's own is listed, and each is accounted for: made by a named migration, or there before C02 with a named reason. None is a probe schema, a probe role class or a table of token hashes. The probe tokens were never issued, according to DevOS's records."
+- **target_commit**: the job listings of run 38363215668 at `1c0dbcf` (its `head_sha`); the `devos` read with `main` at `421f6e7` (the prober's commit).
+- **deployment_config_ref**: the rows of `1c0dbcf` and `421f6e7` in 19.1. The listing step's text and its three lists are the same at `d33c8e9` and at `421f6e7`, in both jobs (prober, part 1).
+- **criterion_version**: `1c0dbcf`. It equals the job listings' target commit (19.1) and precedes `421f6e7`.
+- **inputs_ref**: `T-W03-10_devos_listing.sql`; the text of step `listing`; the planted (d) and (e) on the throwaway database; `plan/key_inventory.md` rows 16 and 17; PC-21 item 1.
+- **observations_ref**: step "(4) listing of point 10" of job 115182093582 (07:31:52Z) and job 115182202196 (07:32:09Z); the `devos` read at 2026-10-14T15:12:08Z; the prober's runs on its throwaway database.
+- **raw_evidence_ref**: `T-W03-10_prober_report.md`, `T-W03-10_prober_raw/`, `T-W03-10_devos_read_20261014T1512Z.md`, the `devos-test` and `devos` logs.
+- **independence_level**: 19.1. A prober (fresh-context, declared; its agent ID is not in its report or in L-323) analysed it.
+- **evidence_layer**: "Structural (the catalog). The tokens' absence is a records claim, labelled as such."
+- **run_at**: 2026-10-13T07:31:52Z and 07:32:09Z (the job listings); 2026-10-14T15:12:08Z (the `devos` read); 15:17:25Z to 15:22:19Z (the throwaway cluster).
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| (a) `devos`: the job listing (4 objects) and the connection read (7), each object accounted | pass | every object made by 20261012184638 or 20261012231841; none unaccounted; no name of the probe's kind | prober report, part 3; `devos` read file |
+| (b) `devos-test`: the job listing (4), accounted | pass | the same four; the listing came after 20261012184638 and before 20261012231841's apply | prober report, part 3 |
+| (b) `devos-test` after T-W03-05's fixture, and at H2 to H5 | could not check | counts only: `listing=7 objects` (`devos-test` log line 1458), and `listing_count` "7" in the H2 to H5 report lines | prober report, part 5; H2 to H5 files |
+| (c) The tokens | records claim, labelled | rows 16 and 17 "never created"; PC-21 item 1 | prober report, part 4 |
+| Positive control (i) | pass | without the exclusion list, 121 objects with `auth.users` among them, in both jobs | both logs |
+| Positive control (ii): (d) and (e) | pass (16.15, supporting) | shown with the exclusion list applied (state S1, five objects) | prober report, part 2 |
+| Breaks: the lists widened, a query that lists nothing, an account step that accepts any object | pass | each red (criterion (ii) red; the account break FAIL) | prober report, parts 2 and 3 |
+| The derived file gives the step's list | pass | the same list in states S0 to S4 | prober report, part 2 |
+
+### 19.8 T-W03-14 (point 14's observation)
+
+- **claim**: "A migration reaches `devos` only after the same run's `devos-test` apply, comparison and tests succeeded, and only through a merge into `main` through the gate. On a failure, a difference or a "could not check" in `devos-test`, `devos` is not applied in that run."
+- **target_commit**: item 1 `eec732c` (run 38584684190); 2a `5f5b29b` (run 38585846651); R `4611fd5` (run 38585268400) and `67e7b7c` (run 38586438580); P `1c0dbcf` (run 38363215668). The static test: CHK-C02-065's run at `cfc67f7` (F8) and the checks of #329, #331 and #336.
+- **deployment_config_ref**: 19.1. **criterion_version**: `1c0dbcf` (the specification) and `458491f` (the program). They precede every target but P, where the specification's merge equals it.
+- **inputs_ref**: H2 to H5 (19.3); items 1, 2a, 2b, P and R; the seventeen copies of `test_workflow_order.py`.
+- **observations_ref**: as 19.3; for P, the step times (19.2) and the gate's lines and the verdict file (19.11 item 5).
+- **raw_evidence_ref**: as 19.3; for P, `T-W03-05_run38363215668_jobs.md`.
+- **independence_level**: 19.1. No prober analysed H2 to H5.
+- **evidence_layer**: "Structural, observed live, with a static check of the workflow's text. The static check shows the conditions are written. Only the live runs show they act."
+- **run_at**: as 19.3; P 2026-10-13T07:31:37Z to 07:32:13Z.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| 1 | pass | as T-W03-06 form (i). The fixture fails in both projects (P11), so the stop rests on the run record, not on `devos` lacking the version | H2 file |
+| 1, what the failed file left | pass | in H3's run, `devos-test`'s comparison names no row of 20261012232111, and its listing counts 7, as before H2. In `devos`, no schema and no row (14:55:28Z). The listing's object lines are not filed; this rests on the count | H3, H2 files |
+| 2a | pass | as T-W03-06 form (ii) | H4 file |
+| 2b | not observed | not made (L-321), as T-W03-14 line 25 allows. T-W03-07 c2 and T-W03-DEC D14 and D15 carry the class | — |
+| P | pass | the `devos-test` job ended at 07:32:00Z; the `devos` job started at 07:32:03Z and its apply at 07:32:10Z. The gate's line: 19.11 item 5 | jobs file |
+| R | pass | #329's check passed under M16, naming 20261012232111 in both projects. Runs 38585268400 and 38586438580 gave `no_difference` in both, with `devos-test`'s tests success. `devos` applied H4, then H5 (`only migrations on main, not applied: 2`). `devos`'s history holds the four rows, with T-W03-05's name restored (15:08:27Z). H2 left nothing; H4 and H5 left a row each | H3, H5 files |
+| The static test, its seventeen copies | pass | CHK-C02-065 F8, its own run; `W03_ORDER_TEST PASS` in the checks of #329, #331 and #336 | H3, H5, #336 files |
+
+### 19.9 T-W03-DEC (the deciding steps)
+
+- **claim** (its "ID and claim", verbatim): "T-W03-DEC. The code the workflows run decides the `devos` apply, and a pull request's check, as M07, M16 and section 5's first-migration exception state. `devos` is applied only when `devos-test`'s `go` is `yes` and either (a) `deployment_drift` in `devos` gave a complete, well-formed result listing only migrations "on `main`, not applied", or (b) the three reads, complete and in one snapshot, show the function absent, the history table absent (with no row count given) or present and holding no row, and nothing in the listing outside Supabase's own (the never-pushed state, or the empty table a failed first apply leaves, P13). Reads whose fields disagree (the table reported absent with a row count given) are "could not check". A pull request that changes, removes or renames a merged migration file is red unless the run report shows that version unapplied in both projects. Everything else is "skip" or "pass", with the reason or the state written."
+- **target_commit**: CHK-C02-065's runs at `cfc67f7` (F8); the checks of #329 (head `99cb280`), #331 (`4d26227`) and #336 (`09e065c`). Each check ran on GitHub's merge of its head, and that merge commit is not recorded (19.1).
+- **deployment_config_ref**: `migrate.yml` `e47f2327…` and `migration-checks.yml` `1ef13c62…` at each of those commits. **criterion_version**: `9537194`, which precedes them.
+- **inputs_ref**: the 69 cases of `test_decision_steps.py` at `9537194`; the self-check's seven programs.
+- **observations_ref**: run 38585006585 (job 115924514944), run 38586227086 (job 115928845980) and run 38593814637 (job 115955251370), each in step `w03_tests`; CHK-C02-065 F8.
+- **raw_evidence_ref**: the H3, H5 and #336 files, which hold the PASS line and "W-C02-03 tests: decision steps exit 0, workflow order exit 0". The harness's full output is not filed.
+- **independence_level**: 19.1. Run by GitHub's checks and by CHK-C02-065. The recorded break copies are the build producer's (9.4; 10.1).
+- **evidence_layer**: "Structural, a check of the deciding code's behaviour on planted input. It does not show that the live steps feed it true inputs. That is T-W03-06, T-W03-07 and T-W03-14. It also does not show that the read step's three reads are really one snapshot. That is part D below."
+- **run_at**: 2026-10-14T14:56:43Z, 15:05:25Z and about 15:57Z (the three checks). CHK-C02-065's run time is not recorded: the verdict gives its date only.
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| The cases | pass | `W03_DECISION_TEST PASS (69/69)` in the three checks and in CHK-C02-065's run | H3, H5, #336 files |
+| `--self-check` | pass | `W03_DECISION_SELF_CHECK PASS (7/7)` (CHK-C02-065 F8) | — |
+| Break copies (i), recorded | pass | the build producer's copies, each red on its named cases: the old rule (any history table refused), the row check, a null count taken as empty, the listing check, the "taken" line (9.4); the disagreement rule removed, and a copy refusing only a count above 0 (10.1, red on E25 and E26, and on E26) | — |
+| Break copies (i), the others the specification requires | could not check (not recorded) | copies of the build's own code for D06, E04's table check, E06b, D02, D19, a `pr_decide` passing on "could not check" (P07 to P10, P15) and one reading one project (P08). Not found in this record or in the verdicts read: `grep` for `D06` and `E06b` finds them only in CHK-C02-017, which judged the test before the build | — |
+| Part D, one snapshot | pass on PostgreSQL 16.15 (supporting); could not check on 17 | section 5's R6 row, and 9.4's probes D1 to D4 | — |
+
+### 19.10 T-W03-15 (N-265's guards)
+
+- **claim** (its "ID and claim", verbatim): "G1: no step's `run:` value in any workflow holds an expression opener, so the body every offline check runs is the body GitHub runs. G2: `pr_inputs`, as the head writes it, gives `pr_decide` inputs from which a pull request that changes, removes or renames a merged migration applied in a project fails (including names git quotes), and a failed diff fails as "could not check". An addition, and a removal of a version unapplied in both, pass with the records' state read from the jobs that ran, whether GitHub's job list holds skipped jobs or not. A ran job whose log is missing leaves its project "could not check" and the other read."
+- **target_commit**, **deployment_config_ref**, **observations_ref**, **raw_evidence_ref**, **run_at**: as 19.9.
+- **criterion_version**: `1c0dbcf` (the specification) and `458491f` (the program and the frozen copies). Both precede.
+- **inputs_ref**: G1's planted copies and its control; G2's 21 cases and its six breaks; the frozen copies `breaks/G2_pr_inputs_d33c8e9.py` and `breaks/G2_pr_decide_d33c8e9.py`.
+- **independence_level**: 19.1.
+- **evidence_layer**: G1 "structural (the files' text as parsed)"; G2 "behavioural, offline".
+
+| Part | Status | Reason | Raw |
+|---|---|---|---|
+| G1 | pass | `W03_RUN_EXPR_TEST PASS (57 values in 2 files …)` in CHK-C02-065's run (F8). Its line is not among the lines filed from the three checks. Those files do hold "workflow order exit 0", which carries the worse of T-W03-14's and T-W03-15's results (README line 35); that G1 passed there is an inference from it | H3, H5, #336 files |
+| G2 | pass | `W03_PR_INPUTS_TEST PASS (21/21 cases; breaks: 6 shown, 0 not shown, of 6)` | H3, H5, #336 files |
+| `--self-check` | pass | `W03_GUARDS_SELF_CHECK PASS (20/20)` (CHK-C02-065 F8) | — |
+
+### 19.11 The five statements of CHK-C02-065 C3 (B)
+
+**1. T-W03-07 part C.**
+- **c1: could not check.** T-W03-14 item 2b was not made (L-321: "item 2b is not made ("2b not observed")"). So no run showed `devos-test`'s comparison as "could not check", with `go` not `yes` and `devos`'s apply skipped for that reason. T-W03-07 allows this ("c1 if no "could not check" variant was made"). The class is shown offline only: T-W03-DEC (D13 to D24, E09 to E17) and the SQL tests (C01 to C13).
+- **c2: pass, offline.** Source: the build producer's runs of the `compare` step's own body, read from `migrate.yml`, against a throwaway PostgreSQL 16.15 cluster.
+  - At the build (section 8, `eddab74`, 2026-10-12): "a sleeping copy with a 3-second timeout, `call=timeout`".
+  - At the revision after the four lenses (10.6): "`W03_TIMEOUT=0.01`" gave "call=timeout".
+  - The interface: `compare` takes its connection parts from its `env`, with nothing hard-coded (section 2).
+  - The `compare` body hash is `1260def3e0a4` at `d4eb7c6` (the commit of section 10's revision; section 11's sources start from it) and at every commit through H5's `67e7b7c`. This was computed here with PyYAML over `git show`.
+  - The raw output is not filed. The runs used the producer's own cluster, not the W-C02-07 break harness that T-W03-07 names, and PostgreSQL 16.15 rather than 17.6: supporting evidence.
+- **c3: the tally.**
+  - **The runs.** The item's runs of `migrate.yml` from its first (38315433827) up to H5's push run 38586438580 number 26: the 20 earlier runs that S2's search read ("20 of 20"; head raw file (a)), S2 itself, S3, and the push runs of H2 to H5. `main` has no other first-parent commit after `44b37ab` up to `67e7b7c`. The scheduled listing read at about 14:40Z gives four scheduled runs. Whether a scheduled run was created between that listing and H5's push run (created 15:06:39Z) is not in any file.
+  - **The method.** A run's result counts only where its report is in a raw file: its `W03REPORT` line, or the `RUN_REPORT` that a pull request's check read from it. `result` is the report's final comparison.
+
+| Run | Commit | `devos-test` | `devos` | Raw |
+|---|---|---|---|---|
+| 38363215668 (H1-prime) | `1c0dbcf` | no_difference | no_difference (before its apply: differences, `on_main_not_applied 20261012231841`) | both logs (lines 2149, 2040); #321 log line 946 (`RUN_REPORT`) |
+| 38516392605 (S2) | `44b37ab` | no_difference | no_difference | head raw file (a), line 56; S2 `check-devos` file, line 42 |
+| 38584684190 (H2) | `eec732c` | differences | differences | H2 file; H3 file (`RUN_REPORT`) |
+| 38585268400 (H3) | `4611fd5` | no_difference | no_difference | H3 file |
+| 38585846651 (H4) | `5f5b29b` | differences | differences | H4 file |
+| 38586438580 (H5) | `67e7b7c` | no_difference | no_difference (before its apply: differences) | H5 file |
+
+  - **Could not check (report not read): 20 runs.** No raw file holds their reports.
+    - For six of them a record states a result, read from a log that is not filed. These are readings, not reports:
+      - 38315433827: "could not check" in both (section 13; L-303).
+      - 38316669047: no difference in both (L-303).
+      - 38319371450: no difference in both (14.1, through PR #309's check run 38325999697; L-304).
+      - 38328877217: no difference in both (L-305, through PR #310's check run 38331945277).
+      - 38332726619: no difference in both (14.2, through run 38332761132; CHK-C02-052).
+      - 38360556244: no difference in both (L-312).
+    - Fourteen have no stated result: 38332873603, 38334121865, 38334216555 (L-308: "succeeded"), 38338397428, 38343064563, 38356419903, 38356623539, 38363081389, 38367427286 and 38367799155 (L-315: "ended success with nothing pending"), 38371046806, 38371262081, 38455614435 (S1), 38563282231 (S3).
+    - Attempt 2 of run 38363215668 (T-W03-08 (e)) ran its report step, and its line is not filed either. It is an attempt of a run counted above, not a 27th run.
+
+| Project | no_difference | differences | could_not_check (report not read) |
+|---|---|---|---|
+| `devos-test` | 4: 38363215668, 38516392605, 38585268400, 38586438580 | 2: 38584684190, 38585846651 | 20: the runs above |
+| `devos` | 4: the same | 2: the same | 20: the same |
+
+  - **The count.** The denominator is 26 in each project, and no could_not_check is counted as clean. If the six readings were counted, each project would have 9 no_difference, 2 differences, 1 could_not_check (38315433827) and 14 runs not read.
+
+**2. T-W03-06 forms (iii) and (iv).**
+- **Form (iii): not reached in C02.** At this head `supabase/` holds only `migrations/` (`git ls-tree`), and `expected.functions` is `[]` (section 3). Note N-230 on `plan/work/C03.md` names the stage: the change that adds the first file under `supabase/functions/` adds the deploy step, its credential, the write of `devos_private.function_deployment` and this form's test. "If this stage adds none, its close carries this note to the next stage's file." Until then, function versions are compared only in the database: part B's S06 to S09 (`W03_DRIFT_DETECTS PASS (10/10)` in the job, 19.3), which B2 turns red.
+- **Form (iv): not observed.** One run comes near it and is recorded here, not counted as the form. Run 38315433827 stopped before its apply, by design: no pooler host was recorded, so no step connected (section 13). It left the first migration unapplied in both projects. But nothing could compare there (no connection, and `deployment_drift` did not yet exist), each report said "could not check", and the next run applied the migration. No other run in c3's list is recorded as cancelled, failed before its apply, or meeting a paused project.
+
+**3. The pull-request half through `devos_ci`'s direct call.**
+- Until `devos_ci`'s key exists, the checks read the migration job's run report (EV-C02-001 M15; T-W03-06, "The pull-request checks' direct call").
+- That period is shown live by forms (i) and (ii)'s next pull requests' checks (#329, #331) and by the live example #336. It is shown offline by T-W03-DEC's `pr_decide` cases.
+- The direct call is not shown in this item: a planted difference named and the merge stopped, and a "could not check" from the call blocking the merge. README line 90: "It starts at W-C02-12 or the item that stores the key (M15). `test_decision_steps.py`'s pull-request cases cover the run-report period only, and the direct call needs its own cases then."
+- W-C02-12's point 4 names `deployment_drift` only as an example ("for example `deployment_drift` from a pull request's checks, B:390").
+- Note **N-275** on `plan/work/C02.md` binds the part. Its item is W-C02-12, or the item that stores the `devos_ci` key ("Batu's steps" row 4) and changes the checks to call through it. Owner: the executor. Deadline: that item's acceptance.
+
+**4. T-W03-09's claim, at its level.**
+- **What S2 found.** By the stated method, in both jobs, neither project's credential, plain or percent-encoded, was found in `devos`'s refs and history, in issue #6, in the fixture issue #308, or in the logs of `migrate.yml`'s 20 earlier runs. The same method found the plant where it was planted (19.6).
+- **The documentation, documented and not independently tested.** That a session has no other route rests on R5 G1 and G2, both read 2026-10-12, 12:58Z to 13:08Z (`evidence/C02/raw/W-C02-01_source_map_R5_platform_documentation.md`):
+  - G1, "Any user with write access to your repository has read access to all secrets configured in your repository" (https://docs.github.com/en/actions/reference/security/secure-use). This is why no repository secret is used.
+  - G2, "Secrets stored in an environment are only available to workflow jobs that reference the environment" (https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).
+- **The layers, as EV-C02-001 line 136 names them.** What runs with the credential changes only through a merge into `main` of class-high paths (the merge gate's class-high verdict on `.github/workflows/**` and `supabase/migrations/**`), and the guard denies sessions a push to `main`. The rule of `main` counts only after N-175 (plan 6.7).
+- **D-003's residual** (EV-C02-001 line 472): "a session that defeats its own guard and can push to `main` could change what the job runs".
+- **The ✘ is claimed at that level only.**
+- **P8's result** is not recorded, though EV-C02-001 line 472 also names it: section 5 lists it as a reading still to make. T-W03-08 (a) shows only that the session's credential pushed a workflow file to a `claude/` branch.
+
+**5. T-W03-14 P: the merge gate's class-high line for PR #315.**
+- **The log line was not found.** The guard's decision log (`/tmp/devos-guard/session_01XyxvJd3RayQk4HCrjurbVH.jsonl`, outside the repository) holds no record of the merge gate's output for PR #315. It was searched with `grep -n "class high" … | grep "315"` and with `grep -n "class high"` alone. The log records tool calls' inputs, not a command's output. Its "class high" matches are other calls' inputs: CHK-C02-065's checker at 15:43Z on 2026-10-14 (records #28118 and #28119), and earlier ones. The one record that also matches "315" is this producer's own `grep`.
+- **The reproduction instead.**
+  - `git diff --name-only c09797f fc0f40c` lists 16 files.
+  - The gate's own functions, run over the merge base `c09797f` (`git merge-base 3bd19a7 fc0f40c`) and the head `fc0f40c`, give `class high: .github/workflows/migrate.yml, supabase/migrations/20261012231841_w03_fixture_apply.sql, supabase/migrations/tests/w03_fixture_apply_read.sql`. They find it covered by `evidence/C02/checks/CHK-C02-053.md` (reviewed_head `1fe8365053739b18eed94dc879d3c4289a0e0042`).
+  - Both `tools/merge_gate.py` as at `3bd19a7` (the merge's first parent) and as at `22cff96` give the same result.
+- **The order.**
+  - The verdict was committed at `2971988` (2026-10-13T02:42:54Z), an ancestor of the head `fc0f40c` (07:30:40Z).
+  - Then the merge commit `1c0dbcf` (07:31:37Z), and push run 38363215668, created at 07:31:41Z.
+  - Then `devos-test`'s apply at 07:31:53Z, and `devos`'s at 07:32:10Z.
+- CHK-C02-065 F12 reproduced the same set.
+
+### 19.12 T-W03-08's break (CHK-C02-065 C4, branch (b))
+
+D-038 is unanswered: `plan/decisions/D-038.md` at `22cff96` reads `status: open`. So branch (b) applies.
+- **The break: could not check.** The synthetic environment `w03-fixture-unprotected` was not created, so the probe step was never pointed at an environment without a branch rule.
+- **T-W03-08's own sentence** (line 46): "If it is not made, the break is "could not check", and the record says that the test's sensitivity rests on the positive control and on the documentation (R5 G2, G3)."
+  - The positive control is run 38363215668: "credential present: yes" in both jobs (line 838 of each log).
+  - The documentation is R5 G2 (quoted in 19.11 item 4) and R5 G3: "The deployment branch or tag rule is matched against the `GITHUB_REF` of the workflow run" (same reference page, read 2026-10-12). It is labelled documented, not independently tested.
+- **A later answer (a).** If D-038 is later answered (a), the break is made then. Its result is added to W-C02-03's Record: the run and job IDs, the probe step's line from `w03-fixture-unprotected`, and the environment's deletion. A line other than "credential present: yes", or no step run, is a result other than "yes", and it reopens point 8.
+- **A limit that stays** (CHK-C02-065 F4): the refusal's cause is shown by the jobs' `waiting` state and empty runner, not by the protection message, which was not read.
+
+### 19.13 Raw output hygiene, checks (a) and (b): method and counts only
+
+**The files.** 175 files, every raw file filed with sections 16 to 18 and with L-317 to L-323, and the two filed at the head:
+- With section 16 (L-313, `8759299`), 7 files: `T-W03-05_T-W03-08_prober_report.md`, `T-W03-05_devos_read_20261013T0735Z.json`, the `devos-test` and `devos` logs, `T-W03-05_run38363215668_jobs.md`, `T-W03-08_attempts_runs.md`, `T-W03-08_pr321_migration-checks_run38363816205.log`.
+- With L-315 (`258411b`; the producers' reports on the builds of sections 17 and 18), 2 files: `H2_producer_report.md`, `T-W03-09_break_copies_producer_report.md`.
+- With section 18 (L-317, `19e7bb5`), 4 files: `T-W03-09_schedule_runs_S1_S3_20261014.md`, `T-W03-09_S2_run38516392605_devos_job115696047003_search_lines.md`, `T-W03-08_e_run38363215668_attempt2_jobs.md`, `T-W03-09_breaks_pr327_run38578385204_job115901434489_redacted.log`.
+- With L-318 to L-321, 4 files: the H2, H3, H4 and H5 files.
+- With L-323 (`72413c5`), 156 files: `T-W03-10_prober_report.md`, `T-W03-10_devos_read_20261014T1512Z.md`, and the 154 files under `T-W03-10_prober_raw/`.
+- At the head (`22cff96`; CHK-C02-065 C1 and C2), 2 files: `T-W03-09_S2_check-devos-test_search_lines_and_S1_count.md` and the #336 file.
+
+**(a) The pattern search.**
+- **Method.** A program of the producer's, kept in its scratch directory outside the repository, run with `python3 -I` over the 175 files. It counts, per file:
+  - connection-string schemes (`postgres`, `postgresql`, `mysql`, `mongodb`, `redis`, `amqp`, each followed by `://`);
+  - URLs that hold a user and a password (`scheme://user:password@`);
+  - password assignments (`PGPASSWORD`, `SUPABASE_DB_PASSWORD`, `password` or `passwd`, then `:` or `=`) whose value is not masked (`***`), not a reference (`$…`, `{…`) and not empty;
+  - hex strings of 32 or more digits, and base64-like strings of 40 or more characters.
+
+  A long string is accounted when it occurs verbatim in a tracked file at the head outside `evidence/C02/raw/` (workflow code, records, pins), or, at 40 hex digits, names an object in the clone. Every other match was read by its file and line and classed by hand. No matched value is printed or copied here.
+- **Connection-string schemes: 4.** Each is the workflow's URL template `postgresql://%s@%s:%s/%s…` in a script echoed by the `devos-test` and `devos` logs (2 each). The user and host are filled at run time, and the template holds no password.
+- **URLs holding a password: 0.**
+- **Password assignments: 26 matches.** 17 are masked or references. The other 9 were read by line, and none is a value: shell expansions `${SUPABASE_DB_PASSWORD:-}` and a comment line, 4 in each of the two T-W03-05 logs; and one line of the copies' log saying that the plant stands in for the secret, which holds neither.
+- **Long strings: 195 hex and 705 base64-like.** 35 were not accounted automatically and were read by line:
+  - 4 runner `Commit:` lines (the runner's source commit, printed at set-up);
+  - 12 git refspecs and merge commits (GitHub's merge commits of #321 and #327, and run 38363215668's own commit in a fetch refspec);
+  - 18 SHA-256 values of files and step bodies, named as such in their lines;
+  - 1 API path.
+
+  None is a key, token or password, or anything derived from one.
+- **The plant (tag 20261013T0213Z).** The counting script (`count_files.py`) over the 175 files: plain 0, percent 0, base64 0.
+- **The token formats.** `scan_formats.py` with `tests/C02/W-C02-07/shared/scan_patterns.json` (its four patterns `env_token_exact`, `claim_token_exact`, `env_token_find` and `claim_token_find`): 0 matches in 175 files.
+
+**(b) The credential value scan.** `python3 -I tools/credential_value_scan.py --dir evidence/C02/raw`, run from the clone's root at `22cff96` before this section was written:
+- exit 0, `CREDENTIAL_VALUE_SCAN DONE`;
+- 208 files read: the whole directory, the 175 files included;
+- 2 values searched; each held by 0 files.
+
+Its labels and lengths are not copied. The migration passwords are never in a session's reach, so for them the guarantee is (a), plus the job's own masking and printing rules (README).
+
+### 19.14 What this section does not show
+
+- It is not a verdict, and it changes no test.
+- Several things rest on records, not raw output: the readings that stand for unfiled reports (19.11 item 1), the head check's lines in (e), the re-run window of T-W03-09, the SQL breaks' and c2's offline runs, and the T-W03-DEC break copies that were made.
+- Some things are not recorded at all: the merge commits of four pull-request checks, the run URLs, P8's result, part of T-W03-DEC's required break copies, and the T-W03-10 prober's agent ID.
+- Two raw files, C1's and C2's, wait for an assessor.

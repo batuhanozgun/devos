@@ -2,11 +2,11 @@
 
 **Senden beklenen:** Şu kararlar senin: `D-038` (T-W03-08'in kırma denemesi ve iki test dalının silinmesi, tek seferde: (a) GitHub'da sahte bir ortam açarsın, ben denemeyi yaparım, sonra ortamı ve üç dalı silersin (önerim); (b) hiçbiri: kırma denemesi 'kontrol edilemedi' kalır, dallar durur). Cevabını [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'suna yaz.
 
-**Son güncelleme:** 14 Ekim 2026, 18:32 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 14 Ekim 2026, 19:27 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C02 (Veri modeli, kural kapısı ve kimlik zinciri).
 
-**Sıradaki işler:** `W-C02-03`, `W-C02-20` sürüyor. Ayrıntı: `plan/ledger.md`, bölüm 2.
+**Sıradaki işler:** `W-C02-20` sürüyor; başlatılabilir: `W-C02-08`. Ayrıntı: `plan/ledger.md`, bölüm 2.
 
 **Kullanım:** "uyarı düzeyinde" düzeyinde (haftalık pencere); pencere 17 Ekim 2026, 20:00 (Türkiye saati) tarihinde yenileniyor.
 
@@ -15,6 +15,7 @@
 **Şu an**
 
 **Sürüyor** (14 Ekim, 14:07 UTC'de senin "devam"ınla). Zamanlanmış üç çalışma (S1–S3) okundu: şifre hiçbir yerde bulunmadı, sahte işaret konduğu yerlerde bulundu. Veritabanı yolunun dört kontrollü denemesi (H2–H5) bitti: hatalı ya da fark çıkaran değişiklik asıl veritabanına hiç gitmedi; onarımlardan sonra iki veritabanı yine birebir aynı. 
+**W-C02-03 kabul edildi** (veritabanı değişikliklerini uygulayan yol, 14 Ekim): son denetçi koşullarla onayladı, koşullar karşılandı. 
 **Senden beklenen:** bir adım, isteğe bağlı: D-038 (#6), bir test için GitHub'da sahte bir ortam açıp sonra onu ve üç test dalını silmek. #6'daki dört cevabın (13 Ekim: D-034 b, D-035 a, D-036 a, D-037 a) kayda geçti; efor denemen için deponun sabit "xhigh" ayarı kaldırıldı, etkisi oturum yeniden başlayınca görülecek. 
 **Senin kuralın (D-033):** kullanıcı aksini belirtmedikçe sözleri teknik şartname değildir; kurulum, DevOS ve SOUL için. DevOS'un ve SOUL'un kurallarına yazıldı (PC-48, denetçi onayladı). 
 **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 bugün 11:40'tan sonra; birleşik deneme kısmi, N-207). 
