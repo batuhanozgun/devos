@@ -34,3 +34,4 @@ begin
   end loop;
 end
 $$;
+-- T-W03-06 live example (CHK-C02-065 C2): this edit of an applied migration is never merged; its pull request must be refused.
