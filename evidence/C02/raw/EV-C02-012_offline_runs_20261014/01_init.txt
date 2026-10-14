@@ -1,0 +1,1 @@
+[initdb exit 0]

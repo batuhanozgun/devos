@@ -1,0 +1,150 @@
+Pager usage is off.
+        relation         | relkind |                                                                                                                                                                                                                                                                                                                                                                          columns                                                                                                                                                                                                                                                                                                                                                                          
+-------------------------+---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ event_id_seq            | S       | last_value bigint not null, log_cnt bigint not null, is_called boolean not null
+ leak_fingerprint_id_seq | S       | last_value bigint not null, log_cnt bigint not null, is_called boolean not null
+ rejected_attempt_id_seq | S       | last_value bigint not null, log_cnt bigint not null, is_called boolean not null
+ acceptance              | r       | id uuid not null, target_ref uuid not null, target_revision integer, accepted_use text not null, scope text not null, current_evidence jsonb not null, residual_decisions jsonb not null, owner_authority uuid, created_at timestamp with time zone not null
+ artifact                | r       | id uuid not null, status devos_private.artifact_status not null, scope text not null, created_at timestamp with time zone not null
+ artifact_revision       | r       | id uuid not null, artifact_id uuid not null, revision integer not null, path text not null, commit text, kind text not null, reason text, created_at timestamp with time zone not null
+ assignment              | r       | id uuid not null, work_ref uuid not null, work_revision integer not null, declared_session_id text, role_class devos_private.role_class not null, claim_token_hash text not null, generation integer not null, authority_epoch bigint not null, lease_expires_at timestamp with time zone not null, last_heartbeat_at timestamp with time zone, status devos_private.assignment_status not null, created_at timestamp with time zone not null
+ decision                | r       | id uuid not null, class devos_private.decision_class not null, status devos_private.decision_status not null, answer jsonb, answer_original_tr text, answer_interpretation_en text, answered_by text, answer_channel_ref text, answered_revision integer, answered_at timestamp with time zone, created_at timestamp with time zone not null
+ decision_revision       | r       | id uuid not null, decision_id uuid not null, revision integer not null, question text not null, presented_text_tr text, why_this_owner text, options jsonb, alternatives_considered jsonb, single_viable_path_reason text, premises jsonb, criteria jsonb, evidence_refs jsonb, assumptions jsonb, reversibility text, reopen_triggers jsonb, recommendation text, recommendation_rationale text, if_unanswered text, alternatives_state devos_private.alternatives_state, reason text, created_at timestamp with time zone not null
+ effect_class            | r       | effect_class text not null, irreversible boolean not null, mandatory_read_set text[] not null
+ effort_policy           | r       | id uuid not null, work_ref uuid, work_class text, standing_policy_ref uuid, level text not null, expert_assessment_ref text not null, reduction_reason text, approved_by_role_class devos_private.role_class, non_removable_steps jsonb not null, status devos_private.effort_policy_status not null, created_at timestamp with time zone not null
+ env_tokens              | r       | id uuid not null, role_class devos_private.role_class not null, token_hash text not null, issued_at timestamp with time zone not null, revoked_at timestamp with time zone
+ eval_run                | r       | id uuid not null, eval_set_id text not null, eval_set_version text not null, subject_role text not null, subject_release text, runner_session text not null, work_ref uuid not null, work_revision integer not null, results jsonb not null, run_at timestamp with time zone not null
+ event                   | r       | id bigint not null, aggregate_type text not null, aggregate_id uuid not null, aggregate_revision integer, tx_id xid8 not null, event_type text not null, payload jsonb not null, role_class text not null, origin devos_private.event_origin not null, declared_session_id text, created_at timestamp with time zone not null, exported_at timestamp with time zone
+ finding                 | r       | id uuid not null, status devos_private.finding_status not null, scope text not null, privacy_class devos_private.privacy_class not null, created_at timestamp with time zone not null
+ finding_revision        | r       | id uuid not null, finding_id uuid not null, revision integer not null, claim text not null, source_spans jsonb not null, qualifiers jsonb, counter_evidence_searched text not null, confidence text, open_questions jsonb, changeable devos_private.finding_changeable not null, fresh_until date, agent_addressed jsonb, use_scope text, reason text, created_at timestamp with time zone not null
+ function_deployment     | r       | slug text not null, version integer, ezbr_sha256 text, source_sha256 text not null, commit_sha text not null, run_id bigint not null, deployed_at timestamp with time zone not null
+ global_authority_epoch  | r       | singleton boolean not null, epoch bigint not null, changed_at timestamp with time zone not null
+ leak_fingerprint        | r       | id bigint not null, hash text not null, source_ref uuid, origin devos_private.fingerprint_origin not null, created_at timestamp with time zone not null
+ mission                 | r       | id uuid not null, status devos_private.mission_status not null, created_at timestamp with time zone not null
+ mission_revision        | r       | id uuid not null, mission_id uuid not null, revision integer not null, purpose text not null, scope text not null, constraints jsonb not null, acceptance text not null, owner_authority uuid not null, reason text, created_at timestamp with time zone not null
+ need                    | r       | id uuid not null, mission_ref uuid not null, condition text not null, origin devos_private.need_origin, method_ref text, why_needed text not null, evidence_for jsonb, evidence_against jsonb, assumptions jsonb, alternatives jsonb, consumer text, return_to text, uncertainty text, status devos_private.need_status not null, created_at timestamp with time zone not null
+ observation             | r       | id uuid not null, operation_ref uuid not null, source text not null, observed_at timestamp with time zone not null, observed_effect devos_private.observed_effect not null, details jsonb not null
+ operation               | r       | id uuid not null, idempotency_namespace text not null, idempotency_key text not null, effect_class text not null, target text not null, expected_base text, payload_hash text not null, work_ref uuid not null, assignment_ref uuid not null, generation integer not null, authority_epoch bigint not null, read_set jsonb not null, status devos_private.operation_status not null, attempts integer not null, created_at timestamp with time zone not null
+ rejected_attempt        | r       | id bigint not null, function_name text not null, role_class text not null, reason_code text not null, counted_hour timestamp with time zone, count integer, declared_session_id text, reason text, target_ref uuid, target_revision integer, created_at timestamp with time zone not null, exported_at timestamp with time zone
+ relation                | r       | id uuid not null, type devos_private.relation_type not null, from_ref uuid not null, from_revision integer, to_ref uuid not null, to_revision integer, scope text not null, hard boolean not null, group_id uuid, group_mode devos_private.group_mode, validity devos_private.relation_validity not null, use text, method devos_private.relation_method not null, epistemic_status devos_private.epistemic_status not null, created_at timestamp with time zone not null
+ review                  | r       | id uuid not null, kind devos_private.review_kind not null, target_ref uuid, target_revision integer, target_snapshot text, claim text, criterion_ref text, criterion_version text, use text not null, basis_refs jsonb not null, reviewer_declared_session text, reviewer_role_class devos_private.role_class, independence_level devos_private.independence_level, view_ref text, shared_with_producer jsonb, created_at timestamp with time zone not null
+ verdict                 | r       | id uuid not null, review_ref uuid not null, result devos_private.verdict_result not null, evidence_refs jsonb not null, objections jsonb not null, limits jsonb not null, created_at timestamp with time zone not null
+ work                    | r       | id uuid not null, execution devos_private.work_execution not null, qualification devos_private.work_qualification not null, acceptance devos_private.work_acceptance not null, effect devos_private.work_effect not null, created_at timestamp with time zone not null
+ work_revision           | r       | id uuid not null, work_id uuid not null, revision integer not null, mission_revision_id uuid not null, scope text not null, purpose text not null, input_refs jsonb not null, target_refs jsonb not null, consumer text, return_to text, stop_rule text, acceptance_ref text, impact_class devos_private.impact_class not null, effort_policy_ref uuid, method_refs jsonb not null, mandatory_needs jsonb not null, reason text, created_at timestamp with time zone not null
+ artifact_current        | v       | id uuid, revision integer, path text, commit text, kind text, scope text, status devos_private.artifact_status, created_at timestamp with time zone, revised_at timestamp with time zone
+ decision_current        | v       | id uuid, revision integer, class devos_private.decision_class, status devos_private.decision_status, question text, presented_text_tr text, answer_original_tr text, answer_interpretation_en text, why_this_owner text, options jsonb, alternatives_considered jsonb, single_viable_path_reason text, premises jsonb, criteria jsonb, evidence_refs jsonb, assumptions jsonb, reversibility text, reopen_triggers jsonb, recommendation text, recommendation_rationale text, if_unanswered text, alternatives_state devos_private.alternatives_state, answer jsonb, answered_by text, answer_channel_ref text, answered_revision integer, answered_at timestamp with time zone, created_at timestamp with time zone, revised_at timestamp with time zone
+ finding_current         | v       | id uuid, revision integer, claim text, source_spans jsonb, qualifiers jsonb, counter_evidence_searched text, confidence text, open_questions jsonb, changeable devos_private.finding_changeable, fresh_until date, agent_addressed jsonb, privacy_class devos_private.privacy_class, scope text, status devos_private.finding_status, use_scope text, created_at timestamp with time zone, revised_at timestamp with time zone
+ mission_current         | v       | id uuid, revision integer, status devos_private.mission_status, purpose text, scope text, constraints jsonb, acceptance text, owner_authority uuid, created_at timestamp with time zone, revised_at timestamp with time zone
+ work_current            | v       | id uuid, revision integer, mission_ref uuid, mission_revision integer, scope text, purpose text, input_refs jsonb, target_refs jsonb, consumer text, return_to text, stop_rule text, acceptance_ref text, impact_class devos_private.impact_class, effort_policy_ref uuid, method_refs jsonb, mandatory_needs jsonb, execution devos_private.work_execution, qualification devos_private.work_qualification, acceptance devos_private.work_acceptance, effect devos_private.work_effect, created_at timestamp with time zone, revised_at timestamp with time zone
+(35 rows)
+
+      enum_type       |                                                   labels                                                    
+----------------------+-------------------------------------------------------------------------------------------------------------
+ alternatives_state   | compared, single_viable_path, open_exploration
+ artifact_status      | candidate, current, superseded
+ assignment_status    | active, released, expired, revoked
+ decision_class       | routine, high_impact, batu
+ decision_status      | draft, open, answered, accepted, declined, superseded, withdrawn
+ effort_policy_status | active, retired
+ epistemic_status     | observation, user_decision, inference, hypothesis, proposal
+ event_origin         | call, rule, owner, job
+ finding_changeable   | yes, no, not_recorded
+ finding_status       | candidate, reviewed, accepted_for_use, stale, withdrawn
+ fingerprint_origin   | library, synthetic
+ group_mode           | ALL, ANY
+ impact_class         | routine, high
+ independence_level   | same_session, fresh_context_subagent, same_model_other_session, other_view, other_model_family, batu_expert
+ mission_status       | active, paused, closed
+ need_origin          | goal, method, useful
+ need_status          | open, investigating, resolved, dropped, superseded
+ observed_effect      | applied, not_applied, unknown
+ operation_status     | prepared, attempted, observed, conflicted, abandoned
+ privacy_class        | private_derived, public, private
+ relation_method      | mechanical, model_extracted, recorded
+ relation_type        | depends_on, supports, challenges, derived_from, supersedes, uses, part_of, reviews, blocks_effect, about
+ relation_validity    | current, stale, retracted
+ review_kind          | review, sample
+ role_class           | devos_calisma, devos_denetim, devos_sinav, devos_kurulum, devos_ci, devos_backup
+ verdict_result       | pass, fail, conditional, indeterminate
+ work_acceptance      | proposed, accepted, rejected
+ work_effect          | none, prepared, observed, unknown
+ work_execution       | planned, ready, running, waiting, finished, cancelled
+ work_qualification   | current, stale, needs_review
+(30 rows)
+
+                   index                    |                                                                                 definition                                                                                 
+--------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ devos_private.rejected_attempt_counted_key | CREATE UNIQUE INDEX rejected_attempt_counted_key ON devos_private.rejected_attempt USING btree (function_name, reason_code, counted_hour) WHERE (counted_hour IS NOT NULL)
+ devos_private.assignment_one_active_claim  | CREATE UNIQUE INDEX assignment_one_active_claim ON devos_private.assignment USING btree (work_ref) WHERE (status = 'active'::devos_private.assignment_status)
+(2 rows)
+
+            relation            |                 conname                  |                                                                                                                                                                                                   definition                                                                                                                                                                                                    
+--------------------------------+------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ devos_private.rejected_attempt | rejected_attempt_form                    | CHECK ((((counted_hour IS NOT NULL) AND (count IS NOT NULL) AND (role_class = 'none'::text) AND (declared_session_id IS NULL) AND (reason IS NULL) AND (target_ref IS NULL) AND (target_revision IS NULL) AND (date_trunc('hour'::text, (counted_hour AT TIME ZONE 'UTC'::text)) = (counted_hour AT TIME ZONE 'UTC'::text))) OR ((counted_hour IS NULL) AND (count IS NULL) AND (role_class <> 'none'::text))))
+ devos_private.effort_policy    | effort_policy_item_or_standing           | CHECK (((work_ref IS NULL) <> (work_class IS NULL)))
+ devos_private.relation         | relation_model_extracted_not_observation | CHECK ((NOT ((method = 'model_extracted'::devos_private.relation_method) AND (epistemic_status = 'observation'::devos_private.epistemic_status))))
+(3 rows)
+
+            relation             |            tgname             
+---------------------------------+-------------------------------
+ devos_private.decision_revision | decision_revision_append_only
+ devos_private.decision_revision | decision_revision_no_truncate
+ devos_private.mission_revision  | mission_revision_append_only
+ devos_private.mission_revision  | mission_revision_no_truncate
+ devos_private.work_revision     | work_revision_append_only
+ devos_private.work_revision     | work_revision_no_truncate
+ devos_private.finding_revision  | finding_revision_append_only
+ devos_private.finding_revision  | finding_revision_no_truncate
+ devos_private.artifact_revision | artifact_revision_append_only
+ devos_private.artifact_revision | artifact_revision_no_truncate
+ devos_private.observation       | observation_append_only
+ devos_private.observation       | observation_no_truncate
+(12 rows)
+
+    nspname    |                 nspacl                 
+---------------+----------------------------------------
+ devos_private | {postgres=UC/postgres}
+ devos_api     | {postgres=UC/postgres,anon=U/postgres}
+(2 rows)
+
+ relations_with_acl_entries 
+----------------------------
+                         35
+(1 row)
+
+     proname      |        proacl         
+------------------+-----------------------
+ deployment_drift | {postgres=X/postgres}
+ refuse_change    | {postgres=X/postgres}
+(2 rows)
+
+ default_acl_rows 
+------------------
+                0
+(1 row)
+
+ singleton | epoch |          changed_at           
+-----------+-------+-------------------------------
+ t         |     1 | 2026-10-14 18:27:52.837877+00
+(1 row)
+
+ env_tokens_rows 
+-----------------
+               0
+(1 row)
+
+    version     |                name                
+----------------+------------------------------------
+ 20261012184638 | deployment_drift
+ 20261012231841 | w03_fixture_apply
+ 20261012232112 | w03_fixture_name_differs
+ 20261012232113 | w03_fixture_restore_name
+ 20261014170201 | w08_role_classes_epoch_tokens
+ 20261014170202 | w08_event_rejected_attempt
+ 20261014170203 | w08_missions_decisions_needs_work
+ 20261014170204 | w08_findings_reviews_effects_exams
+ 20261014170205 | w08_append_only_views_access
+ 20261014182601 | w08_ledger_transfer_schema
+(10 rows)
+
+[psql exit 0]

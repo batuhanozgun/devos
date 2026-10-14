@@ -1,0 +1,30 @@
+$ python3 -I -B tools/credential_value_scan.py --dir supabase/migrations --dir evidence/C02 --dir prd08c_raw --dir prd08c_run --dir prd08c_raw_superseded_before_comment_fix
+Values searched for:
+  CLAUDE_CODE_MESSAGING_TOKEN: length 32
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: length 895
+  (GH_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (GITHUB_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLOUDSDK_AUTH_ACCESS_TOKEN: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLAUDE_CODE_MESSAGING_SOCKET: not a candidate (placeholder, path, URL or shorter than 16))
+  (CLAUDE_SESSION_INGRESS_TOKEN_FILE: not a candidate (placeholder, path, URL or shorter than 16))
+  (SESSION_INGRESS_URL: not a candidate (placeholder, path, URL or shorter than 16))
+  (ANTHROPIC_API_KEY: no value)
+  (ANTHROPIC_AUTH_TOKEN: no value)
+  (CLAUDE_CODE_OAUTH_TOKEN: no value)
+directory /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08/supabase/migrations: 18 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+directory /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08/evidence/C02: 300 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+directory /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_raw: 13 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+directory /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run: 9 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+directory /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_raw_superseded_before_comment_fix: 14 files read
+  CLAUDE_CODE_MESSAGING_TOKEN: 0 files hold it
+  the file named by CLAUDE_SESSION_INGRESS_TOKEN_FILE: 0 files hold it
+CREDENTIAL_VALUE_SCAN DONE
+[exit 0]

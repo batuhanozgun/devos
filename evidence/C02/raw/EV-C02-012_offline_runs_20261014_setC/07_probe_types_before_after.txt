@@ -1,0 +1,176 @@
+== create database probe (as postgres)
+CREATE DATABASE
+[exit 0]
+CREATE SCHEMA
+CREATE TABLE
+[stand-in history table exit 0]
+== apply M1 to M6 and main's four (versions up to 20261014182601) to probe
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012184638_deployment_drift.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012184638', 'deployment_drift')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012231841_w03_fixture_apply.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012231841', 'w03_fixture_apply')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012232112_w03_fixture_name_differs.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012232112', 'w03_fixture_name_differs')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012232113_w03_fixture_restore_name.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012232113', 'w03_fixture_restore_name')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170201_w08_role_classes_epoch_tokens.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170201', 'w08_role_classes_epoch_tokens')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170202_w08_event_rejected_attempt.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170202', 'w08_event_rejected_attempt')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170203', 'w08_missions_decisions_needs_work')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170204_w08_findings_reviews_effects_exams.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170204', 'w08_findings_reviews_effects_exams')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170205_w08_append_only_views_access.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170205', 'w08_append_only_views_access')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014182601_w08_ledger_transfer_schema.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014182601', 'w08_ledger_transfer_schema')
+[exit 0]
+[drive apply exit 0]
+== BEFORE parts 7 and 8
+ what  |  db   | m7_types 
+-------+-------+----------
+ state | probe | 
+(1 row)
+
+    kind    | grantee | privilege_type | types 
+------------+---------+----------------+-------
+ array type | PUBLIC  | USAGE          |    62
+ own type   | PUBLIC  | USAGE          |    30
+ row type   | PUBLIC  | USAGE          |    32
+(3 rows)
+
+    kind    | types | typacl_null 
+------------+-------+-------------
+ array type |    62 |          62
+ own type   |    30 |          30
+ row type   |    32 |          32
+(3 rows)
+
+      who      | types | usable 
+---------------+-------+--------
+ anon          |   124 |    124
+ authenticated |   124 |    124
+ authenticator |   124 |    124
+ public        |   124 |    124
+ service_role  |   124 |    124
+(5 rows)
+
+[exit 0]
+== probes (one transaction, rolled back)
+   what   | current_user | superuser 
+----------+--------------+-----------
+ probe as | postgres     | f
+(1 row)
+
+BEGIN
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P1a revoke all on type devos_private._finding_status from public: refused, SQLSTATE 0LP01: cannot set privileges of array types
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P1b grant usage on type devos_private._finding_status to anon: refused, SQLSTATE 0LP01: cannot set privileges of array types
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P2a revoke all on type devos_private.finding (a table's row type) from public: accepted; typacl now {postgres=U/postgres}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P2b revoke all on type devos_private.finding_current (a view's row type) from public: accepted; typacl now {postgres=U/postgres}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P3 before: public may use finding_status t, _finding_status t; anon _finding_status t
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_run/probe_types.sql:48: NOTICE:  P3 after revoking on finding_status: _finding_status typacl null; public may use finding_status f, _finding_status f; anon _finding_status f
+DO
+ALTER DEFAULT PRIVILEGES
+ what | defaclrole | defaclnamespace | defaclobjtype | defaclacl 
+------+------------+-----------------+---------------+-----------
+(0 rows)
+
+CREATE TYPE
+                  what                   |     typname     | typacl | public_may_use 
+-----------------------------------------+-----------------+--------+----------------
+ P4 new type after the per-schema revoke | _prd08c_probe_a | null   | t
+ P4 new type after the per-schema revoke | prd08c_probe_a  | null   | t
+(2 rows)
+
+ALTER DEFAULT PRIVILEGES
+                     what                     | defaclrole | defaclnamespace | defaclobjtype |       defaclacl       
+----------------------------------------------+------------+-----------------+---------------+-----------------------
+ P5 pg_default_acl after the role-wide revoke | postgres   | -               | T             | {postgres=U/postgres}
+(1 row)
+
+CREATE TYPE
+CREATE TABLE
+CREATE TYPE
+                  what                   |    nspname    |     typname     |        typacl         | public_may_use 
+-----------------------------------------+---------------+-----------------+-----------------------+----------------
+ P5 new types after the role-wide revoke | devos_private | _prd08c_probe_b | null                  | f
+ P5 new types after the role-wide revoke | devos_private | _prd08c_probe_t | null                  | t
+ P5 new types after the role-wide revoke | devos_private | prd08c_probe_b  | {postgres=U/postgres} | f
+ P5 new types after the role-wide revoke | devos_private | prd08c_probe_t  | null                  | t
+ P5 new types after the role-wide revoke | public        | _prd08c_probe_c | null                  | f
+ P5 new types after the role-wide revoke | public        | prd08c_probe_c  | {postgres=U/postgres} | f
+(6 rows)
+
+ROLLBACK
+                what                 | count 
+-------------------------------------+-------
+ after rollback: pg_default_acl rows |     0
+(1 row)
+
+               what               | count 
+----------------------------------+-------
+ after rollback: probe types left |     0
+(1 row)
+
+[exit 0]
+== apply parts 7 and 8 to probe
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014190401_w08_finding_source_fields.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014190401', 'w08_finding_source_fields')
+[exit 0]
+$ psql -X -d probe -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014190402_w08_type_privileges.sql
+[exit 0]
+$ psql -X -d probe -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014190402', 'w08_type_privileges')
+[exit 0]
+[drive apply exit 0]
+== AFTER parts 7 and 8
+ what  |  db   |                          m7_types                          
+-------+-------+------------------------------------------------------------
+ state | probe | devos_private.current_authority, devos_private.source_type
+(1 row)
+
+    kind    | grantee | privilege_type | types 
+------------+---------+----------------+-------
+ array type | PUBLIC  | USAGE          |    64
+(1 row)
+
+    kind    | types | typacl_null 
+------------+-------+-------------
+ array type |    64 |          64
+ own type   |    32 |           0
+ row type   |    32 |           0
+(3 rows)
+
+      who      | types | usable 
+---------------+-------+--------
+ anon          |   128 |      0
+ authenticated |   128 |      0
+ authenticator |   128 |      0
+ public        |   128 |      0
+ service_role  |   128 |      0
+(5 rows)
+
+[exit 0]
+== drop database probe
+DROP DATABASE
+[exit 0]
