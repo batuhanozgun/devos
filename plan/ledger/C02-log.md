@@ -495,3 +495,12 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Wait:** ends when Batu answers L-325's question in this session (start W-C02-08 now, or hold until the weekly reset of 2026-10-17T17:00Z and his "devam"); D-038's steps 4 and 5 hold nothing; sooner: none, the choice spends his shared allowance and is his (D-002); whose call: Batu.
 - **Guard:** since L-325's last record: none. No denial by any other hook. The last record #28363 (2026-10-14T16:37Z).
 - **Record changes:** plan/decisions/D-038.md · correction · answered (a); evidence/C02/raw/EV-C02-007_T-W03-08_break_run38599265620_job115973952227.md · addition · raw; evidence/C02/EV-C02-007_migration_path_build.md · addition · section 19.15; plan/work/W-C02-03.md · annotate · its Record; plan/ledger/C02-log.md · addition · L-326; plan/ledger.md · correction · answers seen, summary_tr; DURUM.md, plan/ledger.md · generated
+
+### L-327 · 2026-10-14 · D-038's steps 4 and 5 done by Batu: the four fixture branches observed gone; the synthetic environment's deletion as he reports it
+
+- **Disciplines (D1–D9):** D1: no. D2: no. D3: no. D4: no. D5: yes: the environment's deletion rests on his report, since no tool of the session lists a repository's environments; the branches' deletion is observed. D6: no. D7: yes: CHK-C02-065 C4 (a)'s last part, the environment's deletion, is recorded here. D8: yes: the branches were listed before this entry. D9: no.
+- **Batu** in the working session, at about 16:41Z: "sildim. hem branch'ı hem de enviroment'i sildim." (English: "I deleted them. I deleted both the branch and the environment.").
+- **Observed** (`git ls-remote origin 'refs/heads/claude/w03-*'`, 16:42:18Z): `claude/w03-branch-probe`, `claude/w03-search-breaks`, `claude/w03-t06-live-edit` and `claude/w03-t08-break` are gone; the three left (`claude/w03-a3-rehearsal`, `claude/w03-rehearsal`, `claude/w03-search-fixture`) were not in D-038. The environment `w03-fixture-unprotected`: deleted by his report, not observed. D-038 is done.
+- **Wait:** ends when Batu answers L-325's question in this session (start W-C02-08 now, or hold until the weekly reset of 2026-10-17T17:00Z and his "devam"); sooner: none, the choice spends his shared allowance and is his (D-002); whose call: Batu.
+- **Guard:** since L-326's last record: none. No denial by any other hook. The last record #28375 (2026-10-14T16:42Z).
+- **Record changes:** plan/ledger/C02-log.md · addition · L-327; plan/ledger.md · correction · answers seen, summary_tr; DURUM.md, plan/ledger.md · generated
