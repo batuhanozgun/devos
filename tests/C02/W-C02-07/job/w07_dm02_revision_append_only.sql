@@ -10,6 +10,8 @@
 -- artifact and decision, each with an integer column revision; every devos_private table named *_revision is taken
 -- from the catalogue at run time. Safety: no psql meta-command; stops at its first error; one row per case, then
 -- PASS, FAIL or COULD NOT CHECK (FAIL and COULD NOT CHECK raise).
+-- Revised under ledger rule 3, 2026-10-14: the -trunc case adds an attempt in which only the table's own rule can
+-- refuse (the specification's "Revision under ledger rule 3"); its earlier results are void.
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -251,10 +253,28 @@ begin
   return null;
 end $f$;
 
+-- Every other table a TRUNCATE ... CASCADE of p_table reaches: the tables whose foreign keys reference it, and theirs,
+-- recursively (revision under ledger rule 3, 2026-10-14; see the specification's "Revision under ledger rule 3").
+create function pg_temp.w07_dm02_cascade(p_table text) returns text[] language sql as $f$
+  with recursive c(rel) as (
+    select con.conrelid from pg_constraint con
+     where con.contype = 'f' and con.confrelid = ('devos_private.' || quote_ident(p_table))::regclass
+    union
+    select con.conrelid from pg_constraint con join c on con.confrelid = c.rel where con.contype = 'f'
+  )
+  select coalesce(array_agg(distinct c.rel::regclass::text), '{}') from c
+   where c.rel <> ('devos_private.' || quote_ident(p_table))::regclass
+$f$;
+
 -- One table: append a revision row (positive control), then try UPDATE, DELETE and TRUNCATE ... CASCADE on it,
 -- each in a subtransaction that is undone afterwards. Ok when the planted row is still there, unchanged.
+-- The -trunc case makes two attempts and is ok only when the row survives both (revision under ledger rule 3,
+-- 2026-10-14): (1) as deployed, every trigger in place; (2) the table's own rule alone: inside the attempt, every
+-- other table the cascade reaches has its user triggers disabled (undone with the attempt), so that a refusal by
+-- another table's rule (observation's append-only trigger, reached through assignment and operation) cannot stand
+-- in for this table's own. (2) is the attempt B-DM02-1 turns red.
 create function pg_temp.w07_dm02_table(p_table text) returns void language plpgsql as $f$
-declare row0 jsonb; err text; op text; stmt text; still boolean;
+declare row0 jsonb; err text; op text; stmt text; still boolean; iso text; rel text; n_other int; cid text;
 begin
   begin
     row0 := pg_temp.w07_plant('devos_private.' || p_table, '{}');
@@ -265,26 +285,47 @@ begin
     return;
   end;
   perform pg_temp.w07_rec('DM02-' || p_table || '-ins', 'ok', 'a new revision row was appended at the owner level');
-  foreach op in array array['upd', 'del', 'trunc'] loop
+  foreach op in array array['upd', 'del', 'trunc', 'trunc-own'] loop
     stmt := case op
       when 'upd' then format('update devos_private.%I w07_t set revision = revision + 1000 where to_jsonb(w07_t) = $1', p_table)
       when 'del' then format('delete from devos_private.%I w07_t where to_jsonb(w07_t) = $1', p_table)
       else format('truncate devos_private.%I cascade', p_table) end;
-    err := null; still := null;
+    cid := 'DM02-' || p_table || '-' || case when op = 'trunc-own' then 'trunc' else op end;
+    err := null; still := null; iso := null; n_other := 0;
     begin
-      begin
-        if op = 'trunc' then execute stmt; else execute stmt using row0; end if;
-      exception when others then err := sqlstate || ' ' || left(sqlerrm, 160);
-      end;
-      execute format('select exists (select 1 from devos_private.%I w07_t where to_jsonb(w07_t) = $1)', p_table)
-        using row0 into still;
+      if op = 'trunc-own' then
+        begin
+          foreach rel in array pg_temp.w07_dm02_cascade(p_table) loop
+            execute format('alter table %s disable trigger user', rel);
+            n_other := n_other + 1;
+          end loop;
+        exception when others then iso := sqlstate || ' ' || left(sqlerrm, 160);
+        end;
+      end if;
+      if iso is null then
+        begin
+          if op in ('trunc', 'trunc-own') then execute stmt; else execute stmt using row0; end if;
+        exception when others then err := sqlstate || ' ' || left(sqlerrm, 160);
+        end;
+        execute format('select exists (select 1 from devos_private.%I w07_t where to_jsonb(w07_t) = $1)', p_table)
+          using row0 into still;
+      end if;
       raise exception using errcode = 'P0W07', message = 'w07: undo the attempt';
     exception when sqlstate 'P0W07' then null;
     end;
-    perform pg_temp.w07_check('DM02-' || p_table || '-' || op, still,
-      case when still then 'refused (' || coalesce('raised ' || err, 'no error; the row is unchanged') || ')'
+    if iso is not null then
+      perform pg_temp.w07_rec(cid, 'could_not_check', 'own-rule attempt: the user triggers of the other tables the '
+        || 'cascade reaches could not be disabled for it: ' || iso);
+    else
+      perform pg_temp.w07_check(cid, still,
+        case op when 'trunc' then 'as deployed: '
+                when 'trunc-own' then format('own rule alone (user triggers of the %s other tables the cascade reaches '
+                                             || 'disabled for the attempt): ', n_other)
+                else '' end
+        || case when still then 'refused (' || coalesce('raised ' || err, 'no error; the row is unchanged') || ')'
            else 'the revision row was ' || case op when 'upd' then 'changed' else 'removed' end
                 || coalesce(' (' || err || ')', ' and no error was raised') end);
+    end if;
   end loop;
 end $f$;
 
