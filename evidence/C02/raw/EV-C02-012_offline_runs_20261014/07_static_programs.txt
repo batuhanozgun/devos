@@ -1,0 +1,169 @@
+$ python3 -I tests/C02/W-C02-03/test_workflow_order.py
+note: this test reads the workflow and does not run it; the live run of point 14 is the observation
+ok   .github/workflows/migrate.yml: order and stop present as written
+ok   break 'devos without needs (both at once)': the copy fails, as it must (devos does not need devos-test (the two could run at once))
+ok   break 'apply runs after any decide result': the copy fails, as it must (devos's apply does not require steps.decide.outputs.apply=='yes' alone)
+ok   break 'dryrun without the decide gate': the copy fails, as it must (devos's dryrun does not require steps.decide.outputs.apply=='yes' alone)
+ok   break 'GO forced to yes': the copy fails, as it must (devos's decide does not take GO from needs.devos-test.outputs.go)
+ok   break 'apply before decide': the copy fails, as it must (devos lacks steps decide, dryrun, apply in that order)
+ok   break 'compare skipped after a failed apply': the copy fails, as it must (devos-test's compare does not run after a failed apply)
+ok   break 'dbtests without the clean-comparison condition': the copy fails, as it must (devos-test's dbtests does not require steps.compare.outputs.<x> == 'no_difference' (alone: not negated, not or-ed))
+ok   break 'dbtests condition inverted (runs on a comparison that is not clean)': the copy fails, as it must (devos-test's dbtests does not require steps.compare.outputs.<x> == 'no_difference' (alone: not negated, not or-ed))
+ok   break 'dbtests runner without errors stopping the file': the copy fails, as it must (devos-test's dbtests runner does not run psql with errors stopping the file (ON_ERROR_STOP set true; if the build uses another client, the test designer revises this check first))
+ok   break 'dbtests runner not looking for the PASS notice': the copy fails, as it must (devos-test's dbtests runner does not look for the files' PASS notice)
+ok   break 'go ignores dbtests': the copy fails, as it must (devos-test's go does not depend on dbtests)
+ok   break 'devos skipped when devos-test fails': the copy fails, as it must (devos does not run in every case (its comparison and report would be skipped))
+ok   break 'another job applies to devos': the copy fails, as it must (job w03-fixture-extra holds an apply step)
+ok   break 'devos without its own comparison step': the copy fails, as it must (devos has no comparison step (id compare) of its own before decide)
+ok   break 'devos's comparison after decide': the copy fails, as it must (devos has no comparison step (id compare) of its own before decide)
+ok   break 'decide's DRIFT_RESULT taken from needs.devos-test.outputs (skips a project)': the copy fails, as it must (devos's decide does not take DRIFT_RESULT from steps.compare.outputs (job devos's own comparison, before decide; never needs.*))
+ok   break 'decide's FM_READS taken from needs.devos-test.outputs (skips a project)': the copy fails, as it must (devos's decide does not take FM_READS from steps of job devos before decide (never needs.*))
+W03_ORDER_TEST PASS (.github/workflows/migrate.yml)
+note: G1 reads the workflows and does not run them; G2 runs pr_inputs' and pr_decide's own bodies against scratch git repositories and a stub of GitHub's REST API on 127.0.0.1
+ok   G1 .github/workflows: 57 run: values in 2 files, none holding an expression opener
+ok   G1 planted copy of migrate.yml (job check-devos, step report, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migrate.yml: job check-devos step report: its run: value holds 1 expression opener(s), the f...)
+ok   G1 planted copy of migration-checks.yml (job migration-checks, step w03_tests, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migration-checks.yml: job migration-checks step w03_tests: its run: value holds 1 expression...)
+ok   G1 planted file: the opener written as a YAML escape (\x24): fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-escape.yml: job w03-fixture-job step w03_fixture_escaped: its run: value...)
+ok   G1 planted file: the opener inside a heredoc in a block scalar: fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-block.yml: job w03-fixture-job step w03_fixture_block: its run: value ho...)
+ok   G1 control: openers in name:, env:, if:, with: only, and '$ {{' split by a space in run:: passes, as it must
+W03_RUN_EXPR_TEST PASS (no run: value holds an expression opener: 57 values in 2 files; 4 planted copies red, 1 control passes)
+ok   G2 A0 control: a plain-named migration modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A1 a non-ASCII name modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A2 a non-ASCII name removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A3 a non-ASCII name renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A4 a name holding a tab modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A5 a name holding a double quote removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A6 a name holding a backslash renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A7 a name holding a newline modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A8 a name holding a byte that is not UTF-8 modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 B1 git diff fails: the checked-out commit has no parent (an added migration and a document): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 B2 git diff fails: a depth-1 checkout lacks the merge commit's parent (the same change): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 C1 positive control: a new migration added; the records' state is stated: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 C2 positive control: a merged migration removed while the report shows it unapplied in both (M16): verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D1 push run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D2 push run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D3 scheduled run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D4 scheduled run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D5 negative control: push run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D6 negative control: scheduled run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 E1 push run: devos-test ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: could not check (the report lacks this project or its fields); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 E2 scheduled run: check-devos ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: could not check (the report lacks this project or its fields)'
+ok   G2 break BRK-a (a copy that reads the changed files from git's line output, where git quotes such names (the class of CHK-C02-035 C2)): turns ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-b (a copy that reads a failed git diff as an empty list of changes): turns ['B1', 'B2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+ok   G2 break BRK-c1 (a copy that reports an added migration as modified): turns ['C1', 'D1', 'D3'] red, as it must, and leaves the 18 cases it cannot touch as they were
+ok   G2 break BRK-c2 (a copy that reads each job's report without its list of differences): turns ['C2', 'D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-d (a copy that does not tell a skipped job from one that ran, and reads a skipped job's 404 as an empty clean report): turns ['D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-e (a copy that folds a ran job's 404 into an empty clean report ('no difference')): turns ['E1', 'E2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+W03_PR_INPUTS_TEST PASS (21/21 cases; breaks: 6 shown, 0 not shown, of 6)
+[exit 0]
+$ python3 -I tests/C02/W-C02-03/test_decision_steps.py
+ok   decide (devos job) wiring: env names ['GO', 'FM_READS', 'DRIFT_CALL', 'DRIFT_RESULT', 'EXPECTED']; no secret
+ok   D01 positive control: only 'on main, not applied', go=yes: exit 0; reason: only migrations on main, not applied: 1
+ok   D02 only pending, devos-test go=no: exit 0; reason: devos-test go=no
+ok   D03 only pending, devos-test go empty (job failed before setting it): exit 0; reason: devos-test go=absent
+ok   D04 only pending, devos-test go=superseded: exit 0; reason: devos-test go=superseded
+ok   D05 no difference: nothing to apply: exit 0; reason: no difference: nothing to apply
+ok   D06 applied and not on main (break target: a copy that applies on it): exit 0; reason: devos differs from main other than by pending migrations: 1 (applied_not_on_main
+ok   D07 name differs: exit 0; reason: devos differs from main other than by pending migrations: 1 (name_differs)
+ok   D08 function missing: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_missing)
+ok   D09 function extra: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_extra)
+ok   D10 function differs: exit 0; reason: devos differs from main other than by pending migrations: 1 (function_differs)
+ok   D11 pending plus applied-not-on-main: exit 0; reason: devos differs from main other than by pending migrations: 1 (applied_not_on_main
+ok   D12 an unknown difference kind: exit 0; reason: DRIFT_RESULT holds a difference of unknown form
+ok   D13 result 'could not check': exit 0; reason: deployment_drift answered could_not_check
+ok   D14 the call raised an error: exit 0; reason: DRIFT_CALL=error: no usable result
+ok   D15 the call timed out or the connection was cut: exit 0; reason: DRIFT_CALL=timeout: no usable result
+ok   D16 call ok, result empty: exit 0; reason: DRIFT_RESULT is absent
+ok   D17 result not JSON: exit 0; reason: DRIFT_RESULT is not JSON
+ok   D18 result not an object: exit 0; reason: DRIFT_RESULT is not an object
+ok   D19 completeness flag absent: exit 0; reason: DRIFT_RESULT's completeness flag is absent or not true
+ok   D20 completeness flag false: exit 0; reason: DRIFT_RESULT's completeness flag is absent or not true
+ok   D21 'no difference' with a non-empty list: exit 0; reason: DRIFT_RESULT's status and its list of differences disagree
+ok   D22 'differences' with an empty list: exit 0; reason: DRIFT_RESULT's status and its list of differences disagree
+ok   D23 status absent: exit 0; reason: DRIFT_RESULT's status is absent or unknown
+ok   D24 function exists but the call was not made: exit 0; reason: DRIFT_CALL=not_called: no usable result
+ok   E01 positive control: never-pushed state, one statement (R6 form 1): exit 0; reason: first-migration exception, no history table (the never-pushed state): every vers
+ok   E02 positive control: never-pushed state, read-only REPEATABLE READ transaction (R6 form 2): exit 0; reason: first-migration exception, no history table (the never-pushed state): every vers
+ok   E03 never-pushed state but devos-test go=no: exit 0; reason: devos-test go=no
+ok   E04 history table holding a row, no function (breaks: without the table check; a copy that takes a table holding a row): exit 0; reason: the history table holds 1 rows without deployment_drift
+ok   E05 positive control: history table empty, no function, listing clean, one statement (section 5 as changed after P13): exit 0; reason: first-migration exception, the history table present and holding no row: every v
+ok   E06 function present, table absent, listing clean, the function answers 'could not check' (break: without the function check): exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+ok   E06b function present, table absent, listing clean, no call made (break: without the function check, even where another guard refuses a call made while the reads say 'no function'): exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+ok   E07 function present, table absent, listing clean, the call errors: exit 0; reason: deployment_drift exists but the history table does not (history_table_exists=fal
+ok   E08 a schema in the listing (break: without the listing check): exit 0; reason: the listing holds 1 objects outside Supabase's own
+ok   E09 a role in the listing: exit 0; reason: the listing holds 1 objects outside Supabase's own
+ok   E10 reads incomplete: exit 0; reason: the three reads are not usable (complete is not true: the reads did not all fini
+ok   E11 reads not taken in one snapshot: exit 0; reason: the three reads are not usable (snapshot=None is not one of the two allowed form
+ok   E12 snapshot form unknown: exit 0; reason: the three reads are not usable (snapshot='w03_fixture_other' is not one of the t
+ok   E13 reads absent: exit 0; reason: the three reads are not usable (FM_READS is absent)
+ok   E14 reads not JSON: exit 0; reason: the three reads are not usable (FM_READS is not JSON)
+ok   E15 the function read missing: exit 0; reason: the three reads are not usable (function_exists is missing or not a boolean)
+ok   E16 the table read missing: exit 0; reason: the three reads are not usable (history_table_exists is missing or not a boolean
+ok   E17 the listing failed (null): exit 0; reason: the three reads are not usable (listing is missing, failed or malformed)
+ok   E18 reads say no function but a call returned a result (contradiction): exit 0; reason: the reads say deployment_drift is absent, but a call was made
+ok   E19 never-pushed state but expected malformed: exit 0; reason: EXPECTED has no valid commit
+ok   E20 positive control: history table empty, no function, listing clean, read-only REPEATABLE READ transaction (R6 form 2): exit 0; reason: first-migration exception, the history table present and holding no row: every v
+ok   E21 history table empty, no function, listing clean, but devos-test go=no: exit 0; reason: devos-test go=no
+ok   E22 history table present, its row count not read (null): exit 0; reason: the three reads are not usable (history_table_exists=true but history_rows=null:
+ok   E23 history table present, the row-count read missing: exit 0; reason: the three reads are not usable (history_rows is missing: the row-count read is a
+ok   E24 history table empty, no function, but a schema in the listing: exit 0; reason: the listing holds 1 objects outside Supabase's own
+ok   E25 reads disagree: history table reported absent with a row count of 3, no function, listing clean (break: a copy that ignores the row count when the table is absent): exit 0; reason: the three reads are not usable (history_table_exists=false but history_rows=3: t
+ok   E26 reads disagree: history table reported absent with a row count of 0, no function, listing clean: exit 0; reason: the three reads are not usable (history_table_exists=false but history_rows=0: t
+n/a  crosscheck (O3): no step 'crosscheck': O3 not adopted, nothing to test
+ok   pr_decide (pull-request check) wiring: env names ['CHANGED', 'RUN_REPORT', 'MAIN_HEAD']; no secret
+ok   P01 positive control: adds a migration, records clean: exit 0
+ok   P02 adds a migration, no completed run (could not check is shown, not blocking): exit 0
+ok   P03 adds a migration while devos lacks V2: the state names it: exit 0
+ok   P04 changes a migration applied in both: exit 1
+ok   P05 changes a migration applied in devos-test only: exit 1
+ok   P06 positive control: changes a migration shown unapplied in both: exit 0
+ok   P07 changes a migration, no run report: exit 1
+ok   P08 changes a migration, report lacks devos (break: skips a project): exit 1
+ok   P09 changes a migration, report at another commit: exit 1
+ok   P10 changes a migration, run not completed: exit 1
+ok   P11 deletes a migration applied in both: exit 1
+ok   P12 renames a migration applied in both: exit 1
+ok   P13 positive control: changes a database test, not a migration: exit 0
+ok   P14 positive control: unrelated change while devos differs: passes and names it: exit 0
+ok   P15 changes a migration, report not JSON: exit 1
+ok   P16 changes a migration unapplied in both, but devos-test could not check: exit 1
+W03_DECISION_TEST PASS (69/69)
+[exit 0]
+$ python3 -I tests/C02/W-C02-03/test_workflow_guards.py
+note: G1 reads the workflows and does not run them; G2 runs pr_inputs' and pr_decide's own bodies against scratch git repositories and a stub of GitHub's REST API on 127.0.0.1
+ok   G1 .github/workflows: 57 run: values in 2 files, none holding an expression opener
+ok   G1 planted copy of migrate.yml (job check-devos, step report, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migrate.yml: job check-devos step report: its run: value holds 1 expression opener(s), the f...)
+ok   G1 planted copy of migration-checks.yml (job migration-checks, step w03_tests, a block scalar): fails on its own file, job and step, as it must (.github/workflows/migration-checks.yml: job migration-checks step w03_tests: its run: value holds 1 expression...)
+ok   G1 planted file: the opener written as a YAML escape (\x24): fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-escape.yml: job w03-fixture-job step w03_fixture_escaped: its run: value...)
+ok   G1 planted file: the opener inside a heredoc in a block scalar: fails on its own file, job and step, as it must (.github/workflows/w03-fixture-planted-block.yml: job w03-fixture-job step w03_fixture_block: its run: value ho...)
+ok   G1 control: openers in name:, env:, if:, with: only, and '$ {{' split by a space in run:: passes, as it must
+W03_RUN_EXPR_TEST PASS (no run: value holds an expression opener: 57 values in 2 files; 4 planted copies red, 1 control passes)
+ok   G2 A0 control: a plain-named migration modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A1 a non-ASCII name modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A2 a non-ASCII name removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A3 a non-ASCII name renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A4 a name holding a tab modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A5 a name holding a double quote removed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A6 a name holding a backslash renamed, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A7 a name holding a newline modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 A8 a name holding a byte that is not UTF-8 modified, applied in both: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 B1 git diff fails: the checked-out commit has no parent (an added migration and a document): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 B2 git diff fails: a depth-1 checkout lacks the merge commit's parent (the same change): verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 C1 positive control: a new migration added; the records' state is stated: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 C2 positive control: a merged migration removed while the report shows it unapplied in both (M16): verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D1 push run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D2 push run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D3 scheduled run's job list (two jobs skipped): C1's addition: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D4 scheduled run's job list (two jobs skipped): C2's removal: verdict 'pass'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D5 negative control: push run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 D6 negative control: scheduled run's job list, a migration applied in both modified: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 E1 push run: devos-test ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: could not check (the report lacks this project or its fields); devos: differences (on_main_not_applied 29990101000008)'
+ok   G2 E2 scheduled run: check-devos ran but its log answers 404; C2's removal: verdict 'fail'; state 'devos-test: differences (on_main_not_applied 29990101000008); devos: could not check (the report lacks this project or its fields)'
+ok   G2 break BRK-a (a copy that reads the changed files from git's line output, where git quotes such names (the class of CHK-C02-035 C2)): turns ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-b (a copy that reads a failed git diff as an empty list of changes): turns ['B1', 'B2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+ok   G2 break BRK-c1 (a copy that reports an added migration as modified): turns ['C1', 'D1', 'D3'] red, as it must, and leaves the 18 cases it cannot touch as they were
+ok   G2 break BRK-c2 (a copy that reads each job's report without its list of differences): turns ['C2', 'D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-d (a copy that does not tell a skipped job from one that ran, and reads a skipped job's 404 as an empty clean report): turns ['D2', 'D4'] red, as it must, and leaves the 13 cases it cannot touch as they were
+ok   G2 break BRK-e (a copy that folds a ran job's 404 into an empty clean report ('no difference')): turns ['E1', 'E2'] red, as it must, and leaves the 19 cases it cannot touch as they were
+W03_PR_INPUTS_TEST PASS (21/21 cases; breaks: 6 shown, 0 not shown, of 6)
+[exit 0]

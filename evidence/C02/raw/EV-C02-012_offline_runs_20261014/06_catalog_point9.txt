@@ -1,0 +1,123 @@
+Pager usage is off.
+              conname              |                                                                                                                                                                                                                                                                                                                                                                                                               definition                                                                                                                                                                                                                                                                                                                                                                                                               
+-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ event_aggregate_revision_check    | CHECK ((aggregate_revision >= 1))
+ event_aggregate_type_check        | CHECK ((aggregate_type ~ '^[a-z][a-z0-9_]*$'::text))
+ event_event_type_check            | CHECK ((event_type ~ '^[a-z][a-z0-9_]*$'::text))
+ event_payload_check               | CHECK ((jsonb_typeof(payload) = 'object'::text))
+ event_role_class_check            | CHECK ((role_class = ANY (ARRAY['devos_calisma'::text, 'devos_denetim'::text, 'devos_sinav'::text, 'devos_kurulum'::text, 'devos_ci'::text, 'devos_backup'::text, 'owner'::text])))
+ event_transferred_transfer_source | CHECK (((event_type <> 'transferred'::text) OR COALESCE(((jsonb_typeof((payload -> 'transfer_source'::text)) = 'object'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'kind'::text)) = 'string'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'source_id'::text)) = 'string'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'path'::text)) = 'string'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'input_commit'::text)) = 'string'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'last_commit'::text)) = 'string'::text) AND (jsonb_typeof(((payload -> 'transfer_source'::text) -> 'sha256'::text)) = 'string'::text) AND (((payload -> 'transfer_source'::text) ->> 'input_commit'::text) ~ '^[0-9a-f]{40}$'::text)), false)))
+(6 rows)
+
+                  index                  | indisunique | indisvalid | indnatts |                                                                                                                    definition                                                                                                                     |                 predicate                 
+-----------------------------------------+-------------+------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------
+ devos_private.event_pkey                | t           | t          |        1 | CREATE UNIQUE INDEX event_pkey ON devos_private.event USING btree (id)                                                                                                                                                                            | 
+ devos_private.event_aggregate_idx       | f           | t          |        2 | CREATE INDEX event_aggregate_idx ON devos_private.event USING btree (aggregate_type, aggregate_id)                                                                                                                                                | 
+ devos_private.event_tx_idx              | f           | t          |        1 | CREATE INDEX event_tx_idx ON devos_private.event USING btree (tx_id)                                                                                                                                                                              | 
+ devos_private.event_one_ledger_handover | t           | t          |        1 | CREATE UNIQUE INDEX event_one_ledger_handover ON devos_private.event USING btree (event_type) WHERE (event_type = 'ledger_handed_over'::text)                                                                                                     | (event_type = 'ledger_handed_over'::text)
+ devos_private.event_transferred_key     | t           | t          |        2 | CREATE UNIQUE INDEX event_transferred_key ON devos_private.event USING btree ((((payload -> 'transfer_source'::text) ->> 'kind'::text)), (((payload -> 'transfer_source'::text) ->> 'source_id'::text))) WHERE (event_type = 'transferred'::text) | (event_type = 'transferred'::text)
+(5 rows)
+
+                         decision_status                          
+------------------------------------------------------------------
+ draft, open, answered, accepted, declined, superseded, withdrawn
+(1 row)
+
+    table_name     |        column_name        |  data_type   |      udt_name      | is_nullable 
+-------------------+---------------------------+--------------+--------------------+-------------
+ acceptance        | accepted_use              | text         | text               | NO
+ artifact_revision | kind                      | text         | text               | NO
+ finding_revision  | changeable                | USER-DEFINED | finding_changeable | NO
+ finding_revision  | counter_evidence_searched | text         | text               | NO
+(4 rows)
+
+  finding_changeable   
+-----------------------
+ yes, no, not_recorded
+(1 row)
+
+            relation             |                conname                 |                                       definition                                       
+---------------------------------+----------------------------------------+----------------------------------------------------------------------------------------
+ devos_private.finding_revision  | finding_revision_agent_addressed_check | CHECK (((agent_addressed IS NULL) OR (jsonb_typeof(agent_addressed) = 'array'::text)))
+ devos_private.finding_revision  | finding_revision_revision_check        | CHECK ((revision >= 1))
+ devos_private.finding_revision  | finding_revision_source_spans_check    | CHECK ((jsonb_typeof(source_spans) = 'array'::text))
+ devos_private.artifact_revision | artifact_revision_commit_check         | CHECK ((commit ~ '^[0-9a-f]{40}([0-9a-f]{24})?$'::text))
+ devos_private.artifact_revision | artifact_revision_revision_check       | CHECK ((revision >= 1))
+ devos_private.acceptance        | acceptance_current_evidence_check      | CHECK ((jsonb_typeof(current_evidence) = 'array'::text))
+ devos_private.acceptance        | acceptance_residual_decisions_check    | CHECK ((jsonb_typeof(residual_decisions) = 'array'::text))
+ devos_private.acceptance        | acceptance_scope_check                 | CHECK ((scope ~ '^[a-z][a-z0-9_]*([.][a-z][a-z0-9_]*)*$'::text))
+ devos_private.acceptance        | acceptance_target_revision_check       | CHECK ((target_revision >= 1))
+(9 rows)
+
+     relname     | relkind |           relacl            |       reloptions        
+-----------------+---------+-----------------------------+-------------------------
+ finding_current | v       | {postgres=arwdDxt/postgres} | {security_invoker=true}
+(1 row)
+
+        relname         | relkind 
+------------------------+---------
+ acceptance             | r
+ artifact               | r
+ artifact_revision      | r
+ assignment             | r
+ decision               | r
+ decision_revision      | r
+ effect_class           | r
+ effort_policy          | r
+ env_tokens             | r
+ eval_run               | r
+ event                  | r
+ finding                | r
+ finding_revision       | r
+ function_deployment    | r
+ global_authority_epoch | r
+ leak_fingerprint       | r
+ mission                | r
+ mission_revision       | r
+ need                   | r
+ observation            | r
+ operation              | r
+ rejected_attempt       | r
+ relation               | r
+ review                 | r
+ verdict                | r
+ work                   | r
+ work_revision          | r
+ artifact_current       | v
+ decision_current       | v
+ finding_current        | v
+ mission_current        | v
+ work_current           | v
+(32 rows)
+
+    nspname    |     proname      
+---------------+------------------
+ devos_api     | deployment_drift
+ devos_private | refuse_change
+(2 rows)
+
+ relations_with_acl_entries 
+----------------------------
+                         35
+(1 row)
+
+ default_acl_rows 
+------------------
+                0
+(1 row)
+
+    version     |                name                
+----------------+------------------------------------
+ 20261012184638 | deployment_drift
+ 20261012231841 | w03_fixture_apply
+ 20261012232112 | w03_fixture_name_differs
+ 20261012232113 | w03_fixture_restore_name
+ 20261014170201 | w08_role_classes_epoch_tokens
+ 20261014170202 | w08_event_rejected_attempt
+ 20261014170203 | w08_missions_decisions_needs_work
+ 20261014170204 | w08_findings_reviews_effects_exams
+ 20261014170205 | w08_append_only_views_access
+ 20261014182601 | w08_ledger_transfer_schema
+(10 rows)
+
+[psql exit 0]

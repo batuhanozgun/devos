@@ -1,0 +1,34 @@
+$ git rev-parse HEAD
+178468b14e76a423823a0ac0b2443c5044b43be8
+$ git diff --stat 6807099 178468b -- <5A and DM02: specifications, staged files, breaks>
+ .../W-C02-07/T-W07-DM02_revision_append_only.md    | 13 +++--
+ .../W-C02-07/job/w07_dm02_revision_append_only.sql | 63 ++++++++++++++++++----
+ 2 files changed, 62 insertions(+), 14 deletions(-)
+[exit 0]
+$ git log --format='%H %s' 6807099..178468b -- <same paths>
+c818e944f432b417be4644e72c1fa66cfe0fe8e5 C02: CHK-C02-066's conditions: W-C02-08 point 6 (d) keeps "their files" (C1); T-W14-SCH's JSON-null and non-hex cases (C2, C3); writers named (C4); note N-277 
+6b2dedba7f612ed78831c36ca814e9ad9444de4a C02: W-C02-08's pre-commit test work: N-267's acceptance amendments, T-W14-SCH (the transfer schema's tests), DM02's trunc case and F04/K05's purpose field
+$ git diff --stat 6807099 178468b -- tests/C02/W-C02-07/ (all of W-C02-07's files, for the other items' revisions)
+ .../W-C02-07/T-W07-DM02_revision_append_only.md    | 13 +++--
+ tests/C02/W-C02-07/T-W07-F04_affected_records.md   | 10 +++-
+ tests/C02/W-C02-07/T-W07-K05_many_paths.md         |  8 ++-
+ .../W-C02-07/job/w07_dm02_revision_append_only.sql | 63 ++++++++++++++++++----
+ .../C02/W-C02-07/job/w07_f04_affected_records.sql  | 26 ++++-----
+ tests/C02/W-C02-07/job/w07_k05_many_paths.sql      |  2 +-
+ 6 files changed, 91 insertions(+), 31 deletions(-)
+$ git diff --stat 178468b -- tests/ (working tree against main: this build changes no test file)
+[exit 0]
+$ git status --short --untracked-files=all
+?? evidence/C02/EV-C02-012_schema_roles_access.md
+?? supabase/migrations/20261014170201_w08_role_classes_epoch_tokens.sql
+?? supabase/migrations/20261014170202_w08_event_rejected_attempt.sql
+?? supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql
+?? supabase/migrations/20261014170204_w08_findings_reviews_effects_exams.sql
+?? supabase/migrations/20261014170205_w08_append_only_views_access.sql
+?? supabase/migrations/20261014182601_w08_ledger_transfer_schema.sql
+?? supabase/migrations/tests/w07_5a_no_direct_writes.sql
+?? supabase/migrations/tests/w07_dm02_revision_append_only.sql
+?? supabase/migrations/tests/w14_sch_transfer_schema.sql
+$ git log --format='%H %ad %s' --date=iso-strict 178468b -- tests/C02/W-C02-14/
+c818e944f432b417be4644e72c1fa66cfe0fe8e5 2026-10-14T18:07:58+00:00 C02: CHK-C02-066's conditions: W-C02-08 point 6 (d) keeps "their files" (C1); T-W14-SCH's JSON-null and non-hex cases (C2, C3); write
+6b2dedba7f612ed78831c36ca814e9ad9444de4a 2026-10-14T17:36:19+00:00 C02: W-C02-08's pre-commit test work: N-267's acceptance amendments, T-W14-SCH (the transfer schema's tests), DM02's trunc case and F

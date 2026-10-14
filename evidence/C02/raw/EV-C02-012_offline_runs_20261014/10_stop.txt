@@ -1,0 +1,4 @@
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[rm exit 0]
