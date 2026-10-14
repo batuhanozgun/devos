@@ -1,0 +1,6 @@
+step listing (with exclusion list): []
+step control (without exclusion list): count 10 ; 'table auth.users' in it: True
+criterion (ii) members: {'schema w03_fixture_probe': False, 'table w03_fixture_probe.token_hashes': False, 'role w03_fixture_probe_role': False}
+criterion (ii): (d) and (e) shown -> RED
+derived listing: []
+same list (derived == step): True

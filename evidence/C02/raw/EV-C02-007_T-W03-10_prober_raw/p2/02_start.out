@@ -1,0 +1,3 @@
+waiting for server to start.... done
+server started
+pg_ctl start exit=0

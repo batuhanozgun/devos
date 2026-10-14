@@ -1,0 +1,25 @@
+=== S4 asis: step exit=0; stdout /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prb10/p2/S4_asis.stdout
+listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own
+listing: extension pgcrypto
+listing: function devos_api.deployment_drift(expected jsonb)
+listing: function public.w03_fixture_probe_public_f()
+listing: schema devos_api
+listing: schema devos_private
+listing: schema w03_fixture
+listing: table devos_private.function_deployment
+listing: table public.w03_fixture_probe_public_t
+listing: table w03_fixture.apply_check
+listing: view public.w03_fixture_probe_public_v
+listing: view w03_fixture.apply_check_view
+listing: 11 objects outside Supabase's own
+listing control: the same query without the exclusion list shows 21 objects; auth.users among them: yes
+stderr: ''
+github_output: 'count=11\n'
+listing.sql written by the step == extraction at 421f6e7: True
+derived run exit=0 stdout_lines=1 stderr=''
+step listing (with exclusion list): ["extension pgcrypto", "function devos_api.deployment_drift(expected jsonb)", "function public.w03_fixture_probe_public_f()", "schema devos_api", "schema devos_private", "schema w03_fixture", "table devos_private.function_deployment", "table public.w03_fixture_probe_public_t", "table w03_fixture.apply_check", "view public.w03_fixture_probe_public_v", "view w03_fixture.apply_check_view"]
+step control (without exclusion list): count 21 ; 'table auth.users' in it: True
+criterion (ii) members: {'schema w03_fixture_probe': False, 'table w03_fixture_probe.token_hashes': False, 'role w03_fixture_probe_role': False}
+criterion (ii): (d) and (e) shown -> RED
+derived listing: ["extension pgcrypto", "function devos_api.deployment_drift(expected jsonb)", "function public.w03_fixture_probe_public_f()", "schema devos_api", "schema devos_private", "schema w03_fixture", "table devos_private.function_deployment", "table public.w03_fixture_probe_public_t", "table w03_fixture.apply_check", "view public.w03_fixture_probe_public_v", "view w03_fixture.apply_check_view"]
+same list (derived == step): True

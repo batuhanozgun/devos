@@ -1,0 +1,6 @@
+step listing (with exclusion list): ["function devos_api.deployment_drift(expected jsonb)", "schema devos_api", "schema devos_private", "schema w03_fixture", "table devos_private.function_deployment", "table w03_fixture.apply_check", "view w03_fixture.apply_check_view"]
+step control (without exclusion list): count 17 ; 'table auth.users' in it: True
+criterion (ii) members: {'schema w03_fixture_probe': False, 'table w03_fixture_probe.token_hashes': False, 'role w03_fixture_probe_role': False}
+criterion (ii): (d) and (e) shown -> RED
+derived listing: ["function devos_api.deployment_drift(expected jsonb)", "schema devos_api", "schema devos_private", "schema w03_fixture", "table devos_private.function_deployment", "table w03_fixture.apply_check", "view w03_fixture.apply_check_view"]
+same list (derived == step): True

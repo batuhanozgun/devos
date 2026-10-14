@@ -1,0 +1,7 @@
+NOTICE:  drop cascades to 3 other objects
+DETAIL:  drop cascades to table w03_fixture_probe.token_hashes
+drop cascades to view w03_fixture_probe.token_hashes_view
+drop cascades to function w03_fixture_probe.f()
+DROP SCHEMA
+DROP ROLE
+exit=0

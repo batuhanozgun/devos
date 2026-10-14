@@ -1,0 +1,1 @@
+W03LISTING ["role anon", "role authenticated", "role authenticator", "role postgres", "role service_role", "schema auth", "schema public", "schema supabase_migrations", "table auth.users", "table supabase_migrations.schema_migrations"]

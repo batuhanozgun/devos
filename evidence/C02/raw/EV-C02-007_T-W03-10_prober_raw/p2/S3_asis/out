@@ -1,0 +1,1 @@
+W03LISTING ["function devos_api.deployment_drift(expected jsonb)", "schema devos_api", "schema devos_private", "schema w03_fixture", "table devos_private.function_deployment", "table w03_fixture.apply_check", "view w03_fixture.apply_check_view"]

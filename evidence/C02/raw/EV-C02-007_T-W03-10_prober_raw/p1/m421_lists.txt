@@ -1,0 +1,3 @@
+W03_EXCLUDED_SCHEMAS='auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations'
+W03_SCHEMA_ENTRY_ONLY='public'
+W03_EXCLUDED_ROLES='postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role'
