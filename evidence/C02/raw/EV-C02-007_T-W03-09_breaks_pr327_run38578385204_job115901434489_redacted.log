@@ -1,0 +1,594 @@
+﻿2026-10-14T14:12:07.3454427Z Current runner version: '2.337.0'
+2026-10-14T14:12:07.3485009Z ##[group]Runner Image Provisioner
+2026-10-14T14:12:07.3486038Z Hosted Compute Agent
+2026-10-14T14:12:07.3486773Z Version: 20261002.596
+2026-10-14T14:12:07.3487678Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-14T14:12:07.3488591Z Build Date: 2026-10-02T22:28:27Z
+2026-10-14T14:12:07.3489485Z Worker ID: {9326bb23-b198-4b55-915b-bf8bffb5861d}
+2026-10-14T14:12:07.3490467Z Region: eastus
+2026-10-14T14:12:07.3491127Z Cloud: Azure
+2026-10-14T14:12:07.3492146Z ##[endgroup]
+2026-10-14T14:12:07.3493964Z ##[group]Operating System
+2026-10-14T14:12:07.3494743Z Ubuntu
+2026-10-14T14:12:07.3495382Z 24.04.5
+2026-10-14T14:12:07.3496011Z LTS
+2026-10-14T14:12:07.3496713Z ##[endgroup]
+2026-10-14T14:12:07.3497408Z ##[group]Runner Image
+2026-10-14T14:12:07.3498119Z Image: ubuntu-24.04
+2026-10-14T14:12:07.3498888Z Version: 20261004.327.1
+2026-10-14T14:12:07.3500525Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-14T14:12:07.3502754Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-14T14:12:07.3504163Z ##[endgroup]
+2026-10-14T14:12:07.3505689Z ##[group]GITHUB_TOKEN Permissions
+2026-10-14T14:12:07.3508322Z Actions: read
+2026-10-14T14:12:07.3509017Z Contents: read
+2026-10-14T14:12:07.3509749Z Issues: read
+2026-10-14T14:12:07.3510406Z Metadata: read
+2026-10-14T14:12:07.3511035Z ##[endgroup]
+2026-10-14T14:12:07.3513841Z Secret source: Actions
+2026-10-14T14:12:07.3515065Z Cache mode: write
+2026-10-14T14:12:07.3515969Z Prepare workflow directory
+2026-10-14T14:12:07.4726627Z Prepare all required actions
+2026-10-14T14:12:07.4767903Z Getting action download info
+2026-10-14T14:12:07.6348352Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-14T14:12:07.9207876Z Complete job name: breaks (T-W03-09; five copies of migrate.yml's search; the plant in place of the secret)
+2026-10-14T14:12:08.2285461Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-14T14:12:08.2286420Z with:
+2026-10-14T14:12:08.2286872Z   persist-credentials: false
+2026-10-14T14:12:08.2287378Z   repository: batuhanozgun/devos
+2026-10-14T14:12:08.2290809Z   token: ***
+2026-10-14T14:12:08.2291232Z   ssh-strict: true
+2026-10-14T14:12:08.2291924Z   ssh-user: git
+2026-10-14T14:12:08.2292343Z   clean: true
+2026-10-14T14:12:08.2292771Z   sparse-checkout-cone-mode: true
+2026-10-14T14:12:08.2293267Z   fetch-depth: 1
+2026-10-14T14:12:08.2293682Z   fetch-tags: false
+2026-10-14T14:12:08.2294098Z   show-progress: true
+2026-10-14T14:12:08.2294518Z   lfs: false
+2026-10-14T14:12:08.2294921Z   submodules: false
+2026-10-14T14:12:08.2295356Z   set-safe-directory: true
+2026-10-14T14:12:08.2295857Z   allow-unsafe-pr-checkout: false
+2026-10-14T14:12:08.2296581Z ##[endgroup]
+2026-10-14T14:12:08.3161166Z Syncing repository: batuhanozgun/devos
+2026-10-14T14:12:08.3163983Z ##[group]Getting Git version info
+2026-10-14T14:12:08.3164967Z Working directory is '/home/runner/work/devos/devos'
+2026-10-14T14:12:08.3166433Z [command]/usr/bin/git version
+2026-10-14T14:12:08.3473437Z git version 2.55.0
+2026-10-14T14:12:08.3540313Z ##[endgroup]
+2026-10-14T14:12:08.3551555Z Temporarily overriding HOME='/home/runner/work/_temp/4944c54b-98eb-4dea-b860-4e899fcd5396' before making global git config changes
+2026-10-14T14:12:08.3556120Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T14:12:08.3559306Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-14T14:12:08.3616317Z Deleting the contents of '/home/runner/work/devos/devos'
+2026-10-14T14:12:08.3618155Z ##[group]Determining repository object format
+2026-10-14T14:12:08.3619541Z ##[endgroup]
+2026-10-14T14:12:08.3620787Z ##[group]Initializing the repository
+2026-10-14T14:12:08.3622057Z [command]/usr/bin/git init /home/runner/work/devos/devos
+2026-10-14T14:12:08.3742825Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-14T14:12:08.3745228Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-14T14:12:08.3752149Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-14T14:12:08.3753917Z hint: call:
+2026-10-14T14:12:08.3754833Z hint:
+2026-10-14T14:12:08.3755877Z hint: 	git config --global init.defaultBranch <name>
+2026-10-14T14:12:08.3757121Z hint:
+2026-10-14T14:12:08.3758302Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-14T14:12:08.3760015Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-14T14:12:08.3761431Z hint:
+2026-10-14T14:12:08.3762484Z hint: 	git branch -m <name>
+2026-10-14T14:12:08.3763415Z hint:
+2026-10-14T14:12:08.3764640Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-14T14:12:08.3766762Z Initialized empty Git repository in /home/runner/work/devos/devos/.git/
+2026-10-14T14:12:08.3770525Z [command]/usr/bin/git remote add origin https://github.com/batuhanozgun/devos
+2026-10-14T14:12:08.3841144Z ##[endgroup]
+2026-10-14T14:12:08.3843273Z ##[group]Disabling automatic garbage collection
+2026-10-14T14:12:08.3844777Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-14T14:12:08.3879896Z ##[endgroup]
+2026-10-14T14:12:08.3881183Z ##[group]Setting up auth
+2026-10-14T14:12:08.3882243Z Removing SSH command configuration
+2026-10-14T14:12:08.3888406Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T14:12:08.3925531Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T14:12:08.4261887Z Removing HTTP extra header
+2026-10-14T14:12:08.4268810Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T14:12:08.4306508Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T14:12:08.4525643Z Removing includeIf entries pointing to credentials config files
+2026-10-14T14:12:08.4531763Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T14:12:08.4566472Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T14:12:08.4776672Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-14T14:12:08.4816113Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:08.4850778Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:08.4886460Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:08.4926585Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:08.4963485Z ##[endgroup]
+2026-10-14T14:12:08.4964662Z ##[group]Fetching the repository
+2026-10-14T14:12:08.4966685Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f8fb8fc8dbedddade26bc684b0701f9e22fd7182:refs/remotes/pull/327/merge
+2026-10-14T14:12:09.8708113Z From https://github.com/batuhanozgun/devos
+2026-10-14T14:12:09.8710429Z  * [new ref]         f8fb8fc8dbedddade26bc684b0701f9e22fd7182 -> pull/327/merge
+2026-10-14T14:12:09.8714566Z ##[endgroup]
+2026-10-14T14:12:09.8719063Z ##[group]Determining the checkout info
+2026-10-14T14:12:09.8720599Z ##[endgroup]
+2026-10-14T14:12:09.8727317Z [command]/usr/bin/git sparse-checkout disable
+2026-10-14T14:12:09.8775556Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-14T14:12:09.8806819Z ##[group]Checking out the ref
+2026-10-14T14:12:09.8810535Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/327/merge
+2026-10-14T14:12:09.9792882Z Note: switching to 'refs/remotes/pull/327/merge'.
+2026-10-14T14:12:09.9793623Z 
+2026-10-14T14:12:09.9794202Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-14T14:12:09.9795608Z changes and commit them, and you can discard any commits you make in this
+2026-10-14T14:12:09.9796955Z state without impacting any branches by switching back to a branch.
+2026-10-14T14:12:09.9797742Z 
+2026-10-14T14:12:09.9798419Z If you want to create a new branch to retain commits you create, you may
+2026-10-14T14:12:09.9799652Z do so (now or later) by using -c with the switch command. Example:
+2026-10-14T14:12:09.9800333Z 
+2026-10-14T14:12:09.9800645Z   git switch -c <new-branch-name>
+2026-10-14T14:12:09.9801135Z 
+2026-10-14T14:12:09.9801485Z Or undo this operation with:
+2026-10-14T14:12:09.9802278Z 
+2026-10-14T14:12:09.9802765Z   git switch -
+2026-10-14T14:12:09.9803305Z 
+2026-10-14T14:12:09.9804075Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-14T14:12:09.9805081Z 
+2026-10-14T14:12:09.9806315Z HEAD is now at f8fb8fc Merge d5c4dbfdd6d125996eb95d3bae24021bd238db0a into 44b37abfc9f629f2a7ac7854aa99ac6e93fdf2e3
+2026-10-14T14:12:09.9810198Z ##[endgroup]
+2026-10-14T14:12:09.9846697Z [command]/usr/bin/git log -1 --format=%H
+2026-10-14T14:12:09.9872968Z f8fb8fc8dbedddade26bc684b0701f9e22fd7182
+2026-10-14T14:12:09.9882305Z ##[group]Removing auth
+2026-10-14T14:12:09.9883364Z Removing SSH command configuration
+2026-10-14T14:12:09.9885531Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T14:12:09.9916922Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T14:12:10.0112381Z Removing HTTP extra header
+2026-10-14T14:12:10.0116386Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T14:12:10.0152851Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T14:12:10.0349500Z Removing includeIf entries pointing to credentials config files
+2026-10-14T14:12:10.0352191Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T14:12:10.0379976Z includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-14T14:12:10.0398165Z includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-14T14:12:10.0400107Z includeif.gitdir:/github/workspace/.git.path
+2026-10-14T14:12:10.0401470Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-14T14:12:10.0405806Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-14T14:12:10.0415313Z /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0426127Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0460750Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-14T14:12:10.0483002Z /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0493403Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0527538Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-14T14:12:10.0550333Z /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0559506Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0593322Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-14T14:12:10.0615918Z /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0626481Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config
+2026-10-14T14:12:10.0664997Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T14:12:10.0859571Z Removing credentials config '/home/runner/work/_temp/git-credentials-274e31ae-b029-4996-b652-075a42e2764f.config'
+2026-10-14T14:12:10.0869781Z ##[endgroup]
+2026-10-14T14:12:10.1895288Z ##[group]Run # T-W03-09's break attempt. Synthetic test data (plan Section 8 item 13): the plant is a value made up for that
+2026-10-14T14:12:10.1898862Z [36;1m# T-W03-09's break attempt. Synthetic test data (plan Section 8 item 13): the plant is a value made up for that[0m
+2026-10-14T14:12:10.1901317Z [36;1m# test, never a credential. The step search of job check-devos-test is read from this commit's[0m
+2026-10-14T14:12:10.1916750Z [36;1m# .github/workflows/migrate.yml by job and step id, as the rehearsal read it (EV-C02-007 section 15.15, "The run[0m
+2026-10-14T14:12:10.1919731Z [36;1m# step"): exactly one such step, its shell python or bash, no expression in its body. The SHA-256 of run|shell[0m
+2026-10-14T14:12:10.1922443Z [36;1m# must equal main's (EXPECTED); otherwise nothing runs. Then five copies of the body run in order, each as GitHub[0m
+2026-10-14T14:12:10.1925023Z [36;1m# runs its shell (python FILE): copy 0 unchanged, the positive control; copies 1 to 4 each made by one textual[0m
+2026-10-14T14:12:10.1927501Z [36;1m# change that must apply exactly once (otherwise that copy is not run, with a line that says so). Each copy's[0m
+2026-10-14T14:12:10.1930022Z [36;1m# environment is this step's, plus the plant decoded here and given to its process alone as SUPABASE_DB_PASSWORD,[0m
+2026-10-14T14:12:10.1932675Z [36;1m# in place of the secret. Names, hashes, each copy's own lines (counts and statuses only) prefixed by its label,[0m
+2026-10-14T14:12:10.1935177Z [36;1m# and a summary of the plant's counts read from those lines are printed, never a value. A copy's verdict is read[0m
+2026-10-14T14:12:10.1937631Z [36;1m# from its count lines, not from its exit status: with the plant in place of the secret, each copy reports the[0m
+2026-10-14T14:12:10.1939863Z [36;1m# "credential" found. This step exits 0 when all five copies were made and run, 1 otherwise.[0m
+2026-10-14T14:12:10.1941578Z [36;1mimport base64, hashlib, json, os, re, subprocess, sys[0m
+2026-10-14T14:12:10.1942895Z [36;1mimport yaml[0m
+2026-10-14T14:12:10.1943637Z [36;1m[0m
+2026-10-14T14:12:10.1944446Z [36;1msys.stdout.reconfigure(line_buffering=True)[0m
+2026-10-14T14:12:10.1946001Z [36;1mEXPR = "$" + "{{"  # written in two parts, so that this body holds no expression opener itself[0m
+2026-10-14T14:12:10.1947541Z [36;1mJOB, STEP = "check-devos-test", "search"[0m
+2026-10-14T14:12:10.1949210Z [36;1m# SHA-256 of run|shell of that step at main 1f6f9a2 (190 lines). EV-C02-007 sections 15.15 and 15.16 give its[0m
+2026-10-14T14:12:10.1951469Z [36;1m# first 12 hex digits, 2ef72520eefd. Another value means the copies would not be the search S2 runs.[0m
+2026-10-14T14:12:10.1953967Z [36;1mEXPECTED = "2ef72520eefdfc1407925d2742f6a5db12c8622548518f582f2aea18e832aebe"[0m
+2026-10-14T14:12:10.1956093Z [36;1m# (label, old text, new text): each broken copy removes one part named by T-W03-09's break attempt, and only it.[0m
+2026-10-14T14:12:10.1957776Z [36;1mCOPIES = [[0m
+2026-10-14T14:12:10.1958616Z [36;1m    ("copy 0 unbroken", None, None),[0m
+2026-10-14T14:12:10.1960053Z [36;1m    # 1: only the current trees' blobs are read; no other object (the history) is read.[0m
+2026-10-14T14:12:10.1961490Z [36;1m    ("copy 1 no history",[0m
+2026-10-14T14:12:10.1963079Z [36;1m     'ids = git("-C", m, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").stdout',[0m
+2026-10-14T14:12:10.1964765Z [36;1m     r'ids = b"".join(s + b"\n" for s in sorted(tip_blobs))'),[0m
+2026-10-14T14:12:10.1966496Z [36;1m    # 2: only the plain form is searched, in every place; the percent-encoded form is never counted.[0m
+2026-10-14T14:12:10.1968066Z [36;1m    ("copy 2 plain only",[0m
+2026-10-14T14:12:10.1969433Z [36;1m     'return {"plain": v.encode(), "percent": urllib.parse.quote(v, safe="").encode()}',[0m
+2026-10-14T14:12:10.1970914Z [36;1m     'return {"plain": v.encode()}'),[0m
+2026-10-14T14:12:10.1972914Z [36;1m    # 3: the issues are not read (issue #6 and the fixture issue share this code); each place still prints 0.[0m
+2026-10-14T14:12:10.1974544Z [36;1m    ("copy 3 no issue",[0m
+2026-10-14T14:12:10.1975464Z [36;1m     'place = f"issue #{number}"',[0m
+2026-10-14T14:12:10.1976673Z [36;1m     'place = f"issue #{number}"; count(place, b""); continue'),[0m
+2026-10-14T14:12:10.1978435Z [36;1m    # 4: the run list is not read, so no earlier run's log is read; the logs place still prints 0, no gap.[0m
+2026-10-14T14:12:10.1979976Z [36;1m    ("copy 4 no logs",[0m
+2026-10-14T14:12:10.1981037Z [36;1m     'runs, seen, listed, page, more = [], set(), 0, 0, True',[0m
+2026-10-14T14:12:10.1982575Z [36;1m     'runs, seen, listed, page, more = [], set(), 0, 0, False'),[0m
+2026-10-14T14:12:10.1983712Z [36;1m][0m
+2026-10-14T14:12:10.1984371Z [36;1m[0m
+2026-10-14T14:12:10.1985515Z [36;1msha, event = os.environ.get("GITHUB_SHA", "?"), os.environ.get("GITHUB_EVENT_NAME", "?")[0m
+2026-10-14T14:12:10.1986895Z [36;1mtry:[0m
+2026-10-14T14:12:10.1987916Z [36;1m    with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:[0m
+2026-10-14T14:12:10.1989296Z [36;1m        pr = json.load(f).get("pull_request") or {}[0m
+2026-10-14T14:12:10.1990440Z [36;1mexcept (KeyError, OSError, ValueError):[0m
+2026-10-14T14:12:10.1991414Z [36;1m    pr = {}[0m
+2026-10-14T14:12:10.1992568Z [36;1mbase, head = pr.get("base") or {}, pr.get("head") or {}[0m
+2026-10-14T14:12:10.1993905Z [36;1mprint(f"breaks: event {event}, checked-out commit {sha}"[0m
+2026-10-14T14:12:10.1995531Z [36;1m      + (f" (pull request #{pr.get('number')}: head {head.get('ref')} {head.get('sha')} into base "[0m
+2026-10-14T14:12:10.1997151Z [36;1m         f"{base.get('ref')} {base.get('sha')})" if pr else ""))[0m
+2026-10-14T14:12:10.1998243Z [36;1m[0m
+2026-10-14T14:12:10.1999237Z [36;1mwith open(".github/workflows/migrate.yml", encoding="utf-8") as f:[0m
+2026-10-14T14:12:10.2000500Z [36;1m    wf = yaml.safe_load(f)[0m
+2026-10-14T14:12:10.2001507Z [36;1mjobdef = (wf.get("jobs") or {}).get(JOB) or {}[0m
+2026-10-14T14:12:10.2003203Z [36;1mfound = [s for s in jobdef.get("steps") or [] if isinstance(s, dict) and s.get("id") == STEP][0m
+2026-10-14T14:12:10.2004635Z [36;1mif len(found) != 1:[0m
+2026-10-14T14:12:10.2006210Z [36;1m    print(f"breaks: could not check: migrate.yml's job {JOB} has {len(found)} steps with id {STEP}; no copy is run")[0m
+2026-10-14T14:12:10.2007948Z [36;1m    raise SystemExit(1)[0m
+2026-10-14T14:12:10.2008882Z [36;1mstep = found[0][0m
+2026-10-14T14:12:10.2009843Z [36;1mrun, shell = step.get("run"), step.get("shell")[0m
+2026-10-14T14:12:10.2011513Z [36;1mcmd = {"python": [sys.executable], "bash": ["bash", "--noprofile", "--norc", "-eo", "pipefail"]}.get(shell)[0m
+2026-10-14T14:12:10.2013592Z [36;1mif not isinstance(run, str) or cmd is None or EXPR in run:[0m
+2026-10-14T14:12:10.2015502Z [36;1m    print(f"breaks: could not check: step {STEP} is not a run body, in shell python or bash, free of expressions; "[0m
+2026-10-14T14:12:10.2017185Z [36;1m          "no copy is run")[0m
+2026-10-14T14:12:10.2018127Z [36;1m    raise SystemExit(1)[0m
+2026-10-14T14:12:10.2019311Z [36;1mdigest = hashlib.sha256((run + "|" + shell).encode()).hexdigest()[0m
+2026-10-14T14:12:10.2021209Z [36;1mprint(f"breaks: migrate.yml at {sha}, job {JOB}, step {STEP}: shell {shell}, {len(run.splitlines())} lines, "[0m
+2026-10-14T14:12:10.2023280Z [36;1m      f"SHA-256 of run|shell {digest}; run as: {' '.join(cmd)} FILE")[0m
+2026-10-14T14:12:10.2024500Z [36;1mif digest != EXPECTED:[0m
+2026-10-14T14:12:10.2025971Z [36;1m    print(f"breaks: could not check: that is not main's search body (SHA-256 of run|shell {EXPECTED}); "[0m
+2026-10-14T14:12:10.2027546Z [36;1m          "no copy is run")[0m
+2026-10-14T14:12:10.2028469Z [36;1m    raise SystemExit(1)[0m
+2026-10-14T14:12:10.2029873Z [36;1mprint(f"breaks: that equals main's search body ({EXPECTED[:12]}, EV-C02-007 section 15.15)")[0m
+2026-10-14T14:12:10.2031313Z [36;1m[0m
+2026-10-14T14:12:10.2032211Z [36;1menv = dict(os.environ)[0m
+2026-10-14T14:12:10.2033755Z [36;1mfor scope, block in (("workflow", wf.get("env") or {}), ("job", jobdef.get("env") or {})):[0m
+2026-10-14T14:12:10.2035200Z [36;1m    for k, v in block.items():[0m
+2026-10-14T14:12:10.2036472Z [36;1m        if re.search(r"(?<![A-Za-z0-9_])" + re.escape(k) + r"(?![A-Za-z0-9_])", run):[0m
+2026-10-14T14:12:10.2037770Z [36;1m            v = str(v)[0m
+2026-10-14T14:12:10.2038648Z [36;1m            if k in os.environ:[0m
+2026-10-14T14:12:10.2039775Z [36;1m                print(f"breaks: env {k}: this workflow's value, "[0m
+2026-10-14T14:12:10.2041490Z [36;1m                      f"{'the same as' if os.environ[k] == v else 'NOT the same as'} migrate.yml's {scope}-level "[0m
+2026-10-14T14:12:10.2043439Z [36;1m                      f"value at this commit ({'set' if v else 'empty'} there)")[0m
+2026-10-14T14:12:10.2044674Z [36;1m            elif EXPR in v:[0m
+2026-10-14T14:12:10.2046233Z [36;1m                print(f"breaks: could not check: migrate.yml's {scope}-level {k} holds an expression; no copy is run")[0m
+2026-10-14T14:12:10.2047887Z [36;1m                raise SystemExit(1)[0m
+2026-10-14T14:12:10.2048833Z [36;1m            else:[0m
+2026-10-14T14:12:10.2049639Z [36;1m                env[k] = v[0m
+2026-10-14T14:12:10.2051021Z [36;1m                print(f"breaks: env {k}: migrate.yml's {scope}-level value ({'set' if v else 'empty'})")[0m
+2026-10-14T14:12:10.2052662Z [36;1mfor k, v in (step.get("env") or {}).items():[0m
+2026-10-14T14:12:10.2053673Z [36;1m    v = str(v)[0m
+2026-10-14T14:12:10.2054505Z [36;1m    if k == "SUPABASE_DB_PASSWORD":[0m
+2026-10-14T14:12:10.2056098Z [36;1m        print(f"breaks: env {k}: the plant, decoded here from W03_PLANT_B64, in place of migrate.yml's value")[0m
+2026-10-14T14:12:10.2057682Z [36;1m    elif EXPR not in v:[0m
+2026-10-14T14:12:10.2058544Z [36;1m        env[k] = v[0m
+2026-10-14T14:12:10.2059528Z [36;1m        print(f"breaks: env {k}: the step's own value")[0m
+2026-10-14T14:12:10.2060619Z [36;1m    elif k in os.environ:[0m
+2026-10-14T14:12:10.2061967Z [36;1m        print(f"breaks: env {k}: an expression in migrate.yml; this job's own value")[0m
+2026-10-14T14:12:10.2063300Z [36;1m    else:[0m
+2026-10-14T14:12:10.2064368Z [36;1m        print(f"breaks: env {k}: an expression in migrate.yml; not set here")[0m
+2026-10-14T14:12:10.2065607Z [36;1mtry:[0m
+2026-10-14T14:12:10.2066853Z [36;1m    plant = base64.b64decode(os.environ.get("W03_PLANT_B64", ""), validate=True).decode("ascii")[0m
+2026-10-14T14:12:10.2068324Z [36;1mexcept ValueError:[0m
+2026-10-14T14:12:10.2069139Z [36;1m    plant = ""[0m
+2026-10-14T14:12:10.2069919Z [36;1mif not plant:[0m
+2026-10-14T14:12:10.2071465Z [36;1m    print("breaks: could not check: W03_PLANT_B64 is empty, or not base64 of ASCII text; no copy is run")[0m
+2026-10-14T14:12:10.2073101Z [36;1m    raise SystemExit(1)[0m
+2026-10-14T14:12:10.2074640Z [36;1menv["SUPABASE_DB_PASSWORD"] = plant  # the process environment only: never a command line, a file or a line[0m
+2026-10-14T14:12:10.2076220Z [36;1m[0m
+2026-10-14T14:12:10.2076893Z [36;1mresults = [][0m
+2026-10-14T14:12:10.2077785Z [36;1mfor i, (label, old, new) in enumerate(COPIES):[0m
+2026-10-14T14:12:10.2078814Z [36;1m    body = run[0m
+2026-10-14T14:12:10.2079602Z [36;1m    if old is not None:[0m
+2026-10-14T14:12:10.2080468Z [36;1m        n = body.count(old)[0m
+2026-10-14T14:12:10.2081336Z [36;1m        if n != 1:[0m
+2026-10-14T14:12:10.2082774Z [36;1m            print(f"[{label}] breaks: could not check: its change applies {n} times, not exactly once; "[0m
+2026-10-14T14:12:10.2084309Z [36;1m                  "this copy is not run")[0m
+2026-10-14T14:12:10.2085371Z [36;1m            results.append((label, None, []))[0m
+2026-10-14T14:12:10.2086356Z [36;1m            continue[0m
+2026-10-14T14:12:10.2087236Z [36;1m        body = body.replace(old, new)[0m
+2026-10-14T14:12:10.2088417Z [36;1m    h = hashlib.sha256((body + "|" + shell).encode()).hexdigest()[0m
+2026-10-14T14:12:10.2089861Z [36;1m    print(f"[{label}] breaks: SHA-256 of run|shell {h}"[0m
+2026-10-14T14:12:10.2091324Z [36;1m          + (" (unchanged)" if old is None else f"; its one change: {old!r} -> {new!r}"))[0m
+2026-10-14T14:12:10.2093014Z [36;1m    path = os.path.join(os.environ["RUNNER_TEMP"], f"w03b-copy{i}.body")[0m
+2026-10-14T14:12:10.2094368Z [36;1m    with open(path, "w", encoding="utf-8") as f:[0m
+2026-10-14T14:12:10.2095394Z [36;1m        f.write(body)[0m
+2026-10-14T14:12:10.2096854Z [36;1m    p = subprocess.run(cmd + [path], env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,[0m
+2026-10-14T14:12:10.2098468Z [36;1m                       errors="replace")[0m
+2026-10-14T14:12:10.2099493Z [36;1m    lines = p.stdout.splitlines()[0m
+2026-10-14T14:12:10.2100445Z [36;1m    for line in lines:[0m
+2026-10-14T14:12:10.2101335Z [36;1m        print(f"[{label}] {line}")[0m
+2026-10-14T14:12:10.2102812Z [36;1m    print(f"[{label}] breaks: exit {p.returncode} (not its verdict; read its count lines)")[0m
+2026-10-14T14:12:10.2104371Z [36;1m    results.append((label, p.returncode, lines))[0m
+2026-10-14T14:12:10.2105500Z [36;1mdel plant, env["SUPABASE_DB_PASSWORD"][0m
+2026-10-14T14:12:10.2106467Z [36;1m[0m
+2026-10-14T14:12:10.2107466Z [36;1mLINE = re.compile(r"search plant \| (.+) \| (plain|percent): ([0-9]+)")[0m
+2026-10-14T14:12:10.2108704Z [36;1mplaces, table = [], [][0m
+2026-10-14T14:12:10.2109592Z [36;1mfor label, rc, lines in results:[0m
+2026-10-14T14:12:10.2110508Z [36;1m    got = {}[0m
+2026-10-14T14:12:10.2111274Z [36;1m    for line in lines:[0m
+2026-10-14T14:12:10.2112242Z [36;1m        m = LINE.fullmatch(line)[0m
+2026-10-14T14:12:10.2113153Z [36;1m        if m:[0m
+2026-10-14T14:12:10.2114083Z [36;1m            got[(m.group(1), m.group(2))] = int(m.group(3))[0m
+2026-10-14T14:12:10.2115221Z [36;1m            if m.group(1) not in places:[0m
+2026-10-14T14:12:10.2116266Z [36;1m                places.append(m.group(1))[0m
+2026-10-14T14:12:10.2117293Z [36;1m    table.append((label, rc, got))[0m
+2026-10-14T14:12:10.2118953Z [36;1mprint("breaks: summary: the plant's counts per copy and place, read from each copy's own lines (plain, percent)")[0m
+2026-10-14T14:12:10.2120642Z [36;1mfor label, rc, got in table:[0m
+2026-10-14T14:12:10.2121521Z [36;1m    if rc is None:[0m
+2026-10-14T14:12:10.2122789Z [36;1m        print(f"summary: {label}: not run (its change did not apply exactly once)")[0m
+2026-10-14T14:12:10.2124076Z [36;1m        continue[0m
+2026-10-14T14:12:10.2124887Z [36;1m    for place in places:[0m
+2026-10-14T14:12:10.2126000Z [36;1m        pl, pc = got.get((place, "plain")), got.get((place, "percent"))[0m
+2026-10-14T14:12:10.2127690Z [36;1m        print(f"summary: {label} | {place} | plain {'no line' if pl is None else pl}, "[0m
+2026-10-14T14:12:10.2129156Z [36;1m              f"percent {'no line' if pc is None else pc}")[0m
+2026-10-14T14:12:10.2130545Z [36;1mraise SystemExit(0 if all(rc is not None for _, rc, _ in table) else 1)[0m
+2026-10-14T14:12:10.2966665Z shell: /usr/bin/python {0}
+2026-10-14T14:12:10.2967573Z env:
+2026-10-14T14:12:10.2968673Z   W03_PLANT_B64: <removed in this copy: the plant's base64 form, FR-07 item 3; the unedited log is on GitHub>
+2026-10-14T14:12:10.2969978Z   W03_FIXTURE_ISSUE: 308
+2026-10-14T14:12:10.2976901Z   GH_TOKEN: ***
+2026-10-14T14:12:10.2977642Z ##[endgroup]
+2026-10-14T14:12:10.3375795Z breaks: event pull_request, checked-out commit f8fb8fc8dbedddade26bc684b0701f9e22fd7182 (pull request #327: head claude/w03-search-breaks d5c4dbfdd6d125996eb95d3bae24021bd238db0a into base main 44b37abfc9f629f2a7ac7854aa99ac6e93fdf2e3)
+2026-10-14T14:12:10.4294738Z breaks: migrate.yml at f8fb8fc8dbedddade26bc684b0701f9e22fd7182, job check-devos-test, step search: shell python, 190 lines, SHA-256 of run|shell 2ef72520eefdfc1407925d2742f6a5db12c8622548518f582f2aea18e832aebe; run as: /usr/bin/python FILE
+2026-10-14T14:12:10.4298152Z breaks: that equals main's search body (2ef72520eefd, EV-C02-007 section 15.15)
+2026-10-14T14:12:10.4309519Z breaks: env W03_PLANT_B64: this workflow's value, the same as migrate.yml's workflow-level value at this commit (set there)
+2026-10-14T14:12:10.4312249Z breaks: env W03_FIXTURE_ISSUE: this workflow's value, the same as migrate.yml's workflow-level value at this commit (set there)
+2026-10-14T14:12:10.4330790Z breaks: env SUPABASE_DB_PASSWORD: the plant, decoded here from W03_PLANT_B64, in place of migrate.yml's value
+2026-10-14T14:12:10.4332871Z breaks: env GH_TOKEN: an expression in migrate.yml; this job's own value
+2026-10-14T14:12:10.4334849Z [copy 0 unbroken] breaks: SHA-256 of run|shell 2ef72520eefdfc1407925d2742f6a5db12c8622548518f582f2aea18e832aebe (unchanged)
+2026-10-14T14:12:26.2792909Z [copy 0 unbroken] repository: 506 refs, 10342 objects read
+2026-10-14T14:12:26.2793696Z [copy 0 unbroken] logs: run 38563282231: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2794700Z [copy 0 unbroken] logs: run 38516392605: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2795810Z [copy 0 unbroken] logs: run 38455614435: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2796831Z [copy 0 unbroken] logs: run 38371262081: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2797890Z [copy 0 unbroken] logs: run 38371046806: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2798781Z [copy 0 unbroken] logs: run 38367799155: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2799809Z [copy 0 unbroken] logs: run 38367427286: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2801019Z [copy 0 unbroken] logs: run 38363215668: the credential counted in all its files, the plant in its top-level files (2 top-level, 12 in folders)
+2026-10-14T14:12:26.2802238Z [copy 0 unbroken] logs: run 38363081389: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2803278Z [copy 0 unbroken] logs: run 38360556244: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2804317Z [copy 0 unbroken] logs: run 38356623539: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2805356Z [copy 0 unbroken] logs: run 38356419903: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2806641Z [copy 0 unbroken] logs: run 38343064563: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2807681Z [copy 0 unbroken] logs: run 38338397428: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2808731Z [copy 0 unbroken] logs: run 38334216555: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2809796Z [copy 0 unbroken] logs: run 38334121865: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2810862Z [copy 0 unbroken] logs: run 38332873603: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2812090Z [copy 0 unbroken] logs: run 38332726619: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2813213Z [copy 0 unbroken] logs: run 38328877217: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2814491Z [copy 0 unbroken] logs: run 38319371450: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2815566Z [copy 0 unbroken] logs: run 38316669047: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2816637Z [copy 0 unbroken] logs: run 38315433827: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:26.2817443Z [copy 0 unbroken] logs: 22 of 22 earlier runs of migrate.yml read
+2026-10-14T14:12:26.2817972Z [copy 0 unbroken] search credential | repository: history | plain: 0
+2026-10-14T14:12:26.2818521Z [copy 0 unbroken] search credential | repository: history | percent: 1
+2026-10-14T14:12:26.2819106Z [copy 0 unbroken] search credential | repository: current trees | plain: 1
+2026-10-14T14:12:26.2819716Z [copy 0 unbroken] search credential | repository: current trees | percent: 0
+2026-10-14T14:12:26.2820246Z [copy 0 unbroken] search credential | issue #6 | plain: 0
+2026-10-14T14:12:26.2820759Z [copy 0 unbroken] search credential | issue #6 | percent: 0
+2026-10-14T14:12:26.2821249Z [copy 0 unbroken] search credential | issue #308 | plain: 1
+2026-10-14T14:12:26.2821844Z [copy 0 unbroken] search credential | issue #308 | percent: 0
+2026-10-14T14:12:26.2822424Z [copy 0 unbroken] search credential | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:26.2823088Z [copy 0 unbroken] search credential | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:26.2823675Z [copy 0 unbroken] search plant | repository: history | plain: 0
+2026-10-14T14:12:26.2824186Z [copy 0 unbroken] search plant | repository: history | percent: 1
+2026-10-14T14:12:26.2824728Z [copy 0 unbroken] search plant | repository: current trees | plain: 1
+2026-10-14T14:12:26.2825287Z [copy 0 unbroken] search plant | repository: current trees | percent: 0
+2026-10-14T14:12:26.2825796Z [copy 0 unbroken] search plant | issue #6 | plain: 0
+2026-10-14T14:12:26.2826229Z [copy 0 unbroken] search plant | issue #6 | percent: 0
+2026-10-14T14:12:26.2826673Z [copy 0 unbroken] search plant | issue #308 | plain: 1
+2026-10-14T14:12:26.2827105Z [copy 0 unbroken] search plant | issue #308 | percent: 0
+2026-10-14T14:12:26.2827640Z [copy 0 unbroken] search plant | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:26.2828270Z [copy 0 unbroken] search plant | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:26.2829005Z [copy 0 unbroken] search: the credential was FOUND (6 matches); it is treated as exposed (EV-C02-001 M30)
+2026-10-14T14:12:26.2829705Z [copy 0 unbroken] breaks: exit 1 (not its verdict; read its count lines)
+2026-10-14T14:12:26.2831324Z [copy 1 no history] breaks: SHA-256 of run|shell d35b8fecbf9ea370742d68c4f8f9eb7244ce840b6e5e8b708297d69f092c5967; its one change: 'ids = git("-C", m, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").stdout' -> 'ids = b"".join(s + b"\\n" for s in sorted(tip_blobs))'
+2026-10-14T14:12:41.0642344Z [copy 1 no history] repository: 506 refs, 2919 objects read
+2026-10-14T14:12:41.0643317Z [copy 1 no history] logs: run 38563282231: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0644509Z [copy 1 no history] logs: run 38516392605: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0645589Z [copy 1 no history] logs: run 38455614435: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0646689Z [copy 1 no history] logs: run 38371262081: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0647663Z [copy 1 no history] logs: run 38371046806: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0648742Z [copy 1 no history] logs: run 38367799155: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0650249Z [copy 1 no history] logs: run 38367427286: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0651728Z [copy 1 no history] logs: run 38363215668: the credential counted in all its files, the plant in its top-level files (2 top-level, 12 in folders)
+2026-10-14T14:12:41.0653004Z [copy 1 no history] logs: run 38363081389: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0654217Z [copy 1 no history] logs: run 38360556244: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0655429Z [copy 1 no history] logs: run 38356623539: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0656761Z [copy 1 no history] logs: run 38356419903: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0657690Z [copy 1 no history] logs: run 38343064563: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0658363Z [copy 1 no history] logs: run 38338397428: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0659015Z [copy 1 no history] logs: run 38334216555: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0659642Z [copy 1 no history] logs: run 38334121865: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0660275Z [copy 1 no history] logs: run 38332873603: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0660909Z [copy 1 no history] logs: run 38332726619: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0661537Z [copy 1 no history] logs: run 38328877217: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0662396Z [copy 1 no history] logs: run 38319371450: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0663058Z [copy 1 no history] logs: run 38316669047: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0663694Z [copy 1 no history] logs: run 38315433827: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:41.0664393Z [copy 1 no history] logs: 22 of 22 earlier runs of migrate.yml read
+2026-10-14T14:12:41.0664744Z [copy 1 no history] search credential | repository: current trees | plain: 1
+2026-10-14T14:12:41.0665127Z [copy 1 no history] search credential | repository: current trees | percent: 0
+2026-10-14T14:12:41.0665478Z [copy 1 no history] search credential | repository: history | plain: 0
+2026-10-14T14:12:41.0665813Z [copy 1 no history] search credential | repository: history | percent: 0
+2026-10-14T14:12:41.0666141Z [copy 1 no history] search credential | issue #6 | plain: 0
+2026-10-14T14:12:41.0666448Z [copy 1 no history] search credential | issue #6 | percent: 0
+2026-10-14T14:12:41.0666742Z [copy 1 no history] search credential | issue #308 | plain: 1
+2026-10-14T14:12:41.0667043Z [copy 1 no history] search credential | issue #308 | percent: 0
+2026-10-14T14:12:41.0667399Z [copy 1 no history] search credential | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:41.0667820Z [copy 1 no history] search credential | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:41.0668197Z [copy 1 no history] search plant | repository: current trees | plain: 1
+2026-10-14T14:12:41.0668540Z [copy 1 no history] search plant | repository: current trees | percent: 0
+2026-10-14T14:12:41.0668996Z [copy 1 no history] search plant | repository: history | plain: 0
+2026-10-14T14:12:41.0669322Z [copy 1 no history] search plant | repository: history | percent: 0
+2026-10-14T14:12:41.0669628Z [copy 1 no history] search plant | issue #6 | plain: 0
+2026-10-14T14:12:41.0669898Z [copy 1 no history] search plant | issue #6 | percent: 0
+2026-10-14T14:12:41.0670183Z [copy 1 no history] search plant | issue #308 | plain: 1
+2026-10-14T14:12:41.0670460Z [copy 1 no history] search plant | issue #308 | percent: 0
+2026-10-14T14:12:41.0670789Z [copy 1 no history] search plant | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:41.0671185Z [copy 1 no history] search plant | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:41.0671790Z [copy 1 no history] search: could not check: repository: history (the plant was not found in repository: history)
+2026-10-14T14:12:41.0672353Z [copy 1 no history] search: could not check: the percent-encoded form (the plant was not found in that form in any place)
+2026-10-14T14:12:41.0672891Z [copy 1 no history] search: the credential was FOUND (5 matches); it is treated as exposed (EV-C02-001 M30)
+2026-10-14T14:12:41.0673310Z [copy 1 no history] breaks: exit 1 (not its verdict; read its count lines)
+2026-10-14T14:12:41.0674111Z [copy 2 plain only] breaks: SHA-256 of run|shell 10464ff0f29fbf7d5c2e97fd34de9d9a48d9c82f8b5eeb47310a73d036a5eb35; its one change: 'return {"plain": v.encode(), "percent": urllib.parse.quote(v, safe="").encode()}' -> 'return {"plain": v.encode()}'
+2026-10-14T14:12:54.8124818Z [copy 2 plain only] repository: 506 refs, 10342 objects read
+2026-10-14T14:12:54.8125690Z [copy 2 plain only] logs: run 38563282231: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8126695Z [copy 2 plain only] logs: run 38516392605: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8127797Z [copy 2 plain only] logs: run 38455614435: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8128829Z [copy 2 plain only] logs: run 38371262081: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8129868Z [copy 2 plain only] logs: run 38371046806: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8130757Z [copy 2 plain only] logs: run 38367799155: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8132194Z [copy 2 plain only] logs: run 38367427286: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8133369Z [copy 2 plain only] logs: run 38363215668: the credential counted in all its files, the plant in its top-level files (2 top-level, 12 in folders)
+2026-10-14T14:12:54.8134412Z [copy 2 plain only] logs: run 38363081389: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8135452Z [copy 2 plain only] logs: run 38360556244: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8136497Z [copy 2 plain only] logs: run 38356623539: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8137562Z [copy 2 plain only] logs: run 38356419903: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8138626Z [copy 2 plain only] logs: run 38343064563: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8139651Z [copy 2 plain only] logs: run 38338397428: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8140904Z [copy 2 plain only] logs: run 38334216555: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8142188Z [copy 2 plain only] logs: run 38334121865: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8143262Z [copy 2 plain only] logs: run 38332873603: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8144342Z [copy 2 plain only] logs: run 38332726619: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8145423Z [copy 2 plain only] logs: run 38328877217: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8146515Z [copy 2 plain only] logs: run 38319371450: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8147589Z [copy 2 plain only] logs: run 38316669047: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8148657Z [copy 2 plain only] logs: run 38315433827: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:12:54.8149464Z [copy 2 plain only] logs: 22 of 22 earlier runs of migrate.yml read
+2026-10-14T14:12:54.8150007Z [copy 2 plain only] search credential | repository: history | plain: 0
+2026-10-14T14:12:54.8150572Z [copy 2 plain only] search credential | repository: history | percent: 0
+2026-10-14T14:12:54.8151162Z [copy 2 plain only] search credential | repository: current trees | plain: 1
+2026-10-14T14:12:54.8151960Z [copy 2 plain only] search credential | repository: current trees | percent: 0
+2026-10-14T14:12:54.8152502Z [copy 2 plain only] search credential | issue #6 | plain: 0
+2026-10-14T14:12:54.8152975Z [copy 2 plain only] search credential | issue #6 | percent: 0
+2026-10-14T14:12:54.8153452Z [copy 2 plain only] search credential | issue #308 | plain: 1
+2026-10-14T14:12:54.8153936Z [copy 2 plain only] search credential | issue #308 | percent: 0
+2026-10-14T14:12:54.8154522Z [copy 2 plain only] search credential | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:54.8155200Z [copy 2 plain only] search credential | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:54.8155786Z [copy 2 plain only] search plant | repository: history | plain: 0
+2026-10-14T14:12:54.8156310Z [copy 2 plain only] search plant | repository: history | percent: 0
+2026-10-14T14:12:54.8157040Z [copy 2 plain only] search plant | repository: current trees | plain: 1
+2026-10-14T14:12:54.8157609Z [copy 2 plain only] search plant | repository: current trees | percent: 0
+2026-10-14T14:12:54.8158116Z [copy 2 plain only] search plant | issue #6 | plain: 0
+2026-10-14T14:12:54.8158560Z [copy 2 plain only] search plant | issue #6 | percent: 0
+2026-10-14T14:12:54.8159000Z [copy 2 plain only] search plant | issue #308 | plain: 1
+2026-10-14T14:12:54.8159453Z [copy 2 plain only] search plant | issue #308 | percent: 0
+2026-10-14T14:12:54.8160009Z [copy 2 plain only] search plant | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:12:54.8160632Z [copy 2 plain only] search plant | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:12:54.8161392Z [copy 2 plain only] search: could not check: repository: history (the plant was not found in repository: history)
+2026-10-14T14:12:54.8162518Z [copy 2 plain only] search: could not check: the percent-encoded form (the plant was not found in that form in any place)
+2026-10-14T14:12:54.8163422Z [copy 2 plain only] search: the credential was FOUND (5 matches); it is treated as exposed (EV-C02-001 M30)
+2026-10-14T14:12:54.8164113Z [copy 2 plain only] breaks: exit 1 (not its verdict; read its count lines)
+2026-10-14T14:12:54.8165441Z [copy 3 no issue] breaks: SHA-256 of run|shell f801941263f594c58f925c28ee7a2d4a43ae9509e19d336f08682bd36a902db7; its one change: 'place = f"issue #{number}"' -> 'place = f"issue #{number}"; count(place, b""); continue'
+2026-10-14T14:13:07.6869087Z [copy 3 no issue] repository: 506 refs, 10342 objects read
+2026-10-14T14:13:07.6869966Z [copy 3 no issue] logs: run 38563282231: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6870667Z [copy 3 no issue] logs: run 38516392605: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6871315Z [copy 3 no issue] logs: run 38455614435: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6872190Z [copy 3 no issue] logs: run 38371262081: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6872828Z [copy 3 no issue] logs: run 38371046806: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6873444Z [copy 3 no issue] logs: run 38367799155: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6874053Z [copy 3 no issue] logs: run 38367427286: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6874669Z [copy 3 no issue] logs: run 38363215668: the credential counted in all its files, the plant in its top-level files (2 top-level, 12 in folders)
+2026-10-14T14:13:07.6875300Z [copy 3 no issue] logs: run 38363081389: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6875969Z [copy 3 no issue] logs: run 38360556244: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6876630Z [copy 3 no issue] logs: run 38356623539: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6877246Z [copy 3 no issue] logs: run 38356419903: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6877854Z [copy 3 no issue] logs: run 38343064563: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6878469Z [copy 3 no issue] logs: run 38338397428: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6879311Z [copy 3 no issue] logs: run 38334216555: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6879923Z [copy 3 no issue] logs: run 38334121865: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6880536Z [copy 3 no issue] logs: run 38332873603: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6881151Z [copy 3 no issue] logs: run 38332726619: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6881871Z [copy 3 no issue] logs: run 38328877217: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6882513Z [copy 3 no issue] logs: run 38319371450: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6883130Z [copy 3 no issue] logs: run 38316669047: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6883743Z [copy 3 no issue] logs: run 38315433827: the credential counted in all its files, the plant in its top-level files (2 top-level, 2 in folders)
+2026-10-14T14:13:07.6884379Z [copy 3 no issue] logs: 22 of 22 earlier runs of migrate.yml read
+2026-10-14T14:13:07.6884707Z [copy 3 no issue] search credential | repository: history | plain: 0
+2026-10-14T14:13:07.6885042Z [copy 3 no issue] search credential | repository: history | percent: 1
+2026-10-14T14:13:07.6885385Z [copy 3 no issue] search credential | repository: current trees | plain: 1
+2026-10-14T14:13:07.6885745Z [copy 3 no issue] search credential | repository: current trees | percent: 0
+2026-10-14T14:13:07.6886068Z [copy 3 no issue] search credential | issue #6 | plain: 0
+2026-10-14T14:13:07.6886351Z [copy 3 no issue] search credential | issue #6 | percent: 0
+2026-10-14T14:13:07.6886638Z [copy 3 no issue] search credential | issue #308 | plain: 0
+2026-10-14T14:13:07.6886923Z [copy 3 no issue] search credential | issue #308 | percent: 0
+2026-10-14T14:13:07.6887266Z [copy 3 no issue] search credential | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:13:07.6887660Z [copy 3 no issue] search credential | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:13:07.6888020Z [copy 3 no issue] search plant | repository: history | plain: 0
+2026-10-14T14:13:07.6888338Z [copy 3 no issue] search plant | repository: history | percent: 1
+2026-10-14T14:13:07.6888690Z [copy 3 no issue] search plant | repository: current trees | plain: 1
+2026-10-14T14:13:07.6889022Z [copy 3 no issue] search plant | repository: current trees | percent: 0
+2026-10-14T14:13:07.6889321Z [copy 3 no issue] search plant | issue #6 | plain: 0
+2026-10-14T14:13:07.6889580Z [copy 3 no issue] search plant | issue #6 | percent: 0
+2026-10-14T14:13:07.6889835Z [copy 3 no issue] search plant | issue #308 | plain: 0
+2026-10-14T14:13:07.6890105Z [copy 3 no issue] search plant | issue #308 | percent: 0
+2026-10-14T14:13:07.6890419Z [copy 3 no issue] search plant | logs of migrate.yml's earlier runs | plain: 3
+2026-10-14T14:13:07.6890787Z [copy 3 no issue] search plant | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:13:07.6891194Z [copy 3 no issue] search: could not check: issue #6 (the plant was not found in issue #308)
+2026-10-14T14:13:07.6891701Z [copy 3 no issue] search: could not check: issue #308 (the plant was not found in issue #308)
+2026-10-14T14:13:07.6892158Z [copy 3 no issue] search: the credential was FOUND (5 matches); it is treated as exposed (EV-C02-001 M30)
+2026-10-14T14:13:07.6892569Z [copy 3 no issue] breaks: exit 1 (not its verdict; read its count lines)
+2026-10-14T14:13:07.6893319Z [copy 4 no logs] breaks: SHA-256 of run|shell 629a6d9327bd6f8a3f593a61f2d35f508f51883d0c55e839677e3b81563ac0d2; its one change: 'runs, seen, listed, page, more = [], set(), 0, 0, True' -> 'runs, seen, listed, page, more = [], set(), 0, 0, False'
+2026-10-14T14:13:11.3385343Z [copy 4 no logs] repository: 506 refs, 10342 objects read
+2026-10-14T14:13:11.3385889Z [copy 4 no logs] logs: 0 of 0 earlier runs of migrate.yml read
+2026-10-14T14:13:11.3387844Z [copy 4 no logs] search credential | repository: history | plain: 0
+2026-10-14T14:13:11.3388263Z [copy 4 no logs] search credential | repository: history | percent: 1
+2026-10-14T14:13:11.3388654Z [copy 4 no logs] search credential | repository: current trees | plain: 1
+2026-10-14T14:13:11.3389029Z [copy 4 no logs] search credential | repository: current trees | percent: 0
+2026-10-14T14:13:11.3389367Z [copy 4 no logs] search credential | issue #6 | plain: 0
+2026-10-14T14:13:11.3389651Z [copy 4 no logs] search credential | issue #6 | percent: 0
+2026-10-14T14:13:11.3390195Z [copy 4 no logs] search credential | issue #308 | plain: 1
+2026-10-14T14:13:11.3390663Z [copy 4 no logs] search credential | issue #308 | percent: 0
+2026-10-14T14:13:11.3391226Z [copy 4 no logs] search credential | logs of migrate.yml's earlier runs | plain: 0
+2026-10-14T14:13:11.3392091Z [copy 4 no logs] search credential | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:13:11.3392727Z [copy 4 no logs] search plant | repository: history | plain: 0
+2026-10-14T14:13:11.3393280Z [copy 4 no logs] search plant | repository: history | percent: 1
+2026-10-14T14:13:11.3394256Z [copy 4 no logs] search plant | repository: current trees | plain: 1
+2026-10-14T14:13:11.3394852Z [copy 4 no logs] search plant | repository: current trees | percent: 0
+2026-10-14T14:13:11.3395390Z [copy 4 no logs] search plant | issue #6 | plain: 0
+2026-10-14T14:13:11.3395861Z [copy 4 no logs] search plant | issue #6 | percent: 0
+2026-10-14T14:13:11.3396345Z [copy 4 no logs] search plant | issue #308 | plain: 1
+2026-10-14T14:13:11.3396845Z [copy 4 no logs] search plant | issue #308 | percent: 0
+2026-10-14T14:13:11.3397393Z [copy 4 no logs] search plant | logs of migrate.yml's earlier runs | plain: 0
+2026-10-14T14:13:11.3398047Z [copy 4 no logs] search plant | logs of migrate.yml's earlier runs | percent: 0
+2026-10-14T14:13:11.3398893Z [copy 4 no logs] search: could not check: logs of migrate.yml's earlier runs (the plant was not found in logs of migrate.yml's earlier runs)
+2026-10-14T14:13:11.3399866Z [copy 4 no logs] search: the credential was FOUND (3 matches); it is treated as exposed (EV-C02-001 M30)
+2026-10-14T14:13:11.3400614Z [copy 4 no logs] breaks: exit 1 (not its verdict; read its count lines)
+2026-10-14T14:13:11.3401353Z breaks: summary: the plant's counts per copy and place, read from each copy's own lines (plain, percent)
+2026-10-14T14:13:11.3402298Z summary: copy 0 unbroken | repository: history | plain 0, percent 1
+2026-10-14T14:13:11.3402940Z summary: copy 0 unbroken | repository: current trees | plain 1, percent 0
+2026-10-14T14:13:11.3403523Z summary: copy 0 unbroken | issue #6 | plain 0, percent 0
+2026-10-14T14:13:11.3404041Z summary: copy 0 unbroken | issue #308 | plain 1, percent 0
+2026-10-14T14:13:11.3404680Z summary: copy 0 unbroken | logs of migrate.yml's earlier runs | plain 3, percent 0
+2026-10-14T14:13:11.3405368Z summary: copy 1 no history | repository: history | plain 0, percent 0
+2026-10-14T14:13:11.3406006Z summary: copy 1 no history | repository: current trees | plain 1, percent 0
+2026-10-14T14:13:11.3406594Z summary: copy 1 no history | issue #6 | plain 0, percent 0
+2026-10-14T14:13:11.3407165Z summary: copy 1 no history | issue #308 | plain 1, percent 0
+2026-10-14T14:13:11.3407801Z summary: copy 1 no history | logs of migrate.yml's earlier runs | plain 3, percent 0
+2026-10-14T14:13:11.3408495Z summary: copy 2 plain only | repository: history | plain 0, percent 0
+2026-10-14T14:13:11.3409131Z summary: copy 2 plain only | repository: current trees | plain 1, percent 0
+2026-10-14T14:13:11.3409721Z summary: copy 2 plain only | issue #6 | plain 0, percent 0
+2026-10-14T14:13:11.3410268Z summary: copy 2 plain only | issue #308 | plain 1, percent 0
+2026-10-14T14:13:11.3410892Z summary: copy 2 plain only | logs of migrate.yml's earlier runs | plain 3, percent 0
+2026-10-14T14:13:11.3412301Z summary: copy 3 no issue | repository: history | plain 0, percent 1
+2026-10-14T14:13:11.3412991Z summary: copy 3 no issue | repository: current trees | plain 1, percent 0
+2026-10-14T14:13:11.3413599Z summary: copy 3 no issue | issue #6 | plain 0, percent 0
+2026-10-14T14:13:11.3414149Z summary: copy 3 no issue | issue #308 | plain 0, percent 0
+2026-10-14T14:13:11.3414765Z summary: copy 3 no issue | logs of migrate.yml's earlier runs | plain 3, percent 0
+2026-10-14T14:13:11.3415417Z summary: copy 4 no logs | repository: history | plain 0, percent 1
+2026-10-14T14:13:11.3416018Z summary: copy 4 no logs | repository: current trees | plain 1, percent 0
+2026-10-14T14:13:11.3416597Z summary: copy 4 no logs | issue #6 | plain 0, percent 0
+2026-10-14T14:13:11.3417130Z summary: copy 4 no logs | issue #308 | plain 1, percent 0
+2026-10-14T14:13:11.3417723Z summary: copy 4 no logs | logs of migrate.yml's earlier runs | plain 0, percent 0
+2026-10-14T14:13:11.4314184Z Post job cleanup.
+2026-10-14T14:13:11.5015293Z [command]/usr/bin/git version
+2026-10-14T14:13:11.5055017Z git version 2.55.0
+2026-10-14T14:13:11.5091284Z Temporarily overriding HOME='/home/runner/work/_temp/0a84d56d-bca4-4383-8e39-311d3ca8fd87' before making global git config changes
+2026-10-14T14:13:11.5092524Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-14T14:13:11.5096465Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-14T14:13:11.5133970Z Removing SSH command configuration
+2026-10-14T14:13:11.5134547Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-14T14:13:11.5167106Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-14T14:13:11.5387581Z Removing HTTP extra header
+2026-10-14T14:13:11.5392982Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-14T14:13:11.5426577Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-14T14:13:11.5653218Z Removing includeIf entries pointing to credentials config files
+2026-10-14T14:13:11.5659479Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-14T14:13:11.5698969Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-14T14:13:11.6057300Z Cleaning up orphan processes
