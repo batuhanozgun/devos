@@ -20,6 +20,7 @@ sources:
   - "Revision of 2026-10-12 (sections 15.6 to 15.11, part 2 of H1), at the branch head 3c80bf1, by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the executor's three decisions for part 2 (a hint); GitHub's documentation pages cited in 15.6, read 2026-10-12 23:35Z to 23:39Z; @actions/workflow-parser 0.3.61 as in 15.4; local runs against a stand-in GitHub API on 127.0.0.1 only, no database, nothing against GitHub's API"
   - "Revision of 2026-10-13 (section 15.12, part 3 of H1), at the branch head 5201bd9, by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the executor's three decisions for part 3 on part 2's open items 2, 3 and 7 (a hint); main's first-parent history at d33c8e9, read with local git (the rate of pushes in 15.12.2); @actions/workflow-parser 0.3.61 as in 15.4; local runs against part 2's stand-in API on 127.0.0.1 only, no database, nothing against GitHub"
   - "Revision H1-prime of 2026-10-13 (section 15's opening and 15.13 to 15.16; the renumbering of section 14 to 15), at main 6807099 (branch claude/c02-w03-h1p, head 376a123), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): plan/decisions/FR-07.md and evidence/C02/raw/FR-07_*.md; CHK-C02-043, -044 and -045; the executor's five facts for H1-prime (a hint; section 15.14); tests/C02/W-C02-03/ at 376a123; the image digest of postgres:17 from Docker Hub's registry (registry-1.docker.io) and the docker-library repo-info page for postgres:17, read 2026-10-13T01:42Z; @actions/workflow-parser 0.3.61 as in 15.4; local runs, hints only, on a throwaway PostgreSQL 16.15 cluster under /var/tmp (stopped and deleted after) and against a stand-in GitHub API on 127.0.0.1; nothing against devos, devos-test or GitHub's API"
+  - "Revision H2 of 2026-10-13 (section 17), at main 1f6f9a2 (branch claude/c02-w03-h2), by a fresh-context producer subagent of the same working session (declared, Ek A 5.3): the executor's task for H2 (a hint); tests/C02/W-C02-03/README.md ('The live campaign's class-high changes'), T-W03-14 item 1 and T-W03-09 at 1f6f9a2; the test designer's text of 20261012232111_w03_fixture_fail.sql (SHA-256 as in 15.17); this record's section 15 (its Numbering note, 15.2, 15.3 and 15.17); evidence/C02/checks/CHK-C02-053.md C4; plan/decisions/FR-07.md; local runs only, no database, nothing against devos, devos-test or GitHub, no network"
 claim: "A build, checked offline only. The offline tests pass at this build. Nothing ran against devos or devos-test, and no workflow ran on GitHub (until 2026-10-12, when GitHub ran `migration-checks.yml` on pull request #304, section 12.9, and `migrate.yml`'s first push run reached the pooler with each project's user and no password, section 13): every behaviour of GitHub, of the pooler and of the projects is still documented, inferred or read in source, until the first runs after Batu's step 1. Section 6 lists what stays live-only."
 ---
 
@@ -1484,3 +1485,155 @@ A prober (agent `aec4059aa1d8434f3`, fresh context, declared; DISCIPLINES OK) an
 - G10 (the "Afterwards" steps): pull request #321 closed unmerged and issue #322 closed (GitHub shows both); the branch is left (16.2).
 - G12 (the fixture's revoke statements are observed by no field): the test does not ask for them; recorded as not covered.
 These are the prober's and the executor's readings; point 13's checker judges from the raw outputs.
+
+## 17. H2: T-W03-14's failing fixture, the plant's settings emptied and its print step removed (2026-10-13)
+
+H2 is the live campaign's second class-high change (README, "The live campaign's class-high changes": "H2: T-W03-14's failing fixture (with the plant's settings unset and the print step removed, or that in a later class-high change)"), under FR-07. Made at `main` `1f6f9a2` (branch `claude/c02-w03-h2`) by a fresh-context producer subagent of the same working session (declared, Ek A 5.3), offline only, on the executor's task (a hint). Files changed: `supabase/migrations/20261012232111_w03_fixture_fail.sql` (new), `.github/workflows/migrate.yml`, and this record (this section and a `sources` line). `migration-checks.yml`, the tests, the other SQL files and every step body but the two `search` copies' comments are unchanged. Nothing ran against `devos`, `devos-test` or GitHub, and the network was not used. **When it merges** (the executor's; FR-07, "Then two tracks"; T-W03-09): only after S2's search and after T-W03-08 (e), never before. Line numbers below are those of `1f6f9a2` ("before") and of this build ("after").
+
+### 17.1 The fixture (T-W03-14 item 1)
+
+- **The file** is the test designer's text, copied byte for byte (`cp`, then `cmp`: identical): 13 lines, 863 bytes, SHA-256 `0d439a148f88c3d2067d45a85c1e273ae4bb99d6cbb2a952287ae340e976e0c7`, the value A3 rehearsed (15.17). It is labelled synthetic in its first line (plan Section 8 item 13). It creates schema `w03_fixture_fail` and table `w03_fixture_fail.attempt`, then raises `W-C02-03 T-W03-14 item 1: synthetic failing fixture (plan Section 8 item 13); it fails on purpose` in a `do` block, its statement 2 as the tool counts (15.17). Not changed.
+- **Its version** [obs, `git ls-tree -r 1f6f9a2 supabase/migrations`]: `main` holds `20261012184638_deployment_drift.sql` and `20261012231841_w03_fixture_apply.sql` at the top level, and the three database tests under `tests/`. `20261012232111` is later than both, so the file keeps its name. T-W03-14's rule stands for the pull request: if another migration has merged into `main` by the time it is opened, the file is renamed to a later version first, keeping its name part. That check is the executor's, at the pull request.
+
+### 17.2 The plant's settings emptied, and step `plant` removed (T-W03-09; 15.2; CHK-C02-053)
+
+**The change.** `W03_PLANT_B64` is `""` (it held the base64 of the H1-prime tag's plant, tag `20261013T0213Z`, 15.13). Its comment now reads `T-W03-09's plant, base64; emptied after S2's search, with the print step removed (EV-C02-007 sections 15 and 17)`. `W03_FIXTURE_ISSUE` is `""` (it was `"308"`). Step `plant`, the last step of `check-devos-test` (before :2742 to :2771, body `b049a11f5998`), is removed. T-W03-09: "`W03_PLANT_B64` and `W03_FIXTURE_ISSUE` are emptied by the next class-high change after S2's search (until then every scheduled run prints p4 again, and no search after S2 is this test's run)". 15.3, "Later runs": after that change the plant is no longer a needle, and S3 would otherwise count 2.
+
+**What reads them** [src, `migrate.yml` at this build; a search of the repository outside `evidence/` finds no other reader]:
+- `W03_PLANT_B64` is read only by the two `search` copies (after :2533 to :2534 and :3239 to :3240), which add the plant as a needle when it is set, and by the removed step (its `if:` and body). No job's `if:` and no other step names it.
+- `W03_FIXTURE_ISSUE` is read only by the two `search` copies (after :2599 and :2680; :3305 and :3386): the fixture issue is read, and backs issue #6, only when it is set.
+- Step `plant` had no reader: nothing names `steps.plant`, and as the job's last step its outcome changed no other step (15.2).
+- `tokens_revoke` (job `devos-test`) reads neither setting nor the step. Its condition, `${{ always() && steps.head.outputs.head == 'yes' && steps.tokens.outcome != 'skipped' }}` (:889, as H1-prime made it, 15.9), and its body `8117e8de0831` are unchanged; only its comment's section numbers change (17.3).
+- The rehearsals' workflows (15.15, 15.17) read `migrate.yml`'s settings, but they are outside this repository and are not run again here.
+
+**What each scheduled run prints once they are empty** [src, the search body; not run here]:
+- The needles are the credential only, when the secret is present. Issue #308 is no longer read; the places are `repository: current trees`, `repository: history`, `issue #6` and `logs of migrate.yml's earlier runs`.
+- The lines: `repository: <n> refs, <m> objects read`; per earlier run read, `logs: run <id>: the credential counted in all its files, the plant in its … (<t> top-level, <f> in folders)` (the wording is unchanged; with no plant needle, the plant's count adds nothing); `logs: <r> of <t> earlier runs of migrate.yml read`; then `search credential | <place> | plain: <n>` and `| percent: <n>` for the four places; any gap; then `search positive control: no plant configured (W03_PLANT_B64 is empty), so a 0 here is not backed by a positive control: could not check`.
+- Every place is then unbacked. With the secret present and no match, no "none found" line is printed, and the last line is `search: 0 matches, but could not check (no positive control, or not read): repository: current trees; repository: history; issue #6; logs of migrate.yml's earlier runs` (with any gap's place), exit 0. With a match: `search: the credential was FOUND (<n> matches); it is treated as exposed (EV-C02-001 M30)`, exit 1. Without the secret: `search: could not check (credential present: no)`.
+- So every scheduled search after H2 reads "could not check" by its own rule, never "none found": the code's behaviour before the plants were set (15.13, the decision (i)), not a new one. A later round of T-W03-09 needs a new tag, both settings set again and a print step again, in a class-high change of its own.
+- No run prints the line `synthetic plant (T-W03-09 p4; …)` any more. The lines that S1, S2 and any scheduled run before H2's merge printed stay in those runs' logs, unless the executor deletes them or GitHub's retention does (15.5 item 4; T-W03-09).
+- Every step's environment listing in a run's log names `W03_PLANT_B64` with an empty value, no longer the base64 [inf from 16.1's "How the logs are kept"; not seen on GitHub]. A raw log of a run at H2 or later then needs no redaction for the plant (16.1).
+
+### 17.3 The seven comments that cite section 14 (CHK-C02-053 C4 (a))
+
+Each was read against this record's section 15. The mapping is the Numbering note's (14.1 to 14.12 are 15.1 to 15.12); each comment keeps the granularity it had.
+
+| Before | After | Before's text | Now | What section 15 holds |
+|---|---|---|---|---|
+| :64 | :64 | `(step plant; EV-C02-007 section 14)` | rewritten with 17.2: `(EV-C02-007 sections 15 and 17)` | 15.2 and 15.3, the step and its count; 17, its removal |
+| :887 | :887 | `section 14` | `section 15` | H1-prime's revision; 15.1, `tokens_revoke` only after the head check's yes |
+| :887 | :887 | `section 14.9` | `section 15.9` | `tokens_revoke` only when `tokens` ran |
+| :2617, :3353 | :2617, :3323 | `section 14.6` | `section 15.6` | GitHub's documentation on the log archive; its layout [cnc] |
+| :2620, :3356 | :2620, :3326 | `section 14.12` | `section 15.12` | part 3; the counting rule per needle is 15.12.1 |
+| :2755 | removed | `section 14` | removed with step `plant` | 15.3, how the printed line meets the search's count |
+
+After this build, `migrate.yml` holds no "section 14". Lines 2617, 2620, 3323 and 3326 are inside the two `search` bodies, so their hash changes (17.4); lines 64 and 887 are YAML comments outside any body.
+
+### 17.4 What else changes in `migrate.yml`: nothing
+
+[obs, `git diff --stat`, at the producer's last edit]: 7 insertions, 37 deletions; 3477 lines before, 3447 after (3446 after the executor's header correction below). The changed lines are :64, :65, :887, :2617, :2620, :3353 and :3356 (before), and :2742 to :2771 are removed. A blank line still separates `check-devos-test` from `check-devos`.
+
+**The bodies** (SHA-256 of `run` + "|" + `shell`, 12 hex digits, from PyYAML's reading of each file): every body is identical to 15.16's and to A3's table (15.17) but these:
+- `search` ×2, identical to each other, now `75d0f1f47cb9` (was `2ef72520eefd`): the four comment lines only;
+- `plant` `b049a11f5998`: gone.
+
+So `cli` `9a997b75cce6`, `workdir` `39a09b6a79ce`, `listing` `b1b058f32c88`, `dryrun` `117defd57d50`, `apply` `1dcb025e4aee`, `compare` and `compare_after` `1260def3e0a4`, `dbtests` `08eedf39e196`, `tokens_revoke` `8117e8de0831`, `go` `a2dd2c3950eb` and `decide` `e4e381332519` are unchanged. `migrate.yml` has 53 `run:` values (was 54, 15.16) and `migration-checks.yml` 4, so 57 in the two workflows (was 58, CHK-C02-053 F-4's run of `test_workflow_order.py`).
+
+**The header comment** (lines 4 to 6 before): it read "and, while W03_PLANT_B64 is set, check-devos-test prints the synthetic plant once, step plant; T-W03-09 p4", which the step's removal makes untrue (15.2 noted that the header names the step). The producer left it, since its task allowed no other change, and proposed one line; the executor made that correction (2026-10-13): lines 5 and 6 become "# search only, in each project. The only workflow that names the environments migrate-devos-test and migrate-devos;". It is a comment outside every step body, so no body hash changes; `test_workflow_order.py` passes after it.
+
+### 17.5 The blobs' SHA-256
+
+`git -C <clone> show 1f6f9a2:<path> | sha256sum` before; `sha256sum <path>` in the clone's working tree after:
+
+| File | Before (`main` `1f6f9a2`) | After (this build) |
+|---|---|---|
+| `.github/workflows/migrate.yml` | `5e3c9116590898b5a8bd3e226422c63619c583fd8bf58443463cc4bd29520ce6` | `15aa179e5888db8e780dc4da54c87dc9b68310166b7b3b6f6282b022c23d1488` at the producer's last edit; `b986a6763ecacdf7c25f0ba67d7510630c8e9f70091baf6d018631e9c443a847` after the executor's header correction (17.4) |
+| `supabase/migrations/20261012232111_w03_fixture_fail.sql` | absent | `0d439a148f88c3d2067d45a85c1e273ae4bb99d6cbb2a952287ae340e976e0c7` |
+| this record | `8346e564521ce6cd42d26bf6ae82c3d48ab6d4ad1ecccd8d512ce5cbbfed3bb6` | in the producer's report (a file cannot hold its own hash) |
+
+### 17.6 What the runs after the merge will show
+
+Written before any run, from T-W03-14 item 1, A3's rows `t2` and `t3` (15.17, run 38338911054) and `migrate.yml`'s code. `<c>` is H2's merge commit.
+
+**H2's push run** (T-W03-14 item 1; also T-W03-06 form (i)):
+- `devos-test`:
+  - `head check: yes (…)`, then `expected: 3 migrations on main at <c>: ['20261012184638', '20261012231841', '20261012232111']`;
+  - the listing before the apply, `listing: 7 objects outside Supabase's own` (16.1's 4 and T-W03-05's 3);
+  - `dry run: pending versions: ["20261012232111"]`, `dry run: exit 0`;
+  - the apply: `cli: Applying migration 20261012232111_w03_fixture_fail.sql...`, then `cli: ERROR: W-C02-03 T-W03-14 item 1: synthetic failing fixture (plan Section 8 item 13); it fails on purpose (SQLSTATE P0001)` and `cli: At statement: 2` (A3's wording on PostgreSQL 17.11), `apply: exit 1`; the step concludes failure;
+  - `compare` runs anyway (its `if:` is `!cancelled() && …`): `history_rows=2 listing=7 objects complete=True`, `comparison in devos-test: result=differences call=ok`, then exactly `comparison in devos-test: on_main_not_applied 20261012232111`;
+  - `dbtests`, `tokens`, `dbprograms` and `tokens_revoke` skipped (the comparison is not clean; `tokens` skipped, 15.9);
+  - `devos-test go=no (head=yes apply=failure comparison=differences tests=skipped programs=skipped revocation=skipped)` [inf from the `go` body's format, 16.1's line];
+  - the report with `"result":"differences"`, the one difference and `"go":"no"`.
+- `devos` (its job runs, `needs: devos-test` with `!cancelled()`):
+  - its own comparison before `decide`: `history_rows=2 listing=7 objects`, `result=differences`, `comparison in devos: on_main_not_applied 20261012232111`;
+  - `first-migration exception: not taken (…)`, then `decide: apply=no result_kind=differences exception=not_taken; devos-test go=no`;
+  - `dryrun`, `apply` and `compare_after` skipped, never started;
+  - its report with `"apply":"no"` and the reason.
+- `devos`'s history, read through the builder's read-only connection, lacks `20261012232111`. The fixture fails in both projects (P11), so the stop rests on the run record (`decide`'s `apply=no`, and `dryrun` and `apply` skipped), not on that absence (T-W03-14, "Could not check").
+
+**Scheduled runs between H2's merge and H3's**: `check-devos-test` and `check-devos` each compare as above, `result=differences` with `on_main_not_applied 20261012232111` [inf from the code and A3's `t2`]. The compare step reports a difference without failing. Their searches print 17.2's lines, and no plant line.
+
+**H3's push run** (T-W03-14 item 1, "What the failed file left"): in `devos-test`, the listing before its apply holds no `w03_fixture_fail` object (7 objects, as A3's `t3`), and its comparison no row of H2's version (`no_difference` with H2's file removed). In `devos`, the read-only connection shows the same. H3's pull request's check names H2's version `on_main_not_applied` in both projects (M16).
+
+### 17.7 Outputs of the checks run for this build
+
+From the clone's root, after this build's last edit of `migrate.yml`:
+- `python3 -I tests/C02/W-C02-03/test_workflow_order.py`, exit 0: `ok   .github/workflows/migrate.yml: order and stop present as written`, its 17 copies "the copy fails, as it must", `W03_ORDER_TEST PASS (.github/workflows/migrate.yml)`, then T-W03-15's `W03_RUN_EXPR_TEST PASS (no run: value holds an expression opener: 57 values in 2 files; 4 planted copies red, 1 control passes)` and `W03_PR_INPUTS_TEST PASS (21/21 cases; breaks: 6 shown, 0 not shown, of 6)`. `--self-check`, exit 0: `W03_ORDER_TEST PASS (synthetic skeleton)` and `W03_GUARDS_SELF_CHECK PASS (20/20)`.
+- `python3 -I tests/C02/W-C02-03/test_workflow_guards.py`, exit 0: the same two T-W03-15 lines.
+- `python3 -I tests/C02/W-C02-03/test_decision_steps.py`, exit 0: `W03_DECISION_TEST PASS (69/69)`. `--self-check`, exit 0: `W03_DECISION_SELF_CHECK PASS (7/7)`.
+- `migration-checks.yml`'s step `w03_tests`, its body as PyYAML reads it (`68490ed29189`), run with `bash --noprofile --norc -e -o pipefail`: exit 0, last line `W-C02-03 tests: decision steps exit 0, workflow order exit 0`.
+- **M22**, step `workflow_check`'s body as PyYAML reads it (`a7268e7a127e`), run with `python3 -I`: 31 lines "fails on its own rule, as it must", the control "passes, as it must", `workflow check: workflows naming an environment: .github/workflows/migrate.yml`, `workflow check: pass`, exit 0.
+- `python3 -I tools/test_merge_gate.py`: `MERGE_GATE_TEST PASS (97/97)`, exit 0.
+- No test asserts the plant step or either setting: none failed, and none was changed.
+- **GitHub's parser was not run.** The scratch installs of `@actions/workflow-parser` 0.3.61 (15.4) failed to load under this session's Node.js 22.22.0 (`ERR_IMPORT_ATTRIBUTE_MISSING` on the package's JSON schema). The pull request's own check on GitHub loads both workflows.
+- `records.py render --check`, `check_service_names.sh` and `git status --short`: their final lines are in the producer's report to the executor, run after this record's last edit.
+
+### 17.8 What only the live runs show, and what stays open
+
+1. **Supabase's own server.** That the failed file leaves nothing (no schema, no table, no history row) under Supabase's 17.6 build, its event triggers and its non-superuser `postgres`, through the pooler with `verify-full`. P2 (PostgreSQL 16.15, offline) and A3 (17.11, on GitHub's runner) show it only off Supabase.
+2. **The stop before `devos`.** `decide`'s `apply=no` and `dryrun` and `apply` skipped are written (the static test reads them) and act only in H2's push run. `devos`'s history is read through the read-only connection.
+3. **The scheduled runs' lines after H2** (17.2, 17.6): read from the code only.
+4. **The header comment** (17.4): corrected by the executor before the verdict (17.4).
+5. **The window before the merge** (T-W03-09): every scheduled run between S2 and H2's merge still prints p4 once. Its line stays in that run's log, and no search after S2 is T-W03-09's run.
+6. **The version at the pull request** (17.1): renamed first if another migration has merged.
+
+## 18. Live results: S1 to S3, T-W03-08 (e), and T-W03-09's break copies (2026-10-13 and 2026-10-14)
+
+Recorded by the executor (L-317). Raw: `evidence/C02/raw/EV-C02-007_T-W03-09_schedule_runs_S1_S3_20261014.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-09_S2_run38516392605_devos_job115696047003_search_lines.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-08_e_run38363215668_attempt2_jobs.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-09_breaks_pr327_run38578385204_job115901434489_redacted.log`. The analysis of these
+against T-W03-08 and T-W03-09 is point 13's checker's, from the raw records; this section only states what was observed.
+
+### 18.1 The scheduled runs
+
+S1 = run 38455614435 (created 2026-10-13T19:32:14Z), S2 = run 38516392605 (2026-10-14T05:23:41Z to 05:24:12Z),
+S3 = run 38563282231 (2026-10-14T12:22:15Z): the first three scheduled runs of `migrate.yml` created after 07:31:41Z on
+2026-10-13, each at `44b37ab`, each concluded success. The 12:41Z slot of 2026-10-13 has no run; the created times lag
+their slots by 51 minutes to about five and a half hours. `main` did not change from `44b37ab` (merged 2026-10-13T08:43:46Z)
+until after the copies' run below, so T-W03-09's windows held: no change of `W03_PLANT_B64` or of step `plant` from
+H1-prime's merge to the end of S2's search.
+
+S2's search in job `check-devos`: the ten credential lines are 0; the plant lines are history percent 1, current trees
+plain 1, issue #308 plain 1, logs plain 1, the other six 0; "20 of 20 earlier runs of migrate.yml read"; its report gives
+`no_difference` with versions 20261012184638 and 20261012231841 applied. In job `check-devos-test`, the report line gives
+the same; the search's count lines were read on GitHub before a context compaction and are not filed (that log prints the
+plant; FR-07 item 3).
+
+### 18.2 T-W03-08 (e)
+
+The re-run of run 38363215668 (H1-prime's push run, at `1c0dbcf`), attempt 2, started 2026-10-14T14:10:14Z with `main` at
+`44b37ab` and after S2's search: in jobs 115900506370 (`devos-test`) and 115900597246 (`devos`) the head check concluded
+success and every step after it that holds or uses the secret was skipped, `go`, `decide` and `report` ran; the two check
+jobs were skipped. No step connected to either project.
+
+### 18.3 T-W03-09's break copies
+
+Pull request #327 (head `claude/w03-search-breaks` `d5c4dbf`, merge commit `f8fb8fc`), run 38578385204, job 115901434489,
+2026-10-14T14:12:07Z to 14:13:11Z, after S2's search and before the plants' removal; the pull request was then closed
+unmerged. The job states that the search body it copies equals `main`'s (SHA-256 `2ef72520eefd…`, 15.15) and that the plant
+stands in place of the secret. The unbroken copy (copy 0) read the logs of every earlier run, S1 to S3 included, and its plant
+counts are current trees plain 1, history percent 1, issue #308 plain 1, logs plain 3; each broken copy's line is in the
+redacted log. The copies were run without the checker that L-315's resume plan step (2) put before them (the executor's
+decision, L-317): their outputs are judged by point 13's checker from the raw log, with the producer's open points 1 to 6.
