@@ -1,0 +1,14 @@
+ ?column? | typname | pg_get_userbyid | privilege_type 
+----------+---------+-----------------+----------------
+(0 rows)
+
+ ?column? | typname | pg_get_userbyid | privilege_type 
+----------+---------+-----------------+----------------
+(0 rows)
+
+       what        | count 
+-------------------+-------
+ enum types listed |    32
+(1 row)
+
+[psql exit 0]

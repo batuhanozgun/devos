@@ -1,0 +1,204 @@
+  what  |                                                                  value                                                                   | as_role  | superuser |    db    
+--------+------------------------------------------------------------------------------------------------------------------------------------------+----------+-----------+----------
+ server | PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit | postgres | f         | postgres
+(1 row)
+
+         typname         |    kind    | grantee | privilege_type | typacl_is_null 
+-------------------------+------------+---------+----------------+----------------
+ _acceptance             | array type | PUBLIC  | USAGE          | t
+ _alternatives_state     | array type | PUBLIC  | USAGE          | t
+ _artifact               | array type | PUBLIC  | USAGE          | t
+ _artifact_current       | array type | PUBLIC  | USAGE          | t
+ _artifact_revision      | array type | PUBLIC  | USAGE          | t
+ _artifact_status        | array type | PUBLIC  | USAGE          | t
+ _assignment             | array type | PUBLIC  | USAGE          | t
+ _assignment_status      | array type | PUBLIC  | USAGE          | t
+ _current_authority      | array type | PUBLIC  | USAGE          | t
+ _decision               | array type | PUBLIC  | USAGE          | t
+ _decision_class         | array type | PUBLIC  | USAGE          | t
+ _decision_current       | array type | PUBLIC  | USAGE          | t
+ _decision_revision      | array type | PUBLIC  | USAGE          | t
+ _decision_status        | array type | PUBLIC  | USAGE          | t
+ _effect_class           | array type | PUBLIC  | USAGE          | t
+ _effort_policy          | array type | PUBLIC  | USAGE          | t
+ _effort_policy_status   | array type | PUBLIC  | USAGE          | t
+ _env_tokens             | array type | PUBLIC  | USAGE          | t
+ _epistemic_status       | array type | PUBLIC  | USAGE          | t
+ _eval_run               | array type | PUBLIC  | USAGE          | t
+ _event                  | array type | PUBLIC  | USAGE          | t
+ _event_origin           | array type | PUBLIC  | USAGE          | t
+ _finding                | array type | PUBLIC  | USAGE          | t
+ _finding_changeable     | array type | PUBLIC  | USAGE          | t
+ _finding_current        | array type | PUBLIC  | USAGE          | t
+ _finding_revision       | array type | PUBLIC  | USAGE          | t
+ _finding_status         | array type | PUBLIC  | USAGE          | t
+ _fingerprint_origin     | array type | PUBLIC  | USAGE          | t
+ _function_deployment    | array type | PUBLIC  | USAGE          | t
+ _global_authority_epoch | array type | PUBLIC  | USAGE          | t
+ _group_mode             | array type | PUBLIC  | USAGE          | t
+ _impact_class           | array type | PUBLIC  | USAGE          | t
+ _independence_level     | array type | PUBLIC  | USAGE          | t
+ _leak_fingerprint       | array type | PUBLIC  | USAGE          | t
+ _mission                | array type | PUBLIC  | USAGE          | t
+ _mission_current        | array type | PUBLIC  | USAGE          | t
+ _mission_revision       | array type | PUBLIC  | USAGE          | t
+ _mission_status         | array type | PUBLIC  | USAGE          | t
+ _need                   | array type | PUBLIC  | USAGE          | t
+ _need_origin            | array type | PUBLIC  | USAGE          | t
+ _need_status            | array type | PUBLIC  | USAGE          | t
+ _observation            | array type | PUBLIC  | USAGE          | t
+ _observed_effect        | array type | PUBLIC  | USAGE          | t
+ _operation              | array type | PUBLIC  | USAGE          | t
+ _operation_status       | array type | PUBLIC  | USAGE          | t
+ _privacy_class          | array type | PUBLIC  | USAGE          | t
+ _rejected_attempt       | array type | PUBLIC  | USAGE          | t
+ _relation               | array type | PUBLIC  | USAGE          | t
+ _relation_method        | array type | PUBLIC  | USAGE          | t
+ _relation_type          | array type | PUBLIC  | USAGE          | t
+ _relation_validity      | array type | PUBLIC  | USAGE          | t
+ _review                 | array type | PUBLIC  | USAGE          | t
+ _review_kind            | array type | PUBLIC  | USAGE          | t
+ _role_class             | array type | PUBLIC  | USAGE          | t
+ _source_type            | array type | PUBLIC  | USAGE          | t
+ _verdict                | array type | PUBLIC  | USAGE          | t
+ _verdict_result         | array type | PUBLIC  | USAGE          | t
+ _work                   | array type | PUBLIC  | USAGE          | t
+ _work_acceptance        | array type | PUBLIC  | USAGE          | t
+ _work_current           | array type | PUBLIC  | USAGE          | t
+ _work_effect            | array type | PUBLIC  | USAGE          | t
+ _work_execution         | array type | PUBLIC  | USAGE          | t
+ _work_qualification     | array type | PUBLIC  | USAGE          | t
+ _work_revision          | array type | PUBLIC  | USAGE          | t
+(64 rows)
+
+    kind    | types | with_public_or_app_grantee | typacl_null |     typacl_values     
+------------+-------+----------------------------+-------------+-----------------------
+ array type |    64 |                         64 |          64 | null
+ own type   |    32 |                          0 |           0 | {postgres=U/postgres}
+ row type   |    32 |                          0 |           0 | {postgres=U/postgres}
+(3 rows)
+
+      who      | types | usable 
+---------------+-------+--------
+ anon          |   128 |      0
+ authenticated |   128 |      0
+ authenticator |   128 |      0
+ public        |   128 |      0
+ service_role  |   128 |      0
+(5 rows)
+
+        what         | n 
+---------------------+---
+ pg_default_acl rows | 0
+(1 row)
+
+ defaclrole | defaclnamespace | defaclobjtype | defaclacl 
+------------+-----------------+---------------+-----------
+(0 rows)
+
+  what  |    nspname    |                 nspacl                 
+--------+---------------+----------------------------------------
+ nspacl | devos_private | {postgres=UC/postgres}
+ nspacl | devos_api     | {postgres=UC/postgres,anon=U/postgres}
+(2 rows)
+
+                        what                         | n 
+-----------------------------------------------------+---
+ relations with a PUBLIC or application-role grantee | 0
+(1 row)
+
+   what    |                oid                |        proacl         
+-----------+-----------------------------------+-----------------------
+ functions | devos_api.deployment_drift(jsonb) | {postgres=X/postgres}
+ functions | devos_private.refuse_change()     | {postgres=X/postgres}
+(2 rows)
+
+          what          |           relacl            
+------------------------+-----------------------------
+ finding_current relacl | {postgres=arwdDxt/postgres}
+(1 row)
+
+    table_name    | ordinal_position |        column_name        |        data_type         |      udt_name      | is_nullable |                 column_default                 
+------------------+------------------+---------------------------+--------------------------+--------------------+-------------+------------------------------------------------
+ finding          |                1 | id                        | uuid                     | uuid               | NO          | gen_random_uuid()
+ finding          |                2 | status                    | USER-DEFINED             | finding_status     | NO          | 'candidate'::devos_private.finding_status
+ finding          |                3 | scope                     | text                     | text               | NO          | 
+ finding          |                4 | privacy_class             | USER-DEFINED             | privacy_class      | NO          | 'private_derived'::devos_private.privacy_class
+ finding          |                5 | created_at                | timestamp with time zone | timestamptz        | NO          | now()
+ finding_current  |                1 | id                        | uuid                     | uuid               | YES         | 
+ finding_current  |                2 | revision                  | integer                  | int4               | YES         | 
+ finding_current  |                3 | claim                     | text                     | text               | YES         | 
+ finding_current  |                4 | source_spans              | jsonb                    | jsonb              | YES         | 
+ finding_current  |                5 | qualifiers                | jsonb                    | jsonb              | YES         | 
+ finding_current  |                6 | counter_evidence_searched | text                     | text               | YES         | 
+ finding_current  |                7 | confidence                | text                     | text               | YES         | 
+ finding_current  |                8 | open_questions            | jsonb                    | jsonb              | YES         | 
+ finding_current  |                9 | changeable                | USER-DEFINED             | finding_changeable | YES         | 
+ finding_current  |               10 | fresh_until               | date                     | date               | YES         | 
+ finding_current  |               11 | agent_addressed           | jsonb                    | jsonb              | YES         | 
+ finding_current  |               12 | privacy_class             | USER-DEFINED             | privacy_class      | YES         | 
+ finding_current  |               13 | scope                     | text                     | text               | YES         | 
+ finding_current  |               14 | status                    | USER-DEFINED             | finding_status     | YES         | 
+ finding_current  |               15 | use_scope                 | text                     | text               | YES         | 
+ finding_current  |               16 | created_at                | timestamp with time zone | timestamptz        | YES         | 
+ finding_current  |               17 | revised_at                | timestamp with time zone | timestamptz        | YES         | 
+ finding_current  |               18 | source_type               | USER-DEFINED             | source_type        | YES         | 
+ finding_current  |               19 | epistemic_status          | USER-DEFINED             | epistemic_status   | YES         | 
+ finding_current  |               20 | current_authority         | USER-DEFINED             | current_authority  | YES         | 
+ finding_revision |                1 | id                        | uuid                     | uuid               | NO          | gen_random_uuid()
+ finding_revision |                2 | finding_id                | uuid                     | uuid               | NO          | 
+ finding_revision |                3 | revision                  | integer                  | int4               | NO          | 
+ finding_revision |                4 | claim                     | text                     | text               | NO          | 
+ finding_revision |                5 | source_spans              | jsonb                    | jsonb              | NO          | '[]'::jsonb
+ finding_revision |                6 | qualifiers                | jsonb                    | jsonb              | YES         | 
+ finding_revision |                7 | counter_evidence_searched | text                     | text               | NO          | 
+ finding_revision |                8 | confidence                | text                     | text               | YES         | 
+ finding_revision |                9 | open_questions            | jsonb                    | jsonb              | YES         | 
+ finding_revision |               10 | changeable                | USER-DEFINED             | finding_changeable | NO          | 
+ finding_revision |               11 | fresh_until               | date                     | date               | YES         | 
+ finding_revision |               12 | agent_addressed           | jsonb                    | jsonb              | YES         | 
+ finding_revision |               13 | use_scope                 | text                     | text               | YES         | 
+ finding_revision |               14 | reason                    | text                     | text               | YES         | 
+ finding_revision |               15 | created_at                | timestamp with time zone | timestamptz        | NO          | now()
+ finding_revision |               16 | source_type               | USER-DEFINED             | source_type        | YES         | 
+ finding_revision |               17 | epistemic_status          | USER-DEFINED             | epistemic_status   | NO          | 
+ finding_revision |               18 | current_authority         | USER-DEFINED             | current_authority  | NO          | 
+(43 rows)
+
+      typname      |                                               labels                                               
+-------------------+----------------------------------------------------------------------------------------------------
+ current_authority | can_open_work, instruction, information_only
+ epistemic_status  | observation, user_decision, inference, hypothesis, proposal
+ source_type       | foundation, candidate_study, context, exploration, historical_record, archived_report, legacy_repo
+(3 rows)
+
+                  what                   |                                                        comment                                                         
+-----------------------------------------+------------------------------------------------------------------------------------------------------------------------
+ comment on finding_revision.source_type | Appendix B 3.8. NULL: not one of B's library categories (a DevOS-made record); T-35's value pending (plan/work/C04.md)
+(1 row)
+
+              what              |     relname      |     attname      
+--------------------------------+------------------+------------------
+ columns using epistemic_status | finding_revision | epistemic_status
+ columns using epistemic_status | relation         | epistemic_status
+(2 rows)
+
+ relkind | count 
+---------+-------
+ S       |     3
+ i       |    45
+ r       |    27
+ v       |     5
+(4 rows)
+
+            what             | count 
+-----------------------------+-------
+ enum types in devos_private |    32
+(1 row)
+
+     what     | count 
+--------------+-------
+ history rows |    12
+(1 row)
+
+[psql exit 0]

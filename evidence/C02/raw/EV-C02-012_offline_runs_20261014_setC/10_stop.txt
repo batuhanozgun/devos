@@ -1,0 +1,5 @@
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[rm -rf prd08c_pg exit 0]
+ls: cannot access '/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd08c_pg': No such file or directory
