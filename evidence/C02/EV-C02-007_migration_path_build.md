@@ -1597,3 +1597,43 @@ From the clone's root, after this build's last edit of `migrate.yml`:
 4. **The header comment** (17.4): corrected by the executor before the verdict (17.4).
 5. **The window before the merge** (T-W03-09): every scheduled run between S2 and H2's merge still prints p4 once. Its line stays in that run's log, and no search after S2 is T-W03-09's run.
 6. **The version at the pull request** (17.1): renamed first if another migration has merged.
+
+## 18. Live results: S1 to S3, T-W03-08 (e), and T-W03-09's break copies (2026-10-13 and 2026-10-14)
+
+Recorded by the executor (L-317). Raw: `evidence/C02/raw/EV-C02-007_T-W03-09_schedule_runs_S1_S3_20261014.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-09_S2_run38516392605_devos_job115696047003_search_lines.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-08_e_run38363215668_attempt2_jobs.md`,
+`evidence/C02/raw/EV-C02-007_T-W03-09_breaks_pr327_run38578385204_job115901434489_redacted.log`. The analysis of these
+against T-W03-08 and T-W03-09 is point 13's checker's, from the raw records; this section only states what was observed.
+
+### 18.1 The scheduled runs
+
+S1 = run 38455614435 (created 2026-10-13T19:32:14Z), S2 = run 38516392605 (2026-10-14T05:23:41Z to 05:24:12Z),
+S3 = run 38563282231 (2026-10-14T12:22:15Z): the first three scheduled runs of `migrate.yml` created after 07:31:41Z on
+2026-10-13, each at `44b37ab`, each concluded success. The 12:41Z slot of 2026-10-13 has no run; the created times lag
+their slots by 51 minutes to about five and a half hours. `main` did not change from `44b37ab` (merged 2026-10-13T08:43:46Z)
+until after the copies' run below, so T-W03-09's windows held: no change of `W03_PLANT_B64` or of step `plant` from
+H1-prime's merge to the end of S2's search.
+
+S2's search in job `check-devos`: the ten credential lines are 0; the plant lines are history percent 1, current trees
+plain 1, issue #308 plain 1, logs plain 1, the other six 0; "20 of 20 earlier runs of migrate.yml read"; its report gives
+`no_difference` with versions 20261012184638 and 20261012231841 applied. In job `check-devos-test`, the report line gives
+the same; the search's count lines were read on GitHub before a context compaction and are not filed (that log prints the
+plant; FR-07 item 3).
+
+### 18.2 T-W03-08 (e)
+
+The re-run of run 38363215668 (H1-prime's push run, at `1c0dbcf`), attempt 2, started 2026-10-14T14:10:14Z with `main` at
+`44b37ab` and after S2's search: in jobs 115900506370 (`devos-test`) and 115900597246 (`devos`) the head check concluded
+success and every step after it that holds or uses the secret was skipped, `go`, `decide` and `report` ran; the two check
+jobs were skipped. No step connected to either project.
+
+### 18.3 T-W03-09's break copies
+
+Pull request #327 (head `claude/w03-search-breaks` `d5c4dbf`, merge commit `f8fb8fc`), run 38578385204, job 115901434489,
+2026-10-14T14:12:07Z to 14:13:11Z, after S2's search and before the plants' removal; the pull request was then closed
+unmerged. The job states that the search body it copies equals `main`'s (SHA-256 `2ef72520eefd…`, 15.15) and that the plant
+stands in place of the secret. The unbroken copy (copy 0) read the logs of every earlier run, S1 to S3 included, and its plant
+counts are current trees plain 1, history percent 1, issue #308 plain 1, logs plain 3; each broken copy's line is in the
+redacted log. The copies were run without the checker that L-315's resume plan step (2) put before them (the executor's
+decision, L-317): their outputs are judged by point 13's checker from the raw log, with the producer's open points 1 to 6.
