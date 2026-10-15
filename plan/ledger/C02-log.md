@@ -568,3 +568,11 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Wait:** ends when Batu answers in this session (start W-C02-09 now, or hold until the weekly reset of 2026-10-17T17:00Z and his "devam"); sooner: none, the choice spends his shared allowance and is his (D-002); whose call: Batu.
 - **Guard:** since L-332's last record: none. No denial by any other hook. The last record #29647 (2026-10-14T20:57:03Z).
 - **Record changes:** plan/ledger/C02-log.md · addition · L-333; plan/ledger.md · correction · Usage, summary_tr; DURUM.md, plan/ledger.md · generated
+
+### L-334 · 2026-10-15 · Batu answers L-333: hold until the weekly reset; the installation holds at a clean point (W-C02-08 accepted, everything merged)
+
+- **Disciplines (D1–D9):** D1: no. D2: no. D3: no. D4: no. D5: no. D6: no. D7: yes: this entry carries where the work resumes: W-C02-09, with N-277 first (S5's tests and W-C02-09's acceptance amendment before any of its work), W-C02-18 also ready. D8: yes: `main` and the frontier were read before this entry. D9: no.
+- **Batu** in the working session, 2026-10-15 about 06:30Z: "Bekle sıfırlamaya kadar." (English: "Wait until the reset."): L-333's question, hold until the weekly reset of 2026-10-17T17:00Z.
+- **Wait:** ends when the weekly limit resets at 2026-10-17T17:00Z and Batu writes "devam" in this session; sooner: none, his decision (D-002); whose call: Batu.
+- **Guard:** since L-333's last record: the executor: #29664 (G0, a command substitution the guard could not parse; redone as separate calls), and a `sleep` chained with `echo` was blocked by the harness, not the guard; rerun in the background). No denial by any other hook. The last record #29665 (2026-10-15T06:28:50Z).
+- **Record changes:** plan/ledger/C02-log.md · addition · L-334; plan/ledger.md · correction · answers seen, summary_tr; DURUM.md, plan/ledger.md · generated
