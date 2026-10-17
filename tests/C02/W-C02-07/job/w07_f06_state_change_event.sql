@@ -315,6 +315,39 @@ begin
                             'events', pg_temp.w07_new_events(e0));
 end $f$;
 
+-- G20 (revised before any result: EV-C02-013 sections 2.2, 2.8 and 3, 2026-10-17). S1's transfer_source, with
+-- synthetic commit and hash strings made from md5 at run time.
+create function pg_temp.f06_src(p_kind text, p_sid text) returns jsonb language sql as $f$
+  select jsonb_build_object('kind', p_kind, 'source_id', p_sid, 'path', 'w07_fixture/' || p_sid || '.md',
+    'input_commit', left(md5('w07 f06 input') || md5('w07 f06 input 2'), 40), 'last_commit', left(md5('w07 f06 last ' || p_sid) || md5(p_sid), 40),
+    'sha256', md5('w07 f06 text ' || p_sid) || md5('w07 f06 text 2 ' || p_sid))
+$f$;
+create function pg_temp.f06_run_args(p_run text) returns jsonb language sql as $f$
+  select jsonb_build_object('run_id', p_run, 'input_commit', left(md5('w07 f06 input') || md5('w07 f06 input 2'), 40),
+    'manifest_sha256', md5('w07 f06 manifest ' || p_run) || md5(p_run), 'counts', '{}'::jsonb, 'phase', 'begun', 'mode', 'ahead')
+$f$;
+-- A late fill, at the call: the installation's Mission (the one whose creation event is transferred, EV-C02-013
+-- section 4) exists only once transfer_mission's own recipe has run, so the recipes that name it (transfer_work,
+-- transfer_need) or a Work under it (record_ledger_entry's stage Work, made here by transfer_work) are completed just
+-- before their call. If it cannot be done, the arguments stay as they are and the build's refusal makes the case
+-- could_not_check with its reason.
+create function pg_temp.f06_late(p_what text, p_args jsonb, p_tok text) returns jsonb language plpgsql as $f$
+declare m text; n int; x jsonb;
+begin
+  execute 'select m.id::text from devos_private.mission m where exists (select 1 from devos_private.event e
+             where e.aggregate_id = m.id and e.event_type::text = ''transferred'') order by m.created_at limit 1' into m;
+  if m is null then return p_args; end if;
+  execute 'select max(r.revision) from devos_private.mission_revision r where r.mission_id::text = $1' into n using m;
+  if p_what = 'mission' then return p_args || jsonb_build_object('mission_ref', m, 'mission_revision', n); end if;
+  x := pg_temp.w07_call('transfer_work', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+         'transfer_source', pg_temp.f06_src('work', 'W07-FIXTURE-F06-STAGE'), 'mission_ref', m, 'mission_revision', n,
+         'scope', 'installation', 'purpose', 'w07_fixture SYNTHETIC W-C02-07 stage work item', 'impact_class', 'high',
+         'execution', 'planned', 'acceptance', 'proposed', 'effort_policy', jsonb_build_object('level', 'high',
+         'expert_assessment_ref', 'w07_fixture/expert_assessment', 'non_removable_steps', '["verification"]'::jsonb)), p_tok);
+  if x->'result'->>'status' is distinct from 'ok' then return p_args; end if;
+  return p_args || jsonb_build_object('stage_work_id', x->'result'->'id');
+end $f$;
+
 do $$
 declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 jsonb; a jsonb; b jsonb; d jsonb; rel jsonb;
         recipes jsonb; e0 text[]; v jsonb; fd jsonb; ev jsonb; t_x text; ok boolean; n_listed int;
@@ -322,6 +355,7 @@ declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 
         t_cal text; t_kur text;
         t_den text; d2 jsonb; mr jsonb; wk jsonb; cl jsonb; op jsonb; x jsonb; fn text; ct text;  -- phase C3
         fx_fail jsonb := '{}'; unformable jsonb; no_repeat jsonb;
+        nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; trv text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -339,6 +373,9 @@ begin
     perform pg_temp.w07_plant('devos_private.finding_revision', jsonb_build_object('finding_id', fd->'id', 'revision', 1,
       'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'changeable', 'no', 'source_spans', '[]'::jsonb,
       'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found'));
+    -- D-2 (EV-C02-013 section 5): record_need's mission_ref is required (need.mission_ref NOT NULL; B 3.2): a planted
+    -- Mission, active by default.
+    nm := pg_temp.w07_plant('devos_private.mission_revision', '{}');
   exception when others then
     perform pg_temp.w07_rec('F06-pre', 'could_not_check', 'fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200));
     return;
@@ -361,7 +398,7 @@ begin
       'declared_session_id', 'w07_fixture_session_f06')),
     'revise_work', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('id', b->'work_id',
       'base_revision', b->'revision', 'scope', 'synthetic.w07fixture', 'reason', 'w07_fixture SYNTHETIC W-C02-07 revision')),
-    'record_need', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
+    'record_need', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('mission_ref', nm->'mission_id',
       'condition', 'w07_fixture SYNTHETIC W-C02-07 condition', 'why_needed', 'w07_fixture SYNTHETIC W-C02-07: F06 needs one accepted need')),
     'open_decision', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('class', 'routine',
       'question', 'w07_fixture SYNTHETIC W-C02-07 routine question')),
@@ -386,14 +423,14 @@ begin
     recipes := recipes || jsonb_build_object(
       'open_mission', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object(
         'purpose', 'w07_fixture SYNTHETIC W-C02-07 mission; not work', 'scope', 'synthetic.w07fixture',
-        'owner_authority', jsonb_build_object('id', d2->'id', 'revision', 1),
+        'owner_authority', d2->'id', 'owner_authority_revision', 1,
         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb)),
       'revise_mission', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object(
         'id', mr->'mission_id', 'base_revision', mr->'revision', 'purpose', 'w07_fixture SYNTHETIC W-C02-07 mission, revised',
-        'scope', 'synthetic.w07fixture', 'owner_authority', jsonb_build_object('id', d2->'id', 'revision', 1),
+        'scope', 'synthetic.w07fixture', 'owner_authority', d2->'id', 'owner_authority_revision', 1,
         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb)),
       'admit_work', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
-        'mission_ref', jsonb_build_object('id', mr->'mission_id', 'revision', mr->'revision'), 'scope', 'synthetic.w07fixture',
+        'mission_ref', mr->'mission_id', 'mission_revision', mr->'revision', 'scope', 'synthetic.w07fixture',
         'purpose', 'w07_fixture SYNTHETIC W-C02-07 work item', 'impact_class', 'routine', 'consumer', 'w07_fixture',
         'return_to', 'w07_fixture', 'stop_rule', 'w07_fixture', 'input_refs', '[]'::jsonb, 'target_refs', '[]'::jsonb,
         'mandatory_needs', '[]'::jsonb)));
@@ -440,10 +477,10 @@ begin
       'record_eval_run', jsonb_build_object('class', 'devos_sinav', 'args', jsonb_build_object(
         'eval_set_id', 'w07_fixture_eval_set', 'eval_set_version', '1', 'subject_role', 'w07_fixture',
         'subject_release', 'w07_fixture', 'runner_session', 'w07_fixture_session_f06',
-        'work_ref', jsonb_build_object('id', wk->'work_id', 'revision', wk->'revision'),
+        'work_ref', wk->'work_id', 'work_revision', wk->'revision',
         'results', '{"positive": [], "negative": []}'::jsonb, 'run_at', now())),
       'set_effort_policy', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
-        'work_ref', jsonb_build_object('id', wk->'work_id', 'revision', wk->'revision'), 'level', 'high',
+        'work_ref', wk->'work_id', 'work_revision', wk->'revision', 'level', 'high',
         'expert_assessment_ref', 'w07_fixture SYNTHETIC W-C02-07: expert assessment of the item, high effort',
         'non_removable_steps', '["verification", "alternatives_research", "external_source_research"]'::jsonb,
         'status', 'active')));
@@ -464,7 +501,7 @@ begin
       ct := cl->'result'->>'claim_token';
       op := jsonb_build_object('claim_token', ct, 'idempotency_namespace', 'w07_fixture', 'idempotency_key', 'w07_fixture_key_f06_' || fn,
         'effect_class', 'w07_fixture_effect_f06', 'target', 'w07_fixture/target_f06', 'expected_base', 'w07_fixture_base_1',
-        'payload_hash', 'w07_fixture_payload_1', 'work_ref', jsonb_build_object('id', wk->'work_id', 'revision', wk->'revision'),
+        'payload_hash', 'w07_fixture_payload_1', 'work_ref', wk->'work_id', 'work_revision', wk->'revision',
         'read_set', jsonb_build_array(jsonb_build_object('ref', wk->'work_id', 'revision', wk->'revision')));
       if fn in ('prepare_operation', 'record_attempt', 'record_observation')
          and not exists (select 1 from devos_private.effect_class where effect_class::text = 'w07_fixture_effect_f06') then
@@ -482,7 +519,7 @@ begin
         when 'revoke_claim' then jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object(
           'assignment_id', cl->'result'->'assignment_id', 'reason', 'w07_fixture SYNTHETIC W-C02-07 revoked'))
         when 'register_artifact' then jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('claim_token', ct,
-          'work_ref', jsonb_build_object('id', wk->'work_id', 'revision', wk->'revision'), 'path', 'w07_fixture/f06_artifact',
+          'work_ref', wk->'work_id', 'work_revision', wk->'revision', 'path', 'w07_fixture/f06_artifact',
           'commit', repeat('a7', 20), 'kind', 'w07_fixture', 'scope', 'synthetic.w07fixture',
           'declared_session_id', 'w07_fixture_session_f06'))
         when 'prepare_operation' then jsonb_build_object('class', 'devos_calisma', 'args', op)
@@ -506,12 +543,109 @@ begin
   -- since it changes nothing and makes no event.
   recipes := recipes || jsonb_build_object('deployment_drift', jsonb_build_object('class', 'devos_ci', 'args',
     jsonb_build_object('expected', jsonb_build_object('commit', repeat('a7', 20), 'migrations', '[]'::jsonb, 'functions', '[]'::jsonb))));
-  -- Functions this file cannot form, each listed with its reason (could_not_check, never a pass).
-  unformable := jsonb_build_object(
-    'mark_exported', 'its arguments (the range of events it marks, B 3.13) are named by no source and by no rule of README section 8.1',
-    'link_prior_decisions', 'its arguments are named by no source, and README section 8.1''s rules (one record''s fields; one record''s identifier and new values) do not decide them')
-    || (select jsonb_object_agg(z, 'a ledger transfer function (Appendix B section 4; PC-44 place 10): README section 8.1 gives it p jsonb, but no source names its payload''s keys (EV-C02-005 section 12 names the functions only), and its order (a run begun and not ended, no hand-over) is set by W-C02-14 point 13''s tests; could not check until W-C02-09 names the payload and the recipe is added')
-          from unnest(array['begin_transfer_run', 'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision', 'transfer_review', 'transfer_acceptance', 'transfer_need', 'transfer_finding', 'transfer_artifact', 'transfer_event', 'end_transfer_run', 'record_handover', 'record_ledger_entry']) z);
+  -- G20 (revised before any result: EV-C02-013 sections 2.2, 2.8 and 3.2, 2026-10-17): recipes for the ledger
+  -- transfer's fourteen functions, mark_exported and link_prior_decisions, with the payloads the interface record names.
+  -- The transfer's prerequisites (EV-C02-013 3.2, "Prerequisites a test must plant"): an open run for the records, a
+  -- second run for end_transfer_run to end, D-010's batu Decision for transfer_mission (R1-9), a Review copy (a
+  -- transferred creation event) for transfer_acceptance. transfer_mission's own call makes the installation's Mission,
+  -- so the loop below runs the functions that need it after it, and record_handover, which closes the path, last.
+  begin
+    x := pg_temp.w07_call('begin_transfer_run', pg_temp.f06_run_args('w07_fixture_run_f06_open'), t_kur);
+    if x->'result'->>'status' is distinct from 'ok' then raise exception 'the open run its recipes need was not begun: %', pg_temp.w07_show(x); end if;
+    x := pg_temp.w07_call('begin_transfer_run', pg_temp.f06_run_args('w07_fixture_run_f06_end'), t_kur);
+    if x->'result'->>'status' is distinct from 'ok' then raise exception 'the run end_transfer_run ends was not begun: %', pg_temp.w07_show(x); end if;
+    dl := jsonb_build_object('class', 'high_impact', 'question', 'w07_fixture SYNTHETIC W-C02-07 transferred decision',
+      'why_this_owner', 'w07_fixture SYNTHETIC W-C02-07', 'options', '[]'::jsonb, 'alternatives_considered', '[]'::jsonb,
+      'alternatives_state', 'compared', 'criteria', '[]'::jsonb, 'evidence_refs', '[]'::jsonb, 'assumptions', '[]'::jsonb,
+      'premises', '[]'::jsonb, 'reopen_triggers', '[]'::jsonb, 'status', 'answered', 'run_id', 'w07_fixture_run_f06_open');
+    x := pg_temp.w07_call('transfer_decision', dl || jsonb_build_object('class', 'batu', 'presented_text_tr', 'w07_fixture SYNTHETIC karar',
+      'answer_original_tr', 'w07_fixture SYNTHETIC yanit', 'answer_interpretation_en', 'w07_fixture SYNTHETIC answer',
+      'answered_by', 'w07_fixture SYNTHETIC', 'answer_channel_ref', 'w07_fixture/channel', 'answered_at', now(),
+      'transfer_source', pg_temp.f06_src('decision', 'D-010')), t_kur);
+    if x->'result'->>'status' is distinct from 'ok' then raise exception 'D-010''s Decision (transfer_mission''s prerequisite) was not transferred: %', pg_temp.w07_show(x); end if;
+    tdd := x->'result'->>'id';
+    wt1 := pg_temp.w07_plant('devos_private.work_revision', '{}'); wt2 := pg_temp.w07_plant('devos_private.work_revision', '{}');
+    dl2 := jsonb_build_object('run_id', 'w07_fixture_run_f06_open', 'kind', 'review', 'claim', 'w07_fixture SYNTHETIC W-C02-07 verdict copy',
+      'target_ref', wt1->'work_id', 'criterion', 'w07_fixture/criterion', 'basis_refs', '["w07_fixture_tree"]'::jsonb,
+      'reviewer_declared_session', 'w07_fixture_checker_run SYNTHETIC', 'independence_level', 'fresh_context_subagent',
+      'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', 'pass', 'objections', '[]'::jsonb,
+      'evidence_refs', '[]'::jsonb, 'limits', '[]'::jsonb));
+    x := pg_temp.w07_call('transfer_review', dl2 || jsonb_build_object('transfer_source', pg_temp.f06_src('verdict', 'W07-FIXTURE-F06-RV0')), t_kur);
+    if x->'result'->>'status' is distinct from 'ok' then raise exception 'the Review copy transfer_acceptance needs was not written: %', pg_temp.w07_show(x); end if;
+    trv := x->'result'->>'id';
+    recipes := recipes || jsonb_build_object(
+      'begin_transfer_run', jsonb_build_object('class', 'devos_kurulum', 'args', pg_temp.f06_run_args('w07_fixture_run_f06_begin')),
+      'end_transfer_run', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_end',
+        'counts', '{}'::jsonb, 'phase', 'completed')),
+      'record_handover', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'input_commit', left(md5('w07 f06 input') || md5('w07 f06 input 2'), 40), 'mark_commit', left(md5('w07 f06 mark') || md5('m'), 40),
+        'handed_over_sha256', md5('w07 f06 handed over') || md5('h'))),
+      'transfer_mission', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('mission', 'W07-FIXTURE-F06-INSTALL'), 'purpose', 'w07_fixture SYNTHETIC W-C02-07 installation mission',
+        'scope', 'installation', 'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'owner_authority', tdd, 'owner_authority_revision', 1,
+        'constraints', '[]'::jsonb, 'status', 'active')),
+      'transfer_work', jsonb_build_object('class', 'devos_kurulum', 'late', 'mission', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('work', 'W07-FIXTURE-F06-W1'), 'scope', 'installation',
+        'purpose', 'w07_fixture SYNTHETIC W-C02-07 transferred work item', 'impact_class', 'high', 'execution', 'planned',
+        'acceptance', 'proposed', 'effort_policy', jsonb_build_object('level', 'high', 'expert_assessment_ref', 'w07_fixture/expert_assessment',
+        'non_removable_steps', '["verification"]'::jsonb))),
+      'transfer_need', jsonb_build_object('class', 'devos_kurulum', 'late', 'mission', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('need', 'W07-FIXTURE-F06-N1'), 'condition', 'w07_fixture SYNTHETIC W-C02-07 condition',
+        'why_needed', 'w07_fixture SYNTHETIC W-C02-07: F06 transfers one need', 'status', 'open')),
+      'record_ledger_entry', jsonb_build_object('class', 'devos_kurulum', 'late', 'stage', 'args', jsonb_build_object(
+        'entry_id', 'W07-FIXTURE-F06-L1', 'entry_date', current_date::text, 'text', 'w07_fixture SYNTHETIC W-C02-07 ledger entry')),
+      'transfer_relation', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('relation', 'W07-FIXTURE-F06-REL1'), 'type', 'about', 'from_ref', a->'work_id',
+        'from_revision', a->'revision', 'to_ref', b->'work_id', 'to_revision', b->'revision', 'scope', 'installation', 'hard', false,
+        'method', 'mechanical', 'epistemic_status', 'observation')),
+      'transfer_decision', jsonb_build_object('class', 'devos_kurulum', 'args', dl || jsonb_build_object(
+        'transfer_source', pg_temp.f06_src('decision', 'W07-FIXTURE-F06-D1'))),
+      'transfer_review', jsonb_build_object('class', 'devos_kurulum', 'args', dl2 || jsonb_build_object('target_ref', wt2->'work_id',
+        'transfer_source', pg_temp.f06_src('verdict', 'W07-FIXTURE-F06-RV1'))),
+      'transfer_acceptance', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'target_ref', wt1->'work_id', 'review_ref', trv, 'accepted_use', 'installation_acceptance', 'scope', 'installation',
+        'current_evidence', jsonb_build_array(trv), 'transfer_source', pg_temp.f06_src('acceptance', 'W07-FIXTURE-F06-ACC1'))),
+      'transfer_finding', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('finding', 'W07-FIXTURE-F06-FND1'), 'claim', 'w07_fixture SYNTHETIC W-C02-07 transferred finding',
+        'scope', 'installation', 'counter_evidence_searched', 'not_recorded', 'changeable', 'not_recorded', 'epistemic_status', 'observation',
+        'current_authority', 'information_only', 'privacy_class', 'public', 'status', 'candidate')),
+      'transfer_artifact', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('artifact', 'W07-FIXTURE-F06-ART1'), 'path', 'w07_fixture/f06_transferred_artifact.md',
+        'commit', left(md5('w07 f06 artifact') || md5('a'), 40), 'kind', 'git_file', 'scope', 'installation', 'status', 'current')),
+      'transfer_event', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+        'transfer_source', pg_temp.f06_src('record_line', 'W07-FIXTURE-F06#1'), 'event_type', 'record_line', 'aggregate_type', 'work',
+        'aggregate_id', a->'work_id', 'text', 'w07_fixture SYNTHETIC W-C02-07 record line')));
+  exception when others then
+    fx_fail := fx_fail || (select jsonb_object_agg(z, 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150))
+      from unnest(array['begin_transfer_run', 'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision', 'transfer_review',
+                        'transfer_acceptance', 'transfer_need', 'transfer_finding', 'transfer_artifact', 'transfer_event', 'end_transfer_run',
+                        'record_handover', 'record_ledger_entry']) z);
+  end;
+  begin  -- mark_exported({table, from_id, to_id}; EV-C02-013 2.8): one planted event, its range alone
+    ev_id := pg_temp.w07_plant('devos_private.event', jsonb_build_object('aggregate_type', 'w07_fixture', 'aggregate_id', gen_random_uuid(),
+      'event_type', 'w07_fixture_event', 'payload', '{}'::jsonb, 'role_class', 'owner', 'origin', 'owner'))->>'id';
+    recipes := recipes || jsonb_build_object('mark_exported', jsonb_build_object('class', 'devos_backup', 'args',
+      jsonb_build_object('table', 'event', 'from_id', ev_id::bigint, 'to_id', ev_id::bigint)));
+  exception when others then
+    fx_fail := fx_fail || jsonb_build_object('mark_exported', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+  end;
+  begin  -- link_prior_decisions({decision_id, prior_ids, scope}; EV-C02-013 2.2): two planted decisions
+    x := pg_temp.w07_plant('devos_private.decision', '{"class": "high_impact", "status": "draft"}');
+    perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', x->'id', 'revision', 1));
+    op := pg_temp.w07_plant('devos_private.decision', '{"class": "high_impact", "status": "answered"}');
+    perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', op->'id', 'revision', 1));
+    recipes := recipes || jsonb_build_object('link_prior_decisions', jsonb_build_object('class', 'devos_calisma', 'args',
+      jsonb_build_object('decision_id', x->'id', 'prior_ids', jsonb_build_array(op->'id'), 'scope', 'synthetic.w07fixture')));
+  exception when others then
+    fx_fail := fx_fail || jsonb_build_object('link_prior_decisions', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+  end;
+  x := null; op := null;
+  -- Functions this file cannot form, each listed with its reason (could_not_check, never a pass): none since G20.
+  unformable := '{}'::jsonb;
+  -- The functions whose state change is an event only (EV-C02-013 3.2 and 2.8: a transfer_run event, the
+  -- ledger_handed_over event, a ledger_entry event, an event of the six kinds, the exported event and the export marks
+  -- on event rows): for them F06-event's "changes state" reads the event table too.
+  event_state := array['begin_transfer_run', 'end_transfer_run', 'record_handover', 'record_ledger_entry', 'transfer_event', 'mark_exported'];
   -- A repeat that is not an exact repeat of the same change: a call that creates a new record (no idempotency key), or
   -- one whose every call is a new change by design. Phase C5 (CHK-C02-030 C2): outside F06-r3's and F06-p1's subject
   -- (an exact repeat of the same change), so not a case and not in the verdict count; listed in one notice with the
@@ -529,7 +663,10 @@ begin
 
   for f in select p.proname, coalesce(obj_description(p.oid, 'pg_proc'), '') like 'devos:read%' as is_read,
                   p.pronargs - p.pronargdefaults as required
-             from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_api' order by p.proname loop
+             from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'devos_api'
+            -- G20: the functions that need the installation's Mission after transfer_mission, record_handover last.
+            order by p.proname = 'record_handover',
+                     p.proname in ('transfer_work', 'transfer_need', 'transfer_acceptance', 'record_ledger_entry'), p.proname loop
     -- The refused call: no token. deployment_drift admits the migration role's direct login before the token check
     -- (B:45), and session_user stays postgres under set role (README 5.1 (a)), so its no-token case is the Data API's.
     m := pg_temp.w07_measure(f.proname, '{}', null, true);
@@ -576,6 +713,10 @@ begin
       perform pg_temp.w07_rec('F06-event:' || f.proname, 'could_not_check', 'no recipe for an accepted call (the specification, "Could not check")');
     else
       tok := case recipes->f.proname->>'class' when 'devos_calisma' then t_cal else pg_temp.w07_token(recipes->f.proname->>'class') end;
+      if recipes->f.proname ? 'late' then  -- G20: completed at the call (pg_temp.f06_late)
+        recipes := jsonb_set(recipes, array[f.proname, 'args'],
+                             pg_temp.f06_late(recipes->f.proname->>'late', recipes->f.proname->'args', tok));
+      end if;
       m := pg_temp.w07_measure(f.proname, recipes->f.proname->'args', tok);
       if m->'call' ? 'interface' or pg_temp.w07_refused(m->'call') then  -- phase C: the recipe was not accepted
         perform pg_temp.w07_rec('F06-event:' || f.proname, 'could_not_check', 'the recipe''s call was not accepted, so no state '
@@ -583,7 +724,8 @@ begin
         perform pg_temp.w07_rec('F06-repeat:' || f.proname, 'could_not_check', 'no accepted call to repeat');
         continue;
       end if;
-      perform pg_temp.w07_check('F06-event:' || f.proname, not pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'changed') > 0
+      perform pg_temp.w07_check('F06-event:' || f.proname, not pg_temp.w07_refused(m->'call')
+          and (jsonb_array_length(m->'changed') > 0 or f.proname = any (event_state))
           and jsonb_array_length(m->'events') >= 1
           and not exists (select 1 from jsonb_array_elements(m->'events') e where e->>'role_class' is distinct from recipes->f.proname->>'class'
                             or e->>'origin' not in ('call', 'rule') or (e->>'this_tx')::boolean is not true),

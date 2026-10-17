@@ -230,26 +230,41 @@ begin
 end $f$;
 
 -- Inserts one owner-level fixture row; NOT NULL columns without a default get synthetic values by type (as
--- W-C02-03's w03_plant_function).
+-- W-C02-03's w03_plant_function). Revised before any result (note N-278 (4); EV-C02-013 D-14, 2026-10-17): a value
+-- meets the column's own CHECK where the schema fixes a form (a text column whose CHECK asks for 64 or 40 lower-case
+-- hexadecimal characters gets a synthetic string of that form, drawn at run time; a json column whose CHECK asks for
+-- an object gets {}), and an enum column gets its type's first label instead of null.
 create function pg_temp.w07_plant_row(p_tbl text, p_base jsonb) returns void language plpgsql as $f$
-declare cols text := ''; vals text := ''; c record; k text;
+declare cols text := ''; vals text := ''; c record; k text; chk text;
 begin
   for k in select jsonb_object_keys(p_base) loop
     cols := cols || ', ' || quote_ident(k); vals := vals || ', ' || quote_literal(p_base->>k) || '::' ||
       (select format_type(a.atttypid, a.atttypmod) from pg_attribute a where a.attrelid = ('devos_private.' || p_tbl)::regclass and a.attname = k);
   end loop;
-  for c in select column_name, data_type, udt_name from information_schema.columns
+  for c in select column_name, data_type, udt_schema, udt_name from information_schema.columns
            where table_schema = 'devos_private' and table_name = p_tbl and is_nullable = 'NO' and column_default is null
              and is_identity = 'NO' and is_generated = 'NEVER' and not (p_base ? column_name) order by ordinal_position loop
+    select coalesce(string_agg(pg_get_constraintdef(con.oid), ' '), '') into chk from pg_constraint con
+      join pg_attribute att on att.attrelid = con.conrelid and att.attnum = any (con.conkey)
+     where con.conrelid = ('devos_private.' || p_tbl)::regclass and con.contype = 'c' and att.attname = c.column_name;
     cols := cols || ', ' || quote_ident(c.column_name);
     vals := vals || ', ' || case
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{64}' in chk) > 0
+        then quote_literal(md5(random()::text) || md5(random()::text))
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{40}' in chk) > 0
+        then quote_literal(left(md5(random()::text) || md5(random()::text), 40))
       when c.data_type in ('text', 'character varying', 'character') then quote_literal('w07_fixture SYNTHETIC W-C02-07')
       when c.data_type in ('integer', 'bigint', 'smallint', 'numeric') then '1'
       when c.data_type like 'timestamp%' then 'now()'
       when c.data_type = 'boolean' then 'false'
+      when c.data_type in ('json', 'jsonb') and position('jsonb_typeof(' || c.column_name || ') = ''object''' in chk) > 0
+        then quote_literal('{}') || '::' || c.data_type
       when c.data_type in ('json', 'jsonb') then quote_literal('[]') || '::' || c.data_type
       when c.data_type = 'uuid' then 'gen_random_uuid()'
       when c.data_type = 'ARRAY' then quote_literal('{}') || '::' || quote_ident(ltrim(c.udt_name, '_')) || '[]'
+      when c.data_type = 'USER-DEFINED' then coalesce((select quote_literal(e.enumlabel) || '::' || quote_ident(c.udt_schema) || '.'
+        || quote_ident(c.udt_name) from pg_enum e join pg_type t on t.oid = e.enumtypid join pg_namespace n on n.oid = t.typnamespace
+        where n.nspname = c.udt_schema and t.typname = c.udt_name order by e.enumsortorder limit 1), 'null')
       else 'null' end;
   end loop;
   execute format('insert into devos_private.%I (%s) values (%s)', p_tbl, substr(cols, 3), substr(vals, 3));
@@ -566,8 +581,12 @@ end $f$;
 -- devos_denetim, devos_sinav and devos_kurulum at the gate (EV-C02-008 1.7.4, and its section 3.4's dated paragraph).
 -- An owner-level statement the build's record names (README section 8): it returns the id of a Mission the build treats
 -- as the installation's under Rule O (CHK-C02-025 F5). Empty until then: N03-pos-default-kurulum gives could_not_check.
+-- Filled before any result (EV-C02-013 section 4, the hook installation_mission, 2026-10-17): as owner, a Mission and
+-- its revision 1 on a batu Decision answered at owner level, and one transferred Event on it (aggregate_type
+-- mission, a transfer_source of kind mission, source ID INSTALL); its scope synthetic.w07_fixture, so the fixture
+-- work items' scopes lie under it (DM-34). One already in the database tested is returned as it is.
 create function pg_temp.n03_hook(p_key text) returns text language sql immutable as $f$
-  select t.v from (values ('installation_mission', '')) t(k, v) where t.k = p_key
+  select t.v from (values ('installation_mission', 'with x as (select m.id from devos_private.mission m where exists (select 1 from devos_private.event e where e.aggregate_id = m.id and e.event_type = ''transferred'') order by m.created_at limit 1), d as (insert into devos_private.decision (class, status, answered_revision, answered_at, answered_by, answer_original_tr, answer_interpretation_en) select ''batu''::devos_private.decision_class, ''answered''::devos_private.decision_status, 1, now(), ''w07_fixture SYNTHETIC W-C02-07'', ''w07_fixture SYNTHETIC yanit'', ''w07_fixture SYNTHETIC answer'' where not exists (select 1 from x) returning id), dr as (insert into devos_private.decision_revision (decision_id, revision, question) select d.id, 1, ''w07_fixture SYNTHETIC W-C02-07 decision of the installation Mission stand-in'' from d returning decision_id), m as (insert into devos_private.mission (status) select ''active''::devos_private.mission_status where not exists (select 1 from x) returning id), mr as (insert into devos_private.mission_revision (mission_id, revision, purpose, scope, acceptance, owner_authority) select m.id, 1, ''w07_fixture SYNTHETIC W-C02-07 installation Mission stand-in; not work'', ''synthetic.w07_fixture'', ''w07_fixture SYNTHETIC W-C02-07'', dr.decision_id from m, dr returning mission_id), ev as (insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin) select ''mission'', mr.mission_id, 1, ''transferred'', jsonb_build_object(''transfer_source'', jsonb_build_object(''kind'', ''mission'', ''source_id'', ''INSTALL'', ''path'', ''w07_fixture/INSTALL.md'', ''input_commit'', repeat(''a7'', 20), ''last_commit'', repeat(''a7'', 20), ''sha256'', repeat(''5e'', 32)), ''run_id'', null, ''lacks'', ''[]''::jsonb), ''devos_kurulum'', ''call''::devos_private.event_origin from mr returning aggregate_id) select coalesce((select aggregate_id::text from ev), (select id::text from x))')) t(k, v) where t.k = p_key
 $f$;
 -- An exam task of the exam environment: opened with devos_sinav as ordinary work (B:38; if the build refuses that before
 -- any exam link exists, with devos_calisma), and an exam run naming it, planted at owner level (DM-24; record_eval_run's

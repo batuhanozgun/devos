@@ -231,26 +231,41 @@ begin
 end $f$;
 
 -- Inserts one owner-level fixture row; NOT NULL columns without a default get synthetic values by type (as
--- W-C02-03's w03_plant_function).
+-- W-C02-03's w03_plant_function). Revised before any result (note N-278 (4); EV-C02-013 D-14, 2026-10-17): a value
+-- meets the column's own CHECK where the schema fixes a form (a text column whose CHECK asks for 64 or 40 lower-case
+-- hexadecimal characters gets a synthetic string of that form, drawn at run time; a json column whose CHECK asks for
+-- an object gets {}), and an enum column gets its type's first label instead of null.
 create function pg_temp.w07_plant_row(p_tbl text, p_base jsonb) returns void language plpgsql as $f$
-declare cols text := ''; vals text := ''; c record; k text;
+declare cols text := ''; vals text := ''; c record; k text; chk text;
 begin
   for k in select jsonb_object_keys(p_base) loop
     cols := cols || ', ' || quote_ident(k); vals := vals || ', ' || quote_literal(p_base->>k) || '::' ||
       (select format_type(a.atttypid, a.atttypmod) from pg_attribute a where a.attrelid = ('devos_private.' || p_tbl)::regclass and a.attname = k);
   end loop;
-  for c in select column_name, data_type, udt_name from information_schema.columns
+  for c in select column_name, data_type, udt_schema, udt_name from information_schema.columns
            where table_schema = 'devos_private' and table_name = p_tbl and is_nullable = 'NO' and column_default is null
              and is_identity = 'NO' and is_generated = 'NEVER' and not (p_base ? column_name) order by ordinal_position loop
+    select coalesce(string_agg(pg_get_constraintdef(con.oid), ' '), '') into chk from pg_constraint con
+      join pg_attribute att on att.attrelid = con.conrelid and att.attnum = any (con.conkey)
+     where con.conrelid = ('devos_private.' || p_tbl)::regclass and con.contype = 'c' and att.attname = c.column_name;
     cols := cols || ', ' || quote_ident(c.column_name);
     vals := vals || ', ' || case
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{64}' in chk) > 0
+        then quote_literal(md5(random()::text) || md5(random()::text))
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{40}' in chk) > 0
+        then quote_literal(left(md5(random()::text) || md5(random()::text), 40))
       when c.data_type in ('text', 'character varying', 'character') then quote_literal('w07_fixture SYNTHETIC W-C02-07')
       when c.data_type in ('integer', 'bigint', 'smallint', 'numeric') then '1'
       when c.data_type like 'timestamp%' then 'now()'
       when c.data_type = 'boolean' then 'false'
+      when c.data_type in ('json', 'jsonb') and position('jsonb_typeof(' || c.column_name || ') = ''object''' in chk) > 0
+        then quote_literal('{}') || '::' || c.data_type
       when c.data_type in ('json', 'jsonb') then quote_literal('[]') || '::' || c.data_type
       when c.data_type = 'uuid' then 'gen_random_uuid()'
       when c.data_type = 'ARRAY' then quote_literal('{}') || '::' || quote_ident(ltrim(c.udt_name, '_')) || '[]'
+      when c.data_type = 'USER-DEFINED' then coalesce((select quote_literal(e.enumlabel) || '::' || quote_ident(c.udt_schema) || '.'
+        || quote_ident(c.udt_name) from pg_enum e join pg_type t on t.oid = e.enumtypid join pg_namespace n on n.oid = t.typnamespace
+        where n.nspname = c.udt_schema and t.typname = c.udt_name order by e.enumsortorder limit 1), 'null')
       else 'null' end;
   end loop;
   execute format('insert into devos_private.%I (%s) values (%s)', p_tbl, substr(cols, 3), substr(vals, 3));
@@ -568,7 +583,7 @@ begin
 end $f$;
 create function pg_temp.n02_transfer() returns void language plpgsql as $f$
 declare run text := 'w07_fixture_run_n02_' || nextval('w07_seq'); r jsonb; why text; i int; pos jsonb; neg jsonb;
-        n0 bigint; n1 bigint; kp text; kn text; dp text; dn text; rp text; rn text; s0 text; s1 text; sp text;
+        n0 bigint; n1 bigint; kp text; kn text; dp text; dn text; rp text; rn text; s0 text; s1 text; sp text; im text; md text;
 begin
   if to_regprocedure('devos_api.transfer_decision(jsonb)') is null or to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null
      or to_regprocedure('devos_api.begin_transfer_run(jsonb)') is null then
@@ -620,18 +635,53 @@ begin
   -- (b) transfer_acceptance: a decision in open_exploration with no options and no reason set accepted. The decisions
   -- are opened through open_decision; the positive's reason is entered by a revision (as N02-oe-pos-reason); the Review
   -- and Verdict copies it names are planted at owner level, result pass.
+  -- Revised before any result (EV-C02-013 section 5 D-8 and section 3.2, R1-10; 2026-10-17): three fixtures the
+  -- interface record's transfer_acceptance needs, none a change of the rule under test. (1) The installation's Mission
+  -- (transfer_acceptance takes its owner authority from it; else reference_missing), planted at owner level by the hook
+  -- statement of EV-C02-013 section 4: a Mission and its revision 1 on a batu Decision answered at owner level, and one
+  -- transferred Event on it, source ID INSTALL (one already in the database tested is used as it is). (2) Each Review
+  -- copy gets its transferred creation event (else verdict_missing). (3) The two Decision targets are set answered at
+  -- owner level, with answered_revision their current revision, the decision table's user triggers off for that one
+  -- update only (else invalid_field: a target must be answered or accepted). A failed fixture raises P0W07, so both
+  -- cases become could_not_check with the reason.
   begin
+    execute 'select m.id::text from devos_private.mission m where exists (select 1 from devos_private.event e
+               where e.aggregate_id = m.id and e.event_type::text = ''transferred'') order by m.created_at limit 1' into im;
+    if im is null then
+      md := pg_temp.w07_answered('batu');
+      im := gen_random_uuid()::text;
+      perform pg_temp.w07_plant_row('mission', jsonb_build_object('id', im, 'status', 'active'));
+      perform pg_temp.w07_plant_row('mission_revision', jsonb_build_object('mission_id', im, 'revision', 1,
+        'purpose', 'Synthetic test fixture (plan Section 8 item 13): W-C02-07 installation Mission stand-in; not work',
+        'scope', 'installation', 'acceptance', 'SYNTHETIC W-C02-07', 'owner_authority', md));
+      execute 'insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin)
+               values (''mission'', $1::uuid, 1, ''transferred'', $2, ''devos_kurulum'', ''call'')'
+        using im, jsonb_build_object('transfer_source', pg_temp.n02_src('mission', 'INSTALL'), 'run_id', run, 'lacks', '[]'::jsonb);
+    end if;
     dn := pg_temp.w07_decision('high_impact', 'open_exploration');
     dp := pg_temp.w07_decision('high_impact', 'open_exploration');
     why := pg_temp.w07_new_revision(dp, jsonb_build_object('alternatives_state', 'open_exploration',
       'single_viable_path_reason', 'SYNTHETIC W-C02-07: only form A fits the existing w07_fixture foreign keys'));
     if why is not null then raise exception using errcode = 'P0W07', message = 'the revision entering the reason was refused: ' || why; end if;
+    -- (3) after dp's revision (a revision after an answer is refused, B:305), before transfer_acceptance.
+    foreach md in array array[dp, dn] loop
+      alter table devos_private.decision disable trigger user;
+      why := pg_temp.w07_set_status(md, 'answered', pg_temp.w07_rev(md));
+      alter table devos_private.decision enable trigger user;
+      if why is not null then raise exception using errcode = 'P0W07', message = 'the owner-level answer of a Decision target was refused: ' || why; end if;
+    end loop;
     rp := pg_temp.n02_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture acceptance copy',
       'target_ref', dp, 'reviewer_role_class', 'devos_kurulum', 'use', 'installation_acceptance', 'status', 'closed'));
     perform pg_temp.n02_plant('verdict', jsonb_build_object('review_ref', rp, 'result', 'pass'));
     rn := pg_temp.n02_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture acceptance copy',
       'target_ref', dn, 'reviewer_role_class', 'devos_kurulum', 'use', 'installation_acceptance', 'status', 'closed'));
     perform pg_temp.n02_plant('verdict', jsonb_build_object('review_ref', rn, 'result', 'pass'));
+    -- (2) each copy's transferred creation event, source IDs of their own (S2's index).
+    execute 'insert into devos_private.event (aggregate_type, aggregate_id, event_type, payload, role_class, origin)
+             values (''review'', $1::uuid, ''transferred'', $3, ''devos_kurulum'', ''call''),
+                    (''review'', $2::uuid, ''transferred'', $4, ''devos_kurulum'', ''call'')'
+      using rp, rn, jsonb_build_object('transfer_source', pg_temp.n02_src('verdict', 'W07-FIXTURE-RP-' || i), 'run_id', run, 'lacks', '[]'::jsonb),
+                    jsonb_build_object('transfer_source', pg_temp.n02_src('verdict', 'W07-FIXTURE-RN-' || i), 'run_id', run, 'lacks', '[]'::jsonb);
   exception when others then
     perform pg_temp.w07_put(c, 'could_not_check', 'the acceptance''s fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200))
       from unnest(array['N02-oe-transfer-accept', 'N02-oe-transfer-accept-pos']) c;

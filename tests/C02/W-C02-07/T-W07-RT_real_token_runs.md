@@ -116,3 +116,8 @@ Not a format-gate test.
 - The control surface between environments (C03 test 3).
 - The network level and the guard's presence in each session: W-C02-12 points 4 and 10, not database cases.
 - The format scan (`T-W07-6SC`; W-C02-12 point 9).
+
+## Revision before any result (EV-C02-013, 2026-10-17)
+Under ledger rule 3, before any result of W-C02-09's build (no SQL of it exists), by the test designer (a fresh-context subagent of type `test-designer`; agent `ae53376fe7add21d4`, filled in by the executor at filing), from W-C02-09's interface record `evidence/C02/EV-C02-013_w09_interface.md` (Revision 1, at `349e151`). One fresh checker judges it with that record's Revision 1 before both merge. **No case ID, expected outcome or break red list is changed.**
+- **Files changed:** this specification only.
+- **D-3 (EV-C02-013 section 5 D-3), text only:** the test Mission (DM-23, opened with `open_mission`) is not the installation's Mission (EV-C02-013 section 2.3 and section 4: the one Mission whose creation event is `transferred`), so RT's own fallback applies as `RT-kur-p3`'s row states it: the run records that the pair is not formable, and `RT-kur-n6` is `could_not_check`, labelled so. No file of this test changes; W-C02-12's record states it.

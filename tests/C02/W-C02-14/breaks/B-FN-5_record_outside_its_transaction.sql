@@ -1,5 +1,5 @@
 -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-T-half-ev-transfer_review,FN-T-half-rec-transfer_review
--- T-W14-FN break B-FN-5 (tests/C02/W-C02-14/T-W14-FN_transfer_functions.md, "Break attempt"). Rule removed: the one transaction of transfer_review's write and its transferred event (EV-C02-005 S5 and 3.2). The wrapper calls the build's function in its own block; when that block raises, the wrapper writes the Review copy's row anyway, outside it, so a failed mark or a failed second write leaves a record. (Assumed form: the build's function raises when one of its writes fails. If it returns a refusal instead, the patch is revised before the first result.)
+-- T-W14-FN break B-FN-5 (tests/C02/W-C02-14/T-W14-FN_transfer_functions.md, "Break attempt"). Rule removed: the one transaction of transfer_review's write and its transferred event (EV-C02-005 S5 and 3.2). The wrapper calls the build's function; when one of its writes fails and the build returns its refusal of a failed write (reason code write_failed, the write block of EV-C02-013 section 1 item 7 (iv)), or raises, the wrapper writes the Review copy's row anyway, as the owner, outside the build's block, so a failed mark or a failed second write leaves a record. Revised before any result (EV-C02-013 D-6, 2026-10-17): the first version acted only on a raised error, and a build that refuses in an inner block returns instead. Any other refusal (the class, the input, a conflict) is passed through unchanged.
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data, no token in the file. No psql meta-command.
@@ -19,15 +19,19 @@ end $g$;
 alter function devos_api.transfer_review(jsonb) rename to transfer_review_w14_orig;
 create function devos_api.transfer_review(p jsonb) returns jsonb language plpgsql security definer
 set search_path = pg_catalog as $f$
-declare r jsonb;
+declare r jsonb; failed boolean := false;
 begin
   begin
     r := devos_api.transfer_review_w14_orig(p);
+    failed := r ->> 'status' = 'refused' and r ->> 'reason_code' = 'write_failed';
   exception when others then
+    failed := true;
+    r := jsonb_build_object('status', 'refused', 'reason_code', 'w14_break', 'reason', 'the build raised');
+  end;
+  if failed then
     insert into devos_private.review (kind, target_ref, claim, use, basis_refs)
     values ('review', (p ->> 'target_ref')::uuid, p ->> 'claim', coalesce(p ->> 'use', 'w14_break'), '[]');
-    r := jsonb_build_object('status', 'refused', 'reason_code', 'w14_break', 'reason', 'the record kept without its mark');
-  end;
+  end if;
   return r;
 end $f$;
 do $p$

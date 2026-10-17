@@ -67,3 +67,8 @@ Self-check: run without a connection, it printed `T-W07-CONC COULD NOT CHECK (..
 - More than 8 connections.
 - Expiry racing a new claim with real time passing (planted elsewhere: T-W07-F08, T-W07-DM07).
 - `devos`.
+
+## Revision before any result (EV-C02-013, 2026-10-17)
+Under ledger rule 3, before any result of W-C02-09's build (no SQL of it exists), by the test designer (a fresh-context subagent of type `test-designer`; agent `ae53376fe7add21d4`, filled in by the executor at filing), from W-C02-09's interface record `evidence/C02/EV-C02-013_w09_interface.md` (Revision 1, at `349e151`). One fresh checker judges it with that record's Revision 1 before both merge. **No case ID, expected outcome or break red list is changed.**
+- **Files changed:** this specification; `job/w07_conc_claim_and_cycle.py`.
+- **D-1 (EV-C02-013 section 1 item 3 and section 5 D-1): the flat reference form.** Every reference sent as an object `{"id", "revision"}` under a field name (`mission_ref`, `work_ref`, `from_ref`, `to_ref`, `target_ref`, `owner_authority`) is now sent flat: the field's Appendix B name holds the record's uuid and `<name without _ref>_revision` its revision (`owner_authority_revision` for `owner_authority`). Read-set entries (`{ref, revision}`) and internal helper objects are unchanged. In this program `ref(w, name)` returns `{<name>_ref, <name>_revision}`: `relate`'s payload sends `from_ref`, `from_revision`, `to_ref`, `to_revision`, and `register_artifact`'s sends `work_ref` (the uuid) and `work_revision` (EV-C02-013 D-1, R1-11).

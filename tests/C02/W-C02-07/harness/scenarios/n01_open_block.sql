@@ -242,26 +242,41 @@ begin
 end $f$;
 
 -- Inserts one owner-level fixture row; NOT NULL columns without a default get synthetic values by type (as
--- W-C02-03's w03_plant_function).
+-- W-C02-03's w03_plant_function). Revised before any result (note N-278 (4); EV-C02-013 D-14, 2026-10-17): a value
+-- meets the column's own CHECK where the schema fixes a form (a text column whose CHECK asks for 64 or 40 lower-case
+-- hexadecimal characters gets a synthetic string of that form, drawn at run time; a json column whose CHECK asks for
+-- an object gets {}), and an enum column gets its type's first label instead of null.
 create function pg_temp.w07_plant_row(p_tbl text, p_base jsonb) returns void language plpgsql as $f$
-declare cols text := ''; vals text := ''; c record; k text;
+declare cols text := ''; vals text := ''; c record; k text; chk text;
 begin
   for k in select jsonb_object_keys(p_base) loop
     cols := cols || ', ' || quote_ident(k); vals := vals || ', ' || quote_literal(p_base->>k) || '::' ||
       (select format_type(a.atttypid, a.atttypmod) from pg_attribute a where a.attrelid = ('devos_private.' || p_tbl)::regclass and a.attname = k);
   end loop;
-  for c in select column_name, data_type, udt_name from information_schema.columns
+  for c in select column_name, data_type, udt_schema, udt_name from information_schema.columns
            where table_schema = 'devos_private' and table_name = p_tbl and is_nullable = 'NO' and column_default is null
              and is_identity = 'NO' and is_generated = 'NEVER' and not (p_base ? column_name) order by ordinal_position loop
+    select coalesce(string_agg(pg_get_constraintdef(con.oid), ' '), '') into chk from pg_constraint con
+      join pg_attribute att on att.attrelid = con.conrelid and att.attnum = any (con.conkey)
+     where con.conrelid = ('devos_private.' || p_tbl)::regclass and con.contype = 'c' and att.attname = c.column_name;
     cols := cols || ', ' || quote_ident(c.column_name);
     vals := vals || ', ' || case
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{64}' in chk) > 0
+        then quote_literal(md5(random()::text) || md5(random()::text))
+      when c.data_type in ('text', 'character varying', 'character') and position('[0-9a-f]{40}' in chk) > 0
+        then quote_literal(left(md5(random()::text) || md5(random()::text), 40))
       when c.data_type in ('text', 'character varying', 'character') then quote_literal('w07_fixture SYNTHETIC W-C02-07')
       when c.data_type in ('integer', 'bigint', 'smallint', 'numeric') then '1'
       when c.data_type like 'timestamp%' then 'now()'
       when c.data_type = 'boolean' then 'false'
+      when c.data_type in ('json', 'jsonb') and position('jsonb_typeof(' || c.column_name || ') = ''object''' in chk) > 0
+        then quote_literal('{}') || '::' || c.data_type
       when c.data_type in ('json', 'jsonb') then quote_literal('[]') || '::' || c.data_type
       when c.data_type = 'uuid' then 'gen_random_uuid()'
       when c.data_type = 'ARRAY' then quote_literal('{}') || '::' || quote_ident(ltrim(c.udt_name, '_')) || '[]'
+      when c.data_type = 'USER-DEFINED' then coalesce((select quote_literal(e.enumlabel) || '::' || quote_ident(c.udt_schema) || '.'
+        || quote_ident(c.udt_name) from pg_enum e join pg_type t on t.oid = e.enumtypid join pg_namespace n on n.oid = t.typnamespace
+        where n.nspname = c.udt_schema and t.typname = c.udt_name order by e.enumsortorder limit 1), 'null')
       else 'null' end;
   end loop;
   execute format('insert into devos_private.%I (%s) values (%s)', p_tbl, substr(cols, 3), substr(vals, 3));
