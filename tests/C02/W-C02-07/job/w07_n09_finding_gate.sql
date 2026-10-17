@@ -257,7 +257,7 @@ declare f jsonb; r jsonb;
 begin
   f := pg_temp.w07_plant('devos_private.finding', '{"status": "reviewed", "scope": "synthetic.w07fixture"}');
   r := pg_temp.w07_plant('devos_private.finding_revision', jsonb_build_object('finding_id', f->'id', 'revision', 1,
-         'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'source_spans', p_spans, 'changeable', p_changeable,
+         'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'source_spans', p_spans, 'changeable', case when p_changeable then 'yes' else 'no' end,
          'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found'));
   return jsonb_build_object('id', f->'id', 'revision', 1);
 end $f$;

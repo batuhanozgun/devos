@@ -317,10 +317,10 @@ begin
     a := jsonb_build_object('claim', lab || ': the w07_fixture parser accepts UTF-8 input',
       'source_spans', jsonb_build_array(jsonb_build_object('source', 'w07_fixture_source', 'span', '1-2', 'primary', true, 'read_at', '2026-10-12')),
       'counter_evidence_searched', lab || ': searched the w07_fixture issue list for contrary reports; none found',
-      'confidence', 'medium', 'changeable', false, 'privacy_class', 'public', 'scope', 'synthetic.w07_fixture', 'status', 'candidate');
+      'confidence', 'medium', 'changeable', 'no', 'epistemic_status', 'observation', 'current_authority', 'information_only', 'privacy_class', 'public', 'scope', 'synthetic.w07_fixture', 'status', 'candidate');
     if k = 'fbm1' then a := a || '{"counter_evidence_searched": "-"}';
     elsif k = 'fbm2' then a := a || jsonb_build_object('claim', lab || ': the w07_fixture product costs 10 units today',
-         'counter_evidence_searched', 'none found', 'changeable', false); end if;
+         'counter_evidence_searched', 'none found', 'changeable', 'no'); end if;
   elsif p_family = 'work' then
     a := jsonb_build_object('mission_ref', pg_temp.w07_mission(), 'mission_revision', 1, 'scope', 'synthetic.w07_fixture.c',
       'purpose', lab || ': tidy the w07_fixture notes', 'impact_class', p_class, 'stop_rule', lab || ': stop when the notes are tidy',
@@ -819,25 +819,30 @@ begin
 end $f$;
 -- The data part of a plant (before the "before" snapshot).
 create function pg_temp.roc_x_prep(p_kind text, p_id text) returns void language plpgsql as $f$
-declare t text; c record; n bigint; tot bigint := 0;
+declare t text; mc text; c record; n bigint; tot bigint := 0;
 begin
   if p_kind in ('mission-missing', 'mission-partial') then
-    for t in select table_name from information_schema.columns where table_schema = 'devos_private'
-              and table_name in ('work', 'work_revision') and column_name = 'mission_ref' loop
-      execute format('alter table devos_private.%I alter column mission_ref drop not null', t);
+    -- Revision before any result (N-278 (2), same class): the built link is work_revision.mission_revision_id (DM-02).
+    for t, mc in select table_name, column_name from information_schema.columns where table_schema = 'devos_private'
+              and table_name in ('work', 'work_revision') and column_name in ('mission_ref', 'mission_revision_id') loop
+      execute format('alter table devos_private.%I alter column %I drop not null', t, mc);
       if p_kind = 'mission-partial' then
         for c in select con.conname from pg_constraint con where con.conrelid = ('devos_private.' || t)::regclass
                    and con.contype = 'f' and exists (select 1 from pg_attribute a where a.attrelid = con.conrelid
-                   and a.attnum = any(con.conkey) and a.attname = 'mission_ref') loop
+                   and a.attnum = any(con.conkey) and a.attname = mc) loop
           execute format('alter table devos_private.%I drop constraint %I', t, c.conname);
         end loop;
       end if;
-      execute format('update devos_private.%I x set mission_ref = %s where (%L = ''work'' and to_jsonb(x)->>''id'' = $1) '
-                     || 'or to_jsonb(x)->>''work_id'' = $1 or to_jsonb(x)->>''work_ref'' = $1', t,
+      -- The built revision table is append-only by trigger (DM-02); the owner-level plant switches its user triggers off
+      -- for this one update, as the event branch below does.
+      execute format('alter table devos_private.%I disable trigger user', t);
+      execute format('update devos_private.%I x set %I = %s where (%L = ''work'' and to_jsonb(x)->>''id'' = $1) '
+                     || 'or to_jsonb(x)->>''work_id'' = $1 or to_jsonb(x)->>''work_ref'' = $1', t, mc,
                      case when p_kind = 'mission-missing' then 'null'
                           else quote_literal(md5('w07_fixture SYNTHETIC W-C02-07 no such mission')::uuid::text) end, t)
         using p_id;
       get diagnostics n = row_count; tot := tot + n;
+      execute format('alter table devos_private.%I enable trigger user', t);
     end loop;
     if tot = 0 then raise exception using errcode = 'P0W07', message = 'no mission_ref of the work item was found to plant'; end if;
   elsif p_kind in ('event-missing', 'event-partial') then
