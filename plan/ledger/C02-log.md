@@ -576,3 +576,13 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Wait:** ends when the weekly limit resets at 2026-10-17T17:00Z and Batu writes "devam" in this session; sooner: none, his decision (D-002); whose call: Batu.
 - **Guard:** since L-333's last record: the executor: #29664 (G0, a command substitution the guard could not parse; redone as separate calls), and a `sleep` chained with `echo` was blocked by the harness, not the guard; rerun in the background). No denial by any other hook. The last record #29665 (2026-10-15T06:28:50Z).
 - **Record changes:** plan/ledger/C02-log.md · addition · L-334; plan/ledger.md · correction · answers seen, summary_tr; DURUM.md, plan/ledger.md · generated
+
+### L-335 · 2026-10-17 · Batu's "devam" after the weekly reset; the work resumes at W-C02-09 with N-277 first; CHK-C02-064 C4 observed: the guard's log reports `high` since the process restarted
+
+- **Disciplines (D1–D9):** D1: no. D2: no. D3: yes: W-C02-09's work does not start before N-277 (S5's tests and W-C02-09's acceptance amendment, merged first). D4: no. D5: yes: the effort reading is the guard's own log, not the summary of an earlier turn. D6: yes: the cause CHK-C02-064 named (the repository's environment pin overriding his setting) is shown removed: the log changed to `high` at the first call after the worker process restarted. D7: yes: the resume point and C4's observation are on `main` with this merge. D8: yes: `main` (`629ab92`), the frontier and `get_session` were read before this entry. D9: no.
+- **Batu** in the working session, 2026-10-17 about 20:20Z: "Devam edebilirsin." (English: "You can continue."): his "devam" after the weekly reset of 17:00Z (L-334).
+- **Usage** (`get_session`, 20:20Z): `five_hour` `allowed`; `isUsingOverage` false; the session's context about 609k tokens of 1M.
+- **CHK-C02-064 C4.** The guard's decision log reports effort `xhigh` for records up to #29657 and `high` from #29658 (2026-10-15T06:27:26Z, the first call after the worker process restarted) to #29677 (2026-10-17T20:21:00Z); `get_session` shows `effort_level` high. So the removal of the repository's pin (PR #332) made his setting apply in this session after the restart; CLAUDE.md's "runs at the effort he sets in it" is now observed.
+- **Wait:** none; the work resumes.
+- **Guard:** since L-334's last record: none. No denial by any other hook. The last record #29677 (2026-10-17T20:21:00Z).
+- **Record changes:** plan/ledger/C02-log.md · addition · L-335; plan/ledger.md · correction · answers seen, Usage, summary_tr; DURUM.md, plan/ledger.md · generated
