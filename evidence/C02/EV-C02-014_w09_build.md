@@ -147,3 +147,5 @@ As EV13 section 4 and EV3 1.1 and 1.6 design it: one Data API remote procedure c
 - **Section 1.2 items 2 and 5**, for the checker's judgment.
 
 *Filed 2026-10-17 by the executor (L-342):* written by the producer, agent `a167a0843565bed6c`. Its offline raw outputs (01 to 13) are filed verbatim as `evidence/C02/raw/EV-C02-014_m01_offline_*.txt`.
+
+*Added 2026-10-17 (L-343; CHK-C02-078 C1):* section 1.8's "If Route A is chosen, M09-01 is revised before its merge" no longer holds. The executor chose Route A for the pull request that adds M09-02 (N-279 (8), L-342), and moves CHK-C02-076 C5's deadline there, subject to the verdict CHK-C02-079 (N-279 (8), L-343). M09-01 holds no TEMPORARY revoke, and point 2's catalogue look is not met by M09-01 (section 1, point 2).
