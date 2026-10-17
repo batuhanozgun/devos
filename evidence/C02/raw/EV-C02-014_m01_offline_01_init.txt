@@ -1,0 +1,4 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+start 2026-10-17T23:08:42Z
+[initdb exit 0]
+prd10 scrub (01_init): 0 token-format strings removed

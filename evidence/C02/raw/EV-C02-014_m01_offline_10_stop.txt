@@ -1,0 +1,6 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+end 2026-10-17T23:08:44Z
+prd10 scrub (10_stop): 0 token-format strings removed

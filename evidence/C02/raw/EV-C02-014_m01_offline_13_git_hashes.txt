@@ -1,0 +1,12 @@
+hashes of the bytes run (offline run 2026-10-17); counts: no
+1cdbb4e99cc5306e4dadf1e431ebbade7b03b68f
+273034669fe46bfa78932b5e819551ad7c0bd9bfce0df0944b0cc682185f1052  supabase/migrations/20261017230001_w09_identity_chain_first_part.sql
+14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  supabase/migrations/tests/w07_idc_identity_chain.sql
+30c8cf431d32df6c7e93b62e3b9e5f2e475c706b23c1068b16ff1da4dcbbe102  tools/devos_rpc.py
+staged file at main 1cdbb4e:
+14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  -
+staged file at its last change 3e81482:
+14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  -
+cmp: identical
+[git diff on tracked test files: empty above means unchanged]
+W-C02-07 merge commit 68070993 (PR #313): 14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  -
