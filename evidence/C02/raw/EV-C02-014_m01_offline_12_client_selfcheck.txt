@@ -1,0 +1,11 @@
+offline self-check of tools/devos_rpc.py; no key set, so no request is made; counts: no
+[py_compile exit 0]
+devos_rpc: could not call devos_api.token_role_class: DEVOS_PUBLISHABLE_KEY is not set
+[no key: exit 3]
+usage: python3 -I tools/devos_rpc.py <function> < arguments.json
+[bad name: exit 2]
+devos_rpc: standard input must be a JSON object of named arguments
+[array input: exit 2]
+printed line holds the synthetic claim token: False | withheld marker present: True
+[printable: exit 0]
+prd10 scrub (12_client_selfcheck): 0 token-format strings removed

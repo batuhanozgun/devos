@@ -1,0 +1,250 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+BEGIN
+SET
+ rejected_rows_before | rejected_total_before 
+----------------------+-----------------------
+                    0 |                     0
+(1 row)
+
+ events_before 
+---------------
+             0
+(1 row)
+
+ epoch_before 
+--------------
+            1
+(1 row)
+
+     class     | issued 
+---------------+--------
+ devos_calisma | t
+ devos_denetim | t
+ devos_sinav   | t
+ devos_kurulum | t
+ devos_ci      | t
+ devos_backup  | t
+(6 rows)
+
+                               revoke_answer                                
+----------------------------------------------------------------------------
+ {"id": "41fe03c8-e745-4fa9-bbfb-dfb13e666a02", "epoch": 2, "status": "ok"}
+(1 row)
+
+                                    revoke_again_answer                                     
+--------------------------------------------------------------------------------------------
+ {"id": "41fe03c8-e745-4fa9-bbfb-dfb13e666a02", "epoch": 2, "repeat": true, "status": "ok"}
+(1 row)
+
+                                      revoke_unknown_id_answer                                       
+-----------------------------------------------------------------------------------------------------
+ {"reason": "no environment token row has this id", "status": "refused", "reason_code": "not_found"}
+(1 row)
+
+ epoch_after_revoke 
+--------------------
+                  2
+(1 row)
+
+RESET
+SET
+SET
+ session_user  | current_user 
+---------------+--------------
+ authenticator | anon
+(1 row)
+
+ token | header_set 
+-------+------------
+ ci    | t
+(1 row)
+
+                                                drift_ci_expected_null                                                 
+-----------------------------------------------------------------------------------------------------------------------
+ {"reason": "expected is missing or not an object", "status": "could_not_check", "complete": false, "differences": []}
+(1 row)
+
+                   trc_ci                   
+--------------------------------------------
+ {"status": "ok", "role_class": "devos_ci"}
+(1 row)
+
+  token  | header_set 
+---------+------------
+ denetim | t
+(1 row)
+
+                                                           drift_denetim                                                            
+------------------------------------------------------------------------------------------------------------------------------------
+ {"reason": "deployment_drift admits only the role class devos_ci", "status": "refused", "reason_code": "role_class_not_permitted"}
+(1 row)
+
+                   trc_denetim                   
+-------------------------------------------------
+ {"status": "ok", "role_class": "devos_denetim"}
+(1 row)
+
+  token  | header_set 
+---------+------------
+ kurulum | t
+(1 row)
+
+                                                           drift_kurulum                                                            
+------------------------------------------------------------------------------------------------------------------------------------
+ {"reason": "deployment_drift admits only the role class devos_ci", "status": "refused", "reason_code": "role_class_not_permitted"}
+(1 row)
+
+       token       | header_set 
+-------------------+------------
+ calisma (revoked) | t
+(1 row)
+
+                                         drift_revoked                                         
+-----------------------------------------------------------------------------------------------
+ {"reason": "the environment token is revoked", "status": "refused", "reason_code": "revoked"}
+(1 row)
+
+                                          trc_revoked                                          
+-----------------------------------------------------------------------------------------------
+ {"reason": "the environment token is revoked", "status": "refused", "reason_code": "revoked"}
+(1 row)
+
+      token       | header_set 
+------------------+------------
+ sinav cut by one | t
+(1 row)
+
+                                                 drift_malformed                                                 
+-----------------------------------------------------------------------------------------------------------------
+ {"reason": "the environment token is not of the token format", "status": "refused", "reason_code": "malformed"}
+(1 row)
+
+                                                  trc_malformed                                                  
+-----------------------------------------------------------------------------------------------------------------
+ {"reason": "the environment token is not of the token format", "status": "refused", "reason_code": "malformed"}
+(1 row)
+
+             token              | header_set 
+--------------------------------+------------
+ backup, last character changed | t
+(1 row)
+
+                                          drift_unknown                                          
+-------------------------------------------------------------------------------------------------
+ {"reason": "the environment token is not known", "status": "refused", "reason_code": "unknown"}
+(1 row)
+
+                                           trc_unknown                                           
+-------------------------------------------------------------------------------------------------
+ {"reason": "the environment token is not known", "status": "refused", "reason_code": "unknown"}
+(1 row)
+
+ whitespace_header_set 
+-----------------------
+ t
+(1 row)
+
+                                      trc_whitespace                                       
+-------------------------------------------------------------------------------------------
+ {"reason": "the environment token is empty", "status": "refused", "reason_code": "empty"}
+(1 row)
+
+ empty_object_header_set 
+-------------------------
+ t
+(1 row)
+
+                                             drift_missing                                             
+-------------------------------------------------------------------------------------------------------
+ {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}
+(1 row)
+
+ bad_header_set 
+----------------
+ t
+(1 row)
+
+                                              trc_header_unreadable                                               
+------------------------------------------------------------------------------------------------------------------
+ {"reason": "the request headers are not a JSON object", "status": "refused", "reason_code": "header_unreadable"}
+(1 row)
+
+RESET
+RESET
+SET
+ session_user | current_user 
+--------------+--------------
+ prd10_super  | postgres
+(1 row)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd10_run/tokencheck.sql:85: NOTICE:  prd10 value search: 29 tables searched; tables holding a token value: none; not readable: auth.users
+DO
+ events_holding_a_value 
+------------------------
+                      0
+(1 row)
+
+ rejected_holding_a_value 
+--------------------------
+                        0
+(1 row)
+
+ env_rows_holding_a_value 
+--------------------------
+                        0
+(1 row)
+
+ env_rows_holding_its_hash_rule 
+--------------------------------
+                              6
+(1 row)
+
+  function_name   |  role_class   |       reason_code        | counted | count |                        reason                        
+------------------+---------------+--------------------------+---------+-------+------------------------------------------------------
+ deployment_drift | none          | malformed                | t       |     1 | 
+ deployment_drift | none          | missing                  | t       |     1 | 
+ deployment_drift | none          | revoked                  | t       |     1 | 
+ deployment_drift | devos_denetim | role_class_not_permitted | f       |       | deployment_drift admits only the role class devos_ci
+ deployment_drift | devos_kurulum | role_class_not_permitted | f       |       | deployment_drift admits only the role class devos_ci
+ deployment_drift | none          | unknown                  | t       |     1 | 
+ token_role_class | none          | empty                    | t       |     1 | 
+ token_role_class | none          | header_unreadable        | t       |     1 | 
+ token_role_class | none          | malformed                | t       |     1 | 
+ token_role_class | none          | revoked                  | t       |     1 | 
+ token_role_class | none          | unknown                  | t       |     1 | 
+(11 rows)
+
+ aggregate_type |    event_type     |                   payload                   | role_class | origin 
+----------------+-------------------+---------------------------------------------+------------+--------
+ env_token      | env_token_issued  | {"role_class": "devos_calisma"}             | owner      | owner
+ env_token      | env_token_issued  | {"role_class": "devos_denetim"}             | owner      | owner
+ env_token      | env_token_issued  | {"role_class": "devos_sinav"}               | owner      | owner
+ env_token      | env_token_issued  | {"role_class": "devos_kurulum"}             | owner      | owner
+ env_token      | env_token_issued  | {"role_class": "devos_ci"}                  | owner      | owner
+ env_token      | env_token_issued  | {"role_class": "devos_backup"}              | owner      | owner
+ env_token      | env_token_revoked | {"epoch": 2, "role_class": "devos_calisma"} | owner      | owner
+(7 rows)
+
+ epoch_at_end 
+--------------
+            2
+(1 row)
+
+ROLLBACK
+ env_tokens_after_rollback 
+---------------------------
+                         0
+(1 row)
+
+ rejected_after_rollback 
+-------------------------
+                       0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+[psql exit 0]
+prd10 scrub (07_tokencheck): 0 token-format strings removed
