@@ -149,3 +149,9 @@ Phase C4a, 2026-10-12, PostgreSQL 16.15, on a scratch stub of README 8.1 and EV-
 - `deployment_drift`'s cells here: they need the Data API, and are `IDC-dd-*`. Their break needs a Data API on the throwaway database, which the harness lacks. Its own breaks are W-C02-03's.
 - `devos_ingest` (C04).
 - Real tokens (`T-W07-RT`).
+
+## Revision before any result (EV-C02-013, 2026-10-17)
+Under ledger rule 3, before any result of W-C02-09's build (no SQL of it exists), by the test designer (a fresh-context subagent of type `test-designer`; agent `ae53376fe7add21d4`, filled in by the executor at filing), from W-C02-09's interface record `evidence/C02/EV-C02-013_w09_interface.md` (Revision 1, at `349e151`). One fresh checker judges it with that record's Revision 1 before both merge. **No case ID, expected outcome or break red list is changed.**
+- **Files changed:** this specification; `job/w07_5b_authorization_matrix.sql`.
+- **`w07_fn_cfg` (EV-C02-013 section 4):** R10r `read_eval_run`; R12 `read_review`, `read_decision`, `authority_epoch`; R13 `fingerprint_matches`.
+- **Left for a later revision: 5B-row-R14.** Its move to C03 is carried by note N-279 (9), which must be on `main` before the row is revised; until then R14's key stays empty and the row gives `could_not_check` as before.

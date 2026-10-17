@@ -220,7 +220,7 @@ begin
   end if;
   r := pg_temp.w07_call(p_k, 'select devos_api.open_mission($2)', null, jsonb_build_object(
          'purpose', 'w07_fixture SYNTHETIC W-C02-07 mission (plan Section 8 item 13); not work',
-         'scope', p_scope, 'owner_authority', jsonb_build_object('id', d->>'id', 'revision', 1),
+         'scope', p_scope, 'owner_authority', d->>'id', 'owner_authority_revision', 1,
          'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb));
   if r->>'status' is distinct from 'ok' then
     raise exception 'w07: fixture mission not opened: %', coalesce(r->>'reason_code', r->>'w07_raised', r->>'status');
@@ -231,7 +231,7 @@ end $f$;
 create function pg_temp.w07_work_payload(p_mission jsonb, p_scope text, p_extra jsonb default '{}') returns jsonb
 language sql as $f$
   select jsonb_build_object(
-    'mission_ref', jsonb_build_object('id', p_mission->>'id', 'revision', (p_mission->>'revision')::int),
+    'mission_ref', p_mission->>'id', 'mission_revision', (p_mission->>'revision')::int,
     'scope', p_scope, 'purpose', 'w07_fixture SYNTHETIC W-C02-07 work item', 'impact_class', 'routine',
     'consumer', 'w07_fixture', 'return_to', 'w07_fixture', 'stop_rule', 'w07_fixture',
     'input_refs', '[]'::jsonb, 'target_refs', '[]'::jsonb, 'mandatory_needs', '[]'::jsonb) || p_extra
@@ -259,7 +259,7 @@ $f$;
 create function pg_temp.w07_effect(p_tok text, p_claim text, p_work jsonb, p_path text, p_scope text default null,
                                    p_session text default 'w07_fixture_session_a') returns jsonb language sql as $f$
   select pg_temp.w07_call(p_tok, 'select devos_api.register_artifact($1, $2)', p_claim, jsonb_build_object(
-    'work_ref', jsonb_build_object('id', p_work->>'id', 'revision', (p_work->>'revision')::int),
+    'work_ref', p_work->>'id', 'work_revision', (p_work->>'revision')::int,
     'path', 'w07_fixture/' || p_path, 'commit', repeat('a7', 20), 'kind', 'w07_fixture',
     'scope', coalesce(p_scope, p_work->>'scope'), 'declared_session_id', p_session))
 $f$;
@@ -281,8 +281,8 @@ $f$;
 
 create function pg_temp.w07_dep(p_tok text, p_from jsonb, p_to jsonb) returns jsonb language sql as $f$
   select pg_temp.w07_call(p_tok, 'select devos_api.relate($2)', null, jsonb_build_object('type', 'depends_on',
-    'from_ref', jsonb_build_object('id', p_from->>'id', 'revision', (p_from->>'revision')::int),
-    'to_ref', jsonb_build_object('id', p_to->>'id', 'revision', (p_to->>'revision')::int),
+    'from_ref', p_from->>'id', 'from_revision', (p_from->>'revision')::int,
+    'to_ref', p_to->>'id', 'to_revision', (p_to->>'revision')::int,
     'hard', true, 'group_mode', 'ALL', 'scope', p_from->>'scope', 'method', 'recorded', 'epistemic_status', 'observation'))
 $f$;
 
@@ -290,7 +290,7 @@ create function pg_temp.w07_op08(p_work jsonb, p_key text, p_read jsonb) returns
   select jsonb_build_object('idempotency_namespace', 'w07_fixture', 'idempotency_key', p_key,
     'effect_class', 'w07_fixture_effect', 'target', 'w07_fixture/target_f08', 'expected_base', 'w07_fixture_base_1',
     'payload_hash', 'w07_fixture_payload_1',
-    'work_ref', jsonb_build_object('id', p_work->>'id', 'revision', (p_work->>'revision')::int), 'read_set', p_read)
+    'work_ref', p_work->>'id', 'work_revision', (p_work->>'revision')::int, 'read_set', p_read)
 $f$;
 
 create function pg_temp.w07_ref(p jsonb) returns jsonb language sql as $f$

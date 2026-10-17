@@ -266,11 +266,13 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
         nxt += k
         return out_
 
-    def ref(w):
-        return {'id': w[0], 'revision': w[1]}
+    # The flat reference form (EV-C02-013 section 1 item 3, D-1; revised before any result, 2026-10-17): a field's
+    # Appendix B name holds the record's uuid and '<name without _ref>_revision' its revision.
+    def ref(w, name):
+        return {f'{name}_ref': w[0], f'{name}_revision': w[1]}
 
     def relate_call(a, b):
-        p = {'type': 'depends_on', 'from_ref': ref(a), 'to_ref': ref(b), 'hard': True, 'group_mode': 'ALL',
+        p = {'type': 'depends_on', **ref(a, 'from'), **ref(b, 'to'), 'hard': True, 'group_mode': 'ALL',
              'scope': scope, 'method': 'recorded', 'epistemic_status': 'observation'}
         return f"devos_api.relate('{json.dumps(p)}'::jsonb)"
 
@@ -326,7 +328,7 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
     late_bad = []
     for run in range(RUNS_LATE):
         w, x = take(2)
-        payload = json.dumps({'work_ref': ref(w), 'path': f'w07_fixture/conc_{run_id}_{run}', 'commit': 'a7' * 20,
+        payload = json.dumps({**ref(w, 'work'), 'path': f'w07_fixture/conc_{run_id}_{run}', 'commit': 'a7' * 20,
                               'kind': 'w07_fixture', 'scope': scope, 'declared_session_id': 'w07_fixture_session_e'})
         pre = NL.join(["begin;", "select (set_config('request.headers', json_build_object('x-devos-env-token', "
                        "current_setting('w07.tok'))::text, true) is not null);", "set local role anon;",

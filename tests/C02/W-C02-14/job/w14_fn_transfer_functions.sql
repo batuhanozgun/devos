@@ -17,8 +17,12 @@
 -- call runs as anon with the token header simulated by set_config('request.headers', ..., true); session_user stays
 -- postgres.
 -- Interface assumed: the specification's "Interface assumed" (W-C02-07's README 8.1, its chosen keys for four of the
--- fourteen functions; the other ten's payloads are not named, and the cases that need an accepted call of one of them
--- give could_not_check).
+-- fourteen functions; the other ten's payloads, their prerequisites, the run rule after the hand-over and the form in
+-- which current_evidence names an event as W-C02-09's interface record gives them: evidence/C02/EV-C02-013_w09_interface.md
+-- sections 1 and 3, Revision 1).
+-- Revised before any result (EV-C02-013, 2026-10-17; ledger rule 3): the ten recipes and their prerequisites filled, the
+-- installation's Mission planted for transfer_acceptance, run_id dropped after the hand-over, FN-G's counted row read,
+-- FN-A-cond-pos formed. No case ID and no expected outcome changed.
 -- Safety: no psql meta-command and no backslash; owner-level states (a planted hand-over, a trigger that raises) are
 -- made inside subtransactions that are undone; stops at its first error; one row per case, then PASS, FAIL or COULD NOT
 -- CHECK (FAIL and COULD NOT CHECK raise).
@@ -225,39 +229,95 @@ create function pg_temp.w14_src(p_kind text, p_sid text, p_text text default 'on
     'sha256', pg_temp.w14_hex('w14 text ' || p_sid || ' ' || p_text, 64))
 $f$;
 
--- The recipes: one accepted call per function, with the payload keys W-C02-07's README 8.1 chooses for four of the
--- fourteen (begin_transfer_run, transfer_decision, transfer_review, transfer_acceptance; "The payload keys T-W07-N02 and
--- T-W07-N04 send, each chosen"). For the other ten no source names the keys (EV-C02-005 section 12 names the functions
--- only), so their recipe is null and every case that needs an accepted call of one gives could_not_check, never a pass.
--- The test designer fills each once W-C02-09's record names its payload, before the first result (README section 8).
--- p_o: the call's own values (run_id, source ID, text, target, review, verdict result, current_evidence).
+-- The recipes: one accepted call per function. Four keep the payload keys W-C02-07's README 8.1 chooses
+-- (begin_transfer_run, transfer_decision, transfer_review, transfer_acceptance; "The payload keys T-W07-N02 and T-W07-N04
+-- send, each chosen"); the other ten send the keys W-C02-09's interface record names (EV-C02-013 section 3.2, the table
+-- "The fourteen", and its paragraph "What the ten recipes need"). A null recipe still gives could_not_check, never a pass.
+-- p_o: the call's own values (run_id, source ID, text, target, review, verdict result, current_evidence, and the ids the
+-- prerequisites made: mission, mission_revision, decision, decision_revision, from, to, stage, kind, class, path).
+-- After the ledger_handed_over event a copy names no run (EV-C02-013 section 3.1, D-7): with no 'run' in p_o,
+-- transfer_review, transfer_acceptance and transfer_artifact send no run_id key at all.
 create function pg_temp.w14_recipe(p_fn text, p_o jsonb) returns jsonb language plpgsql as $f$
 declare sid text := coalesce(p_o ->> 'sid', pg_temp.w14_tag() || '_' || p_fn); txt text := coalesce(p_o ->> 'text', 'one');
+        j jsonb; kind text := coalesce(p_o ->> 'kind', 'record_line');
 begin
   if p_fn = 'begin_transfer_run' then
     return jsonb_build_object('run_id', p_o ->> 'run', 'input_commit', pg_temp.w14_hex('w14 input commit', 40),
       'manifest_sha256', pg_temp.w14_hex('w14 manifest ' || (p_o ->> 'run'), 64), 'counts', '{}'::jsonb,
       'phase', 'begun', 'mode', coalesce(p_o ->> 'mode', 'ahead'));
   elsif p_fn = 'transfer_decision' then
-    return jsonb_build_object('class', 'high_impact', 'question', 'w14_fixture SYNTHETIC W-C02-14 decision ' || sid,
+    j := jsonb_build_object('class', coalesce(p_o ->> 'class', 'high_impact'), 'question', 'w14_fixture SYNTHETIC W-C02-14 decision ' || sid,
       'why_this_owner', 'w14_fixture SYNTHETIC W-C02-14: a rule of the fixture schema',
       'options', '[]'::jsonb, 'alternatives_considered', '[]'::jsonb, 'alternatives_state', 'compared',
       'criteria', '[]'::jsonb, 'evidence_refs', '[]'::jsonb, 'assumptions', '[]'::jsonb, 'premises', '[]'::jsonb,
       'reversibility', null, 'reopen_triggers', '[]'::jsonb, 'recommendation', null, 'recommendation_rationale', null,
       'status', 'answered', 'run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('decision', sid, txt));
+    if p_o ->> 'class' = 'batu' then
+      -- The answered batu Decision the installation's Mission rests on (EV-C02-013 3.2, transfer_mission's row, R1-9).
+      j := j || jsonb_build_object('presented_text_tr', 'w14_fixture SYNTHETIC W-C02-14 karar metni',
+        'answer_original_tr', 'w14_fixture SYNTHETIC W-C02-14 yanit', 'answer_interpretation_en',
+        'w14_fixture SYNTHETIC W-C02-14 answer', 'answered_by', 'w14_fixture SYNTHETIC', 'answer_channel_ref',
+        'w14_fixture/channel', 'answered_at', now());
+    end if;
+    return j;
   elsif p_fn = 'transfer_review' then
-    return jsonb_build_object('run_id', p_o ->> 'run', 'kind', 'review',
+    j := jsonb_build_object('run_id', p_o ->> 'run', 'kind', 'review',
       'claim', 'w14_fixture SYNTHETIC W-C02-14 installation verdict copy ' || sid, 'target_ref', p_o ->> 'target',
       'criterion', 'w14_fixture/plan/work/W-W14-FIXTURE.md', 'basis_refs', jsonb_build_array('w14_fixture_tree'),
       'reviewer_declared_session', 'w14_fixture_checker_run SYNTHETIC W-C02-14', 'independence_level', 'fresh_context_subagent',
       'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', coalesce(p_o ->> 'result', 'pass'),
       'objections', '[]'::jsonb, 'evidence_refs', '[]'::jsonb, 'limits', '[]'::jsonb),
       'transfer_source', pg_temp.w14_src('verdict', sid, txt));
+    return case when p_o ->> 'run' is null then j - 'run_id' else j end;
   elsif p_fn = 'transfer_acceptance' then
-    return jsonb_build_object('run_id', p_o ->> 'run', 'target_ref', p_o ->> 'target', 'review_ref', p_o ->> 'review',
+    j := jsonb_build_object('run_id', p_o ->> 'run', 'target_ref', p_o ->> 'target', 'review_ref', p_o ->> 'review',
       'accepted_use', 'installation_acceptance', 'scope', 'installation',
       'current_evidence', coalesce(p_o -> 'evidence', jsonb_build_array(p_o ->> 'review')),
       'transfer_source', pg_temp.w14_src('acceptance', sid, txt));
+    return case when p_o ->> 'run' is null then j - 'run_id' else j end;
+  -- The ten, from EV-C02-013 section 3.2 (* there: required).
+  elsif p_fn = 'end_transfer_run' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'counts', '{}'::jsonb, 'phase', 'completed');
+  elsif p_fn = 'record_handover' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'input_commit', pg_temp.w14_hex('w14 input commit', 40),
+      'mark_commit', pg_temp.w14_hex('w14 mark commit ' || sid, 40), 'handed_over_sha256', pg_temp.w14_hex('w14 handed over ' || sid, 64));
+  elsif p_fn = 'transfer_mission' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('mission', sid, txt),
+      'purpose', 'w14_fixture SYNTHETIC W-C02-14 installation mission ' || sid, 'scope', 'installation',
+      'acceptance', 'w14_fixture SYNTHETIC W-C02-14 acceptance', 'owner_authority', p_o ->> 'decision',
+      'owner_authority_revision', (p_o ->> 'decision_revision')::int, 'constraints', '[]'::jsonb, 'status', 'active');
+  elsif p_fn = 'transfer_work' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('work', sid, txt),
+      'mission_ref', p_o ->> 'mission', 'mission_revision', (p_o ->> 'mission_revision')::int, 'scope', 'installation',
+      'purpose', 'w14_fixture SYNTHETIC W-C02-14 work item ' || sid, 'impact_class', 'high', 'execution', 'planned',
+      'acceptance', 'proposed', 'effort_policy', jsonb_build_object('level', 'high', 'expert_assessment_ref',
+      'w14_fixture/expert_assessment', 'non_removable_steps', jsonb_build_array('w14_fixture SYNTHETIC step')));
+  elsif p_fn = 'transfer_relation' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('relation', sid, txt),
+      'type', 'about', 'from_ref', p_o ->> 'from', 'from_revision', 1, 'to_ref', p_o ->> 'to', 'to_revision', 1,
+      'scope', 'installation', 'hard', false, 'method', 'mechanical', 'epistemic_status', 'observation');
+  elsif p_fn = 'transfer_need' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('need', sid, txt),
+      'mission_ref', p_o ->> 'mission', 'condition', 'w14_fixture SYNTHETIC W-C02-14 condition ' || sid,
+      'why_needed', 'w14_fixture SYNTHETIC W-C02-14: a fixture need', 'status', 'open');
+  elsif p_fn = 'transfer_finding' then
+    return jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('finding', sid, txt),
+      'claim', 'w14_fixture SYNTHETIC W-C02-14 finding ' || sid, 'scope', 'installation',
+      'counter_evidence_searched', 'not_recorded', 'changeable', 'not_recorded', 'epistemic_status', 'observation',
+      'current_authority', 'information_only', 'privacy_class', 'public', 'status', 'candidate');
+  elsif p_fn = 'transfer_artifact' then
+    j := jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src('artifact', sid, txt),
+      'path', coalesce(p_o ->> 'path', 'w14_fixture/' || sid || '.md'), 'commit', pg_temp.w14_hex('w14 artifact commit ' || sid, 40),
+      'kind', coalesce(p_o ->> 'artifact_kind', 'git_file'), 'scope', 'installation', 'status', 'current');
+    return case when p_o ->> 'run' is null then j - 'run_id' else j end;
+  elsif p_fn = 'transfer_event' then
+    j := jsonb_build_object('run_id', p_o ->> 'run', 'transfer_source', pg_temp.w14_src(kind, sid, txt), 'event_type', kind,
+      'aggregate_type', 'work', 'aggregate_id', p_o ->> 'target', 'text', 'w14_fixture SYNTHETIC W-C02-14 line ' || sid);
+    if kind = 'ledger_entry' then j := j || jsonb_build_object('entry_id', sid, 'entry_date', current_date::text); end if;
+    return j;
+  elsif p_fn = 'record_ledger_entry' then
+    return jsonb_build_object('stage_work_id', p_o ->> 'stage', 'entry_id', sid, 'entry_date', current_date::text,
+      'text', 'w14_fixture SYNTHETIC W-C02-14 ledger entry ' || sid || ' ' || txt);
   end if;
   return null;
 end $f$;
@@ -270,6 +330,72 @@ begin
   r := pg_temp.w14_call('devos_kurulum', 'begin_transfer_run', pg_temp.w14_recipe('begin_transfer_run', jsonb_build_object('run', p_run)));
   if pg_temp.w14_kind(r) = 'accepted' then return p_run; end if;
   return null;
+end $f$;
+
+-- The prerequisites EV-C02-013 section 3.2 names ("Prerequisites a test must plant"). A prerequisite call that is not
+-- accepted raises P0W17, which every case reads as could_not_check with that reason, never a pass.
+create function pg_temp.w14_need(p_what text, r jsonb) returns text language plpgsql as $f$
+begin
+  if pg_temp.w14_kind(r) = 'accepted' and pg_temp.w14_id(r) is not null then return pg_temp.w14_id(r); end if;
+  raise exception using errcode = 'P0W17', message = 'a prerequisite (' || p_what || ') was not accepted: ' || pg_temp.w14_brief(r);
+end $f$;
+-- The answered batu Decision transferred with source ID D-010, untagged (EV-C02-013 3.2, R1-9; S2's index allows it,
+-- since this file's transaction is rolled back). One already committed in the database tested is used as it is.
+create function pg_temp.w14_d010(p_run text) returns jsonb language plpgsql as $f$
+declare d text; dr int;
+begin
+  execute 'select d.id::text from devos_private.decision d join devos_private.event e on e.aggregate_id = d.id
+            where e.event_type::text = ''transferred'' and e.payload -> ''transfer_source'' ->> ''source_id'' = ''D-010''
+            order by e.id limit 1' into d;
+  if d is null then
+    d := pg_temp.w14_need('transfer_decision with source ID D-010', pg_temp.w14_call('devos_kurulum', 'transfer_decision',
+           pg_temp.w14_recipe('transfer_decision', jsonb_build_object('run', p_run, 'sid', 'D-010', 'class', 'batu'))));
+  end if;
+  execute 'select coalesce((to_jsonb(x) ->> ''answered_revision'')::int, 1) from devos_private.decision x where x.id::text = $1'
+    into dr using d;
+  return jsonb_build_object('decision', d, 'decision_revision', dr);
+end $f$;
+-- The installation's Mission: the one Mission whose creation event is transferred (EV-C02-013 section 4, the hook
+-- installation_mission), made here by its second form, transfer_decision (D-010) then transfer_mission with devos_kurulum.
+-- One already committed in the database tested is used as it is. Returns its id and current revision.
+create function pg_temp.w14_install(p_run text) returns jsonb language plpgsql as $f$
+declare m text; n int;
+begin
+  execute 'select m.id::text from devos_private.mission m where exists (select 1 from devos_private.event e
+             where e.aggregate_id = m.id and e.event_type::text = ''transferred'') order by m.created_at limit 1' into m;
+  if m is null then
+    m := pg_temp.w14_need('transfer_mission', pg_temp.w14_call('devos_kurulum', 'transfer_mission',
+           pg_temp.w14_recipe('transfer_mission', jsonb_build_object('run', p_run, 'sid', pg_temp.w14_tag() || '_INSTALL')
+                                                  || pg_temp.w14_d010(p_run))));
+  end if;
+  execute 'select max(r.revision) from devos_private.mission_revision r where r.mission_id::text = $1' into n using m;
+  return jsonb_build_object('mission', m, 'mission_revision', n);
+end $f$;
+-- What each of the ten needs before its call (EV-C02-013 3.2's paragraph "What the ten recipes need"), as p_o keys.
+create function pg_temp.w14_prep(p_fn text, p_run text) returns jsonb language plpgsql as $f$
+declare i jsonb;
+begin
+  if p_fn = 'transfer_mission' then return pg_temp.w14_d010(p_run);
+  elsif p_fn in ('transfer_work', 'transfer_need', 'record_handover', 'transfer_acceptance') then return pg_temp.w14_install(p_run);
+  elsif p_fn = 'transfer_relation' then return jsonb_build_object('from', pg_temp.w14_work(), 'to', pg_temp.w14_work());
+  elsif p_fn = 'transfer_event' then return jsonb_build_object('target', pg_temp.w14_work());
+  elsif p_fn = 'record_ledger_entry' then
+    i := pg_temp.w14_install(p_run);
+    return i || jsonb_build_object('stage', pg_temp.w14_need('transfer_work for the stage''s Work', pg_temp.w14_call('devos_kurulum',
+      'transfer_work', pg_temp.w14_recipe('transfer_work', i || jsonb_build_object('run', p_run, 'sid', pg_temp.w14_tag() || '_W-stage')))));
+  end if;
+  return '{}'::jsonb;
+end $f$;
+-- The counted RejectedAttempt row of an unverified call (B 3.13, B:270; EV-C02-013 section 1 item 9): the sum of its
+-- count for this function and reason code missing, under any of the function's spellings. Null when it cannot be read.
+create function pg_temp.w14_counted(p_fn text) returns bigint language plpgsql as $f$
+declare n bigint;
+begin
+  execute 'select coalesce(sum(x.count), 0) from devos_private.rejected_attempt x where x.counted_hour is not null
+             and x.reason_code::text = ''missing'' and x.function_name::text in ($1, ''devos_api.'' || $1, $1 || ''(jsonb)'',
+             ''devos_api.'' || $1 || ''(jsonb)'')' into n using p_fn;
+  return n;
+exception when others then return null;
 end $f$;
 
 -- The hand-over planted as the owner (S1: at most one ledger_handed_over event, on the installation's Mission).
@@ -308,7 +434,7 @@ end $f$;
 do $$
 declare why text; f text; c text; r jsonb; r2 jsonb; k text; s0 jsonb; s1 jsonb; acc jsonb; ok boolean; det text;
         run text; tag text := pg_temp.w14_tag(); rcp jsonb; pre text; w text; rv text; rv2 text; sid text; ch text[];
-        miss text[]; n0 bigint; n1 bigint; i int; res jsonb;
+        miss text[]; n0 bigint; n1 bigint; i bigint; res jsonb; w2 text;
 begin
   why := pg_temp.w14_pre();
   if why is not null then
@@ -339,8 +465,16 @@ begin
     begin
       s0 := pg_temp.w14_counts(); ok := true; det := '';
       foreach c in array array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_ci', 'devos_backup', 'none'] loop
+        if c = 'none' then n0 := pg_temp.w14_counted(f); end if;
         r := pg_temp.w14_call(case when c = 'none' then null else c end, f, '{}'::jsonb);
         k := pg_temp.w14_kind(r);
+        -- The no-token call's counted row increases in place by one (B:270; CHK-C02-075 finding 2 (e); EV-C02-013 D-11).
+        if c = 'none' then
+          n1 := pg_temp.w14_counted(f);
+          if n0 is null or n1 is null then ok := null;
+          elsif ok is not null and n1 - n0 <> 1 then ok := false; end if;
+          det := det || format('counted row (missing) %s -> %s (wanted +1); ', coalesce(n0::text, 'unreadable'), coalesce(n1::text, 'unreadable'));
+        end if;
         if k in ('test', 'raised', 'unknown') then ok := null;
         elsif ok is not null and not (k = 'refused' and r ->> 'reason_code' = case when c = 'none' then 'missing' else 'role_class_not_permitted' end) then
           ok := false;
@@ -377,9 +511,8 @@ begin
     exit when pg_temp.w14_handovers() > 0;
     rcp := pg_temp.w14_recipe(f, jsonb_build_object('run', tag || '_run_c_' || f));
     if rcp is null then
-      perform pg_temp.w14_rec('FN-C-' || f, 'could_not_check', f || ': no source names its payload keys (EV-C02-005 section '
-        || '12 names the functions only), so no accepted call can be formed; the test designer fills its recipe from '
-        || 'W-C02-09''s record before the first result (README section 8; as T-W07-F06''s G20)');
+      perform pg_temp.w14_rec('FN-C-' || f, 'could_not_check', f || ': no recipe is formed for it, so no accepted call can '
+        || 'be made; the test designer fills its recipe from W-C02-09''s record (EV-C02-013 section 3.2) before the first result');
       continue;
     end if;
     acc := '[]';
@@ -389,12 +522,16 @@ begin
       if run is null then
         pre := 'begin_transfer_run did not accept its recipe, so no run is open';
       else
+        -- Its prerequisites (EV-C02-013 3.2), planted before the call.
+        rcp := pg_temp.w14_recipe(f, jsonb_build_object('run', run) || case when f = 'begin_transfer_run' then '{}'::jsonb
+                                                                            else pg_temp.w14_prep(f, run) end);
         r := pg_temp.w14_call('devos_kurulum', f, rcp); pre := pg_temp.w14_brief(r);
         if pg_temp.w14_kind(r) = 'accepted' then pre := null; end if;
       end if;
       raise exception using errcode = 'P0W14', message = 'w14: undo the block';
     exception
       when sqlstate 'P0W14' then null;
+      when sqlstate 'P0W17' then pre := sqlerrm;
       when others then pre := 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160);
     end;
     if pre is not null then
@@ -405,6 +542,9 @@ begin
     begin
       run := tag || '_run_c_' || f;
       if f <> 'begin_transfer_run' then run := pg_temp.w14_begin(run); end if;
+      -- The same call as the control, its prerequisites planted before the hand-over (they write through the functions).
+      rcp := pg_temp.w14_recipe(f, jsonb_build_object('run', run) || case when f = 'begin_transfer_run' then '{}'::jsonb
+                                                                          else pg_temp.w14_prep(f, run) end);
       perform pg_temp.w14_handover();
       s0 := pg_temp.w14_counts();
       r := pg_temp.w14_call('devos_kurulum', f, rcp); k := pg_temp.w14_kind(r);
@@ -417,53 +557,131 @@ begin
       raise exception using errcode = 'P0W14', message = 'w14: undo the block';
     exception
       when sqlstate 'P0W14' then null;
+      when sqlstate 'P0W17' then acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-C-' || f, 'cond', null, 'detail', sqlerrm));
       when others then acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-C-' || f, 'cond', null,
         'detail', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
     end;
     perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
   end loop;
 
-  -- FN-O-<fn>: after the hand-over, transfer_review and transfer_acceptance still write a verdict copy (section 12).
-  -- transfer_artifact (for a verdict file, and refused for another file) and record_ledger_entry: no recipe.
-  perform pg_temp.w14_rec(cid, 'could_not_check', 'no source names its payload keys (EV-C02-005 section 12), so no call of it '
-    || 'can be formed; the test designer fills its recipe from W-C02-09''s record before the first result')
-    from unnest(array['FN-O-transfer_artifact', 'FN-O-transfer_artifact-other', 'FN-O-record_ledger_entry']) cid;
+  -- FN-O-<fn>: after the hand-over, transfer_review, transfer_acceptance, transfer_artifact (a verdict file) and
+  -- record_ledger_entry still write (EV-C02-005 section 12; EV-C02-013 3.1 "Closing"). The copies send no run_id
+  -- (EV-C02-013 3.1, D-7). What they need is planted before the hand-over, through the functions: an open run, the
+  -- installation's Mission (transfer_acceptance takes its owner authority from it, EV-C02-013 D-8), the stage's Work
+  -- (record_ledger_entry, under that Mission), and a Work the copies name.
   acc := '[]';
   begin
     if pg_temp.w14_handovers() > 0 then raise exception using errcode = 'P0W16', message = 'a ledger_handed_over event is already here'; end if;
     run := pg_temp.w14_begin(tag || '_run_o');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    res := pg_temp.w14_install(run);
     w := pg_temp.w14_work();
+    w2 := pg_temp.w14_need('transfer_work for the stage''s Work', pg_temp.w14_call('devos_kurulum', 'transfer_work',
+            pg_temp.w14_recipe('transfer_work', res || jsonb_build_object('run', run, 'sid', tag || '_W-O1'))));
     perform pg_temp.w14_handover();
     s0 := pg_temp.w14_counts();
     r := pg_temp.w14_call('devos_kurulum', 'transfer_review', pg_temp.w14_recipe('transfer_review',
-           jsonb_build_object('run', run, 'sid', tag || '_CHK-O1', 'target', w)));
+           jsonb_build_object('sid', tag || '_CHK-O1', 'target', w)));
     s1 := pg_temp.w14_counts(); rv := pg_temp.w14_id(r);
     acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_review',
-      'cond', case when run is null or pg_temp.w14_kind(r) in ('test', 'raised', 'unknown') then null
+      'cond', case when pg_temp.w14_kind(r) in ('test', 'raised', 'unknown') then null
                    else pg_temp.w14_kind(r) = 'accepted' and pg_temp.w14_delta(s0, s1, 'review') = 1 and pg_temp.w14_marks(tag || '_CHK-O1') = 1 end,
-      'detail', format('after the hand-over (run %s): transfer_review %s; review rows +%s, its transferred events %s (wanted '
-        || 'accepted, +1, 1)', coalesce(run, 'not begun'), pg_temp.w14_brief(r), pg_temp.w14_delta(s0, s1, 'review'),
-        pg_temp.w14_marks(tag || '_CHK-O1'))));
+      'detail', format('after the hand-over, no run_id: transfer_review %s; review rows +%s, its transferred events %s (wanted '
+        || 'accepted, +1, 1)', pg_temp.w14_brief(r), pg_temp.w14_delta(s0, s1, 'review'), pg_temp.w14_marks(tag || '_CHK-O1'))));
     s0 := pg_temp.w14_counts();
     r2 := pg_temp.w14_call('devos_kurulum', 'transfer_acceptance', pg_temp.w14_recipe('transfer_acceptance',
-           jsonb_build_object('run', run, 'sid', tag || '_ACC-O1', 'target', w, 'review', rv)));
+           jsonb_build_object('sid', tag || '_ACC-O1', 'target', w, 'review', rv)));
     s1 := pg_temp.w14_counts();
     acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_acceptance',
-      'cond', case when run is null or pg_temp.w14_kind(r) <> 'accepted' or pg_temp.w14_kind(r2) in ('test', 'raised', 'unknown') then null
+      'cond', case when pg_temp.w14_kind(r) <> 'accepted' or pg_temp.w14_kind(r2) in ('test', 'raised', 'unknown') then null
                    else pg_temp.w14_kind(r2) = 'accepted' and pg_temp.w14_delta(s0, s1, 'acceptance') = 1 end,
-      'detail', format('after the hand-over: transfer_acceptance of that copy %s; acceptance rows +%s (wanted accepted, +1)',
+      'detail', format('after the hand-over, no run_id: transfer_acceptance of that copy %s; acceptance rows +%s (wanted accepted, +1)',
         pg_temp.w14_brief(r2), pg_temp.w14_delta(s0, s1, 'acceptance'))));
+    -- A verdict file's Artifact: a git_file whose path is a check's verdict file (EV-C02-013 3.2, transfer_artifact's row).
+    s0 := pg_temp.w14_counts();
+    r := pg_temp.w14_call('devos_kurulum', 'transfer_artifact', pg_temp.w14_recipe('transfer_artifact',
+           jsonb_build_object('sid', tag || '_ART-O1', 'artifact_kind', 'git_file',
+                              'path', 'evidence/C99/checks/CHK-C99-' || abs(hashtext(tag))::text || '.md')));
+    s1 := pg_temp.w14_counts();
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_artifact',
+      'cond', case when pg_temp.w14_kind(r) in ('test', 'raised', 'unknown') then null
+                   else pg_temp.w14_kind(r) = 'accepted' and pg_temp.w14_delta(s0, s1, 'artifact') = 1 and pg_temp.w14_marks(tag || '_ART-O1') = 1 end,
+      'detail', format('after the hand-over, no run_id: transfer_artifact of a verdict file (git_file, a synthetic '
+        || 'evidence/C99/checks/ path) %s; artifact rows +%s, its transferred events %s (wanted accepted, +1, 1)',
+        pg_temp.w14_brief(r), pg_temp.w14_delta(s0, s1, 'artifact'), pg_temp.w14_marks(tag || '_ART-O1'))));
+    -- record_ledger_entry writes one ledger_entry event on the stage's Work, and nothing else (EV-C02-005 section 12).
+    execute 'select count(*) from devos_private.event e where e.event_type::text = ''ledger_entry'' and e.aggregate_id::text = $1'
+      into n0 using w2;
+    i := (select count(*) from devos_private.event e where e.event_type::text = 'transferred');
+    s0 := pg_temp.w14_counts();
+    r := pg_temp.w14_call('devos_kurulum', 'record_ledger_entry', pg_temp.w14_recipe('record_ledger_entry',
+           jsonb_build_object('sid', tag || '_L-O1', 'stage', w2)));
+    s1 := pg_temp.w14_counts(); ch := pg_temp.w14_changed(s0, s1, array['rejected_attempt', 'event']);
+    execute 'select count(*) from devos_private.event e where e.event_type::text = ''ledger_entry'' and e.aggregate_id::text = $1'
+      into n1 using w2;
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-O-record_ledger_entry',
+      'cond', case when pg_temp.w14_kind(r) in ('test', 'raised', 'unknown') then null
+                   else pg_temp.w14_kind(r) = 'accepted' and pg_temp.w14_delta(s0, s1, 'event') = 1 and n1 - n0 = 1
+                        and (select count(*) from devos_private.event e where e.event_type::text = 'transferred') = i
+                        and cardinality(ch) = 0 end,
+      'detail', format('after the hand-over: record_ledger_entry on the stage''s Work %s; event rows +%s, its ledger_entry '
+        || 'events +%s, transferred events +%s, other tables changed: %s (wanted accepted, +1, +1, +0, none)', pg_temp.w14_brief(r),
+        pg_temp.w14_delta(s0, s1, 'event'), n1 - n0, (select count(*) from devos_private.event e where e.event_type::text = 'transferred') - i,
+        coalesce(nullif(array_to_string(ch, ', '), ''), 'none'))));
     raise exception using errcode = 'P0W14', message = 'w14: undo the block';
   exception
     when sqlstate 'P0W14' then null;
-    when sqlstate 'P0W16' then
-      acc := jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_review', 'cond', null, 'detail', sqlerrm),
-                               jsonb_build_object('id', 'FN-O-transfer_acceptance', 'cond', null, 'detail', sqlerrm));
+    when sqlstate 'P0W16' or sqlstate 'P0W17' then
+      acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm))
+                from unnest(array['FN-O-transfer_review', 'FN-O-transfer_acceptance', 'FN-O-transfer_artifact',
+                                  'FN-O-record_ledger_entry']) x);
     when others then
-      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_review', 'cond', null, 'detail',
-        'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
+      acc := acc || (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail',
+        'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)))
+                from unnest(array['FN-O-transfer_review', 'FN-O-transfer_acceptance', 'FN-O-transfer_artifact',
+                                  'FN-O-record_ledger_entry']) x);
   end;
   perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+  -- FN-O-transfer_artifact-other: after the hand-over, another file's Artifact is refused and nothing but RejectedAttempt
+  -- changes. Its control: the same call, with a run, before the hand-over, accepted (else could_not_check).
+  pre := null;
+  begin
+    if pg_temp.w14_handovers() > 0 then raise exception using errcode = 'P0W17', message = 'a ledger_handed_over event is already here'; end if;
+    run := pg_temp.w14_begin(tag || '_run_o_other');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    r := pg_temp.w14_call('devos_kurulum', 'transfer_artifact', pg_temp.w14_recipe('transfer_artifact',
+           jsonb_build_object('run', run, 'sid', tag || '_ART-O2', 'artifact_kind', 'git_file')));
+    if pg_temp.w14_kind(r) <> 'accepted' then pre := 'the control (the same call with a run, before the hand-over) was not '
+      || 'accepted with the chosen keys: ' || pg_temp.w14_brief(r); end if;
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then pre := sqlerrm;
+    when others then pre := 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160);
+  end;
+  if pre is not null then
+    perform pg_temp.w14_rec('FN-O-transfer_artifact-other', 'could_not_check', pre);
+  else
+    acc := '[]';
+    begin
+      perform pg_temp.w14_handover();
+      s0 := pg_temp.w14_counts();
+      r := pg_temp.w14_call('devos_kurulum', 'transfer_artifact', pg_temp.w14_recipe('transfer_artifact',
+             jsonb_build_object('sid', tag || '_ART-O2', 'artifact_kind', 'git_file')));
+      s1 := pg_temp.w14_counts(); ch := pg_temp.w14_changed(s0, s1, array['rejected_attempt']); k := pg_temp.w14_kind(r);
+      acc := jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_artifact-other',
+        'cond', case when k in ('test', 'raised', 'unknown') then null else k = 'refused' and cardinality(ch) = 0 end,
+        'detail', format('after the hand-over, no run_id: transfer_artifact of a file that is not a verdict file %s; tables '
+          || 'changed besides rejected_attempt: %s (wanted refused, none); before it the same call with a run was accepted',
+          pg_temp.w14_brief(r), coalesce(nullif(array_to_string(ch, ', '), ''), 'none'))));
+      raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+    exception
+      when sqlstate 'P0W14' then null;
+      when others then acc := jsonb_build_array(jsonb_build_object('id', 'FN-O-transfer_artifact-other', 'cond', null,
+        'detail', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
+    end;
+    perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+  end if;
 
   -- FN-T-ev-<fn> (positive controls of the transaction rule and of S1's "role_class from the token"): an accepted write
   -- adds its record and exactly one transferred event, which names the record and carries the transfer_source sent,
@@ -575,44 +793,57 @@ begin
   -- FN-A-*: transfer_acceptance (EV-C02-005 2.4): it refuses when the Review copy it names is missing, when that
   -- verdict's result is fail, or, for a conditional result, when it names no ledger_entry event; an accepted call sets
   -- the target Work's acceptance to accepted in the same transaction. Each case differs from FN-A-pos in one thing.
-  foreach c in array array['pos', 'missing', 'fail', 'cond'] loop
+  -- The installation's Mission is planted in each (transfer_acceptance takes its owner authority from it; EV-C02-013 3.2
+  -- and D-8). FN-A-cond-pos: the conditional copy with a ledger_entry event, written by transfer_event, that
+  -- current_evidence names as {"event_id": n} (EV-C02-013 3.2, transfer_acceptance's row and "What the ten recipes need").
+  foreach c in array array['pos', 'missing', 'fail', 'cond', 'cond-pos'] loop
     acc := '[]';
     begin
       run := pg_temp.w14_begin(tag || '_run_a_' || c); w := pg_temp.w14_work();
+      if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+      perform pg_temp.w14_install(run);
       r := pg_temp.w14_call('devos_kurulum', 'transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run,
-             'sid', tag || '_A-' || c, 'target', w, 'result', case c when 'fail' then 'fail' when 'cond' then 'conditional' else 'pass' end)));
+             'sid', tag || '_A-' || c, 'target', w, 'result', case c when 'fail' then 'fail' when 'cond' then 'conditional'
+                                                                    when 'cond-pos' then 'conditional' else 'pass' end)));
       rv := case when c = 'missing' then gen_random_uuid()::text else pg_temp.w14_id(r) end;
-      if run is null or pg_temp.w14_kind(r) <> 'accepted' then
+      res := null;
+      if c = 'cond-pos' then
+        res := jsonb_build_array(rv, jsonb_build_object('event_id', (pg_temp.w14_need('transfer_event of a ledger_entry',
+                 pg_temp.w14_call('devos_kurulum', 'transfer_event', pg_temp.w14_recipe('transfer_event', jsonb_build_object('run', run,
+                 'sid', tag || '_LE-A', 'kind', 'ledger_entry', 'target', w)))))::bigint));
+      end if;
+      if pg_temp.w14_kind(r) <> 'accepted' then
         acc := jsonb_build_array(jsonb_build_object('id', 'FN-A-' || c, 'cond', null,
                  'detail', 'the Review copy was not accepted with the chosen keys: ' || pg_temp.w14_brief(r)));
       else
         s0 := pg_temp.w14_counts();
         r2 := pg_temp.w14_call('devos_kurulum', 'transfer_acceptance', pg_temp.w14_recipe('transfer_acceptance',
-               jsonb_build_object('run', run, 'sid', tag || '_ACC-' || c, 'target', w, 'review', rv)));
+               jsonb_build_object('run', run, 'sid', tag || '_ACC-' || c, 'target', w, 'review', rv)
+               || case when res is null then '{}'::jsonb else jsonb_build_object('evidence', res) end));
         s1 := pg_temp.w14_counts(); k := pg_temp.w14_kind(r2);
         acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-A-' || c,
           'cond', case when k in ('test', 'raised', 'unknown') then null
-                       when c = 'pos' then k = 'accepted' and pg_temp.w14_delta(s0, s1, 'acceptance') = 1
+                       when c in ('pos', 'cond-pos') then k = 'accepted' and pg_temp.w14_delta(s0, s1, 'acceptance') = 1
                                            and pg_temp.w14_work_acceptance(w) = 'accepted' and pg_temp.w14_marks(tag || '_ACC-' || c) = 1
                        else k = 'refused' and cardinality(pg_temp.w14_changed(s0, s1, array['rejected_attempt'])) = 0
                             and pg_temp.w14_work_acceptance(w) = 'proposed' end,
           'detail', format('transfer_acceptance naming %s: %s; acceptance rows +%s; the Work''s acceptance %s; tables changed '
             || 'besides rejected_attempt: %s (wanted %s)', case c when 'pos' then 'a pass copy' when 'missing' then 'an id that '
-            || 'names no Review copy' when 'fail' then 'a fail copy' else 'a conditional copy, current_evidence naming only it' end,
+            || 'names no Review copy' when 'fail' then 'a fail copy' when 'cond' then 'a conditional copy, current_evidence '
+            || 'naming only it' else 'a conditional copy, current_evidence naming it and a ledger_entry event as {"event_id": n}' end,
             pg_temp.w14_brief(r2), pg_temp.w14_delta(s0, s1, 'acceptance'), pg_temp.w14_work_acceptance(w),
             coalesce(nullif(array_to_string(pg_temp.w14_changed(s0, s1, array['rejected_attempt']), ', '), ''), 'none'),
-            case c when 'pos' then 'accepted, +1, accepted, its one transferred event' else 'refused, +0, proposed, none' end)));
+            case when c in ('pos', 'cond-pos') then 'accepted, +1, accepted, its one transferred event' else 'refused, +0, proposed, none' end)));
       end if;
       raise exception using errcode = 'P0W14', message = 'w14: undo the block';
     exception
       when sqlstate 'P0W14' then null;
+      when sqlstate 'P0W17' then acc := jsonb_build_array(jsonb_build_object('id', 'FN-A-' || c, 'cond', null, 'detail', sqlerrm));
       when others then acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-A-' || c, 'cond', null,
         'detail', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
     end;
     perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
   end loop;
-  perform pg_temp.w14_rec('FN-A-cond-pos', 'could_not_check', 'a conditional copy with the ledger_entry event that records '
-    || 'its conditions met: no source names how current_evidence names an event (EV-C02-005 2.4); filled from W-C02-09''s record');
 
   -- FN-R-declared: a declared role class in the payload changes nothing (B principle 8; S1: role_class from the token).
   acc := '[]';

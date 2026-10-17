@@ -361,8 +361,12 @@ insert into w07_named_rows values
   ('R12', 'yyyyyy', 'reading review verdicts, decisions, current authority and epoch (B:40); W-C02-09 names it (EV-C02-008 1.4)'),
   ('R13', 'nnnnyn', 'fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)'),
   ('R14', 'nnnnyn', 'recording a check''s result (devos_ci, EV-C02-003 §5.2); W-C02-09 names it or moves it to C03 (EV-C02-008 1.4)');
+-- Filled before any result (EV-C02-013 section 4, the row of w07_fn_cfg, 2026-10-17): R10r read_eval_run; R12
+-- read_review, read_decision, authority_epoch; R13 fingerprint_matches. R14 stays empty in this revision: its move to C03
+-- (EV-C02-013 section 4) is carried by note N-279 (9), which must be on main before 5B-row-R14 is revised.
 create function pg_temp.w07_fn_cfg(p_row text) returns text language sql immutable as $f$
-  select t.v from (values ('R10r', ''), ('R12', ''), ('R13', ''), ('R14', '')) t(k, v) where t.k = p_row
+  select t.v from (values ('R10r', 'read_eval_run'), ('R12', 'read_review,read_decision,authority_epoch'),
+                          ('R13', 'fingerprint_matches'), ('R14', '')) t(k, v) where t.k = p_row
 $f$;
 
 do $$

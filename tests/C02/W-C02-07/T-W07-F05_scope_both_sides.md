@@ -60,3 +60,8 @@ COULD NOT CHECK when the interface is absent, a fixture cannot be written, a cal
 - The Mission's scope at `admit_work` (T-W07-DM34).
 - Sources of family Source (C04).
 - Decision as a source: it has no scope and is checked by revision only (DM-34). No case here.
+
+## Revision before any result (EV-C02-013, 2026-10-17)
+Under ledger rule 3, before any result of W-C02-09's build (no SQL of it exists), by the test designer (a fresh-context subagent of type `test-designer`; agent `ae53376fe7add21d4`, filled in by the executor at filing), from W-C02-09's interface record `evidence/C02/EV-C02-013_w09_interface.md` (Revision 1, at `349e151`). One fresh checker judges it with that record's Revision 1 before both merge. **No case ID, expected outcome or break red list is changed.**
+- **Files changed:** this specification; `job/w07_f05_scope_both_sides.sql`.
+- **D-1 (EV-C02-013 section 1 item 3 and section 5 D-1): the flat reference form.** Every reference sent as an object `{"id", "revision"}` under a field name (`mission_ref`, `work_ref`, `from_ref`, `to_ref`, `target_ref`, `owner_authority`) is now sent flat: the field's Appendix B name holds the record's uuid and `<name without _ref>_revision` its revision (`owner_authority_revision` for `owner_authority`). Read-set entries (`{ref, revision}`) and internal helper objects are unchanged. `prepare_operation`'s `target_ref` is sent with `target_revision`. Open, reported: EV-C02-013 2.7 lists no `target_ref` among `prepare_operation`'s keys, and keys a function does not read are ignored (section 1 item 4), so F05-pos3, F05-d and F05-b depend on a key the record does not name; the executor settles it (a key of the build, or a revision of these cases) before the first result.
