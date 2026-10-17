@@ -448,7 +448,7 @@ declare why text; tok text; i int; c jsonb; refs text[]; want text[]; p jsonb; b
         fn text;  -- phase C3
         -- phase C4b (EV-C02-008 5.1)
         tok_den text; tok_kur text; tok_sin text; hw jsonb; e jsonb; h3 jsonb; d jsonb; p2 jsonb; ok boolean; det text;
-        cls text; ctok text; em3 text; n3 text; wc jsonb; wc2 jsonb; ws jsonb; ws2 jsonb; im text; wk jsonb; wk2 jsonb; rr jsonb;
+        cls text; ctok text; em3 text; n3 text; wc jsonb; wc2 jsonb; ws jsonb; ws2 jsonb; im text; imr text; wk jsonb; wk2 jsonb; rr jsonb;
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -653,10 +653,16 @@ begin
     else
       begin
         execute im into im;
-        wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur SYNTHETIC W-C02-07'));
-        execute 'update devos_private.work set mission_ref = $1::uuid where id::text = $2' using im, wk->>'work_id';
-        wk2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur2 SYNTHETIC W-C02-07'));
-        execute 'update devos_private.work set mission_ref = $1::uuid where id::text = $2' using im, wk2->>'work_id';
+        -- Revision before any result (N-278 (2)): Work's Mission link is work_revision.mission_revision_id, the
+        -- Mission's revision (EV-C02-002 DM-02; work_current shows it as mission_ref), so each work item is planted with
+        -- its first revision under the installation Mission's current revision, not by an update of the identity row.
+        execute 'select id::text from devos_private.mission_revision where mission_id::text = $1 order by revision desc limit 1'
+          into imr using im;
+        if imr is null then raise exception 'the hook''s Mission % has no revision', im; end if;
+        wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur SYNTHETIC W-C02-07',
+                'mission_revision_id', imr));
+        wk2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_kur2 SYNTHETIC W-C02-07',
+                'mission_revision_id', imr));
         perform pg_temp.f04_m4('F04-m4-kur', 'devos_kurulum', tok_kur, e->>'id', gen_random_uuid()::text, wk->>'work_id', wk2->>'work_id');
       exception when others then
         perform pg_temp.w07_rec('F04-m4-kur', 'could_not_check', 'the installation''s work items could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 160));

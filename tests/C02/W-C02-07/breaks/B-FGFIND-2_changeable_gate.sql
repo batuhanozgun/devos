@@ -19,7 +19,7 @@ alter function devos_api.record_finding(jsonb) rename to record_finding_w07_orig
 create function devos_api.record_finding(p jsonb) returns jsonb language plpgsql security definer
 set search_path = pg_catalog as $f$
 begin
-  if (p->'changeable' is null or jsonb_typeof(p->'changeable') = 'null' or (jsonb_typeof(p->'changeable') = 'string' and btrim(p->>'changeable', E' \t\r\n') = '') or (jsonb_typeof(p->'changeable') = 'array' and jsonb_array_length(p->'changeable') = 0)) then p := p || jsonb_build_object('changeable', false); end if;
+  if (p->'changeable' is null or jsonb_typeof(p->'changeable') = 'null' or (jsonb_typeof(p->'changeable') = 'string' and btrim(p->>'changeable', E' \t\r\n') = '') or (jsonb_typeof(p->'changeable') = 'array' and jsonb_array_length(p->'changeable') = 0)) then p := p || jsonb_build_object('changeable', 'no'); end if;
   return devos_api.record_finding_w07_orig(p);
 end $f$;
 grant execute on function devos_api.record_finding(jsonb) to anon, authenticated;

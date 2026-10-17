@@ -303,10 +303,10 @@ begin
     a := jsonb_build_object('claim', lab || ': the w07_fixture parser accepts UTF-8 input',
       'source_spans', jsonb_build_array(jsonb_build_object('source', 'w07_fixture_source', 'span', '1-2', 'primary', true, 'read_at', '2026-10-12')),
       'counter_evidence_searched', lab || ': searched the w07_fixture issue list for contrary reports; none found',
-      'confidence', 'medium', 'changeable', false, 'privacy_class', 'public', 'scope', 'synthetic.w07_fixture', 'status', 'candidate');
+      'confidence', 'medium', 'changeable', 'no', 'epistemic_status', 'observation', 'current_authority', 'information_only', 'privacy_class', 'public', 'scope', 'synthetic.w07_fixture', 'status', 'candidate');
     if k = 'fbm1' then a := a || '{"counter_evidence_searched": "-"}';
     elsif k = 'fbm2' then a := a || jsonb_build_object('claim', lab || ': the w07_fixture product costs 10 units today',
-         'counter_evidence_searched', 'none found', 'changeable', false); end if;
+         'counter_evidence_searched', 'none found', 'changeable', 'no'); end if;
   elsif p_family = 'work' then
     a := jsonb_build_object('mission_ref', pg_temp.w07_mission(), 'mission_revision', 1, 'scope', 'synthetic.w07_fixture.c',
       'purpose', lab || ': tidy the w07_fixture notes', 'impact_class', p_class, 'stop_rule', lab || ': stop when the notes are tidy',
@@ -481,7 +481,7 @@ create function pg_temp.fg_gate() returns void language plpgsql as $f$
 declare a jsonb := pg_temp.w07_args('finding', 'complete', nextval('w07_seq')::int);
 begin
   perform pg_temp.w07_expect('FGFIND-pos', 'devos_calisma', 'record_finding', a, 'accepted', null, 'finding');
-  perform pg_temp.w07_expect('FGFIND-pos-changeable', 'devos_calisma', 'record_finding', a || jsonb_build_object('changeable', true,
+  perform pg_temp.w07_expect('FGFIND-pos-changeable', 'devos_calisma', 'record_finding', a || jsonb_build_object('changeable', 'yes',
     'fresh_until', '2026-12-31', 'claim', 'SYNTHETIC W-C02-07: the w07_fixture service limit is 5 calls a minute'), 'accepted', null, 'finding');
   perform pg_temp.w07_expect('FGFIND-neg-ces-empty', 'devos_calisma', 'record_finding', a || '{"counter_evidence_searched": ""}',
     'refused', array['counter_evidence_searched'], 'finding');

@@ -20,7 +20,7 @@ Synthetic test data (plan Section 8 item 13): every need, decision, policy, find
 | EffortPolicy `expert_assessment_ref` (text) | B 3.18 | the four; and emptied by a later revision (`-rev-…-empty`, `-whitespace`) |
 | EffortPolicy `non_removable_steps` (list) | B 3.18 | the four, `-emptylist`; and emptied by a later revision (`-rev-…-emptylist`) |
 | Finding `counter_evidence_searched` (text) | B 3.8; DM-30 | the four |
-| Finding `changeable` (mandatory; a boolean) | B 3.8; DM-26; DM-30 | the four |
+| Finding `changeable` (mandatory; the value set `yes` / `no` / `not_recorded`, B 3.8 and EV-C02-005 S4; N-278 (1)) | B 3.8; DM-26; DM-30 | the four |
 | N-032's structural gate | — | moved to C03 (EV-C02-002 section 3 row 2.12; N-211): no case |
 
 ## Cases
@@ -51,10 +51,16 @@ Synthetic test data (plan Section 8 item 13): every need, decision, policy, find
 | "✔ complete records are accepted (every gate's positive control)" | `5D-need-pos`, `5D-dec-hi-pos`, `5D-dec-batu-pos`, `5D-eff-pos`, `5D-find-pos`, `5D-eff-rev-pos` | — |
 
 ## Format gate (point 4)
-Two kinds per gate: Need `-` and a circular reason; Decision every list `x` and a circular single-path reason; EffortPolicy `n/a` and an unrelated assessment; Finding `-` and `changeable = false` on a time-bound claim. Each must be accepted and land in sample review as a `Review` of kind `sample` queued for `devos_denetim`.
+Two kinds per gate: Need `-` and a circular reason; Decision every list `x` and a circular single-path reason; EffortPolicy `n/a` and an unrelated assessment; Finding `-` and `changeable = no` on a time-bound claim. Each must be accepted and land in sample review as a `Review` of kind `sample` queued for `devos_denetim`.
 
 ## Could not check
 COULD NOT CHECK when an object is absent (`5D-pre`), a fixture cannot be made, no policy can be written to revise (`5D-eff-rev`), or a stream cannot be aligned.
 
 ## Not covered
 The `format_gate` label's form (W-C02-10 point 2): W-C02-04's record gives no form to test against, so its checker judges it from the migrations; the content of records (sample review); N-032 (C03); `devos`.
+
+## Revision before any result (N-278, 2026-10-17)
+Revised by: test-designer, agent `a4e19b0f4f0daf82d`, filled in by the executor at filing (it read no file of W-C02-09's build: there is none; it read W-C02-08's merged migrations, the interface these tests must fit). Under ledger rule 3 and README section 8: no result of this test is counted (the executor's task of 2026-10-17); any earlier result of the changed file is void, and the test is run again. Changed: `job/w07_5d_format_gates_empty.sql`.
+- **N-278 (1): Finding's `changeable` is the value set `yes` / `no` / `not_recorded`.** The Group C fixture finding that this file sends to `record_finding` (`pg_temp.w07_args('finding', ...)`, kinds complete and fbm2). Decided from Appendix B 3.8 (`changeable`, "mandatory: whether the finding carries information that can change"; a transferred finding's fields "hold `not_recorded`, a recorded value distinct from 'none found'") and EV-C02-005 S4 ("so `changeable` is a value set: yes / no / not_recorded"), as W-C02-08 built it (the enum `devos_private.finding_changeable`, migration `20261014182601`). A boolean cannot carry `not_recorded`, so these tests do not assume an interface that maps one; a JSON `false` planted in the built column is refused (`invalid input value for enum devos_private.finding_changeable: "false"`; the test designer's self-check of 2026-10-17, PostgreSQL 16.15, counts: no). The file now sends `no` where it sent `false`, and `yes` where it sent `true`. Whether W-C02-09's `record_finding` also accepts a JSON boolean is its build's choice; no case relies on it.
+- **N-278 (5): Finding's `epistemic_status` and `current_authority`.** The Group C fixture finding (`pg_temp.w07_args('finding', ...)`) now carries `epistemic_status` `observation` and `current_authority` `information_only`, which W-C02-08 built NOT NULL on `finding_revision` (migration `20261014190401`; Appendix B 3.8's separate fields). `source_type` stays absent (NULL: a DevOS-made record, T-35's value pending). How W-C02-09 and W-C02-10 tell a NULL `source_type` from one not filled in is theirs to settle (N-278 (5)); no case here depends on it.
+- No case ID, expected outcome, count or break's red list changed.

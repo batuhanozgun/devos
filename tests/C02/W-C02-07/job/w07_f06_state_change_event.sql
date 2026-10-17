@@ -337,7 +337,7 @@ begin
         'target_revision', 1, 'use', 'w07_fixture_use_one', 'basis_refs', '[]'::jsonb))->'id'));
     fd := pg_temp.w07_plant('devos_private.finding', '{"status": "candidate", "scope": "synthetic.w07fixture"}');
     perform pg_temp.w07_plant('devos_private.finding_revision', jsonb_build_object('finding_id', fd->'id', 'revision', 1,
-      'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'changeable', false, 'source_spans', '[]'::jsonb,
+      'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'changeable', 'no', 'source_spans', '[]'::jsonb,
       'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found'));
   exception when others then
     perform pg_temp.w07_rec('F06-pre', 'could_not_check', 'fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200));
@@ -366,8 +366,9 @@ begin
     'open_decision', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('class', 'routine',
       'question', 'w07_fixture SYNTHETIC W-C02-07 routine question')),
     'record_finding', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('claim', 'w07_fixture SYNTHETIC W-C02-07 claim',
-      'scope', 'synthetic.w07fixture', 'changeable', false, 'source_spans', '[]'::jsonb,
-      'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found')),
+      'scope', 'synthetic.w07fixture', 'changeable', 'no', 'source_spans', '[]'::jsonb,
+      'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found', 'epistemic_status', 'observation',
+      'current_authority', 'information_only')),
     'open_review', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('kind', 'review', 'target_ref', a->'work_id',
       'target_revision', a->'revision', 'use', 'w07_fixture_use_f06', 'basis_refs', '[]'::jsonb)));
 
