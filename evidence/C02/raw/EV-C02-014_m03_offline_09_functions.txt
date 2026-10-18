@@ -1,0 +1,174 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the seven functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                   id                   | ok |           got            |          wanted          |                               delta                                |                                                                note                                                                 
+-----+----------------------------------------+----+--------------------------+--------------------------+--------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------
+   1 | OM-pos                                 | t  | ok                       | ok                       | {"event": 1, "mission": 1, "mission_revision": 1}                  | 
+   2 | OM-pos-event                           | t  | true                     | true                     | {}                                                                 | mission_opened devos_kurulum call rev 1 this_tx t declared m0903_declared_session SYNTHETIC owner_authority_revision 1
+   3 | OM-pos-accepted                        | t  | ok                       | ok                       | {"event": 1, "mission": 1, "mission_revision": 1}                  | 
+   4 | OM-groupc-form                         | t  | ok                       | ok                       | {"event": 1, "mission": 1, "mission_revision": 1}                  | 
+   5 | OM-class-high_impact                   | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority: not an answered or accepted Decision of class batu (B 3.1; DM-23)
+   6 | OM-class-routine                       | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority: not an answered or accepted Decision of class batu (B 3.1; DM-23)
+   7 | OM-status-open                         | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority: not an answered or accepted Decision of class batu (B 3.1; DM-23)
+   8 | OM-answered-revision-null              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority: answered_revision missing
+   9 | OM-revision-beyond (C-20)              | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority_revision: not the revision the Decision's answer is bound to (DM-11)
+  10 | OM-revision-earlier                    | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority_revision: not the revision the Decision's answer is bound to (DM-11)
+  11 | OM-revision-answered-of-two            | t  | ok                       | ok                       | {"event": 1, "mission": 1, "mission_revision": 1}                  | 
+  12 | OM-decision-absent                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority: the record could not be read
+  13 | OM-revision-absent                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority_revision: missing
+  14 | OM-revision-json-null                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority_revision: missing
+  15 | OM-revision-string                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | owner_authority_revision: not an integer of at least 1
+  16 | OM-revision-zero                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | owner_authority_revision: not an integer of at least 1
+  17 | OM-authority-absent                    | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | owner_authority: missing
+  18 | OM-purpose-absent                      | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | purpose: missing
+  19 | OM-scope-form                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | scope: not a dotted path of lower-case labels
+  20 | OM-constraints-form                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | constraints: not an array
+  21 | OM-p-null                              | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | p: missing
+  22 | OM-p-array                             | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | p: not a JSON object
+  23 | OM-role-devos_calisma                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_mission admits only the role class devos_kurulum
+  24 | OM-role-devos_denetim                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_mission admits only the role class devos_kurulum
+  25 | OM-role-devos_sinav                    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_mission admits only the role class devos_kurulum
+  26 | OM-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_mission admits only the role class devos_kurulum
+  27 | OM-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_mission admits only the role class devos_kurulum
+  28 | OM-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                                                    | the request carries no environment token
+  29 | OM-read-unreadable (42P01)             | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority: its input could not be read (SQLSTATE 42P01)
+  30 | OM-read-revoked (42501)                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority: its input could not be read (SQLSTATE 42501)
+  31 | OM-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                                                    | the write failed (SQLSTATE P0001)
+  32 | OM-write-event-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}                                                    | the write failed (SQLSTATE P0001)
+  33 | OM-write-P0D02                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | synthetic write-path check: its input could not be read
+  34 | OM-write-P0D02-reason                  | t  | true                     | true                     | {}                                                                 | synthetic write-path check: its input could not be read
+  35 | OM-reject-row                          | t  | true                     | true                     | {}                                                                 | one per-call row of class devos_calisma with its declared session
+  36 | RM-narrow                              | t  | ok                       | ok                       | {"event": 1, "mission_revision": 1}                                | 
+  37 | RM-repeat-before-stale                 | t  | ok repeat                | ok repeat                | {}                                                                 | 
+  38 | RM-stale                               | t  | stale_revision           | stale_revision           | {"rejected": 1}                                                    | base_revision: not the Mission's current revision
+  39 | RM-widen-no-authority                  | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | widening the scope or changing the purpose needs a Decision of Batu's named in the call (owner_authority; B 3.1)
+  40 | RM-widen-high_impact                   | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority: not an answered or accepted Decision of class batu (B 3.1; DM-23)
+  41 | RM-widen-batu                          | t  | ok                       | ok                       | {"event": 1, "mission_revision": 1}                                | 
+  42 | RM-purpose-no-authority                | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | widening the scope or changing the purpose needs a Decision of Batu's named in the call (owner_authority; B 3.1)
+  43 | RM-authority-checked-on-no-change      | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority: not an answered or accepted Decision of class batu (B 3.1; DM-23)
+  44 | RM-authority-revision-beyond           | t  | mission_authority        | mission_authority        | {"rejected": 1}                                                    | owner_authority_revision: not the revision the Decision's answer is bound to (DM-11)
+  45 | RM-authority-revision-alone            | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | owner_authority: missing (owner_authority_revision is sent without it)
+  46 | RM-authority-revision-absent           | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | owner_authority_revision: missing
+  47 | RM-pause                               | t  | ok                       | ok                       | {"event": 1}                                                       | 
+  48 | RM-resume                              | t  | ok                       | ok                       | {"event": 1}                                                       | 
+  49 | RM-content-and-status                  | t  | ok                       | ok                       | {"event": 2, "mission_revision": 1}                                | 
+  50 | RM-close                               | t  | ok                       | ok                       | {"event": 1}                                                       | 
+  51 | RM-closed-repeat                       | t  | ok repeat                | ok repeat                | {}                                                                 | 
+  52 | RM-closed-reopen                       | t  | mission_closed           | mission_closed           | {"rejected": 1}                                                    | the Mission is closed, which is terminal (EV-C02-013 2.2)
+  53 | RM-closed-reopen-with-batu             | t  | mission_closed           | mission_closed           | {"rejected": 1}                                                    | the Mission is closed, which is terminal (EV-C02-013 2.2)
+  54 | RM-closed-content                      | t  | mission_closed           | mission_closed           | {"rejected": 1}                                                    | the Mission is closed, which is terminal (EV-C02-013 2.2)
+  55 | RM-unknown-id                          | t  | not_found                | not_found                | {"rejected": 1}                                                    | id: names no Mission
+  56 | RM-unknown-id-target                   | t  | true                     | true                     | {}                                                                 | the refusal row names the id and base_revision the call named
+  57 | RM-base-absent                         | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | base_revision: missing
+  58 | RM-status-bad                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | status: not active, paused or closed
+  59 | RM-role-sinav                          | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | revise_mission admits only the role class devos_kurulum
+  60 | RM-mission-revision-unreadable (42501) | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | mission: its input could not be read (SQLSTATE 42501)
+  61 | RM-f06-recipe                          | t  | ok                       | ok                       | {"event": 1, "mission_revision": 1}                                | 
+  62 | RM-f06-repeat                          | t  | ok repeat                | ok repeat                | {}                                                                 | 
+  63 | RN-pos                                 | t  | ok                       | ok                       | {"need": 1, "event": 1}                                            | 
+  64 | RN-pos-stored                          | t  | true                     | true                     | {}                                                                 | evidence_for kept as sent; status open by default
+  65 | RN-pos-sinav                           | t  | ok                       | ok                       | {"need": 1, "event": 1}                                            | 
+  66 | RN-pos-kurulum-investigating           | t  | ok                       | ok                       | {"need": 1, "event": 1}                                            | 
+  67 | RN-mission-closed                      | t  | mission_not_active       | mission_not_active       | {"rejected": 1}                                                    | mission_ref: the Mission is not active
+  68 | RN-mission-absent                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | mission_ref: the record could not be read
+  69 | RN-why-absent                          | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | why_needed: missing
+  70 | RN-why-empty (W-C02-10's gate)         | t  | ok                       | ok                       | {"need": 1, "event": 1}                                            | 
+  71 | RN-status-resolved                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | status: a new Need is open or investigating
+  72 | RN-origin-bad                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | origin: not goal, method or useful
+  73 | RN-role-denetim                        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | record_need admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  74 | RS-pos                                 | t  | ok                       | ok                       | {"event": 1}                                                       | 
+  75 | RS-repeat                              | t  | ok repeat                | ok repeat                | {}                                                                 | 
+  76 | RS-dropped                             | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | need_id: the Need is dropped or superseded
+  77 | RS-unknown                             | t  | not_found                | not_found                | {"rejected": 1}                                                    | need_id: names no Need
+  78 | RS-null                                | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | need_id: missing
+  79 | RS-role-ci                             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | resolve_need admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  80 | OD-pos                                 | t  | ok                       | ok                       | {"event": 1, "decision": 1, "decision_revision": 1}                | 
+  81 | OD-pos-stored                          | t  | true                     | true                     | {}                                                                 | status draft by default, revision 1 with the question
+  82 | OD-groupc-form                         | t  | ok                       | ok                       | {"event": 1, "decision": 1, "decision_revision": 1}                | 
+  83 | OD-pos-kurulum-batu                    | t  | ok                       | ok                       | {"event": 1, "decision": 1, "decision_revision": 1}                | 
+  84 | OD-status-answered                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | status: a new Decision is draft or open
+  85 | OD-class-bad                           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | class: not routine, high_impact or batu
+  86 | OD-question-absent                     | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | question: missing
+  87 | OD-alternatives_state-bad              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | alternatives_state: not compared, single_viable_path or open_exploration
+  88 | OD-work-calisma                        | t  | ok                       | ok                       | {"event": 2, "decision": 1, "relation": 1, "decision_revision": 1} | 
+  89 | OD-work-relation                       | t  | true                     | true                     | {}                                                                 | one about relation from the work item (revision 1) to the decision (revision 1), the work item's scope; work_ref in decision_opened
+  90 | OD-work-kurulum-outside                | t  | not_owner                | not_owner                | {"rejected": 1}                                                    | Rule O: devos_kurulum changes only the work items under the installation's Mission
+  91 | OD-work-kurulum-inside                 | t  | ok                       | ok                       | {"event": 2, "decision": 1, "relation": 1, "decision_revision": 1} | 
+  92 | OD-work-calisma-inside                 | t  | not_owner                | not_owner                | {"rejected": 1}                                                    | Rule O: devos_calisma does not change the work items under the installation's Mission
+  93 | OD-work-sinav-no-link                  | t  | not_owner                | not_owner                | {"rejected": 1}                                                    | Rule O: devos_sinav changes only the work items its exam link names
+  94 | OD-work-sinav-link                     | t  | ok                       | ok                       | {"event": 2, "decision": 1, "relation": 1, "decision_revision": 1} | 
+  95 | OD-work-calisma-exam-task              | t  | ok                       | ok                       | {"event": 2, "decision": 1, "relation": 1, "decision_revision": 1} | 
+  96 | OD-work-absent                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | work_ref: the record could not be read
+  97 | OD-work-not-uuid                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | work_ref: not a uuid
+  98 | OD-work-mission-unreadable (42501)     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | rule_o: its input could not be read (SQLSTATE 42501)
+  99 | OD-work-events-unreadable (42501)      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | rule_o: its input could not be read (SQLSTATE 42501)
+ 100 | OD-work-mission-link-null              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | rule_o: the work item's Mission is missing
+ 101 | OD-role-denetim                        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | open_decision admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+ 102 | LP-pos                                 | t  | ok                       | ok                       | {"event": 1, "relation": 1}                                        | 
+ 103 | LP-pos-relation                        | t  | true                     | true                     | {}                                                                 | about, decision to prior, revisions 1 and 1, recorded, inference, soft
+ 104 | LP-repeat                              | t  | ok repeat                | ok repeat                | {}                                                                 | 
+ 105 | LP-one-new-of-two                      | t  | ok                       | ok                       | {"event": 1, "relation": 1}                                        | 
+ 106 | LP-ids                                 | t  | true                     | true                     | {}                                                                 | ids 2 (wanted 2: duplicates named once)
+ 107 | LP-self                                | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | prior_ids: names the decision itself
+ 108 | LP-empty                               | t  | invalid_field            | invalid_field            | {"rejected": 1}                                                    | prior_ids: not an array of at least one uuid
+ 109 | LP-decision-absent                     | t  | not_found                | not_found                | {"rejected": 1}                                                    | decision_id: names no Decision
+ 110 | LP-prior-absent                        | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | prior_ids: a record could not be read
+ 111 | LP-prior-without-revision              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | prior_ids: a prior's current revision is missing (partial)
+ 112 | LP-scope-absent                        | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | scope: missing
+ 113 | LP-role-backup                         | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                                    | link_prior_decisions admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+ 114 | RD-devos_calisma                       | t  | ok                       | ok                       | {}                                                                 | 
+ 115 | RD-devos_denetim                       | t  | ok                       | ok                       | {}                                                                 | 
+ 116 | RD-devos_sinav                         | t  | ok                       | ok                       | {}                                                                 | 
+ 117 | RD-devos_kurulum                       | t  | ok                       | ok                       | {}                                                                 | 
+ 118 | RD-devos_ci                            | t  | ok                       | ok                       | {}                                                                 | 
+ 119 | RD-devos_backup                        | t  | ok                       | ok                       | {}                                                                 | 
+ 120 | RD-answer                              | t  | true                     | true                     | {}                                                                 | decision id, revision 1, status open
+ 121 | RD-unknown                             | t  | not_found                | not_found                | {"rejected": 1}                                                    | decision_id: names no Decision
+ 122 | RD-no-revision                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | decision: its current revision is missing (partial)
+ 123 | RD-null                                | t  | missing_field            | missing_field            | {"rejected": 1}                                                    | decision_id: missing
+ 124 | RD-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                                                    | the request carries no environment token
+ 125 | RD-unreadable (42501)                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                                                    | decision: its input could not be read (SQLSTATE 42501)
+(125 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0903_run/fn_check.sql:446: NOTICE:  M0903_FUNCTIONS PASS (125/125)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ missions_after_rollback 
+-------------------------
+                       0
+(1 row)
+
+[psql exit 0]
+prd10 scrub (09_functions): 0 token-format strings removed

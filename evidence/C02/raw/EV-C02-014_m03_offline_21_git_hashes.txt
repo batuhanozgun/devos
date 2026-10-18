@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes and git output only)
+2026-10-18T21:56:00Z
+HEAD 9638f1d3d8c28aadbea4b23925325ef516ae5a3c
+b0b476b8969a55ae7627675c678af957db0007021fda71855fdd8c7c89b187e3  supabase/migrations/20261018214501_w09_mission_need_decision.sql
+0e1081e73feb970e86c983200e43d887d8cffac1249ada427a584c0eecf470f8  evidence/C02/EV-C02-013_w09_interface.md
+backslashes in M09-03: 0
+$ git status --porcelain
+ M evidence/C02/EV-C02-013_w09_interface.md
+?? supabase/migrations/20261018214501_w09_mission_need_decision.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end]
