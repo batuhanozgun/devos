@@ -769,12 +769,15 @@ jobs:
           python3 -I - <<'PY' || exit $?
           # N-255 (2): as owner, one synthetic token per role class the tests use (W03_TOKEN_CLASSES, EV-C02-003 section 4.1's
           # columns) and one more, of the first class, revoked before the programs run: the "revoked token". Issued with
-          # devos_private.issue_env_token(role_class), revoked with devos_private.revoke_env_token(token) (B:46; EV-C02-003
-          # section 6.3). Each token is masked before anything else is printed, and is never printed; the file (0600, under
-          # the runner's temporary directory) is rewritten after every issue, so that the step that revokes them, which runs
-          # in every case, finds every token issued before a failure or a cancellation. A token reaches psql only through its
-          # environment (psql's \getenv), never through a command line.
-          import json, os, subprocess
+          # devos_private.issue_env_token(role_class), revoked with devos_private.revoke_env_token(token_id uuid) (B:46;
+          # EV-C02-013 section 2.1; N-280) on the env_tokens row whose token_hash is the token's hash, computed here by
+          # token_hash's rule (EV-C02-013 section 10): the token itself never reaches psql, so no SQL text or error can
+          # hold it, and the hash reaches psql only through its environment (psql's \getenv). Revoked means the function
+          # answered status ok; a refusal, no row or a psql error is "NOT revoked". Each token is masked before anything
+          # else is printed, and is never printed, nor is its hash; the file (0600, under the runner's temporary
+          # directory) is rewritten after every issue, so that the step that revokes them, which runs in every case, finds
+          # every token issued before a failure or a cancellation.
+          import hashlib, json, os, re, subprocess
           path = os.path.join(os.environ["RUNNER_TEMP"], "w03tokens.json")
           classes = os.environ["W03_TOKEN_CLASSES"].split()
           state = {"tokens": {}, "revoked_token": None, "revoked_before_programs": False}
@@ -792,6 +795,12 @@ jobs:
                   return None, r.returncode
               print("::add-mask::" + token.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"), flush=True)
               return token, 0
+          def revoke(token):
+              r = psql("\\getenv h W03_TOKEN_HASH\nselect coalesce((select devos_private.revoke_env_token(t.id) from "
+                       "devos_private.env_tokens t where t.token_hash = :'h')->>'status', 'no_row');\n",
+                       env={"W03_TOKEN_HASH": hashlib.sha256(token.encode("utf-8")).hexdigest()})
+              status = r.stdout.strip() if re.fullmatch(r"[a-z_]{1,32}", r.stdout.strip()) else "unreadable"
+              return r.returncode == 0 and status == "ok", f"psql exit {r.returncode}, status {status}"
           ok = True
           for role_class in classes:
               token, rc = issue(role_class)
@@ -809,12 +818,11 @@ jobs:
           else:
               state["revoked_token"] = token
               save()
-              r = psql("\\getenv tok W03_TOKEN\nselect devos_private.revoke_env_token(:'tok');\n", env={"W03_TOKEN": token})
-              state["revoked_before_programs"] = r.returncode == 0
+              done, why = revoke(token)
+              state["revoked_before_programs"] = done
               save()
-              print(f"revoked token ({classes[0]}): issued and " + ("revoked" if r.returncode == 0 else
-                                                                    f"NOT revoked (psql exit {r.returncode})"))
-              ok = ok and r.returncode == 0
+              print(f"revoked token ({classes[0]}): issued and " + ("revoked" if done else f"NOT revoked ({why})"))
+              ok = ok and done
           raise SystemExit(0 if ok else 1)
           PY
       - id: dbprograms
@@ -898,11 +906,12 @@ jobs:
             exit 0
           fi
           python3 -I - "$f" <<'PY' && rc=0 || rc=$?
-          # Revoked with devos_private.revoke_env_token, called with the token (EV-C02-003 section 6.3). That argument form is
-          # assumed here; W-C02-09 fixes the function's signature, and this step is changed with it if it differs. The
-          # revoked token is revoked again only if its revocation before the programs did not succeed. A token reaches
-          # psql only through its environment (psql's \getenv), never through a command line.
-          import json, os, subprocess, sys
+          # Revoked with devos_private.revoke_env_token(token_id uuid) on the env_tokens row whose token_hash is the token's
+          # hash, as step tokens revokes (EV-C02-013 sections 2.1 and 10; N-280): the token never reaches psql, and the
+          # hash reaches it only through its environment (psql's \getenv). Revoked means status ok (an already revoked
+          # row answers ok, as a repeat); a refusal, no row or a psql error is "NOT revoked". The revoked token is revoked
+          # again only if its revocation before the programs did not succeed. No token or hash is printed.
+          import hashlib, json, os, re, subprocess, sys
           state = json.load(open(sys.argv[1], encoding="utf-8"))
           todo = list(state.get("tokens", {}).items())
           if state.get("revoked_token") and not state.get("revoked_before_programs"):
@@ -912,13 +921,25 @@ jobs:
           bad = 0
           for role_class, token in todo:
               r = subprocess.run(["psql", "-X", "-q", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-f", "-"],
-                                 input="\\getenv tok W03_TOKEN\nselect devos_private.revoke_env_token(:'tok');\n",
-                                 capture_output=True, text=True, env={**os.environ, "W03_TOKEN": token})
-              print(f"synthetic token for {role_class}: {'revoked' if r.returncode == 0 else 'NOT revoked'}")
-              bad += r.returncode != 0
+                                 input="\\getenv h W03_TOKEN_HASH\nselect coalesce((select devos_private.revoke_env_token(t.id) "
+                                       "from devos_private.env_tokens t where t.token_hash = :'h')->>'status', 'no_row');\n",
+                                 capture_output=True, text=True,
+                                 env={**os.environ, "W03_TOKEN_HASH": hashlib.sha256(token.encode("utf-8")).hexdigest()})
+              status = r.stdout.strip() if re.fullmatch(r"[a-z_]{1,32}", r.stdout.strip()) else "unreadable"
+              done = r.returncode == 0 and status == "ok"
+              print(f"synthetic token for {role_class}: " + ("revoked" if done else
+                                                             f"NOT revoked (psql exit {r.returncode}, status {status})"))
+              bad += not done
           raise SystemExit(1 if bad else 0)
           PY
-          rm -f "$f"
+          # The state file is removed only when every revocation succeeded; otherwise it is kept and the step fails, so
+          # that go is no (step go requires this step's success; N-280). It is kept for this job only: the runner's
+          # temporary directory does not outlive the job, so a later run does not retry from it.
+          if [ "$rc" -eq 0 ]; then
+            rm -f "$f"
+          else
+            echo "synthetic tokens: not every token was revoked; the state file is kept and this step fails"
+          fi
           exit $rc
       - id: go
         name: "go = yes only after the apply, a clean comparison and the tests"
