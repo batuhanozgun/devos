@@ -385,7 +385,10 @@ begin
                                                                        'declared_session_id', 'w07_fixture_session'));
   if pg_temp.w07_kind(r) <> 'accepted' or (r->>'claim_token') is null then
     raise exception using errcode = 'P0W07', message = 'fixture claim refused: ' || pg_temp.w07_brief(r - 'claim_token'); end if;
-  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token');
+  -- Revised before any result (EV-C02-013 R2-1, 2026-10-18): an effect names the revision of its work item
+  -- (work_revision, required with work_ref), read here as owner at the claim.
+  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token', 'work_revision',
+    (select w.revision from devos_private.work_current w where w.id::text = p_work));
 end $f$;
 
 -- The sample stream's state (owner level): block_size, block_seen (records counted in the open block),
@@ -658,8 +661,18 @@ begin
                values (''mission'', $1::uuid, 1, ''transferred'', $2, ''devos_kurulum'', ''call'')'
         using im, jsonb_build_object('transfer_source', pg_temp.n02_src('mission', 'INSTALL'), 'run_id', run, 'lacks', '[]'::jsonb);
     end if;
-    dn := pg_temp.w07_decision('high_impact', 'open_exploration');
-    dp := pg_temp.w07_decision('high_impact', 'open_exploration');
+    -- Revised before any result (EV-C02-013 R2-2, 2026-10-18): transfer_acceptance accepts only an installation record,
+    -- and a Decision target is one when its creation event's role_class is devos_kurulum (EV-C02-013 3.2). So dn and dp
+    -- are opened with the devos_kurulum token here (the shared pg_temp.w07_decision opens with devos_calisma and is
+    -- unchanged); a refusal raises P0W07, so both cases become could_not_check with the reason.
+    foreach md in array array['dn', 'dp'] loop
+      r := pg_temp.w07_call('devos_kurulum', 'open_decision', pg_temp.w07_args('decision', 'open_exploration',
+             nextval('w07_seq')::int, 'high_impact'));
+      if pg_temp.w07_kind(r) <> 'accepted' then
+        raise exception using errcode = 'P0W07', message = 'fixture decision ' || md || ' (devos_kurulum) refused: ' || pg_temp.w07_brief(r);
+      end if;
+      if md = 'dn' then dn := r->>'id'; else dp := r->>'id'; end if;
+    end loop;
     why := pg_temp.w07_new_revision(dp, jsonb_build_object('alternatives_state', 'open_exploration',
       'single_viable_path_reason', 'SYNTHETIC W-C02-07: only form A fits the existing w07_fixture foreign keys'));
     if why is not null then raise exception using errcode = 'P0W07', message = 'the revision entering the reason was refused: ' || why; end if;

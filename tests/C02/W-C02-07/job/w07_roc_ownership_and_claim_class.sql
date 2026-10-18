@@ -398,7 +398,10 @@ begin
                                                                        'declared_session_id', 'w07_fixture_session'));
   if pg_temp.w07_kind(r) <> 'accepted' or (r->>'claim_token') is null then
     raise exception using errcode = 'P0W07', message = 'fixture claim refused: ' || pg_temp.w07_brief(r - 'claim_token'); end if;
-  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token');
+  -- Revised before any result (EV-C02-013 R2-1, 2026-10-18): an effect names the revision of its work item
+  -- (work_revision, required with work_ref), read here as owner at the claim.
+  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token', 'work_revision',
+    (select w.revision from devos_private.work_current w where w.id::text = p_work));
 end $f$;
 
 -- The sample stream's state (owner level): block_size, block_seen (records counted in the open block),
@@ -825,8 +828,10 @@ end $f$;
 -- another code), with no table changed, no event on the target and no record returned. The forms are the designer's
 -- (T-W07-ROC, "Could not check"):
 --   missing    the Mission reference null; the relation's creation event deleted; the claims table absent (renamed);
---   unreadable every privilege on the table that holds the input (mission, event, assignment) revoked from the called
---              function's owner for the call, and given back before the observation;
+--   unreadable every privilege on the table that holds the input (mission_revision, event, assignment) revoked from
+--              the called function's owner for the call, and given back before the observation; mission_revision is
+--              the link Rule O follows from the work item to its Mission (EV-C02-013 2.3, "What Rule O reads", R2-6;
+--              revised before any result, 2026-10-18, from the table mission, which Rule O does not read);
 --   partial    the Mission reference naming no Mission; the creation event with its event_type null; an active claim on
 --              the item with its role_class null.
 create function pg_temp.roc_x_owner(p_fn text) returns text language plpgsql as $f$
@@ -891,7 +896,7 @@ begin
 end $f$;
 -- The access part of a plant (after the "before" snapshot), and its reversal (before the "after" snapshot).
 create function pg_temp.roc_x_access(p_kind text, p_fn text, p_on boolean) returns void language plpgsql as $f$
-declare t text := case split_part(p_kind, '-', 1) when 'mission' then 'mission' when 'event' then 'event' else 'assignment' end;
+declare t text := case split_part(p_kind, '-', 1) when 'mission' then 'mission_revision' when 'event' then 'event' else 'assignment' end;
 begin
   if p_kind like '%-unreadable' then
     if to_regclass('devos_private.' || t) is null then

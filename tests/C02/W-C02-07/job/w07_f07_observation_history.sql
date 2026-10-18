@@ -213,7 +213,10 @@ end $f$;
 create function pg_temp.w07_fixture_mission(p_k text, p_scope text) returns jsonb language plpgsql as $f$
 declare d jsonb; r jsonb;
 begin
-  d := pg_temp.w07_owner_insert('devos_private.decision', jsonb_build_object('class', 'batu', 'status', 'answered'));
+  -- Revised before any result (EV-C02-013 R2-7, 2026-10-18): the answer is bound to the revision answered (DM-11 (a)),
+  -- so the answered Decision names answered_revision 1, which open_mission compares with owner_authority_revision.
+  d := pg_temp.w07_owner_insert('devos_private.decision', jsonb_build_object('class', 'batu', 'status', 'answered',
+                                                                          'answered_revision', 1));
   if to_regclass('devos_private.decision_revision') is not null then
     perform pg_temp.w07_owner_insert('devos_private.decision_revision', jsonb_build_object('revision', 1),
                                      jsonb_build_object('devos_private.decision', d->>'id'));
