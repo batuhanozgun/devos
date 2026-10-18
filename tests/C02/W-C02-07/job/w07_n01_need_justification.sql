@@ -387,7 +387,10 @@ begin
                                                                        'declared_session_id', 'w07_fixture_session'));
   if pg_temp.w07_kind(r) <> 'accepted' or (r->>'claim_token') is null then
     raise exception using errcode = 'P0W07', message = 'fixture claim refused: ' || pg_temp.w07_brief(r - 'claim_token'); end if;
-  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token');
+  -- Revised before any result (EV-C02-013 R2-1, 2026-10-18): an effect names the revision of its work item
+  -- (work_revision, required with work_ref), read here as owner at the claim.
+  return jsonb_build_object('work_ref', p_work, 'claim_token', r->>'claim_token', 'work_revision',
+    (select w.revision from devos_private.work_current w where w.id::text = p_work));
 end $f$;
 
 -- The sample stream's state (owner level): block_size, block_seen (records counted in the open block),
