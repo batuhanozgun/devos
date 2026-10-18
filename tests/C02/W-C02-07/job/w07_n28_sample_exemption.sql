@@ -20,6 +20,9 @@
 -- subtransaction and undone. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_N28_SAMPLE_EXEMPTION PASS as a notice, or FAIL / COULD
 -- NOT CHECK as an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-18 (N-283 (6); CHK-C02-088 C1), before any result of this file: S-neg-direct
+-- counts only the table check's kind of error as the refusal; see the specification's "Revision under ledger rule 3
+-- (N-283 (6), 2026-10-18)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -657,6 +660,13 @@ begin
     n := jsonb_array_length(pg_temp.s_sample_rows(tid));
     if left(coalesce(st, ''), 2) = '42' then
       perform pg_temp.w07_put('S-neg-direct', 'could_not_check', 'the row could not be formed: ' || e);
+    -- Revised under ledger rule 3, 2026-10-18 (N-283 (6); CHK-C02-088 C1): only the Review table's check refuses here,
+    -- so only its kind of error counts as the refusal: SQLSTATE 23514 (a CHECK) or 23001 (a table rule, as W-C02-08's
+    -- devos_private.refuse_change raises). The first version excluded class 42 alone, so any other error (22P02, 23502,
+    -- a plain raise) passed. That error is now the test's own could_not_check (the specification's "Interface assumed").
+    elsif st is not null and st <> all (array['23514', '23001']) then
+      perform pg_temp.w07_put('S-neg-direct', 'could_not_check', 'refused by an error that is not the table check''s refusal '
+        || '(wanted SQLSTATE 23514 or 23001): ' || e);
     else
       perform pg_temp.w07_rec('S-neg-direct', e is not null and n = 0,
         format('the owner''s sample row without the marker: %s; sample rows naming its target: %s (wanted refused, 0)', coalesce('refused: ' || e, 'written'), n));

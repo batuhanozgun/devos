@@ -15,6 +15,9 @@
 -- deleted row) are planted inside a subtransaction and undone before the next case. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_DM11_ANSWER_REVISION PASS as a notice, or FAIL / COULD NOT CHECK as
 -- an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-18 (N-283 (6) and (7); CHK-C02-088 C1), before any result of this file:
+-- DM11-a to -e count only the rule's kind of error as the refusal; DM11-pos-supersede sends relate's scope; see the
+-- specification's "Revision under ledger rule 3 (N-283 (6) and (7), 2026-10-18)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -496,6 +499,22 @@ begin
 end $f$;
 
 -- The cases of this file.
+-- Revised under ledger rule 3, 2026-10-18 (N-283 (6); CHK-C02-088 C1): a negative case of a rule held on the tables
+-- is ok only when the write is refused by that rule's kind of error: SQLSTATE 23514 (check_violation, what a CHECK
+-- raises) or 23001 (restrict_violation, what W-C02-08's table rules raise: devos_private.refuse_change, migration
+-- 20261014170205). No migration builds these rules yet (W-C02-10's), so the codes are an assumed interface (the
+-- specification's "Interface assumed"). Any other error (22P02 from a fixture, 42xxx from a call that could not be
+-- formed, 23502 from a missing column, a plain raise) did not show the rule: the case is the test's own
+-- could_not_check, never ok. No error at all is bad, as before.
+create function pg_temp.dm11_rule_judge(p_case text, e text, p_held boolean, p_detail text) returns void language plpgsql as $f$
+begin
+  if e is not null and split_part(e, ' ', 1) <> all (array['23514', '23001']) then
+    perform pg_temp.w07_put(p_case, 'could_not_check', p_detail || ': refused by an error that is not the rule''s refusal '
+      || '(wanted SQLSTATE 23514 or 23001): ' || e);
+  else
+    perform pg_temp.w07_rec(p_case, e is not null and p_held, p_detail || ': ' || coalesce('refused (' || e || ')', 'ACCEPTED'));
+  end if;
+end $f$;
 create function pg_temp.dm11_eq() returns void language plpgsql as $f$
 declare d text; e text; st text; n0 int;
 begin
@@ -505,22 +524,19 @@ begin
     perform pg_temp.w07_put('DM11-eq', 'could_not_check', 'a second revision could not be planted: ' || coalesce(e, 'revision ' || pg_temp.w07_rev(d))); return;
   end if;
   e := pg_temp.w07_set_status(d, 'answered', 1); st := pg_temp.w07_dec_state(d);
-  perform pg_temp.w07_rec('DM11-a', e is not null and st like 'status open%', 'answer recorded to revision 1 while revision 2 is current: '
-    || coalesce('refused (' || e || ')', 'ACCEPTED') || '; then ' || st);
+  perform pg_temp.dm11_rule_judge('DM11-a', e, st like 'status open%', 'answer recorded to revision 1 while revision 2 is current; then ' || st);
   e := pg_temp.w07_set_status(d, 'answered', 3); st := pg_temp.w07_dec_state(d);
-  perform pg_temp.w07_rec('DM11-b', e is not null and st like 'status open%', 'answer recorded to revision 3, which does not exist: '
-    || coalesce('refused (' || e || ')', 'ACCEPTED') || '; then ' || st);
+  perform pg_temp.dm11_rule_judge('DM11-b', e, st like 'status open%', 'answer recorded to revision 3, which does not exist; then ' || st);
   e := pg_temp.w07_set_status(d, 'answered', null); st := pg_temp.w07_dec_state(d);
-  perform pg_temp.w07_rec('DM11-c', e is not null and st like 'status open%', 'answer recorded without a revision: '
-    || coalesce('refused (' || e || ')', 'ACCEPTED') || '; then ' || st);
+  perform pg_temp.dm11_rule_judge('DM11-c', e, st like 'status open%', 'answer recorded without a revision; then ' || st);
   e := pg_temp.w07_set_status(d, 'answered', 2); st := pg_temp.w07_dec_state(d);
   perform pg_temp.w07_rec('DM11-pos-answer', e is null and st = 'status answered answered_revision 2', 'answer recorded to the current revision 2: '
     || coalesce('refused (' || e || ')', 'accepted') || '; then ' || st);
   if e is not null then return; end if;
   n0 := pg_temp.w07_rev(d);
   e := pg_temp.w07_new_revision(d, jsonb_build_object('question', 'SYNTHETIC W-C02-07: the w07_fixture question, edited after the answer'));
-  perform pg_temp.w07_rec('DM11-d', e is not null and pg_temp.w07_rev(d) = n0, 'a new revision after the answer: '
-    || coalesce('refused (' || e || ')', 'ACCEPTED') || format('; revisions %s -> %s', n0, pg_temp.w07_rev(d)));
+  perform pg_temp.dm11_rule_judge('DM11-d', e, pg_temp.w07_rev(d) = n0, 'a new revision after the answer'
+    || format('; revisions %s -> %s', n0, pg_temp.w07_rev(d)));
 end $f$;
 create function pg_temp.dm11_after_accept() returns void language plpgsql as $f$
 declare d text; e text; n0 int;
@@ -531,8 +547,8 @@ begin
     perform pg_temp.w07_put('DM11-e', 'could_not_check', 'the answered decision could not be marked accepted: ' || e); return; end if;
   n0 := pg_temp.w07_rev(d);
   e := pg_temp.w07_new_revision(d, jsonb_build_object('question', 'SYNTHETIC W-C02-07: edited after the answer and the acceptance'));
-  perform pg_temp.w07_rec('DM11-e', e is not null and pg_temp.w07_rev(d) = n0, 'a new revision of an answered, then accepted decision: '
-    || coalesce('refused (' || e || ')', 'ACCEPTED') || format('; revisions %s -> %s', n0, pg_temp.w07_rev(d)));
+  perform pg_temp.dm11_rule_judge('DM11-e', e, pg_temp.w07_rev(d) = n0, 'a new revision of an answered, then accepted decision'
+    || format('; revisions %s -> %s', n0, pg_temp.w07_rev(d)));
 end $f$;
 create function pg_temp.dm11_pos() returns void language plpgsql as $f$
 declare d text; e text; old text; nw text;
@@ -543,9 +559,11 @@ begin
     || coalesce('refused (' || e || ')', 'accepted') || '; revision now ' || coalesce(pg_temp.w07_rev(d)::text, 'unreadable'));
   old := pg_temp.w07_answered('batu');
   nw := pg_temp.w07_decision('batu');
+  -- Revised under ledger rule 3, 2026-10-18 (N-283 (7)): relate's scope is required (EV-C02-013 2.5, scope*); a Decision
+  -- has none (DM-34), so the relation takes the fixture Mission's scope, as link_prior_decisions' relations take theirs.
   perform pg_temp.w07_expect('DM11-pos-supersede', 'devos_calisma', 'relate', jsonb_build_object('type', 'supersedes',
-    'from_ref', nw, 'from_revision', 1, 'to_ref', old, 'to_revision', 1, 'hard', false, 'method', 'recorded',
-    'epistemic_status', 'inference'), 'accepted', null, 'relation');
+    'from_ref', nw, 'from_revision', 1, 'to_ref', old, 'to_revision', 1, 'hard', false, 'scope', 'synthetic.w07_fixture',
+    'method', 'recorded', 'epistemic_status', 'inference'), 'accepted', null, 'relation');
   if to_regprocedure('devos_api.answer_decision(jsonb)') is not null then
     perform pg_temp.w07_put('DM11-channel', 'could_not_check', 'devos_api.answer_decision exists in this build (B:390 gives it to C06): its channel cases must be written before a result counts');
   end if;
