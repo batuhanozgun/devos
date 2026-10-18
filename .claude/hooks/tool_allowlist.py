@@ -29,7 +29,9 @@ Rule families (the IDs are the keys of RULES):
      (W-C02-20): no string of either DevOS token format in any field of a call that leaves the session, or in a
      commit or branch name a push would publish, read raw before any masking, by the finder patterns of
      tests/C02/W-C02-07/shared/ read at every call; while those files cannot be read or disagree, every such call
-     is denied.
+     is denied. L5, L4's one exception (W-C02-20 point 3): a string of the claim token's format in the arguments
+     of the client script's own call to the live host (tools/devos_rpc.py as merged, its content pinned), and
+     nowhere else; that call's text is never repeated.
 
 Threat model (plan/Installation_Working_Order.md): accidents and injected instructions, not a session that
 deliberately edits this file. A deliberate bypass stays visible in git and is a stated residual risk (D-003).
@@ -371,9 +373,18 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "call. Any other match is reported to the executor as a finding, without the string; for the environment "
            "token's format, EV-C02-003 section 2.2 and plan 6.3 apply: the token is revoked and renewed. If the detail "
            "says the shared files cannot be read or disagree, restore both to their text on main (this rule does not "
-           "read the Read and Write tools) and report it to the executor."),
+           "read the Read and Write tools) and report it to the executor. A claim token goes to devos_api only by the "
+           "client path (rule L5)."),
+    "L5": ("the client path, L4's one exception", "A string of the claim token's format may leave only in the "
+           "arguments of the client script's own call to the live project's host: python3 -I tools/devos_rpc.py "
+           "<function>, alone in its Bash call, run from the checkout's root, with its arguments in a single-quoted "
+           "here-string or a quoted here-document, and the script as merged into main (its content is pinned in this "
+           "guard). The call's text is never repeated, so another rule's denial of it names only that rule.",
+           WO + "; EV-C02-003 sections 1.6 and 1.7; W-C02-20 point 3",
+           "Run the client call alone, in exactly that form. If the script was changed on purpose, the exception "
+           "follows it only through a guard change of its own; report it to the executor."),
 }
-LEAK_WITHHELD = {"L1", "L2", "L4"}   # denials whose call text is never repeated (it may hold the matched text)
+LEAK_WITHHELD = {"L1", "L2", "L4", "L5"}   # rules whose call text is never repeated (it may hold the matched text)
 
 
 class Bad(Exception):
@@ -462,7 +473,7 @@ def summary(name, args, rule=None):
     object, which G0 denies before any rule (L4 included) has read it (N-269). It never raises: a text it cannot
     read is not shown, so that the denial built from it keeps its rule and the call keeps its log record (N-269)."""
     if rule in LEAK_WITHHELD:
-        return f"[withheld: a {rule} denial does not repeat the call's text]"
+        return f"[withheld: a {rule} {'decision' if rule == 'L5' else 'denial'} does not repeat the call's text]"
     if not isinstance(args, dict):
         return f"[not shown: the tool input is a {type(args).__name__} value, not an object]"
     try:
@@ -1902,15 +1913,54 @@ def input_strings(v):
             stack += x
 
 
-def token_stop(texts, what="the call"):
+def token_stop(texts, what="the call", claim_ok=()):
     """L4: deny when any of texts holds a string of either DevOS token format; neither the string nor where it is is
-    named in the detail."""
+    named in the detail. The texts of claim_ok (the client path's arguments, L5) are read for the environment token's
+    format only."""
     finders = token_finders()
     for t in texts:
         for fmt, rx in finders:
             if rx.search(t):
                 raise Bad("L4", f"{what} carries a string of the {fmt} format (tests/C02/W-C02-07/shared/"
                                 "token_format.md section 3); neither the string nor the field holding it is shown")
+    for t in claim_ok:
+        for fmt, rx in finders:
+            if fmt != TOKEN_FINDERS["claim_token_find"][0] and rx.search(t):
+                raise Bad("L4", f"the client path's arguments carry a string of the {fmt} format (tests/C02/W-C02-07/"
+                                "shared/token_format.md section 3); neither the string nor where it is is shown")
+
+
+# The client path's exception (L5; W-C02-20 point 3; EV-C02-003 sections 1.6 and 1.7): a string of the claim token's
+# format only, and only in the arguments of the client script's own call to the live host. The call is one simple
+# command, exactly `python3 -I tools/devos_rpc.py <function>` with its arguments in a single-quoted here-string or a
+# quoted here-document (data the shell does not expand), run from this guard's own tree, whose client is the script as
+# merged: its content is pinned, because the script names its one host in its own text (HOST and its request line), so
+# any change of the client turns the exception off until a guard change follows it. The rest of the call (the command
+# outside those arguments and every other field) and the environment token's format everywhere stay under L4.
+CLIENT_REL = os.path.join("tools", "devos_rpc.py")
+CLIENT_SHA256 = "30c8cf431d32df6c7e93b62e3b9e5f2e475c706b23c1068b16ff1da4dcbbe102"   # blob e450b90b557c: added by
+#                                                         9af14f1, merged into main by 7a6f3ea (PR #352)
+CLIENT_CALL = re.compile(r"python3 -I tools/devos_rpc\.py [a-z_][a-z0-9_]{0,62} (?:<<< '(?P<s>[^']*)'|"
+                         r"<<(?P<q>['\"])(?P<d>[A-Za-z_][A-Za-z0-9_]*)(?P=q)\n(?P<b>.*)\n(?P=d))\n?", re.S)
+
+
+def client_args(args, data):
+    """L5: (start, end) of the client path's arguments in the Bash call's command, or None when the call is not the
+    client path: another form, a directory other than the guard's tree, or a client missing, unreadable or changed."""
+    cmd, cwd = args.get("command"), data.get("cwd")
+    if not isinstance(cmd, str) or not isinstance(cwd, str) or not os.path.isabs(cwd) or \
+            os.path.realpath(cwd) != os.path.realpath(ROOT):
+        return None
+    m = CLIENT_CALL.fullmatch(cmd)
+    if not m or (m.group("d") and m.group("d") in m.group("b").split("\n")):   # a body line that ends the document
+        return None
+    try:
+        with open(os.path.join(ROOT, CLIENT_REL), "rb") as f:
+            if hashlib.sha256(f.read(1 << 20)).hexdigest() != CLIENT_SHA256:
+                return None
+    except OSError:
+        return None
+    return m.span("s") if m.group("s") is not None else m.span("b")
 
 
 def git_sub(args):
@@ -2118,8 +2168,13 @@ def decide(data):
     if not isinstance(args, dict):
         return "deny", "G0", "the tool input is not an object"
     cwd = data.get("cwd") if isinstance(data.get("cwd"), str) and os.path.isabs(data.get("cwd") or "") else ROOT
+    span = client_args(args, data) if name == "Bash" else None   # L5, the client path (W-C02-20 point 3)
     try:
-        if name.startswith(ALLOWED_PREFIXES) or (name in ALLOWED_NON_MCP and name not in LOCAL_TOOLS):
+        if span:
+            s, e = span
+            cmd = args["command"]
+            token_stop(input_strings({**args, "command": cmd[:s] + " " + cmd[e:]}), claim_ok=[cmd[s:e]])
+        elif name.startswith(ALLOWED_PREFIXES) or (name in ALLOWED_NON_MCP and name not in LOCAL_TOOLS):
             token_stop(input_strings(args))   # L4 before every other rule of an outbound call (W-C02-20 point 2)
         if any(isinstance(v, str) and "\x00" in v for v in args.values()):
             raise Bad("G0", "the tool input contains a NUL byte, which no real path or command needs")
@@ -2183,12 +2238,17 @@ def decide(data):
             if PUSHES:
                 push_alone()
                 return "allow", "L1", push_leak_checks()
+            if span:
+                return "allow", "L5", ("the client path: tools/devos_rpc.py as merged, from the guard's tree, its "
+                                       "arguments in a quoted here-string or here-document; no shell ban matched")
             return "allow", "B0", "no shell ban matched"
         if name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
             rule, why = file_checks(name, args)
             return "allow", rule, why
         return "allow", "T1", f"{name} is on the allow list"
     except Bad as b:
+        if span and b.rule not in LEAK_WITHHELD:   # the client path's text is never repeated, nor a detail built from it
+            return "deny", "L5", f"rule {b.rule} ({RULES.get(b.rule, RULES['G0'])[0]}) denies the client path's call"
         return "deny", b.rule, b.detail
 
 
