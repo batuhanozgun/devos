@@ -204,6 +204,7 @@ begin
               and table_name = 'decision' and column_name in ('answered_at', 'answered_by', 'answer_channel_ref', 'answer',
               'answer_original_tr', 'answer_interpretation_en') loop
       sets := sets || ', ' || quote_ident(c) || ' = ' || case c when 'answered_at' then 'now()'
+        when 'answer' then quote_literal(to_jsonb('w07_fixture SYNTHETIC W-C02-07 ' || c)::text) || '::jsonb'  -- jsonb (N-283)
         else quote_literal('w07_fixture SYNTHETIC W-C02-07 ' || c) end;
     end loop;
   end if;

@@ -12,6 +12,9 @@
 -- Specification: tests/C02/W-C02-07/T-W07-F06_state_change_event.md. Serves W-C02-09 points 5 and 8.
 -- Runs: in devos-test by the migration job's test step as postgres, calls as anon with the header simulated
 -- (sql-set-role); with its break on the throwaway database. Safety: no psql meta-command; stops at its first error.
+-- Revised under ledger rule 3, 2026-10-18 (N-283; CHK-C02-086 C1 (b) and C4), before any result of this file:
+-- revise_mission's recipe sends a reason; recipes for the read functions with required arguments; see the
+-- specification's "Revision under ledger rule 3 (N-283)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -447,10 +450,13 @@ begin
         'purpose', 'w07_fixture SYNTHETIC W-C02-07 mission; not work', 'scope', 'synthetic.w07fixture',
         'owner_authority', d2->'id', 'owner_authority_revision', 1,
         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb)),
+      -- Revised under ledger rule 3, before any result (N-283; CHK-C02-086 C1 (b); 2026-10-18): a new revision carries
+      -- a reason (Appendix B principle 3; EV-C02-013 2.2 stars revise_mission's reason), as revise_work's recipe sends one.
       'revise_mission', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object(
         'id', mr->'mission_id', 'base_revision', mr->'revision', 'purpose', 'w07_fixture SYNTHETIC W-C02-07 mission, revised',
         'scope', 'synthetic.w07fixture', 'owner_authority', d2->'id', 'owner_authority_revision', 1,
-        'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb)),
+        'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb,
+        'reason', 'w07_fixture SYNTHETIC W-C02-07 mission revision')),
       'admit_work', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
         'mission_ref', mr->'mission_id', 'mission_revision', mr->'revision', 'scope', 'synthetic.w07fixture',
         'purpose', 'w07_fixture SYNTHETIC W-C02-07 work item', 'impact_class', 'routine', 'consumer', 'w07_fixture',
@@ -512,8 +518,10 @@ begin
   end;
   -- The functions that act under a claim: one planted work item and one accepted claim each (the claim token is held
   -- in the recipe's arguments, a PL/pgSQL variable, and bound through a setting, never printed or inlined).
+  -- operation_state (a read, EV-C02-013 2.7; revised under ledger rule 3, N-283, 2026-10-18) reads an operation prepared
+  -- for it the same way.
   foreach fn in array array['heartbeat', 'release', 'revoke_claim', 'register_artifact', 'prepare_operation',
-                            'record_attempt', 'record_observation'] loop
+                            'record_attempt', 'record_observation', 'operation_state'] loop
     begin
       wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
       cl := pg_temp.w07_call('claim', jsonb_build_object('work_id', wk->'work_id', 'declared_session_id', 'w07_fixture_session_f06'), t_cal);
@@ -525,11 +533,11 @@ begin
         'effect_class', 'w07_fixture_effect_f06', 'target', 'w07_fixture/target_f06', 'expected_base', 'w07_fixture_base_1',
         'payload_hash', 'w07_fixture_payload_1', 'work_ref', wk->'work_id', 'work_revision', wk->'revision',
         'read_set', jsonb_build_array(jsonb_build_object('ref', wk->'work_id', 'revision', wk->'revision')));
-      if fn in ('prepare_operation', 'record_attempt', 'record_observation')
+      if fn in ('prepare_operation', 'record_attempt', 'record_observation', 'operation_state')
          and not exists (select 1 from devos_private.effect_class where effect_class::text = 'w07_fixture_effect_f06') then
         perform pg_temp.w07_plant('devos_private.effect_class', '{"effect_class": "w07_fixture_effect_f06", "irreversible": false, "mandatory_read_set": ["work"]}');
       end if;
-      if fn in ('record_attempt', 'record_observation') then  -- an operation prepared for it
+      if fn in ('record_attempt', 'record_observation', 'operation_state') then  -- an operation prepared for it
         x := pg_temp.w07_call('prepare_operation', op, t_cal);
         if x ? 'interface' or x->>'error' is not null or x->'result'->>'status' is distinct from 'ok' then
           raise exception 'the operation its fixture needs was not prepared: %', pg_temp.w07_show(x);
@@ -546,6 +554,8 @@ begin
           'declared_session_id', 'w07_fixture_session_f06'))
         when 'prepare_operation' then jsonb_build_object('class', 'devos_calisma', 'args', op)
         when 'record_attempt' then jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('claim_token', ct,
+          'operation_id', x->'result'->'id'))
+        when 'operation_state' then jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
           'operation_id', x->'result'->'id'))
         else jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('operation_ref', x->'result'->'id',
           'source', 'w07_fixture SYNTHETIC W-C02-07 source', 'observed_at', to_char(now() at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"'),
@@ -660,6 +670,38 @@ begin
   exception when others then
     fx_fail := fx_fail || jsonb_build_object('link_prior_decisions', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
   end;
+  -- Revised under ledger rule 3, before any result (N-283; CHK-C02-086 C4; 2026-10-18): recipes for the read functions
+  -- with required arguments (EV-C02-013 2.2, 2.6, 2.7 and 2.8), so that F06-read-accepted can be judged for each, not
+  -- left could_not_check on every build. The class named is one the record permits; the read case still tries the
+  -- classes in the order fixed in the specification. Each fixture is made in its own block; one that cannot be made
+  -- gives could_not_check with the reason. operation_state's operation is prepared in the claim loop above.
+  begin  -- read_decision(decision_id): a planted Decision with its revision 1
+    x := pg_temp.w07_plant('devos_private.decision', '{"class": "routine", "status": "open"}');
+    perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', x->'id', 'revision', 1));
+    recipes := recipes || jsonb_build_object('read_decision', jsonb_build_object('class', 'devos_calisma', 'args',
+      jsonb_build_object('decision_id', x->'id')));
+  exception when others then
+    fx_fail := fx_fail || jsonb_build_object('read_decision', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+  end;
+  -- read_review(review_id): the planted Review of the accept recipe's Verdict (kind review, not a sample)
+  recipes := recipes || jsonb_build_object('read_review', jsonb_build_object('class', 'devos_denetim', 'args',
+    jsonb_build_object('review_id', v->'review_ref')));
+  begin  -- read_eval_run(eval_run_id): a planted EvalRun on a planted work revision
+    wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
+    x := pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', wk->'work_id', 'work_revision', wk->'revision',
+      'results', '{}'::jsonb));
+    recipes := recipes || jsonb_build_object('read_eval_run', jsonb_build_object('class', 'devos_sinav', 'args',
+      jsonb_build_object('eval_run_id', x->'id')));
+  exception when others then
+    fx_fail := fx_fail || jsonb_build_object('read_eval_run', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+  end;
+  -- read_rejected_attempts(since) and fingerprint_matches(hashes): no fixture; the hash is a synthetic string made at
+  -- run time (EV-C02-013 2.8: an empty array is invalid_field).
+  recipes := recipes || jsonb_build_object(
+    'read_rejected_attempts', jsonb_build_object('class', 'devos_denetim', 'args',
+      jsonb_build_object('since', to_char((now() - interval '1 day') at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"'))),
+    'fingerprint_matches', jsonb_build_object('class', 'devos_ci', 'args',
+      jsonb_build_object('hashes', jsonb_build_array(md5('w07 f06 fingerprint') || md5('w07 f06 fingerprint 2')))));
   x := null; op := null;
   -- Functions this file cannot form, each listed with its reason (could_not_check, never a pass): none since G20.
   unformable := '{}'::jsonb;
@@ -705,6 +747,10 @@ begin
     end if;
     -- The accepted call.
     if f.is_read then
+      if f.required > 0 and fx_fail ? f.proname then  -- N-283: its recipe's fixture could not be made
+        perform pg_temp.w07_rec('F06-read-accepted:' || f.proname, 'could_not_check', 'no recipe: ' || (fx_fail->>f.proname));
+        continue;
+      end if;
       if f.required > 0 and not recipes ? f.proname then
         perform pg_temp.w07_rec('F06-read-accepted:' || f.proname, 'could_not_check', 'no recipe for a call with its required arguments');
         continue;
