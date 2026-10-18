@@ -1,0 +1,8 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+prd10 log scan: /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/pg/log: 326 lines; token-format strings: 0
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[cluster directory deleted: yes]
+end 2026-10-18T23:01:42Z
+prd10 scrub (25_breaks_stop): 0 token-format strings removed
