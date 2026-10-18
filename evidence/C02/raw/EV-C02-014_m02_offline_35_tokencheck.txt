@@ -1,0 +1,78 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+BEGIN
+ rejected_rows_before 
+----------------------
+                    0
+(1 row)
+
+     class     | issued 
+---------------+--------
+ devos_calisma | t
+ devos_denetim | t
+ devos_sinav   | t
+ devos_kurulum | t
+ devos_ci      | t
+ devos_backup  | t
+(6 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_calisma: {"status": "ok", "role_class": "devos_calisma"}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_denetim: {"status": "ok", "role_class": "devos_denetim"}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_sinav: {"status": "ok", "role_class": "devos_sinav"}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_kurulum: {"status": "ok", "role_class": "devos_kurulum"}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_ci: {"status": "ok", "role_class": "devos_ci"}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:21: NOTICE:  part 1, class devos_backup: {"status": "ok", "role_class": "devos_backup"}
+DO
+ rejected_rows_after_part1 
+---------------------------
+                         0
+(1 row)
+
+ROLLBACK
+ALTER TYPE
+BEGIN
+ issued_seventh 
+----------------
+ t
+(1 row)
+
+ header_set 
+------------
+ t
+(1 row)
+
+ rejected_rows_before 
+----------------------
+                    0
+(1 row)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:47: NOTICE:  part 2 (a), the merged check: the call raised SQLSTATE 23514 and gave no answer
+DO
+ALTER TABLE
+ALTER TABLE
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:62: NOTICE:  part 2 (b), the widened check: answer {"reason": "token_role_class admits only the six role classes of Appendix B section 2", "status": "refused", "reason_code": "role_class_not_permitted"}
+DO
+  function_name   |     role_class      |       reason_code        |                                  reason                                   | per_call 
+------------------+---------------------+--------------------------+---------------------------------------------------------------------------+----------
+ token_role_class | devos_w09_synthetic | role_class_not_permitted | token_role_class admits only the six role classes of Appendix B section 2 | t
+(1 row)
+
+  derivation_gives   
+---------------------
+ devos_w09_synthetic
+(1 row)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902_run/tokencheck.sql:81: NOTICE:  part 2 (c), the literal widened: answer {"status": "ok", "role_class": "devos_w09_synthetic"}, rejected rows added 0
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ env_tokens_after_rollback 
+---------------------------
+                         0
+(1 row)
+
+[psql exit 0]
+prd10 scrub (35_tokencheck): 0 token-format strings removed

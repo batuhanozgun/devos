@@ -1,0 +1,57 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+                                                                                                          function                                                                                                           | vol | definer |             config              |  owner   |                  acl                  |         returns          |                 comment                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+---------+---------------------------------+----------+---------------------------------------+--------------------------+------------------------------------------
+ devos_api.deployment_drift(expected jsonb)                                                                                                                                                                                  | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The difference between main's
+ devos_api.token_role_class()                                                                                                                                                                                                | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The role class of the caller'
+ devos_private.caller_role_class(function_name text)                                                                                                                                                                         | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | devos_private.role_class | 
+ devos_private.check_claim(p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean)                                                                                                  | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.hard_dependency_cycle(p_from uuid, p_to uuid)                                                                                                                                                                 | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.is_installation_mission(p_mission_id uuid)                                                                                                                                                                    | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.issue_env_token(role_class text)                                                                                                                                                                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | text                     | 
+ devos_private.ready_value(p_work_id uuid, p_own_claim uuid)                                                                                                                                                                 | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.refuse_change()                                                                                                                                                                                               | v   | f       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | trigger                  | 
+ devos_private.reject(p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer)                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.reject_counted(p_function_name text, p_reason_code text)                                                                                                                                                      | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | void                     | 
+ devos_private.revoke_env_token(token_id uuid)                                                                                                                                                                               | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.scope_within(p_scope text, p_container text)                                                                                                                                                                  | i   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.token_hash(token text)                                                                                                                                                                                        | i   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | text                     | 
+ devos_private.write_event(p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text) | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | bigint                   | 
+(15 rows)
+
+          function          | grantee | privilege_type 
+----------------------------+---------+----------------
+ devos_api.deployment_drift | anon    | EXECUTE
+ devos_api.token_role_class | anon    | EXECUTE
+(2 rows)
+
+     proname      |                                  role_list_literal                                  
+------------------+-------------------------------------------------------------------------------------
+ token_role_class | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum', 'devos_ci',+
+                  |                                'devos_backup']::devos_private.role_class[]
+(1 row)
+
+ typname | typacl 
+---------+--------
+(0 rows)
+
+                  fn                   |   kw   |     name     
+---------------------------------------+--------+--------------
+ devos_private.check_claim             | from   | p_work_id
+ devos_private.is_installation_mission | from   | p_mission_id
+ devos_private.ready_value             | from   | p_own_claim
+ devos_private.reject_counted          | update | set
+(4 rows)
+
+ unqualified_relation_scan 
+---------------------------
+ scan done
+(1 row)
+
+        proname        | advisory_xact_lock_calls | row_lock_clauses 
+-----------------------+--------------------------+------------------
+ check_claim           |                        0 |                5
+ hard_dependency_cycle |                        1 |                0
+(2 rows)
+
+[psql exit 0]
+prd10 scrub (33_catalog): 0 token-format strings removed

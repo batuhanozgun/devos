@@ -1,0 +1,521 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (producer's self-check of the helpers)
+BEGIN
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+ m_case 
+--------
+ 
+(1 row)
+
+CREATE FUNCTION
+CREATE FUNCTION
+ m_demo_case 
+-------------
+ 
+(1 row)
+
+ m_demo_case 
+-------------
+ 
+(1 row)
+
+ m_demo_case 
+-------------
+ 
+(1 row)
+
+ m_demo_case 
+-------------
+ 
+(1 row)
+
+ m_demo_case 
+-------------
+ 
+(1 row)
+
+ id  | outcome |                                                      got                                                      |                                                    wanted                                                     |                                        note                                         
+-----+---------+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------
+ B1  | ok      | ok | - | - | events +1 | rejected +0                                                                          | ok | - | - | events +1 | rejected +0                                                                          | inner-block pattern, mode ok
+ B2  | ok      | refused | claim_unknown | the claim token names no claim of this work item | events +0 | rejected +1          | refused | claim_unknown | the claim token names no claim of this work item | events +0 | rejected +1          | inner-block pattern, mode ok
+ B3  | ok      | refused | could_not_check | readiness: its input could not be read (SQLSTATE 22012) | events +0 | rejected +1 | refused | could_not_check | readiness: its input could not be read (SQLSTATE 22012) | events +0 | rejected +1 | inner-block pattern, mode read_error
+ B4  | ok      | refused | write_failed | the write failed (SQLSTATE 23502) | events +0 | rejected +1                          | refused | write_failed | the write failed (SQLSTATE 23502) | events +0 | rejected +1                          | inner-block pattern, mode write_error
+ B5  | ok      | refused | could_not_check | sample: its input could not be read | events +0 | rejected +1                     | refused | could_not_check | sample: its input could not be read | events +0 | rejected +1                     | inner-block pattern, mode write_p0d02
+ C1  | ok      | ok 1 true                                                                                                     | ok 1 true                                                                                                     | positive control
+ C2  | ok      | claim_missing                                                                                                 | claim_missing                                                                                                 | no token
+ C3  | ok      | claim_missing                                                                                                 | claim_missing                                                                                                 | only whitespace
+ C4  | ok      | claim_unknown                                                                                                 | claim_unknown                                                                                                 | a token that names no claim
+ C5  | ok      | claim_unknown                                                                                                 | claim_unknown                                                                                                 | another work item's claim
+ C6  | ok      | ok                                                                                                            | ok                                                                                                            | no work item named (heartbeat, release)
+ C7  | ok      | claim_class                                                                                                   | claim_class                                                                                                   | another role class (S8 line 2)
+ C8  | ok      | claim_not_active                                                                                              | claim_not_active                                                                                              | released
+ C9  | ok      | claim_expired                                                                                                 | claim_expired                                                                                                 | lease run out
+ C10 | ok      | could_not_check                                                                                               | could_not_check                                                                                               | lease NULL (6RG-l4's input)
+ C11 | ok      | claim_generation                                                                                              | claim_generation                                                                                              | a newer generation exists
+ C12 | ok      | could_not_check                                                                                               | could_not_check                                                                                               | generation NULL
+ C13 | ok      | claim_epoch                                                                                                   | claim_epoch                                                                                                   | an earlier epoch
+ C14 | ok      | could_not_check                                                                                               | could_not_check                                                                                               | epoch row missing (6RG-e1's input)
+ C15 | ok      | could_not_check                                                                                               | could_not_check                                                                                               | epoch NULL (6RG-e3's input)
+ C16 | ok      | error 42P01                                                                                                   | error 42P01                                                                                                   | epoch table renamed (6RG-e2's input): raises, for the caller's read block
+ C17 | ok      | claim_not_active                                                                                              | claim_not_active                                                                                              | work item cancelled (2.3, cancel_work)
+ C18 | ok      | could_not_check                                                                                               | could_not_check                                                                                               | work item execution NULL
+ C19 | ok      | ok                                                                                                            | ok                                                                                                            | for update form
+ I1  | ok      | true                                                                                                          | true                                                                                                          | creation event transferred
+ I2  | ok      | false                                                                                                         | false                                                                                                         | creation event mission_opened
+ I3  | ok      | NULL                                                                                                          | NULL                                                                                                          | no creation event
+ I4  | ok      | NULL                                                                                                          | NULL                                                                                                          | a second Mission whose creation event is transferred
+ I5  | ok      | NULL                                                                                                          | NULL                                                                                                          | creation event type NULL
+ I6  | ok      | true                                                                                                          | true                                                                                                          | devos_private.mission unreadable: not read (R2-6)
+ I7  | ok      | error 42P01                                                                                                   | error 42P01                                                                                                   | event table renamed: raises
+ J1  | ok      | reason,reason_code,status invalid_field                                                                       | reason,reason_code,status invalid_field                                                                       | the answer holds three keys only
+ J2  | ok      | m0902_probe|devos_calisma|invalid_field|SYNTHETIC m0902 fixed reason|synthetic-session-m0902|true|1|true|true | m0902_probe|devos_calisma|invalid_field|SYNTHETIC m0902 fixed reason|synthetic-session-m0902|true|1|true|true | one per-call row with its fields (written by the plant, read by the next statement)
+ J3  | ok      | devos_sinav|NULL|NULL                                                                                         | devos_sinav|NULL|NULL                                                                                         | target_revision dropped without target_ref
+ J4  | ok      | error 23502                                                                                                   | error 23502                                                                                                   | no role class: the write fails and raises
+ R1  | ok      | true                                                                                                          | true                                                                                                          | no claim, no dependency, Mission active, planned
+ R2  | ok      | false                                                                                                         | false                                                                                                         | a live claim
+ R3  | ok      | true                                                                                                          | true                                                                                                          | the caller's own claim left out (an effect's re-check)
+ R4  | ok      | true                                                                                                          | true                                                                                                          | a lapsed claim counts as none (DM-06)
+ R5  | ok      | NULL                                                                                                          | NULL                                                                                                          | active claim, lease NULL (6RG-l5's input)
+ R6  | ok      | NULL                                                                                                          | NULL                                                                                                          | claim status NULL
+ R7  | ok      | false                                                                                                         | false                                                                                                         | group of one, member proposed
+ R8  | ok      | true                                                                                                          | true                                                                                                          | group of one, member accepted (6RG-g0's input)
+ R9  | ok      | NULL                                                                                                          | NULL                                                                                                          | member's state NULL (6RG-g1's input)
+ R10 | ok      | NULL                                                                                                          | NULL                                                                                                          | member's revision missing (6RG-g2's input)
+ R11 | ok      | NULL                                                                                                          | NULL                                                                                                          | Work member named without its revision
+ R12 | ok      | NULL                                                                                                          | NULL                                                                                                          | ALL: true and unknown
+ R13 | ok      | false                                                                                                         | false                                                                                                         | ALL: false and unknown
+ R14 | ok      | true                                                                                                          | true                                                                                                          | ANY: true and false
+ R15 | ok      | NULL                                                                                                          | NULL                                                                                                          | ANY: false and unknown
+ R16 | ok      | true                                                                                                          | true                                                                                                          | Need resolved
+ R17 | ok      | false                                                                                                         | false                                                                                                         | Need open
+ R18 | ok      | NULL                                                                                                          | NULL                                                                                                          | Need named with a revision it cannot have
+ R19 | ok      | true                                                                                                          | true                                                                                                          | Decision answered
+ R20 | ok      | false                                                                                                         | false                                                                                                         | Decision draft
+ R21 | ok      | false                                                                                                         | false                                                                                                         | Mission paused
+ R22 | ok      | false                                                                                                         | false                                                                                                         | execution running
+ R23 | ok      | NULL                                                                                                          | NULL                                                                                                          | execution NULL
+ R24 | ok      | true                                                                                                          | true                                                                                                          | a dependency that is not hard does not count
+ R25 | ok      | true                                                                                                          | true                                                                                                          | a retracted hard dependency does not count
+ R26 | ok      | true                                                                                                          | true                                                                                                          | a stale hard dependency is not current
+ R27 | ok      | NULL                                                                                                          | NULL                                                                                                          | one group with two modes
+ R28 | ok      | NULL                                                                                                          | NULL                                                                                                          | group_id without group_mode
+ R29 | ok      | error 42P01                                                                                                   | error 42P01                                                                                                   | relation table renamed (6RG-g3's input): raises
+ R30 | ok      | NULL                                                                                                          | NULL                                                                                                          | no such work item
+ R31 | ok      | true                                                                                                          | true                                                                                                          | the member accepted after (F08-pos2's input)
+ S1  | ok      | true                                                                                                          | true                                                                                                          | under
+ S2  | ok      | true                                                                                                          | true                                                                                                          | equal
+ S3  | ok      | false                                                                                                         | false                                                                                                         | a longer label is not under
+ S4  | ok      | false                                                                                                         | false                                                                                                         | the container is not within its part
+ S5  | ok      | NULL                                                                                                          | NULL                                                                                                          | NULL input
+ Y1  | ok      | true                                                                                                          | true                                                                                                          | H3 -> H1 closes H1 -> H2 -> H3
+ Y2  | ok      | false                                                                                                         | false                                                                                                         | H1 -> H3 closes nothing
+ Y3  | ok      | true                                                                                                          | true                                                                                                          | a self-dependency
+ Y4  | ok      | false                                                                                                         | false                                                                                                         | the path through H3 -> H4 is not hard
+ Y5  | ok      | NULL                                                                                                          | NULL                                                                                                          | the path's edge has hard NULL
+ Y6  | ok      | true                                                                                                          | true                                                                                                          | a stale hard edge still counts for the cycle
+ Y7  | ok      | true                                                                                                          | true                                                                                                          | H4 -> H1 current again: H2 -> H4 closes H4 -> H1 -> H2
+ Y8  | ok      | 1                                                                                                             | 1                                                                                                             | the advisory lock (9001, 1) is held by the transaction after the call returns
+ Y9  | ok      | error 42P01                                                                                                   | error 42P01                                                                                                   | relation table renamed: raises
+ Y8b | ok      | 1                                                                                                             | 1                                                                                                             | taken inside an inner block that ends normally, the lock stays with the transaction
+(81 rows)
+
+          summary           
+----------------------------
+ M0902_HELPERS PASS (81/81)
+(1 row)
+
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+[psql exit 0]
+prd10 scrub (11_helpers): 0 token-format strings removed

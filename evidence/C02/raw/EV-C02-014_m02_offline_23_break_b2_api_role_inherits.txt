@@ -1,0 +1,61 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break B2, synthetic: authenticated inherits TEMPORARY from a role that holds its own grant; M09-02 unchanged)
+CREATE ROLE
+[superuser psql exit 0]
+GRANT
+[superuser psql exit 0]
+GRANT ROLE
+[superuser psql exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f 20261018203001_w09_private_helpers.sql  (as postgres)
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd10/supabase/migrations/20261018203001_w09_private_helpers.sql:577: ERROR:  route A self-check failed: (b) API roles that still have TEMPORARY on the database: authenticated
+CONTEXT:  PL/pgSQL function inline_code_block line 54 at RAISE
+[apply exit 3]
+                                                                           datacl                                                                           
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ {=Tc/postgres,postgres=CTc/postgres,supabase_etl_admin=C/postgres,supabase_storage_admin=C/postgres,dashboard_user=CTc/postgres,w09_brk_holder=T/postgres}
+(1 row)
+
+     role      | temporary 
+---------------+-----------
+ public        | t
+ anon          | t
+ authenticated | t
+ authenticator | t
+ service_role  | t
+ postgres      | t
+(6 rows)
+
+ m0902_private_functions_present 
+---------------------------------
+                               0
+(1 row)
+
+ m0902_history_rows 
+--------------------
+                  0
+(1 row)
+
+[look exit 0]
+(undo the stand-in)
+REVOKE ROLE
+[superuser psql exit 0]
+REVOKE
+[superuser psql exit 0]
+DROP ROLE
+[superuser psql exit 0]
+prd10 scrub (23_break_b2_api_role_inherits): 0 token-format strings removed

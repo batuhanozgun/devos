@@ -1,0 +1,48 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break B5: M09-02 revoking postgres's own TEMPORARY too)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b5_postgres_revoked.sql  (as postgres)
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0902b_brk/b5_postgres_revoked.sql:578: ERROR:  route A self-check failed: (a) postgres has no TEMPORARY on the database
+CONTEXT:  PL/pgSQL function inline_code_block line 42 at RAISE
+[apply exit 3]
+                                                              datacl                                                              
+----------------------------------------------------------------------------------------------------------------------------------
+ {=Tc/postgres,postgres=CTc/postgres,supabase_etl_admin=C/postgres,supabase_storage_admin=C/postgres,dashboard_user=CTc/postgres}
+(1 row)
+
+     role      | temporary 
+---------------+-----------
+ public        | t
+ anon          | t
+ authenticated | t
+ authenticator | t
+ service_role  | t
+ postgres      | t
+(6 rows)
+
+ m0902_private_functions_present 
+---------------------------------
+                               0
+(1 row)
+
+ m0902_history_rows 
+--------------------
+                  0
+(1 row)
+
+[look exit 0]
+prd10 scrub (26_break_b5_postgres_revoked): 0 token-format strings removed

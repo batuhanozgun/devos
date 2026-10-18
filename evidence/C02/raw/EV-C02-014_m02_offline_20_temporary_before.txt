@@ -1,0 +1,191 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (TEMPORARY before M09-02)
+ datname  |  owner   |                                                              datacl                                                              
+----------+----------+----------------------------------------------------------------------------------------------------------------------------------
+ postgres | postgres | {=Tc/postgres,postgres=CTc/postgres,supabase_etl_admin=C/postgres,supabase_storage_admin=C/postgres,dashboard_user=CTc/postgres}
+(1 row)
+
+        grantee         | grantor  | privilege_type | is_grantable 
+------------------------+----------+----------------+--------------
+ PUBLIC                 | postgres | CONNECT        | f
+ PUBLIC                 | postgres | TEMPORARY      | f
+ dashboard_user         | postgres | CONNECT        | f
+ dashboard_user         | postgres | CREATE         | f
+ dashboard_user         | postgres | TEMPORARY      | f
+ postgres               | postgres | CONNECT        | f
+ postgres               | postgres | CREATE         | f
+ postgres               | postgres | TEMPORARY      | f
+ supabase_etl_admin     | postgres | CREATE         | f
+ supabase_storage_admin | postgres | CREATE         | f
+(10 rows)
+
+     role      | temporary | connect 
+---------------+-----------+---------
+ public        | t         | t
+ anon          | t         | t
+ authenticated | t         | t
+ authenticator | t         | t
+ service_role  | t         | t
+ postgres      | t         | t
+(6 rows)
+
+ postgres_own_temporary_entry 
+------------------------------
+ t
+(1 row)
+
+           rolname           | rolsuper | temporary 
+-----------------------------+----------+-----------
+ anon                        | f        | t
+ authenticated               | f        | t
+ authenticator               | f        | t
+ dashboard_user              | f        | t
+ pg_checkpoint               | f        | t
+ pg_create_subscription      | f        | t
+ pg_database_owner           | f        | t
+ pg_execute_server_program   | f        | t
+ pg_monitor                  | f        | t
+ pg_read_all_data            | f        | t
+ pg_read_all_settings        | f        | t
+ pg_read_all_stats           | f        | t
+ pg_read_server_files        | f        | t
+ pg_signal_backend           | f        | t
+ pg_stat_scan_tables         | f        | t
+ pg_use_reserved_connections | f        | t
+ pg_write_all_data           | f        | t
+ pg_write_server_files       | f        | t
+ postgres                    | f        | t
+ prd10_super                 | t        | t
+ service_role                | f        | t
+ supabase_auth_admin         | f        | t
+ supabase_etl_admin          | f        | t
+ supabase_read_only_user     | f        | t
+ supabase_storage_admin      | f        | t
+(25 rows)
+
+[psql exit 0]
+role postgres (login):
+ session_user | current_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[postgres exit 0]
+role anon (set role from the bootstrap superuser):
+SET
+ session_user | current_user 
+--------------+--------------
+ prd10_super  | anon
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[anon exit 0]
+role authenticated (set role from the bootstrap superuser):
+SET
+ session_user | current_user  
+--------------+---------------
+ prd10_super  | authenticated
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[authenticated exit 0]
+role authenticator (set role from the bootstrap superuser):
+SET
+ session_user | current_user  
+--------------+---------------
+ prd10_super  | authenticator
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[authenticator exit 0]
+role service_role (set role from the bootstrap superuser):
+SET
+ session_user | current_user 
+--------------+--------------
+ prd10_super  | service_role
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[service_role exit 0]
+role supabase_auth_admin (set role from the bootstrap superuser):
+SET
+ session_user |    current_user     
+--------------+---------------------
+ prd10_super  | supabase_auth_admin
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[supabase_auth_admin exit 0]
+role supabase_read_only_user (set role from the bootstrap superuser):
+SET
+ session_user |      current_user       
+--------------+-------------------------
+ prd10_super  | supabase_read_only_user
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[supabase_read_only_user exit 0]
+role dashboard_user (set role from the bootstrap superuser):
+SET
+ session_user |  current_user  
+--------------+----------------
+ prd10_super  | dashboard_user
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[dashboard_user exit 0]
+role supabase_etl_admin (set role from the bootstrap superuser):
+SET
+ session_user |    current_user    
+--------------+--------------------
+ prd10_super  | supabase_etl_admin
+(1 row)
+
+CREATE TABLE
+         result          
+-------------------------
+ temporary table created
+(1 row)
+
+[supabase_etl_admin exit 0]
+prd10 scrub (20_temporary_before): 0 token-format strings removed
