@@ -124,3 +124,5 @@ None of them reads the token steps' bodies; they show that the change breaks no 
 4. **Not shown offline:** the pooler connection and TLS, GitHub's `::add-mask::` handling, and cancellation during `tokens_revoke` itself.
 
 *Filed 2026-10-18 by the executor (L-352):* written by the producer, agent `ae51f46cb41a0d2e3`.
+
+*Note, 2026-10-18 (L-353; CHK-C02-083 finding 4.2):* the front matter's `main_at` gives `1d981ad`; the branch's parent is `57ff424`. `.github/workflows/migrate.yml` and `supabase/migrations/` are byte-identical between the two, so nothing this record states changes.
