@@ -1,0 +1,27 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes and git output only; rerun on M09-03's new bytes, CHK-C02-086 C1)
+2026-10-18T22:25:18Z
+HEAD c3cd1ed1fcf5e5e3ef1fef7057175d5fd9a1503b
+264895106ebc5fd29dfd7ea9456cd2a83c9c951928a8def8350924d8f38e9556  supabase/migrations/20261018214501_w09_mission_need_decision.sql
+047984de52e66a79317fcdbd6676c1f93a90fba0c7ed904b855f430320fa0972  evidence/C02/EV-C02-013_w09_interface.md
+backslashes in M09-03: 0
+$ git status --porcelain
+ M evidence/C02/EV-C02-013_w09_interface.md
+ M supabase/migrations/20261018214501_w09_mission_need_decision.sql
+?? evidence/C02/raw/EV-C02-014_m03_offline_22_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_23_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_24_apply_m0903.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_25_drift.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_26_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_27_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_28_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_29_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_30_functions.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_31_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_32_server_log_scan.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_33_stop.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_34_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_35_break_b7_revise_mission_reason_not_required.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_36_break_b3_revise_mission_no_repeat.txt
+?? evidence/C02/raw/EV-C02-014_m03_offline_37_breaks_stop.txt
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end]

@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-03, new bytes)
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261018214501_w09_mission_need_decision.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261018214501', 'w09_mission_need_decision')
+[exit 0]
+[drive apply exit 0]
+prd10 scrub (24_apply_m0903): 0 token-format strings removed

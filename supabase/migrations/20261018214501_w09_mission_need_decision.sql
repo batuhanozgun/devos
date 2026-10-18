@@ -187,7 +187,8 @@ $fn$;
 -- status (active, paused, closed) and reason. A change of content gives a new revision (event mission_revised); a
 -- change of status alone is state (event mission_status_set); a call may do both. Order: the form; the Mission
 -- (not_found; its row locked for update); a closed Mission is terminal (mission_closed, for every change; a call that
--- changes nothing answers the exact repeat); owner_authority, when sent, checked as open_mission checks it, on every
+-- changes nothing answers the exact repeat); a call that writes a new revision without a string reason: missing_field
+-- (a status-only call needs none); owner_authority, when sent, checked as open_mission checks it, on every
 -- such call; the exact repeat (content and status as current: ok, "repeat": true, before stale_revision); base_revision
 -- not the current revision: stale_revision; a scope that does not lie within the current one, or a changed purpose,
 -- needs a Decision of Batu's named in the call (owner_authority), else mission_authority. Pausing, resuming and closing
@@ -367,6 +368,16 @@ begin
         raise exception using errcode = 'P0D01', message = 'devos refusal';
       end if;
       v_answer := jsonb_build_object('status', 'ok', 'id', v_id, 'revision', v_cur_rev, 'repeat', true);
+    end if;
+
+    -- A call that writes a new revision needs a reason (B principle 3, B:17; EV-C02-013 2.2 with C-086); a call that
+    -- changes the status alone writes no revision and needs none.
+    if v_answer is null and v_content_changed then
+      v_check := 'reason';
+      if coalesce(jsonb_typeof(p -> 'reason'), 'null') <> 'string' then
+        v_code := 'missing_field'; v_reason := 'reason: missing (a call that writes a new revision needs one)';
+        raise exception using errcode = 'P0D01', message = 'devos refusal';
+      end if;
     end if;
 
     if v_answer is null and v_authority_sent then
