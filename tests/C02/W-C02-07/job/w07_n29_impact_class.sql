@@ -15,6 +15,8 @@
 -- deleted row) are planted inside a subtransaction and undone before the next case. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_N29_IMPACT_CLASS PASS as a notice, or FAIL / COULD NOT CHECK as
 -- an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-18 (N-283; CHK-C02-086 C1 (b) and C4), before any result of this file: the two
+-- Mission-widening cases (pg_temp.n29_missions); see the specification's "Revision under ledger rule 3 (N-283)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -190,6 +192,7 @@ begin
               and table_name = 'decision' and column_name in ('answered_at', 'answered_by', 'answer_channel_ref', 'answer',
               'answer_original_tr', 'answer_interpretation_en') loop
       sets := sets || ', ' || quote_ident(c) || ' = ' || case c when 'answered_at' then 'now()'
+        when 'answer' then quote_literal(to_jsonb('w07_fixture SYNTHETIC W-C02-07 ' || c)::text) || '::jsonb'  -- jsonb (N-283)
         else quote_literal('w07_fixture SYNTHETIC W-C02-07 ' || c) end;
     end loop;
   end if;
@@ -561,12 +564,30 @@ begin
   if pg_temp.w07_kind(r) <> 'accepted' then
     perform pg_temp.w07_put('N29-mis-widen', 'could_not_check', 'no Mission to widen'); return; end if;
   mid := r->>'id';
+  -- Revised under ledger rule 3, before any result (N-283; CHK-C02-086 C1 (b) and C4; 2026-10-18). The two widening
+  -- calls send what EV-C02-013 2.2 requires of revise_mission: base_revision (the Mission's current revision, read as
+  -- owner from devos_private.mission_current just before each call) and a reason (B principle 3: a new revision
+  -- carries a reason). They differ only in the Decision's class. The refusal must name mission_authority (2.2's code),
+  -- so a refusal for an incomplete call (missing_field) no longer passes; no Mission revision may be added by it. The
+  -- scope is read from the current form (mission_current: the scope is mission_revision's, not mission's), and must
+  -- be unchanged after the refusal and widened after the acceptance, with exactly one new Mission revision.
+  execute 'select to_jsonb(x) from devos_private.mission_current x where x.id::text = $1' into row using mid;
   perform pg_temp.w07_expect('N29-mis-widen-high_impact', 'devos_kurulum', 'revise_mission', m || jsonb_build_object('id', mid,
-    'mission_ref', mid, 'scope', 'synthetic', 'owner_authority', pg_temp.w07_answered('high_impact'), 'owner_authority_revision', 1), 'refused', null, null);
-  execute 'select to_jsonb(x) from devos_private.mission x where x.id::text = $1' into row using mid;
-  perform pg_temp.w07_rec('N29-mis-widen-high_impact', row->>'scope' = m->>'scope', 'scope after the refusal: ' || coalesce(row->>'scope', 'unreadable'));
+    'base_revision', (row->>'revision')::int, 'mission_ref', mid, 'scope', 'synthetic',
+    'owner_authority', pg_temp.w07_answered('high_impact'), 'owner_authority_revision', 1,
+    'reason', 'w07_fixture SYNTHETIC W-C02-07 N29: widen the Mission on a high_impact decision'),
+    'refused', array['mission_authority'], 'mission_revision');
+  execute 'select to_jsonb(x) from devos_private.mission_current x where x.id::text = $1' into row using mid;
+  perform pg_temp.w07_rec('N29-mis-widen-high_impact', row->>'scope' = m->>'scope', 'current scope after the refusal: '
+    || coalesce(row->>'scope', 'unreadable') || ' (wanted ' || (m->>'scope') || '), revision ' || coalesce(row->>'revision', 'unreadable'));
   perform pg_temp.w07_expect('N29-pos-mis-widen-batu', 'devos_kurulum', 'revise_mission', m || jsonb_build_object('id', mid,
-    'mission_ref', mid, 'scope', 'synthetic', 'owner_authority', pg_temp.w07_answered('batu'), 'owner_authority_revision', 1), 'accepted', null, null);
+    'base_revision', (row->>'revision')::int, 'mission_ref', mid, 'scope', 'synthetic',
+    'owner_authority', pg_temp.w07_answered('batu'), 'owner_authority_revision', 1,
+    'reason', 'w07_fixture SYNTHETIC W-C02-07 N29: widen the Mission on a batu decision'),
+    'accepted', null, 'mission_revision');
+  execute 'select to_jsonb(x) from devos_private.mission_current x where x.id::text = $1' into row using mid;
+  perform pg_temp.w07_rec('N29-pos-mis-widen-batu', row->>'scope' = 'synthetic', 'current scope after the acceptance: '
+    || coalesce(row->>'scope', 'unreadable') || ' (wanted synthetic), revision ' || coalesce(row->>'revision', 'unreadable'));
 end $f$;
 create function pg_temp.n29_share() returns void language plpgsql as $f$
 declare s text;
@@ -580,7 +601,7 @@ end $f$;
 do $$
 declare why text;
 begin
-  why := pg_temp.w07_pre(string_to_array('admit_work,claim,register_artifact,prepare_operation,relate,open_decision,open_mission,revise_mission', ','), string_to_array('work,artifact,operation,relation,decision,decision_revision,mission,high_impact_path,effect_class,review,sample_stream', ','));
+  why := pg_temp.w07_pre(string_to_array('admit_work,claim,register_artifact,prepare_operation,relate,open_decision,open_mission,revise_mission', ','), string_to_array('work,artifact,operation,relation,decision,decision_revision,mission,mission_revision,mission_current,high_impact_path,effect_class,review,sample_stream', ','));
   if why is null then
     begin
       perform pg_temp.w07_mission();
