@@ -1,0 +1,226 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the six functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                   id                   | ok |           got            |          wanted          |                    delta                    |                                                                               note                                                                               
+-----+----------------------------------------+----+--------------------------+--------------------------+---------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | AW-pos                                 | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+   2 | AW-pos-event                           | t  | true                     | true                     | {}                                          | work_admitted devos_calisma call rev 1 this_tx t declared m0904_declared_session SYNTHETIC
+   3 | AW-pos-stored                          | t  | true                     | true                     | {}                                          | revision 1 tied to the Mission revision named; the four axes at their defaults
+   4 | AW-pos-refs                            | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+   5 | AW-pos-refs-stored                     | t  | true                     | true                     | {}                                          | input_refs stored as sent ({ref, revision})
+   6 | AW-pos-sinav                           | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+   7 | AW-pos-kurulum                         | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+   8 | AW-undeclared-keys-ignored             | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+   9 | AW-scope-sibling                       | t  | scope_outside            | scope_outside            | {"rejected": 1}                             | scope: does not equal or lie under the Mission's scope (B principle 4; DM-34)
+  10 | AW-scope-string-prefix                 | t  | scope_outside            | scope_outside            | {"rejected": 1}                             | scope: does not equal or lie under the Mission's scope (B principle 4; DM-34)
+  11 | AW-scope-wider                         | t  | scope_outside            | scope_outside            | {"rejected": 1}                             | scope: does not equal or lie under the Mission's scope (B principle 4; DM-34)
+  12 | AW-scope-form                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | scope: not a dotted path of lower-case labels
+  13 | AW-mission-absent                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_ref: the record could not be read
+  14 | AW-mission-revision-absent             | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_revision: missing
+  15 | AW-mission-revision-json-null          | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_revision: missing
+  16 | AW-mission-revision-string             | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | mission_revision: not an integer of at least 1
+  17 | AW-mission-revision-beyond             | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_revision: the revision could not be read
+  18 | AW-mission-revision-stale              | t  | stale_revision           | stale_revision           | {"rejected": 1}                             | mission_revision: not the Mission's current revision
+  19 | AW-mission-revision-current            | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+  20 | AW-mission-closed                      | t  | mission_not_active       | mission_not_active       | {"rejected": 1}                             | mission_ref: the Mission is not active
+  21 | AW-impact-bad                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | impact_class: not routine or high
+  22 | AW-impact-absent                       | t  | missing_field            | missing_field            | {"rejected": 1}                             | impact_class: missing
+  23 | AW-purpose-absent                      | t  | missing_field            | missing_field            | {"rejected": 1}                             | purpose: missing
+  24 | AW-p-null                              | t  | missing_field            | missing_field            | {"rejected": 1}                             | p: missing
+  25 | AW-p-array                             | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | p: not a JSON object
+  26 | AW-ref-object-id-form                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | input_refs: an element is not {"ref": <uuid>, "revision": <integer>}
+  27 | AW-ref-revision-string                 | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | input_refs: an element is not {"ref": <uuid>, "revision": <integer>}
+  28 | AW-ref-no-revision                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | input_refs: an element is sent without its revision (partial)
+  29 | AW-ref-random                          | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | target_refs: a record could not be read
+  30 | AW-ref-revision-999                    | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | input_refs: a record could not be read
+  31 | AW-ref-other-family                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | input_refs: an element names a record that is not a Work, an Artifact, a Finding or a Decision
+  32 | AW-refs-not-array                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | input_refs: not an array
+  33 | AW-policy-active                       | t  | ok                       | ok                       | {"work": 1, "event": 1, "work_revision": 1} | 
+  34 | AW-policy-retired                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | effort_policy_ref: names a retired policy (B 3.18)
+  35 | AW-policy-absent                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | effort_policy_ref: the record could not be read
+  36 | AW-role-devos_denetim                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | admit_work admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  37 | AW-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | admit_work admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  38 | AW-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | admit_work admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  39 | AW-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                             | the request carries no environment token
+  40 | AW-read-unreadable (42501)             | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_revision: its input could not be read (SQLSTATE 42501)
+  41 | AW-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                             | the write failed (SQLSTATE P0001)
+  42 | AW-write-event-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}                             | the write failed (SQLSTATE P0001)
+  43 | AW-write-P0D02                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | synthetic write-path check: its input could not be read
+  44 | AW-write-P0D02-reason                  | t  | true                     | true                     | {}                                          | synthetic write-path check: its input could not be read
+  45 | AW-reject-row                          | t  | true                     | true                     | {}                                          | one per-call row of class devos_denetim with its declared session
+  46 | RW-narrow                              | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  47 | RW-narrow-stored                       | t  | true                     | true                     | {}                                          | revision 2: the reason stored, the fields not sent kept
+  48 | RW-narrow-event                        | t  | true                     | true                     | {}                                          | work_revised on revision 2 with its reason, devos_calisma, call
+  49 | RW-repeat-before-stale                 | t  | ok repeat                | ok repeat                | {}                                          | 
+  50 | RW-stale                               | t  | stale_revision           | stale_revision           | {"rejected": 1}                             | base_revision: not the work item's current revision
+  51 | RW-reason-absent                       | t  | missing_field            | missing_field            | {"rejected": 1}                             | reason: missing (a call that writes a new revision needs one)
+  52 | RW-reason-absent-names-field           | t  | true                     | true                     | {}                                          | reason: missing (a call that writes a new revision needs one)
+  53 | RW-reason-json-null                    | t  | missing_field            | missing_field            | {"rejected": 1}                             | reason: missing (a call that writes a new revision needs one)
+  54 | RW-reason-number                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | reason: not a string
+  55 | RW-reason-before-stale                 | t  | missing_field            | missing_field            | {"rejected": 1}                             | reason: missing (a call that writes a new revision needs one)
+  56 | RW-widen                               | t  | scope_outside            | scope_outside            | {"rejected": 1}                             | scope: does not equal or lie under the Mission's scope (B principle 4; DM-34)
+  57 | RW-input-random                        | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | input_refs: a record could not be read
+  58 | RW-input-ok                            | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  59 | RW-impact-bad                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | impact_class: not routine or high
+  60 | RW-unknown-id                          | t  | not_found                | not_found                | {"rejected": 1}                             | id: names no Work
+  61 | RW-unknown-id-target                   | t  | true                     | true                     | {}                                          | the refusal row names the id and base_revision the call named
+  62 | RW-id-absent                           | t  | missing_field            | missing_field            | {"rejected": 1}                             | id: missing
+  63 | RW-base-absent                         | t  | missing_field            | missing_field            | {"rejected": 1}                             | base_revision: missing
+  64 | RW-role-denetim                        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | revise_work admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  65 | RW-mission-revision-stale              | t  | stale_revision           | stale_revision           | {"rejected": 1}                             | mission_revision: not the Mission's current revision
+  66 | RW-mission-revision-beyond             | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | mission_revision: the revision could not be read
+  67 | RW-mission-revision-current            | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  68 | RW-mission-revision-current-tie        | t  | true                     | true                     | {}                                          | the new revision is tied to the Mission's revision 3
+  69 | RW-o-kurulum-outside                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+  70 | RW-o-calisma-inside                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_calisma does not change the work items under the installation's Mission
+  71 | RW-o-kurulum-inside                    | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  72 | RW-o-sinav-no-link                     | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_sinav changes only the work items its exam link names
+  73 | RW-o-sinav-link                        | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  74 | RW-o-calisma-exam-task                 | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  75 | RW-o-mission-no-event                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_o: whether the work item lies under the installation's Mission is missing or partial
+  76 | RW-o-mission-unreadable (42501)        | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_o: its input could not be read (SQLSTATE 42501)
+  77 | RW-o-mission-link-null                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_o: the work item's Mission is missing
+  78 | RW-c-other-class                       | t  | other_class_claim        | other_class_claim        | {"rejected": 1}                             | Rule C: another role class holds an active claim on the work item
+  79 | RW-c-own-class                         | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  80 | RW-c-lapsed                            | t  | ok                       | ok                       | {"event": 1, "work_revision": 1}            | 
+  81 | RW-c-partial                           | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_c: a claim on the work item lacks its status, lease or role class (partial)
+  82 | RW-c-unreadable (42501)                | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_c: its input could not be read (SQLSTATE 42501)
+  83 | RW-c-missing (42P01)                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_c: its input could not be read (SQLSTATE 42P01)
+  84 | RW-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                             | the write failed (SQLSTATE P0001)
+  85 | RW-f06-recipe-is-repeat                | t  | ok repeat                | ok repeat                | {}                                          | 
+  86 | MS-pos                                 | t  | ok                       | ok                       | {"event": 1}                                | 
+  87 | MS-pos-state                           | t  | true                     | true                     | {}                                          | qualification stale; execution unchanged
+  88 | MS-pos-event                           | t  | true                     | true                     | {}                                          | work_marked_stale with the reason, on the current revision
+  89 | MS-repeat                              | t  | ok repeat                | ok repeat                | {}                                          | 
+  90 | MS-o-kurulum-outside                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+  91 | MS-o-sinav-no-link                     | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_sinav changes only the work items its exam link names
+  92 | MS-o-mission-no-event                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_o: whether the work item lies under the installation's Mission is missing or partial
+  93 | MS-c-not-checked                       | t  | ok                       | ok                       | {"event": 1}                                | 
+  94 | MS-not-found                           | t  | not_found                | not_found                | {"rejected": 1}                             | work_id: names no Work
+  95 | MS-null                                | t  | missing_field            | missing_field            | {"rejected": 1}                             | work_id: missing
+  96 | MS-role-denetim                        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | mark_stale admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  97 | MS-reason-null                         | t  | ok                       | ok                       | {"event": 1}                                | 
+  98 | CW-pos                                 | t  | ok                       | ok                       | {"event": 1}                                | 
+  99 | CW-pos-state                           | t  | true                     | true                     | {}                                          | execution cancelled; qualification unchanged
+ 100 | CW-repeat                              | t  | ok repeat                | ok repeat                | {}                                          | 
+ 101 | CW-o-kurulum-outside                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 102 | CW-o-calisma-inside                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_calisma does not change the work items under the installation's Mission
+ 103 | CW-o-kurulum-inside                    | t  | ok                       | ok                       | {"event": 1}                                | 
+ 104 | CW-o-sinav-link                        | t  | ok                       | ok                       | {"event": 1}                                | 
+ 105 | CW-c-other-class                       | t  | other_class_claim        | other_class_claim        | {"rejected": 1}                             | Rule C: another role class holds an active claim on the work item
+ 106 | CW-c-same-class                        | t  | ok                       | ok                       | {"event": 1}                                | 
+ 107 | CW-c-same-class-claim-stays            | t  | true                     | true                     | {}                                          | the claim of the caller's own class stays active (EV-C02-013 2.3)
+ 108 | CW-c-partial                           | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_c: a claim on the work item lacks its status, lease or role class (partial)
+ 109 | CW-not-found                           | t  | not_found                | not_found                | {"rejected": 1}                             | work_id: names no Work
+ 110 | CW-role-backup                         | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | cancel_work admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+ 111 | RR-pos                                 | t  | ok                       | ok                       | {"event": 1}                                | 
+ 112 | RR-pos-state                           | t  | true                     | true                     | {}                                          | qualification needs_review; execution and acceptance unchanged (nothing cancelled)
+ 113 | RR-repeat                              | t  | ok repeat                | ok repeat                | {}                                          | 
+ 114 | RR-denetim-inside                      | t  | ok                       | ok                       | {"event": 1}                                | 
+ 115 | RR-denetim-exam                        | t  | ok                       | ok                       | {"event": 1}                                | 
+ 116 | RR-denetim-reads-no-mission            | t  | ok                       | ok                       | {"event": 1}                                | 
+ 117 | RR-o-kurulum-outside                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 118 | RR-o-calisma-inside                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_calisma does not change the work items under the installation's Mission
+ 119 | RR-c-not-checked                       | t  | ok                       | ok                       | {"event": 1}                                | 
+ 120 | RR-role-ci                             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | reopen_for_review admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 121 | SP-default-calisma                     | t  | ok                       | ok                       | {"event": 1, "effort_policy": 1}            | 
+ 122 | SP-default-stored                      | t  | true                     | true                     | {}                                          | an item policy, active, level high, no approval recorded
+ 123 | SP-repeat                              | t  | ok repeat                | ok repeat                | {}                                          | 
+ 124 | SP-f06-form-keys-ignored               | t  | ok repeat                | ok repeat                | {}                                          | 
+ 125 | SP-second-retires-first                | t  | ok                       | ok                       | {"event": 2, "effort_policy": 1}            | 
+ 126 | SP-second-retires-first-state          | t  | true                     | true                     | {}                                          | the first policy retired (event origin rule); one active policy for the item
+ 127 | SP-denetim-default                     | t  | not_owner                | not_owner                | {"rejected": 1}                             | devos_denetim approves reductions and standing policies; a work item's policy within its floor is written by the classes Rule O gives the item (EV-C02-008 1.7.4
+ 128 | SP-o-kurulum-outside                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 129 | SP-o-kurulum-inside                    | t  | ok                       | ok                       | {"event": 1, "effort_policy": 1}            | 
+ 130 | SP-o-calisma-inside                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_calisma does not change the work items under the installation's Mission
+ 131 | SP-o-sinav-link                        | t  | ok                       | ok                       | {"event": 1, "effort_policy": 1}            | 
+ 132 | SP-o-sinav-no-link                     | t  | not_owner                | not_owner                | {"rejected": 1}                             | Rule O: devos_sinav changes only the work items its exam link names
+ 133 | SP-o-mission-no-event                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | rule_o: whether the work item lies under the installation's Mission is missing or partial
+ 134 | SP-reduction-calisma                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | a reduction needs the audit environment's approval: only devos_denetim makes it (B 3.18)
+ 135 | SP-reduction-calisma-declared-approval | t  | not_owner                | not_owner                | {"rejected": 1}                             | a reduction needs the audit environment's approval: only devos_denetim makes it (B 3.18)
+ 136 | SP-reduction-kurulum                   | t  | not_owner                | not_owner                | {"rejected": 1}                             | a reduction needs the audit environment's approval: only devos_denetim makes it (B 3.18)
+ 137 | SP-reduction-sinav                     | t  | not_owner                | not_owner                | {"rejected": 1}                             | a reduction needs the audit environment's approval: only devos_denetim makes it (B 3.18)
+ 138 | SP-reduction-denetim                   | t  | ok                       | ok                       | {"event": 2, "effort_policy": 1}            | 
+ 139 | SP-reduction-denetim-approved          | t  | true                     | true                     | {}                                          | approved_by_role_class devos_denetim, from the token
+ 140 | SP-reduction-no-reason                 | t  | missing_field            | missing_field            | {"rejected": 1}                             | reduction_reason: missing (a reduction is made with a reason, P:763)
+ 141 | SP-standing-calisma                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | a standing policy is written only with devos_denetim (B 3.18)
+ 142 | SP-standing-kurulum                    | t  | not_owner                | not_owner                | {"rejected": 1}                             | a standing policy is written only with devos_denetim (B 3.18)
+ 143 | SP-standing-sinav                      | t  | not_owner                | not_owner                | {"rejected": 1}                             | a standing policy is written only with devos_denetim (B 3.18)
+ 144 | SP-standing-denetim                    | t  | ok                       | ok                       | {"event": 1, "effort_policy": 1}            | 
+ 145 | SP-standing-stored                     | t  | true                     | true                     | {}                                          | a standing policy: no work_ref, its work_class, approved by devos_denetim
+ 146 | SP-standing-with-ref                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | standing_policy_ref: a standing policy cites none
+ 147 | SP-use-standing-calisma                | t  | ok                       | ok                       | {"event": 1, "effort_policy": 1}            | 
+ 148 | SP-over-level-calisma                  | t  | not_owner                | not_owner                | {"rejected": 1}                             | a reduction needs the audit environment's approval: only devos_denetim makes it (B 3.18)
+ 149 | SP-over-level-denetim                  | t  | ok                       | ok                       | {"event": 2, "effort_policy": 1}            | 
+ 150 | SP-standing-ref-absent                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | standing_policy_ref: the record could not be read
+ 151 | SP-standing-ref-item                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | standing_policy_ref: names a work item's policy, not a standing one
+ 152 | SP-cite-retired                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | standing_policy_ref: names a retired policy (B 3.18)
+ 153 | SP-retire-calisma                      | t  | not_owner                | not_owner                | {"rejected": 1}                             | a standing policy is retired only with devos_denetim (B 3.18)
+ 154 | SP-retire-sinav                        | t  | not_owner                | not_owner                | {"rejected": 1}                             | a standing policy is retired only with devos_denetim (B 3.18)
+ 155 | SP-retire-refused-keeps-active         | t  | true                     | true                     | {}                                          | after the two refusals the standing policy is active
+ 156 | SP-retire-denetim                      | t  | ok                       | ok                       | {"event": 1}                                | 
+ 157 | SP-retire-denetim-state                | t  | true                     | true                     | {}                                          | the standing policy is retired
+ 158 | SP-retire-repeat                       | t  | ok repeat                | ok repeat                | {}                                          | 
+ 159 | SP-cite-just-retired                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | standing_policy_ref: names a retired policy (B 3.18)
+ 160 | SP-retire-item-policy                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | retire_id: names a work item's policy, which its next policy retires (EV-C02-013 2.3)
+ 161 | SP-retire-unknown                      | t  | not_found                | not_found                | {"rejected": 1}                             | retire_id: names no EffortPolicy
+ 162 | SP-retire-n03-form                     | t  | missing_field            | missing_field            | {"rejected": 1}                             | work_ref, work_class or retire_id: missing
+ 163 | SP-work-absent                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | work_ref: the record could not be read
+ 164 | SP-level-bad                           | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | level: not high, medium or low
+ 165 | SP-level-absent                        | t  | missing_field            | missing_field            | {"rejected": 1}                             | level: missing
+ 166 | SP-expert-absent                       | t  | missing_field            | missing_field            | {"rejected": 1}                             | expert_assessment_ref: missing
+ 167 | SP-expert-empty (W-C02-10's gate)      | t  | ok                       | ok                       | {"event": 2, "effort_policy": 1}            | 
+ 168 | SP-steps-absent                        | t  | missing_field            | missing_field            | {"rejected": 1}                             | non_removable_steps: missing
+ 169 | SP-steps-not-array                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | non_removable_steps: not an array
+ 170 | SP-kind-absent                         | t  | missing_field            | missing_field            | {"rejected": 1}                             | work_ref, work_class or retire_id: missing
+ 171 | SP-item-and-class                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                             | work_ref and work_class: a policy is a work item's or a standing one, not both
+ 172 | SP-role-ci                             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                             | set_effort_policy admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 173 | SP-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                             | the request carries no environment token
+ 174 | SP-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                             | the write failed (SQLSTATE P0001)
+ 175 | SP-policy-unreadable (42501)           | t  | could_not_check          | could_not_check          | {"rejected": 1}                             | repeat: its input could not be read (SQLSTATE 42501)
+(175 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql:570: NOTICE:  M0904_FUNCTIONS PASS (175/175)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ work_after_rollback 
+---------------------
+                   0
+(1 row)
+
+[psql exit 0]
+prd10 scrub (09_functions): 0 token-format strings removed

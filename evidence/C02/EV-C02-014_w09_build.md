@@ -2,7 +2,7 @@
 id: EV-C02-014
 item: W-C02-09
 kind: build
-produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362)"
+produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366)"
 main_at: 1cdbb4e99cc5306e4dadf1e431ebbade7b03b68f
 date: 2026-10-17
 claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; nothing applied to a project by sections 1, 3 and 4; not independently tested"
@@ -664,4 +664,213 @@ The runs:
 5. **For the producers of M09-04 and M09-06:**
    - Rule O in `open_decision` is written inline (M09-03 adds no helper). The same reads serve `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review`, `relate` and `retract_relation`. A shared helper, if they make one, should not change `open_decision`'s answers.
    - T-W07-N29's `N29-dec-routine-on-high` (W-C02-10's rule) reads the relation `open_decision` writes, from the work item to the decision.
+
+## 5. M09-04: Work and effort policy
+
+The producer's record of `supabase/migrations/20261018230001_w09_work_effort.sql` (M09-04), written on branch `claude/c02-w09-m0904` at `main` `d032a8475b19e11a1cf9971852f4abb36883d0fd`, where M09-01 to M09-03 are merged. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at that commit, with EV13's correction section 17 added by the same producer. M09-04 means the file above, and M09-04:n a line of it. `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 17 first.** EV13 gained "17. Correction, 2026-10-18 (M09-04)", with marks *[C-M04]* in 2.3's paragraph "What Rule O reads" and in the rows `admit_work`, `revise_work`, `mark_stale` and `set_effort_policy`. It states the forms 5.2 lists. M09-04's checker judges it.
+- **The note items that bind M09-04, checked on `main` before the SQL** (`plan/work/C02.md`):
+  - N-279 (15), CHK-C02-077 K1: "before any result of T-W07-ROC and before the first commit of the migrations that build `revise_work` and `retract_relation`". **Met.** EV13 R2-6 chose option (a); the test designer moved `ROC-x-o-mission-unreadable`'s revoke to `devos_private.mission_revision` (`job/w07_roc_ownership_and_claim_class.sql:894`, commit `04da0de`), and CHK-C02-081 judged that revision sound (L-347).
+  - N-279 (12): the form of `input_refs` elements, "before the first commit of the migration that builds the function concerned" (`admit_work`). **Met.** EV13 R2-4 fixed `{ref, revision}`; F08's fixture `wd` sends it (`job/w07_f08_recheck_at_effect.sql:330-331`, commit `04da0de`).
+  - N-279 (16): Group A's and F06's fixture Decisions carry `answered_revision` 1. **Met** (before M09-03); Group A's fixture Missions are opened through `open_mission` here, and DM34 runs through them.
+  - N-279 (10): its three rules concern `register_artifact`, `prepare_operation` and `transfer_acceptance` (M09-07, M09-08, M09-12). Not M09-04's.
+  - N-279 (1), (17), (19), (21), N-282, N-283 and N-284: their deadlines are C03's work list, M09-08, each Group B file's first result or copy, W-C02-10's sampling call, the first migration adding a role class, N29's or F06's first result or copy, and verdict (ii). None falls at M09-04's commit. N-283 (1) to (5) bear on tests that call M09-04's functions (N29, F06); 5.4 says what they mean here.
+- **Appendix B principle 3** (B:17) binds `revise_work`, the one function here that writes a new revision of an existing record: 5.2 item 1.
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | `main` `d032a84`, clean before this work; the runs were made with M09-04 and the raw files untracked (O, `26_git_hashes.txt`). Bytes run: M09-04 `165ea69997401d944ecd73a598dd3627caf841ffaa88ab91578f792a89eb01d5`; the self-check `…/scratchpad/m0904_run/fn_check.sql` `5bd5c6d9f1b3baf7d0fc4d14222522adbc11e98ee5d6c6d053455991cdaf15a4`; the break maker `…/scratchpad/m0904_run/brk.py` `805f1e7231df9b010a0e81fea18c4139e8e273627c8d21f45963c4e6c58354eb`. EV13 with its section 17, at this record's writing (after the runs): `0d335e5c3b12d0f6365074df85447c7adde7986f8abfd33d805ce097e8e1a8ff`. A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1, 3 and 4: one throwaway PostgreSQL 16.15 cluster per run, unix socket only (in `…/scratchpad/m4s`, a path short enough for the 107-byte socket limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, `12_stop.txt` and `25_breaks_stop.txt`: `[cluster directory deleted: yes]`). Stand-ins: M09-02's `setup.sql` unchanged (`…/scratchpad/m0903_run/setup.sql`), with the ACL read on `devos`. The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `d032a84`; EV13 with Revisions 1 and 2, its corrections 15 and 16, and its section 17 (for M09-04's checker) |
+| Input | The sixteen migrations (`main`'s fifteen and M09-04); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `tests/C02/W-C02-07/job/` and T-W14-FN's, run in place; the producer's self-check; eleven break copies of M09-04 made outside the repository (`…/scratchpad/m0904_brk/`, by `brk.py`) |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m04_offline_01_init_setup.txt` to `…_26_git_hashes.txt`, written directly by `…/scratchpad/m0904_run/rerun.sh` (01 to 12) and `brk.sh` (13 to 25). Every file but `26` passed through section 1's filter, and each ends `0 token-format strings removed`. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 09) and the break runs (14 to 24) are the producer's own |
+
+### 5.1 What was built, object by object
+
+All in M09-04, in this order: the six functions of EV13 2.3, and their grants. No table, type or `devos_private` function is added. M09-01 to M09-03 are not changed; M09-01's and M09-02's helpers are called: `caller_role_class`, `write_event`, `reject`, `scope_within` and `is_installation_mission`.
+
+**The form every function has** is M09-03's (4.1): the derivation first; the read block with steps (b) to (f), a decided refusal by `v_code`, `v_reason` and `P0D01`, any other error `could_not_check` with `<v_check>: its input could not be read (SQLSTATE <code>)`; the write block, `write_failed` but `P0D02`; one per-call row by `reject` after a refusal; fixed reasons; keys a function does not read ignored; the exact repeat `ok` with `"repeat": true`. O (`08_catalog.txt`): each of the six has `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, ACL `{postgres=X/postgres,anon=X/postgres}`.
+
+**Rule O and Rule C** (EV-C02-008 1.7.1; EV13 2.3, "What Rule O reads", with C-M04) are written inline in each function that checks them, as `open_decision` writes Rule O (4.6 item 5). Rule O reads the work item's current `work_revision` row (its `mission_revision_id`), the `mission_revision` row it names (its `mission_id`), that Mission's events through `is_installation_mission`, and for `devos_sinav` the exam link; never `devos_private.mission`. Rule C reads `devos_private.assignment`. The reasons name the rule, never the item's opener.
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.admit_work(p jsonb)` (M09-04:45) | `devos_calisma`, `devos_sinav`, `devos_kurulum`. Required `mission_ref` (uuid), `scope` (a dotted path, else `invalid_field`), `purpose`, `impact_class` (`routine` or `high`); `mission_revision` absent or JSON null `could_not_check`, not an integer of at least 1 `invalid_field`. Optional `consumer`, `return_to`, `stop_rule`, `acceptance_ref`, `effort_policy_ref` (uuid), and the arrays `input_refs`, `target_refs`, `method_refs`, `mandatory_needs` (default `[]`); each element of `input_refs` and `target_refs` `{"ref": <uuid>, "revision": <integer>}`, else `invalid_field`. Then: the Mission `for share` (absent or status NULL: `could_not_check`); its revisions (none: `could_not_check`; the revision named absent: `could_not_check`; an earlier one: `stale_revision`, M09-04:199-202); not `active`: `mission_not_active`; `scope_within` false: `scope_outside` (M09-04:213-216), NULL `could_not_check`; each element (a Work, Artifact, Finding or Decision with that revision; another family `invalid_field`; no record, no such revision or no revision sent `could_not_check`); `effort_policy_ref` (no record or status NULL `could_not_check`; retired `invalid_field`). Writes the Work (its axes at their defaults), revision 1 tied to the Mission revision named, and `work_admitted` (revision 1; payload the fields). No exact repeat. Answer `id`, `revision` 1 | 2.3's row with R2-4 and C-M04 (17 (3)); B 3.3, principle 4; DM-34; 1 items 3, 4, 7 (ii), 14 |
+| `devos_api.revise_work(p jsonb)` (M09-04:327) | `devos_calisma`, `devos_sinav`, `devos_kurulum`. Required `id`, `base_revision`; optional every revision field of `admit_work` but `mission_ref`, and `reason`. Order: the form; the work item `for update` (`not_found` when absent); its current revision (missing: `could_not_check`); Rule O; Rule C; a `mission_revision` sent that names no revision of the Mission: `could_not_check`; the exact repeat (every field as the current revision's: `ok`, `"repeat": true`, M09-04:579-589); no string `reason`: `missing_field` (M09-04:593-597); `base_revision` not current: `stale_revision`; a `mission_revision` sent that is not the Mission's current: `stale_revision`; the elements sent and `effort_policy_ref`, as in `admit_work`; the new scope not within the tied Mission revision's: `scope_outside`. Writes revision n+1 with the reason, and `work_revised` (payload the fields, `base_revision`, `reason`). Refusal rows carry `target_ref` `id` and `target_revision` `base_revision`. Answer `id`, `revision` | 2.3's row with R2-4, R2-9 and C-M04 (17 (1), (4), (5)); B principle 3 (B:17); DM-02; EV-C02-008 1.7.1 |
+| `devos_api.mark_stale(work_id uuid, reason text)` (M09-04:736) | `devos_calisma`, `devos_sinav`, `devos_kurulum`. `work_id` NULL `missing_field`; the work item `for update` (`not_found`); its qualification and current revision (missing: `could_not_check`); Rule O, not Rule C; already `stale`: the exact repeat. Writes `qualification` `stale` and `work_marked_stale` on the current revision (payload `qualification`, `previous_qualification`, `reason`). Refusal rows carry `target_ref` `work_id`. Answer `id` | 2.3's row with C-M04 (17 (1), (5)); B 3.3 (B:134); EV-C02-008 1.7.1 |
+| `devos_api.cancel_work(work_id uuid, reason text)` (M09-04:871) | As `mark_stale`, with Rule C after Rule O (M09-04:966-979); already `cancelled`: the exact repeat. Writes `execution` `cancelled` and `work_cancelled` (payload `execution`, `previous_execution`, `reason`). A claim of the caller's own class stays active; `check_claim` then refuses its effects `claim_not_active` (3.3 item 2) | 2.3's row; B 3.3 (B:136); EV-C02-008 1.7.1 |
+| `devos_api.reopen_for_review(work_id uuid, reason text)` (M09-04:1024) | `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_kurulum`. As `mark_stale`; Rule O for every class but `devos_denetim`, which reads no Mission (any work item); not Rule C; already `needs_review`: the exact repeat. Writes `qualification` `needs_review` and `work_reopened_for_review`; `execution` and `acceptance` are not changed | 2.3's row with C-M04 (17 (5)); B 3.3 (B:135); EV-C02-008 1.7.1 |
+| `devos_api.set_effort_policy(p jsonb)` (M09-04:1174) | `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_kurulum` at the gate. The kind: `retire_id`, `work_ref` (an item's policy) or `work_class` (a standing one). An item's policy: the work item `for update` (absent: `could_not_check`); `standing_policy_ref` (absent `could_not_check`; an item's policy or a retired one `invalid_field`); below the floor (`high`, or the standing policy's level) it is a reduction: `devos_denetim` only (`not_owner`), with a string `reduction_reason` (`missing_field`, M09-04:1380-1384), `approved_by_role_class` `devos_denetim`; at or above it, `devos_denetim` is refused `not_owner` and the others pass Rule O; then the exact repeat against the item's active policy. Writes: the item's earlier active policies `retired` (each `effort_policy_retired`, origin `rule`, M09-04:1462-1468), the new policy and `effort_policy_set`. A standing policy: `devos_denetim` only, else `not_owner`. `retire_id`: `devos_denetim` only (`not_owner`, M09-04:1304-1308, before the policy is read); absent `not_found`; an item's policy `invalid_field`; already retired the exact repeat; writes `retired` and `effort_policy_retired`. Answer `id` | 2.3's row with C-M04 (17 (2)); EV-C02-008 1.7.4; B 3.18 (B:312, B:314); P:763 |
+| Grants (M09-04:1497-1528) | `revoke all … from public` and from the four API roles where they exist, on all six; `grant execute … to anon` on all six; no type, no private function | 1 item 13; T-W08-PRIV's constraint |
+
+O (`08_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the fifteen `devos_api` functions.
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+- **The literals**, as the break patches read them: `admit_work`, `revise_work`, `mark_stale` and `cancel_work`: `array['devos_calisma', 'devos_sinav', 'devos_kurulum']`; `reopen_for_review` and `set_effort_policy`: `array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']`.
+- **The unqualified-name scan.** No hit in M09-04's six functions; its four hits are section 3.1's.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** Still `deployment_drift`, `read_decision` and `token_role_class`: the six are state-changing (F06's list).
+- **The exam table's name.** It occurs in the text of `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` and `set_effort_policy` (Rule O's `devos_sinav` clause), all five on T-W07-N08's list of functions exempt by name (`job/w07_n08_exam_records.sql:283-286`), and not in `admit_work`'s, which is not on it (5.2 item 4).
+
+### 5.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated; none is silent. No merged test is changed. Where the record and a merged test pull apart, the record's side is built and the test's form is reported (5.6). EV13 section 17 (C-M04) states items 1 to 7 in the record itself.
+1. **`revise_work`'s `reason`** (EV13 17 (1)). Required on every call that writes a new revision, `missing_field` without a string; the exact repeat needs none. 2.3's row stars it, and B principle 3 (B:17) asks for it: not a departure, but its place in the order is chosen. It is after Rule O, Rule C and the repeat, and before `stale_revision`. So a stale call without a reason is `missing_field` (`RW-reason-before-stale`).
+2. **The state functions' `reason` may be NULL** (EV13 17 (1)): `mark_stale`, `cancel_work` and `reopen_for_review` write no revision (DM-09), as M09-03's `resolve_need`.
+3. **`set_effort_policy`** (EV13 17 (2)):
+   - **The levels.** `high`, `medium` and `low`, ordered so, are chosen from T-W07-N03's interface; B names none but `high`.
+   - **The kind.** It is told by the level against the floor, never by the steps.
+   - **Retiring.** `retire_id` retires only a standing policy, and an already retired one is the exact repeat.
+   - **References.** A `standing_policy_ref` that names an item's policy is `invalid_field`.
+   - **Writes.** The earlier item policy is retired with origin `rule` (EV13 1 item 10: a record the database changes by rule inside the call). The work item's revision and its `effort_policy_ref` are not touched.
+   - **Locks.** The work item's row is locked `for update`, so that two calls for one item do not both find no active policy and write two.
+4. **`admit_work`** (EV13 17 (3)):
+   - **The Mission's revision.** `mission_revision` absent is `could_not_check`, not item 4's `missing_field`, for R2-1's and C-20's reason (a reference without its revision).
+   - **Other families.** An element naming another family is `invalid_field` only for the nine families it looks up.
+   - **Exam records.** An EvalRun id is `could_not_check` for every class. `admit_work`'s text must not name the exam table: T-W07-N08's records part requires every `devos_api` function whose text names it, but its nine exempt by name, to refuse the four classes that may not read exam records (`job/w07_n08_exam_records.sql:381-393`), and `admit_work` admits `devos_calisma` and `devos_kurulum`. Reading EvalRun for `devos_sinav` alone would tell `sin` an `invalid_field` that the others get as `could_not_check`, which no source asks for.
+   - **No Rule O.** `admit_work` checks no Rule O: EV-C02-008 1.7.1 lists the functions that do, and it is not among them.
+5. **`revise_work`'s other forms** (EV13 17 (4)):
+   - **The Mission's revision.** `mission_revision` moves the tie, only to the Mission's current revision. The scope is checked against the tied revision's scope.
+   - **Keys.** `mission_ref` is not read.
+   - **Clearing a field.** A key absent or JSON null keeps the current value, so an optional text field or `effort_policy_ref` cannot be cleared by a revision (a residual, 5.6).
+   - **Elements.** The elements of `input_refs` and `target_refs` are checked only when sent.
+6. **Rule O and Rule C** (EV13 17 (5)):
+   - **No creation event.** A Mission with no creation event is `could_not_check`.
+   - **`devos_denetim`.** It reads no Mission in `reopen_for_review`.
+   - **Lapsed claims.** Rule C counts only claims whose lease has not run out. A claim without its status, lease or role class is `could_not_check`.
+   - **Locks.** Rule C takes no lock on `assignment`: the five functions lock the work item `for update`, and `claim` locks it `for update` (EV13 2.4), so a claim and one of these calls serialize on that row. If M09-05's `claim` takes a weaker lock, Rule C can race; 5.6 carries it to that producer.
+7. **Rule O and Rule C come before the exact repeat**, as M09-03's departure 6 puts `owner_authority` before it: neither is a check "that the first call's own write would now fail" (R2-9). So an identical `cancel_work` by a class Rule O refuses is `not_owner`, not a repeat.
+8. **Forms the record leaves open (chosen):**
+   - `p` NULL is `missing_field`; `p` not an object `invalid_field`; an optional key holding JSON null counts as absent; a revision is a JSON number of at least 1; a uuid is in its canonical 36-character form.
+   - Answers: `admit_work` and `revise_work` `id`, `revision`; the others `id`.
+   - The state events are written on the work item's current revision; EffortPolicy has no revision, so its events have `aggregate_revision` NULL.
+   - Refusal rows: `revise_work` names `id` and `base_revision`; the state functions `work_id`; `set_effort_policy` `retire_id` when sent; the creating calls none.
+   - `declared_session_id` is read from `p` only; the three `(work_id, reason)` functions have no `p`.
+   - `cancel_work` cancels a work item in any execution state but `cancelled`; no source refuses a finished one.
+   - Locks: the Mission `for share` in `admit_work`; the work item `for update` in the five others; a cited standing policy and an `effort_policy_ref` `for share`; a policy to retire `for update`.
+
+Not departures, for the checker:
+- `admit_work` ignores a `status` or a role name sent in `p` (`AW-undeclared-keys-ignored`).
+- `set_effort_policy` ignores F06's `work_revision` and N03's `status` keys (`SP-f06-form-keys-ignored`): EffortPolicy's `work_ref` has no revision (B 3.18; EV13 1 item 3).
+- An empty `expert_assessment_ref` is accepted here; it is W-C02-10's gate (`SP-expert-empty`).
+- The steps are not compared with the standing policy's: also W-C02-10's.
+
+### 5.3 How W-C02-09's points are served by M09-04
+
+- **Point 1.** A versioned file later than `20261018214501`, plain SQL, no `psql` meta-command, no backslash (O, `26_git_hashes.txt`: `backslashes in M09-04: 0`). Decisions followed, with the object:
+  - the rejected-attempt record's per-call form: `reject`, on every refusal (run 09's `{"rejected": 1}` deltas; `AW-reject-row`);
+  - F06's list: none of the six carries the read marker (run 08, part 7; `F06-list | ok | 15 devos_api functions (3 marked devos:read)`);
+  - the events: origin `call`, the token's class (`AW-pos-event`, `RW-narrow-event`, `MS-pos-event`), and `rule` for a policy retired by a new one (`SP-second-retires-first-state`);
+  - Rules O and C as EV-C02-008 1.7.1 decides them; `set_effort_policy`'s three kinds as 1.7.4 decides them.
+  - Offline, `deployment_drift` reports `no_difference`, 16 of 16 (runs 04 and 10).
+- **Point 2.** Fifteen of the 55 `devos_api` functions now exist (six here), each with definer rights, the fixed `search_path` and every DevOS name qualified (5.1's scan).
+- **Point 3.**
+  - Fourth bullet. Each of the six refuses a call with no token before any other check (`F06-refused:<fn>`, all six `ok`; `AW-no-token`, `SP-no-token`). Each refuses a class not on its list with one per-call row: 5B rows R02 (`admit_work`), R08g, R23 and R24, their 36 cells `ok`; the self-check's `*-role-*` cases.
+  - Fifth bullet. A declared role or approval changes nothing: `AW-undeclared-keys-ignored`, `SP-reduction-calisma-declared-approval` (`not_owner`).
+- **Point 5.**
+  - Each state-changing function writes its event in the same transaction, with the token's class (`F06-event:admit_work | ok`, `new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]`; the self-check's event cases).
+  - An exact repeat writes no event and raises no error (`RW-repeat-before-stale`, `MS-repeat`, `CW-repeat`, `RR-repeat`, `SP-repeat`, `SP-retire-repeat`, each `ok repeat`, `{}`).
+  - A failure planted mid-transaction leaves no half state and no orphan event (`AW-write-failed` on `work_revision`, `AW-write-event-failed` on `event`, `RW-write-failed`, `SP-write-failed`: only the refusal row is added).
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass:
+  - `AW-mission-absent`, `-mission-revision-absent`, `-json-null`, `-beyond`, `-ref-no-revision`, `-ref-random`, `-ref-revision-999`, `-policy-absent`, `-read-unreadable` (42501), `-write-P0D02`;
+  - `RW-input-random`, `-mission-revision-beyond`, `-o-mission-no-event`, `-o-mission-unreadable` (42501), `-o-mission-link-null`, `-c-partial`, `-c-unreadable` (42501), `-c-missing` (42P01);
+  - `MS-o-mission-no-event`, `CW-c-partial`, `SP-o-mission-no-event`, `SP-work-absent`, `SP-standing-ref-absent`, `SP-policy-unreadable` (42501).
+  - These are the forms T-W07-ROC's nine `ROC-x-*` cases plant, on the self-check's stand-ins; ROC itself does not run yet (5.4).
+- **Point 8.**
+  - W-C02-08's four copies, W-C02-03's three and the IDC copy pass again (run 05).
+  - The staged files whose cases call the six, run in place (run 06):
+    - **T-W07-DM34 `PASS (10/10)`**: `admit_work` and `revise_work` through Group A's fixtures, the first merged file to pass whole on these functions;
+    - 5B: the 36 cells of R02's `admit_work`, R08g, R23 and R24 `ok`, `COULD NOT CHECK (15 of 99 …)` for rows whose functions are not built, none `bad`;
+    - 6TK `PASS (32/32)`;
+    - F06: `F06-event:admit_work` and the six `F06-refused:<fn>` `ok`; ten cases of the five others `could_not_check` (5.4); `COULD NOT CHECK (16 of 44 …)`, none `bad`.
+  - Their copies are a later pull request's (R:247; EV13 section 11).
+
+### 5.4 What M09-04 does not yet serve
+
+- **T-W07-F06's ten cases for `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` and `set_effort_policy`** (`F06-event:<fn>` and `F06-repeat:<fn>`): `could_not_check`, `rule_o: whether the work item lies under the installation's Mission is missing or partial`. F06 plants these work items with `pg_temp.w07_plant`, whose Missions have no event (`job/w07_f06_state_change_event.sql:185-230`, `:470-512`). By EV13 1 item 7 (ii) and 17 (5), Rule O cannot read such a Mission. And `revise_work`'s recipe (`:420-421`) is an exact repeat (EV13 17 (5)). Until the test designer revises them, no merged test shows these five functions' events or repeats; the self-check alone does. F06's other `could_not_check` cases are not M09-04's: `revise_mission`'s two (N-283 (4)), `read_decision`'s recipe (N-283 (5)), and three that need `relate`.
+- **The staged files that call these functions but need a later function stop at their `-pre` line** (run 06):
+  - Group A but DM34 (5C, 6RG, DM07, F01, F05, F07, F08, N17) need `claim`.
+  - Group C (N01, N02, N03, N08, N28, N29, ROC, T31, 5D, 6ST, DM11, DM47, FGFIND) need `relate`, `record_finding`, `open_review`, `claim` or W-C02-10's tables.
+  - So T-W07-ROC (Rules O and C through the merged file) and T-W07-N03 (`set_effort_policy`'s kinds) do not run. Each is "could not check", not counted.
+- **The test designer's unmerged revision of `w07_set_status`** (branch `claude/c02-w07-n283-tests`; it writes text into `decision.answer`, `jsonb`). It changes nothing observable here: every Group C file stops at its `-pre` line on a missing function first. Which of their cases that helper's fault would stop cannot be seen until those functions exist.
+- **T-W07-N03's forms** (EV13 17 (2)): its retirement form `{id, status}` and `N03-pos-over-with-approval`'s missing `reduction_reason` cannot pass on this build once N03 runs.
+- **The breaks that rewrite these functions** (B-ROC-1, -2, -3, B-N03-1 to -7, B-DM34-1, B-5D-3, B-5D-5) are W-C02-13's. They wrap the functions by name and signature, which M09-04 keeps.
+  - B-DM34-1 reads `devos_private.mission.scope`, a column that does not exist (the scope is in `mission_revision`), and `mission_ref` as an object (D-1's old form; `tests/C02/W-C02-07/breaks/B-DM34-1_admit_scope_check_removed.sql`). So its wrapper gets NULL and passes every call through unchanged, and DM34-n1 to -n6 stay green: the break is "not shown" on any build. Read, not run. *[Dated line, 2026-10-18, L-367; CHK-C02-089 C2 (a): the mechanism above is wrong. Applied, the wrapper raises 42703 ("column scope does not exist") and DM34 ends COULD NOT CHECK, 10 of 10; the conclusion, "not shown", stands (N-285 item (3)).]*
+  - *[Dated line, 2026-10-18, L-367; CHK-C02-089 C1: also unable to pass on a correct M09-04, and missed above and in 5.6 item 1: T-W07-F05 (c) (`job/w07_f05_scope_both_sides.sql`, line 309 with 363 to 367) and T-W07-F08 (b) and (w) (`job/w07_f08_recheck_at_effect.sql`, lines 323, 326, 377 to 378 and 451 to 452) revise a work item by sending only the scope it already has, plus a reason, which EV-C02-013 2.3 and R2-9 answer as an exact repeat (`ok`, repeat true, no new revision): F05-c is `could_not_check`, F08-b and F08-w `bad`, and F08-pos3 is refused once `claim` and `prepare_operation` exist. Carried as N-285 item (4).]*
+  - B-5D-5 assumes N03's `{id, …}` form.
+- **The test Mission and the installation's Mission in `devos`** (the transfer's functions, M09-11); Rule O's `kur` clause is shown on the self-check's stand-in only.
+
+### 5.5 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0904` at `d032a84`, with M09-04 untracked. The main run started 2026-10-18T23:00:31Z and ended 23:00:35Z, on one cluster (`…/scratchpad/m0904_run/rerun.sh`). The break runs started 23:01:27Z and ended 23:01:42Z, on a second cluster (`…/scratchpad/m0904_run/brk.sh`).
+- **The drivers.** `run.sh` and `drive.py` are `…/m0903b_run/run.sh` and `…/m0903_run/drive.py`, changed only in their paths (the clone `prd10`, the cluster under `…/m0904_run/pg`, the socket in `…/scratchpad/m4s`). `drive.py`'s line "M09-02 uncommitted" in run 04 is its old wording; the bytes run are the envelope's. `setup.sql`, `scrub.py`, `logscan.py` and `catalog.sql` are `…/m0903_run/`'s, unchanged.
+- **Trial runs.** Two trial runs of the same drivers just before (`…/m0904_run/trial.sh`, `trial2.sh`) gave the same counts. They are not filed.
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the fifteen migrations before M09-04, each `[exit 0]` with its history row (30 `[exit 0]` lines).
+- **03, M09-04:** `CREATE FUNCTION` ×6, `REVOKE` ×6, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 10:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 16, "migrations_expected": 16`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (95/95)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result):
+  - `W07_DM34_MISSION_SCOPE PASS (10/10)`, for example `DM34-n1 | ok | a sibling scope: refused: scope_outside`, `DM34-n7 | ok | revise_work widening beyond the Mission: refused: scope_outside`, `DM34-pos3 | ok | revise_work within the Mission: accepted`.
+  - `W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (16 of 44 could not be checked)`, none `bad`: `F06-event:admit_work | ok | … tables changed: ["work", "work_revision"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]`; `F06-event:cancel_work | could_not_check | the recipe's call was not accepted … "reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial"`, and the same for the four others.
+  - `W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (15 of 99 could not be checked)`, none `bad`; for example `5B-R23-revise_work-den | ok | x cell: … code role_class_not_permitted`, `5B-R24-reopen_for_review-den | ok | v cell: … code not_found`. The 15 are the rows R04 to R07, R10, R10r, R13, R15, R17, R19 to R22, R25 and R26, whose functions are not built.
+  - `W07_6TK_TOKEN_REASONS PASS (32/32)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`.
+  - `W07_DM19B_BURST_COUNT COULD NOT CHECK (6 of 12 …)`, needing `accept`; `W07_N04_SELF_APPROVAL COULD NOT CHECK (4 of 4 …)`.
+  - `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, …)`: W-C02-10's, as in section 4.5's runs 06 and 27; it calls no M09-04 function.
+  - Every other file `COULD NOT CHECK` on its `-pre` line (5.4); run 07 is T-W14-FN's `FN-pre`.
+- **08, the catalogue:** 5.1's listing.
+- **09, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC W-C02-09 M09-04; one transaction rolled back): `M0904_FUNCTIONS PASS (175/175)`. The cases: 45 for `admit_work`, 40 for `revise_work`, 12 for `mark_stale`, 13 for `cancel_work`, 10 for `reopen_for_review` and 55 for `set_effort_policy`. Each compares the answer's code and the change of nine tables, and the state cases read the row after. Among them:
+  - `AW-mission-revision-stale`: `stale_revision`; `AW-mission-revision-beyond`: `could_not_check`; `AW-ref-object-id-form`: `invalid_field`; `AW-ref-other-family` (a Need): `invalid_field`; `AW-ref-no-revision`: `could_not_check`.
+  - `RW-repeat-before-stale`: `ok repeat`, `{}`; `RW-reason-before-stale`: `missing_field`; `RW-mission-revision-current-tie`: the new revision tied to the Mission's revision 3.
+  - `RW-o-calisma-inside`, `-kurulum-outside`, `-sinav-no-link`: `not_owner`; `RW-o-kurulum-inside`, `-sinav-link`, `-calisma-exam-task`: `ok`.
+  - `RW-c-other-class`: `other_class_claim`; `-own-class` and `-lapsed`: `ok`; `MS-c-not-checked` and `RR-c-not-checked`: `ok`; `CW-c-same-class`: `ok`, and the claim stays active.
+  - `RR-denetim-reads-no-mission`: `ok` with `mission_revision` revoked from the owner.
+  - `SP-reduction-calisma`, `-kurulum`, `-sinav`, `SP-denetim-default`, `SP-standing-calisma`, `SP-retire-calisma`: `not_owner`; `SP-reduction-denetim`: `ok`, `approved_by_role_class` `devos_denetim`; `SP-over-level-denetim`: `ok`; `SP-cite-retired`: `invalid_field`; `SP-retire-n03-form`: `missing_field`.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt`, `event` and `work`.
+- **11:** the server log, `494 lines; token-format strings: 0`. **12:** `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **13 to 25, the breaks** (`brk.py`: each `made (one replacement in devos_api.<fn>)`, the replacement found after that function's `create` line). Each copy was applied in place of M09-04 (`[apply exit 0]`), the self-check and the staged DM34, F06, 5B and 6TK were run, and its six functions were dropped (`[drop exit 0]`):
+  - **k01**, `admit_work`'s scope check removed: self-check `FAIL (3 of 175 …)`, red `AW-scope-sibling`, `-string-prefix`, `-wider`; **DM34 `FAIL (3 bad, …)`**, `DM34-n1` to `-n3` `bad`. DM34's n4 to n6 stay green, since the form check refuses a malformed scope before the containment.
+  - **k02**, `admit_work`'s `stale_revision` removed: red `AW-mission-revision-stale`. No merged test catches it.
+  - **k03**, `admit_work`'s literal widened to `devos_denetim`: red `AW-role-devos_denetim`, `AW-reject-row`; **5B `FAIL (1 bad, …)`**, `5B-R02-admit_work-den | bad`.
+  - **k04**, `revise_work`'s repeat check removed: red `RW-repeat-before-stale` (`missing_field`) and `RW-f06-recipe-is-repeat` (a new revision written).
+  - **k05**, `revise_work`'s `reason` not required: `FAIL (7 of 175 …)`, red `RW-reason-absent`, `-names-field`, `-json-null`, `-before-stale`, and three after them whose base revision the accepted call moved on.
+  - **k06**, Rule C removed in `revise_work`: red `RW-c-other-class`.
+  - **k07**, Rule O's `devos_kurulum` clause removed in `cancel_work`: red `CW-o-kurulum-outside`.
+  - **k08**, `mark_stale` reading a Mission without a creation event as not the installation's: red `MS-o-mission-no-event`. **F06 prefers this break:** its two `mark_stale` cases turn `ok` and F06 goes to `COULD NOT CHECK (14 of 44 …)`, because its fixtures plant exactly such Missions (5.4).
+  - **k09**, the reduction's approval removed in `set_effort_policy`: `FAIL (6 of 175 …)`, red `SP-reduction-calisma`, `-kurulum`, `-sinav`, the declared-approval case, and two after them.
+  - **k10**, retiring by any class: red `SP-retire-calisma`, `-sinav`, `SP-retire-refused-keeps-active`, `SP-retire-denetim`.
+  - **k11**, the item's earlier policy not retired: red `SP-second-retires-first`, its state case, and the three later writes that retire one.
+  - So each check turns red when its rule is removed. DM34 caught k01 and 5B caught k03. The self-check alone caught the other nine, because no merged test runs those rules yet (5.4).
+  - 25: `326 lines; token-format strings: 0`, `[cluster directory deleted: yes]`.
+- **26:** the hashes in the envelope; `backslashes in M09-04: 0`; `git status --porcelain`: M09-04 and the raw files 01 to 26 untracked, before EV13 section 17 and this section were written; `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty.
+
+### 5.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-F06's planted work items for `revise_work`, `mark_stale`, `cancel_work`, `reopen_for_review` and `set_effort_policy` (`job/w07_f06_state_change_event.sql:420-421`, `:470-512`) sit under Missions with no creation event, so Rule O answers `could_not_check`. They need a Mission whose creation event is not `transferred` (one opened with `open_mission`, or a planted `mission_opened` event). Until then F06 cannot pass W-C02-09 point 8 for these five, and it prefers break k08.
+   - F06's `revise_work` recipe changes no field (`:420-421`). It needs a changed field, for example another scope under the planted one, or `purpose`.
+   - T-W07-N03's retirement form `{"id": …, "status": "retired"}` (`job/w07_n03_effort_policy.sql:566-567`, `:575`, `:645-646`) and its interface line "a revision is a call with the policy's id"; EV13 2.3 builds `retire_id`. B-5D-5 assumes the same form.
+   - `N03-pos-over-with-approval` (`:564-565`) is a reduction with no `reduction_reason`, which P:763 and EV13 2.3 require.
+   - B-DM34-1 reads `devos_private.mission.scope` and `mission_ref` as an object, so it is "not shown" on any build (5.4).
+2. **For the executor** (reported, not done):
+   - T-W07-N08's records part (`job/w07_n08_exam_records.sql:381-393`) will require every `devos_api` function whose text names the exam table, but its nine exempt by name, to refuse `devos_calisma`, `devos_denetim`, `devos_kurulum` and `devos_ci` by role. M09-03's `open_decision` names it (Rule O's `devos_sinav` clause, M09-03:859) and is not exempt. So `N08-r-open_decision-<class>` will be `bad` once `record_eval_run` exists (M09-09). Either N08's list gains `open_decision`, or EV-C02-008 5.1's list is reread. Found while reading; not run here, since N08 stops at its `-pre` line.
+3. **For the checker of verdict (i):**
+   - EV13 section 17 with its *[C-M04]* marks;
+   - 5.2's departures, chiefly 3, 4, 6 and 7;
+   - the self-check and the break runs, which are the producer's own.
+4. **For the producers of M09-05 and M09-06:**
+   - `claim` must lock the work item `for update` (EV13 2.4): Rule C's freedom from races here rests on it (5.2 item 6).
+   - `relate` and `retract_relation` check Rule O and Rule C with the same reads, written inline as here. Rule O's `devos_sinav` clause puts the exam table's name in their text, and both are on N08's exempt list.
+5. **Residuals:**
+   - A revision cannot clear an optional text field or `effort_policy_ref` (5.2 item 5).
+   - `effort_policy_ref` may name another work item's policy. No source refuses it, and none is built.
+   - That an item belongs to a standing policy's class is declared and falls to the sample review (B 3.18), which is W-C02-10's.
 

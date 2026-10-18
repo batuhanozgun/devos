@@ -1,0 +1,17 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k01_admit_scope_check_removed, a copy of M09-04 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f k01_admit_scope_check_removed.sql  (as postgres)
+[apply exit 0]
+   9 | AW-scope-sibling                       | f  | ok                       | scope_outside            | {"work": 1, "event": 1, "work_revision": 1} |  | wanted delta {"rejected": 1}
+  10 | AW-scope-string-prefix                 | f  | ok                       | scope_outside            | {"work": 1, "event": 1, "work_revision": 1} |  | wanted delta {"rejected": 1}
+  11 | AW-scope-wider                         | f  | ok                       | scope_outside            | {"work": 1, "event": 1, "work_revision": 1} |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql:570: NOTICE:  M0904_FUNCTIONS FAIL (3 of 175 not as wanted)
+[self-check done]
+w07_dm34_mission_scope.sql:  DM34-n1   | bad     | a sibling scope: accepted, wanted refused
+w07_dm34_mission_scope.sql:  DM34-n2   | bad     | a string prefix that is not a path prefix: accepted, wanted refused
+w07_dm34_mission_scope.sql:  DM34-n3   | bad     | the Mission's parent (wider): accepted, wanted refused
+w07_dm34_mission_scope.sql: psql:tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql:352: ERROR:  W07_DM34_MISSION_SCOPE FAIL (3 bad, 0 could not check, of 10)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (16 of 44 could not be checked)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (15 of 99 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (14_break_k01_admit_scope_check_removed): 0 token-format strings removed
