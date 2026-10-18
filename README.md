@@ -4,12 +4,15 @@ DevOS, SOUL'u geliştirecek yapay zekâ çalışma sistemidir. SOUL, kullanıcı
 
 ## Durum
 
-Kurulum henüz başlamadı. Bu depoda şu an yalnız kurulum planı ve ekleri var. Kurulumu bir Claude Code oturumu (kurucu) bu plana göre yapacak.
+Kurulum sürüyor. Kurulumu bir Claude Code oturumu (kurucu) bu plana göre yapıyor. Güncel aşama ve Batu'dan beklenenler [`DURUM.md`](DURUM.md)'de: o sayfa her kayıt değişikliğinde `plan/ledger.md`'den yeniden üretilir, bu yüzden aşama burada yazılmaz. Batu'dan beklenen kararlar [#6](https://github.com/batuhanozgun/devos/issues/6) numaralı issue'da toplanır.
 
 ## Belgeler
 
 | Belge | İçerik |
 |---|---|
+| [`DURUM.md`](DURUM.md) | Kurulumun güncel durumu (üretilir) |
+| [`plan/ledger.md`](plan/ledger.md), `plan/ledger/` | Durum kaydı ve aşama günlükleri |
+| [`plan/Installation_Working_Order.md`](plan/Installation_Working_Order.md) | Kurucunun çalışma düzeni |
 | [`plan/DevOS_Kurulum_Plani.md`](plan/DevOS_Kurulum_Plani.md) | Ne kurulacak, neden, nasıl, hangi sırayla, neyle kanıtlanacak |
 | [`plan/Ek_A_Rol_Sozlesmeleri.md`](plan/Ek_A_Rol_Sozlesmeleri.md) | Rol sözleşmeleri, rol paketleri, rol hazırlama |
 | [`plan/Ek_B_Veri_Modeli.md`](plan/Ek_B_Veri_Modeli.md) | Veri modeli ve kural kapısı |
