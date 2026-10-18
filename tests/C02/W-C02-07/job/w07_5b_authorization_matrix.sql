@@ -360,10 +360,14 @@ insert into w07_named_rows values
   ('R10r', 'nnynnn', 'reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)'),
   ('R12', 'yyyyyy', 'reading review verdicts, decisions, current authority and epoch (B:40); W-C02-09 names it (EV-C02-008 1.4)'),
   ('R13', 'nnnnyn', 'fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)'),
-  ('R14', 'nnnnyn', 'recording a check''s result (devos_ci, EV-C02-003 §5.2); W-C02-09 names it or moves it to C03 (EV-C02-008 1.4)');
+  ('R14', 'nnnnyn', 'recording a check''s result (devos_ci, EV-C02-003 §5.2); moved to C03 (EV-C02-013 section 4; note N-279 (9))');
 -- Filled before any result (EV-C02-013 section 4, the row of w07_fn_cfg, 2026-10-17): R10r read_eval_run; R12
--- read_review, read_decision, authority_epoch; R13 fingerprint_matches. R14 stays empty in this revision: its move to C03
--- (EV-C02-013 section 4) is carried by note N-279 (9), which must be on main before 5B-row-R14 is revised.
+-- read_review, read_decision, authority_epoch; R13 fingerprint_matches. R14 has no C02 function: revised before any
+-- result (2026-10-18), it moves to C03 (EV-C02-013 section 4; note N-279 (9) on plan/work/C02.md: Appendix B gives no
+-- record family for a check's result and no C02 check writes one; C03's test 6, the leak check, or test 5's gating
+-- check is the first to need one, and C03's work list gives the family and its function). So 5B-row-R14 is no longer a
+-- case of this file, as R11 and R18, rows of later stages, are none when absent; a function named for R14 here would
+-- still have its six cells judged.
 create function pg_temp.w07_fn_cfg(p_row text) returns text language sql immutable as $f$
   select t.v from (values ('R10r', 'read_eval_run'), ('R12', 'read_review,read_decision,authority_epoch'),
                           ('R13', 'fingerprint_matches'), ('R14', '')) t(k, v) where t.k = p_row
@@ -411,8 +415,12 @@ begin
     end loop;
   end loop;
   -- A row of C02 with no function present cannot be judged: could not check (moved rows excepted, see the specification).
+  -- R14 moved to C03 (EV-C02-013 section 4; N-279 (9)): not a case when no function is named for it.
+  if not ('R14' = any(seen)) then
+    raise notice 'W07_5B not a case: 5B-row-R14: moved to C03 (EV-C02-013 section 4; note N-279 (9)); no C02 function records a check''s result';
+  end if;
   for m in select distinct x.row_id from w07_matrix x where x.row_id not in ('R11', 'R16', 'R18')
-           union select n.row_id from w07_named_rows n order by 1 loop
+           union select n.row_id from w07_named_rows n where n.row_id <> 'R14' order by 1 loop
     if not (m.row_id = any(seen)) then
       perform pg_temp.w07_cnc('5B-row-' || m.row_id, case when m.row_id in (select row_id from w07_named_rows)
         then 'no function is named for this row yet (w07_fn_cfg; README section 8): '

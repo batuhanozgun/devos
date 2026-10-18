@@ -328,17 +328,38 @@ create function pg_temp.f06_run_args(p_run text) returns jsonb language sql as $
 $f$;
 -- A late fill, at the call: the installation's Mission (the one whose creation event is transferred, EV-C02-013
 -- section 4) exists only once transfer_mission's own recipe has run, so the recipes that name it (transfer_work,
--- transfer_need) or a Work under it (record_ledger_entry's stage Work, made here by transfer_work) are completed just
--- before their call. If it cannot be done, the arguments stay as they are and the build's refusal makes the case
+-- transfer_need) or a Work under it (record_ledger_entry's stage Work, made here by transfer_work; transfer_acceptance's
+-- target Work and its Review copy, EV-C02-013 R2-2) are completed just before their call. If it cannot be done, the arguments stay as they are and the build's refusal makes the case
 -- could_not_check with its reason.
 create function pg_temp.f06_late(p_what text, p_args jsonb, p_tok text) returns jsonb language plpgsql as $f$
-declare m text; n int; x jsonb;
+declare m text; n int; x jsonb; y jsonb;
 begin
   execute 'select m.id::text from devos_private.mission m where exists (select 1 from devos_private.event e
              where e.aggregate_id = m.id and e.event_type::text = ''transferred'') order by m.created_at limit 1' into m;
   if m is null then return p_args; end if;
   execute 'select max(r.revision) from devos_private.mission_revision r where r.mission_id::text = $1' into n using m;
   if p_what = 'mission' then return p_args || jsonb_build_object('mission_ref', m, 'mission_revision', n); end if;
+  if p_what = 'acceptance' then
+    -- Revised before any result (EV-C02-013 R2-2, 2026-10-18): transfer_acceptance's target must be an installation
+    -- record, so its Work is written with transfer_work under the installation's Mission, and its Review copy with
+    -- transfer_review naming that Work; the Acceptance names both. Either write refused: the arguments are returned
+    -- unchanged (no target_ref, review_ref or current_evidence), and the case gives could_not_check.
+    x := pg_temp.w07_call('transfer_work', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
+           'transfer_source', pg_temp.f06_src('work', 'W07-FIXTURE-F06-ACC-W'), 'mission_ref', m, 'mission_revision', n,
+           'scope', 'installation', 'purpose', 'w07_fixture SYNTHETIC W-C02-07 accepted work item', 'impact_class', 'high',
+           'execution', 'planned', 'acceptance', 'proposed', 'effort_policy', jsonb_build_object('level', 'high',
+           'expert_assessment_ref', 'w07_fixture/expert_assessment', 'non_removable_steps', '["verification"]'::jsonb)), p_tok);
+    if x->'result'->>'status' is distinct from 'ok' then return p_args; end if;
+    y := pg_temp.w07_call('transfer_review', jsonb_build_object('run_id', 'w07_fixture_run_f06_open', 'kind', 'review',
+           'claim', 'w07_fixture SYNTHETIC W-C02-07 verdict copy', 'target_ref', x->'result'->'id', 'criterion', 'w07_fixture/criterion',
+           'basis_refs', '["w07_fixture_tree"]'::jsonb, 'reviewer_declared_session', 'w07_fixture_checker_run SYNTHETIC',
+           'independence_level', 'fresh_context_subagent', 'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', 'pass',
+           'objections', '[]'::jsonb, 'evidence_refs', '[]'::jsonb, 'limits', '[]'::jsonb),
+           'transfer_source', pg_temp.f06_src('verdict', 'W07-FIXTURE-F06-ACC-RV')), p_tok);
+    if y->'result'->>'status' is distinct from 'ok' then return p_args; end if;
+    return p_args || jsonb_build_object('target_ref', x->'result'->'id', 'review_ref', y->'result'->'id',
+                                        'current_evidence', jsonb_build_array(y->'result'->'id'));
+  end if;
   x := pg_temp.w07_call('transfer_work', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
          'transfer_source', pg_temp.f06_src('work', 'W07-FIXTURE-F06-STAGE'), 'mission_ref', m, 'mission_revision', n,
          'scope', 'installation', 'purpose', 'w07_fixture SYNTHETIC W-C02-07 stage work item', 'impact_class', 'high',
@@ -355,7 +376,7 @@ declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 
         t_cal text; t_kur text;
         t_den text; d2 jsonb; mr jsonb; wk jsonb; cl jsonb; op jsonb; x jsonb; fn text; ct text;  -- phase C3
         fx_fail jsonb := '{}'; unformable jsonb; no_repeat jsonb;
-        nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; trv text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
+        nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -415,7 +436,8 @@ begin
   -- reason. These recipes were run on no stub of these functions; a recipe the build refuses gives could_not_check.
   t_den := pg_temp.w07_token('devos_denetim');
   begin  -- open_mission, revise_mission, admit_work: a planted answered batu Decision (B 3.1) and a planted Mission
-    d2 := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered"}');
+    -- Revised before any result (EV-C02-013 R2-7, 2026-10-18): answered_revision 1, the revision answered (DM-11 (a)).
+    d2 := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
     if to_regclass('devos_private.decision_revision') is not null then
       perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', d2->'id', 'revision', 1));
     end if;
@@ -570,9 +592,8 @@ begin
       'reviewer_declared_session', 'w07_fixture_checker_run SYNTHETIC', 'independence_level', 'fresh_context_subagent',
       'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', 'pass', 'objections', '[]'::jsonb,
       'evidence_refs', '[]'::jsonb, 'limits', '[]'::jsonb));
-    x := pg_temp.w07_call('transfer_review', dl2 || jsonb_build_object('transfer_source', pg_temp.f06_src('verdict', 'W07-FIXTURE-F06-RV0')), t_kur);
-    if x->'result'->>'status' is distinct from 'ok' then raise exception 'the Review copy transfer_acceptance needs was not written: %', pg_temp.w07_show(x); end if;
-    trv := x->'result'->>'id';
+    -- (Revised before any result, EV-C02-013 R2-2, 2026-10-18: the Review copy of the planted wt1 that transfer_acceptance
+    -- named is no longer made here; its target and Review copy are made at the call, pg_temp.f06_late 'acceptance'.)
     recipes := recipes || jsonb_build_object(
       'begin_transfer_run', jsonb_build_object('class', 'devos_kurulum', 'args', pg_temp.f06_run_args('w07_fixture_run_f06_begin')),
       'end_transfer_run', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_end',
@@ -602,9 +623,9 @@ begin
         'transfer_source', pg_temp.f06_src('decision', 'W07-FIXTURE-F06-D1'))),
       'transfer_review', jsonb_build_object('class', 'devos_kurulum', 'args', dl2 || jsonb_build_object('target_ref', wt2->'work_id',
         'transfer_source', pg_temp.f06_src('verdict', 'W07-FIXTURE-F06-RV1'))),
-      'transfer_acceptance', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
-        'target_ref', wt1->'work_id', 'review_ref', trv, 'accepted_use', 'installation_acceptance', 'scope', 'installation',
-        'current_evidence', jsonb_build_array(trv), 'transfer_source', pg_temp.f06_src('acceptance', 'W07-FIXTURE-F06-ACC1'))),
+      'transfer_acceptance', jsonb_build_object('class', 'devos_kurulum', 'late', 'acceptance', 'args', jsonb_build_object(
+        'run_id', 'w07_fixture_run_f06_open', 'accepted_use', 'installation_acceptance', 'scope', 'installation',
+        'transfer_source', pg_temp.f06_src('acceptance', 'W07-FIXTURE-F06-ACC1'))),
       'transfer_finding', jsonb_build_object('class', 'devos_kurulum', 'args', jsonb_build_object('run_id', 'w07_fixture_run_f06_open',
         'transfer_source', pg_temp.f06_src('finding', 'W07-FIXTURE-F06-FND1'), 'claim', 'w07_fixture SYNTHETIC W-C02-07 transferred finding',
         'scope', 'installation', 'counter_evidence_searched', 'not_recorded', 'changeable', 'not_recorded', 'epistemic_status', 'observation',
@@ -737,12 +758,20 @@ begin
         continue;
       end if;
       m2 := pg_temp.w07_measure(f.proname, recipes->f.proname->'args', tok);
-      -- An exact repeat makes no event and raises no error (B principle 2): accepted unchanged, or a returned refusal
-      -- (a claim already held, a stale base revision) with nothing changed.
+      -- An exact repeat makes no event and raises no error (B principle 2), and answers ok with the existing id (EV-C02-013
+      -- section 1 item 10: the repeat check comes before stale_revision and run_not_open). Revised before any result
+      -- (EV-C02-013 R2-9, 2026-10-18): a returned refusal is accepted only for claim (already_claimed), release
+      -- (claim_not_active) and record_handover (handed_over: its second call comes after the hand-over its first
+      -- recorded, B:397), the three functions with no exact repeat that answers ok; for every other function the repeat
+      -- must answer status ok.
       perform pg_temp.w07_check('F06-repeat:' || f.proname, (m2->'call'->>'error') is null and not (m2->'call' ? 'interface')
           and jsonb_array_length(m2->'changed') = 0
-          and jsonb_array_length(m2->'events') = 0,
-        'exact repeat: ' || pg_temp.w07_show(m2->'call') || '; tables changed: ' || (m2->'changed')::text || '; new events ' || jsonb_array_length(m2->'events'));
+          and jsonb_array_length(m2->'events') = 0
+          and (f.proname = any (array['claim', 'release', 'record_handover'])
+               or m2->'call'->'result'->>'status' = 'ok'),
+        'exact repeat: ' || pg_temp.w07_show(m2->'call') || '; tables changed: ' || (m2->'changed')::text || '; new events ' || jsonb_array_length(m2->'events')
+        || case when f.proname = any (array['claim', 'release', 'record_handover']) then ' (wanted no error, none, 0; a returned refusal allowed)'
+                else ' (wanted status ok, none, 0)' end);
     end if;
   end loop;
 

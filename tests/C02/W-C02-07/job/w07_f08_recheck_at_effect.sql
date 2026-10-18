@@ -213,7 +213,10 @@ end $f$;
 create function pg_temp.w07_fixture_mission(p_k text, p_scope text) returns jsonb language plpgsql as $f$
 declare d jsonb; r jsonb;
 begin
-  d := pg_temp.w07_owner_insert('devos_private.decision', jsonb_build_object('class', 'batu', 'status', 'answered'));
+  -- Revised before any result (EV-C02-013 R2-7, 2026-10-18): the answer is bound to the revision answered (DM-11 (a)),
+  -- so the answered Decision names answered_revision 1, which open_mission compares with owner_authority_revision.
+  d := pg_temp.w07_owner_insert('devos_private.decision', jsonb_build_object('class', 'batu', 'status', 'answered',
+                                                                          'answered_revision', 1));
   if to_regclass('devos_private.decision_revision') is not null then
     perform pg_temp.w07_owner_insert('devos_private.decision_revision', jsonb_build_object('revision', 1),
                                      jsonb_build_object('devos_private.decision', d->>'id'));
@@ -322,8 +325,10 @@ begin
     wi1 := pg_temp.w07_fixture_work(w, m, sc); wi2 := pg_temp.w07_fixture_work(w, m, sc);
     wg := pg_temp.w07_fixture_work(w, m, sc); ww := pg_temp.w07_fixture_work(w, m, sc);
     wv := pg_temp.w07_fixture_work(w, m, sc);
+    -- Revised before any result (EV-C02-013 R2-4, 2026-10-18): each input_refs element is {ref, revision}, the read-set
+    -- entry's form (EV-C02-013 2.3, admit_work); the first version's key was id.
     wd := pg_temp.w07_fixture_work(w, m, sc, jsonb_build_object('input_refs', jsonb_build_array(
-            jsonb_build_object('id', wi1->>'id', 'revision', 1), jsonb_build_object('id', wi2->>'id', 'revision', 1))));
+            jsonb_build_object('ref', wi1->>'id', 'revision', 1), jsonb_build_object('ref', wi2->>'id', 'revision', 1))));
     perform pg_temp.w07_effect_class();
     ca := pg_temp.w07_claim(w, wa); ce := pg_temp.w07_claim(w, we); cb := pg_temp.w07_claim(w, wb);
     cc1 := pg_temp.w07_claim(w, wc1); cc2 := pg_temp.w07_claim(w, wc2); cc3 := pg_temp.w07_claim(w, wc3);
