@@ -2,7 +2,7 @@
 
 **Senden beklenen:** Hiçbir şey. [Batu'dan beklenenler](https://github.com/batuhanozgun/devos/issues/6) issue'sunda açık karar yok.
 
-**Son güncelleme:** 18 Ekim 2026, 04:50 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
+**Son güncelleme:** 18 Ekim 2026, 23:13 (Türkiye saati). Bu sayfa `tools/records.py durum` ile durum dosyasından (`plan/ledger.md`) üretilir; elle yazılan tek kısım "Şu an" bölümüdür.
 
 **Aşama:** C02 (Veri modeli, kural kapısı ve kimlik zinciri).
 
@@ -17,7 +17,7 @@
 **Sürüyor** (14 Ekim, 14:07 UTC'de senin "devam"ınla). Zamanlanmış üç çalışma (S1–S3) okundu: şifre hiçbir yerde bulunmadı, sahte işaret konduğu yerlerde bulundu. Veritabanı yolunun dört kontrollü denemesi (H2–H5) bitti: hatalı ya da fark çıkaran değişiklik asıl veritabanına hiç gitmedi; onarımlardan sonra iki veritabanı yine birebir aynı. 
 **W-C02-03 kabul edildi** (veritabanı değişikliklerini uygulayan yol, 14 Ekim): son denetçi koşullarla onayladı, koşullar karşılandı. 
 **W-C02-08 kabul edildi** (14 Ekim gecesi): DevOS'un veri şeması, rolleri ve erişim kuralları iki veritabanına da kuruldu (test projesi önce, sonra asıl proje); hiçbir rol tablolara doğrudan yazamıyor, testler iki projede de geçti. 
-**Senden beklenen:** #6'daki A oturumu (53 kısa adım, yaklaşık yarım saat, bilgisayardan): veritabanı arayüzünü iki projede açmak, kurulum ortamının ve CI'nın anahtarlarını üretip yerlerine koymak; bitince #6'ya "A tamam" yazman.
+**A oturumu bitti** (18 Ekim akşamı, senin "A Tamam"ınla): kimlik zinciri ilk kez gerçek yoldan çalıştı; kurulum oturumu veritabanına "ben kimim?" diye sordu, veritabanı "devos_kurulum" dedi; anahtarın kopyası ne oturumun dosyalarında ne veritabanının kayıtlarında bulundu.
 **Sürüyor** (17 Ekim, senin "devam"ınla): W-C02-09, kayıtları kurallı yazan fonksiyonlar; ilk parçası (kimlik zinciri) iki veritabanına da kuruldu, testleri geçti. Koruyucu artık istemci betiğinin anahtarlı çağrısına izin veriyor, başka hiçbir yere değil (W-C02-20 kabul edildi, 18 Ekim gecesi); test anahtarlarının iptalindeki sızıntı düzeltildi (N-280). D-038 bitti: kırma denemesi geçti, ortamı ve dalları sildin. #6'daki dört cevabın (13 Ekim: D-034 b, D-035 a, D-036 a, D-037 a) kayda geçti; efor denemen için deponun sabit "xhigh" ayarı kaldırıldı, etkisi oturum yeniden başlayınca görülecek. 
 **Senin kuralın (D-033):** kullanıcı aksini belirtmedikçe sözleri teknik şartname değildir; kurulum, DevOS ve SOUL için. DevOS'un ve SOUL'un kurallarına yazıldı (PC-48, denetçi onayladı). 
 **C01 kabul edildi** (12 Ekim), sınırlarıyla (FR-05'in daralttığı amaç; rutinin silinmesi senin bildirimin, N-202 bugün 11:40'tan sonra; birleşik deneme kısmi, N-207). 
