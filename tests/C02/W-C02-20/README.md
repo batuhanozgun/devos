@@ -435,6 +435,7 @@ Expected outcomes are given against `main` `7a6f3ea` (the stop, without the exce
 | `arg-function`, `-second`, `-url`, `-option` | ✘ | the claim string as the client's function argument, a second argument, inside a URL argument of the live host, or in an option | ok | ok |
 | `field-description`, `-description-only` | ✘ | the claim string in the Bash call's `description`, with the client's here-string call, or with step 5's call (R10) | ok | ok |
 | `beside-semicolon`, `-and-live`, `-or`, `-bg`, `-newline`, `-heredoc-trailer` | ✘ | the client's call, then `;`, `&&` (to the live host), `||`, `&`, a new line, or a line after the here-document, with a network command carrying the string | ok | ok |
+| `beside-heredoc-delim-line` (added for CHK-C02-080 C1 (i); section 12.7, R15) | ✘ | the client's quoted here-document whose body holds a line equal to its delimiter, then `curl` carrying the string, then the delimiter again, so that the command still ends with the delimiter | ok | ok |
 | `beside-pipe-in` | ✘ | the string in `printf`'s argument piped into the client (R8) | ok | ok |
 | `beside-pipe-out`, `-subst-outer`, `-devtcp` | ✘ | the string only in the client's here-string, its output piped to a one-liner that sends to another host, used inside a substitution in `curl`'s URL, or redirected to `/dev/tcp` | ok | ok |
 | `beside-subst-herestring`, `-unquoted-heredoc` | ✘ | a double-quoted here-string or an unquoted here-document holding a substitution that runs `curl` with the string | ok | ok |
@@ -444,6 +445,7 @@ Expected outcomes are given against `main` `7a6f3ea` (the stop, without the exce
 | `look-clone-cwd`, `-clone-identical-cwd`, `-clone-abs` | ✘ | the relative path run in another clone whose client differs by one line, or is identical; the changed clone's client by its absolute path | ok | ok |
 | `look-interp`, `-exec`, `-module`, `-bash-c`, `-wrapper` | ✘ | another interpreter binary; a one-liner that execs the client's text; `-m tools.devos_rpc`; `bash -c`; `timeout 30` | ok | ok |
 | `look-comment` | ✘ | `curl` carrying the string, the client's call only in a comment | ok | ok |
+| `other-rule-sandbox` (added for CHK-C02-080 C1 (ii); section 12.7, R16) | ✘ | the client's here-string call with `dangerouslyDisableSandbox: true`, which another rule denies; its twin drops only that field and keeps the claim string | BAD (R16) | ok |
 | `missing-file`, `-dir`, `-loop` | ✘ | the here-string call in a tree without the client, with a directory at its path, or with a link to itself (R13) | ok | ok |
 | `info-abs`, `-dot`, `-no-I` | info | the client by its absolute path, by `./`, or without `-I` (R8) | deny | recorded |
 | `info-file-arg` | info | the client's arguments read from a file the call names, so the call holds none of them (a residual, as `P2R-r-file`) | allow | allow |
@@ -465,6 +467,8 @@ How each is built: as section 4 says. Make a scratch copy of change 2's head, ma
 | (f) the exception removed | as at `7a6f3ea` | `pos-herestring`, `pos-heredoc`, `pos-tree`, `env-with-claim` (R14) |
 | (h2) designer's: the exception's allow not withheld | the allowing rule's call text shown in the log (not in `LEAK_WITHHELD`, or its equivalent) | `pos-herestring`, `pos-heredoc`, `pos-tree` |
 | (h3) designer's: the exception logged as `B0` | the allow returned under the shell's general rule | `pos-herestring`, `pos-heredoc`, `pos-tree` |
+| (e9) added for CHK-C02-080 C1: the delimiter-line test removed | a quoted here-document is taken as the client's arguments even when a line of its body equals its delimiter | `beside-heredoc-delim-line` |
+| (e10) added for CHK-C02-080 C1: another rule's denial not withheld | when another rule denies the client path's call, that rule's own denial and log text are returned | `other-rule-sandbox` |
 
 Section 4's (a), the stop removed, also turns every ✘ case here `BAD`, since nothing would deny them. A producer's exception may catch some ✘ cases by more than one of its checks. Then a break turns fewer cases `BAD` than this table names, and the checker states which and why. Each break must still turn at least one case `BAD`, or it is not shown to bite.
 
@@ -504,3 +508,37 @@ All runs were made on 2026-10-17 and 18 (UTC), in the scratch clone `td11` (bran
 - **What the client does with the string:** that it never prints request headers or the answer's claim token is W-C02-09's (the block's "Not covered" (h)). That the live tree's client is the merged one is point 9's sync record.
 - **Other forms of a claim string in the client's input** (cut, upper case, glued): the exception covers the format as the finder defines it. These forms are not cases, and the ✘ cases use whole strings.
 - **The rule's ID and its text:** the producer's (R1, R11). That the exception is named in the guard's docstring and in working order section 10 is point 10's record.
+
+### 12.7 Two cases added for CHK-C02-080's condition C1 (2026-10-18)
+
+**Who and when.** Written on 2026-10-18 by a fresh-context `test-designer` subagent. It is not change 2's producer and it did not write sections 12.1 to 12.6. It worked in the scratch clone `td11` at `927da16` (branch `claude/c02-w20-change2`). Unlike sections 12.1 to 12.6, these two cases were written **after** change 2 and after CHK-C02-080's verdict. That verdict names the two checks of the guard that no case reached (finding 2): the here-document delimiter-line test (`tool_allowlist.py:1955` at `927da16`) and the re-labelling of other rules' denials as L5 (`:2250-2251`). So the cases aim at known code, and their independence is lower than that of the cases written first. They add two cases, one option (`twin_drop`) and its input self-check. They change no earlier case, control, expectation or input, and the diff of `tools/test_token_stop.py` only adds lines. The guard is unchanged.
+
+**The readings.**
+- **R15 A body line equal to the delimiter ends the here-document** (`beside-heredoc-delim-line`, C1 (i)).
+  - What bash does: bash ends a here-document at the first line equal to its delimiter and runs the lines after it as commands. So a call whose quoted here-document holds `EOF`, then `curl … <string>`, then `EOF` sends the string with `curl`.
+  - Why the case is built this way: the whole command still ends with the delimiter, so its outline fits the client's form. Only a check of the body's lines tells it apart. `beside-heredoc-trailer` ends with the `curl` line, so the form check alone rejects it, and it does not reach this check.
+  - Expected: denied by the stop on both events, with nothing repeated (point 5's search).
+  - The twin is the same command with a twin string and no format string. It is allowed at the head and against `main`.
+  - The body's first line also holds the string, as the client's `claim_token`, as a real call would.
+- **R16 Point 5 holds when another rule denies the client path's call** (`other-rule-sandbox`, C1 (ii)).
+  - The planted call is the client's here-string call, the claim string as `heartbeat`'s `claim_token`, with `dangerouslyDisableSandbox: true`, which B10 denies.
+  - Expected: denied on both events. The denial's text, the call's decision log and `guard_report.py`'s output hold no format string.
+  - The test does not name the denial's rule ID, which is the producer's (as R1 and R11). A guard that denied this call under B10 with its usual text would repeat the client's arguments, and the case catches that.
+  - The twin is the same call without that one field, and it keeps the claim string. The twin is allowed at the head, and that shows two things: the call is on the client path, so the case reaches another rule's denial on that path and not L4's denial of the whole call; and the field is what denies it.
+  - As R14: against `main` the twin is denied by the stop, so the case answers `BAD` there by construction.
+  - The input self-check asks three things: the planted call sets the field to `true`; the twin lacks the field; the twin holds a claim-format match and no environment-format match.
+
+**Counts.** Section 12.2's examples become 55 ✘ shapes in nine groups (the new group is "another rule denies the client path's call", with one shape). Section 12.4 gains (e9) and (e10).
+
+**Runs** (2026-10-18 UTC; raw last lines). The break copies are full copies of the clone outside every repository, each with one edit of its guard.
+- At the head, `python3 -I tools/test_token_stop.py`: exit 0, `TOKEN_STOP_TEST PASS (ok 541, BAD 0, info 29)`. Both new cases are `ok` on both events ("denied; its twin allowed; nothing repeated").
+- (e9) line 1955's condition replaced by `if not m:`: exit 1, `TOKEN_STOP_TEST FAIL (ok 539, BAD 2, info 29)`. The two `BAD` lines are `beside-heredoc-delim-line` on both events, each "allowed, expected the stop's denial".
+- (e10) line 2250's condition replaced by `if False:`: exit 1, `TOKEN_STOP_TEST FAIL (ok 539, BAD 2, info 29)`. The two `BAD` lines are `other-rule-sandbox` on both events. Each says the denial's text, the decision log's record and `guard_report.py`'s output hold a format string.
+- With `main`'s guard (`4630798`) in a copy: `TOKEN_STOP_TEST FAIL (ok 531, BAD 10, info 29)`. The `BAD` lines are the eight of section 12.3's `main` column and `other-rule-sandbox` on both events ("its twin was not allowed"). `beside-heredoc-delim-line` is `ok`.
+- The whole suite at the head, `bash tools/test_tool_allowlist.sh`, on the pushed branch's name: exit 0, 1524 lines, 1492 `ok`, 0 `BAD`, 30 `info`, no `SKIPPED` line. Its last lines are `TOKEN_STOP_TEST PASS (ok 541, BAD 0, info 29)` and `ALLOWLIST_TEST PASS`.
+- No output of these runs and no line of the diff holds a format string (searched with both finder patterns, built at run time from the shared file).
+
+**What these two cases do not cover, and why.**
+- **One other rule only.** B10 is the rule planted. Other rules that can deny a call of the client's form (G0's NUL byte in a field, for example) are not cases. The re-labelling is one branch for every rule outside `LEAK_WITHHELD`, so removing it is caught through B10. A rule whose own denial text omits the call would not show that removal, and B10's text does show it, as (e10) shows.
+- **One delimiter quote.** The body line is tested with a single-quoted `EOF` only. The double-quoted form and other delimiter names go through the same check. CHK-C02-080 probed them (finding 1), and they are not cases here.
+- **Each failure class has one example here, not two.** This addition was scoped to the two checks C1 names. The classes themselves are covered by section 12.3's earlier cases: `beside-*` for commands beside the client call, and R12's withholding for repetition.
