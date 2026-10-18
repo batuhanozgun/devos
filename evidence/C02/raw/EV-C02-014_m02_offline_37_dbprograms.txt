@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the job's step dbprograms over the copy; no key, no request, no network)
+m0902b: step dbprograms' Python taken from migrate.yml: 50 lines
+test programs: 1; endpoint https://cqbzxexxwrrbrlszoseg.supabase.co; publishable key not set (null); tokens for ['devos_backup', 'devos_calisma', 'devos_ci', 'devos_denetim', 'devos_kurulum', 'devos_sinav'] and one revoked token
+W07_IDC_REAL_PATH: Data API part and file look (synthetic tokens from the job; no value or header is printed)
+IDC-file1	ok	14 migration files; statements that call issue_env_token or revoke_env_token: none
+IDC-http	could_not_check	apikey is null: the job holds no publishable key for devos-test yet (N-255, The key's source, decided), so no Data API case can run
+W07_IDC_REAL_PATH COULD NOT CHECK (1 of 2 could not be checked)
+test program w07_idc_real_path.py: could not check
+[step dbprograms exit 1]
+prd10 scrub (37_dbprograms): 0 token-format strings removed

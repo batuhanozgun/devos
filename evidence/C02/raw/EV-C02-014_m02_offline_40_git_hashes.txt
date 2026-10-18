@@ -1,0 +1,38 @@
+hashes of the bytes run (offline run 2026-10-18); offline, PostgreSQL 16.x, counts: no
+db6d6bea49c3990e2a197ec853af7d8471f483cb
+080333bad93831a74952b800119903efe6cb1d26f7019cd46fa2b15bd8de91c1  supabase/migrations/20261018203001_w09_private_helpers.sql
+the program copy and its staged file (working tree):
+093b7c3a1d0cda5402793885ed2e4f131dd150a1c357573232d236aaac13f66a  supabase/migrations/tests/w07_idc_real_path.py
+093b7c3a1d0cda5402793885ed2e4f131dd150a1c357573232d236aaac13f66a  tests/C02/W-C02-07/job/w07_idc_real_path.py
+the staged file at main db6d6be, at its last change 3e81482 and at W-C02-07's merge 6807099 (git show):
+db6d6be  093b7c3a1d0cda5402793885ed2e4f131dd150a1c357573232d236aaac13f66a  -
+3e81482  093b7c3a1d0cda5402793885ed2e4f131dd150a1c357573232d236aaac13f66a  -
+68070993cebf76a2433256b6180c7dfc80889501  093b7c3a1d0cda5402793885ed2e4f131dd150a1c357573232d236aaac13f66a  -
+the IDC SQL copy and its staged file:
+14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  supabase/migrations/tests/w07_idc_identity_chain.sql
+14380e57b5dfdd55b56d4f2ae565f7c59a81115948dff71a2fe9e2f5d8960a38  tests/C02/W-C02-07/job/w07_idc_identity_chain.sql
+cmp of the program copy with its staged file:
+identical
+backslashes in M09-02: 0
+git status --porcelain:
+ M evidence/C02/EV-C02-014_w09_build.md
+?? evidence/C02/raw/EV-C02-014_m02_offline_01_init.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_02_start_setup.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_03_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_04_temporary_before.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_05_apply_m0902.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_06_temporary_after.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_07_drift.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_08_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_09_staged.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_10_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_11_helpers.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_12_tokencheck.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_13_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_14_server_log_scan.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_15_stop.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_16_idc_file_look.txt
+?? evidence/C02/raw/EV-C02-014_m02_offline_17_git_hashes.txt
+?? supabase/migrations/20261018203001_w09_private_helpers.sql
+?? supabase/migrations/tests/w07_idc_real_path.py
+git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/ (empty: no tracked file there changed):

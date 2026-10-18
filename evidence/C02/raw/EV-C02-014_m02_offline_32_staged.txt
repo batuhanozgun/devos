@@ -1,0 +1,183 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (staged files run in place, not copies; a self-check, never a result)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql
+w07_6tk_token_reasons.sql: BEGIN
+w07_6tk_token_reasons.sql: SET
+w07_6tk_token_reasons.sql: SET
+w07_6tk_token_reasons.sql: CREATE TABLE
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:419: NOTICE:  T-W07-6TK answers of the derivation seen: clean 1 , fail 3 , could not check 21 , of 25
+w07_6tk_token_reasons.sql: DO
+w07_6tk_token_reasons.sql:   case_id  |     outcome     |                                                                                                            detail                                                                                                            
+w07_6tk_token_reasons.sql: -----------+-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_6tk_token_reasons.sql:  6TK-em1-a | ok              | empty expected; code empty; err - ; ra {"token_role_class|empty|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-em1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-h1    | ok              | env_tokens absent: a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h2    | ok              | token_hash unreadable: a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h3    | ok              | revoked_at unreadable (partial): a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h4    | ok              | role_class unreadable (partial): a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu0-a | ok              | request.headers never set; header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu1-a | ok              | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-hu2-a | ok              | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu3-a | ok              | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu4-a | ok              | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ka1   | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-ka2   | ok              | a verified audit token is accepted: devos_denetim; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma1-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-ma2-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma3-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma4-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma5-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma6-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma7-a | ok              | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi1-a | ok              | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-mi2-a | ok              | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi3-a | ok              | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi4-a | ok              | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-rv1-a | ok              | revoked expected; code revoked; err - ; ra {"token_role_class|revoked|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-rv1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-un1-a | ok              | unknown expected; code unknown; err - ; ra {"token_role_class|unknown|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-un1-b | could_not_check | no devos_api function that refuses devos_calisma exists yet
+w07_6tk_token_reasons.sql:  6TK-un2-a | ok              | unknown expected; code unknown; err - ; ra {"token_role_class|unknown|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql: (32 rows)
+w07_6tk_token_reasons.sql: 
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: ERROR:  W07_6TK_TOKEN_REASONS COULD NOT CHECK (7 of 32 could not be checked)
+w07_6tk_token_reasons.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_6tk_token_reasons.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm19b_burst_count.sql
+w07_dm19b_burst_count.sql: BEGIN
+w07_dm19b_burst_count.sql: SET
+w07_dm19b_burst_count.sql: SET
+w07_dm19b_burst_count.sql: CREATE TABLE
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: DO
+w07_dm19b_burst_count.sql:              case_id              |     outcome     |                                                                                                           detail                                                                                                            
+w07_dm19b_burst_count.sql: ----------------------------------+-----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_dm19b_burst_count.sql:  DM19B-accept-empty               | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-malformed           | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-missing             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-revoked             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-unknown             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-percall                    | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-pos                        | ok              | returned {"status": "ok", "role_class": "devos_calisma"}; new records 0
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-empty     | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is empty", "status": "refused", "reason_code": "empty"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-malformed | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is not of the token format", "status": "refused", "reason_code": "malformed"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-missing   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-revoked   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is revoked", "status": "refused", "reason_code": "revoked"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-unknown   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is not known", "status": "refused", "reason_code": "unknown"}
+w07_dm19b_burst_count.sql: (12 rows)
+w07_dm19b_burst_count.sql: 
+w07_dm19b_burst_count.sql: psql:tests/C02/W-C02-07/job/w07_dm19b_burst_count.sql:392: ERROR:  W07_DM19B_BURST_COUNT COULD NOT CHECK (6 of 12 could not be checked)
+w07_dm19b_burst_count.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm19b_burst_count.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql
+w07_5b_authorization_matrix.sql: BEGIN
+w07_5b_authorization_matrix.sql: SET
+w07_5b_authorization_matrix.sql: SET
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: INSERT 0 52
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: INSERT 0 4
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:432: NOTICE:  W07_5B not a case: 5B-row-R14: moved to C03 (EV-C02-013 section 4; note N-279 (9)); no C02 function records a check's result
+w07_5b_authorization_matrix.sql: DO
+w07_5b_authorization_matrix.sql:            case_id           |     outcome     |                                                                                      detail                                                                                      
+w07_5b_authorization_matrix.sql: -----------------------------+-----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-bak | ok              | v cell: token_role_class with the devos_backup token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-cal | ok              | v cell: token_role_class with the devos_calisma token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-ci  | ok              | v cell: token_role_class with the devos_ci token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-den | ok              | v cell: token_role_class with the devos_denetim token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-kur | ok              | v cell: token_role_class with the devos_kurulum token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-sin | ok              | v cell: token_role_class with the devos_sinav token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-row-R02                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R03                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R04                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R05                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R06                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R07                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R08g                 | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                 | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R12                  | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading review verdicts, decisions, current authority and epoch (B:40); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                  | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R20                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R21                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R22                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R23                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R24                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R25                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                  | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: (27 rows)
+w07_5b_authorization_matrix.sql: 
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (21 of 27 could not be checked)
+w07_5b_authorization_matrix.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_5b_authorization_matrix.sql: not passed (psql exit 3)
+[drive dbtests exit 1]
+prd10 scrub (32_staged): 0 token-format strings removed

@@ -1,0 +1,5 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the break copies, made outside the repository)
+b3_grant_back_removed.sql: made (one replacement)
+b4_public_revoke_removed.sql: made (one replacement)
+b5_postgres_revoked.sql: made (one replacement)
+prd10 scrub (21_breaks_made): 0 token-format strings removed
