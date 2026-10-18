@@ -1,0 +1,3 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+prd10 log scan: /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0903_pg/log: 508 lines; token-format strings: 0
+prd10 scrub (11_server_log_scan): 0 token-format strings removed

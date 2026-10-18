@@ -1,0 +1,59 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W14-FN's staged file, run in place, not a copy; a self-check, never a result)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql
+w14_fn_transfer_functions.sql: BEGIN
+w14_fn_transfer_functions.sql: SET
+w14_fn_transfer_functions.sql: SET
+w14_fn_transfer_functions.sql: CREATE TABLE
+w14_fn_transfer_functions.sql: CREATE TABLE
+w14_fn_transfer_functions.sql: INSERT 0 1
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: DO
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: DO
+w14_fn_transfer_functions.sql:  case_id |     outcome     |                                                detail                                                
+w14_fn_transfer_functions.sql: ---------+-----------------+------------------------------------------------------------------------------------------------------
+w14_fn_transfer_functions.sql:  FN-pre  | could_not_check | no function of the ledger transfer's group exists in devos_api (W-C02-09 builds them; EV-C02-005 S5)
+w14_fn_transfer_functions.sql: (1 row)
+w14_fn_transfer_functions.sql: 
+w14_fn_transfer_functions.sql: psql:tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql:1254: ERROR:  W14_FN_TRANSFER_FUNCTIONS COULD NOT CHECK (1 of 1 could not be checked)
+w14_fn_transfer_functions.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w14_fn_transfer_functions.sql: not passed (psql exit 3)
+[drive dbtests exit 1]
+prd10 scrub (28_staged_w14): 0 token-format strings removed

@@ -1,0 +1,2011 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged staged files of tests/C02/W-C02-07/job/, run in place, not copies; a self-check, never a result)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5a_no_direct_writes.sql
+w07_5a_no_direct_writes.sql: BEGIN
+w07_5a_no_direct_writes.sql: SET
+w07_5a_no_direct_writes.sql: SET
+w07_5a_no_direct_writes.sql: CREATE TABLE
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: DO
+w07_5a_no_direct_writes.sql:                   case_id                  | outcome |                                                                                           detail                                                                                           
+w07_5a_no_direct_writes.sql: -------------------------------------------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_5a_no_direct_writes.sql:  5A-cat-api                                | ok      | tables, views or sequences in devos_api: none
+w07_5a_no_direct_writes.sql:  5A-cat-default                            | ok      | default privileges that would give PUBLIC or an application role a privilege on a table or sequence a later migration adds to devos_private
+w07_5a_no_direct_writes.sql:  5A-cat-grantees                           | ok      | other grantees on devos_private relations (not the owner, postgres, service_role or supabase_admin): none
+w07_5a_no_direct_writes.sql:  5A-cat-priv                               | ok      | privileges on devos_private or its objects held by PUBLIC or an application role: none on relations
+w07_5a_no_direct_writes.sql:  5A-r:anon:acceptance                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:artifact                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:artifact_revision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:assignment                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:decision                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:decision_revision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:effect_class                    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:effort_policy                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:env_tokens                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:eval_run                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:event                           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:finding                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:finding_revision                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:function_deployment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:global_authority_epoch          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:leak_fingerprint                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:mission                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:mission_revision                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:need                            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:observation                     | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:operation                       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:rejected_attempt                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:relation                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:review                          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:verdict                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:work                            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:work_revision                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:acceptance             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:artifact               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:artifact_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:assignment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:decision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:decision_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:effect_class           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:effort_policy          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:env_tokens             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:eval_run               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:event                  | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:finding                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:finding_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:function_deployment    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:global_authority_epoch | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:leak_fingerprint       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:mission                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:mission_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:need                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:observation            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:operation              | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:rejected_attempt       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:relation               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:review                 | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:verdict                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:work                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:work_revision          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:acceptance             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:artifact               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:artifact_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:assignment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:decision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:decision_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:effect_class           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:effort_policy          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:env_tokens             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:eval_run               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:event                  | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:finding                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:finding_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:function_deployment    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:global_authority_epoch | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:leak_fingerprint       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:mission                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:mission_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:need                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:observation            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:operation              | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:rejected_attempt       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:relation               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:review                 | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:verdict                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:work                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:work_revision          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-roles                                  | ok      | roles tried: anon, authenticated, authenticator; outside the line: the migration role and the project owner (postgres), service_role and Supabase's own roles (W-C02-08 "Not covered" (e))
+w07_5a_no_direct_writes.sql:  5A-snap                                   | ok      | tables whose row count or content changed: none
+w07_5a_no_direct_writes.sql:  5A-w:anon:acceptance                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:artifact                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:artifact_revision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:assignment                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:decision                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:decision_revision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:effect_class                    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:effort_policy                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:env_tokens                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:eval_run                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:event                           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:finding                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:finding_revision                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:function_deployment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:global_authority_epoch          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:leak_fingerprint                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:mission                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:mission_revision                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:need                            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:observation                     | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:operation                       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:rejected_attempt                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:relation                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:review                          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:verdict                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:work                            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:work_revision                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:acceptance             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:artifact               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:artifact_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:assignment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:decision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:decision_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:effect_class           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:effort_policy          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:env_tokens             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:eval_run               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:event                  | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:finding                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:finding_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:function_deployment    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:global_authority_epoch | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:leak_fingerprint       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:mission                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:mission_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:need                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:observation            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:operation              | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:rejected_attempt       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:relation               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:review                 | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:verdict                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:work                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:work_revision          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:acceptance             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:artifact               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:artifact_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:assignment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:decision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:decision_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:effect_class           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:effort_policy          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:env_tokens             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:eval_run               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:event                  | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:finding                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:finding_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:function_deployment    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:global_authority_epoch | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:leak_fingerprint       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:mission                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:mission_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:need                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:observation            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:operation              | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:rejected_attempt       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:relation               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:review                 | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:verdict                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:work                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:work_revision          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql: (168 rows)
+w07_5a_no_direct_writes.sql: 
+w07_5a_no_direct_writes.sql: psql:tests/C02/W-C02-07/job/w07_5a_no_direct_writes.sql:383: NOTICE:  W07_5A_NO_DIRECT_WRITES PASS (168/168)
+w07_5a_no_direct_writes.sql: DO
+w07_5a_no_direct_writes.sql: ROLLBACK
+database test w07_5a_no_direct_writes.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5a_positive_control.sql
+w07_5a_positive_control.sql: BEGIN
+w07_5a_positive_control.sql: SET
+w07_5a_positive_control.sql: SET
+w07_5a_positive_control.sql: CREATE TABLE
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: CREATE FUNCTION
+w07_5a_positive_control.sql: DO
+w07_5a_positive_control.sql:  case_id |     outcome     |                        detail                        
+w07_5a_positive_control.sql: ---------+-----------------+------------------------------------------------------
+w07_5a_positive_control.sql:  5A-pos  | could_not_check | devos_api.relate does not exist (W-C02-09 builds it)
+w07_5a_positive_control.sql: (1 row)
+w07_5a_positive_control.sql: 
+w07_5a_positive_control.sql: psql:tests/C02/W-C02-07/job/w07_5a_positive_control.sql:330: ERROR:  W07_5A_POSITIVE_CONTROL COULD NOT CHECK (1 of 1 could not be checked)
+w07_5a_positive_control.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_5a_positive_control.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql
+w07_5b_authorization_matrix.sql: BEGIN
+w07_5b_authorization_matrix.sql: SET
+w07_5b_authorization_matrix.sql: SET
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: INSERT 0 52
+w07_5b_authorization_matrix.sql: CREATE TABLE
+w07_5b_authorization_matrix.sql: INSERT 0 4
+w07_5b_authorization_matrix.sql: CREATE FUNCTION
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:432: NOTICE:  W07_5B not a case: 5B-row-R14: moved to C03 (EV-C02-013 section 4; note N-279 (9)); no C02 function records a check's result
+w07_5b_authorization_matrix.sql: DO
+w07_5b_authorization_matrix.sql:              case_id             |     outcome     |                                                                                                                                     detail                                                                                                                                     
+w07_5b_authorization_matrix.sql: ---------------------------------+-----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-bak     | ok              | v cell: token_role_class with the devos_backup token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-cal     | ok              | v cell: token_role_class with the devos_calisma token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-ci      | ok              | v cell: token_role_class with the devos_ci token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-den     | ok              | v cell: token_role_class with the devos_denetim token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-kur     | ok              | v cell: token_role_class with the devos_kurulum token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R01-token_role_class-sin     | ok              | v cell: token_role_class with the devos_sinav token must pass the role gate; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-bak | ok              | x cell: link_prior_decisions with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"link_prior_decisions|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-cal | ok              | v cell: link_prior_decisions with the devos_calisma token must pass the role gate; code missing_field; err - ; ra {"link_prior_decisions|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-ci  | ok              | x cell: link_prior_decisions with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"link_prior_decisions|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-den | ok              | x cell: link_prior_decisions with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"link_prior_decisions|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-kur | ok              | v cell: link_prior_decisions with the devos_kurulum token must pass the role gate; code missing_field; err - ; ra {"link_prior_decisions|missing_field|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-link_prior_decisions-sin | ok              | v cell: link_prior_decisions with the devos_sinav token must pass the role gate; code missing_field; err - ; ra {"link_prior_decisions|missing_field|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-bak        | ok              | x cell: open_decision with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_decision|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-cal        | ok              | v cell: open_decision with the devos_calisma token must pass the role gate; code missing_field; err - ; ra {"open_decision|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-ci         | ok              | x cell: open_decision with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_decision|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-den        | ok              | x cell: open_decision with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_decision|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-kur        | ok              | v cell: open_decision with the devos_kurulum token must pass the role gate; code missing_field; err - ; ra {"open_decision|missing_field|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-open_decision-sin        | ok              | v cell: open_decision with the devos_sinav token must pass the role gate; code missing_field; err - ; ra {"open_decision|missing_field|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-bak          | ok              | x cell: record_need with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"record_need|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-cal          | ok              | v cell: record_need with the devos_calisma token must pass the role gate; code missing_field; err - ; ra {"record_need|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-ci           | ok              | x cell: record_need with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"record_need|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-den          | ok              | x cell: record_need with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"record_need|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-kur          | ok              | v cell: record_need with the devos_kurulum token must pass the role gate; code missing_field; err - ; ra {"record_need|missing_field|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-record_need-sin          | ok              | v cell: record_need with the devos_sinav token must pass the role gate; code missing_field; err - ; ra {"record_need|missing_field|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-bak         | ok              | x cell: resolve_need with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"resolve_need|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-cal         | ok              | v cell: resolve_need with the devos_calisma token must pass the role gate; code not_found; err - ; ra {"resolve_need|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-ci          | ok              | x cell: resolve_need with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"resolve_need|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-den         | ok              | x cell: resolve_need with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"resolve_need|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-kur         | ok              | v cell: resolve_need with the devos_kurulum token must pass the role gate; code not_found; err - ; ra {"resolve_need|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R02-resolve_need-sin         | ok              | v cell: resolve_need with the devos_sinav token must pass the role gate; code not_found; err - ; ra {"resolve_need|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-bak         | ok              | x cell: open_mission with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-cal         | ok              | x cell: open_mission with the devos_calisma token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-ci          | ok              | x cell: open_mission with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-den         | ok              | x cell: open_mission with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-kur         | ok              | v cell: open_mission with the devos_kurulum token must pass the role gate; code missing_field; err - ; ra {"open_mission|missing_field|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-open_mission-sin         | ok              | x cell: open_mission with the devos_sinav token must be refused for its role class; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-bak       | ok              | x cell: revise_mission with the devos_backup token must be refused for its role class; code role_class_not_permitted; err - ; ra {"revise_mission|role_class_not_permitted|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-cal       | ok              | x cell: revise_mission with the devos_calisma token must be refused for its role class; code role_class_not_permitted; err - ; ra {"revise_mission|role_class_not_permitted|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-ci        | ok              | x cell: revise_mission with the devos_ci token must be refused for its role class; code role_class_not_permitted; err - ; ra {"revise_mission|role_class_not_permitted|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-den       | ok              | x cell: revise_mission with the devos_denetim token must be refused for its role class; code role_class_not_permitted; err - ; ra {"revise_mission|role_class_not_permitted|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-kur       | ok              | v cell: revise_mission with the devos_kurulum token must pass the role gate; code missing_field; err - ; ra {"revise_mission|missing_field|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R03-revise_mission-sin       | ok              | x cell: revise_mission with the devos_sinav token must be refused for its role class; code role_class_not_permitted; err - ; ra {"revise_mission|role_class_not_permitted|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-bak        | ok              | v cell: read_decision with the devos_backup token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_backup": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-cal        | ok              | v cell: read_decision with the devos_calisma token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-ci         | ok              | v cell: read_decision with the devos_ci token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-den        | ok              | v cell: read_decision with the devos_denetim token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-kur        | ok              | v cell: read_decision with the devos_kurulum token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-R12-read_decision-sin        | ok              | v cell: read_decision with the devos_sinav token must pass the role gate; code not_found; err - ; ra {"read_decision|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-row-R04                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R05                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R06                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R07                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R08g                     | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R20                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R21                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R22                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R23                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R24                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R25                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: (66 rows)
+w07_5b_authorization_matrix.sql: 
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (18 of 66 could not be checked)
+w07_5b_authorization_matrix.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_5b_authorization_matrix.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql
+w07_5c_other_session_fake_id.sql: BEGIN
+w07_5c_other_session_fake_id.sql: SET
+w07_5c_other_session_fake_id.sql: SET
+w07_5c_other_session_fake_id.sql: CREATE TABLE
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: CREATE FUNCTION
+w07_5c_other_session_fake_id.sql: DO
+w07_5c_other_session_fake_id.sql:  case_id |     outcome     |                   detail                   
+w07_5c_other_session_fake_id.sql: ---------+-----------------+--------------------------------------------
+w07_5c_other_session_fake_id.sql:  5C-pre  | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_5c_other_session_fake_id.sql: (1 row)
+w07_5c_other_session_fake_id.sql: 
+w07_5c_other_session_fake_id.sql: psql:tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql:362: ERROR:  W07_5C_OTHER_SESSION_FAKE_ID COULD NOT CHECK (1 of 1 could not be checked)
+w07_5c_other_session_fake_id.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_5c_other_session_fake_id.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_5d_format_gates_empty.sql
+w07_5d_format_gates_empty.sql: BEGIN
+w07_5d_format_gates_empty.sql: SET
+w07_5d_format_gates_empty.sql: SET
+w07_5d_format_gates_empty.sql: CREATE TABLE
+w07_5d_format_gates_empty.sql: CREATE TABLE
+w07_5d_format_gates_empty.sql: CREATE SEQUENCE
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: CREATE FUNCTION
+w07_5d_format_gates_empty.sql: DO
+w07_5d_format_gates_empty.sql:  case_id |     outcome     |                      detail                       
+w07_5d_format_gates_empty.sql: ---------+-----------------+---------------------------------------------------
+w07_5d_format_gates_empty.sql:  5D-pre  | could_not_check | devos_api.set_effort_policy(jsonb) does not exist
+w07_5d_format_gates_empty.sql: (1 row)
+w07_5d_format_gates_empty.sql: 
+w07_5d_format_gates_empty.sql: psql:tests/C02/W-C02-07/job/w07_5d_format_gates_empty.sql:612: ERROR:  W07_5D_FORMAT_GATES_EMPTY COULD NOT CHECK (1 of 1 could not be checked)
+w07_5d_format_gates_empty.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_5d_format_gates_empty.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql
+w07_6rg_rule_gate_could_not_check.sql: BEGIN
+w07_6rg_rule_gate_could_not_check.sql: SET
+w07_6rg_rule_gate_could_not_check.sql: SET
+w07_6rg_rule_gate_could_not_check.sql: CREATE TABLE
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE TABLE
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: CREATE FUNCTION
+w07_6rg_rule_gate_could_not_check.sql: DO
+w07_6rg_rule_gate_could_not_check.sql:  case_id |     outcome     |                   detail                   
+w07_6rg_rule_gate_could_not_check.sql: ---------+-----------------+--------------------------------------------
+w07_6rg_rule_gate_could_not_check.sql:  6RG-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_6rg_rule_gate_could_not_check.sql: (1 row)
+w07_6rg_rule_gate_could_not_check.sql: 
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: ERROR:  W07_6RG_RULE_GATE_COULD_NOT_CHECK COULD NOT CHECK (1 of 1 could not be checked)
+w07_6rg_rule_gate_could_not_check.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_6rg_rule_gate_could_not_check.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_6st_settings_could_not_check.sql
+w07_6st_settings_could_not_check.sql: BEGIN
+w07_6st_settings_could_not_check.sql: SET
+w07_6st_settings_could_not_check.sql: SET
+w07_6st_settings_could_not_check.sql: CREATE TABLE
+w07_6st_settings_could_not_check.sql: CREATE TABLE
+w07_6st_settings_could_not_check.sql: CREATE SEQUENCE
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: CREATE FUNCTION
+w07_6st_settings_could_not_check.sql: DO
+w07_6st_settings_could_not_check.sql:  case_id |     outcome     |                     detail                     
+w07_6st_settings_could_not_check.sql: ---------+-----------------+------------------------------------------------
+w07_6st_settings_could_not_check.sql:  6ST-pre | could_not_check | devos_api.record_finding(jsonb) does not exist
+w07_6st_settings_could_not_check.sql: (1 row)
+w07_6st_settings_could_not_check.sql: 
+w07_6st_settings_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6st_settings_could_not_check.sql:853: ERROR:  W07_6ST_SETTINGS_COULD_NOT_CHECK COULD NOT CHECK (1 of 1 could not be checked)
+w07_6st_settings_could_not_check.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_6st_settings_could_not_check.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql
+w07_6tk_token_reasons.sql: BEGIN
+w07_6tk_token_reasons.sql: SET
+w07_6tk_token_reasons.sql: SET
+w07_6tk_token_reasons.sql: CREATE TABLE
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: CREATE FUNCTION
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:419: NOTICE:  T-W07-6TK answers of the derivation seen: clean 1 , fail 4 , could not check 21 , of 26
+w07_6tk_token_reasons.sql: DO
+w07_6tk_token_reasons.sql:   case_id  | outcome |                                                                                                                                  detail                                                                                                                                  
+w07_6tk_token_reasons.sql: -----------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_6tk_token_reasons.sql:  6TK-em1-a | ok      | empty expected; code empty; err - ; ra {"token_role_class|empty|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-em1-b | ok      | empty on open_mission with neutral arguments, refused for the token before its role list and arguments; code empty; err - ; ra {"open_mission|empty|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h1    | ok      | env_tokens absent: a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h2    | ok      | token_hash unreadable: a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h3    | ok      | revoked_at unreadable (partial): a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-h4    | ok      | role_class unreadable (partial): a verified token must not be let through; code could_not_check; err - ; ra {"token_role_class|could_not_check|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu0-a | ok      | request.headers never set; header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu1-a | ok      | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu1-b | ok      | header_unreadable on open_mission with neutral arguments, refused for the token before its role list and arguments; code header_unreadable; err - ; ra {"open_mission|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu2-a | ok      | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu3-a | ok      | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-hu4-a | ok      | header_unreadable expected; code header_unreadable; err - ; ra {"token_role_class|header_unreadable|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ka1   | ok      | a verified working token on open_mission: a role refusal under devos_calisma, not a token code; code role_class_not_permitted; err - ; ra {"open_mission|role_class_not_permitted|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ka2   | ok      | a verified audit token is accepted: devos_denetim; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma1-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma1-b | ok      | malformed on open_mission with neutral arguments, refused for the token before its role list and arguments; code malformed; err - ; ra {"open_mission|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma2-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma3-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma4-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma5-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma6-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-ma7-a | ok      | malformed expected; code malformed; err - ; ra {"token_role_class|malformed|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi1-a | ok      | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi1-b | ok      | missing on open_mission with neutral arguments, refused for the token before its role list and arguments; code missing; err - ; ra {"open_mission|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi2-a | ok      | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi3-a | ok      | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-mi4-a | ok      | missing expected; code missing; err - ; ra {"token_role_class|missing|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-rv1-a | ok      | revoked expected; code revoked; err - ; ra {"token_role_class|revoked|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-rv1-b | ok      | revoked on open_mission with neutral arguments, refused for the token before its role list and arguments; code revoked; err - ; ra {"open_mission|revoked|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-un1-a | ok      | unknown expected; code unknown; err - ; ra {"token_role_class|unknown|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-un1-b | ok      | unknown on open_mission with neutral arguments, refused for the token before its role list and arguments; code unknown; err - ; ra {"open_mission|unknown|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql:  6TK-un2-a | ok      | unknown expected; code unknown; err - ; ra {"token_role_class|unknown|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql: (32 rows)
+w07_6tk_token_reasons.sql: 
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+w07_6tk_token_reasons.sql: DO
+w07_6tk_token_reasons.sql: ROLLBACK
+database test w07_6tk_token_reasons.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql
+w07_dm02_revision_append_only.sql: BEGIN
+w07_dm02_revision_append_only.sql: SET
+w07_dm02_revision_append_only.sql: SET
+w07_dm02_revision_append_only.sql: CREATE TABLE
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "work_revision"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "work_revision"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: DO
+w07_dm02_revision_append_only.sql:            case_id            | outcome |                                                                                                                                              detail                                                                                                                                               
+w07_dm02_revision_append_only.sql: ------------------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-del   | ok      | refused (raised 23001 devos_private.artifact_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-ins   | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-trunc | ok      | as deployed: refused (raised 23001 devos_private.artifact_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.artifact_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-upd   | ok      | refused (raised 23001 devos_private.artifact_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-del   | ok      | refused (raised 23001 devos_private.decision_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-ins   | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-trunc | ok      | as deployed: refused (raised 23001 devos_private.decision_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.decision_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-upd   | ok      | refused (raised 23001 devos_private.decision_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-del    | ok      | refused (raised 23001 devos_private.finding_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-ins    | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-trunc  | ok      | as deployed: refused (raised 23001 devos_private.finding_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.finding_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-upd    | ok      | refused (raised 23001 devos_private.finding_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-list                    | ok      | revision tables found: artifact_revision, decision_revision, finding_revision, mission_revision, work_revision
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-del    | ok      | refused (raised 23001 devos_private.mission_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-ins    | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-trunc  | ok      | as deployed: refused (raised 23001 devos_private.mission_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 5 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.mission_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-upd    | ok      | refused (raised 23001 devos_private.mission_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-del       | ok      | refused (raised 23001 devos_private.work_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-ins       | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-work_revision-trunc     | ok      | as deployed: refused (raised 23001 devos_private.work_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 4 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.work_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-upd       | ok      | refused (raised 23001 devos_private.work_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql: (21 rows)
+w07_dm02_revision_append_only.sql: 
+w07_dm02_revision_append_only.sql: psql:tests/C02/W-C02-07/job/w07_dm02_revision_append_only.sql:363: NOTICE:  W07_DM02_REVISION_APPEND_ONLY PASS (21/21)
+w07_dm02_revision_append_only.sql: DO
+w07_dm02_revision_append_only.sql: ROLLBACK
+database test w07_dm02_revision_append_only.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql
+w07_dm07_heartbeat.sql: BEGIN
+w07_dm07_heartbeat.sql: SET
+w07_dm07_heartbeat.sql: SET
+w07_dm07_heartbeat.sql: CREATE TABLE
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: CREATE FUNCTION
+w07_dm07_heartbeat.sql: DO
+w07_dm07_heartbeat.sql:  case_id  |     outcome     |                   detail                   
+w07_dm07_heartbeat.sql: ----------+-----------------+--------------------------------------------
+w07_dm07_heartbeat.sql:  DM07-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_dm07_heartbeat.sql: (1 row)
+w07_dm07_heartbeat.sql: 
+w07_dm07_heartbeat.sql: psql:tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql:429: ERROR:  W07_DM07_HEARTBEAT COULD NOT CHECK (1 of 1 could not be checked)
+w07_dm07_heartbeat.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm07_heartbeat.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm11_answer_revision.sql
+w07_dm11_answer_revision.sql: BEGIN
+w07_dm11_answer_revision.sql: SET
+w07_dm11_answer_revision.sql: SET
+w07_dm11_answer_revision.sql: CREATE TABLE
+w07_dm11_answer_revision.sql: CREATE TABLE
+w07_dm11_answer_revision.sql: CREATE SEQUENCE
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: CREATE FUNCTION
+w07_dm11_answer_revision.sql: DO
+w07_dm11_answer_revision.sql:  case_id  |     outcome     |                 detail                 
+w07_dm11_answer_revision.sql: ----------+-----------------+----------------------------------------
+w07_dm11_answer_revision.sql:  DM11-pre | could_not_check | devos_api.relate(jsonb) does not exist
+w07_dm11_answer_revision.sql: (1 row)
+w07_dm11_answer_revision.sql: 
+w07_dm11_answer_revision.sql: psql:tests/C02/W-C02-07/job/w07_dm11_answer_revision.sql:586: ERROR:  W07_DM11_ANSWER_REVISION COULD NOT CHECK (1 of 1 could not be checked)
+w07_dm11_answer_revision.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm11_answer_revision.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm19_rejected_attempt_survives.sql
+w07_dm19_rejected_attempt_survives.sql: BEGIN
+w07_dm19_rejected_attempt_survives.sql: SET
+w07_dm19_rejected_attempt_survives.sql: SET
+w07_dm19_rejected_attempt_survives.sql: CREATE TABLE
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: CREATE FUNCTION
+w07_dm19_rejected_attempt_survives.sql: DO
+w07_dm19_rejected_attempt_survives.sql:  case_id  |     outcome     |                       detail                        
+w07_dm19_rejected_attempt_survives.sql: ----------+-----------------+-----------------------------------------------------
+w07_dm19_rejected_attempt_survives.sql:  DM19-pre | could_not_check | devos_api.accept or devos_api.relate does not exist
+w07_dm19_rejected_attempt_survives.sql: (1 row)
+w07_dm19_rejected_attempt_survives.sql: 
+w07_dm19_rejected_attempt_survives.sql: psql:tests/C02/W-C02-07/job/w07_dm19_rejected_attempt_survives.sql:401: ERROR:  W07_DM19_REJECTED_ATTEMPT_SURVIVES COULD NOT CHECK (1 of 1 could not be checked)
+w07_dm19_rejected_attempt_survives.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm19_rejected_attempt_survives.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm19b_burst_count.sql
+w07_dm19b_burst_count.sql: BEGIN
+w07_dm19b_burst_count.sql: SET
+w07_dm19b_burst_count.sql: SET
+w07_dm19b_burst_count.sql: CREATE TABLE
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: CREATE FUNCTION
+w07_dm19b_burst_count.sql: DO
+w07_dm19b_burst_count.sql:              case_id              |     outcome     |                                                                                                           detail                                                                                                            
+w07_dm19b_burst_count.sql: ----------------------------------+-----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_dm19b_burst_count.sql:  DM19B-accept-empty               | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-malformed           | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-missing             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-revoked             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-accept-unknown             | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-percall                    | could_not_check | interface: devos_api.accept: 0 definitions
+w07_dm19b_burst_count.sql:  DM19B-pos                        | ok              | returned {"status": "ok", "role_class": "devos_calisma"}; new records 0
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-empty     | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is empty", "status": "refused", "reason_code": "empty"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-malformed | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is not of the token format", "status": "refused", "reason_code": "malformed"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-missing   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-revoked   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is revoked", "status": "refused", "reason_code": "revoked"}
+w07_dm19b_burst_count.sql:  DM19B-token_role_class-unknown   | ok              | 20 calls: refused 20, raised 0; counted rows +1 (bound 1); total +20; per-call rows +0; first call returned {"reason": "the environment token is not known", "status": "refused", "reason_code": "unknown"}
+w07_dm19b_burst_count.sql: (12 rows)
+w07_dm19b_burst_count.sql: 
+w07_dm19b_burst_count.sql: psql:tests/C02/W-C02-07/job/w07_dm19b_burst_count.sql:392: ERROR:  W07_DM19B_BURST_COUNT COULD NOT CHECK (6 of 12 could not be checked)
+w07_dm19b_burst_count.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm19b_burst_count.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql
+w07_dm34_mission_scope.sql: BEGIN
+w07_dm34_mission_scope.sql: SET
+w07_dm34_mission_scope.sql: SET
+w07_dm34_mission_scope.sql: CREATE TABLE
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: CREATE FUNCTION
+w07_dm34_mission_scope.sql: DO
+w07_dm34_mission_scope.sql:  case_id  |     outcome     |                   detail                   
+w07_dm34_mission_scope.sql: ----------+-----------------+--------------------------------------------
+w07_dm34_mission_scope.sql:  DM34-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_dm34_mission_scope.sql: (1 row)
+w07_dm34_mission_scope.sql: 
+w07_dm34_mission_scope.sql: psql:tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql:352: ERROR:  W07_DM34_MISSION_SCOPE COULD NOT CHECK (1 of 1 could not be checked)
+w07_dm34_mission_scope.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm34_mission_scope.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_dm47_path_table.sql
+w07_dm47_path_table.sql: BEGIN
+w07_dm47_path_table.sql: SET
+w07_dm47_path_table.sql: SET
+w07_dm47_path_table.sql: CREATE TABLE
+w07_dm47_path_table.sql: CREATE TABLE
+w07_dm47_path_table.sql: CREATE SEQUENCE
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: CREATE FUNCTION
+w07_dm47_path_table.sql: DO
+w07_dm47_path_table.sql:  case_id  |     outcome     |                    detail                     
+w07_dm47_path_table.sql: ----------+-----------------+-----------------------------------------------
+w07_dm47_path_table.sql:  DM47-pre | could_not_check | devos_private.high_impact_path does not exist
+w07_dm47_path_table.sql: (1 row)
+w07_dm47_path_table.sql: 
+w07_dm47_path_table.sql: psql:tests/C02/W-C02-07/job/w07_dm47_path_table.sql:552: ERROR:  W07_DM47_PATH_TABLE COULD NOT CHECK (1 of 1 could not be checked)
+w07_dm47_path_table.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_dm47_path_table.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f01_whole_intent.sql
+w07_f01_whole_intent.sql: BEGIN
+w07_f01_whole_intent.sql: SET
+w07_f01_whole_intent.sql: SET
+w07_f01_whole_intent.sql: CREATE TABLE
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: DO
+w07_f01_whole_intent.sql:  case_id |     outcome     |                   detail                   
+w07_f01_whole_intent.sql: ---------+-----------------+--------------------------------------------
+w07_f01_whole_intent.sql:  F01-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_f01_whole_intent.sql: (1 row)
+w07_f01_whole_intent.sql: 
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT COULD NOT CHECK (1 of 1 could not be checked)
+w07_f01_whole_intent.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f01_whole_intent.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f04_affected_records.sql
+w07_f04_affected_records.sql: BEGIN
+w07_f04_affected_records.sql: SET
+w07_f04_affected_records.sql: SET
+w07_f04_affected_records.sql: CREATE TABLE
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE TABLE
+w07_f04_affected_records.sql: CREATE TABLE
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: CREATE FUNCTION
+w07_f04_affected_records.sql: DO
+w07_f04_affected_records.sql:  case_id |     outcome     |                                detail                                 
+w07_f04_affected_records.sql: ---------+-----------------+-----------------------------------------------------------------------
+w07_f04_affected_records.sql:  F04-pre | could_not_check | devos_api.affected_entities or devos_api.explain_paths does not exist
+w07_f04_affected_records.sql: (1 row)
+w07_f04_affected_records.sql: 
+w07_f04_affected_records.sql: psql:tests/C02/W-C02-07/job/w07_f04_affected_records.sql:737: ERROR:  W07_F04_AFFECTED_RECORDS COULD NOT CHECK (1 of 1 could not be checked)
+w07_f04_affected_records.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f04_affected_records.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql
+w07_f05_scope_both_sides.sql: BEGIN
+w07_f05_scope_both_sides.sql: SET
+w07_f05_scope_both_sides.sql: SET
+w07_f05_scope_both_sides.sql: CREATE TABLE
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: CREATE FUNCTION
+w07_f05_scope_both_sides.sql: DO
+w07_f05_scope_both_sides.sql:  case_id |     outcome     |                   detail                   
+w07_f05_scope_both_sides.sql: ---------+-----------------+--------------------------------------------
+w07_f05_scope_both_sides.sql:  F05-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_f05_scope_both_sides.sql: (1 row)
+w07_f05_scope_both_sides.sql: 
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:392: ERROR:  W07_F05_SCOPE_BOTH_SIDES COULD NOT CHECK (1 of 1 could not be checked)
+w07_f05_scope_both_sides.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f05_scope_both_sides.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f06_state_change_event.sql
+w07_f06_state_change_event.sql: BEGIN
+w07_f06_state_change_event.sql: SET
+w07_f06_state_change_event.sql: SET
+w07_f06_state_change_event.sql: CREATE TABLE
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: CREATE FUNCTION
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:818: NOTICE:  W07_F06 not a case (outside F06-r3 and F06-p1): F06-repeat:open_decision: a repeat of a creating call with no idempotency key makes a new record, not the same change (B principle 2)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:818: NOTICE:  W07_F06 not a case (outside F06-r3 and F06-p1): F06-repeat:open_mission: a repeat of a creating call with no idempotency key makes a new record, not the same change (B principle 2)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:818: NOTICE:  W07_F06 not a case (outside F06-r3 and F06-p1): F06-repeat:record_need: a repeat of a creating call with no idempotency key makes a new record, not the same change (B principle 2)
+w07_f06_state_change_event.sql: DO
+w07_f06_state_change_event.sql:               case_id               |     outcome     |                                                                                                           detail                                                                                                           
+w07_f06_state_change_event.sql: ------------------------------------+-----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_f06_state_change_event.sql:  F06-event:link_prior_decisions     | ok              | returned {"ids": ["6816a343-20cc-4d89-a136-b3f26a53b77c"], "status": "ok"}; tables changed: ["relation"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]
+w07_f06_state_change_event.sql:  F06-event:open_decision            | ok              | returned {"id": "30e610db-1156-46cf-808f-9cbd5d9ae1ba", "status": "ok", "revision": 1}; tables changed: ["decision", "decision_revision"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]
+w07_f06_state_change_event.sql:  F06-event:open_mission             | ok              | returned {"id": "fb208e10-5859-4274-aa58-0d9148f751cc", "status": "ok", "revision": 1}; tables changed: ["mission", "mission_revision"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_kurulum"}]
+w07_f06_state_change_event.sql:  F06-event:record_need              | ok              | returned {"id": "a3f7dfce-2c53-49a8-b52e-960d188533cd", "status": "ok"}; tables changed: ["need"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]
+w07_f06_state_change_event.sql:  F06-event:resolve_need             | ok              | returned {"id": "63c9b3c2-7f34-4e69-8d54-0597e4f999b9", "status": "ok"}; tables changed: ["need"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_calisma"}]
+w07_f06_state_change_event.sql:  F06-event:revise_mission           | ok              | returned {"id": "63bb8a67-8f56-4dce-a6c6-75fb7085f52e", "status": "ok", "revision": 2}; tables changed: ["mission_revision"]; new events [{"origin": "call", "this_tx": true, "role_class": "devos_kurulum"}]
+w07_f06_state_change_event.sql:  F06-list                           | ok              | 9 devos_api functions (3 marked devos:read) and the two owner-only functions, read from the catalogue
+w07_f06_state_change_event.sql:  F06-orphan-a                       | could_not_check | failure planted on the event write: interface: devos_api.relate: 0 definitions; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-orphan-b                       | could_not_check | failure planted on the relation write: interface: devos_api.relate: 0 definitions; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-owner:issue_env_token          | ok              | issue_env_token as the owner: new events [{"origin": "owner", "this_tx": true, "role_class": "owner"}]
+w07_f06_state_change_event.sql:  F06-owner:revoke_env_token         | ok              | revoke_env_token as the owner: new events [{"origin": "owner", "this_tx": true, "role_class": "owner"}]
+w07_f06_state_change_event.sql:  F06-read-accepted:deployment_drift | ok              | accepted with a devos_calisma token; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-read-accepted:read_decision    | could_not_check | no recipe for a call with its required arguments
+w07_f06_state_change_event.sql:  F06-read-accepted:token_role_class | ok              | accepted with a devos_calisma token; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-read-refused:deployment_drift  | ok              | returned {"reason": "expected is missing or not an object", "status": "could_not_check", "complete": false, "differences": []}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-read-refused:read_decision     | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-read-refused:token_role_class  | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:link_prior_decisions   | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:open_decision          | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:open_mission           | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:record_need            | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:resolve_need           | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-refused:revise_mission         | ok              | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; tables changed besides rejected_attempt: []; new events 0
+w07_f06_state_change_event.sql:  F06-repeat:link_prior_decisions    | ok              | exact repeat: returned {"ids": ["6816a343-20cc-4d89-a136-b3f26a53b77c"], "repeat": true, "status": "ok"}; tables changed: []; new events 0 (wanted status ok, none, 0)
+w07_f06_state_change_event.sql:  F06-repeat:resolve_need            | ok              | exact repeat: returned {"id": "63c9b3c2-7f34-4e69-8d54-0597e4f999b9", "repeat": true, "status": "ok"}; tables changed: []; new events 0 (wanted status ok, none, 0)
+w07_f06_state_change_event.sql:  F06-repeat:revise_mission          | ok              | exact repeat: returned {"id": "63bb8a67-8f56-4dce-a6c6-75fb7085f52e", "repeat": true, "status": "ok", "revision": 2}; tables changed: []; new events 0 (wanted status ok, none, 0)
+w07_f06_state_change_event.sql:  F06-role-token                     | could_not_check | interface: devos_api.relate: 0 definitions; new events []
+w07_f06_state_change_event.sql: (27 rows)
+w07_f06_state_change_event.sql: 
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (4 of 27 could not be checked)
+w07_f06_state_change_event.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f06_state_change_event.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f07_observation_history.sql
+w07_f07_observation_history.sql: BEGIN
+w07_f07_observation_history.sql: SET
+w07_f07_observation_history.sql: SET
+w07_f07_observation_history.sql: CREATE TABLE
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: CREATE FUNCTION
+w07_f07_observation_history.sql: DO
+w07_f07_observation_history.sql:  case_id |     outcome     |                   detail                   
+w07_f07_observation_history.sql: ---------+-----------------+--------------------------------------------
+w07_f07_observation_history.sql:  F07-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_f07_observation_history.sql: (1 row)
+w07_f07_observation_history.sql: 
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: ERROR:  W07_F07_OBSERVATION_HISTORY COULD NOT CHECK (1 of 1 could not be checked)
+w07_f07_observation_history.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f07_observation_history.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql
+w07_f08_recheck_at_effect.sql: BEGIN
+w07_f08_recheck_at_effect.sql: SET
+w07_f08_recheck_at_effect.sql: SET
+w07_f08_recheck_at_effect.sql: CREATE TABLE
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: CREATE FUNCTION
+w07_f08_recheck_at_effect.sql: DO
+w07_f08_recheck_at_effect.sql:  case_id |     outcome     |                   detail                   
+w07_f08_recheck_at_effect.sql: ---------+-----------------+--------------------------------------------
+w07_f08_recheck_at_effect.sql:  F08-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_f08_recheck_at_effect.sql: (1 row)
+w07_f08_recheck_at_effect.sql: 
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:502: ERROR:  W07_F08_RECHECK_AT_EFFECT COULD NOT CHECK (1 of 1 could not be checked)
+w07_f08_recheck_at_effect.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_f08_recheck_at_effect.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_fgfind_finding_gate.sql
+w07_fgfind_finding_gate.sql: BEGIN
+w07_fgfind_finding_gate.sql: SET
+w07_fgfind_finding_gate.sql: SET
+w07_fgfind_finding_gate.sql: CREATE TABLE
+w07_fgfind_finding_gate.sql: CREATE TABLE
+w07_fgfind_finding_gate.sql: CREATE SEQUENCE
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: CREATE FUNCTION
+w07_fgfind_finding_gate.sql: DO
+w07_fgfind_finding_gate.sql:   case_id   |     outcome     |                     detail                     
+w07_fgfind_finding_gate.sql: ------------+-----------------+------------------------------------------------
+w07_fgfind_finding_gate.sql:  FGFIND-pre | could_not_check | devos_api.record_finding(jsonb) does not exist
+w07_fgfind_finding_gate.sql: (1 row)
+w07_fgfind_finding_gate.sql: 
+w07_fgfind_finding_gate.sql: psql:tests/C02/W-C02-07/job/w07_fgfind_finding_gate.sql:551: ERROR:  W07_FGFIND_FINDING_GATE COULD NOT CHECK (1 of 1 could not be checked)
+w07_fgfind_finding_gate.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_fgfind_finding_gate.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_idc_identity_chain.sql
+w07_idc_identity_chain.sql: BEGIN
+w07_idc_identity_chain.sql: SET
+w07_idc_identity_chain.sql: SET
+w07_idc_identity_chain.sql: CREATE TABLE
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: DO
+w07_idc_identity_chain.sql:              case_id              | outcome |                                                                              detail                                                                               
+w07_idc_identity_chain.sql: ----------------------------------+---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_idc_identity_chain.sql:  IDC-d-devos_backup               | ok      | token_role_class() answered devos_backup (wanted devos_backup); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_calisma              | ok      | token_role_class() answered devos_calisma (wanted devos_calisma); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_ci                   | ok      | token_role_class() answered devos_ci (wanted devos_ci); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_denetim              | ok      | token_role_class() answered devos_denetim (wanted devos_denetim); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_kurulum              | ok      | token_role_class() answered devos_kurulum (wanted devos_kurulum); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_sinav                | ok      | token_role_class() answered devos_sinav (wanted devos_sinav); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-e1                           | ok      | functions whose result or error held a presented value: none
+w07_idc_identity_chain.sql:  IDC-f1                           | ok      | distinct prefixes 1 (wanted 1); random parts of 43 URL-safe characters: t; prefix ends in _ and names no class: t
+w07_idc_identity_chain.sql:  IDC-i-devos_backup               | ok      | one env_tokens row of class devos_backup, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_calisma              | ok      | one env_tokens row of class devos_calisma, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_ci                   | ok      | one env_tokens row of class devos_ci, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_denetim              | ok      | one env_tokens row of class devos_denetim, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_kurulum              | ok      | one env_tokens row of class devos_kurulum, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_sinav                | ok      | one env_tokens row of class devos_sinav, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-n-acl                        | ok      | issue/revoke functions with EXECUTE for PUBLIC (or the default ACL) or an application role: 0 (wanted 0)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-anon              | ok      | issue_env_token as role anon: state 42501 (wanted 42501, insufficient privilege); changed []; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-authenticated     | ok      | issue_env_token as role authenticated: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticated (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-authenticator     | ok      | issue_env_token as role authenticator: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticator (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-service_role      | ok      | issue_env_token as role service_role: state 42501 (wanted 42501, insufficient privilege); changed []; as service_role (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_backup   | ok      | issue_env_token with the devos_backup token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_calisma  | ok      | issue_env_token with the devos_calisma token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_ci       | ok      | issue_env_token with the devos_ci token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_denetim  | ok      | issue_env_token with the devos_denetim token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_kurulum  | ok      | issue_env_token with the devos_kurulum token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_sinav    | ok      | issue_env_token with the devos_sinav token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-anon             | ok      | revoke_env_token as role anon: state 42501 (wanted 42501, insufficient privilege); changed []; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-authenticated    | ok      | revoke_env_token as role authenticated: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticated (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-authenticator    | ok      | revoke_env_token as role authenticator: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticator (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-service_role     | ok      | revoke_env_token as role service_role: state 42501 (wanted 42501, insufficient privilege); changed []; as service_role (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_backup  | ok      | revoke_env_token with the devos_backup token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_calisma | ok      | revoke_env_token with the devos_calisma token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_ci      | ok      | revoke_env_token with the devos_ci token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_denetim | ok      | revoke_env_token with the devos_denetim token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_kurulum | ok      | revoke_env_token with the devos_kurulum token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_sinav   | ok      | revoke_env_token with the devos_sinav token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-r1                           | ok      | epoch 1 to 2 (wanted +1); revoked_at set: t; events [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner)
+w07_idc_identity_chain.sql:  IDC-r2                           | ok      | the revoked working token: code revoked; err - ; ra {"token_role_class|revoked|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-r3                           | ok      | after the revocation the audit token answers devos_denetim (wanted devos_denetim: an epoch change ends claims, not tokens)
+w07_idc_identity_chain.sql:  IDC-s1                           | ok      | env_tokens columns: id, issued_at, revoked_at, role_class, token_hash (wanted exactly id, role_class, token_hash, issued_at, revoked_at)
+w07_idc_identity_chain.sql:  IDC-s2                           | ok      | the global authority epoch table holds 1 rows (wanted 1)
+w07_idc_identity_chain.sql:  IDC-s3                           | ok      | Event has 2 of role_class and origin
+w07_idc_identity_chain.sql:  IDC-s4                           | ok      | RejectedAttempt has 5 of the 5 key columns, and 0 columns named for a token, header or value (wanted 0)
+w07_idc_identity_chain.sql:  IDC-v1                           | ok      | tables holding a token value: none; not searched (not readable as owner): auth.users
+w07_idc_identity_chain.sql: (43 rows)
+w07_idc_identity_chain.sql: 
+w07_idc_identity_chain.sql: psql:tests/C02/W-C02-07/job/w07_idc_identity_chain.sql:485: NOTICE:  W07_IDC_IDENTITY_CHAIN PASS (43/43)
+w07_idc_identity_chain.sql: DO
+w07_idc_identity_chain.sql: ROLLBACK
+database test w07_idc_identity_chain.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_k05_many_paths.sql
+w07_k05_many_paths.sql: BEGIN
+w07_k05_many_paths.sql: SET
+w07_k05_many_paths.sql: SET
+w07_k05_many_paths.sql: CREATE TABLE
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE TABLE
+w07_k05_many_paths.sql: CREATE TABLE
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: CREATE FUNCTION
+w07_k05_many_paths.sql: DO
+w07_k05_many_paths.sql:  case_id |     outcome     |                                detail                                 
+w07_k05_many_paths.sql: ---------+-----------------+-----------------------------------------------------------------------
+w07_k05_many_paths.sql:  K05-pre | could_not_check | devos_api.affected_entities or devos_api.explain_paths does not exist
+w07_k05_many_paths.sql: (1 row)
+w07_k05_many_paths.sql: 
+w07_k05_many_paths.sql: psql:tests/C02/W-C02-07/job/w07_k05_many_paths.sql:397: ERROR:  W07_K05_MANY_PATHS COULD NOT CHECK (1 of 1 could not be checked)
+w07_k05_many_paths.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_k05_many_paths.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n01_need_justification.sql
+w07_n01_need_justification.sql: BEGIN
+w07_n01_need_justification.sql: SET
+w07_n01_need_justification.sql: SET
+w07_n01_need_justification.sql: CREATE TABLE
+w07_n01_need_justification.sql: CREATE TABLE
+w07_n01_need_justification.sql: CREATE SEQUENCE
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: CREATE FUNCTION
+w07_n01_need_justification.sql: DO
+w07_n01_need_justification.sql:  case_id |     outcome     |                   detail                    
+w07_n01_need_justification.sql: ---------+-----------------+---------------------------------------------
+w07_n01_need_justification.sql:  N01-pre | could_not_check | devos_api.open_review(jsonb) does not exist
+w07_n01_need_justification.sql: (1 row)
+w07_n01_need_justification.sql: 
+w07_n01_need_justification.sql: psql:tests/C02/W-C02-07/job/w07_n01_need_justification.sql:632: ERROR:  W07_N01_NEED_JUSTIFICATION COULD NOT CHECK (1 of 1 could not be checked)
+w07_n01_need_justification.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n01_need_justification.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n02_decision_alternatives.sql
+w07_n02_decision_alternatives.sql: BEGIN
+w07_n02_decision_alternatives.sql: SET
+w07_n02_decision_alternatives.sql: SET
+w07_n02_decision_alternatives.sql: CREATE TABLE
+w07_n02_decision_alternatives.sql: CREATE TABLE
+w07_n02_decision_alternatives.sql: CREATE SEQUENCE
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: CREATE FUNCTION
+w07_n02_decision_alternatives.sql: DO
+w07_n02_decision_alternatives.sql:  case_id |     outcome     |                   detail                   
+w07_n02_decision_alternatives.sql: ---------+-----------------+--------------------------------------------
+w07_n02_decision_alternatives.sql:  N02-pre | could_not_check | devos_private.sample_stream does not exist
+w07_n02_decision_alternatives.sql: (1 row)
+w07_n02_decision_alternatives.sql: 
+w07_n02_decision_alternatives.sql: psql:tests/C02/W-C02-07/job/w07_n02_decision_alternatives.sql:773: ERROR:  W07_N02_DECISION_ALTERNATIVES COULD NOT CHECK (1 of 1 could not be checked)
+w07_n02_decision_alternatives.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n02_decision_alternatives.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n03_effort_policy.sql
+w07_n03_effort_policy.sql: BEGIN
+w07_n03_effort_policy.sql: SET
+w07_n03_effort_policy.sql: SET
+w07_n03_effort_policy.sql: CREATE TABLE
+w07_n03_effort_policy.sql: CREATE TABLE
+w07_n03_effort_policy.sql: CREATE SEQUENCE
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: CREATE FUNCTION
+w07_n03_effort_policy.sql: DO
+w07_n03_effort_policy.sql:  case_id |     outcome     |                      detail                       
+w07_n03_effort_policy.sql: ---------+-----------------+---------------------------------------------------
+w07_n03_effort_policy.sql:  N03-pre | could_not_check | devos_api.set_effort_policy(jsonb) does not exist
+w07_n03_effort_policy.sql: (1 row)
+w07_n03_effort_policy.sql: 
+w07_n03_effort_policy.sql: psql:tests/C02/W-C02-07/job/w07_n03_effort_policy.sql:714: ERROR:  W07_N03_EFFORT_POLICY COULD NOT CHECK (1 of 1 could not be checked)
+w07_n03_effort_policy.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n03_effort_policy.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n04_self_approval.sql
+w07_n04_self_approval.sql: BEGIN
+w07_n04_self_approval.sql: SET
+w07_n04_self_approval.sql: SET
+w07_n04_self_approval.sql: CREATE TABLE
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: DO
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: CREATE FUNCTION
+w07_n04_self_approval.sql: DO
+w07_n04_self_approval.sql:   case_id   |     outcome     |                                                    detail                                                    
+w07_n04_self_approval.sql: ------------+-----------------+--------------------------------------------------------------------------------------------------------------
+w07_n04_self_approval.sql:  N04-T1     | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2     | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2-pos | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-pre    | could_not_check | devos_api.record_verdict does not exist
+w07_n04_self_approval.sql: (4 rows)
+w07_n04_self_approval.sql: 
+w07_n04_self_approval.sql: psql:tests/C02/W-C02-07/job/w07_n04_self_approval.sql:634: ERROR:  W07_N04_SELF_APPROVAL COULD NOT CHECK (4 of 4 could not be checked)
+w07_n04_self_approval.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n04_self_approval.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n08_exam_fact.sql
+w07_n08_exam_fact.sql: BEGIN
+w07_n08_exam_fact.sql: SET
+w07_n08_exam_fact.sql: SET
+w07_n08_exam_fact.sql: CREATE TABLE
+w07_n08_exam_fact.sql: CREATE TABLE
+w07_n08_exam_fact.sql: CREATE SEQUENCE
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: CREATE FUNCTION
+w07_n08_exam_fact.sql: DO
+w07_n08_exam_fact.sql:   case_id  |     outcome     |                   detail                   
+w07_n08_exam_fact.sql: -----------+-----------------+--------------------------------------------
+w07_n08_exam_fact.sql:  N08-pre-x | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_n08_exam_fact.sql: (1 row)
+w07_n08_exam_fact.sql: 
+w07_n08_exam_fact.sql: psql:tests/C02/W-C02-07/job/w07_n08_exam_fact.sql:985: ERROR:  W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+w07_n08_exam_fact.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n08_exam_fact.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n08_exam_records.sql
+w07_n08_exam_records.sql: BEGIN
+w07_n08_exam_records.sql: SET
+w07_n08_exam_records.sql: SET
+w07_n08_exam_records.sql: CREATE TABLE
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: CREATE FUNCTION
+w07_n08_exam_records.sql: DO
+w07_n08_exam_records.sql:  case_id |     outcome     |                  detail                  
+w07_n08_exam_records.sql: ---------+-----------------+------------------------------------------
+w07_n08_exam_records.sql:  N08-pre | could_not_check | devos_api.record_eval_run does not exist
+w07_n08_exam_records.sql: (1 row)
+w07_n08_exam_records.sql: 
+w07_n08_exam_records.sql: psql:tests/C02/W-C02-07/job/w07_n08_exam_records.sql:452: ERROR:  W07_N08_EXAM_RECORDS COULD NOT CHECK (1 of 1 could not be checked)
+w07_n08_exam_records.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n08_exam_records.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n09_finding_gate.sql
+w07_n09_finding_gate.sql: BEGIN
+w07_n09_finding_gate.sql: SET
+w07_n09_finding_gate.sql: SET
+w07_n09_finding_gate.sql: CREATE TABLE
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: CREATE FUNCTION
+w07_n09_finding_gate.sql: DO
+w07_n09_finding_gate.sql:  case_id |     outcome     |                 detail                  
+w07_n09_finding_gate.sql: ---------+-----------------+-----------------------------------------
+w07_n09_finding_gate.sql:  N09-pre | could_not_check | devos_api.review_finding does not exist
+w07_n09_finding_gate.sql: (1 row)
+w07_n09_finding_gate.sql: 
+w07_n09_finding_gate.sql: psql:tests/C02/W-C02-07/job/w07_n09_finding_gate.sql:336: ERROR:  W07_N09_FINDING_GATE COULD NOT CHECK (1 of 1 could not be checked)
+w07_n09_finding_gate.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n09_finding_gate.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n17_claim_token.sql
+w07_n17_claim_token.sql: BEGIN
+w07_n17_claim_token.sql: SET
+w07_n17_claim_token.sql: SET
+w07_n17_claim_token.sql: CREATE TABLE
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: CREATE FUNCTION
+w07_n17_claim_token.sql: DO
+w07_n17_claim_token.sql:  case_id |     outcome     |                   detail                   
+w07_n17_claim_token.sql: ---------+-----------------+--------------------------------------------
+w07_n17_claim_token.sql:  N17-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_n17_claim_token.sql: (1 row)
+w07_n17_claim_token.sql: 
+w07_n17_claim_token.sql: psql:tests/C02/W-C02-07/job/w07_n17_claim_token.sql:401: ERROR:  W07_N17_CLAIM_TOKEN COULD NOT CHECK (1 of 1 could not be checked)
+w07_n17_claim_token.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n17_claim_token.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n25_verdict_staleness.sql
+w07_n25_verdict_staleness.sql: BEGIN
+w07_n25_verdict_staleness.sql: SET
+w07_n25_verdict_staleness.sql: SET
+w07_n25_verdict_staleness.sql: CREATE TABLE
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: CREATE FUNCTION
+w07_n25_verdict_staleness.sql: DO
+w07_n25_verdict_staleness.sql:  case_id |     outcome     |             detail              
+w07_n25_verdict_staleness.sql: ---------+-----------------+---------------------------------
+w07_n25_verdict_staleness.sql:  N25-pre | could_not_check | devos_api.accept does not exist
+w07_n25_verdict_staleness.sql: (1 row)
+w07_n25_verdict_staleness.sql: 
+w07_n25_verdict_staleness.sql: psql:tests/C02/W-C02-07/job/w07_n25_verdict_staleness.sql:340: ERROR:  W07_N25_VERDICT_STALENESS COULD NOT CHECK (1 of 1 could not be checked)
+w07_n25_verdict_staleness.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n25_verdict_staleness.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n28_sample_exemption.sql
+w07_n28_sample_exemption.sql: BEGIN
+w07_n28_sample_exemption.sql: SET
+w07_n28_sample_exemption.sql: SET
+w07_n28_sample_exemption.sql: CREATE TABLE
+w07_n28_sample_exemption.sql: CREATE TABLE
+w07_n28_sample_exemption.sql: CREATE SEQUENCE
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: CREATE FUNCTION
+w07_n28_sample_exemption.sql: DO
+w07_n28_sample_exemption.sql:  case_id |     outcome     |                      detail                       
+w07_n28_sample_exemption.sql: ---------+-----------------+---------------------------------------------------
+w07_n28_sample_exemption.sql:  S-pre   | could_not_check | devos_api.set_effort_policy(jsonb) does not exist
+w07_n28_sample_exemption.sql: (1 row)
+w07_n28_sample_exemption.sql: 
+w07_n28_sample_exemption.sql: psql:tests/C02/W-C02-07/job/w07_n28_sample_exemption.sql:752: ERROR:  W07_N28_SAMPLE_EXEMPTION COULD NOT CHECK (1 of 1 could not be checked)
+w07_n28_sample_exemption.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n28_sample_exemption.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n28_verifier_does_not_repair.sql
+w07_n28_verifier_does_not_repair.sql: BEGIN
+w07_n28_verifier_does_not_repair.sql: SET
+w07_n28_verifier_does_not_repair.sql: SET
+w07_n28_verifier_does_not_repair.sql: CREATE TABLE
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: CREATE FUNCTION
+w07_n28_verifier_does_not_repair.sql: DO
+w07_n28_verifier_does_not_repair.sql:  case_id | outcome |                                      detail                                       
+w07_n28_verifier_does_not_repair.sql: ---------+---------+-----------------------------------------------------------------------------------
+w07_n28_verifier_does_not_repair.sql:  N28-a   | bad     | first write written; second write written; review present t, revision 2 present t
+w07_n28_verifier_does_not_repair.sql:  N28-b   | bad     | first write written; second write written; review present t, revision 2 present t
+w07_n28_verifier_does_not_repair.sql:  N28-pos | ok      | revision 2 written
+w07_n28_verifier_does_not_repair.sql: (3 rows)
+w07_n28_verifier_does_not_repair.sql: 
+w07_n28_verifier_does_not_repair.sql: psql:tests/C02/W-C02-07/job/w07_n28_verifier_does_not_repair.sql:325: ERROR:  W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, 0 could not check, of 3)
+w07_n28_verifier_does_not_repair.sql: CONTEXT:  PL/pgSQL function inline_code_block line 7 at RAISE
+database test w07_n28_verifier_does_not_repair.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_n29_impact_class.sql
+w07_n29_impact_class.sql: BEGIN
+w07_n29_impact_class.sql: SET
+w07_n29_impact_class.sql: SET
+w07_n29_impact_class.sql: CREATE TABLE
+w07_n29_impact_class.sql: CREATE TABLE
+w07_n29_impact_class.sql: CREATE SEQUENCE
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: CREATE FUNCTION
+w07_n29_impact_class.sql: DO
+w07_n29_impact_class.sql:  case_id |     outcome     |                   detail                   
+w07_n29_impact_class.sql: ---------+-----------------+--------------------------------------------
+w07_n29_impact_class.sql:  N29-pre | could_not_check | devos_api.admit_work(jsonb) does not exist
+w07_n29_impact_class.sql: (1 row)
+w07_n29_impact_class.sql: 
+w07_n29_impact_class.sql: psql:tests/C02/W-C02-07/job/w07_n29_impact_class.sql:616: ERROR:  W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+w07_n29_impact_class.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_n29_impact_class.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_rel_relation_status.sql
+w07_rel_relation_status.sql: BEGIN
+w07_rel_relation_status.sql: SET
+w07_rel_relation_status.sql: SET
+w07_rel_relation_status.sql: CREATE TABLE
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: CREATE FUNCTION
+w07_rel_relation_status.sql: DO
+w07_rel_relation_status.sql:  case_id |     outcome     |             detail              
+w07_rel_relation_status.sql: ---------+-----------------+---------------------------------
+w07_rel_relation_status.sql:  REL-pre | could_not_check | devos_api.relate does not exist
+w07_rel_relation_status.sql: (1 row)
+w07_rel_relation_status.sql: 
+w07_rel_relation_status.sql: psql:tests/C02/W-C02-07/job/w07_rel_relation_status.sql:322: ERROR:  W07_REL_RELATION_STATUS COULD NOT CHECK (1 of 1 could not be checked)
+w07_rel_relation_status.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_rel_relation_status.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_roc_ownership_and_claim_class.sql
+w07_roc_ownership_and_claim_class.sql: BEGIN
+w07_roc_ownership_and_claim_class.sql: SET
+w07_roc_ownership_and_claim_class.sql: SET
+w07_roc_ownership_and_claim_class.sql: CREATE TABLE
+w07_roc_ownership_and_claim_class.sql: CREATE TABLE
+w07_roc_ownership_and_claim_class.sql: CREATE SEQUENCE
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE TABLE
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: CREATE FUNCTION
+w07_roc_ownership_and_claim_class.sql: DO
+w07_roc_ownership_and_claim_class.sql:  case_id |     outcome     |                   detail                    
+w07_roc_ownership_and_claim_class.sql: ---------+-----------------+---------------------------------------------
+w07_roc_ownership_and_claim_class.sql:  ROC-pre | could_not_check | devos_api.revise_work(jsonb) does not exist
+w07_roc_ownership_and_claim_class.sql: (1 row)
+w07_roc_ownership_and_claim_class.sql: 
+w07_roc_ownership_and_claim_class.sql: psql:tests/C02/W-C02-07/job/w07_roc_ownership_and_claim_class.sql:1076: ERROR:  W07_ROC_OWNERSHIP_AND_CLAIM_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+w07_roc_ownership_and_claim_class.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_roc_ownership_and_claim_class.sql: not passed (psql exit 3)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_t31_planted_rate.sql
+w07_t31_planted_rate.sql: BEGIN
+w07_t31_planted_rate.sql: SET
+w07_t31_planted_rate.sql: SET
+w07_t31_planted_rate.sql: CREATE TABLE
+w07_t31_planted_rate.sql: CREATE TABLE
+w07_t31_planted_rate.sql: CREATE SEQUENCE
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: CREATE FUNCTION
+w07_t31_planted_rate.sql: DO
+w07_t31_planted_rate.sql:  case_id |     outcome     |                      detail                       
+w07_t31_planted_rate.sql: ---------+-----------------+---------------------------------------------------
+w07_t31_planted_rate.sql:  T31-pre | could_not_check | devos_api.set_effort_policy(jsonb) does not exist
+w07_t31_planted_rate.sql: (1 row)
+w07_t31_planted_rate.sql: 
+w07_t31_planted_rate.sql: psql:tests/C02/W-C02-07/job/w07_t31_planted_rate.sql:552: ERROR:  W07_T31_PLANTED_RATE COULD NOT CHECK (1 of 1 could not be checked)
+w07_t31_planted_rate.sql: CONTEXT:  PL/pgSQL function inline_code_block line 9 at RAISE
+database test w07_t31_planted_rate.sql: not passed (psql exit 3)
+[drive dbtests exit 1]
+prd10 scrub (06_staged_w07): 0 token-format strings removed
