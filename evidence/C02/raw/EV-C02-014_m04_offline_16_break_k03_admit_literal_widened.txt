@@ -1,0 +1,14 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k03_admit_literal_widened, a copy of M09-04 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f k03_admit_literal_widened.sql  (as postgres)
+[apply exit 0]
+  36 | AW-role-devos_denetim                  | f  | ok                       | role_class_not_permitted | {"work": 1, "event": 1, "work_revision": 1} |  | wanted delta {"rejected": 1}
+  45 | AW-reject-row                          | f  | false                    | true                     | {}                                          | one per-call row of class devos_denetim with its declared session
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql:570: NOTICE:  M0904_FUNCTIONS FAIL (2 of 175 not as wanted)
+[self-check done]
+w07_dm34_mission_scope.sql: psql:tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql:352: NOTICE:  W07_DM34_MISSION_SCOPE PASS (10/10)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (16 of 44 could not be checked)
+w07_5b_authorization_matrix.sql:  5B-R02-admit_work-den           | bad             | x cell: admit_work with the devos_denetim token must be refused for its role class; code missing_field; err - ; ra {"admit_work|missing_field|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 15 could not check, of 99)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (16_break_k03_admit_literal_widened): 0 token-format strings removed

@@ -1,0 +1,38 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the bytes run; git state at the run's end)
+at 2026-10-18T23:02:00Z
+HEAD d032a8475b19e11a1cf9971852f4abb36883d0fd on claude/c02-w09-m0904
+165ea69997401d944ecd73a598dd3627caf841ffaa88ab91578f792a89eb01d5  supabase/migrations/20261018230001_w09_work_effort.sql
+5bd5c6d9f1b3baf7d0fc4d14222522adbc11e98ee5d6c6d053455991cdaf15a4  /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql
+805f1e7231df9b010a0e81fea18c4139e8e273627c8d21f45963c4e6c58354eb  /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/brk.py
+backslashes in M09-04: 0
+lines in M09-04: 1528
+$ git status --porcelain
+?? evidence/C02/raw/EV-C02-014_m04_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_03_apply_m0904.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_05_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_06_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_07_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_08_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_09_functions.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_10_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_11_server_log_scan.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_12_stop.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_13_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_14_break_k01_admit_scope_check_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_15_break_k02_admit_stale_mission_revision_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_16_break_k03_admit_literal_widened.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_17_break_k04_revise_repeat_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_18_break_k05_revise_reason_not_required.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_19_break_k06_revise_rule_c_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_20_break_k07_cancel_rule_o_kurulum_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_21_break_k08_stale_no_event_read_as_not_transferred.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_22_break_k09_policy_reduction_approval_removed.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_23_break_k10_policy_retire_by_any_class.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_24_break_k11_policy_earlier_not_retired.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_25_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_m04_offline_26_git_hashes.txt
+?? supabase/migrations/20261018230001_w09_work_effort.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end]

@@ -1,0 +1,18 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k05_revise_reason_not_required, a copy of M09-04 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f k05_revise_reason_not_required.sql  (as postgres)
+[apply exit 0]
+  51 | RW-reason-absent                       | f  | ok                       | missing_field            | {"event": 1, "work_revision": 1}            |  | wanted delta {"rejected": 1}
+  52 | RW-reason-absent-names-field           | f  | false                    | true                     | {}                                          | none
+  53 | RW-reason-json-null                    | f  | ok repeat                | missing_field            | {}                                          |  | wanted delta {"rejected": 1}
+  55 | RW-reason-before-stale                 | f  | ok repeat                | missing_field            | {}                                          |  | wanted delta {"rejected": 1}
+  56 | RW-widen                               | f  | stale_revision           | scope_outside            | {"rejected": 1}                             | base_revision: not the work item's current revision
+  57 | RW-input-random                        | f  | stale_revision           | could_not_check          | {"rejected": 1}                             | base_revision: not the work item's current revision
+  58 | RW-input-ok                            | f  | stale_revision           | ok                       | {"rejected": 1}                             | base_revision: not the work item's current revision | wanted delta {"event": 1, "work_revision": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql:570: NOTICE:  M0904_FUNCTIONS FAIL (7 of 175 not as wanted)
+[self-check done]
+w07_dm34_mission_scope.sql: psql:tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql:352: NOTICE:  W07_DM34_MISSION_SCOPE PASS (10/10)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (16 of 44 could not be checked)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (15 of 99 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (18_break_k05_revise_reason_not_required): 0 token-format strings removed

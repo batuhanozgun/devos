@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k06_revise_rule_c_removed, a copy of M09-04 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f k06_revise_rule_c_removed.sql  (as postgres)
+[apply exit 0]
+  78 | RW-c-other-class                       | f  | ok                       | other_class_claim        | {"event": 1, "work_revision": 1}            |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0904_run/fn_check.sql:570: NOTICE:  M0904_FUNCTIONS FAIL (1 of 175 not as wanted)
+[self-check done]
+w07_dm34_mission_scope.sql: psql:tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql:352: NOTICE:  W07_DM34_MISSION_SCOPE PASS (10/10)
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (16 of 44 could not be checked)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (15 of 99 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (19_break_k06_revise_rule_c_removed): 0 token-format strings removed
