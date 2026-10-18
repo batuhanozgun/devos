@@ -1,0 +1,14 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b5_closed_not_terminal, a copy of M09-03 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b5_closed_not_terminal.sql  (as postgres)
+[apply exit 0]
+  52 | RM-closed-reopen                       | f  | ok                       | mission_closed           | {"event": 1}                                                       |  | wanted delta {"rejected": 1}
+  53 | RM-closed-reopen-with-batu             | f  | ok repeat                | mission_closed           | {}                                                                 |  | wanted delta {"rejected": 1}
+  54 | RM-closed-content                      | f  | ok                       | mission_closed           | {"event": 1, "mission_revision": 1}                                |  | wanted delta {"rejected": 1}
+  67 | RN-mission-closed                      | f  | ok                       | mission_not_active       | {"need": 1, "event": 1}                                            |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0903_run/fn_check.sql:446: NOTICE:  M0903_FUNCTIONS FAIL (4 of 125 not as wanted)
+[self-check done]
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (4 of 27 could not be checked)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (18 of 66 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (18_break_b5_closed_not_terminal): 0 token-format strings removed

@@ -1,0 +1,15 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b4_record_need_no_event, a copy of M09-03 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b4_record_need_no_event.sql  (as postgres)
+[apply exit 0]
+  63 | RN-pos                                 | f  | ok                       | ok                       | {"need": 1}                                                        |  | wanted delta {"need": 1, "event": 1}
+  65 | RN-pos-sinav                           | f  | ok                       | ok                       | {"need": 1}                                                        |  | wanted delta {"need": 1, "event": 1}
+  66 | RN-pos-kurulum-investigating           | f  | ok                       | ok                       | {"need": 1}                                                        |  | wanted delta {"need": 1, "event": 1}
+  70 | RN-why-empty (W-C02-10's gate)         | f  | ok                       | ok                       | {"need": 1}                                                        |  | wanted delta {"need": 1, "event": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0903_run/fn_check.sql:446: NOTICE:  M0903_FUNCTIONS FAIL (4 of 125 not as wanted)
+[self-check done]
+w07_f06_state_change_event.sql:  F06-event:record_need              | bad             | returned {"id": "3043d22f-96aa-488a-a733-1111d202bed5", "status": "ok"}; tables changed: ["need"]; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:833: ERROR:  W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 4 could not check, of 27)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (18 of 66 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+[drop exit 0]
+prd10 scrub (17_break_b4_record_need_no_event): 0 token-format strings removed
