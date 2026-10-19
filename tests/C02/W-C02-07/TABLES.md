@@ -183,7 +183,7 @@ F07-a2, -b2 and -c2 read the current state through `devos_api.operation_state(op
 | CONC-c2 | 108 | "when two opposing hard dependencies are added at the same time, no cycle forms" | CONC-cyc2, CONC-cyc4 | — |
 | CONC-m1 | 109 | "Many concurrent connections on real PostgreSQL; repeated runs" | 8 connections; 20 runs for the claim, 20 for two edges, 20 for four edges, 10 for the late effect, fixed before any run; CONC-overlap shows that the transactions overlapped (W-C02-13 point 4) | — |
 | CONC-p1 | 110 | "One claim always succeeds (the system does not deadlock and reject everyone)" | CONC-pos, CONC-err | — |
-| CONC-x1 | — | Class rule, examples, negative control and break (none in Appendix C) | Form C0, the designer's additions (five marks); CONC-late and CONC-tokens; B-CONC-1 (CONC-claim), B-CONC-2 (the dependency queue removed: CONC-cyc2 and CONC-cyc4) | — |
+| CONC-x1 | — | Class rule, examples, negative control and break (none in Appendix C) | Form C0, the designer's additions (five marks); CONC-late and CONC-tokens; B-CONC-1 (CONC-claim), B-CONC-2 (the dependency queue removed: CONC-cyc2 and CONC-cyc4), B-CONC-3 (one revocation without effect: CONC-tokens; the revision of 2026-10-19, N-304 (4)) | — |
 
 ### N01 · `T-W07-N01` · `T-W07-N01_need_justification.md` (Ek_C:118)
 

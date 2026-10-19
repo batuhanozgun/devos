@@ -26,7 +26,10 @@ by set_config (transport sql-set-role, several connections). Tokens: each connec
 with devos_private.issue_env_token inside the database, keeps it in a session setting, never in a statement text, a
 table or the output; the program revokes it by its env_tokens row ID once every connection of its run has ended
 (revised 2026-10-19, N-299 (1): a revocation raises the global authority epoch, so none is made during a run); claim
-tokens stay in the same way inside their session.
+tokens stay in the same way inside their session. CONC-tokens judges the tokens this program issued, by the env_tokens
+row IDs it recorded as it issued them, and counts apart any token issued during its run that it did not record; tokens
+already unrevoked before it began (in the job, the tokens step's six) are not its own and are not counted (revised
+2026-10-19 under ledger rule 3, CHK-C02-106 C1 route (b); N-304 (4)).
 Exit codes: 0 PASS, 1 FAIL, 3 COULD NOT CHECK. The last line is "W07_CONC_CLAIM_AND_CYCLE PASS|FAIL|COULD NOT CHECK (...)"
 (README section 3).
 """
@@ -155,6 +158,9 @@ select 'W07|done';
 
 
 UUID_RE = re.compile('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
+# The env_tokens row IDs of the racing connections' tokens, as race() collects them, and the number of connections that
+# printed none (CONC-tokens; revised 2026-10-19, CHK-C02-106 C1 route (b)). IDs only, never a token or a hash.
+ISSUED, NO_TID = [], [0]
 
 
 def parse(out, err):
@@ -212,6 +218,8 @@ def race(lock_no, scripts):
     # judge its claim (N-299 (1); CHK-C02-095 C1). A token whose ID was not printed stays unrevoked and is counted by
     # CONC-tokens.
     tids = [r['tid'] for r in results if r['tid']]
+    ISSUED.extend(tids)
+    NO_TID[0] += len(results) - len(tids)
     if tids:
         run_sql('do $v$ declare i text; begin foreach i in array array[' + ', '.join(f"'{t}'" for t in tids)
                 + "]::text[] loop execute format('select devos_private.revoke_env_token(%L)', i); end loop; end $v$;" + NL)
@@ -268,12 +276,24 @@ begin
   end loop;
 end $s$;
 select 'W07|id|' || n || '|' || id || '|' || rev from w07_ids order by n;
+select 'W07|sid|' || id::text from devos_private.env_tokens where id::text not in (select id from w07_token_marked);
 do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's rows, by ID (README section 8)
   perform set_config('w07.k', '', false); perform set_config('w07.w', '', false); end $s$;
 """)
-    started = time.time()
+    # CONC-tokens' baseline (revised under ledger rule 3, 2026-10-19; CHK-C02-106 C1 route (b), N-304 (4)): the row IDs
+    # of the env_tokens rows already unrevoked before this program issues any token. They are not this run's: in the
+    # migration job they are the tokens step's six, which stay unrevoked until after the programs (README 5.1 (b)). This
+    # replaces a time window (every unrevoked token issued from 5 s before the start on), which counted them.
+    rc, out, err = run_sql("select 'W07|base|' || coalesce(string_agg(id::text, ','), '') "
+                           "from devos_private.env_tokens where revoked_at is null;")
+    base = [l[len('W07|base|'):] for l in out.splitlines() if l.startswith('W07|base|')]
+    base_ids = [i for i in base[0].split(',') if i] if rc == 0 and len(base) == 1 else None
+    if base_ids is None or not all(UUID_RE.match(i) for i in base_ids):
+        finish('COULD NOT CHECK', 'the unrevoked env_tokens rows before the run could not be read: ' + clean(err), 3)
     rc, out, err = run_sql(setup)
     ids = [l.split('|')[3:5] for l in out.splitlines() if l.startswith('W07|id|')]
+    # The fixtures' two tokens, by their row IDs (the rows issued since the mark that w07_revoke_since_mark revokes).
+    setup_tids = [l.split('|')[2] for l in out.splitlines() if l.startswith('W07|sid|') and UUID_RE.match(l.split('|')[2])]
     if rc != 0 or len(ids) != n_work:
         finish('COULD NOT CHECK', 'the committed fixtures could not be written: ' + clean(err), 3)
     ids = [(i, int(r)) for i, r in ids]
@@ -379,9 +399,35 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
     cases['CONC-err'] = ('bad' if counts else 'ok', 'raised errors by SQLSTATE (deadlock 40P01, serialization 40001, '
                          f'lock timeout 55P03, cancel 57014 among them): {counts or "none"}; of which serious {serious or "none"}')
 
-    # Tokens: every token this run issued is revoked (env_tokens' issued_at and revoked_at, B 3.27).
-    left = db_count(f"select count(*) from devos_private.env_tokens where revoked_at is null and issued_at >= to_timestamp({started - 5});")
-    cases['CONC-tokens'] = ('ok' if left == 0 else 'could_not_check', f'synthetic tokens of this run left unrevoked: {left}')
+    # Tokens: every token this run issued is revoked (env_tokens' revoked_at, B 3.27). Revised under ledger rule 3,
+    # 2026-10-19 (CHK-C02-106 C1 route (b); N-304 (4)): judged by the row IDs this program recorded as it issued its
+    # tokens (the fixtures' two, each connection's one), not by a time window. Any other unrevoked row that was not
+    # unrevoked before the run (a token of this run whose ID was lost, or another issuer's) is counted apart.
+    own = sorted(set(setup_tids + ISSUED))
+
+    def arr(xs):
+        return ('array[' + ', '.join(f"'{x}'" for x in xs) + ']::text[]') if xs else "'{}'::text[]"
+    rc, out, err = run_sql(
+        f"select 'W07|tok|' || count(*) filter (where id::text = any({arr(own)})) || '|' "
+        f"|| count(*) filter (where id::text = any({arr(own)}) and revoked_at is null) || '|' "
+        f"|| count(*) filter (where revoked_at is null and not (id::text = any({arr(own)})) "
+        f"and not (id::text = any({arr(base_ids)}))) from devos_private.env_tokens;")
+    tok = [l.split('|')[2:5] for l in out.splitlines() if l.startswith('W07|tok|')]
+    tok = [int(v) for v in tok[0]] if rc == 0 and len(tok) == 1 and all(v.isdigit() for v in tok[0]) else None
+    detail = (f'{len(own)} tokens this run issued and recorded ({len(setup_tids)} for the fixtures, {len(ISSUED)} for '
+              f'the connections; {NO_TID[0]} connections printed no ID); unrevoked before the run, not counted: '
+              f'{len(base_ids)}')
+    if tok is None:
+        cases['CONC-tokens'] = ('could_not_check', 'env_tokens could not be read after the runs: ' + clean(err))
+    elif tok[0] != len(own):
+        cases['CONC-tokens'] = ('could_not_check', f'of the {len(own)} recorded IDs only {tok[0]} name an env_tokens row; ' + detail)
+    elif tok[1]:
+        cases['CONC-tokens'] = ('bad', f'synthetic tokens of this run left unrevoked: {tok[1]}; ' + detail)
+    elif tok[2]:
+        cases['CONC-tokens'] = ('could_not_check', f'recorded tokens left unrevoked: 0; unrecorded tokens issued during '
+                                f'the run and unrevoked (its own with a lost ID, or another issuer): {tok[2]}; ' + detail)
+    else:
+        cases['CONC-tokens'] = ('ok', 'synthetic tokens of this run left unrevoked: 0; ' + detail)
 
     for cid in sorted(cases):
         print(f'{cid} | {cases[cid][0]} | {clean(cases[cid][1])}')
