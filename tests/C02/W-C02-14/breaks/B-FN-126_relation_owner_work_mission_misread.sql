@@ -23,8 +23,8 @@ do $b$
 declare src text; o text; nw text; k int;
 begin
   src := pg_get_functiondef('devos_api.transfer_relation(jsonb)'::regprocedure);
-  o := $o$select r.revision, mr.mission_id into v_tcb_wrev, v_tcb_mission$o$;
-  nw := $n$select r.revision, r.mission_revision_id into v_tcb_wrev, v_tcb_mission$n$;
+  o := $o$select r.revision, mr.mission_id into v_own_rev, v_own_mission$o$;
+  nw := $n$select r.revision, r.mission_revision_id into v_own_rev, v_own_mission$n$;
   k := (length(src) - length(replace(src, o, ''))) / length(o);
   if k <> 1 then
     raise exception 'w14 break not applied: fragment 1 of devos_api.transfer_relation(jsonb) found % times, not once; not a break shown (W-C02-13 point 3)', k;

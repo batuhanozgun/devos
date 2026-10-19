@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k09_event_need_unjudged, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k24 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k24l exit 0]
+-- the self-check on k24:
+summary: MTC_FUNCTIONS PASS (93/93)
+bad (0): none
+could_not_check (0): none
+-- T-W14-FN on k24:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 0 could not check, of 265)
+bad (2): FN-OW-ev-need-cnc, FN-OW-ev-need-other
+could_not_check (0): none
+detail: FN-OW-ev-need-cnc                 | bad     | transfer_event on a need under a Mission planted with no creation event: accepted; tables changed besides rejected_attempt: event; rejected_attempt rows +0 (wanted refused could_not_check, none, at least 1); marks of the source 1; its pair FN-OW-ev-need-
+detail: FN-OW-ev-need-other               | bad     | transfer_event on a need under a Mission opened through open_mission: accepted; tables changed besides rejected_attempt: event; rejected_attempt rows +0 (wanted refused not_owner, none, at least 1); marks of the source 1; its pair FN-OW-ev-need-pos: acce
+mtc scrub (24_break_k09): claim-format strings replaced 0; environment-format strings replaced 0

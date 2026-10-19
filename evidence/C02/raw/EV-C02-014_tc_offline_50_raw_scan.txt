@@ -1,0 +1,38 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (every tc raw file before this one, with the finders of tests/C02/W-C02-07/shared/scan_patterns.json)
+mtc scan: EV-C02-014_tc_offline_01_init_setup.txt: 37 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_02_apply_before.txt: 413 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_03_apply_corrections.txt: 40 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_04_drift.txt: 8 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_05_staged_w07.txt: 2868 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_06_staged_w14.txt: 351 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_07_catalog.txt: 235 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_08_selfcheck.txt: 133 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_09_folder_sql.txt: 4408 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_10_locks.txt: 86 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_11_drift_after.txt: 8 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_12_log_scan_stop.txt: 9 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_13_breaks_setup.txt: 42 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_14_function_defs_and_search.txt: 78 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_15_compare.txt: 198 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_16_break_k01.txt: 20 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_17_break_k02.txt: 20 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_18_break_k03.txt: 31 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_19_break_k04.txt: 20 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_20_break_k05.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_21_break_k06.txt: 15 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_22_break_k07.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_23_break_k08.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_24_break_k09.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_25_break_k10.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_26_break_k11.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_27_break_k12.txt: 22 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_28_break_k13.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_29_break_k14.txt: 16 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_30_breaks_stop.txt: 9 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_40_harness_fn_1_33.txt: 74 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_41_harness_fn_34_66.txt: 76 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_42_harness_fn_67_98.txt: 102 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_43_harness_fn_99_130.txt: 87 lines; claim-format 0; environment-format 0
+mtc scan: EV-C02-014_tc_offline_44_harness_locks_f06.txt: 22 lines; claim-format 0; environment-format 0
+mtc scan: 35 files; claim-format 0; environment-format 0
+mtc scrub (50_raw_scan): claim-format strings replaced 0; environment-format strings replaced 0

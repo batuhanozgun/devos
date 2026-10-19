@@ -1,0 +1,15 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k06_ic_partial_removed_in_review, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k21 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k21l exit 0]
+-- the self-check on k21:
+summary: MTC_FUNCTIONS PASS (93/93)
+bad (0): none
+could_not_check (0): none
+-- T-W14-FN on k21:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-IC-cnc-transfer_review
+could_not_check (0): none
+detail: FN-IC-cnc-transfer_review         | bad     | transfer_review naming a run whose begun event lacks its input commit: accepted; tables changed besides rejected_attempt: event, review, verdict; rejected_attempt rows +0 (wanted refused could_not_check, none, at least 1); marks of the source 1; its cont
+mtc scrub (21_break_k06): claim-format strings replaced 0; environment-format strings replaced 0

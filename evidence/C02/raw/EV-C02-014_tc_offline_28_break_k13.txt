@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k13_run_index_dropped, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k28 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k28l exit 0]
+-- the self-check on k28:
+summary: MTC_FUNCTIONS FAIL (2 of 93 not as wanted)
+bad (1): IX-plan-run
+could_not_check (0): none
+detail: 93 | IX-plan-run                     | f  | JIT: / Seq Scan on event e  (cost=10000000000.00..10000000015.77 rows=1 width=8) / Options: Inlining true, Optimization true, Expressions true, Deforming true / Functions: 4 / Filter: ((event_type = '
+-- T-W14-FN on k28:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-IX-run
+could_not_check (0): none
+detail: FN-IX-run                         | bad     | an index on devos_private.event of payload->>'run_id' where event_type='transfer_run', valid, not unique, one key: none (wanted one)
+mtc scrub (28_break_k13): claim-format strings replaced 0; environment-format strings replaced 0

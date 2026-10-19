@@ -1,0 +1,40 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the transfer corrections, 20261019180001_w09_transfer_corrections.sql)
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261019180001_w09_transfer_corrections.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE INDEX
+COMMENT
+CREATE INDEX
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261019180001', 'w09_transfer_corrections')
+[exit 0]
+[drive apply exit 0]
+mtc scrub (03_apply_corrections): claim-format strings replaced 0; environment-format strings replaced 0

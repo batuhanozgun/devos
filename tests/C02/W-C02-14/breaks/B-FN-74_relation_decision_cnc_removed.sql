@@ -23,7 +23,7 @@ do $b$
 declare src text; o text; nw text; k int;
 begin
   src := pg_get_functiondef('devos_api.transfer_relation(jsonb)'::regprocedure);
-  o := $o$          if not v_tcb_cfound or v_tcb_ctype is null or v_tcb_cclass is null or v_tcb_ctype not in ('decision_opened', 'transferred') then$o$;
+  o := $o$          if v_ctype is null or v_cclass is null or v_ctype not in ('decision_opened', 'transferred') then$o$;
   nw := $n$          if false then$n$;
   k := (length(src) - length(replace(src, o, ''))) / length(o);
   if k <> 1 then

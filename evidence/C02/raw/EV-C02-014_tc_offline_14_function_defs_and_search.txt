@@ -1,0 +1,78 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (every devos_api and devos_private function on t25 and on t26: name, md5 of pg_get_functiondef, ACL; the lines that differ)
+functions on t25: 69; on t26: 69
+< devos_api.begin_transfer_run(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.begin_transfer_run(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.end_transfer_run(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.end_transfer_run(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.prepare_operation(claim_token text, p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.prepare_operation(claim_token text, p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.record_handover(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.record_handover(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_acceptance(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_artifact(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_decision(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_event(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_finding(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_mission(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_need(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_relation(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_review(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+< devos_api.transfer_work(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_acceptance(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_artifact(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_decision(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_event(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_finding(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_mission(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_need(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_relation(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_review(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+> devos_api.transfer_work(p jsonb) <md5> {postgres=X/postgres,anon=X/postgres}
+functions whose definition or ACL differs: 14
+-- the search at this head (search.py):
+supabase/migrations/tests/w07_5c_other_session_fake_id.sql: prepare_operation
+supabase/migrations/tests/w07_6rg_rule_gate_could_not_check.sql: prepare_operation
+supabase/migrations/tests/w07_dm07_heartbeat.sql: prepare_operation
+supabase/migrations/tests/w07_dm34_mission_scope.sql: prepare_operation
+supabase/migrations/tests/w07_f01_whole_intent.sql: prepare_operation
+supabase/migrations/tests/w07_f05_scope_both_sides.sql: prepare_operation
+supabase/migrations/tests/w07_f06_state_change_event.sql: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding, transfer_review, transfer_acceptance
+supabase/migrations/tests/w07_f07_observation_history.sql: prepare_operation
+supabase/migrations/tests/w07_f08_recheck_at_effect.sql: prepare_operation
+supabase/migrations/tests/w07_n08_exam_fact.sql: prepare_operation
+supabase/migrations/tests/w07_n17_claim_token.sql: prepare_operation
+supabase/migrations/tests/w07_n29_mission_widening.sql: prepare_operation
+supabase/migrations/tests/w14_fn_transfer_functions.sql: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding, transfer_review, transfer_acceptance
+tests/C02/W-C02-07/harness/scenarios/n01_open_block.sql: prepare_operation
+tests/C02/W-C02-07/harness/scenarios/n28_sample_taking.sql: prepare_operation
+tests/C02/W-C02-07/harness/scenarios/t31_open_block.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding, transfer_review, transfer_acceptance
+tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_5d_format_gates_empty.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_6st_settings_could_not_check.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_dm11_answer_revision.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_dm47_path_table.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_f01_whole_intent.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_f06_state_change_event.sql: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding, transfer_review, transfer_acceptance
+tests/C02/W-C02-07/job/w07_f07_observation_history.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_fgfind_finding_gate.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_locks_key_and_handover_locks.py: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding
+tests/C02/W-C02-07/job/w07_n01_need_justification.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_n02_decision_alternatives.sql: prepare_operation, begin_transfer_run, transfer_decision, transfer_acceptance
+tests/C02/W-C02-07/job/w07_n03_effort_policy.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_n04_self_approval.sql: begin_transfer_run, transfer_review
+tests/C02/W-C02-07/job/w07_n08_exam_fact.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_n17_claim_token.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_n28_sample_exemption.sql: prepare_operation, transfer_review
+tests/C02/W-C02-07/job/w07_n29_impact_class.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_n29_mission_widening.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_roc_ownership_and_claim_class.sql: prepare_operation
+tests/C02/W-C02-07/job/w07_t31_planted_rate.sql: prepare_operation
+tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql: prepare_operation, begin_transfer_run, end_transfer_run, record_handover, transfer_event, transfer_artifact, transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_need, transfer_finding, transfer_review, transfer_acceptance
+files: 44
+mtc scrub (14_function_defs_and_search): claim-format strings replaced 0; environment-format strings replaced 0

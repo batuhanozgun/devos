@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k10_relation_decision_unjudged, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k25 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k25l exit 0]
+-- the self-check on k25:
+summary: MTC_FUNCTIONS PASS (93/93)
+bad (0): none
+could_not_check (0): none
+-- T-W14-FN on k25:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 0 could not check, of 265)
+bad (2): FN-OW-rel-dec-cnc, FN-OW-rel-dec-owner
+could_not_check (0): none
+detail: FN-OW-rel-dec-cnc                 | bad     | transfer_relation with to_ref a Decision with no creation event: accepted; tables changed besides rejected_attempt: event, relation; rejected_attempt rows +0 (wanted refused could_not_check, none, at least 1); marks of the source 1; its pair FN-OW-rel-de
+detail: FN-OW-rel-dec-owner               | bad     | transfer_relation with to_ref a Decision whose creation event is decision_opened of devos_calisma: accepted; tables changed besides rejected_attempt: event, relation; rejected_attempt rows +0 (wanted refused not_owner, none, at least 1); marks of the sou
+mtc scrub (25_break_k10): claim-format strings replaced 0; environment-format strings replaced 0

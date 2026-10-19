@@ -1,0 +1,133 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the transfer corrections: text and catalogue)
+BEGIN
+CREATE TABLE
+SELECT 14
+CREATE TABLE
+INSERT 0 12
+CREATE FUNCTION
+INSERT 0 1
+INSERT 0 12
+INSERT 0 1
+INSERT 0 10
+INSERT 0 4
+INSERT 0 1
+INSERT 0 3
+INSERT 0 10
+INSERT 0 1
+INSERT 0 3
+INSERT 0 1
+INSERT 0 1
+INSERT 0 12
+INSERT 0 1
+INSERT 0 14
+INSERT 0 14
+INSERT 0 2
+SET
+SET
+PREPARE
+PREPARE
+CREATE TABLE
+DO
+INSERT 0 2
+ n  |             case_id             | ok |                                                                       detail                                                                        
+----+---------------------------------+----+-----------------------------------------------------------------------------------------------------------------------------------------------------
+  1 | TX-fourteen                     | t  | 14 functions
+  2 | TX-9005-begin_transfer_run      | t  | shared statements 1
+  3 | TX-9005-end_transfer_run        | t  | shared statements 1
+  4 | TX-9005-transfer_event          | t  | shared statements 1
+  5 | TX-9005-transfer_artifact       | t  | shared statements 1
+  6 | TX-9005-transfer_mission        | t  | shared statements 1
+  7 | TX-9005-transfer_work           | t  | shared statements 1
+  8 | TX-9005-transfer_relation       | t  | shared statements 1
+  9 | TX-9005-transfer_decision       | t  | shared statements 1
+ 10 | TX-9005-transfer_need           | t  | shared statements 1
+ 11 | TX-9005-transfer_finding        | t  | shared statements 1
+ 12 | TX-9005-transfer_review         | t  | shared statements 1
+ 13 | TX-9005-transfer_acceptance     | t  | shared statements 1
+ 14 | TX-9005-record_handover         | t  | exclusive statements 1
+ 15 | TX-9007-transfer_artifact       | t  | kind 'artifact'
+ 16 | TX-9007-transfer_event          | t  | kind v_kind
+ 17 | TX-9007-transfer_mission        | t  | kind 'mission'
+ 18 | TX-9007-transfer_work           | t  | kind 'work'
+ 19 | TX-9007-transfer_relation       | t  | kind 'relation'
+ 20 | TX-9007-transfer_decision       | t  | kind 'decision'
+ 21 | TX-9007-transfer_need           | t  | kind 'need'
+ 22 | TX-9007-transfer_finding        | t  | kind 'finding'
+ 23 | TX-9007-transfer_review         | t  | kind 'verdict'
+ 24 | TX-9007-transfer_acceptance     | t  | kind 'acceptance'
+ 25 | TX-no-9007-prepare_operation    | t  | none
+ 26 | TX-no-9007-record_handover      | t  | none
+ 27 | TX-no-9007-begin_transfer_run   | t  | none
+ 28 | TX-no-9007-end_transfer_run     | t  | none
+ 29 | TX-9006                         | t  | advisory statements 1
+ 30 | TX-kept-transfer_mission        | t  | perform pg_catalog.pg_advisory_xact_lock(9004, 1);
+ 31 | TX-kept-begin_transfer_run      | t  | pg_advisory_xact_lock(9002, pg_catalog.hashtext(v_run));
+ 32 | TX-kept-end_transfer_run        | t  | pg_advisory_xact_lock(9002, pg_catalog.hashtext(v_run));
+ 33 | TX-ic-transfer_artifact         | t  | compares 1
+ 34 | TX-ic-transfer_event            | t  | compares 1
+ 35 | TX-ic-transfer_mission          | t  | compares 1
+ 36 | TX-ic-transfer_work             | t  | compares 1
+ 37 | TX-ic-transfer_relation         | t  | compares 1
+ 38 | TX-ic-transfer_decision         | t  | compares 1
+ 39 | TX-ic-transfer_need             | t  | compares 1
+ 40 | TX-ic-transfer_finding          | t  | compares 1
+ 41 | TX-ic-transfer_review           | t  | compares 1
+ 42 | TX-ic-transfer_acceptance       | t  | compares 1
+ 43 | TX-ic-record_handover           | t  | compares 1
+ 44 | TX-no-ic-prepare_operation      | t  | none
+ 45 | TX-no-ic-begin_transfer_run     | t  | none
+ 46 | TX-no-ic-end_transfer_run       | t  | none
+ 47 | TX-owner-transfer_event         | t  | not_owner 1
+ 48 | TX-owner-transfer_relation      | t  | not_owner 2
+ 49 | TX-no-owner-prepare_operation   | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 50 | TX-no-owner-transfer_artifact   | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 51 | TX-no-owner-record_handover     | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 52 | TX-no-owner-transfer_mission    | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 53 | TX-no-owner-transfer_work       | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 54 | TX-no-owner-transfer_decision   | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 55 | TX-no-owner-transfer_need       | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 56 | TX-no-owner-transfer_finding    | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 57 | TX-no-owner-transfer_review     | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 58 | TX-no-owner-transfer_acceptance | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 59 | TX-no-owner-begin_transfer_run  | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 60 | TX-no-owner-end_transfer_run    | t  | none (narrowed after the first filed run from v_own, which the merged transfer_acceptance's v_owner also holds)
+ 61 | TX-ledger-entry-untouched       | t  | record_ledger_entry
+ 62 | CAT-prepare_operation           | t  | claim_token text, p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 63 | CAT-transfer_artifact           | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 64 | CAT-record_handover             | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 65 | CAT-transfer_event              | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 66 | CAT-transfer_mission            | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 67 | CAT-transfer_work               | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 68 | CAT-transfer_relation           | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 69 | CAT-transfer_decision           | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 70 | CAT-transfer_need               | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 71 | CAT-transfer_finding            | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 72 | CAT-transfer_review             | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 73 | CAT-transfer_acceptance         | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 74 | CAT-begin_transfer_run          | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 75 | CAT-end_transfer_run            | t  | p jsonb; {postgres=X/postgres,anon=X/postgres}
+ 76 | CAT-literal-prepare_operation   | t  | array['devos_calisma', 'devos_kurulum']::devos_private.role_class[]
+ 77 | CAT-literal-transfer_artifact   | t  | array['devos_kurulum']::devos_private.role_class[]
+ 78 | CAT-literal-record_handover     | t  | array['devos_kurulum']::devos_private.role_class[]
+ 79 | CAT-literal-transfer_event      | t  | array['devos_kurulum']::devos_private.role_class[]
+ 80 | CAT-literal-transfer_mission    | t  | array['devos_kurulum']::devos_private.role_class[]
+ 81 | CAT-literal-transfer_work       | t  | array['devos_kurulum']::devos_private.role_class[]
+ 82 | CAT-literal-transfer_relation   | t  | array['devos_kurulum']::devos_private.role_class[]
+ 83 | CAT-literal-transfer_decision   | t  | array['devos_kurulum']::devos_private.role_class[]
+ 84 | CAT-literal-transfer_need       | t  | array['devos_kurulum']::devos_private.role_class[]
+ 85 | CAT-literal-transfer_finding    | t  | array['devos_kurulum']::devos_private.role_class[]
+ 86 | CAT-literal-transfer_review     | t  | array['devos_kurulum']::devos_private.role_class[]
+ 87 | CAT-literal-transfer_acceptance | t  | array['devos_kurulum']::devos_private.role_class[]
+ 88 | CAT-literal-begin_transfer_run  | t  | array['devos_kurulum']::devos_private.role_class[]
+ 89 | CAT-literal-end_transfer_run    | t  | array['devos_kurulum']::devos_private.role_class[]
+ 90 | IX-event_transfer_run_idx       | t  | CREATE INDEX event_transfer_run_idx ON devos_private.event USING btree (((payload ->> 'run_id'::text))) WHERE (event_type = 'transfer_run'::text)
+ 91 | IX-event_ledger_entry_idx       | t  | CREATE INDEX event_ledger_entry_idx ON devos_private.event USING btree (((payload ->> 'entry_id'::text))) WHERE (event_type = 'ledger_entry'::text)
+ 92 | IX-plan-entry                   | t  | Index Scan using event_ledger_entry_idx on event e  (cost=0.14..8.16 rows=1 width=8) / Index Cond: ((payload ->> 'entry_id'::text) = $1)
+ 93 | IX-plan-run                     | t  | Index Scan using event_transfer_run_idx on event e  (cost=0.14..8.16 rows=1 width=8) / Index Cond: ((payload ->> 'run_id'::text) = $1)
+(93 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/mtc_run/fn_check.sql:183: NOTICE:  MTC_FUNCTIONS PASS (93/93)
+DO
+ROLLBACK
+[psql exit 0]
+mtc scrub (08_selfcheck): claim-format strings replaced 0; environment-format strings replaced 0

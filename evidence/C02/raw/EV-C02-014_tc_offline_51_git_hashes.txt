@@ -1,0 +1,83 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes of the bytes run, the copies against their staged files, text counts of the corrections, and the clone's git state; written without the scrub, hashes, counts and git output only)
+766c08d9c32cdd0611982a32a44e845af28f0ae8f397f0c48459a0060837f319  supabase/migrations/20261019180001_w09_transfer_corrections.sql
+11c4ad9ff46f45fb1910767a59c8c95a1443423b234142bf5db9ddbf26d44d13  evidence/C02/EV-C02-013_w09_interface.md
+7587ba62403fb4c52535a8d24c75bb8085e082d64abcb396533ab01e8ed39a3a  tests/C02/W-C02-07/harness/run_breaks.py
+db88df95bed9ddb903d7f26e210c85b321ab748bb53e03482dc62ba1470bc0b4  build.py
+7023ce7b7b3a3710dc1830e1ca5c7eca6bc46880483f95db3ff170dc96170e9d  fn_diff.txt
+a9e6aa1a398a11ed673fd10a9835651fd48ac7b80c12d498a37294d7ee6a375f  fn_check.sql
+46910915bf35f10a2d7f91d9e03e7f9dc7ec01e2ff2ad42f5705e0725715200d  brk.py
+f6ec0e1cff321115ae3fbba7ed513e438a57823ff65500c3abddee80d305ed7b  brk.sh
+8358f0e358c54bc7a97b8ca8d9ce85983272dbe0e902dffdff17f3c893553b3f  brkh.sh
+70664bcd339dfe79e0475eb55468547f14a7eb2bff4bb09401fdb8d4a6346b9c  harness_all.sh
+ecf2f6a8e04dd56bce92fd98cd37546115fcfb0e55fff939886fcf5f83745620  sumh.py
+0b7baa76ce54b48212b9b70e80c990c4279d1d4b9de28cb060fb883af5cf5f54  rerun.sh
+19615ad77d08c9d070bbed0e8dd987415c53ceb06143ebe0aa08c317b12f297f  run.sh
+d62646caef6879f74cc2dd6156e4a93f32e87d9dc6839cf41c3172f7ed8ec7e2  drive.py
+c07b30344b96b4f5908f96759cca2059ef79fe918d9ee6c7a2d119e014286dd7  judge.py
+883f98c8df1d8d330e144b6a3656d22e4d6b8c1201ea017019e0b9c6ce3f86fc  cmpcases.py
+e49436741eb59c0581fb27141b1ae1b3db18ca344a2902f3f930eccfa92a5b07  search.py
+2daab8fe37ad773d5c8bce065333994240059863d6435d98134a11694a143cc2  scrub.py
+c106d48ab3b7b448de3d4d684e5a6bcf16e9cf3dcc6d94b770b50305195000a8  scan.py
+fa2a9cfa8e9b1bef07d784dbbb4d909582eb8ae43d2b1b8e141d5487ff129783  setup.sql
+4bd934440e11bc6f156462e001837af95f78fc3633c251a7700f738b679b1cd4  catalog.sql
+9549fd3bc24bbe47cf500a6a547f2a14c3a7c307a4231a3f2810084ea1873a69  final.sh
+setup.sql against scratchpad/m0903_run/setup.sql: equal
+the copies: staged file, its last commit, SHA-256 of the staged file and of the copy, equal or not
+tests/C02/W-C02-07/job/w07_f06_state_change_event.sql 8a35886 827e87263d33146110431e0e6219e6baacb62a2237333162b3d524df03e0091c 827e87263d33146110431e0e6219e6baacb62a2237333162b3d524df03e0091c equal
+tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql 8a35886 86b321b02d59f3e4b9b422b86c55ce8c5b5958137e818de197e5a4b136e744e6 86b321b02d59f3e4b9b422b86c55ce8c5b5958137e818de197e5a4b136e744e6 equal
+files in supabase/migrations/tests/: 31; with a backslash: 0
+backslashes in the corrections: 0
+psql meta-command lines in it: 0
+its strings found by either token finder: mtc scan: 1 files; claim-format 0; environment-format 0
+functions it creates or replaces: 14; plain create function: 0; indexes: 2
+lock statements: 9005 shared 12, 9005 exclusive 1, 9006 1, 9007 10, 9001 to 9004 3
+record_ledger_entry named in it outside comments: 1
+$ git rev-parse HEAD; git status --porcelain
+7cb9972e2742ce17d0aa2d8f94f2ba21f4bdbcad
+ M evidence/C02/EV-C02-014_w09_build.md
+ M supabase/migrations/tests/w14_fn_transfer_functions.sql
+?? evidence/C02/raw/EV-C02-014_tc_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_03_apply_corrections.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_05_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_06_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_07_catalog.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_08_selfcheck.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_09_folder_sql.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_10_locks.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_11_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_12_log_scan_stop.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_13_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_14_function_defs_and_search.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_15_compare.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_16_break_k01.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_17_break_k02.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_18_break_k03.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_19_break_k04.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_20_break_k05.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_21_break_k06.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_22_break_k07.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_23_break_k08.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_24_break_k09.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_25_break_k10.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_26_break_k11.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_27_break_k12.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_28_break_k13.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_29_break_k14.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_30_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_40_harness_fn_1_33.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_41_harness_fn_34_66.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_42_harness_fn_67_98.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_43_harness_fn_99_130.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_44_harness_locks_f06.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_50_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_tc_offline_51_git_hashes.txt
+?? supabase/migrations/20261019180001_w09_transfer_corrections.sql
+?? supabase/migrations/tests/w07_f06_state_change_event.sql
+$ git diff --stat HEAD -- tests/ .github/ tools/ plan/ .claude/
+[end of diff]
+$ git diff --stat HEAD -- supabase/migrations/tests/
+ .../migrations/tests/w14_fn_transfer_functions.sql | 1746 +++++++++++++++++++-
+ 1 file changed, 1733 insertions(+), 13 deletions(-)
+[end of diff]
