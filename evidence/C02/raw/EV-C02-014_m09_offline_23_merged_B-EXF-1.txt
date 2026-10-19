@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-EXF-1_ready_works_shows_opener.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_fact.sql; expect-red=EXF-pair-ready_works)
+[database b23 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b23:
+summary: W07_N08_EXAM_FACT FAIL (1 bad, 0 could not check, of 61)
+bad (1): EXF-pair-ready_works
+could_not_check (0): none
+detail: EXF-pair-ready_works             | bad     | ready_works, working token: the exam task listed, the ordinary item listed; rows ids aside: [{"id": "<id>", "scope": "synthetic.w07_fixture.c", "purpose": "SYNTHETIC W-C02-07 w07_fixture work complete 900: tidy the w07_fixture notes", "work_id": "<id>", "
+red list: exactly as expect-red (1)
+m0909 scrub (23_merged_B-EXF-1): claim-format strings replaced 0; environment-format strings replaced 0

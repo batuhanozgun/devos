@@ -1,0 +1,17 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k04_exam_claim_check_through_claim_live, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k32 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k32:
+summary: M0909_FUNCTIONS FAIL (3 of 153 not as wanted)
+bad (3): RE-sin-claim-lapsed, RE-sin-claim-lease-now, RE-sin-claim-earlier-epoch
+could_not_check (0): none
+detail: 39 | RE-sin-claim-lapsed             | f  | ok                       | invalid_field            | {"event": 1, "eval_run": 1}       |  | wanted delta {"rejected": 1}
+detail: 40 | RE-sin-claim-lease-now          | f  | ok                       | invalid_field            | {"event": 1, "eval_run": 1}       |  | wanted delta {"rejected": 1}
+detail: 41 | RE-sin-claim-earlier-epoch      | f  | ok                       | invalid_field            | {"event": 1, "eval_run": 1}       |  | wanted delta {"rejected": 1}
+-- w07_n08_exam_fact.sql on k32:
+summary: W07_N08_EXAM_FACT FAIL (1 bad, 0 could not check, of 61)
+bad (1): N08-s4-run
+could_not_check (0): none
+detail: N08-s4-run                       | bad     | record_eval_run, exam token, on a work item with an active claim of class devos_sinav: accepted as anon session_user postgres; recorded 0 time(s); EvalRun rows 2 -> 3 (wanted refused, recorded once, none added)
+red list: not as expect-red; missing none; extra ['N08-s4-run']
+m0909 scrub (32_break_k04): claim-format strings replaced 0; environment-format strings replaced 0

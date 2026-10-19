@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-5B-3_review_finding_admits_working.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_5b_authorization_matrix.sql; expect-red=5B-R25-review_finding-cal)
+[database b26 from t22 exit 0]
+[patch exit 0]
+-- w07_5b_authorization_matrix.sql on b26:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R25-review_finding-cal
+could_not_check (1): 5B-row-R19
+detail: 5B-R25-review_finding-cal         | bad             | x cell: review_finding with the devos_calisma token must be refused for its role class; code invalid_field; err - ; ra {"review_finding|invalid_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: exactly as expect-red (1)
+m0909 scrub (26_merged_B-5B-3): claim-format strings replaced 0; environment-format strings replaced 0

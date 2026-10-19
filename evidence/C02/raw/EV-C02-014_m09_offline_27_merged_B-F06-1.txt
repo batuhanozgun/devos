@@ -1,0 +1,15 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-F06-1_relate_without_event.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=supabase/migrations/tests/w07_f06_state_change_event.sql; expect-red=F06-event:relate,F06-role-token)
+[database b27 from t22 exit 0]
+[patch exit 0]
+-- w07_f06_state_change_event.sql on b27:
+summary: W07_F06_STATE_CHANGE_EVENT FAIL (2 bad, 4 could not check, of 105)
+bad (2): F06-event:relate, F06-role-token
+could_not_check (4): F06-event:retract_relation, F06-event:revise_mission, F06-repeat:retract_relation, F06-repeat:revise_mission
+detail: F06-event:relate                         | bad             | returned {"id": "200d5ce9-c749-4f20-ac6d-75dd2368be85", "status": "ok"}; tables changed: ["relation"]; new events []
+detail: F06-event:retract_relation               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: the relation's creation event is missing", "status": "refused", "reason_code": "could_not_check"}
+detail: F06-event:revise_mission                 | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "owner_authority: answered_at missing", "status": "refused", "reason_code": "could_not_check"}
+detail: F06-repeat:retract_relation              | could_not_check | no accepted call to repeat
+detail: F06-repeat:revise_mission                | could_not_check | no accepted call to repeat
+detail: F06-role-token                           | bad             | returned {"id": "73ab166c-04be-4df5-9ea2-7f48475dbaa7", "status": "ok"}; new events []
+red list: exactly as expect-red (2)
+m0909 scrub (27_merged_B-F06-1): claim-format strings replaced 0; environment-format strings replaced 0

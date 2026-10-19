@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-5B-1_verdict_admits_working.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_5b_authorization_matrix.sql,w07_n04_self_approval.sql; expect-red=5B-R07-record_verdict-cal,N04-a1,N04-a2,N04-c1,N04-c2,N04-e1-record_verdict)
+[database b24 from t22 exit 0]
+[patch exit 0]
+-- w07_5b_authorization_matrix.sql on b24:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R07-record_verdict-cal
+could_not_check (1): 5B-row-R19
+detail: 5B-R07-record_verdict-cal         | bad             | x cell: record_verdict with the devos_calisma token must be refused for its role class; code missing_field; err - ; ra {"record_verdict|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: not as expect-red; missing ['N04-a1', 'N04-a2', 'N04-c1', 'N04-c2', 'N04-e1-record_verdict']; extra none
+-- w07_n04_self_approval.sql on b24:
+summary: W07_N04_SELF_APPROVAL FAIL (4 bad, 3 could not check, of 19)
+bad (4): N04-a1, N04-a2, N04-c1, N04-c2
+could_not_check (3): N04-T1, N04-T2, N04-T2-pos
+detail: N04-T1            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+detail: N04-T2            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+detail: N04-T2-pos        | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+detail: N04-a1            | bad             | record_verdict with the working token: code missing_field; err - ; ra {"record_verdict|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: N04-a2            | bad             | the same verdict call with the working token: code -; err - ; ra {}; events [{"origin": "call", "role_class": "devos_calisma"}]; changed ["devos_private.verdict"]; echo false; as anon (session_user postgres)
+detail: N04-c1            | bad             | record_verdict, working token, fake role name and session ID in headers: code missing_field; err - ; ra {"record_verdict|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: N04-c2            | bad             | record_verdict, working token, fake role in the JWT claim settings: code missing_field; err - ; ra {"record_verdict|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing ['5B-R07-record_verdict-cal', 'N04-e1-record_verdict']; extra none
+m0909 scrub (24_merged_B-5B-1): claim-format strings replaced 0; environment-format strings replaced 0

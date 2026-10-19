@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k19_empty_hashes_admitted, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k47 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k47:
+summary: M0909_FUNCTIONS FAIL (1 of 153 not as wanted)
+bad (1): FM-empty
+could_not_check (0): none
+detail: 138 | FM-empty                        | f  | ok                       | invalid_field            | {}                                |  | wanted delta {"rejected": 1}
+m0909 scrub (47_break_k19): claim-format strings replaced 0; environment-format strings replaced 0

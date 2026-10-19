@@ -1,0 +1,18 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-2_exam_write_admits_ci.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_records.sql,w07_5b_authorization_matrix.sql; expect-red=N08-w-devos_ci,5B-R10-record_eval_run-ci)
+[database b15 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_records.sql on b15:
+summary: W07_N08_EXAM_RECORDS FAIL (2 bad, 0 could not check, of 14)
+bad (2): N08-rp-read_eval_run, N08-w-devos_ci
+could_not_check (0): none
+detail: N08-rp-read_eval_run              | bad     | read_eval_run with the exam token is accepted: code not_found; err - ; ra {"read_eval_run|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: N08-w-devos_ci                    | bad     | record_eval_run with the devos_ci token: code missing_field; err - ; ra {"record_eval_run|missing_field|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing ['5B-R10-record_eval_run-ci']; extra ['N08-rp-read_eval_run']
+-- w07_5b_authorization_matrix.sql on b15:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R10-record_eval_run-ci
+could_not_check (1): 5B-row-R19
+detail: 5B-R10-record_eval_run-ci         | bad             | x cell: record_eval_run with the devos_ci token must be refused for its role class; code missing_field; err - ; ra {"record_eval_run|missing_field|devos_ci": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: not as expect-red; missing ['N08-w-devos_ci']; extra none
+m0909 scrub (15_merged_B-N08-2): claim-format strings replaced 0; environment-format strings replaced 0

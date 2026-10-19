@@ -1,0 +1,49 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (control: the staged files the break patches name, unpatched, in place, each on a fresh copy of t22)
+-- w07_n08_exam_records.sql on c13_1:
+summary: W07_N08_EXAM_RECORDS FAIL (1 bad, 0 could not check, of 14)
+bad (1): N08-rp-read_eval_run
+could_not_check (0): none
+detail: N08-rp-read_eval_run              | bad     | read_eval_run with the exam token is accepted: code not_found; err - ; ra {"read_eval_run|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing none; extra ['N08-rp-read_eval_run']
+-- w07_n08_exam_fact.sql on c13_2:
+summary: W07_N08_EXAM_FACT PASS (61/61)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_5b_authorization_matrix.sql on c13_3:
+summary: W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (1 of 241 could not be checked)
+bad (0): none
+could_not_check (1): 5B-row-R19
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: exactly as expect-red (0)
+-- w07_f06_state_change_event.sql on c13_4:
+summary: W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (2 of 105 could not be checked)
+bad (0): none
+could_not_check (2): F06-event:revise_mission, F06-repeat:revise_mission
+detail: F06-event:revise_mission                 | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "owner_authority: answered_at missing", "status": "refused", "reason_code": "could_not_check"}
+detail: F06-repeat:revise_mission                | could_not_check | no accepted call to repeat
+red list: exactly as expect-red (0)
+-- w07_roc_ownership_and_claim_class.sql on c13_5:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS (84/84)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f04_affected_records.sql on c13_6:
+summary: W07_F04_AFFECTED_RECORDS PASS (22/22)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n04_self_approval.sql on c13_7:
+summary: W07_N04_SELF_APPROVAL COULD NOT CHECK (3 of 19 could not be checked)
+bad (0): none
+could_not_check (3): N04-T1, N04-T2, N04-T2-pos
+detail: N04-T1            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+detail: N04-T2            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+detail: N04-T2-pos        | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+red list: exactly as expect-red (0)
+-- w07_6tk_token_reasons.sql on c13_8:
+summary: W07_6TK_TOKEN_REASONS PASS (32/32)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0909 scrub (13_control_t22): claim-format strings replaced 0; environment-format strings replaced 0

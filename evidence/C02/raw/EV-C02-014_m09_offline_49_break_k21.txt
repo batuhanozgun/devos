@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k21_partial_claim_read_as_clean, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k49 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k49:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): RE-claim-partial, RE-claim-partial-reason
+could_not_check (0): none
+detail: 44 | RE-claim-partial                | f  | ok                       | could_not_check          | {"event": 1, "eval_run": 1}       |  | wanted delta {"rejected": 1}
+detail: 45 | RE-claim-partial-reason         | f  | false                    | true                     | {}                                | item 7 (ii): a NULL where the check needs a value
+m0909 scrub (49_break_k21): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,18 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-ROC-1_rule_o_reads_exam_link.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_roc_ownership_and_claim_class.sql,w07_n08_exam_fact.sql; expect-red=ROC-o-cancel_work-cal-exam,ROC-leak-cancel_work,EXF-pair-cancel_work,N08-x-cancel_work-cal)
+[database b20 from t22 exit 0]
+[patch exit 0]
+-- w07_roc_ownership_and_claim_class.sql on b20:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (2 bad, 0 could not check, of 84)
+bad (2): ROC-leak-cancel_work, ROC-o-cancel_work-cal-exam
+could_not_check (0): none
+detail: ROC-leak-cancel_work                       | bad     | devos_calisma on an ordinary item: accepted -; on the exam task (opened with devos_sinav): refused w07_break_exam_task
+detail: ROC-o-cancel_work-cal-exam                 | bad     | cancel_work with devos_calisma: wanted accepted; got refused [w07_break_exam_task w07 break: rule o reads the exam link for devos_calisma] as anon session_user postgres; tables changed: false
+red list: not as expect-red; missing ['EXF-pair-cancel_work', 'N08-x-cancel_work-cal']; extra none
+-- w07_n08_exam_fact.sql on b20:
+summary: W07_N08_EXAM_FACT FAIL (2 bad, 0 could not check, of 61)
+bad (2): EXF-pair-cancel_work, N08-x-cancel_work-cal
+could_not_check (0): none
+detail: EXF-pair-cancel_work             | bad     | cancel_work with devos_calisma, on the exam task w_e and the ordinary item w_o: with its reason refused/w07_break_exam_task; again refused/w07_break_exam_task; an empty reason refused/w07_break_exam_task. step 1 differs: on the exam task {"code": "w07_bre
+detail: N08-x-cancel_work-cal            | bad     | cancel_work with devos_calisma, on the exam task w_e and the ordinary item w_o: with its reason refused/w07_break_exam_task; again refused/w07_break_exam_task; an empty reason refused/w07_break_exam_task. step 1 differs: on the exam task {"code": "w07_bre
+red list: not as expect-red; missing ['ROC-leak-cancel_work', 'ROC-o-cancel_work-cal-exam']; extra none
+m0909 scrub (20_merged_B-ROC-1): claim-format strings replaced 0; environment-format strings replaced 0

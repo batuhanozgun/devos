@@ -1,0 +1,63 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (comparison and break runs: setup)
+start 2026-10-19T03:48:32Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+42
+[template t21 exit 0]
+2
+[template t22 exit 0]
+made k01_record_eval_run_admits_working (1 edit(s))
+made k02_record_eval_run_event_on_work (1 edit(s))
+made k03_exam_claim_check_removed (1 edit(s))
+made k04_exam_claim_check_through_claim_live (1 edit(s))
+made k05_revision_named_unchecked (1 edit(s))
+made k06_event_payload_holds_the_link (1 edit(s))
+made k07_read_eval_run_admits_working (1 edit(s))
+made k08_read_eval_run_unknown_id_ok (1 edit(s))
+made k09_counted_row_of_current_hour_marked (1 edit(s))
+made k10_event_with_no_row_marked (1 edit(s))
+made k11_marked_rows_marked_again (1 edit(s))
+made k12_from_after_to_admitted (1 edit(s))
+made k13_mark_exported_admits_audit (1 edit(s))
+made k14_read_rejected_attempts_admits_working (1 edit(s))
+made k15_counted_row_of_an_open_hour_dropped (1 edit(s))
+made k16_since_ignored (1 edit(s))
+made k17_epoch_missing_answered (2 edit(s))
+made k18_fingerprint_source_ref_returned (2 edit(s))
+made k19_empty_hashes_admitted (1 edit(s))
+made k20_store_absent_answered_clean (2 edit(s))
+made k21_partial_claim_read_as_clean (1 edit(s))
+21 break copies made
+m0909 scrub (12_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0
