@@ -1,0 +1,1788 @@
+﻿2026-10-19T15:14:13.2413388Z Current runner version: '2.337.0'
+2026-10-19T15:14:13.2445474Z ##[group]Runner Image Provisioner
+2026-10-19T15:14:13.2446663Z Hosted Compute Agent
+2026-10-19T15:14:13.2447532Z Version: 20261012.601
+2026-10-19T15:14:13.2448593Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-19T15:14:13.2449629Z Build Date: 2026-10-12T17:48:21Z
+2026-10-19T15:14:13.2450647Z Worker ID: {7aaddb35-29db-43f6-bbff-36ad2fb32d42}
+2026-10-19T15:14:13.2451713Z Region: northcentralus
+2026-10-19T15:14:13.2452514Z Cloud: Azure
+2026-10-19T15:14:13.2453263Z ##[endgroup]
+2026-10-19T15:14:13.2455646Z ##[group]Operating System
+2026-10-19T15:14:13.2456551Z Ubuntu
+2026-10-19T15:14:13.2457336Z 24.04.5
+2026-10-19T15:14:13.2458004Z LTS
+2026-10-19T15:14:13.2459041Z ##[endgroup]
+2026-10-19T15:14:13.2459877Z ##[group]Runner Image
+2026-10-19T15:14:13.2460691Z Image: ubuntu-24.04
+2026-10-19T15:14:13.2461523Z Version: 20261012.334.1
+2026-10-19T15:14:13.2463290Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-19T15:14:13.2465607Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-19T15:14:13.2466946Z ##[endgroup]
+2026-10-19T15:14:13.2468737Z ##[group]GITHUB_TOKEN Permissions
+2026-10-19T15:14:13.2471675Z Contents: read
+2026-10-19T15:14:13.2472670Z Metadata: read
+2026-10-19T15:14:13.2473416Z ##[endgroup]
+2026-10-19T15:14:13.2476106Z Secret source: Actions
+2026-10-19T15:14:13.2477365Z Cache mode: write
+2026-10-19T15:14:13.2478961Z Prepare workflow directory
+2026-10-19T15:14:13.2894785Z Prepare all required actions
+2026-10-19T15:14:13.2961752Z Getting action download info
+2026-10-19T15:14:13.5315870Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-19T15:14:13.7092086Z Complete job name: devos (compare, decide, apply)
+2026-10-19T15:14:13.7733952Z ##[group]Run main_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""
+2026-10-19T15:14:13.7735611Z [36;1mmain_head="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)" || main_head=""[0m
+2026-10-19T15:14:13.7736734Z [36;1mif [ -z "$main_head" ]; then[0m
+2026-10-19T15:14:13.7737621Z [36;1m  echo "head check: could not check (main's head could not be read); nothing connects"[0m
+2026-10-19T15:14:13.7738821Z [36;1m  echo "head=unknown" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:13.7739549Z [36;1melif [ "$main_head" = "$GITHUB_SHA" ]; then[0m
+2026-10-19T15:14:13.7740382Z [36;1m  echo "head check: yes (this run's commit ${GITHUB_SHA} is main's head)"[0m
+2026-10-19T15:14:13.7741565Z [36;1m  echo "head=yes" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:13.7742245Z [36;1melse[0m
+2026-10-19T15:14:13.7743222Z [36;1m  echo "head check: superseded (this run's commit ${GITHUB_SHA}; main's head ${main_head}); nothing connects"[0m
+2026-10-19T15:14:13.7744281Z [36;1m  echo "head=superseded" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:13.7744935Z [36;1mfi[0m
+2026-10-19T15:14:13.7916245Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:13.7917229Z env:
+2026-10-19T15:14:13.7917826Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:13.7919175Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:13.7920326Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:13.7930436Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:13.7947550Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:13.7955912Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:13.7957009Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:13.7959856Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:13.7962534Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:13.7963422Z   W03_PLANT_B64: 
+2026-10-19T15:14:13.7963987Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:13.7965398Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:13.7966832Z   PROJECT: devos
+2026-10-19T15:14:13.7967386Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:13.7968038Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:13.7968856Z   PGPORT: 5432
+2026-10-19T15:14:13.7969389Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:13.7969988Z   PGDATABASE: postgres
+2026-10-19T15:14:13.7970545Z   PGSSLMODE: verify-full
+2026-10-19T15:14:13.7971286Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:13.7972031Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:13.7972565Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:13.7973091Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:13.7973644Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:13.7974216Z ##[endgroup]
+2026-10-19T15:14:14.0643589Z head check: yes (this run's commit 0f3fc49aef775794efec7b1cbc8e07835f5a661b is main's head)
+2026-10-19T15:14:14.0912118Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-19T15:14:14.0912936Z with:
+2026-10-19T15:14:14.0913432Z   persist-credentials: false
+2026-10-19T15:14:14.0914056Z   repository: batuhanozgun/devos
+2026-10-19T15:14:14.0917751Z   token: ***
+2026-10-19T15:14:14.0918396Z   ssh-strict: true
+2026-10-19T15:14:14.0918922Z   ssh-user: git
+2026-10-19T15:14:14.0919385Z   clean: true
+2026-10-19T15:14:14.0919987Z   sparse-checkout-cone-mode: true
+2026-10-19T15:14:14.0920569Z   fetch-depth: 1
+2026-10-19T15:14:14.0921093Z   fetch-tags: false
+2026-10-19T15:14:14.0921595Z   show-progress: true
+2026-10-19T15:14:14.0922077Z   lfs: false
+2026-10-19T15:14:14.0922581Z   submodules: false
+2026-10-19T15:14:14.0923110Z   set-safe-directory: true
+2026-10-19T15:14:14.0923723Z   allow-unsafe-pr-checkout: false
+2026-10-19T15:14:14.0924282Z env:
+2026-10-19T15:14:14.0924727Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:14.0925606Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:14.0926642Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:14.0936327Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:14.0953291Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:14.0961604Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:14.0962953Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:14.0965260Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:14.0967919Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:14.0969042Z   W03_PLANT_B64: 
+2026-10-19T15:14:14.0969542Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:14.0970912Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:14.0972346Z   PROJECT: devos
+2026-10-19T15:14:14.0972902Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:14.0973596Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:14.0974241Z   PGPORT: 5432
+2026-10-19T15:14:14.0974770Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:14.0975396Z   PGDATABASE: postgres
+2026-10-19T15:14:14.0975923Z   PGSSLMODE: verify-full
+2026-10-19T15:14:14.0976513Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:14.0977213Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:14.0977750Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:14.0978432Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:14.0978990Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:14.0979535Z ##[endgroup]
+2026-10-19T15:14:14.1912929Z Syncing repository: batuhanozgun/devos
+2026-10-19T15:14:14.1915648Z ##[group]Getting Git version info
+2026-10-19T15:14:14.1916799Z Working directory is '/home/runner/work/devos/devos'
+2026-10-19T15:14:14.1918429Z [command]/usr/bin/git version
+2026-10-19T15:14:14.1919438Z git version 2.55.0
+2026-10-19T15:14:14.1934023Z ##[endgroup]
+2026-10-19T15:14:14.1947863Z Temporarily overriding HOME='/home/runner/work/_temp/9c6bdb30-ccaa-44d9-b891-151f4ed3cf62' before making global git config changes
+2026-10-19T15:14:14.1950586Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T15:14:14.1953498Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-19T15:14:14.1996100Z Deleting the contents of '/home/runner/work/devos/devos'
+2026-10-19T15:14:14.1999438Z ##[group]Determining repository object format
+2026-10-19T15:14:14.2001298Z ##[endgroup]
+2026-10-19T15:14:14.2002754Z ##[group]Initializing the repository
+2026-10-19T15:14:14.2005153Z [command]/usr/bin/git init /home/runner/work/devos/devos
+2026-10-19T15:14:14.2129337Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-19T15:14:14.2131174Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-19T15:14:14.2136826Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-19T15:14:14.2138578Z hint: call:
+2026-10-19T15:14:14.2139484Z hint:
+2026-10-19T15:14:14.2140373Z hint: 	git config --global init.defaultBranch <name>
+2026-10-19T15:14:14.2141403Z hint:
+2026-10-19T15:14:14.2142383Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-19T15:14:14.2143964Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-19T15:14:14.2154627Z hint:
+2026-10-19T15:14:14.2155450Z hint: 	git branch -m <name>
+2026-10-19T15:14:14.2156261Z hint:
+2026-10-19T15:14:14.2157386Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-19T15:14:14.2159501Z Initialized empty Git repository in /home/runner/work/devos/devos/.git/
+2026-10-19T15:14:14.2162417Z [command]/usr/bin/git remote add origin https://github.com/batuhanozgun/devos
+2026-10-19T15:14:14.2218385Z ##[endgroup]
+2026-10-19T15:14:14.2219908Z ##[group]Disabling automatic garbage collection
+2026-10-19T15:14:14.2224262Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-19T15:14:14.2252708Z ##[endgroup]
+2026-10-19T15:14:14.2254424Z ##[group]Setting up auth
+2026-10-19T15:14:14.2255316Z Removing SSH command configuration
+2026-10-19T15:14:14.2260789Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T15:14:14.2290205Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T15:14:14.2549640Z Removing HTTP extra header
+2026-10-19T15:14:14.2551196Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T15:14:14.2574340Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T15:14:14.2767534Z Removing includeIf entries pointing to credentials config files
+2026-10-19T15:14:14.2769776Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T15:14:14.2805477Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T15:14:14.3013139Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-19T15:14:14.3047644Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:14.3204568Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:14.3236910Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:14.3267887Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:14.3294026Z ##[endgroup]
+2026-10-19T15:14:14.3295408Z ##[group]Fetching the repository
+2026-10-19T15:14:14.3303452Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0f3fc49aef775794efec7b1cbc8e07835f5a661b:refs/remotes/origin/main
+2026-10-19T15:14:15.7552360Z From https://github.com/batuhanozgun/devos
+2026-10-19T15:14:15.7554082Z  * [new ref]         0f3fc49aef775794efec7b1cbc8e07835f5a661b -> origin/main
+2026-10-19T15:14:15.7572339Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-19T15:14:15.7588562Z   origin/main
+2026-10-19T15:14:15.7599398Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-19T15:14:15.7623818Z 0f3fc49aef775794efec7b1cbc8e07835f5a661b
+2026-10-19T15:14:15.7628074Z ##[endgroup]
+2026-10-19T15:14:15.7629923Z ##[group]Determining the checkout info
+2026-10-19T15:14:15.7631909Z ##[endgroup]
+2026-10-19T15:14:15.7633156Z [command]/usr/bin/git sparse-checkout disable
+2026-10-19T15:14:15.7684388Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-19T15:14:15.7712826Z ##[group]Checking out the ref
+2026-10-19T15:14:15.7717005Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-19T15:14:15.9534241Z Switched to a new branch 'main'
+2026-10-19T15:14:15.9537470Z branch 'main' set up to track 'origin/main'.
+2026-10-19T15:14:15.9549062Z ##[endgroup]
+2026-10-19T15:14:15.9592275Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T15:14:15.9617007Z 0f3fc49aef775794efec7b1cbc8e07835f5a661b
+2026-10-19T15:14:15.9626865Z ##[group]Removing auth
+2026-10-19T15:14:15.9629012Z Removing SSH command configuration
+2026-10-19T15:14:15.9633527Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T15:14:15.9668839Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T15:14:15.9857261Z Removing HTTP extra header
+2026-10-19T15:14:15.9862690Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T15:14:15.9895174Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T15:14:16.0081881Z Removing includeIf entries pointing to credentials config files
+2026-10-19T15:14:16.0086055Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T15:14:16.0113931Z includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-19T15:14:16.0117716Z includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-19T15:14:16.0121758Z includeif.gitdir:/github/workspace/.git.path
+2026-10-19T15:14:16.0125121Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-19T15:14:16.0131908Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git.path
+2026-10-19T15:14:16.0146517Z /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0194809Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git.path /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0225188Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path
+2026-10-19T15:14:16.0244121Z /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0253376Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/devos/devos/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0284626Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-19T15:14:16.0306447Z /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0318021Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0344843Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-19T15:14:16.0363752Z /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0372703Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config
+2026-10-19T15:14:16.0410028Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T15:14:16.0587916Z Removing credentials config '/home/runner/work/_temp/git-credentials-6d4649af-20fe-42c9-aa9a-4c68ca52c5ea.config'
+2026-10-19T15:14:16.0596424Z ##[endgroup]
+2026-10-19T15:14:16.0767648Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:16.0769220Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:16.0771857Z [36;1mtrap 'echo "command-line tool v${CLI_VERSION}: could not check (a command of this step failed, line ${LINENO}); no step that runs it runs"' ERR[0m
+2026-10-19T15:14:16.0774728Z [36;1md="$RUNNER_TEMP/w03cli"[0m
+2026-10-19T15:14:16.0775968Z [36;1mrm -rf "$d"[0m
+2026-10-19T15:14:16.0777044Z [36;1mmkdir -p "$d"[0m
+2026-10-19T15:14:16.0778835Z [36;1mif ! curl -fsSL --proto '=https' --tlsv1.2 -o "$d/cli.tar.gz" \[0m
+2026-10-19T15:14:16.0781570Z [36;1m    "https://github.com/supabase/cli/releases/download/v${CLI_VERSION}/supabase_linux_amd64.tar.gz"; then[0m
+2026-10-19T15:14:16.0785360Z [36;1m  echo "command-line tool v${CLI_VERSION}: could not check (the download failed); it is not extracted, and no step that runs it runs"[0m
+2026-10-19T15:14:16.0787945Z [36;1m  exit 1[0m
+2026-10-19T15:14:16.0789207Z [36;1mfi[0m
+2026-10-19T15:14:16.0790947Z [36;1mif ! printf '%s  %s\n' "$CLI_SHA256" "$d/cli.tar.gz" | sha256sum --check --status; then[0m
+2026-10-19T15:14:16.0794020Z [36;1m  echo "command-line tool v${CLI_VERSION}: checksum MISMATCH; the tool is not extracted, and no step that runs it runs"[0m
+2026-10-19T15:14:16.0796444Z [36;1m  exit 1[0m
+2026-10-19T15:14:16.0797450Z [36;1mfi[0m
+2026-10-19T15:14:16.0799574Z [36;1mecho "command-line tool v${CLI_VERSION}: checksum matches the release's published SHA-256 ${CLI_SHA256}"[0m
+2026-10-19T15:14:16.0802315Z [36;1mif ! tar -xzf "$d/cli.tar.gz" -C "$d" supabase supabase-go; then[0m
+2026-10-19T15:14:16.0805031Z [36;1m  echo "command-line tool v${CLI_VERSION}: could not check (the archive did not extract); no step that runs it runs"[0m
+2026-10-19T15:14:16.0807453Z [36;1m  exit 1[0m
+2026-10-19T15:14:16.0808542Z [36;1mfi[0m
+2026-10-19T15:14:16.0809729Z [36;1mecho "path=$d/supabase" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:16.0852156Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:16.0853781Z env:
+2026-10-19T15:14:16.0854727Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:16.0856398Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:16.0859034Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:16.0883233Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:16.0924053Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:16.0944186Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:16.0946488Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:16.0951813Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:16.0957859Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:16.0959973Z   W03_PLANT_B64: 
+2026-10-19T15:14:16.0961006Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:16.0964079Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:16.0967271Z   PROJECT: devos
+2026-10-19T15:14:16.0968446Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:16.0969934Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:16.0971310Z   PGPORT: 5432
+2026-10-19T15:14:16.0972405Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:16.0973694Z   PGDATABASE: postgres
+2026-10-19T15:14:16.0974796Z   PGSSLMODE: verify-full
+2026-10-19T15:14:16.0976070Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:16.0977507Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:16.0978807Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:16.0979960Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:16.0981034Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:16.0982230Z ##[endgroup]
+2026-10-19T15:14:16.6301962Z command-line tool v2.120.0: checksum matches the release's published SHA-256 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:17.8270670Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:17.8271236Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:17.8271871Z [36;1mtrap 'echo "expected: could not check (a command of this step failed, line ${LINENO})"' ERR[0m
+2026-10-19T15:14:17.8272493Z [36;1mw="$RUNNER_TEMP/w03work"[0m
+2026-10-19T15:14:17.8272905Z [36;1mrm -rf "$w"[0m
+2026-10-19T15:14:17.8273308Z [36;1mmkdir -p "$w/supabase/migrations"[0m
+2026-10-19T15:14:17.8273816Z [36;1mprintf '%s\n' "$W03_CLI_CONFIG" > "$w/supabase/config.toml"[0m
+2026-10-19T15:14:17.8274351Z [36;1mpython3 -I - "$w" <<'PY'[0m
+2026-10-19T15:14:17.8275027Z [36;1m# M08 and Y-09: the command-line tool runs in a directory this step builds: the workflow's own configuration and[0m
+2026-10-19T15:14:17.8275884Z [36;1m# copies of the top-level migration files only. M14: `expected` from the same files at this commit (main's head).[0m
+2026-10-19T15:14:17.8276538Z [36;1mimport json, os, re, shutil, sys[0m
+2026-10-19T15:14:17.8277089Z [36;1mw = sys.argv[1][0m
+2026-10-19T15:14:17.8277479Z [36;1msrc = "supabase/migrations"[0m
+2026-10-19T15:14:17.8277979Z [36;1mpattern = re.compile(r"([0-9]+)_(.*)\.sql")[0m
+2026-10-19T15:14:17.8279010Z [36;1mmigrations, problems = [], [][0m
+2026-10-19T15:14:17.8279503Z [36;1mif os.path.lexists("supabase/functions"):[0m
+2026-10-19T15:14:17.8280217Z [36;1m    problems.append("supabase/functions/ exists; its part of the comparison comes with the first Edge Function (N-230)")[0m
+2026-10-19T15:14:17.8280964Z [36;1mfor name in sorted(os.listdir(src)) if os.path.isdir(src) else []:[0m
+2026-10-19T15:14:17.8281534Z [36;1m    path = os.path.join(src, name)[0m
+2026-10-19T15:14:17.8281950Z [36;1m    if os.path.islink(path):[0m
+2026-10-19T15:14:17.8282687Z [36;1m        problems.append(f"{path} is a symbolic link")[0m
+2026-10-19T15:14:17.8283165Z [36;1m    elif os.path.isdir(path):[0m
+2026-10-19T15:14:17.8283666Z [36;1m        continue  # subdirectories (tests/) hold no migrations[0m
+2026-10-19T15:14:17.8284229Z [36;1m    elif not pattern.fullmatch(name):[0m
+2026-10-19T15:14:17.8284823Z [36;1m        problems.append(f"{path} is a top-level file that is not a migration (<version>_<name>.sql)")[0m
+2026-10-19T15:14:17.8285460Z [36;1m    else:[0m
+2026-10-19T15:14:17.8285850Z [36;1m        match = pattern.fullmatch(name)[0m
+2026-10-19T15:14:17.8286400Z [36;1m        shutil.copyfile(path, os.path.join(w, "supabase", "migrations", name))[0m
+2026-10-19T15:14:17.8287110Z [36;1m        migrations.append({"version": match.group(1), "name": match.group(2)})[0m
+2026-10-19T15:14:17.8287685Z [36;1mversions = [m["version"] for m in migrations][0m
+2026-10-19T15:14:17.8288324Z [36;1mif len(set(versions)) != len(versions):[0m
+2026-10-19T15:14:17.8288858Z [36;1m    problems.append("two migration files share a version")[0m
+2026-10-19T15:14:17.8289497Z [36;1mprint("working directory of the command-line tool (names only):")[0m
+2026-10-19T15:14:17.8290032Z [36;1mfor root, _, files in sorted(os.walk(w)):[0m
+2026-10-19T15:14:17.8290466Z [36;1m    for f in sorted(files):[0m
+2026-10-19T15:14:17.8290990Z [36;1m        print("  " + os.path.relpath(os.path.join(root, f), w))[0m
+2026-10-19T15:14:17.8291509Z [36;1mexpected = "" if problems else json.dumps([0m
+2026-10-19T15:14:17.8292184Z [36;1m    {"commit": os.environ["GITHUB_SHA"], "migrations": migrations, "functions": []}, separators=(",", ":"))[0m
+2026-10-19T15:14:17.8292790Z [36;1mfor p in problems:[0m
+2026-10-19T15:14:17.8293208Z [36;1m    print("expected: could not check: " + p)[0m
+2026-10-19T15:14:17.8293879Z [36;1mprint(f"expected: {len(migrations)} migrations on main at {os.environ['GITHUB_SHA']}: {versions}")[0m
+2026-10-19T15:14:17.8294568Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:17.8295184Z [36;1m    f.write(f"dir={w}\nexpected<<W03EOF\n{expected}\nW03EOF\n")[0m
+2026-10-19T15:14:17.8295635Z [36;1mPY[0m
+2026-10-19T15:14:17.8341623Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:17.8342280Z env:
+2026-10-19T15:14:17.8342685Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:17.8343202Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:17.8343885Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:17.8349384Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:17.8360040Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:17.8364910Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:17.8365597Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:17.8366894Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:17.8368661Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:17.8369231Z   W03_PLANT_B64: 
+2026-10-19T15:14:17.8369649Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:17.8370600Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:17.8371505Z   PROJECT: devos
+2026-10-19T15:14:17.8371917Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.8372373Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:17.8372866Z   PGPORT: 5432
+2026-10-19T15:14:17.8373240Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.8373668Z   PGDATABASE: postgres
+2026-10-19T15:14:17.8374074Z   PGSSLMODE: verify-full
+2026-10-19T15:14:17.8374499Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:17.8374996Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:17.8375374Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:17.8375754Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:17.8376146Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:17.8376552Z ##[endgroup]
+2026-10-19T15:14:17.8683238Z working directory of the command-line tool (names only):
+2026-10-19T15:14:17.8683928Z   supabase/config.toml
+2026-10-19T15:14:17.8685261Z   supabase/migrations/20261012184638_deployment_drift.sql
+2026-10-19T15:14:17.8686085Z   supabase/migrations/20261012231841_w03_fixture_apply.sql
+2026-10-19T15:14:17.8686783Z   supabase/migrations/20261012232112_w03_fixture_name_differs.sql
+2026-10-19T15:14:17.8687317Z   supabase/migrations/20261012232113_w03_fixture_restore_name.sql
+2026-10-19T15:14:17.8687872Z   supabase/migrations/20261014170201_w08_role_classes_epoch_tokens.sql
+2026-10-19T15:14:17.8688633Z   supabase/migrations/20261014170202_w08_event_rejected_attempt.sql
+2026-10-19T15:14:17.8689374Z   supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql
+2026-10-19T15:14:17.8689967Z   supabase/migrations/20261014170204_w08_findings_reviews_effects_exams.sql
+2026-10-19T15:14:17.8690542Z   supabase/migrations/20261014170205_w08_append_only_views_access.sql
+2026-10-19T15:14:17.8691297Z   supabase/migrations/20261014182601_w08_ledger_transfer_schema.sql
+2026-10-19T15:14:17.8691876Z   supabase/migrations/20261014190401_w08_finding_source_fields.sql
+2026-10-19T15:14:17.8692451Z   supabase/migrations/20261014190402_w08_type_privileges.sql
+2026-10-19T15:14:17.8692985Z   supabase/migrations/20261017230001_w09_identity_chain_first_part.sql
+2026-10-19T15:14:17.8693509Z   supabase/migrations/20261018203001_w09_private_helpers.sql
+2026-10-19T15:14:17.8694032Z   supabase/migrations/20261018214501_w09_mission_need_decision.sql
+2026-10-19T15:14:17.8694559Z   supabase/migrations/20261018230001_w09_work_effort.sql
+2026-10-19T15:14:17.8695008Z   supabase/migrations/20261018235501_w09_claims.sql
+2026-10-19T15:14:17.8695529Z   supabase/migrations/20261019010001_w09_relations.sql
+2026-10-19T15:14:17.8696032Z   supabase/migrations/20261019030001_w09_knowledge_product_review.sql
+2026-10-19T15:14:17.8696570Z   supabase/migrations/20261019050001_w09_external_effect.sql
+2026-10-19T15:14:17.8697121Z   supabase/migrations/20261019080001_w09_rule_corrections.sql
+2026-10-19T15:14:17.8697614Z   supabase/migrations/20261019100001_w09_exam_backup_reads.sql
+2026-10-19T15:14:17.8698399Z   supabase/migrations/20261019120001_w09_transfer_runs_events.sql
+2026-10-19T15:14:17.8698949Z   supabase/migrations/20261019140001_w09_transfer_records.sql
+2026-10-19T15:14:17.8699481Z   supabase/migrations/20261019160001_w09_transfer_copies.sql
+2026-10-19T15:14:17.8700010Z   supabase/migrations/20261019180001_w09_transfer_corrections.sql
+2026-10-19T15:14:17.8701651Z expected: 26 migrations on main at 0f3fc49aef775794efec7b1cbc8e07835f5a661b: ['20261012184638', '20261012231841', '20261012232112', '20261012232113', '20261014170201', '20261014170202', '20261014170203', '20261014170204', '20261014170205', '20261014182601', '20261014190401', '20261014190402', '20261017230001', '20261018203001', '20261018214501', '20261018230001', '20261018235501', '20261019010001', '20261019030001', '20261019050001', '20261019080001', '20261019100001', '20261019120001', '20261019140001', '20261019160001', '20261019180001']
+2026-10-19T15:14:17.8769254Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:17.8769809Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:17.8770230Z [36;1mpython3 -I - <<'PY' || exit $?[0m
+2026-10-19T15:14:17.8770860Z [36;1m# Every connection of this job uses sslmode=verify-full against the root file PGSSLROOTCERT names (the job's env).[0m
+2026-10-19T15:14:17.8771719Z [36;1m# That root is the Supabase Root 2021 CA, kept in this workflow (W03_ROOT_CA_PEM) and pinned by the SHA-256 of its[0m
+2026-10-19T15:14:17.8772534Z [36;1m# DER (W03_ROOT_CA_SHA256). The file is written only if the PEM holds exactly one certificate with that SHA-256,[0m
+2026-10-19T15:14:17.8773329Z [36;1m# and it is written from that DER, so it holds nothing else. Otherwise no file exists, and nothing connects:[0m
+2026-10-19T15:14:17.8774065Z [36;1m# libpq and the command-line tool both refuse a missing root file under verify-full.[0m
+2026-10-19T15:14:17.8774603Z [36;1mimport hashlib, os, ssl[0m
+2026-10-19T15:14:17.8775245Z [36;1mpath, pin = os.environ["PGSSLROOTCERT"], os.environ.get("W03_ROOT_CA_SHA256", "")[0m
+2026-10-19T15:14:17.8775824Z [36;1mif os.path.lexists(path):[0m
+2026-10-19T15:14:17.8776259Z [36;1m    os.remove(path)[0m
+2026-10-19T15:14:17.8776688Z [36;1mpem = os.environ.get("W03_ROOT_CA_PEM", "").strip()[0m
+2026-10-19T15:14:17.8777137Z [36;1mtry:[0m
+2026-10-19T15:14:17.8777498Z [36;1m    if pem.count("-----BEGIN") != 1:[0m
+2026-10-19T15:14:17.8777994Z [36;1m        raise ValueError("the PEM does not hold exactly one certificate")[0m
+2026-10-19T15:14:17.8778844Z [36;1m    der = ssl.PEM_cert_to_DER_cert(pem)[0m
+2026-10-19T15:14:17.8779329Z [36;1mexcept ValueError as exc:[0m
+2026-10-19T15:14:17.8779918Z [36;1m    print(f"server root certificate: could not check ({exc}); no file is written, and nothing connects")[0m
+2026-10-19T15:14:17.8780494Z [36;1m    raise SystemExit(1)[0m
+2026-10-19T15:14:17.8780893Z [36;1mgot = hashlib.sha256(der).hexdigest()[0m
+2026-10-19T15:14:17.8781512Z [36;1mif got != pin:[0m
+2026-10-19T15:14:17.8782057Z [36;1m    print(f"server root certificate: could not check: the SHA-256 of its DER is {got}, not the pin {pin}; "[0m
+2026-10-19T15:14:17.8782699Z [36;1m          f"no file is written, and nothing connects")[0m
+2026-10-19T15:14:17.8783137Z [36;1m    raise SystemExit(1)[0m
+2026-10-19T15:14:17.8783567Z [36;1mwith open(path, "x", encoding="ascii") as f:[0m
+2026-10-19T15:14:17.8784087Z [36;1m    f.write(ssl.DER_cert_to_PEM_cert(der))[0m
+2026-10-19T15:14:17.8784580Z [36;1mwith open(path, encoding="ascii") as f:[0m
+2026-10-19T15:14:17.8785037Z [36;1m    back = f.read().strip()[0m
+2026-10-19T15:14:17.8785650Z [36;1mif back.count("-----BEGIN") != 1 or hashlib.sha256(ssl.PEM_cert_to_DER_cert(back)).hexdigest() != pin:[0m
+2026-10-19T15:14:17.8786299Z [36;1m    os.remove(path)[0m
+2026-10-19T15:14:17.8786872Z [36;1m    print("server root certificate: could not check (the file written does not read back as the pinned "[0m
+2026-10-19T15:14:17.8787538Z [36;1m          "certificate); it is removed, and nothing connects")[0m
+2026-10-19T15:14:17.8788070Z [36;1m    raise SystemExit(1)[0m
+2026-10-19T15:14:17.8788866Z [36;1mprint(f"server root certificate: the SHA-256 of its DER, {got}, matches the pin; written to {path}")[0m
+2026-10-19T15:14:17.8789453Z [36;1mPY[0m
+2026-10-19T15:14:17.8833490Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:17.8834043Z env:
+2026-10-19T15:14:17.8834421Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:17.8834974Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:17.8835615Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:17.8841321Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:17.8850703Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:17.8855863Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:17.8856518Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:17.8857971Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:17.8859663Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:17.8860238Z   W03_PLANT_B64: 
+2026-10-19T15:14:17.8860588Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:17.8861433Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:17.8862303Z   PROJECT: devos
+2026-10-19T15:14:17.8862691Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.8863263Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:17.8863691Z   PGPORT: 5432
+2026-10-19T15:14:17.8864059Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.8864500Z   PGDATABASE: postgres
+2026-10-19T15:14:17.8864868Z   PGSSLMODE: verify-full
+2026-10-19T15:14:17.8865331Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:17.8865773Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:17.8866139Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:17.8866638Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:17.8866994Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:17.8867387Z ##[endgroup]
+2026-10-19T15:14:17.9190876Z server root certificate: the SHA-256 of its DER, 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa, matches the pin; written to /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:17.9292030Z ##[group]Run if [ -n "$POOLER_HOST" ]; then
+2026-10-19T15:14:17.9292583Z [36;1mif [ -n "$POOLER_HOST" ]; then[0m
+2026-10-19T15:14:17.9293111Z [36;1m  echo "pooler host (P3): ${POOLER_HOST} (recorded in the workflow)"[0m
+2026-10-19T15:14:17.9293638Z [36;1m  echo "host=${POOLER_HOST}" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:17.9294044Z [36;1m  exit 0[0m
+2026-10-19T15:14:17.9294390Z [36;1mfi[0m
+2026-10-19T15:14:17.9294961Z [36;1mecho "pooler host (P3): not recorded in the workflow; looking for it without the credential"[0m
+2026-10-19T15:14:17.9295536Z [36;1mfound=""[0m
+2026-10-19T15:14:17.9295898Z [36;1manswers="$RUNNER_TEMP/w03pooler.answers"[0m
+2026-10-19T15:14:17.9296297Z [36;1m: > "$answers"[0m
+2026-10-19T15:14:17.9296697Z [36;1mfor h in $W03_POOLER_CANDIDATES; do[0m
+2026-10-19T15:14:17.9297451Z [36;1m  msg="$(env -u PGPASSWORD PGHOST="$h" timeout 20 psql -X -w -A -t -c 'select 1' 2>&1 >/dev/null)" && rc=0 || rc=$?[0m
+2026-10-19T15:14:17.9298178Z [36;1m  printf '%s\0%s\0%s\0' "$h" "$rc" "$msg" >> "$answers"[0m
+2026-10-19T15:14:17.9298930Z [36;1m  case "$msg" in[0m
+2026-10-19T15:14:17.9299359Z [36;1m    *"Tenant or user not found"*) ;;[0m
+2026-10-19T15:14:17.9299775Z [36;1m    *password*) found="$h"; break ;;[0m
+2026-10-19T15:14:17.9300172Z [36;1m  esac[0m
+2026-10-19T15:14:17.9300514Z [36;1mdone[0m
+2026-10-19T15:14:17.9301044Z [36;1mpython3 -I - "$answers" <<'PY' || echo "pooler host (P3): the candidates' answers could not be listed"[0m
+2026-10-19T15:14:17.9301836Z [36;1m# The distinct answers the candidates gave (CHK-C02-029 F-2): each once, with how many gave it and the first that did,[0m
+2026-10-19T15:14:17.9302791Z [36;1m# the host and its address replaced, escaped. So a run that finds none tells a chain that does not verify against the[0m
+2026-10-19T15:14:17.9303582Z [36;1m# pinned root ("certificate verify failed") from no region holding the project ("Tenant or user not found"), from a[0m
+2026-10-19T15:14:17.9304374Z [36;1m# timeout (exit 124) and from a name that does not resolve. This step holds no secret.[0m
+2026-10-19T15:14:17.9304880Z [36;1mimport re, sys[0m
+2026-10-19T15:14:17.9305368Z [36;1mfields = open(sys.argv[1], "rb").read().decode("utf-8", "replace").split("\0")[0m
+2026-10-19T15:14:17.9305885Z [36;1mkinds = {}[0m
+2026-10-19T15:14:17.9306234Z [36;1mfor i in range(0, len(fields) - 2, 3):[0m
+2026-10-19T15:14:17.9306706Z [36;1m    host, rc, msg = fields[i:i + 3][0m
+2026-10-19T15:14:17.9307227Z [36;1m    text = re.sub(r"\((?:[0-9]{1,3}\.){3}[0-9]{1,3}\)|\([0-9a-fA-F]*:[0-9a-fA-F:]*\)", "(<address>)",[0m
+2026-10-19T15:14:17.9307783Z [36;1m                  msg.replace(host, "<host>"))[0m
+2026-10-19T15:14:17.9308658Z [36;1m    kinds.setdefault(f"exit {rc}: " + (" ".join(text.split()) or "(no message)"), []).append(host)[0m
+2026-10-19T15:14:17.9309255Z [36;1mfor kind, hosts in kinds.items():[0m
+2026-10-19T15:14:17.9309763Z [36;1m    shown = "".join(c if c.isprintable() else ascii(c)[1:-1] for c in kind)[:300][0m
+2026-10-19T15:14:17.9310460Z [36;1m    print(f"pooler host (P3): {len(hosts)} candidate(s) answered, the first {hosts[0]}: {shown}")[0m
+2026-10-19T15:14:17.9311175Z [36;1mPY[0m
+2026-10-19T15:14:17.9311737Z [36;1mecho "pooler host (P3): found ${found:-none}; it is not used until it is recorded in the workflow (EV-C02-001 M19)"[0m
+2026-10-19T15:14:17.9312378Z [36;1mecho "host=" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:17.9312784Z [36;1mexit 1[0m
+2026-10-19T15:14:17.9362269Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:17.9362759Z env:
+2026-10-19T15:14:17.9363138Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:17.9363629Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:17.9364292Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:17.9369956Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:17.9379290Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:17.9384042Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:17.9384693Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:17.9385984Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:17.9387449Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:17.9387974Z   W03_PLANT_B64: 
+2026-10-19T15:14:17.9388599Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:17.9389519Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:17.9390388Z   PROJECT: devos
+2026-10-19T15:14:17.9390760Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.9391189Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:17.9391620Z   PGPORT: 5432
+2026-10-19T15:14:17.9392020Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.9392448Z   PGDATABASE: postgres
+2026-10-19T15:14:17.9392826Z   PGSSLMODE: verify-full
+2026-10-19T15:14:17.9393323Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:17.9393740Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:17.9394125Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:17.9394475Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:17.9394906Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:17.9395314Z ##[endgroup]
+2026-10-19T15:14:17.9465249Z pooler host (P3): aws-0-us-east-1.pooler.supabase.com (recorded in the workflow)
+2026-10-19T15:14:17.9516246Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:17.9516876Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:17.9517366Z [36;1mpython3 -I - <<'PY' || exit $?[0m
+2026-10-19T15:14:17.9518052Z [36;1m# The first-run controls of server authentication, before any step that holds the credential connects. Neither[0m
+2026-10-19T15:14:17.9519097Z [36;1m# control holds the password (PGPASSWORD removed, psql -w), so one that wrongly connects reaches at most the[0m
+2026-10-19T15:14:17.9519897Z [36;1m# server's password request. Each keeps this job's own PGSSLMODE and PGSSLROOTCERT but for the one part it[0m
+2026-10-19T15:14:17.9520699Z [36;1m# changes: (a) a root made at run time in place of the pinned one must give "certificate verify failed"; (b) a[0m
+2026-10-19T15:14:17.9521573Z [36;1m# host name the certificate does not cover, at the pooler's own address (hostaddr), must give "does not match[0m
+2026-10-19T15:14:17.9522604Z [36;1m# host name". The positive control is step connect (select 1, with the credential). If a control is not refused[0m
+2026-10-19T15:14:17.9523503Z [36;1m# for its reason, server authentication is not shown: the root file is removed, so no later step can connect,[0m
+2026-10-19T15:14:17.9524517Z [36;1m# and this step fails, so the apply does not run. Each control prints one line, holding no secret.[0m
+2026-10-19T15:14:17.9525282Z [36;1mimport os, socket, subprocess, tempfile[0m
+2026-10-19T15:14:17.9525776Z [36;1m[0m
+2026-10-19T15:14:17.9526164Z [36;1m[0m
+2026-10-19T15:14:17.9526567Z [36;1mdef esc(s):[0m
+2026-10-19T15:14:17.9527124Z [36;1m    return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in s)[0m
+2026-10-19T15:14:17.9527615Z [36;1m[0m
+2026-10-19T15:14:17.9527965Z [36;1m[0m
+2026-10-19T15:14:17.9528452Z [36;1mdef control(label, change, marker):[0m
+2026-10-19T15:14:17.9528980Z [36;1m    env = {k: v for k, v in os.environ.items() if k != "PGPASSWORD"}[0m
+2026-10-19T15:14:17.9529486Z [36;1m    env.update(change)[0m
+2026-10-19T15:14:17.9529892Z [36;1m    try:[0m
+2026-10-19T15:14:17.9530503Z [36;1m        r = subprocess.run(["psql", "-X", "-w", "-A", "-t", "-c", "select 1"], env=env, stdin=subprocess.DEVNULL,[0m
+2026-10-19T15:14:17.9531133Z [36;1m                           capture_output=True, text=True, timeout=60)[0m
+2026-10-19T15:14:17.9531693Z [36;1m        rc, msg = r.returncode, " ".join((r.stdout + r.stderr).split())[0m
+2026-10-19T15:14:17.9532262Z [36;1m    except (OSError, subprocess.TimeoutExpired) as exc:[0m
+2026-10-19T15:14:17.9532780Z [36;1m        rc, msg = None, type(exc).__name__[0m
+2026-10-19T15:14:17.9533224Z [36;1m    if rc == 0:[0m
+2026-10-19T15:14:17.9533609Z [36;1m        line = "FAIL (it connected)"[0m
+2026-10-19T15:14:17.9534053Z [36;1m    elif rc is not None and marker in msg:[0m
+2026-10-19T15:14:17.9534531Z [36;1m        line = f"pass (refused: {marker})"[0m
+2026-10-19T15:14:17.9534951Z [36;1m    else:[0m
+2026-10-19T15:14:17.9535419Z [36;1m        line = f"FAIL (not refused for that reason: {esc(msg)[:240]})"[0m
+2026-10-19T15:14:17.9536022Z [36;1m    print(f"server authentication, negative control {label}: {line}", flush=True)[0m
+2026-10-19T15:14:17.9536606Z [36;1m    return line.startswith("pass")[0m
+2026-10-19T15:14:17.9537029Z [36;1m[0m
+2026-10-19T15:14:17.9537366Z [36;1m[0m
+2026-10-19T15:14:17.9537831Z [36;1mroot, host = os.environ["PGSSLROOTCERT"], os.environ.get("PGHOST", "")[0m
+2026-10-19T15:14:17.9538494Z [36;1ma = b = False[0m
+2026-10-19T15:14:17.9538922Z [36;1mif not host or not os.path.isfile(root):[0m
+2026-10-19T15:14:17.9539532Z [36;1m    print("server authentication: could not check (no pooler host, or no pinned root file)")[0m
+2026-10-19T15:14:17.9540093Z [36;1melse:[0m
+2026-10-19T15:14:17.9540517Z [36;1m    with tempfile.TemporaryDirectory() as d:[0m
+2026-10-19T15:14:17.9541153Z [36;1m        made = subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",[0m
+2026-10-19T15:14:17.9542041Z [36;1m                               "-nodes", "-keyout", d + "/runtime-root.key", "-out", d + "/runtime-root.crt",[0m
+2026-10-19T15:14:17.9542723Z [36;1m                               "-days", "1", "-subj", "/CN=w03 run-time root"], capture_output=True).returncode == 0[0m
+2026-10-19T15:14:17.9543322Z [36;1m        if made:[0m
+2026-10-19T15:14:17.9543804Z [36;1m            a = control("(a), a root made at run time in place of the pinned one",[0m
+2026-10-19T15:14:17.9544430Z [36;1m                        {"PGSSLROOTCERT": d + "/runtime-root.crt"}, "certificate verify failed")[0m
+2026-10-19T15:14:17.9544975Z [36;1m        else:[0m
+2026-10-19T15:14:17.9545531Z [36;1m            print("server authentication, negative control (a): FAIL (openssl could not make the run-time root)")[0m
+2026-10-19T15:14:17.9546156Z [36;1m    try:[0m
+2026-10-19T15:14:17.9546648Z [36;1m        addr = socket.getaddrinfo(host, int(os.environ.get("PGPORT") or 5432), socket.AF_INET,[0m
+2026-10-19T15:14:17.9547245Z [36;1m                                  socket.SOCK_STREAM)[0][4][0][0m
+2026-10-19T15:14:17.9547762Z [36;1m    except (OSError, ValueError, IndexError) as exc:[0m
+2026-10-19T15:14:17.9548313Z [36;1m        addr = None[0m
+2026-10-19T15:14:17.9549038Z [36;1m        print(f"server authentication, negative control (b): FAIL (the pooler's address: {type(exc).__name__})")[0m
+2026-10-19T15:14:17.9549627Z [36;1m    if addr:[0m
+2026-10-19T15:14:17.9550172Z [36;1m        b = control(f"(b), the host name w03-name-mismatch.invalid at the pooler's address {addr}",[0m
+2026-10-19T15:14:17.9550908Z [36;1m                    {"PGHOST": "w03-name-mismatch.invalid", "PGHOSTADDR": addr}, "does not match host name")[0m
+2026-10-19T15:14:17.9551587Z [36;1mok = a and b[0m
+2026-10-19T15:14:17.9551969Z [36;1mif not ok:[0m
+2026-10-19T15:14:17.9552332Z [36;1m    if os.path.lexists(root):[0m
+2026-10-19T15:14:17.9552754Z [36;1m        os.remove(root)[0m
+2026-10-19T15:14:17.9553364Z [36;1m    print("server authentication: could not check: server authentication not shown; the root file is removed, "[0m
+2026-10-19T15:14:17.9554428Z [36;1m          "so nothing after this step connects, and the apply does not run")[0m
+2026-10-19T15:14:17.9555104Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:17.9555645Z [36;1m    f.write(f"controls={'pass' if ok else 'fail'}\n")[0m
+2026-10-19T15:14:17.9556134Z [36;1mraise SystemExit(0 if ok else 1)[0m
+2026-10-19T15:14:17.9556545Z [36;1mPY[0m
+2026-10-19T15:14:17.9601264Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:17.9601863Z env:
+2026-10-19T15:14:17.9602261Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:17.9602767Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:17.9603404Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:17.9608882Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:17.9618044Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:17.9622964Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:17.9623624Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:17.9624903Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:17.9626382Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:17.9626924Z   W03_PLANT_B64: 
+2026-10-19T15:14:17.9627268Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:17.9628132Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:17.9629390Z   PROJECT: devos
+2026-10-19T15:14:17.9629876Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.9630317Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:17.9630749Z   PGPORT: 5432
+2026-10-19T15:14:17.9631152Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:17.9631579Z   PGDATABASE: postgres
+2026-10-19T15:14:17.9631972Z   PGSSLMODE: verify-full
+2026-10-19T15:14:17.9632396Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:17.9632833Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:17.9633229Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:17.9633627Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:17.9634028Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:17.9634431Z   PGHOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:17.9634872Z ##[endgroup]
+2026-10-19T15:14:18.1796983Z server authentication, negative control (a), a root made at run time in place of the pinned one: pass (refused: certificate verify failed)
+2026-10-19T15:14:18.2645114Z server authentication, negative control (b), the host name w03-name-mismatch.invalid at the pooler's address 52.45.94.125: pass (refused: does not match host name)
+2026-10-19T15:14:18.2741872Z ##[group]Run if [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+2026-10-19T15:14:18.2742397Z [36;1mif [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then[0m
+2026-10-19T15:14:18.2742845Z [36;1m  echo "credential present: no"[0m
+2026-10-19T15:14:18.2743235Z [36;1m  echo "present=no" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:18.2744034Z [36;1melif python3 -I -c 'import os, urllib.parse as u; v = u.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""); print("::add-mask::" + v.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'; then[0m
+2026-10-19T15:14:18.2744866Z [36;1m  echo "credential present: yes"[0m
+2026-10-19T15:14:18.2745282Z [36;1m  echo "present=yes" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:18.2745688Z [36;1melse[0m
+2026-10-19T15:14:18.2746202Z [36;1m  echo "credential present: could not check (its percent-encoded form could not be masked); the job stops"[0m
+2026-10-19T15:14:18.2746731Z [36;1m  exit 1[0m
+2026-10-19T15:14:18.2747052Z [36;1mfi[0m
+2026-10-19T15:14:18.2790953Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:18.2791369Z env:
+2026-10-19T15:14:18.2791713Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:18.2792149Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:18.2792764Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:18.2797693Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:18.2807100Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:18.2811827Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:18.2812429Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:18.2813692Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:18.2815098Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:18.2815602Z   W03_PLANT_B64: 
+2026-10-19T15:14:18.2815949Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:18.2816703Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:18.2817465Z   PROJECT: devos
+2026-10-19T15:14:18.2817806Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.2818323Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:18.2818771Z   PGPORT: 5432
+2026-10-19T15:14:18.2819087Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.2819426Z   PGDATABASE: postgres
+2026-10-19T15:14:18.2819891Z   PGSSLMODE: verify-full
+2026-10-19T15:14:18.2820253Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:18.2820644Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:18.2821003Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:18.2821298Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:18.2821647Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:18.2822376Z   SUPABASE_DB_PASSWORD: ***
+2026-10-19T15:14:18.2822698Z ##[endgroup]
+2026-10-19T15:14:18.3119229Z credential present: yes
+2026-10-19T15:14:18.3162263Z ##[group]Run if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+2026-10-19T15:14:18.3162974Z [36;1mif timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then[0m
+2026-10-19T15:14:18.3163522Z [36;1m  echo "connection: succeeded"[0m
+2026-10-19T15:14:18.3164115Z [36;1m  echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass"[0m
+2026-10-19T15:14:18.3164726Z [36;1m  echo "connected=yes" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:18.3165088Z [36;1melse[0m
+2026-10-19T15:14:18.3165383Z [36;1m  echo "connection: failed"[0m
+2026-10-19T15:14:18.3165967Z [36;1m  echo "server authentication, positive control (sslmode=verify-full with the pinned root, select 1): FAIL"[0m
+2026-10-19T15:14:18.3166716Z [36;1m  echo "server authentication: could not check: server authentication not shown; the apply does not run"[0m
+2026-10-19T15:14:18.3167379Z [36;1m  sed 's/^/psql: /' "$RUNNER_TEMP/w03connect.err"[0m
+2026-10-19T15:14:18.3167788Z [36;1m  echo "connected=no" >> "$GITHUB_OUTPUT"[0m
+2026-10-19T15:14:18.3168181Z [36;1m  exit 1[0m
+2026-10-19T15:14:18.3168673Z [36;1mfi[0m
+2026-10-19T15:14:18.3212072Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:18.3212820Z env:
+2026-10-19T15:14:18.3213223Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:18.3213759Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:18.3214376Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:18.3220152Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:18.3229596Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:18.3234309Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:18.3234898Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:18.3236135Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:18.3237629Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:18.3238111Z   W03_PLANT_B64: 
+2026-10-19T15:14:18.3238744Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:18.3239534Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:18.3240321Z   PROJECT: devos
+2026-10-19T15:14:18.3240701Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.3241073Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:18.3241500Z   PGPORT: 5432
+2026-10-19T15:14:18.3241817Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.3242175Z   PGDATABASE: postgres
+2026-10-19T15:14:18.3242498Z   PGSSLMODE: verify-full
+2026-10-19T15:14:18.3242882Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:18.3243314Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:18.3243633Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:18.3243958Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:18.3244275Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:18.3244659Z   PGHOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:18.3245212Z   PGPASSWORD: ***
+2026-10-19T15:14:18.3245504Z ##[endgroup]
+2026-10-19T15:14:18.5149672Z connection: succeeded
+2026-10-19T15:14:18.5151084Z server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass
+2026-10-19T15:14:18.5212553Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:18.5213265Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:18.5214122Z [36;1mtrap 'echo "listing: could not check (a command of this step failed, line ${LINENO})"' ERR[0m
+2026-10-19T15:14:18.5214957Z [36;1mw="$(mktemp -d)"[0m
+2026-10-19T15:14:18.5215458Z [36;1mcat > "$w/listing.sql" <<'SQL'[0m
+2026-10-19T15:14:18.5215985Z [36;1m\set ON_ERROR_STOP on[0m
+2026-10-19T15:14:18.5216606Z [36;1mbegin transaction isolation level repeatable read, read only;[0m
+2026-10-19T15:14:18.5217328Z [36;1mselect ([0m
+2026-10-19T15:14:18.5217869Z [36;1mselect coalesce(json_agg(o order by o), '[]'::json) from ([0m
+2026-10-19T15:14:18.5218770Z [36;1m  select 'schema ' || n.nspname as o[0m
+2026-10-19T15:14:18.5219346Z [36;1m    from pg_catalog.pg_namespace n[0m
+2026-10-19T15:14:18.5219978Z [36;1m   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:18.5220954Z [36;1m     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:18.5221679Z [36;1m     and n.nspname <> all (string_to_array(:'entry_only', ' '))[0m
+2026-10-19T15:14:18.5222528Z [36;1m  union[0m
+2026-10-19T15:14:18.5223101Z [36;1m  select coalesce('extension ' || e.extname,[0m
+2026-10-19T15:14:18.5223934Z [36;1m                  case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)[0m
+2026-10-19T15:14:18.5224748Z [36;1m    from pg_catalog.pg_class c[0m
+2026-10-19T15:14:18.5225360Z [36;1m    join pg_catalog.pg_namespace n on n.oid = c.relnamespace[0m
+2026-10-19T15:14:18.5226315Z [36;1m    left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'[0m
+2026-10-19T15:14:18.5227230Z [36;1m    left join pg_catalog.pg_extension e on e.oid = d.refobjid[0m
+2026-10-19T15:14:18.5227909Z [36;1m   where c.relkind in ('r', 'p', 'f', 'v', 'm')[0m
+2026-10-19T15:14:18.5228774Z [36;1m     and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:18.5229497Z [36;1m     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:18.5230345Z [36;1m  union[0m
+2026-10-19T15:14:18.5231032Z [36;1m  select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('[0m
+2026-10-19T15:14:18.5231980Z [36;1m                  || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')[0m
+2026-10-19T15:14:18.5232726Z [36;1m    from pg_catalog.pg_proc p[0m
+2026-10-19T15:14:18.5233372Z [36;1m    join pg_catalog.pg_namespace n on n.oid = p.pronamespace[0m
+2026-10-19T15:14:18.5234395Z [36;1m    left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'[0m
+2026-10-19T15:14:18.5235319Z [36;1m    left join pg_catalog.pg_extension e on e.oid = d.refobjid[0m
+2026-10-19T15:14:18.5236118Z [36;1m   where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:18.5236879Z [36;1m     and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:18.5237543Z [36;1m  union[0m
+2026-10-19T15:14:18.5237978Z [36;1m  select 'role ' || r.rolname[0m
+2026-10-19T15:14:18.5238734Z [36;1m    from pg_catalog.pg_roles r[0m
+2026-10-19T15:14:18.5239504Z [36;1m   where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))[0m
+2026-10-19T15:14:18.5240184Z [36;1m) s[0m
+2026-10-19T15:14:18.5240584Z [36;1m)::text as w03_listing \gset[0m
+2026-10-19T15:14:18.5241167Z [36;1m\echo W03LISTING :w03_listing[0m
+2026-10-19T15:14:18.5241681Z [36;1mcommit;[0m
+2026-10-19T15:14:18.5242113Z [36;1mSQL[0m
+2026-10-19T15:14:18.5242830Z [36;1mecho "listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own"[0m
+2026-10-19T15:14:18.5243741Z [36;1mecho "  exclusion list, kept as data in this workflow:"[0m
+2026-10-19T15:14:18.5244706Z [36;1mecho "  schemas excluded with their contents (Supabase's own): ${W03_EXCLUDED_SCHEMAS}"[0m
+2026-10-19T15:14:18.5246188Z [36;1mecho "  schema entries excluded, their contents still listed: ${W03_SCHEMA_ENTRY_ONLY} (the default schema every project is created with)"[0m
+2026-10-19T15:14:18.5247461Z [36;1mecho "  roles excluded (Supabase's own), besides every pg_* role: ${W03_EXCLUDED_ROLES}"[0m
+2026-10-19T15:14:18.5248608Z [36;1mecho "  objects that belong to an extension are listed as that extension"[0m
+2026-10-19T15:14:18.5249650Z [36;1mtimeout 120 psql -X -q -A -t -v ex_schemas="$W03_EXCLUDED_SCHEMAS" -v entry_only="$W03_SCHEMA_ENTRY_ONLY" \[0m
+2026-10-19T15:14:18.5250715Z [36;1m  -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/listing.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?[0m
+2026-10-19T15:14:18.5251778Z [36;1mtimeout 120 psql -X -q -A -t -v ex_schemas= -v entry_only= -v ex_roles= -f "$w/listing.sql" > "$w/control" 2>> "$w/err" || true[0m
+2026-10-19T15:14:18.5252707Z [36;1mW03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?[0m
+2026-10-19T15:14:18.5253340Z [36;1mimport json, os[0m
+2026-10-19T15:14:18.5254659Z [36;1mdef esc(s):[0m
+2026-10-19T15:14:18.5255348Z [36;1m    return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))[0m
+2026-10-19T15:14:18.5256231Z [36;1md = os.environ["W03_DIR"][0m
+2026-10-19T15:14:18.5256749Z [36;1mdef listing(name):[0m
+2026-10-19T15:14:18.5257334Z [36;1m    for ln in open(os.path.join(d, name), encoding="utf-8"):[0m
+2026-10-19T15:14:18.5257991Z [36;1m        if ln.startswith("W03LISTING "):[0m
+2026-10-19T15:14:18.5258726Z [36;1m            try:[0m
+2026-10-19T15:14:18.5259229Z [36;1m                v = json.loads(ln[len("W03LISTING "):])[0m
+2026-10-19T15:14:18.5259875Z [36;1m                return v if isinstance(v, list) else None[0m
+2026-10-19T15:14:18.5260471Z [36;1m            except ValueError:[0m
+2026-10-19T15:14:18.5261015Z [36;1m                return None[0m
+2026-10-19T15:14:18.5261515Z [36;1m    return None[0m
+2026-10-19T15:14:18.5262059Z [36;1mitems, control = listing("out"), listing("control")[0m
+2026-10-19T15:14:18.5262808Z [36;1mfor ln in open(os.path.join(d, "err"), encoding="utf-8"):[0m
+2026-10-19T15:14:18.5263458Z [36;1m    print("psql: " + esc(ln.rstrip()))[0m
+2026-10-19T15:14:18.5264226Z [36;1mif os.environ["W03_RC"] != "0" or items is None:[0m
+2026-10-19T15:14:18.5264944Z [36;1m    print("listing: could not check (the read did not complete)")[0m
+2026-10-19T15:14:18.5265556Z [36;1m    count = ""[0m
+2026-10-19T15:14:18.5265999Z [36;1melse:[0m
+2026-10-19T15:14:18.5266398Z [36;1m    for item in items:[0m
+2026-10-19T15:14:18.5266979Z [36;1m        print("listing: " + esc(item))[0m
+2026-10-19T15:14:18.5267535Z [36;1m    count = str(len(items))[0m
+2026-10-19T15:14:18.5268161Z [36;1m    print(f"listing: {count} objects outside Supabase's own")[0m
+2026-10-19T15:14:18.5268985Z [36;1mif control is None:[0m
+2026-10-19T15:14:18.5269733Z [36;1m    print("listing control: could not check (the same query without the exclusion list did not complete)")[0m
+2026-10-19T15:14:18.5270604Z [36;1melse:[0m
+2026-10-19T15:14:18.5271346Z [36;1m    print(f"listing control: the same query without the exclusion list shows {len(control)} objects; "[0m
+2026-10-19T15:14:18.5272383Z [36;1m          f"auth.users among them: {'yes' if 'table auth.users' in control else 'no'}")[0m
+2026-10-19T15:14:18.5273316Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:18.5273977Z [36;1m    f.write(f"count={count}\n")[0m
+2026-10-19T15:14:18.5274597Z [36;1mraise SystemExit(0 if count else 1)[0m
+2026-10-19T15:14:18.5275132Z [36;1mPY[0m
+2026-10-19T15:14:18.5330760Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:18.5331228Z env:
+2026-10-19T15:14:18.5331541Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:18.5331987Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:18.5332595Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:18.5337759Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:18.5346996Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:18.5351739Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:18.5352371Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:18.5353575Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:18.5355007Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:18.5355497Z   W03_PLANT_B64: 
+2026-10-19T15:14:18.5355774Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:18.5356576Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:18.5357388Z   PROJECT: devos
+2026-10-19T15:14:18.5357714Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.5358100Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:18.5358607Z   PGPORT: 5432
+2026-10-19T15:14:18.5358952Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:18.5359340Z   PGDATABASE: postgres
+2026-10-19T15:14:18.5359736Z   PGSSLMODE: verify-full
+2026-10-19T15:14:18.5360096Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:18.5360491Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:18.5360841Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:18.5361159Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:18.5361508Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:18.5361872Z   PGHOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:18.5362560Z   PGPASSWORD: ***
+2026-10-19T15:14:18.5362911Z ##[endgroup]
+2026-10-19T15:14:18.5453652Z listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own
+2026-10-19T15:14:18.5454981Z   exclusion list, kept as data in this workflow:
+2026-10-19T15:14:18.5456003Z   schemas excluded with their contents (Supabase's own): auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:18.5457286Z   schema entries excluded, their contents still listed: public (the default schema every project is created with)
+2026-10-19T15:14:18.5459599Z   roles excluded (Supabase's own), besides every pg_* role: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:18.5461205Z   objects that belong to an extension are listed as that extension
+2026-10-19T15:14:19.2160665Z listing: function devos_api.accept(verdict_ref uuid, accepted_use text)
+2026-10-19T15:14:19.2161594Z listing: function devos_api.admit_work(p jsonb)
+2026-10-19T15:14:19.2162304Z listing: function devos_api.affected_entities(root uuid, limits jsonb)
+2026-10-19T15:14:19.2162833Z listing: function devos_api.authority_epoch()
+2026-10-19T15:14:19.2163294Z listing: function devos_api.begin_transfer_run(p jsonb)
+2026-10-19T15:14:19.2163798Z listing: function devos_api.cancel_work(work_id uuid, reason text)
+2026-10-19T15:14:19.2164324Z listing: function devos_api.claim(work_id uuid, declared_session_id text)
+2026-10-19T15:14:19.2164834Z listing: function devos_api.deployment_drift(expected jsonb)
+2026-10-19T15:14:19.2165322Z listing: function devos_api.end_transfer_run(p jsonb)
+2026-10-19T15:14:19.2165839Z listing: function devos_api.explain_paths(root uuid, target uuid, limits jsonb)
+2026-10-19T15:14:19.2166357Z listing: function devos_api.fingerprint_matches(hashes text[])
+2026-10-19T15:14:19.2166824Z listing: function devos_api.heartbeat(claim_token text)
+2026-10-19T15:14:19.2167261Z listing: function devos_api.link_prior_decisions(p jsonb)
+2026-10-19T15:14:19.2167676Z listing: function devos_api.mark_exported(p jsonb)
+2026-10-19T15:14:19.2168398Z listing: function devos_api.mark_stale(work_id uuid, reason text)
+2026-10-19T15:14:19.2168859Z listing: function devos_api.open_decision(p jsonb)
+2026-10-19T15:14:19.2169303Z listing: function devos_api.open_mission(p jsonb)
+2026-10-19T15:14:19.2169709Z listing: function devos_api.open_review(p jsonb)
+2026-10-19T15:14:19.2170126Z listing: function devos_api.operation_state(operation_id uuid)
+2026-10-19T15:14:19.2170710Z listing: function devos_api.prepare_operation(claim_token text, p jsonb)
+2026-10-19T15:14:19.2171198Z listing: function devos_api.read_decision(decision_id uuid)
+2026-10-19T15:14:19.2171657Z listing: function devos_api.read_eval_run(eval_run_id uuid)
+2026-10-19T15:14:19.2172155Z listing: function devos_api.read_rejected_attempts(since timestamp with time zone)
+2026-10-19T15:14:19.2172642Z listing: function devos_api.read_review(review_id uuid)
+2026-10-19T15:14:19.2173142Z listing: function devos_api.ready_works()
+2026-10-19T15:14:19.2173592Z listing: function devos_api.record_attempt(claim_token text, operation_id uuid)
+2026-10-19T15:14:19.2174094Z listing: function devos_api.record_eval_run(p jsonb)
+2026-10-19T15:14:19.2174505Z listing: function devos_api.record_finding(p jsonb)
+2026-10-19T15:14:19.2175094Z listing: function devos_api.record_handover(p jsonb)
+2026-10-19T15:14:19.2175546Z listing: function devos_api.record_ledger_entry(p jsonb)
+2026-10-19T15:14:19.2175992Z listing: function devos_api.record_need(p jsonb)
+2026-10-19T15:14:19.2176415Z listing: function devos_api.record_observation(p jsonb)
+2026-10-19T15:14:19.2176916Z listing: function devos_api.record_verdict(p jsonb)
+2026-10-19T15:14:19.2177388Z listing: function devos_api.register_artifact(claim_token text, p jsonb)
+2026-10-19T15:14:19.2177904Z listing: function devos_api.relate(p jsonb)
+2026-10-19T15:14:19.2178658Z listing: function devos_api.release(claim_token text)
+2026-10-19T15:14:19.2179269Z listing: function devos_api.reopen_for_review(work_id uuid, reason text)
+2026-10-19T15:14:19.2179766Z listing: function devos_api.resolve_need(need_id uuid, reason text)
+2026-10-19T15:14:19.2180277Z listing: function devos_api.retract_relation(relation_id uuid, reason text)
+2026-10-19T15:14:19.2180908Z listing: function devos_api.review_finding(finding_id uuid, revision integer, status text)
+2026-10-19T15:14:19.2181420Z listing: function devos_api.revise_mission(p jsonb)
+2026-10-19T15:14:19.2181840Z listing: function devos_api.revise_work(p jsonb)
+2026-10-19T15:14:19.2182411Z listing: function devos_api.revoke_claim(assignment_id uuid, reason text)
+2026-10-19T15:14:19.2183352Z listing: function devos_api.set_effort_policy(p jsonb)
+2026-10-19T15:14:19.2183874Z listing: function devos_api.token_role_class()
+2026-10-19T15:14:19.2184294Z listing: function devos_api.transfer_acceptance(p jsonb)
+2026-10-19T15:14:19.2184736Z listing: function devos_api.transfer_artifact(p jsonb)
+2026-10-19T15:14:19.2185168Z listing: function devos_api.transfer_decision(p jsonb)
+2026-10-19T15:14:19.2185560Z listing: function devos_api.transfer_event(p jsonb)
+2026-10-19T15:14:19.2185991Z listing: function devos_api.transfer_finding(p jsonb)
+2026-10-19T15:14:19.2186435Z listing: function devos_api.transfer_mission(p jsonb)
+2026-10-19T15:14:19.2186848Z listing: function devos_api.transfer_need(p jsonb)
+2026-10-19T15:14:19.2187282Z listing: function devos_api.transfer_relation(p jsonb)
+2026-10-19T15:14:19.2187677Z listing: function devos_api.transfer_review(p jsonb)
+2026-10-19T15:14:19.2188111Z listing: function devos_api.transfer_work(p jsonb)
+2026-10-19T15:14:19.2188809Z listing: function devos_private.caller_role_class(function_name text)
+2026-10-19T15:14:19.2189561Z listing: function devos_private.check_claim(p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean)
+2026-10-19T15:14:19.2190488Z listing: function devos_private.claim_live(claim_status devos_private.assignment_status, claim_lease timestamp with time zone, claim_epoch bigint)
+2026-10-19T15:14:19.2191203Z listing: function devos_private.hard_dependency_cycle(p_from uuid, p_to uuid)
+2026-10-19T15:14:19.2191773Z listing: function devos_private.is_installation_mission(p_mission_id uuid)
+2026-10-19T15:14:19.2192315Z listing: function devos_private.issue_env_token(role_class text)
+2026-10-19T15:14:19.2192838Z listing: function devos_private.ready_value(p_work_id uuid, p_own_claim uuid)
+2026-10-19T15:14:19.2193488Z listing: function devos_private.refuse_change()
+2026-10-19T15:14:19.2194730Z listing: function devos_private.reject(p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer)
+2026-10-19T15:14:19.2196385Z listing: function devos_private.reject_counted(p_function_name text, p_reason_code text)
+2026-10-19T15:14:19.2197236Z listing: function devos_private.revoke_env_token(token_id uuid)
+2026-10-19T15:14:19.2197934Z listing: function devos_private.scope_within(p_scope text, p_container text)
+2026-10-19T15:14:19.2198777Z listing: function devos_private.token_hash(token text)
+2026-10-19T15:14:19.2200212Z listing: function devos_private.write_event(p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text)
+2026-10-19T15:14:19.2201125Z listing: schema devos_api
+2026-10-19T15:14:19.2201491Z listing: schema devos_private
+2026-10-19T15:14:19.2201856Z listing: schema w03_fixture
+2026-10-19T15:14:19.2202201Z listing: table devos_private.acceptance
+2026-10-19T15:14:19.2202585Z listing: table devos_private.artifact
+2026-10-19T15:14:19.2202961Z listing: table devos_private.artifact_revision
+2026-10-19T15:14:19.2203396Z listing: table devos_private.assignment
+2026-10-19T15:14:19.2203772Z listing: table devos_private.decision
+2026-10-19T15:14:19.2204140Z listing: table devos_private.decision_revision
+2026-10-19T15:14:19.2204524Z listing: table devos_private.effect_class
+2026-10-19T15:14:19.2204888Z listing: table devos_private.effort_policy
+2026-10-19T15:14:19.2205265Z listing: table devos_private.env_tokens
+2026-10-19T15:14:19.2205671Z listing: table devos_private.eval_run
+2026-10-19T15:14:19.2206027Z listing: table devos_private.event
+2026-10-19T15:14:19.2206390Z listing: table devos_private.finding
+2026-10-19T15:14:19.2206756Z listing: table devos_private.finding_revision
+2026-10-19T15:14:19.2207161Z listing: table devos_private.function_deployment
+2026-10-19T15:14:19.2207707Z listing: table devos_private.global_authority_epoch
+2026-10-19T15:14:19.2208105Z listing: table devos_private.leak_fingerprint
+2026-10-19T15:14:19.2208655Z listing: table devos_private.mission
+2026-10-19T15:14:19.2209017Z listing: table devos_private.mission_revision
+2026-10-19T15:14:19.2209426Z listing: table devos_private.need
+2026-10-19T15:14:19.2209776Z listing: table devos_private.observation
+2026-10-19T15:14:19.2210185Z listing: table devos_private.operation
+2026-10-19T15:14:19.2210564Z listing: table devos_private.rejected_attempt
+2026-10-19T15:14:19.2210933Z listing: table devos_private.relation
+2026-10-19T15:14:19.2211316Z listing: table devos_private.review
+2026-10-19T15:14:19.2211658Z listing: table devos_private.verdict
+2026-10-19T15:14:19.2211990Z listing: table devos_private.work
+2026-10-19T15:14:19.2212400Z listing: table devos_private.work_revision
+2026-10-19T15:14:19.2212764Z listing: table w03_fixture.apply_check
+2026-10-19T15:14:19.2213180Z listing: view devos_private.artifact_current
+2026-10-19T15:14:19.2213557Z listing: view devos_private.decision_current
+2026-10-19T15:14:19.2213913Z listing: view devos_private.finding_current
+2026-10-19T15:14:19.2214312Z listing: view devos_private.mission_current
+2026-10-19T15:14:19.2216119Z listing: view devos_private.work_current
+2026-10-19T15:14:19.2216528Z listing: view w03_fixture.apply_check_view
+2026-10-19T15:14:19.2216903Z listing: 106 objects outside Supabase's own
+2026-10-19T15:14:19.2217417Z listing control: the same query without the exclusion list shows 223 objects; auth.users among them: yes
+2026-10-19T15:14:19.3192622Z ##[group]Run set -uo pipefail
+2026-10-19T15:14:19.3193851Z [36;1mset -uo pipefail[0m
+2026-10-19T15:14:19.3194371Z [36;1mtrap 'echo "comparison: could not check (a command of this step failed, line ${LINENO})"' ERR[0m
+2026-10-19T15:14:19.3194908Z [36;1mw="$(mktemp -d)"[0m
+2026-10-19T15:14:19.3195242Z [36;1mcat > "$w/compare.sql" <<'SQL'[0m
+2026-10-19T15:14:19.3195612Z [36;1m\set ON_ERROR_STOP on[0m
+2026-10-19T15:14:19.3196216Z [36;1m-- The history table, if present, is locked (ACCESS SHARE) before the transaction's snapshot is taken, so that no[0m
+2026-10-19T15:14:19.3196959Z [36;1m-- TRUNCATE, table-rewriting ALTER TABLE, DROP or other ACCESS EXCLUSIVE command can change it between the reads[0m
+2026-10-19T15:14:19.3197740Z [36;1m-- and the count. A table that appears after this first read is counted as not locked: the reads are partial.[0m
+2026-10-19T15:14:19.3198864Z [36;1mselect exists (select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace[0m
+2026-10-19T15:14:19.3199695Z [36;1m                where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))[0m
+2026-10-19T15:14:19.3200253Z [36;1m       as w03_hist_lock \gset[0m
+2026-10-19T15:14:19.3200689Z [36;1mbegin transaction isolation level repeatable read, read only;[0m
+2026-10-19T15:14:19.3201123Z [36;1m\if :w03_hist_lock[0m
+2026-10-19T15:14:19.3201549Z [36;1mlock table supabase_migrations.schema_migrations in access share mode;[0m
+2026-10-19T15:14:19.3202096Z [36;1m\endif[0m
+2026-10-19T15:14:19.3202495Z [36;1mselect r::text as w03_reads, (r->>'function_exists')::boolean as w03_fn,[0m
+2026-10-19T15:14:19.3203061Z [36;1m       (r->>'history_table_exists')::boolean as w03_hist,[0m
+2026-10-19T15:14:19.3203632Z [36;1m       (select c.oid from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace[0m
+2026-10-19T15:14:19.3204394Z [36;1m         where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p'))[0m
+2026-10-19T15:14:19.3204939Z [36;1m         as w03_hist_oid[0m
+2026-10-19T15:14:19.3205288Z [36;1m  from (select json_build_object([0m
+2026-10-19T15:14:19.3205662Z [36;1m    'function_exists', exists ([0m
+2026-10-19T15:14:19.3206170Z [36;1m      select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace[0m
+2026-10-19T15:14:19.3207007Z [36;1m       where n.nspname = 'devos_api' and p.proname = 'deployment_drift' and p.pronargs = 1[0m
+2026-10-19T15:14:19.3207513Z [36;1m         and p.proargtypes[0] = 3802),[0m
+2026-10-19T15:14:19.3207897Z [36;1m    'history_table_exists', exists ([0m
+2026-10-19T15:14:19.3208535Z [36;1m      select 1 from pg_catalog.pg_class c join pg_catalog.pg_namespace n on n.oid = c.relnamespace[0m
+2026-10-19T15:14:19.3209294Z [36;1m       where n.nspname = 'supabase_migrations' and c.relname = 'schema_migrations' and c.relkind in ('r', 'p')),[0m
+2026-10-19T15:14:19.3209893Z [36;1m    'listing', ([0m
+2026-10-19T15:14:19.3210293Z [36;1m      select coalesce(json_agg(o order by o), '[]'::json) from ([0m
+2026-10-19T15:14:19.3210732Z [36;1m        select 'schema ' || n.nspname as o[0m
+2026-10-19T15:14:19.3211136Z [36;1m          from pg_catalog.pg_namespace n[0m
+2026-10-19T15:14:19.3211637Z [36;1m         where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:19.3212144Z [36;1m           and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:19.3212636Z [36;1m           and n.nspname <> all (string_to_array(:'entry_only', ' '))[0m
+2026-10-19T15:14:19.3213038Z [36;1m        union[0m
+2026-10-19T15:14:19.3213408Z [36;1m        select coalesce('extension ' || e.extname,[0m
+2026-10-19T15:14:19.3214015Z [36;1m                        case when c.relkind in ('v', 'm') then 'view ' else 'table ' end || n.nspname || '.' || c.relname)[0m
+2026-10-19T15:14:19.3214542Z [36;1m          from pg_catalog.pg_class c[0m
+2026-10-19T15:14:19.3215093Z [36;1m          join pg_catalog.pg_namespace n on n.oid = c.relnamespace[0m
+2026-10-19T15:14:19.3215665Z [36;1m          left join pg_catalog.pg_depend d on d.classid = 1259 and d.objid = c.oid and d.deptype = 'e'[0m
+2026-10-19T15:14:19.3216247Z [36;1m          left join pg_catalog.pg_extension e on e.oid = d.refobjid[0m
+2026-10-19T15:14:19.3216757Z [36;1m         where c.relkind in ('r', 'p', 'f', 'v', 'm')[0m
+2026-10-19T15:14:19.3217215Z [36;1m           and n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:19.3217704Z [36;1m           and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:19.3218105Z [36;1m        union[0m
+2026-10-19T15:14:19.3219000Z [36;1m        select coalesce('extension ' || e.extname, 'function ' || n.nspname || '.' || p.proname || '('[0m
+2026-10-19T15:14:19.3219610Z [36;1m                        || pg_catalog.pg_get_function_identity_arguments(p.oid) || ')')[0m
+2026-10-19T15:14:19.3220090Z [36;1m          from pg_catalog.pg_proc p[0m
+2026-10-19T15:14:19.3220537Z [36;1m          join pg_catalog.pg_namespace n on n.oid = p.pronamespace[0m
+2026-10-19T15:14:19.3221096Z [36;1m          left join pg_catalog.pg_depend d on d.classid = 1255 and d.objid = p.oid and d.deptype = 'e'[0m
+2026-10-19T15:14:19.3221749Z [36;1m          left join pg_catalog.pg_extension e on e.oid = d.refobjid[0m
+2026-10-19T15:14:19.3222246Z [36;1m         where n.nspname !~ '^pg_' and n.nspname <> 'information_schema'[0m
+2026-10-19T15:14:19.3222745Z [36;1m           and n.nspname <> all (string_to_array(:'ex_schemas', ' '))[0m
+2026-10-19T15:14:19.3223156Z [36;1m        union[0m
+2026-10-19T15:14:19.3223478Z [36;1m        select 'role ' || r.rolname[0m
+2026-10-19T15:14:19.3223914Z [36;1m          from pg_catalog.pg_roles r[0m
+2026-10-19T15:14:19.3224391Z [36;1m         where r.rolname !~ '^pg_' and r.rolname <> all (string_to_array(:'ex_roles', ' '))[0m
+2026-10-19T15:14:19.3224843Z [36;1m      ) s[0m
+2026-10-19T15:14:19.3225160Z [36;1m    )) as r) s \gset[0m
+2026-10-19T15:14:19.3225490Z [36;1m\echo W03READS :w03_reads[0m
+2026-10-19T15:14:19.3225918Z [36;1m\echo W03LOCKED :w03_hist_lock[0m
+2026-10-19T15:14:19.3226262Z [36;1m\if :w03_hist[0m
+2026-10-19T15:14:19.3226737Z [36;1mselect coalesce(json_agg(version order by version), '[]')::text as w03_applied, count(*) as w03_rows,[0m
+2026-10-19T15:14:19.3227434Z [36;1m       'supabase_migrations.schema_migrations'::regclass::oid = :'w03_hist_oid'::oid as w03_same_table[0m
+2026-10-19T15:14:19.3228081Z [36;1m  from supabase_migrations.schema_migrations \gset[0m
+2026-10-19T15:14:19.3228749Z [36;1m\echo W03APPLIED :w03_applied[0m
+2026-10-19T15:14:19.3229103Z [36;1m\echo W03ROWS :w03_rows[0m
+2026-10-19T15:14:19.3229451Z [36;1m\echo W03SAMETABLE :w03_same_table[0m
+2026-10-19T15:14:19.3229808Z [36;1m\endif[0m
+2026-10-19T15:14:19.3230114Z [36;1m\if :w03_fn[0m
+2026-10-19T15:14:19.3230595Z [36;1mselect devos_api.deployment_drift(:'expected'::jsonb)::text as w03_drift \gset[0m
+2026-10-19T15:14:19.3231069Z [36;1m\echo W03DRIFT :w03_drift[0m
+2026-10-19T15:14:19.3231396Z [36;1m\endif[0m
+2026-10-19T15:14:19.3231689Z [36;1mcommit;[0m
+2026-10-19T15:14:19.3232000Z [36;1m\echo W03END[0m
+2026-10-19T15:14:19.3232305Z [36;1mSQL[0m
+2026-10-19T15:14:19.3232835Z [36;1mtimeout "${W03_TIMEOUT:-120}" psql -X -q -A -t -v expected="${EXPECTED:-}" -v ex_schemas="$W03_EXCLUDED_SCHEMAS" \[0m
+2026-10-19T15:14:19.3233629Z [36;1m  -v entry_only="$W03_SCHEMA_ENTRY_ONLY" -v ex_roles="$W03_EXCLUDED_ROLES" -f "$w/compare.sql" > "$w/out" 2> "$w/err" && rc=0 || rc=$?[0m
+2026-10-19T15:14:19.3234287Z [36;1mW03_RC=$rc W03_DIR="$w" python3 -I - <<'PY' || exit $?[0m
+2026-10-19T15:14:19.3234713Z [36;1mimport json, os[0m
+2026-10-19T15:14:19.3235063Z [36;1mdef esc(s):[0m
+2026-10-19T15:14:19.3235470Z [36;1m    return "".join(c if c.isprintable() else ascii(c)[1:-1] for c in str(s))[0m
+2026-10-19T15:14:19.3235919Z [36;1m[0m
+2026-10-19T15:14:19.3236195Z [36;1m[0m
+2026-10-19T15:14:19.3236768Z [36;1mKINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",[0m
+2026-10-19T15:14:19.3237364Z [36;1m         "function_differs"}[0m
+2026-10-19T15:14:19.3237690Z [36;1m[0m
+2026-10-19T15:14:19.3237962Z [36;1m[0m
+2026-10-19T15:14:19.3238350Z [36;1mdef classify(text):[0m
+2026-10-19T15:14:19.3238871Z [36;1m    """deployment_drift's result as the caller reads it (EV-C02-001 section 4): (kind, differences, why)."""[0m
+2026-10-19T15:14:19.3239406Z [36;1m    try:[0m
+2026-10-19T15:14:19.3239740Z [36;1m        r = json.loads(text)[0m
+2026-10-19T15:14:19.3240085Z [36;1m    except ValueError:[0m
+2026-10-19T15:14:19.3240518Z [36;1m        return "could_not_check", [], "the result is not JSON"[0m
+2026-10-19T15:14:19.3240941Z [36;1m    if not isinstance(r, dict):[0m
+2026-10-19T15:14:19.3241376Z [36;1m        return "could_not_check", [], "the result is not an object"[0m
+2026-10-19T15:14:19.3241887Z [36;1m    status, diffs = r.get("status"), r.get("differences")[0m
+2026-10-19T15:14:19.3242318Z [36;1m    if status == "could_not_check":[0m
+2026-10-19T15:14:19.3242892Z [36;1m        return "could_not_check", [], "deployment_drift answered could_not_check: " + str(r.get("reason", ""))[0m
+2026-10-19T15:14:19.3243465Z [36;1m    if status not in ("no_difference", "differences"):[0m
+2026-10-19T15:14:19.3244015Z [36;1m        return "could_not_check", [], "the result's status is absent or unknown"[0m
+2026-10-19T15:14:19.3244490Z [36;1m    if r.get("complete") is not True:[0m
+2026-10-19T15:14:19.3244984Z [36;1m        return "could_not_check", [], "the result's completeness flag is absent or not true"[0m
+2026-10-19T15:14:19.3245613Z [36;1m    if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):[0m
+2026-10-19T15:14:19.3246219Z [36;1m        return "could_not_check", [], "the result's status and its list of differences disagree"[0m
+2026-10-19T15:14:19.3246748Z [36;1m    for x in diffs:[0m
+2026-10-19T15:14:19.3247234Z [36;1m        key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"[0m
+2026-10-19T15:14:19.3247886Z [36;1m        if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):[0m
+2026-10-19T15:14:19.3248596Z [36;1m            return "could_not_check", [], "the result holds a difference of unknown form"[0m
+2026-10-19T15:14:19.3249153Z [36;1m    return status, diffs, ""[0m
+2026-10-19T15:14:19.3249511Z [36;1m[0m
+2026-10-19T15:14:19.3249849Z [36;1md, rc = os.environ["W03_DIR"], int(os.environ["W03_RC"])[0m
+2026-10-19T15:14:19.3250368Z [36;1mout = open(os.path.join(d, "out"), encoding="utf-8").read().splitlines()[0m
+2026-10-19T15:14:19.3250824Z [36;1mdef tagged(tag):[0m
+2026-10-19T15:14:19.3251144Z [36;1m    for ln in out:[0m
+2026-10-19T15:14:19.3251535Z [36;1m        if ln.startswith(tag + " "):[0m
+2026-10-19T15:14:19.3251905Z [36;1m            return ln[len(tag) + 1:][0m
+2026-10-19T15:14:19.3252280Z [36;1m    return None[0m
+2026-10-19T15:14:19.3252730Z [36;1mreads_text, locked_text, applied_text, rows_text, same_text, drift_text = ([0m
+2026-10-19T15:14:19.3253343Z [36;1m    tagged(t) for t in ("W03READS", "W03LOCKED", "W03APPLIED", "W03ROWS", "W03SAMETABLE", "W03DRIFT"))[0m
+2026-10-19T15:14:19.3253888Z [36;1mended = "W03END" in out[0m
+2026-10-19T15:14:19.3254586Z [36;1mtry:[0m
+2026-10-19T15:14:19.3254989Z [36;1m    reads = json.loads(reads_text) if reads_text else None[0m
+2026-10-19T15:14:19.3255418Z [36;1mexcept ValueError:[0m
+2026-10-19T15:14:19.3255742Z [36;1m    reads = None[0m
+2026-10-19T15:14:19.3256121Z [36;1mfm_reads, applied = "", "null"[0m
+2026-10-19T15:14:19.3256472Z [36;1mif isinstance(reads, dict):[0m
+2026-10-19T15:14:19.3257035Z [36;1m    # The row count is read from the table itself in the same transaction (one snapshot), and only counts if the[0m
+2026-10-19T15:14:19.3257856Z [36;1m    # table was locked before the snapshot (W03LOCKED) and the table it counted is the one the snapshot's catalog[0m
+2026-10-19T15:14:19.3258869Z [36;1m    # read saw (W03SAMETABLE: the same oid); otherwise, or if the count was not read, the reads are partial[0m
+2026-10-19T15:14:19.3259481Z [36;1m    # (EV-C02-001 section 5 as changed after P13).[0m
+2026-10-19T15:14:19.3259951Z [36;1m    hist = reads.get("history_table_exists") is True[0m
+2026-10-19T15:14:19.3260516Z [36;1m    complete = not hist or (locked_text == "t" and applied_text is not None and (rows_text or "").isdigit()[0m
+2026-10-19T15:14:19.3261078Z [36;1m                                and same_text == "t")[0m
+2026-10-19T15:14:19.3261590Z [36;1m    reads.update(complete=complete, snapshot="repeatable_read_transaction",[0m
+2026-10-19T15:14:19.3262152Z [36;1m                 history_rows=int(rows_text) if hist and complete else None)[0m
+2026-10-19T15:14:19.3262663Z [36;1m    fm_reads = json.dumps(reads, separators=(",", ":"))[0m
+2026-10-19T15:14:19.3263076Z [36;1m    if hist and complete:[0m
+2026-10-19T15:14:19.3263437Z [36;1m        applied = applied_text[0m
+2026-10-19T15:14:19.3263812Z [36;1mif not isinstance(reads, dict):[0m
+2026-10-19T15:14:19.3264226Z [36;1m    call = "timeout" if rc == 124 else "not_called"[0m
+2026-10-19T15:14:19.3264672Z [36;1melif reads.get("function_exists") is not True:[0m
+2026-10-19T15:14:19.3265058Z [36;1m    call = "not_called"[0m
+2026-10-19T15:14:19.3265588Z [36;1melif rc == 124:[0m
+2026-10-19T15:14:19.3265923Z [36;1m    call = "timeout"[0m
+2026-10-19T15:14:19.3266318Z [36;1melif rc == 0 and ended and drift_text is not None:[0m
+2026-10-19T15:14:19.3266719Z [36;1m    call = "ok"[0m
+2026-10-19T15:14:19.3267016Z [36;1melse:[0m
+2026-10-19T15:14:19.3267315Z [36;1m    call = "error"[0m
+2026-10-19T15:14:19.3267671Z [36;1mresult_json = drift_text if call == "ok" else ""[0m
+2026-10-19T15:14:19.3268357Z [36;1mkind, diffs, why = classify(result_json) if call == "ok" else ("could_not_check", [], f"call={call}")[0m
+2026-10-19T15:14:19.3268959Z [36;1mfor ln in open(os.path.join(d, "err"), encoding="utf-8"):[0m
+2026-10-19T15:14:19.3269399Z [36;1m    print("psql: " + esc(ln.rstrip()))[0m
+2026-10-19T15:14:19.3269799Z [36;1mproject = os.environ.get("PROJECT", "")[0m
+2026-10-19T15:14:19.3270200Z [36;1mif isinstance(reads, dict):[0m
+2026-10-19T15:14:19.3270824Z [36;1m    print(f"reads in {project} (one read-only REPEATABLE READ transaction): function_exists={reads['function_exists']} "[0m
+2026-10-19T15:14:19.3271635Z [36;1m          f"history_table_exists={reads['history_table_exists']} history_rows={reads['history_rows']} "[0m
+2026-10-19T15:14:19.3272269Z [36;1m          f"listing={len(reads.get('listing') or [])} objects complete={reads['complete']}")[0m
+2026-10-19T15:14:19.3272738Z [36;1melse:[0m
+2026-10-19T15:14:19.3273151Z [36;1m    print(f"reads in {project}: could not check (the reads did not complete)")[0m
+2026-10-19T15:14:19.3273802Z [36;1mprint(f"comparison in {project}: result={kind} call={call}" + (f" ({why})" if why else ""))[0m
+2026-10-19T15:14:19.3274446Z [36;1mfor x in diffs:[0m
+2026-10-19T15:14:19.3274947Z [36;1m    print(f"comparison in {project}: {esc(x.get('kind'))} {esc(x.get('version') or x.get('slug'))}")[0m
+2026-10-19T15:14:19.3275632Z [36;1mwith open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:19.3276236Z [36;1m    for k, v in (("fm_reads", fm_reads), ("call", call), ("result_json", result_json), ("result", kind),[0m
+2026-10-19T15:14:19.3276864Z [36;1m                 ("applied", applied)):[0m
+2026-10-19T15:14:19.3277278Z [36;1m        f.write(f"{k}<<W03EOF\n{v}\nW03EOF\n")[0m
+2026-10-19T15:14:19.3277767Z [36;1mPY[0m
+2026-10-19T15:14:19.3319987Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T15:14:19.3320547Z env:
+2026-10-19T15:14:19.3320847Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:19.3321311Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:19.3322049Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:19.3327039Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:19.3335983Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:19.3340846Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:19.3341456Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:19.3342701Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:19.3344080Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:19.3344639Z   W03_PLANT_B64: 
+2026-10-19T15:14:19.3344932Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:19.3345697Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:19.3346471Z   PROJECT: devos
+2026-10-19T15:14:19.3346786Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.3347242Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:19.3347615Z   PGPORT: 5432
+2026-10-19T15:14:19.3347994Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.3348445Z   PGDATABASE: postgres
+2026-10-19T15:14:19.3348786Z   PGSSLMODE: verify-full
+2026-10-19T15:14:19.3349161Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:19.3349576Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:19.3349890Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:19.3350218Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:19.3350547Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:19.3350931Z   PGHOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:19.3351663Z   PGPASSWORD: ***
+2026-10-19T15:14:19.3356000Z   EXPECTED: {"commit":"0f3fc49aef775794efec7b1cbc8e07835f5a661b","migrations":[{"version":"20261012184638","name":"deployment_drift"},{"version":"20261012231841","name":"w03_fixture_apply"},{"version":"20261012232112","name":"w03_fixture_name_differs"},{"version":"20261012232113","name":"w03_fixture_restore_name"},{"version":"20261014170201","name":"w08_role_classes_epoch_tokens"},{"version":"20261014170202","name":"w08_event_rejected_attempt"},{"version":"20261014170203","name":"w08_missions_decisions_needs_work"},{"version":"20261014170204","name":"w08_findings_reviews_effects_exams"},{"version":"20261014170205","name":"w08_append_only_views_access"},{"version":"20261014182601","name":"w08_ledger_transfer_schema"},{"version":"20261014190401","name":"w08_finding_source_fields"},{"version":"20261014190402","name":"w08_type_privileges"},{"version":"20261017230001","name":"w09_identity_chain_first_part"},{"version":"20261018203001","name":"w09_private_helpers"},{"version":"20261018214501","name":"w09_mission_need_decision"},{"version":"20261018230001","name":"w09_work_effort"},{"version":"20261018235501","name":"w09_claims"},{"version":"20261019010001","name":"w09_relations"},{"version":"20261019030001","name":"w09_knowledge_product_review"},{"version":"20261019050001","name":"w09_external_effect"},{"version":"20261019080001","name":"w09_rule_corrections"},{"version":"20261019100001","name":"w09_exam_backup_reads"},{"version":"20261019120001","name":"w09_transfer_runs_events"},{"version":"20261019140001","name":"w09_transfer_records"},{"version":"20261019160001","name":"w09_transfer_copies"},{"version":"20261019180001","name":"w09_transfer_corrections"}],"functions":[]}
+2026-10-19T15:14:19.3360649Z ##[endgroup]
+2026-10-19T15:14:19.7730200Z reads in devos (one read-only REPEATABLE READ transaction): function_exists=True history_table_exists=True history_rows=26 listing=106 objects complete=True
+2026-10-19T15:14:19.7731203Z comparison in devos: result=no_difference call=ok
+2026-10-19T15:14:19.8745042Z ##[group]Run # The decision of the devos job's apply (EV-C02-001 M07, M16; section 5, "The job's shape" and "The first-migration
+2026-10-19T15:14:19.8747215Z [36;1m# The decision of the devos job's apply (EV-C02-001 M07, M16; section 5, "The job's shape" and "The first-migration[0m
+2026-10-19T15:14:19.8748548Z [36;1m# exception", as changed after P13 on 2026-10-12; tests/C02/W-C02-03/T-W03-DEC_decision_steps.md). Inputs come only[0m
+2026-10-19T15:14:19.8749609Z [36;1m# through env; outputs go to GITHUB_OUTPUT. It holds no secret and connects to nothing.[0m
+2026-10-19T15:14:19.8750392Z [36;1mimport json, os, re[0m
+2026-10-19T15:14:19.8750836Z [36;1m[0m
+2026-10-19T15:14:19.8751764Z [36;1mKINDS = {"on_main_not_applied", "applied_not_on_main", "name_differs", "function_missing", "function_extra",[0m
+2026-10-19T15:14:19.8752617Z [36;1m         "function_differs"}[0m
+2026-10-19T15:14:19.8753281Z [36;1mSNAPSHOTS = ("one_statement", "repeatable_read_transaction")[0m
+2026-10-19T15:14:19.8754110Z [36;1m[0m
+2026-10-19T15:14:19.8754756Z [36;1m[0m
+2026-10-19T15:14:19.8755615Z [36;1mdef load(name):[0m
+2026-10-19T15:14:19.8885748Z [36;1m    text = os.environ.get(name, "")[0m
+2026-10-19T15:14:19.8886170Z [36;1m    if not text:[0m
+2026-10-19T15:14:19.8886519Z [36;1m        return None, f"{name} is absent"[0m
+2026-10-19T15:14:19.8886864Z [36;1m    try:[0m
+2026-10-19T15:14:19.8887212Z [36;1m        return json.loads(text), None[0m
+2026-10-19T15:14:19.8887593Z [36;1m    except ValueError:[0m
+2026-10-19T15:14:19.8887985Z [36;1m        return None, f"{name} is not JSON"[0m
+2026-10-19T15:14:19.8888459Z [36;1m[0m
+2026-10-19T15:14:19.8888702Z [36;1m[0m
+2026-10-19T15:14:19.8888958Z [36;1mdef check_expected():[0m
+2026-10-19T15:14:19.8889293Z [36;1m    e, err = load("EXPECTED")[0m
+2026-10-19T15:14:19.8889654Z [36;1m    if err:[0m
+2026-10-19T15:14:19.8890024Z [36;1m        return None, err[0m
+2026-10-19T15:14:19.8890475Z [36;1m    if not isinstance(e, dict):[0m
+2026-10-19T15:14:19.8891020Z [36;1m        return None, "EXPECTED is not an object"[0m
+2026-10-19T15:14:19.8891856Z [36;1m    if not isinstance(e.get("commit"), str) or not re.fullmatch(r"[0-9a-f]{40}([0-9a-f]{24})?", e["commit"]):[0m
+2026-10-19T15:14:19.8892620Z [36;1m        return None, "EXPECTED has no valid commit"[0m
+2026-10-19T15:14:19.8893246Z [36;1m    if not isinstance(e.get("migrations"), list) or not isinstance(e.get("functions"), list):[0m
+2026-10-19T15:14:19.8894057Z [36;1m        return None, "EXPECTED lacks its migrations or functions list"[0m
+2026-10-19T15:14:19.8894599Z [36;1m    versions = [][0m
+2026-10-19T15:14:19.8895008Z [36;1m    for m in e["migrations"]:[0m
+2026-10-19T15:14:19.8895830Z [36;1m        if not isinstance(m, dict) or not isinstance(m.get("version"), str) or not re.fullmatch(r"[0-9]+", m["version"]) \[0m
+2026-10-19T15:14:19.8896785Z [36;1m                or not isinstance(m.get("name"), str) or m["version"] in versions:[0m
+2026-10-19T15:14:19.8897492Z [36;1m            return None, "EXPECTED holds a malformed or repeated migration"[0m
+2026-10-19T15:14:19.8898102Z [36;1m        versions.append(m["version"])[0m
+2026-10-19T15:14:19.8898672Z [36;1m    slugs = [][0m
+2026-10-19T15:14:19.8899018Z [36;1m    for f in e["functions"]:[0m
+2026-10-19T15:14:19.8899709Z [36;1m        if not isinstance(f, dict) or not isinstance(f.get("slug"), str) or not f["slug"] or f["slug"] in slugs \[0m
+2026-10-19T15:14:19.8900659Z [36;1m                or not isinstance(f.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", f["sha256"]):[0m
+2026-10-19T15:14:19.8901482Z [36;1m            return None, "EXPECTED holds a malformed or repeated function"[0m
+2026-10-19T15:14:19.8902036Z [36;1m        slugs.append(f["slug"])[0m
+2026-10-19T15:14:19.8902444Z [36;1m    return versions, None[0m
+2026-10-19T15:14:19.8902761Z [36;1m[0m
+2026-10-19T15:14:19.8903276Z [36;1m[0m
+2026-10-19T15:14:19.8903616Z [36;1mdef check_reads():[0m
+2026-10-19T15:14:19.8904423Z [36;1m    """The first-migration exception's three reads. (reads, field that shows the problem, problem)."""[0m
+2026-10-19T15:14:19.8905132Z [36;1m    r, err = load("FM_READS")[0m
+2026-10-19T15:14:19.8905508Z [36;1m    if err:[0m
+2026-10-19T15:14:19.8905853Z [36;1m        return None, "FM_READS", err[0m
+2026-10-19T15:14:19.8906266Z [36;1m    if not isinstance(r, dict):[0m
+2026-10-19T15:14:19.8906765Z [36;1m        return None, "FM_READS", "FM_READS is not an object"[0m
+2026-10-19T15:14:19.8907362Z [36;1m    for field in ("function_exists", "history_table_exists"):[0m
+2026-10-19T15:14:19.8907890Z [36;1m        if not isinstance(r.get(field), bool):[0m
+2026-10-19T15:14:19.8909072Z [36;1m            return None, field, f"{field} is missing or not a boolean"[0m
+2026-10-19T15:14:19.8909874Z [36;1m    if not isinstance(r.get("listing"), list) or not all(isinstance(x, str) for x in r["listing"]):[0m
+2026-10-19T15:14:19.8910701Z [36;1m        return None, "listing", "listing is missing, failed or malformed"[0m
+2026-10-19T15:14:19.8911292Z [36;1m    if r.get("complete") is not True:[0m
+2026-10-19T15:14:19.8911872Z [36;1m        return None, "complete", "complete is not true: the reads did not all finish"[0m
+2026-10-19T15:14:19.8912488Z [36;1m    if r.get("snapshot") not in SNAPSHOTS:[0m
+2026-10-19T15:14:19.8913188Z [36;1m        return None, "snapshot", f"snapshot={r.get('snapshot')!r} is not one of the two allowed forms"[0m
+2026-10-19T15:14:19.8914172Z [36;1m    # The history table's row count, read in the same snapshot (EV-C02-001 section 5 as changed after P13).[0m
+2026-10-19T15:14:19.8914906Z [36;1m    if "history_rows" not in r:[0m
+2026-10-19T15:14:19.8915538Z [36;1m        return None, "history_rows", "history_rows is missing: the row-count read is absent"[0m
+2026-10-19T15:14:19.8916168Z [36;1m    rows = r["history_rows"][0m
+2026-10-19T15:14:19.8916766Z [36;1m    if rows is not None and (isinstance(rows, bool) or not isinstance(rows, int) or rows < 0):[0m
+2026-10-19T15:14:19.8917442Z [36;1m        return None, "history_rows", "history_rows is not a count"[0m
+2026-10-19T15:14:19.8918020Z [36;1m    if r["history_table_exists"] and rows is None:[0m
+2026-10-19T15:14:19.8918864Z [36;1m        return None, "history_rows", "history_table_exists=true but history_rows=null: the row count was not read"[0m
+2026-10-19T15:14:19.8919600Z [36;1m    if not r["history_table_exists"] and rows is not None:[0m
+2026-10-19T15:14:19.8920333Z [36;1m        return None, "history_rows", (f"history_table_exists=false but history_rows={rows}: the reads disagree "[0m
+2026-10-19T15:14:19.8921098Z [36;1m                                      f"(a count is given for a table read as absent)")[0m
+2026-10-19T15:14:19.8921610Z [36;1m    return r, None, None[0m
+2026-10-19T15:14:19.8921964Z [36;1m[0m
+2026-10-19T15:14:19.8922203Z [36;1m[0m
+2026-10-19T15:14:19.8922459Z [36;1mdef check_result():[0m
+2026-10-19T15:14:19.8922857Z [36;1m    call = os.environ.get("DRIFT_CALL", "")[0m
+2026-10-19T15:14:19.8923272Z [36;1m    if call != "ok":[0m
+2026-10-19T15:14:19.8923706Z [36;1m        return None, f"DRIFT_CALL={call or 'absent'}: no usable result"[0m
+2026-10-19T15:14:19.8924240Z [36;1m    r, err = load("DRIFT_RESULT")[0m
+2026-10-19T15:14:19.8924584Z [36;1m    if err:[0m
+2026-10-19T15:14:19.8924902Z [36;1m        return None, err[0m
+2026-10-19T15:14:19.8925242Z [36;1m    if not isinstance(r, dict):[0m
+2026-10-19T15:14:19.8925669Z [36;1m        return None, "DRIFT_RESULT is not an object"[0m
+2026-10-19T15:14:19.8926236Z [36;1m    status, diffs = r.get("status"), r.get("differences")[0m
+2026-10-19T15:14:19.8926716Z [36;1m    if status == "could_not_check":[0m
+2026-10-19T15:14:19.8927232Z [36;1m        return None, "deployment_drift answered could_not_check"[0m
+2026-10-19T15:14:19.8927855Z [36;1m    if status not in ("no_difference", "differences"):[0m
+2026-10-19T15:14:19.8928894Z [36;1m        return None, "DRIFT_RESULT's status is absent or unknown"[0m
+2026-10-19T15:14:19.8929584Z [36;1m    if r.get("complete") is not True:[0m
+2026-10-19T15:14:19.8930171Z [36;1m        return None, "DRIFT_RESULT's completeness flag is absent or not true"[0m
+2026-10-19T15:14:19.8930968Z [36;1m    if not isinstance(diffs, list) or (status == "no_difference") != (len(diffs) == 0):[0m
+2026-10-19T15:14:19.8931695Z [36;1m        return None, "DRIFT_RESULT's status and its list of differences disagree"[0m
+2026-10-19T15:14:19.8932271Z [36;1m    for x in diffs:[0m
+2026-10-19T15:14:19.8932910Z [36;1m        key = "slug" if isinstance(x, dict) and str(x.get("kind", "")).startswith("function_") else "version"[0m
+2026-10-19T15:14:19.8933842Z [36;1m        if not isinstance(x, dict) or x.get("kind") not in KINDS or not isinstance(x.get(key), str):[0m
+2026-10-19T15:14:19.8934615Z [36;1m            return None, "DRIFT_RESULT holds a difference of unknown form"[0m
+2026-10-19T15:14:19.8935154Z [36;1m    return r, None[0m
+2026-10-19T15:14:19.8935520Z [36;1m[0m
+2026-10-19T15:14:19.8935749Z [36;1m[0m
+2026-10-19T15:14:19.8936130Z [36;1mdef finish(apply, kind, exception, reason, line, pending=None):[0m
+2026-10-19T15:14:19.8936661Z [36;1m    reason = " ".join(str(reason).split())[0m
+2026-10-19T15:14:19.8937084Z [36;1m    print(line)[0m
+2026-10-19T15:14:19.8937632Z [36;1m    print(f"decide: apply={apply} result_kind={kind} exception={exception}; {reason}")[0m
+2026-10-19T15:14:19.8938648Z [36;1m    with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:19.8939447Z [36;1m        f.write(f"apply={apply}\nresult_kind={kind}\nexception={exception}\nreason={reason}\n")[0m
+2026-10-19T15:14:19.8940111Z [36;1m        if pending is not None:[0m
+2026-10-19T15:14:19.8940587Z [36;1m            f.write(f"pending={json.dumps(pending)}\n")[0m
+2026-10-19T15:14:19.8941087Z [36;1m    if os.environ.get("GITHUB_STEP_SUMMARY"):[0m
+2026-10-19T15:14:19.8941713Z [36;1m        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:19.8942419Z [36;1m            f.write(f"### devos: decision\n\n- apply: {apply}\n- result: {kind}\n- {line}\n- reason: {reason}\n")[0m
+2026-10-19T15:14:19.8942846Z [36;1m[0m
+2026-10-19T15:14:19.8943039Z [36;1m[0m
+2026-10-19T15:14:19.8943246Z [36;1mgo = os.environ.get("GO", "")[0m
+2026-10-19T15:14:19.8943547Z [36;1mexpected, expected_err = check_expected()[0m
+2026-10-19T15:14:19.8943857Z [36;1mreads, field, reads_err = check_reads()[0m
+2026-10-19T15:14:19.8944188Z [36;1mNOT_TAKEN = "first-migration exception: not taken"[0m
+2026-10-19T15:14:19.8944482Z [36;1m[0m
+2026-10-19T15:14:19.8944704Z [36;1mif reads is None:[0m
+2026-10-19T15:14:19.8945110Z [36;1m    finish("no", "could_not_check", "not_taken", f"the three reads are not usable ({reads_err})",[0m
+2026-10-19T15:14:19.8945569Z [36;1m           f"{NOT_TAKEN} ({field}: {reads_err})")[0m
+2026-10-19T15:14:19.8945889Z [36;1melif not reads["function_exists"]:[0m
+2026-10-19T15:14:19.8946361Z [36;1m    state = (f"function_exists=false history_table_exists={str(reads['history_table_exists']).lower()} "[0m
+2026-10-19T15:14:19.8946992Z [36;1m             f"history_rows={reads.get('history_rows')} listing={json.dumps(reads['listing'])} "[0m
+2026-10-19T15:14:19.8947498Z [36;1m             f"snapshot={reads['snapshot']} complete=true")[0m
+2026-10-19T15:14:19.8947999Z [36;1m    if os.environ.get("DRIFT_CALL", "") != "not_called" or os.environ.get("DRIFT_RESULT", ""):[0m
+2026-10-19T15:14:19.8948906Z [36;1m        finish("no", "could_not_check", "not_taken", "the reads say deployment_drift is absent, but a call was made",[0m
+2026-10-19T15:14:19.8949664Z [36;1m               f"{NOT_TAKEN} (DRIFT_CALL={os.environ.get('DRIFT_CALL', '') or 'absent'} and DRIFT_RESULT contradict "[0m
+2026-10-19T15:14:19.8950146Z [36;1m               f"the reads; {state})")[0m
+2026-10-19T15:14:19.8950535Z [36;1m    elif reads["history_table_exists"] and reads["history_rows"] > 0:[0m
+2026-10-19T15:14:19.8951441Z [36;1m        finish("no", "could_not_check", "not_taken", f"the history table holds {reads['history_rows']} rows "[0m
+2026-10-19T15:14:19.8952048Z [36;1m               f"without deployment_drift", f"{NOT_TAKEN} (history_table_exists=true, "[0m
+2026-10-19T15:14:19.8952687Z [36;1m               f"history_rows={reads['history_rows']}: the history table holds a row without the function; {state})")[0m
+2026-10-19T15:14:19.8953175Z [36;1m    elif reads["listing"]:[0m
+2026-10-19T15:14:19.8953648Z [36;1m        finish("no", "could_not_check", "not_taken", f"the listing holds {len(reads['listing'])} objects outside "[0m
+2026-10-19T15:14:19.8954284Z [36;1m               f"Supabase's own", f"{NOT_TAKEN} (listing is not empty: {json.dumps(reads['listing'])})")[0m
+2026-10-19T15:14:19.8954757Z [36;1m    elif expected is None:[0m
+2026-10-19T15:14:19.8955233Z [36;1m        finish("no", "could_not_check", "not_taken", expected_err, f"{NOT_TAKEN} (EXPECTED unusable: {expected_err})")[0m
+2026-10-19T15:14:19.8955714Z [36;1m    else:[0m
+2026-10-19T15:14:19.8956204Z [36;1m        # Taken in one of two table states, and the line names which (EV-C02-001 section 5 as changed after P13):[0m
+2026-10-19T15:14:19.8956907Z [36;1m        # no history table (the never-pushed state), or a history table holding no row (what a failed first apply[0m
+2026-10-19T15:14:19.8957557Z [36;1m        # leaves, P13; or a table emptied out of band, investigated under section 4, "Repair paths").[0m
+2026-10-19T15:14:19.8958020Z [36;1m        if reads["history_table_exists"]:[0m
+2026-10-19T15:14:19.8958690Z [36;1m            table, seen = "history_table_exists=true, history_rows=0", "the history table present and holding no row"[0m
+2026-10-19T15:14:19.8959150Z [36;1m        else:[0m
+2026-10-19T15:14:19.8959548Z [36;1m            table, seen = "history_table_exists=false", "no history table (the never-pushed state)"[0m
+2026-10-19T15:14:19.8960148Z [36;1m        line = (f"first-migration exception: taken (function_exists=false, {table}, listing=[], "[0m
+2026-10-19T15:14:19.8960711Z [36;1m                f"snapshot={reads['snapshot']}, complete=true; table state: {seen})")[0m
+2026-10-19T15:14:19.8961109Z [36;1m        if not expected:[0m
+2026-10-19T15:14:19.8961482Z [36;1m            finish("no", "no_difference", "taken", "nothing on main to apply", line, [])[0m
+2026-10-19T15:14:19.8961901Z [36;1m        elif go != "yes":[0m
+2026-10-19T15:14:19.8962311Z [36;1m            finish("no", "differences", "taken", f"devos-test go={go or 'absent'}", line, expected)[0m
+2026-10-19T15:14:19.8962735Z [36;1m        else:[0m
+2026-10-19T15:14:19.8963171Z [36;1m            finish("yes", "differences", "taken", f"first-migration exception, {seen}: every version on main is "[0m
+2026-10-19T15:14:19.8963705Z [36;1m                   f"pending ({len(expected)})", line, expected)[0m
+2026-10-19T15:14:19.8964043Z [36;1melse:[0m
+2026-10-19T15:14:19.8964437Z [36;1m    line = f"{NOT_TAKEN} (function_exists=true: deployment_drift exists, so step (5) uses its result)"[0m
+2026-10-19T15:14:19.8964938Z [36;1m    if not reads["history_table_exists"]:[0m
+2026-10-19T15:14:19.8965417Z [36;1m        finish("no", "could_not_check", "not_taken", "deployment_drift exists but the history table does not "[0m
+2026-10-19T15:14:19.8965899Z [36;1m               "(history_table_exists=false)", line)[0m
+2026-10-19T15:14:19.8966222Z [36;1m    elif expected is None:[0m
+2026-10-19T15:14:19.8966554Z [36;1m        finish("no", "could_not_check", "not_taken", expected_err, line)[0m
+2026-10-19T15:14:19.8966913Z [36;1m    else:[0m
+2026-10-19T15:14:19.8967150Z [36;1m        result, err = check_result()[0m
+2026-10-19T15:14:19.8967431Z [36;1m        if result is None:[0m
+2026-10-19T15:14:19.8967768Z [36;1m            finish("no", "could_not_check", "not_taken", err, line)[0m
+2026-10-19T15:14:19.8968148Z [36;1m        elif result["status"] == "no_difference":[0m
+2026-10-19T15:14:19.8968842Z [36;1m            finish("no", "no_difference", "not_taken", "no difference: nothing to apply", line)[0m
+2026-10-19T15:14:19.8969457Z [36;1m        else:[0m
+2026-10-19T15:14:19.8969715Z [36;1m            diffs = result["differences"][0m
+2026-10-19T15:14:19.8970146Z [36;1m            pending = [x["version"] for x in diffs if x["kind"] == "on_main_not_applied"][0m
+2026-10-19T15:14:19.8970617Z [36;1m            others = [x for x in diffs if x["kind"] != "on_main_not_applied"][0m
+2026-10-19T15:14:19.8970990Z [36;1m            if others:[0m
+2026-10-19T15:14:19.8971284Z [36;1m                kinds = sorted({x["kind"] for x in others})[0m
+2026-10-19T15:14:19.8971787Z [36;1m                finish("no", "differences", "not_taken", f"devos differs from main other than by pending migrations: "[0m
+2026-10-19T15:14:19.8972278Z [36;1m                       f"{len(others)} ({', '.join(kinds)})", line)[0m
+2026-10-19T15:14:19.8972621Z [36;1m            elif not set(pending) <= set(expected):[0m
+2026-10-19T15:14:19.8973081Z [36;1m                finish("no", "could_not_check", "not_taken", "a pending version is not on main's expected list", line)[0m
+2026-10-19T15:14:19.8973525Z [36;1m            elif go != "yes":[0m
+2026-10-19T15:14:19.8973928Z [36;1m                finish("no", "differences", "not_taken", f"devos-test go={go or 'absent'}", line, pending)[0m
+2026-10-19T15:14:19.8974339Z [36;1m            else:[0m
+2026-10-19T15:14:19.8974740Z [36;1m                finish("yes", "differences", "not_taken", f"only migrations on main, not applied: {len(pending)}",[0m
+2026-10-19T15:14:19.8975188Z [36;1m                       line, pending)[0m
+2026-10-19T15:14:19.9007122Z shell: /usr/bin/python {0}
+2026-10-19T15:14:19.9007374Z env:
+2026-10-19T15:14:19.9007581Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:19.9007928Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:19.9008596Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:19.9013515Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:19.9022651Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:19.9027144Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:19.9027627Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:19.9029021Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:19.9030320Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:19.9030717Z   W03_PLANT_B64: 
+2026-10-19T15:14:19.9030928Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:19.9031587Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:19.9032282Z   PROJECT: devos
+2026-10-19T15:14:19.9032514Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.9032827Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:19.9033125Z   PGPORT: 5432
+2026-10-19T15:14:19.9033362Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.9033641Z   PGDATABASE: postgres
+2026-10-19T15:14:19.9033871Z   PGSSLMODE: verify-full
+2026-10-19T15:14:19.9034148Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:19.9034446Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:19.9034676Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:19.9034906Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:19.9035124Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:19.9035366Z   GO: yes
+2026-10-19T15:14:19.9050434Z   FM_READS: {"function_exists":true,"history_table_exists":true,"listing":["function devos_api.accept(verdict_ref uuid, accepted_use text)","function devos_api.admit_work(p jsonb)","function devos_api.affected_entities(root uuid, limits jsonb)","function devos_api.authority_epoch()","function devos_api.begin_transfer_run(p jsonb)","function devos_api.cancel_work(work_id uuid, reason text)","function devos_api.claim(work_id uuid, declared_session_id text)","function devos_api.deployment_drift(expected jsonb)","function devos_api.end_transfer_run(p jsonb)","function devos_api.explain_paths(root uuid, target uuid, limits jsonb)","function devos_api.fingerprint_matches(hashes text[])","function devos_api.heartbeat(claim_token text)","function devos_api.link_prior_decisions(p jsonb)","function devos_api.mark_exported(p jsonb)","function devos_api.mark_stale(work_id uuid, reason text)","function devos_api.open_decision(p jsonb)","function devos_api.open_mission(p jsonb)","function devos_api.open_review(p jsonb)","function devos_api.operation_state(operation_id uuid)","function devos_api.prepare_operation(claim_token text, p jsonb)","function devos_api.read_decision(decision_id uuid)","function devos_api.read_eval_run(eval_run_id uuid)","function devos_api.read_rejected_attempts(since timestamp with time zone)","function devos_api.read_review(review_id uuid)","function devos_api.ready_works()","function devos_api.record_attempt(claim_token text, operation_id uuid)","function devos_api.record_eval_run(p jsonb)","function devos_api.record_finding(p jsonb)","function devos_api.record_handover(p jsonb)","function devos_api.record_ledger_entry(p jsonb)","function devos_api.record_need(p jsonb)","function devos_api.record_observation(p jsonb)","function devos_api.record_verdict(p jsonb)","function devos_api.register_artifact(claim_token text, p jsonb)","function devos_api.relate(p jsonb)","function devos_api.release(claim_token text)","function devos_api.reopen_for_review(work_id uuid, reason text)","function devos_api.resolve_need(need_id uuid, reason text)","function devos_api.retract_relation(relation_id uuid, reason text)","function devos_api.review_finding(finding_id uuid, revision integer, status text)","function devos_api.revise_mission(p jsonb)","function devos_api.revise_work(p jsonb)","function devos_api.revoke_claim(assignment_id uuid, reason text)","function devos_api.set_effort_policy(p jsonb)","function devos_api.token_role_class()","function devos_api.transfer_acceptance(p jsonb)","function devos_api.transfer_artifact(p jsonb)","function devos_api.transfer_decision(p jsonb)","function devos_api.transfer_event(p jsonb)","function devos_api.transfer_finding(p jsonb)","function devos_api.transfer_mission(p jsonb)","function devos_api.transfer_need(p jsonb)","function devos_api.transfer_relation(p jsonb)","function devos_api.transfer_review(p jsonb)","function devos_api.transfer_work(p jsonb)","function devos_private.caller_role_class(function_name text)","function devos_private.check_claim(p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean)","function devos_private.claim_live(claim_status devos_private.assignment_status, claim_lease timestamp with time zone, claim_epoch bigint)","function devos_private.hard_dependency_cycle(p_from uuid, p_to uuid)","function devos_private.is_installation_mission(p_mission_id uuid)","function devos_private.issue_env_token(role_class text)","function devos_private.ready_value(p_work_id uuid, p_own_claim uuid)","function devos_private.refuse_change()","function devos_private.reject(p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer)","function devos_private.reject_counted(p_function_name text, p_reason_code text)","function devos_private.revoke_env_token(token_id uuid)","function devos_private.scope_within(p_scope text, p_container text)","function devos_private.token_hash(token text)","function devos_private.write_event(p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text)","schema devos_api","schema devos_private","schema w03_fixture","table devos_private.acceptance","table devos_private.artifact","table devos_private.artifact_revision","table devos_private.assignment","table devos_private.decision","table devos_private.decision_revision","table devos_private.effect_class","table devos_private.effort_policy","table devos_private.env_tokens","table devos_private.eval_run","table devos_private.event","table devos_private.finding","table devos_private.finding_revision","table devos_private.function_deployment","table devos_private.global_authority_epoch","table devos_private.leak_fingerprint","table devos_private.mission","table devos_private.mission_revision","table devos_private.need","table devos_private.observation","table devos_private.operation","table devos_private.rejected_attempt","table devos_private.relation","table devos_private.review","table devos_private.verdict","table devos_private.work","table devos_private.work_revision","table w03_fixture.apply_check","view devos_private.artifact_current","view devos_private.decision_current","view devos_private.finding_current","view devos_private.mission_current","view devos_private.work_current","view w03_fixture.apply_check_view"],"complete":true,"snapshot":"repeatable_read_transaction","history_rows":26}
+2026-10-19T15:14:19.9065824Z   DRIFT_CALL: ok
+2026-10-19T15:14:19.9066734Z   DRIFT_RESULT: {"commit": "0f3fc49aef775794efec7b1cbc8e07835f5a661b", "status": "no_difference", "compared": {"functions_expected": 0, "functions_recorded": 0, "migrations_applied": 26, "migrations_expected": 26}, "complete": true, "differences": []}
+2026-10-19T15:14:19.9071941Z   EXPECTED: {"commit":"0f3fc49aef775794efec7b1cbc8e07835f5a661b","migrations":[{"version":"20261012184638","name":"deployment_drift"},{"version":"20261012231841","name":"w03_fixture_apply"},{"version":"20261012232112","name":"w03_fixture_name_differs"},{"version":"20261012232113","name":"w03_fixture_restore_name"},{"version":"20261014170201","name":"w08_role_classes_epoch_tokens"},{"version":"20261014170202","name":"w08_event_rejected_attempt"},{"version":"20261014170203","name":"w08_missions_decisions_needs_work"},{"version":"20261014170204","name":"w08_findings_reviews_effects_exams"},{"version":"20261014170205","name":"w08_append_only_views_access"},{"version":"20261014182601","name":"w08_ledger_transfer_schema"},{"version":"20261014190401","name":"w08_finding_source_fields"},{"version":"20261014190402","name":"w08_type_privileges"},{"version":"20261017230001","name":"w09_identity_chain_first_part"},{"version":"20261018203001","name":"w09_private_helpers"},{"version":"20261018214501","name":"w09_mission_need_decision"},{"version":"20261018230001","name":"w09_work_effort"},{"version":"20261018235501","name":"w09_claims"},{"version":"20261019010001","name":"w09_relations"},{"version":"20261019030001","name":"w09_knowledge_product_review"},{"version":"20261019050001","name":"w09_external_effect"},{"version":"20261019080001","name":"w09_rule_corrections"},{"version":"20261019100001","name":"w09_exam_backup_reads"},{"version":"20261019120001","name":"w09_transfer_runs_events"},{"version":"20261019140001","name":"w09_transfer_records"},{"version":"20261019160001","name":"w09_transfer_copies"},{"version":"20261019180001","name":"w09_transfer_corrections"}],"functions":[]}
+2026-10-19T15:14:19.9076417Z ##[endgroup]
+2026-10-19T15:14:19.9315855Z first-migration exception: not taken (function_exists=true: deployment_drift exists, so step (5) uses its result)
+2026-10-19T15:14:19.9316573Z decide: apply=no result_kind=no_difference exception=not_taken; no difference: nothing to apply
+2026-10-19T15:14:19.9752449Z ##[group]Run import json, os
+2026-10-19T15:14:19.9752806Z [36;1mimport json, os[0m
+2026-10-19T15:14:19.9753044Z [36;1me = os.environ[0m
+2026-10-19T15:14:19.9753289Z [36;1mdef load(text, default):[0m
+2026-10-19T15:14:19.9753541Z [36;1m    try:[0m
+2026-10-19T15:14:19.9753802Z [36;1m        return json.loads(text) if text else default[0m
+2026-10-19T15:14:19.9754117Z [36;1m    except ValueError:[0m
+2026-10-19T15:14:19.9754704Z [36;1m        return default[0m
+2026-10-19T15:14:19.9755003Z [36;1mdef project_state(result, result_json, applied):[0m
+2026-10-19T15:14:19.9755323Z [36;1m    r = load(result_json, {})[0m
+2026-10-19T15:14:19.9755774Z [36;1m    diffs = r.get("differences") if isinstance(r, dict) and isinstance(r.get("differences"), list) else [][0m
+2026-10-19T15:14:19.9756278Z [36;1m    return {"result": result or "could_not_check",[0m
+2026-10-19T15:14:19.9756765Z [36;1m            "differences": [{k: x[k] for k in ("kind", "version", "slug") if k in x} for x in diffs],[0m
+2026-10-19T15:14:19.9757196Z [36;1m            "applied_versions": load(applied, None)}[0m
+2026-10-19T15:14:19.9757509Z [36;1mafter = e.get("AFTER_RESULT", "")[0m
+2026-10-19T15:14:19.9757937Z [36;1mstate = project_state(after, e.get("AFTER_JSON", ""), e.get("AFTER_APPLIED", "")) if after else \[0m
+2026-10-19T15:14:19.9758603Z [36;1m    project_state(e.get("RESULT", ""), e.get("RESULT_JSON", ""), e.get("APPLIED", ""))[0m
+2026-10-19T15:14:19.9759131Z [36;1mreport = {"project": e["PROJECT"], "event": e["GITHUB_EVENT_NAME"], "run_id": e["GITHUB_RUN_ID"],[0m
+2026-10-19T15:14:19.9759617Z [36;1m          "commit": e["GITHUB_SHA"], "head": e.get("HEAD_STATE") or "none",[0m
+2026-10-19T15:14:19.9760120Z [36;1m          "credential_present": e.get("PRESENT") or "none", "connection": e.get("CONNECTED") or "none",[0m
+2026-10-19T15:14:19.9760731Z [36;1m          "listing_count": e.get("LISTING_COUNT") or None, **state}[0m
+2026-10-19T15:14:19.9761238Z [36;1mfor k, name in (("GO", "go"), ("APPLY", "apply_step"), ("DECIDE_APPLY", "apply"), ("DECIDE_REASON", "reason"),[0m
+2026-10-19T15:14:19.9761810Z [36;1m                ("EXCEPTION", "first_migration_exception"), ("BEFORE_RESULT", "result_before_apply")):[0m
+2026-10-19T15:14:19.9762228Z [36;1m    if e.get(k) is not None:[0m
+2026-10-19T15:14:19.9762505Z [36;1m        report[name] = e.get(k) or "none"[0m
+2026-10-19T15:14:19.9762844Z [36;1mline = json.dumps(report, separators=(",", ":"))[0m
+2026-10-19T15:14:19.9763157Z [36;1mprint("W03REPORT", line)[0m
+2026-10-19T15:14:19.9763427Z [36;1mif e.get("GITHUB_STEP_SUMMARY"):[0m
+2026-10-19T15:14:19.9763782Z [36;1m    with open(e["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:[0m
+2026-10-19T15:14:19.9764245Z [36;1m        f.write(f"### Migration report: {report['project']}\n\n```\n{line}\n```\n")[0m
+2026-10-19T15:14:19.9796245Z shell: /usr/bin/python {0}
+2026-10-19T15:14:19.9796515Z env:
+2026-10-19T15:14:19.9796721Z   CLI_VERSION: 2.120.0
+2026-10-19T15:14:19.9797073Z   CLI_SHA256: 7074584113aa00495beeac661c41fb09f1ddd0a483cd7333894b0d080086dc6e
+2026-10-19T15:14:19.9797573Z   W03_ROOT_CA_SHA256: 807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa
+2026-10-19T15:14:19.9802641Z   W03_ROOT_CA_PEM: -----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+
+2026-10-19T15:14:19.9811384Z   W03_POOLER_CANDIDATES: aws-0-us-east-1.pooler.supabase.com aws-0-us-east-2.pooler.supabase.com aws-0-us-west-1.pooler.supabase.com aws-0-us-west-2.pooler.supabase.com aws-0-ca-central-1.pooler.supabase.com aws-0-sa-east-1.pooler.supabase.com aws-0-eu-west-1.pooler.supabase.com aws-0-eu-west-2.pooler.supabase.com aws-0-eu-west-3.pooler.supabase.com aws-0-eu-central-1.pooler.supabase.com aws-0-eu-central-2.pooler.supabase.com aws-0-eu-north-1.pooler.supabase.com aws-0-ap-south-1.pooler.supabase.com aws-0-ap-southeast-1.pooler.supabase.com aws-0-ap-southeast-2.pooler.supabase.com aws-0-ap-northeast-1.pooler.supabase.com aws-0-ap-northeast-2.pooler.supabase.com aws-1-us-east-1.pooler.supabase.com aws-1-us-east-2.pooler.supabase.com aws-1-us-west-1.pooler.supabase.com aws-1-us-west-2.pooler.supabase.com aws-1-ca-central-1.pooler.supabase.com aws-1-sa-east-1.pooler.supabase.com aws-1-eu-west-1.pooler.supabase.com aws-1-eu-west-2.pooler.supabase.com aws-1-eu-west-3.pooler.supabase.com aws-1-eu-central-1.pooler.supabase.com aws-1-eu-central-2.pooler.supabase.com aws-1-eu-north-1.pooler.supabase.com aws-1-ap-south-1.pooler.supabase.com aws-1-ap-southeast-1.pooler.supabase.com aws-1-ap-southeast-2.pooler.supabase.com aws-1-ap-northeast-1.pooler.supabase.com aws-1-ap-northeast-2.pooler.supabase.com
+2026-10-19T15:14:19.9815910Z   W03_EXCLUDED_SCHEMAS: auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T15:14:19.9816395Z   W03_SCHEMA_ENTRY_ONLY: public
+2026-10-19T15:14:19.9817517Z   W03_EXCLUDED_ROLES: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T15:14:19.9818911Z   W03_TOKEN_CLASSES: devos_kurulum devos_calisma devos_denetim devos_sinav devos_ci devos_backup
+2026-10-19T15:14:19.9819324Z   W03_PLANT_B64: 
+2026-10-19T15:14:19.9819544Z   W03_FIXTURE_ISSUE: 
+2026-10-19T15:14:19.9820224Z   W03_CLI_CONFIG: # Written by .github/workflows/migrate.yml; the job reads no configuration from the repository (Y-09).
+project_id = "devos-migrate"
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+
+2026-10-19T15:14:19.9820932Z   PROJECT: devos
+2026-10-19T15:14:19.9821163Z   PROJECT_REF: zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.9821466Z   POOLER_HOST: aws-0-us-east-1.pooler.supabase.com
+2026-10-19T15:14:19.9821768Z   PGPORT: 5432
+2026-10-19T15:14:19.9822001Z   PGUSER: postgres.zyqgltzfzkdvrmvxlamz
+2026-10-19T15:14:19.9822274Z   PGDATABASE: postgres
+2026-10-19T15:14:19.9822505Z   PGSSLMODE: verify-full
+2026-10-19T15:14:19.9822776Z   PGSSLROOTCERT: /tmp/w03-supabase-root-2021-ca.crt
+2026-10-19T15:14:19.9823074Z   PGCONNECT_TIMEOUT: 15
+2026-10-19T15:14:19.9823306Z   PGAPPNAME: devos-migrate
+2026-10-19T15:14:19.9823538Z   DO_NOT_TRACK: 1
+2026-10-19T15:14:19.9823758Z   SUPABASE_TELEMETRY_DISABLED: 1
+2026-10-19T15:14:19.9824000Z   HEAD_STATE: yes
+2026-10-19T15:14:19.9824203Z   PRESENT: yes
+2026-10-19T15:14:19.9824398Z   CONNECTED: yes
+2026-10-19T15:14:19.9824598Z   LISTING_COUNT: 106
+2026-10-19T15:14:19.9824826Z   RESULT: no_difference
+2026-10-19T15:14:19.9825666Z   RESULT_JSON: {"commit": "0f3fc49aef775794efec7b1cbc8e07835f5a661b", "status": "no_difference", "compared": {"functions_expected": 0, "functions_recorded": 0, "migrations_applied": 26, "migrations_expected": 26}, "complete": true, "differences": []}
+2026-10-19T15:14:19.9827377Z   APPLIED: ["20261012184638", "20261012231841", "20261012232112", "20261012232113", "20261014170201", "20261014170202", "20261014170203", "20261014170204", "20261014170205", "20261014182601", "20261014190401", "20261014190402", "20261017230001", "20261018203001", "20261018214501", "20261018230001", "20261018235501", "20261019010001", "20261019030001", "20261019050001", "20261019080001", "20261019100001", "20261019120001", "20261019140001", "20261019160001", "20261019180001"]
+2026-10-19T15:14:19.9828629Z   BEFORE_RESULT: no_difference
+2026-10-19T15:14:19.9828871Z   AFTER_RESULT: 
+2026-10-19T15:14:19.9829075Z   AFTER_JSON: 
+2026-10-19T15:14:19.9829283Z   AFTER_APPLIED: 
+2026-10-19T15:14:19.9829500Z   DECIDE_APPLY: no
+2026-10-19T15:14:19.9829739Z   DECIDE_REASON: no difference: nothing to apply
+2026-10-19T15:14:19.9830036Z   EXCEPTION: not_taken
+2026-10-19T15:14:19.9830256Z   APPLY: skipped
+2026-10-19T15:14:19.9830464Z ##[endgroup]
+2026-10-19T15:14:20.0140359Z W03REPORT {"project":"devos","event":"push","run_id":"39275795501","commit":"0f3fc49aef775794efec7b1cbc8e07835f5a661b","head":"yes","credential_present":"yes","connection":"yes","listing_count":"106","result":"no_difference","differences":[],"applied_versions":["20261012184638","20261012231841","20261012232112","20261012232113","20261014170201","20261014170202","20261014170203","20261014170204","20261014170205","20261014182601","20261014190401","20261014190402","20261017230001","20261018203001","20261018214501","20261018230001","20261018235501","20261019010001","20261019030001","20261019050001","20261019080001","20261019100001","20261019120001","20261019140001","20261019160001","20261019180001"],"apply_step":"skipped","apply":"no","reason":"no difference: nothing to apply","first_migration_exception":"not_taken","result_before_apply":"no_difference"}
+2026-10-19T15:14:20.0829605Z Post job cleanup.
+2026-10-19T15:14:20.1657532Z [command]/usr/bin/git version
+2026-10-19T15:14:20.1701445Z git version 2.55.0
+2026-10-19T15:14:20.1747268Z Temporarily overriding HOME='/home/runner/work/_temp/b427b181-ab33-4b5e-a88f-27d5c4ffd972' before making global git config changes
+2026-10-19T15:14:20.1748514Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T15:14:20.1755625Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-19T15:14:20.1836933Z Removing SSH command configuration
+2026-10-19T15:14:20.1844517Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T15:14:20.1874398Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T15:14:20.2075241Z Removing HTTP extra header
+2026-10-19T15:14:20.2082005Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T15:14:20.2119894Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T15:14:20.2331832Z Removing includeIf entries pointing to credentials config files
+2026-10-19T15:14:20.2339598Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T15:14:20.2387393Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T15:14:20.2713991Z Cleaning up orphan processes
