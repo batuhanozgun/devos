@@ -7,6 +7,11 @@
 -- and lifting its generation above the others), calls the build's heartbeat, and restores status and generation.
 -- It holds none of the build's logic. Synthetic (plan Section 8 item 13): no data. Throwaway database only
 -- (README 5.2), never under supabase/migrations/. No psql meta-command. The whole change runs inside the guard's block.
+-- Revised under ledger rule 3, 2026-10-19 (N-287 (1); CHK-C02-091 finding 8), before any run of this patch: the other
+-- active claim is set aside with the status released, a value devos_private.assignment_status holds ({active,
+-- released, expired, revoked}, W-C02-08's migration 20261014170203), and set active again after the call; the first
+-- version wrote w07_set_aside, which the enum does not hold, so DM07-oldgen raised 22P02 instead of turning red. The
+-- red list is unchanged. T-W07-DM07's "Revision under ledger rule 3 (N-287, 2026-10-19)".
 do $b$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -25,7 +30,7 @@ begin
        where claim_token_hash = encode(sha256(convert_to(coalesce(p_claim_token, ''), 'UTF8')), 'hex');
       if a.id is not null then
         select id into other from devos_private.assignment where work_ref = a.work_ref and status = 'active' and id <> a.id;
-        if other is not null then update devos_private.assignment set status = 'w07_set_aside' where id = other; end if;
+        if other is not null then update devos_private.assignment set status = 'released' where id = other; end if;
         update devos_private.assignment set status = 'active',
                generation = (select max(generation) + 1 from devos_private.assignment where work_ref = a.work_ref),
                lease_expires_at = greatest(lease_expires_at, now() + interval '1 minute')

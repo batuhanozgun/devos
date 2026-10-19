@@ -12,6 +12,10 @@
 -- the run (README 5.2).
 -- Synthetic (plan Section 8 item 13): no data. Throwaway database only (README 5.2), never under
 -- supabase/migrations/. No psql meta-command. The whole change runs inside the guard's block. Phase C3.
+-- Revised under ledger rule 3, 2026-10-19 (N-290 (1); CHK-C02-090 finding 12), before any run of this patch: work_ref
+-- is read in the flat form EV-C02-013 2.6 gives it (a uuid, with work_revision beside it), where the first version read
+-- p->'work_ref'->>'id', null on every call, so the wrapper passed every call through. The red list is unchanged.
+-- T-W07-F08's "Revision under ledger rule 3 (N-290, 2026-10-19)".
 do $b$
 declare ept text; epc text;
 begin
@@ -29,7 +33,7 @@ begin
   execute format($p$
     create function devos_api.register_artifact(p_claim_token text, p jsonb) returns jsonb language plpgsql
     security definer set search_path = pg_catalog as $f$
-    declare r jsonb; r2 jsonb; c record; top int; wid uuid := (p->'work_ref'->>'id')::uuid;
+    declare r jsonb; r2 jsonb; c record; top int; wid uuid := (p->>'work_ref')::uuid;
             act uuid; old record;
     begin
       r := devos_api.register_artifact_w07_orig(p_claim_token, p);

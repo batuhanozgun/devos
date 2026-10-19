@@ -10,6 +10,10 @@
 -- Runs: in devos-test by the migration job's test step as postgres, calls made as anon with the token header
 -- simulated (transport sql-set-role); with its break on the throwaway database. Interface assumed: see the
 -- specification ("Interface assumed"). Safety: no psql meta-command; stops at its first error.
+-- Revised under ledger rule 3, 2026-10-19 (N-291; EV-C02-013 section 17 (5) and 19 (5)), before any result of this
+-- file: the two work items sit under a Mission opened through open_mission, so that Rule O can read its creation event;
+-- DM19-b first shows its call accepted without the planted failure, and DM19-c names the cycle refusal it is about; see
+-- the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -251,11 +255,37 @@ begin
   return null;
 end $f$;
 
--- A work item with its first revision, planted as the owner: {ref, revision}.
-create function pg_temp.w07_node() returns jsonb language plpgsql as $f$
+-- Revised under ledger rule 3, before any result (N-291; EV-C02-013 section 17 (5) and 19 (5); 2026-10-19). The Mission
+-- the work items sit under, copied from job/w07_f06_state_change_event.sql's pg_temp.f06_rule_o_mission (N-285 (1)).
+-- Rule O reads the work item's revision, the Mission revision it names and that Mission's creation event (EV-C02-013
+-- 2.3, "What Rule O reads"); a Mission w07_plant makes has no event, so Rule O refused DM19-b's and DM19-c's relate
+-- before the planted failure and before the cycle check, and both passed for that reason. This Mission is opened
+-- through open_mission with the devos_kurulum token, on an owner-planted batu Decision answered at revision 1, scope
+-- synthetic.w07fixture. Its creation event is mission_opened, not transferred, so the devos_calisma calls are inside
+-- Rule O's cal clause (EV-C02-008 1.7.1). Returns the Mission revision row; raises when it cannot be made.
+create function pg_temp.w07_rule_o_mission(p_kur text) returns jsonb language plpgsql as $f$
+declare dc jsonb; c jsonb; r jsonb;
+begin
+  dc := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc->'id', 'revision', 1));
+  c := pg_temp.w07_call('open_mission', jsonb_build_object('purpose', 'w07_fixture SYNTHETIC W-C02-07 Rule O mission; not work',
+         'scope', 'synthetic.w07fixture', 'owner_authority', dc->'id', 'owner_authority_revision', 1,
+         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb), p_kur);
+  if c ? 'interface' or c->>'error' is not null or c->'result'->>'status' is distinct from 'ok' then
+    raise exception 'the Rule O fixture Mission was not opened: %', pg_temp.w07_show(c);
+  end if;
+  execute 'select to_jsonb(x) from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+     into r using c->'result'->>'id';
+  if r is null then raise exception 'the Rule O fixture Mission has no revision row'; end if;
+  return r;
+end $f$;
+
+-- A work item with its first revision, planted as the owner: {ref, revision}. Revised under ledger rule 3 (N-291,
+-- 2026-10-19): under the Mission revision p_mrev (the Rule O Mission's).
+create function pg_temp.w07_node(p_mrev jsonb) returns jsonb language plpgsql as $f$
 declare r jsonb;
 begin
-  r := pg_temp.w07_plant('devos_private.work_revision', '{}');
+  r := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', p_mrev->'id'));
   return jsonb_build_object('ref', r->'work_id', 'revision', r->'revision');
 end $f$;
 
@@ -279,12 +309,30 @@ end $f$;
 
 -- One refused-call case. p_expect_class: the role class the per-call record must carry, or null for a counted
 -- refusal (role class none, reason code p_reason). p_state: the table the call would change.
+-- Revised under ledger rule 3, before any result (N-291, 2026-10-19): two optional guards that the refusal read is the
+-- one the case is about, not an earlier rule's. p_want_code: the refusal must carry this reason code (DM19-c: cycle,
+-- EV-C02-013 2.5 and 19 (1) step 9). p_plant_failure: the same call without the planted failure, made first in an
+-- undone subtransaction, must be accepted (DM19-b). Either guard unmet makes the case the test's own could_not_check,
+-- never ok and never bad (as N-283 (6)'s revision treats an error of another kind).
 create function pg_temp.w07_refusal_case(p_id text, p_fn text, p_args jsonb, p_token text, p_state text,
-                                         p_expect_class text, p_reason text default null, p_plant_failure boolean default false)
+                                         p_expect_class text, p_reason text default null, p_plant_failure boolean default false,
+                                         p_want_code text default null)
 returns void language plpgsql as $f$
 declare c jsonb; s0 bigint; s1 bigint; e0 text[]; e1 bigint; ra0 text[]; ra jsonb; cnt0 bigint; cnt1 bigint; detail text;
-        cond boolean; raised boolean;
+        cond boolean; raised boolean; ctl jsonb;
 begin
+  if p_plant_failure then
+    begin
+      ctl := pg_temp.w07_call(p_fn, p_args, p_token);
+      raise exception using errcode = 'P0W07', message = 'w07: undo the control';
+    exception when sqlstate 'P0W07' then null;
+    end;
+    if ctl ? 'interface' or pg_temp.w07_refused(ctl) then
+      perform pg_temp.w07_rec(p_id, 'could_not_check', 'control: the same call without the planted failure was not accepted, so '
+        || 'the planted failure is not shown to be reached: ' || pg_temp.w07_show(ctl));
+      return;
+    end if;
+  end if;
   begin
     if p_plant_failure then
       execute 'create trigger w07_planted_failure before insert on devos_private.event for each row execute function pg_temp.w07_fail_trg()';
@@ -305,7 +353,13 @@ begin
     return;
   end if;
   raised := c->>'error' is not null;
-  detail := pg_temp.w07_show(c) || format('; %s rows %s -> %s; new events %s', p_state, s0, s1, e1);
+  if p_want_code is not null and not raised and c->'result'->>'reason_code' is distinct from p_want_code then
+    perform pg_temp.w07_rec(p_id, 'could_not_check', format('the refusal is not the %s refusal the case is about: ', p_want_code)
+      || pg_temp.w07_show(c));
+    return;
+  end if;
+  detail := pg_temp.w07_show(c) || format('; %s rows %s -> %s; new events %s', p_state, s0, s1, e1)
+    || case when ctl is not null then '; control without the planted failure: ' || pg_temp.w07_show(ctl) else '' end;
   cond := pg_temp.w07_refused(c) and s1 = s0 and e1 = 0 and not (c->>'echoed')::boolean;
   if p_expect_class is not null then
     detail := detail || '; new per-call records ' || (select count(*) from jsonb_array_elements(ra) x
@@ -325,7 +379,7 @@ end $f$;
 
 do $$
 declare why text; t_cal text; t_den text; a jsonb; b jsonb; v jsonb; rel_args jsonb; acc_args jsonb;
-        c jsonb; s0 bigint; s1 bigint; e0 text[]; ev jsonb; ra0 text[]; ra jsonb;
+        c jsonb; s0 bigint; s1 bigint; e0 text[]; ev jsonb; ra0 text[]; ra jsonb; om jsonb;
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -335,8 +389,9 @@ begin
   begin
     t_cal := pg_temp.w07_token('devos_calisma');
     t_den := pg_temp.w07_token('devos_denetim');
-    a := pg_temp.w07_node();
-    b := pg_temp.w07_node();
+    om := pg_temp.w07_rule_o_mission(pg_temp.w07_token('devos_kurulum'));  -- N-291
+    a := pg_temp.w07_node(om);
+    b := pg_temp.w07_node(om);
     -- the hard dependency a -> b, planted as the owner, so that b -> a would close a cycle
     perform pg_temp.w07_plant('devos_private.relation', jsonb_build_object('type', 'depends_on', 'from_ref', a->'ref',
       'from_revision', a->'revision', 'to_ref', b->'ref', 'to_revision', b->'revision', 'hard', true,
@@ -358,7 +413,8 @@ begin
   -- DM19-c: a rule refusal after the function's work began: a hard dependency that closes a cycle.
   perform pg_temp.w07_refusal_case('DM19-c', 'relate', jsonb_build_object('type', 'depends_on', 'from_ref', b->'ref',
     'from_revision', b->'revision', 'to_ref', a->'ref', 'to_revision', a->'revision', 'scope', 'synthetic.w07fixture',
-    'hard', true, 'method', 'recorded', 'epistemic_status', 'observation'), t_cal, 'devos_private.relation', 'devos_calisma');
+    'hard', true, 'method', 'recorded', 'epistemic_status', 'observation'), t_cal, 'devos_private.relation', 'devos_calisma',
+    null, false, 'cycle');
   -- DM19-b: a permitted call whose event write fails mid-transaction (planted): no half state, no orphan event.
   perform pg_temp.w07_refusal_case('DM19-b', 'relate', rel_args, t_cal, 'devos_private.relation', 'devos_calisma', null, true);
   -- DM19-d: no token: the counted record (role class none, reason code missing) grows by one.

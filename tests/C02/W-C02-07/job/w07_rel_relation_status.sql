@@ -8,6 +8,9 @@
 -- Runs: in devos-test by the migration job's test step as postgres, calls as anon with a working token's header
 -- simulated (sql-set-role); with its break on the throwaway database. Safety: no psql meta-command; stops at its
 -- first error.
+-- Revised under ledger rule 3, 2026-10-19 (N-291; EV-C02-013 section 17 (5) and 19 (5)), before any result of this
+-- file: the four work items sit under a Mission opened through open_mission, so that Rule O can read its creation
+-- event; see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -246,6 +249,32 @@ begin
   return null;
 end $f$;
 
+-- Revised under ledger rule 3, before any result (N-291; EV-C02-013 section 17 (5) and 19 (5); 2026-10-19). The Mission
+-- the four work items sit under, copied from job/w07_f06_state_change_event.sql's pg_temp.f06_rule_o_mission (N-285 (1)).
+-- Rule O reads the work item's revision, the Mission revision it names and that Mission's creation event (EV-C02-013
+-- 2.3, "What Rule O reads"); a Mission w07_plant makes has no event, so Rule O answers could_not_check before relate's
+-- end, group and repeat checks. This Mission is opened through open_mission with the devos_kurulum token, on an
+-- owner-planted batu Decision answered at revision 1, scope synthetic.w07fixture (the scope w07_plant gives a planted
+-- work revision). Its creation event is mission_opened, not transferred, so the devos_calisma calls are inside Rule O's
+-- cal clause (EV-C02-008 1.7.1). Returns the Mission revision row; raises when it cannot be made, and the caller turns
+-- that into REL-pre's could_not_check with the reason.
+create function pg_temp.w07_rule_o_mission(p_kur text) returns jsonb language plpgsql as $f$
+declare dc jsonb; c jsonb; r jsonb;
+begin
+  dc := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc->'id', 'revision', 1));
+  c := pg_temp.w07_call('open_mission', jsonb_build_object('purpose', 'w07_fixture SYNTHETIC W-C02-07 Rule O mission; not work',
+         'scope', 'synthetic.w07fixture', 'owner_authority', dc->'id', 'owner_authority_revision', 1,
+         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb), p_kur);
+  if c ? 'interface' or c->>'error' is not null or c->'result'->>'status' is distinct from 'ok' then
+    raise exception 'the Rule O fixture Mission was not opened: %', pg_temp.w07_show(c);
+  end if;
+  execute 'select to_jsonb(x) from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+     into r using c->'result'->>'id';
+  if r is null then raise exception 'the Rule O fixture Mission has no revision row'; end if;
+  return r;
+end $f$;
+
 -- One relate call: p_accept says whether it must be accepted (one row and one event more) or refused (no row, no
 -- event, a per-call record with the caller's role class).
 create function pg_temp.w07_rel_case(p_id text, p_args jsonb, p_tok text, p_accept boolean) returns void language plpgsql as $f$
@@ -276,7 +305,7 @@ begin
 end $f$;
 
 do $$
-declare why text; tok text; a jsonb; b jsonb; d jsonb; e jsonb; base jsonb;
+declare why text; tok text; a jsonb; b jsonb; d jsonb; e jsonb; base jsonb; om jsonb; wv jsonb;
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -285,8 +314,13 @@ begin
   end if;
   begin
     tok := pg_temp.w07_token('devos_calisma');
-    a := pg_temp.w07_plant('devos_private.work_revision', '{}'); b := pg_temp.w07_plant('devos_private.work_revision', '{}');
-    d := pg_temp.w07_plant('devos_private.work_revision', '{}'); e := pg_temp.w07_plant('devos_private.work_revision', '{}');
+    -- Revised under ledger rule 3 (N-291, 2026-10-19): the four work items under the Rule O Mission (all four, so each
+    -- negative still differs from its positive only in the status or the method, and a build without relation_rule
+    -- would accept REL-a and REL-b rather than refuse them at Rule O).
+    om := pg_temp.w07_rule_o_mission(pg_temp.w07_token('devos_kurulum'));
+    wv := jsonb_build_object('mission_revision_id', om->'id');
+    a := pg_temp.w07_plant('devos_private.work_revision', wv); b := pg_temp.w07_plant('devos_private.work_revision', wv);
+    d := pg_temp.w07_plant('devos_private.work_revision', wv); e := pg_temp.w07_plant('devos_private.work_revision', wv);
   exception when others then
     perform pg_temp.w07_rec('REL-pre', 'could_not_check', 'fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200));
     return;

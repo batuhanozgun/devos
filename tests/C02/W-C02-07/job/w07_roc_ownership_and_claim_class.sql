@@ -21,6 +21,10 @@
 -- that is undone after it is observed, so the fixtures stay as made. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS as a notice, or
 -- FAIL / COULD NOT CHECK as an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-19 (N-291; CHK-C02-092 C2; EV-C02-013 section 19 (2) and (5)), before any result
+-- of this file: the transferred relation devos_kurulum retracts is planted from the installation's item, and a new case
+-- ROC-o-retract_relation-kur-transferred-cal keeps the stricter reading (devos_kurulum on a transferred relation from an
+-- ordinary item: not_owner); see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -573,8 +577,12 @@ begin
 end $f$;
 
 -- p_want: accepted | refused. A refusal must be returned (interface v1), after the gate (not a token refusal, which
--- would mean the test's own token failed), and leave every table as it was.
-create function pg_temp.roc_case(p_case text, p_class text, p_fn text, p_args jsonb, p_want text, p_prep text default null)
+-- would mean the test's own token failed), and leave every table as it was. Revised under ledger rule 3, before any
+-- result (N-291; CHK-C02-092 C2; 2026-10-19): p_code, when given, is the reason code the refusal must carry; another
+-- code is bad, and could_not_check is the test's own could_not_check (the rule's input was not read, so the case shows
+-- nothing about the rule). Without p_code a case is judged as before.
+create function pg_temp.roc_case(p_case text, p_class text, p_fn text, p_args jsonb, p_want text, p_prep text default null,
+                                 p_code text default null)
 returns jsonb language plpgsql as $f$
 declare r jsonb; k text; ok boolean;
 begin
@@ -590,9 +598,15 @@ begin
       pg_temp.w07_brief(r)));
     return r;
   end if;
-  ok := k = p_want and (p_want = 'accepted' or not coalesce((r->>'w07_changed')::boolean, true));
-  perform pg_temp.w07_rec(p_case, ok, format('%s with %s: wanted %s; got %s; tables changed: %s', p_fn, p_class, p_want,
-    pg_temp.w07_brief(r), coalesce(r->>'w07_changed', '?')));
+  if p_code is not null and k = 'refused' and r->>'reason_code' = 'could_not_check' then
+    perform pg_temp.w07_put(p_case, 'could_not_check', format('%s with %s: wanted refused with %s; got could_not_check, so the rule '
+      || 'was not reached: %s', p_fn, p_class, p_code, pg_temp.w07_brief(r)));
+    return r;
+  end if;
+  ok := k = p_want and (p_want = 'accepted' or not coalesce((r->>'w07_changed')::boolean, true))
+        and (p_code is null or r->>'reason_code' is not distinct from p_code);
+  perform pg_temp.w07_rec(p_case, ok, format('%s with %s: wanted %s%s; got %s; tables changed: %s', p_fn, p_class, p_want,
+    coalesce(' with ' || p_code, ''), pg_temp.w07_brief(r), coalesce(r->>'w07_changed', '?')));
   return r;
 end $f$;
 
@@ -686,6 +700,7 @@ $f$;
 -- finished and accepted first (its input, as T-W07-F06's recipe plants it), inside the undone subtransaction.
 create function pg_temp.roc_rule_o() returns void language plpgsql as $f$
 declare fn text; cls text; kind text; w text; rel text; want text; cid text; prep text; why text;
+        rel_inst text; why_inst text;  -- N-291
         expect jsonb := jsonb_build_object(
           'devos_calisma', jsonb_build_object('cal', 'accepted', 'inst', 'refused', 'exam', 'accepted'),
           'devos_sinav', jsonb_build_object('cal', 'refused', 'inst', 'refused', 'exam', 'accepted'),
@@ -727,22 +742,50 @@ begin
     end if;
   end loop;
   -- A relation whose creation event is transferred is retracted only with devos_kurulum (1.7.1).
-  why := null;
+  -- Revised under ledger rule 3, before any result (N-291; CHK-C02-092 C2; EV-C02-013 19 (2); 2026-10-19). Rule O's two
+  -- clauses both hold for a transferred relation from a work item: devos_kurulum retracts it only when the item lies
+  -- under the installation's Mission. So two transferred relations are planted through the hook: rel from w_cal (an
+  -- ordinary item), as before, for devos_calisma and devos_sinav (refused) and for the new case
+  -- ROC-o-retract_relation-kur-transferred-cal (devos_kurulum refused, not_owner); and rel_inst from w_inst (the
+  -- installation's item), for ROC-o-retract_relation-kur-transferred (devos_kurulum accepted). The first version planted
+  -- one relation, from w_cal, and wanted devos_kurulum accepted on it, which the stricter reading refuses.
+  why := null; why_inst := null;
   if coalesce(pg_temp.roc_hook('transferred_relation'), '') = '' then
     why := 'a transferred relation is planted in a form W-C02-09''s record names; pg_temp.roc_hook(''transferred_relation'') is empty until then (README section 8)';
+    why_inst := why;
   else
     begin
       execute pg_temp.roc_hook('transferred_relation') using pg_temp.roc_fx('w_cal'), pg_temp.roc_fx('w_other') into rel;
     exception when others then
       why := 'the transferred relation could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 160);
     end;
+    if pg_temp.roc_fx('w_inst') is null then
+      why_inst := 'no installation work item: ' || coalesce(pg_temp.roc_fx('inst_why'), '?');
+    else
+      begin
+        execute pg_temp.roc_hook('transferred_relation') using pg_temp.roc_fx('w_inst'), pg_temp.roc_fx('w_other') into rel_inst;
+      exception when others then
+        why_inst := 'the transferred relation from the installation''s item could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 160);
+      end;
+    end if;
   end if;
-  foreach cls in array array['devos_calisma', 'devos_sinav', 'devos_kurulum'] loop
+  foreach cls in array array['devos_calisma', 'devos_sinav'] loop
     cid := 'ROC-o-retract_relation-' || (short->>cls) || '-transferred';
     if why is not null then perform pg_temp.w07_put(cid, 'could_not_check', why); continue; end if;
-    perform pg_temp.roc_case(cid, cls, 'retract_relation', pg_temp.roc_args('retract_relation', null, rel),
-      case when cls = 'devos_kurulum' then 'accepted' else 'refused' end);
+    perform pg_temp.roc_case(cid, cls, 'retract_relation', pg_temp.roc_args('retract_relation', null, rel), 'refused');
   end loop;
+  if why_inst is not null then
+    perform pg_temp.w07_put('ROC-o-retract_relation-kur-transferred', 'could_not_check', why_inst);
+  else
+    perform pg_temp.roc_case('ROC-o-retract_relation-kur-transferred', 'devos_kurulum', 'retract_relation',
+      pg_temp.roc_args('retract_relation', null, rel_inst), 'accepted');
+  end if;
+  if why is not null then
+    perform pg_temp.w07_put('ROC-o-retract_relation-kur-transferred-cal', 'could_not_check', why);
+  else
+    perform pg_temp.roc_case('ROC-o-retract_relation-kur-transferred-cal', 'devos_kurulum', 'retract_relation',
+      pg_temp.roc_args('retract_relation', null, rel), 'refused', null, 'not_owner');
+  end if;
 end $f$;
 
 -- Phase C5 (CHK-C02-030 C4): an active devos_denetim claim on a work item, planted at owner level (README 5.1 (a)),
