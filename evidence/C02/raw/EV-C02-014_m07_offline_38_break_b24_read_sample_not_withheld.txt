@@ -1,0 +1,43 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b24_read_sample_not_withheld, a copy of M09-07 outside the repository, in database k38 copied from t18)
+[database k38 from t18 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b24_read_sample_not_withheld.sql  (as postgres)
+[apply exit 0]
+ 248 | RR-sample-devos_calisma              | f  | ok                       | not_found                | {}                                                  |  | wanted delta {"rejected": 1}
+ 249 | RR-sample-devos_calisma-as-none      | f  | false                    | true                     | {}                                                  | a sample answered as an id that names no Review
+ 250 | RR-sample-devos_sinav                | f  | ok                       | not_found                | {}                                                  |  | wanted delta {"rejected": 1}
+ 251 | RR-sample-devos_sinav-as-none        | f  | false                    | true                     | {}                                                  | a sample answered as an id that names no Review
+ 252 | RR-sample-devos_kurulum              | f  | ok                       | not_found                | {}                                                  |  | wanted delta {"rejected": 1}
+ 253 | RR-sample-devos_kurulum-as-none      | f  | false                    | true                     | {}                                                  | a sample answered as an id that names no Review
+ 254 | RR-sample-devos_ci                   | f  | ok                       | not_found                | {}                                                  |  | wanted delta {"rejected": 1}
+ 255 | RR-sample-devos_ci-as-none           | f  | false                    | true                     | {}                                                  | a sample answered as an id that names no Review
+ 256 | RR-sample-devos_backup               | f  | ok                       | not_found                | {}                                                  |  | wanted delta {"rejected": 1}
+ 257 | RR-sample-devos_backup-as-none       | f  | false                    | true                     | {}                                                  | a sample answered as an id that names no Review
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0907_run/fn_check.sql:697: NOTICE:  M0907_FUNCTIONS FAIL (10 of 266 not as wanted)
+[self-check done]
+w07_f06_state_change_event.sql:  F06-event:accept                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:claim                     | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:heartbeat                 | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:open_review               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "independence_level: missing", "status": "refused", "reason_code": "missing_field"}
+w07_f06_state_change_event.sql:  F06-event:record_verdict            | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "limits: not an array", "status": "refused", "reason_code": "invalid_field"}
+w07_f06_state_change_event.sql:  F06-event:register_artifact         | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:relate                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:release                   | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:retract_relation          | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: the relation's creation event is missing", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revoke_claim              | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-repeat:accept                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:claim                    | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:open_review              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:record_verdict           | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:relate                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:retract_relation         | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-role-token                      | bad             | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:941: ERROR:  W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 16 could not check, of 82)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (7 of 187 could not be checked)
+m0907 scrub (38_break_b24_read_sample_not_withheld): claim-format strings replaced 0; environment-format strings replaced 0

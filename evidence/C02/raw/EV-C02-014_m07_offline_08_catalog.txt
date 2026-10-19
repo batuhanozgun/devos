@@ -1,0 +1,156 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+                                                                                                          function                                                                                                           | vol | definer |             config              |  owner   |                  acl                  |         returns          |                 comment                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+---------+---------------------------------+----------+---------------------------------------+--------------------------+------------------------------------------
+ devos_api.accept(verdict_ref uuid, accepted_use text)                                                                                                                                                                       | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.admit_work(p jsonb)                                                                                                                                                                                               | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.affected_entities(root uuid, limits jsonb)                                                                                                                                                                        | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The records a change of root 
+ devos_api.cancel_work(work_id uuid, reason text)                                                                                                                                                                            | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.claim(work_id uuid, declared_session_id text)                                                                                                                                                                     | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.deployment_drift(expected jsonb)                                                                                                                                                                                  | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The difference between main's
+ devos_api.explain_paths(root uuid, target uuid, limits jsonb)                                                                                                                                                               | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read A bounded list of paths from 
+ devos_api.heartbeat(claim_token text)                                                                                                                                                                                       | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.link_prior_decisions(p jsonb)                                                                                                                                                                                     | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.mark_stale(work_id uuid, reason text)                                                                                                                                                                             | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.open_decision(p jsonb)                                                                                                                                                                                            | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.open_mission(p jsonb)                                                                                                                                                                                             | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.open_review(p jsonb)                                                                                                                                                                                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.read_decision(decision_id uuid)                                                                                                                                                                                   | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read One Decision's current revisi
+ devos_api.read_review(review_id uuid)                                                                                                                                                                                       | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read One Review with its verdicts;
+ devos_api.ready_works()                                                                                                                                                                                                     | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The work items the caller's r
+ devos_api.record_finding(p jsonb)                                                                                                                                                                                           | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.record_need(p jsonb)                                                                                                                                                                                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.record_verdict(p jsonb)                                                                                                                                                                                           | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.register_artifact(claim_token text, p jsonb)                                                                                                                                                                      | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.relate(p jsonb)                                                                                                                                                                                                   | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.release(claim_token text)                                                                                                                                                                                         | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.reopen_for_review(work_id uuid, reason text)                                                                                                                                                                      | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.resolve_need(need_id uuid, reason text)                                                                                                                                                                           | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.retract_relation(relation_id uuid, reason text)                                                                                                                                                                   | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.review_finding(finding_id uuid, revision integer, status text)                                                                                                                                                    | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.revise_mission(p jsonb)                                                                                                                                                                                           | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.revise_work(p jsonb)                                                                                                                                                                                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.revoke_claim(assignment_id uuid, reason text)                                                                                                                                                                     | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.set_effort_policy(p jsonb)                                                                                                                                                                                        | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | 
+ devos_api.token_role_class()                                                                                                                                                                                                | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres,anon=X/postgres} | jsonb                    | devos:read The role class of the caller'
+ devos_private.caller_role_class(function_name text)                                                                                                                                                                         | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | devos_private.role_class | 
+ devos_private.check_claim(p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean)                                                                                                  | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.hard_dependency_cycle(p_from uuid, p_to uuid)                                                                                                                                                                 | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.is_installation_mission(p_mission_id uuid)                                                                                                                                                                    | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.issue_env_token(role_class text)                                                                                                                                                                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | text                     | 
+ devos_private.ready_value(p_work_id uuid, p_own_claim uuid)                                                                                                                                                                 | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.refuse_change()                                                                                                                                                                                               | v   | f       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | trigger                  | 
+ devos_private.reject(p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer)                              | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.reject_counted(p_function_name text, p_reason_code text)                                                                                                                                                      | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | void                     | 
+ devos_private.revoke_env_token(token_id uuid)                                                                                                                                                                               | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | jsonb                    | 
+ devos_private.scope_within(p_scope text, p_container text)                                                                                                                                                                  | i   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | boolean                  | 
+ devos_private.token_hash(token text)                                                                                                                                                                                        | i   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | text                     | 
+ devos_private.write_event(p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text) | v   | t       | search_path=pg_catalog, pg_temp | postgres | {postgres=X/postgres}                 | bigint                   | 
+(44 rows)
+
+            function            | grantee | privilege_type 
+--------------------------------+---------+----------------
+ devos_api.accept               | anon    | EXECUTE
+ devos_api.admit_work           | anon    | EXECUTE
+ devos_api.affected_entities    | anon    | EXECUTE
+ devos_api.cancel_work          | anon    | EXECUTE
+ devos_api.claim                | anon    | EXECUTE
+ devos_api.deployment_drift     | anon    | EXECUTE
+ devos_api.explain_paths        | anon    | EXECUTE
+ devos_api.heartbeat            | anon    | EXECUTE
+ devos_api.link_prior_decisions | anon    | EXECUTE
+ devos_api.mark_stale           | anon    | EXECUTE
+ devos_api.open_decision        | anon    | EXECUTE
+ devos_api.open_mission         | anon    | EXECUTE
+ devos_api.open_review          | anon    | EXECUTE
+ devos_api.read_decision        | anon    | EXECUTE
+ devos_api.read_review          | anon    | EXECUTE
+ devos_api.ready_works          | anon    | EXECUTE
+ devos_api.record_finding       | anon    | EXECUTE
+ devos_api.record_need          | anon    | EXECUTE
+ devos_api.record_verdict       | anon    | EXECUTE
+ devos_api.register_artifact    | anon    | EXECUTE
+ devos_api.relate               | anon    | EXECUTE
+ devos_api.release              | anon    | EXECUTE
+ devos_api.reopen_for_review    | anon    | EXECUTE
+ devos_api.resolve_need         | anon    | EXECUTE
+ devos_api.retract_relation     | anon    | EXECUTE
+ devos_api.review_finding       | anon    | EXECUTE
+ devos_api.revise_mission       | anon    | EXECUTE
+ devos_api.revise_work          | anon    | EXECUTE
+ devos_api.revoke_claim         | anon    | EXECUTE
+ devos_api.set_effort_policy    | anon    | EXECUTE
+ devos_api.token_role_class     | anon    | EXECUTE
+(31 rows)
+
+       proname        |                                          role_list_literal                                          
+----------------------+-----------------------------------------------------------------------------------------------------
+ accept               | array['devos_denetim']::devos_private.role_class[]
+ admit_work           | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ affected_entities    | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ cancel_work          | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ claim                | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ deployment_drift     | array['devos_ci']::devos_private.role_class[]
+ explain_paths        | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ heartbeat            | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ link_prior_decisions | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ mark_stale           | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ open_decision        | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ open_mission         | array['devos_kurulum']::devos_private.role_class[]
+ open_review          | array['devos_denetim']::devos_private.role_class[]
+ read_decision        | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum', 'devos_ci',                +
+                      |                                  'devos_backup']::devos_private.role_class[]
+ read_review          | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum', 'devos_ci',                +
+                      |                                  'devos_backup']::devos_private.role_class[]
+ ready_works          | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ record_finding       | array['devos_calisma', 'devos_kurulum']::devos_private.role_class[]
+ record_need          | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ record_verdict       | array['devos_denetim']::devos_private.role_class[]
+ register_artifact    | array['devos_calisma', 'devos_kurulum']::devos_private.role_class[]
+ relate               | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ release              | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ reopen_for_review    | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ resolve_need         | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ retract_relation     | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ review_finding       | array['devos_denetim']::devos_private.role_class[]
+ revise_mission       | array['devos_kurulum']::devos_private.role_class[]
+ revise_work          | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ revoke_claim         | array['devos_denetim']::devos_private.role_class[]
+ set_effort_policy    | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ token_role_class     | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum', 'devos_ci',                +
+                      |                                'devos_backup']::devos_private.role_class[]
+(31 rows)
+
+ typname | typacl 
+---------+--------
+(0 rows)
+
+                  fn                   |   kw   |     name     
+---------------------------------------+--------+--------------
+ devos_private.check_claim             | from   | p_work_id
+ devos_private.is_installation_mission | from   | p_mission_id
+ devos_private.ready_value             | from   | p_own_claim
+ devos_private.reject_counted          | update | set
+(4 rows)
+
+ unqualified_relation_scan 
+---------------------------
+ scan done
+(1 row)
+
+ function_with_execute 
+-----------------------
+(0 rows)
+
+    read_marked    
+-------------------
+ affected_entities
+ deployment_drift
+ explain_paths
+ read_decision
+ read_review
+ ready_works
+ token_role_class
+(7 rows)
+
+[psql exit 0]
+m0907 scrub (08_catalog): claim-format strings replaced 0; environment-format strings replaced 0

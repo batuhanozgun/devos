@@ -1,0 +1,15 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-ROC-3_could_not_check_as_clean.sql applied in place, w07.throwaway=yes, in database p50 copied from t19)
+[database p50 from t19 exit 0]
+[patch exit 0]
+w07_roc_ownership_and_claim_class.sql:  ROC-o-retract_relation-kur-transferred | bad             | retract_relation with devos_kurulum: wanted accepted; got refused [not_owner rule o: devos_kurulum changes only the work items under the installation's mission] as anon session_user postgres; tables changed: false
+w07_roc_ownership_and_claim_class.sql:  ROC-x-c-claims-missing                 | bad             | revise_work, claims-missing planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-c-claims-partial                 | bad             | revise_work, claims-partial planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-c-claims-unreadable              | bad             | revise_work, claims-unreadable planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-event-missing                  | bad             | retract_relation, event-missing planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-event-partial                  | bad             | retract_relation, event-partial planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-event-unreadable               | could_not_check | retract_relation, event-unreadable planted: not an answer of interface v1: test_cnc
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-mission-missing                | bad             | revise_work, mission-missing planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-mission-partial                | bad             | revise_work, mission-partial planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql:  ROC-x-o-mission-unreadable             | bad             | revise_work, mission-unreadable planted: answered clean (accepted), wanted could not check: accepted as anon session_user postgres
+w07_roc_ownership_and_claim_class.sql: psql:tests/C02/W-C02-07/job/w07_roc_ownership_and_claim_class.sql:1077: ERROR:  W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (9 bad, 1 could not check, of 83)
+m0907 scrub (50_merged_B-ROC-3): claim-format strings replaced 0; environment-format strings replaced 0
