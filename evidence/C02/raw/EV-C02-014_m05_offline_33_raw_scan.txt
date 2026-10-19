@@ -1,0 +1,35 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (every raw file 01 to 32 of this run, with the finders of tests/C02/W-C02-07/shared/scan_patterns.json)
+m0905 scan: EV-C02-014_m05_offline_01_init_setup.txt: 37 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_02_apply_before.txt: 251 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_03_apply_m0905.txt: 19 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_04_drift.txt: 8 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_05_dbtests.txt: 630 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_06_staged_w07.txt: 2118 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_07_staged_w14.txt: 59 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_08_catalog.txt: 119 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_09_functions.txt: 171 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_10_drift_after.txt: 8 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_11_server_log_scan.txt: 4 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_12_stop.txt: 7 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_13_breaks_setup.txt: 300 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_14_break_b01_claim_already_claimed_removed.txt: 47 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_15_break_b02_claim_exam_subject_removed.txt: 48 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_16_break_b03_claim_kurulum_ownership_removed.txt: 46 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_17_break_b04_claim_not_ready_removed.txt: 47 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_18_break_b05_claim_lapsed_not_expired.txt: 47 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_19_break_b06_claim_partial_claims_unchecked.txt: 44 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_20_break_b07_claim_token_in_event.txt: 45 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_21_break_b08_claim_unknown_readiness_passes.txt: 44 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_22_break_b09_heartbeat_not_extended.txt: 46 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_23_break_b10_release_status_not_written.txt: 53 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_24_break_b11_revoke_literal_widened.txt: 52 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_25_break_b12_revoke_lapsed_accepted.txt: 44 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_26_break_b13_ready_works_lists_for_sinav.txt: 44 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_27_break_b14_ready_works_ownership_removed.txt: 47 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_28_merged_B-DM07-1.txt: 11 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_29_merged_B-5B-2.txt: 23 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_30_conc_unpatched.txt: 29 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_31_conc_B-CONC-1.txt: 25 lines; claim-format 0; environment-format 0
+m0905 scan: EV-C02-014_m05_offline_32_breaks_stop.txt: 9 lines; claim-format 0; environment-format 0
+m0905 scan: 32 files; claim-format 0; environment-format 0
+m0905 scrub (33_raw_scan): claim-format strings replaced 0; environment-format strings replaced 0

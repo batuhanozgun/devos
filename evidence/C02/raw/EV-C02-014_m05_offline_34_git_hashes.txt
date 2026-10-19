@@ -1,0 +1,58 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes of the bytes run, and the clone's git state; written without the scrub, hashes and git output only)
+90c3b7ed0a25ac60de3420143a8acd49fe3df2364e22c7e6b8a2e5014f4008dd  supabase/migrations/20261018235501_w09_claims.sql
+1d2086806b724c8ecd13f6becfe7bf679b96d70a16b1f5171aabd5bde0931d31  fn_check.sql
+14ec534e216cdebefc21eeabf08a5277825723e203a5f2a7b59b341ec249a5dd  brk.py
+c4e85e1f928dca256a0cb8c387d467bac811bf4cde04d0c8e270cb4cf1149c39  brk.sh
+da7b810f7a56ee0f5cd8b6cdd5466eececbb44aab7cc0715ebbe14b03d87fc85  rerun.sh
+92f75dca045957aad1b5f77159d681a5a4f0727fd7f3dbe03d75c9b92591fe74  run.sh
+64a7fa689539f801ed185079f9675f06de97486badbce66c8660857f0ad3dccb  drive.py
+de36849fdd89c6c3860cbcafa2f7ba3bdbe36547c414983c87e3a4812becf29a  scrub.py
+0c2ddcf3d92650bb5283a36ed2798ff6bc642d5b2dea887ed7f1fc72c82817fa  scan.py
+6ca23582c1fa710d0c0fb269989ced425e30ab50c96c8f0009712d50cddbac05  conc.sh
+0505d071b60acb64cf71053ca4ea695af263152f918afd25e110aef4ba96d2dc  conc_setup.sql
+1bca621b999786b1bff5a43075cfb2c8f6742683d081e351c3c1bbd74bb66d77  coord.sql
+c365d634a3d9cdee9f8abda5834378a962409dc340767895e42f4d5941b4f66e  worker.sql
+f12e410045cab08c3569fa4b064164ed1b1bb661d76716f2dbad36a4e935fc46  final.sh
+backslashes in M09-05: 0
+M09-05 lines naming the exam table: 0
+M09-05 strings found by either token finder: m0905 scan: 1 files; claim-format 0; environment-format 0
+M09-05 lines holding either marker whole: 0
+$ git rev-parse HEAD; git status --porcelain
+4f011151c46d9837d085a4b5198f9c6780458ab9
+?? evidence/C02/raw/EV-C02-014_m05_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_03_apply_m0905.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_05_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_06_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_07_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_08_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_09_functions.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_10_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_11_server_log_scan.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_12_stop.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_13_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_14_break_b01_claim_already_claimed_removed.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_15_break_b02_claim_exam_subject_removed.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_16_break_b03_claim_kurulum_ownership_removed.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_17_break_b04_claim_not_ready_removed.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_18_break_b05_claim_lapsed_not_expired.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_19_break_b06_claim_partial_claims_unchecked.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_20_break_b07_claim_token_in_event.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_21_break_b08_claim_unknown_readiness_passes.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_22_break_b09_heartbeat_not_extended.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_23_break_b10_release_status_not_written.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_24_break_b11_revoke_literal_widened.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_25_break_b12_revoke_lapsed_accepted.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_26_break_b13_ready_works_lists_for_sinav.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_27_break_b14_ready_works_ownership_removed.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_28_merged_B-DM07-1.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_29_merged_B-5B-2.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_30_conc_unpatched.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_31_conc_B-CONC-1.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_32_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_33_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_m05_offline_34_git_hashes.txt
+?? supabase/migrations/20261018235501_w09_claims.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end of diff]

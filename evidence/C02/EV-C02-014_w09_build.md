@@ -2,10 +2,10 @@
 id: EV-C02-014
 item: W-C02-09
 kind: build
-produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366)"
+produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366); section 6 (M09-05) by agent `ad37a946776298dc5` (named at filing, L-369)"
 main_at: 1cdbb4e99cc5306e4dadf1e431ebbade7b03b68f
 date: 2026-10-17
-claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; nothing applied to a project by sections 1, 3 and 4; not independently tested"
+claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); section 5: M09-04, the six functions of Work and effort policy (EV-C02-013 2.3), as versioned SQL, with EV-C02-013 section 17 (written at main d032a84); section 6: M09-05, the five functions of readiness and claim (EV-C02-013 2.4), as versioned SQL, with EV-C02-013 section 18 (written at main 4f01115); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; section 2 records M09-01's apply to both projects; the applies of M09-02 to M09-04 are recorded in plan/ledger/C02-log.md (L-360, L-364, L-368), and nothing is applied by section 6; each section is judged by a fresh checker of the same session (verdicts named in the log), not independently tested (corrected 2026-10-19, L-371, CHK-C02-091 C1)"
 ---
 
 # EV-C02-014 · W-C02-09's build
@@ -873,4 +873,267 @@ The runs:
    - A revision cannot clear an optional text field or `effort_policy_ref` (5.2 item 5).
    - `effort_policy_ref` may name another work item's policy. No source refuses it, and none is built.
    - That an item belongs to a standing policy's class is declared and falls to the sample review (B 3.18), which is W-C02-10's.
+
+## 6. M09-05: readiness and claim
+
+The producer's record of `supabase/migrations/20261018235501_w09_claims.sql` (M09-05), written on branch `claude/c02-w09-m0905` at `main` `4f011151c46d9837d085a4b5198f9c6780458ab9`, where M09-01 to M09-04 are merged. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at that commit, with EV13's correction section 18 added by the same producer. M09-05 means the file above, and M09-05:n a line of it. `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 18 first.** EV13 gained "18. Correction, 2026-10-18 (M09-05)", with marks *[C-M05]* in 2.4's paragraph "Ready" and in the rows `ready_works`, `claim` and `revoke_claim`. It states the forms 6.2 lists. M09-05's checker judges it.
+- **The note items that bind M09-05, checked on `main` before the SQL** (`plan/work/C02.md`):
+  - **Binding M09-05's commit: none open.**
+  - N-279 (12), its `group_mode` part: a hard `depends_on` without `group_id` is a group of one in readiness. Its deadline is the first commit of the migration that builds the function concerned. **Met:** EV13 R2-5 decided it, and M09-02's `ready_value` builds it (section 3.1). M09-05 calls `ready_value` unchanged.
+  - N-279 (10), (15), (17), (18), (20), (21): their functions are M09-04, M09-06, M09-07, M09-08, M09-12 and W-C02-10's, not M09-05's.
+  - N-279 (19): Group B's files (5B, 6TK, N04, N08) are audited for the `env_token` counting fault before each file's first result, and at the latest in the pull request that copies it. That is not a commit of M09-05. 5B and 6TK run here in place, which is not a result.
+  - N-279 (1): no function sets `execution` `finished`; it may be met by a stated form of `release`. Its deadline is C03's work list. `release` here sets only the claim's status, as EV13 2.4 says.
+  - **N-281** (the guard repeats a denied call's text, which can carry a claim-format string). Its deadline is "before the first call that returns a claim token to a session (W-C02-09's `claim`, M09-05, used over the real path)". That is the first real-path use, not M09-05's commit. It is **not met on `main`**: the note is open and no change of `.claude/hooks/` after it is merged. M09-05's merge makes that call possible once sitting A has exposed `devos_api`. So the executor holds the first real-path `claim` until N-281 is met.
+  - N-280: before a `.py` file is copied. N-282: before a seventh role class. N-283 (6), (7), N-284, N-285, N-286: before a test file's first result or copy, before verdict (ii), or before M09-09. None falls at M09-05's commit.
+  - Notes for M09-05's producer in this record:
+    - Section 3.5 item 4: an effect calls `check_claim`, then `ready_value(work, assignment_id)`. M09-05 has no effect. Its `heartbeat` and `release` call `check_claim` with the work item and the claim `for update`.
+    - Section 5.6 item 4: `claim` locks the work item `for update`. **Met** (M09-05:187).
+- **Appendix B principle 3** binds no function here: none writes a revision.
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | `main` `4f01115`, clean before this work. The runs were made with M09-05 and the raw files untracked (O, `34_git_hashes.txt`). Bytes run: M09-05 `90c3b7ed0a25ac60de3420143a8acd49fe3df2364e22c7e6b8a2e5014f4008dd`; the self-check `…/scratchpad/m0905_run/fn_check.sql` `1d2086806b724c8ecd13f6becfe7bf679b96d70a16b1f5171aabd5bde0931d31`; the break maker `…/scratchpad/m0905_run/brk.py` `14ec534e216cdebefc21eeabf08a5277825723e203a5f2a7b59b341ec249a5dd` (the other drivers' hashes are in file 34). EV13 with its section 18, at this record's writing (after the runs): `5d57bc3df56a41d8b14882811a67cc1689bce5af8fc12f43fb24dcdc88355dfb`. A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1, 3, 4 and 5: one throwaway PostgreSQL 16.15 cluster per run, unix socket only (in `…/scratchpad/m5s`, short enough for the 107-byte socket limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, `12_stop.txt` and `32_breaks_stop.txt`: `[cluster directory deleted: yes]`). Stand-ins: M09-02's `setup.sql` unchanged (`…/scratchpad/m0903_run/setup.sql`). The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `4f01115`; EV13 with Revisions 1 and 2, its corrections 15 to 17, and its section 18 (for M09-05's checker) |
+| Input | The seventeen migrations (`main`'s sixteen and M09-05); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `tests/C02/W-C02-07/job/` and T-W14-FN's, run in place; the producer's self-check; fourteen break copies of M09-05 made outside the repository (`…/scratchpad/m0905_brk/`, by `brk.py`); three merged break patches of `tests/C02/W-C02-07/breaks/` applied in place on the throwaway cluster (B-DM07-1, B-5B-2, B-CONC-1); a concurrency probe of the producer's own (`conc.sh`, `coord.sql`, `worker.sql`, `conc_setup.sql`) |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m05_offline_01_init_setup.txt` to `…_34_git_hashes.txt`, written directly by `…/scratchpad/m0905_run/rerun.sh` (01 to 12), `brk.sh` (13 to 32) and `final.sh` (33, 34). Every file but `34` passed through `scrub.py`. That filter reads the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time and replaces each claim-format and each environment-format string with a fixed label of its own. Each file ends `claim-format strings replaced 0; environment-format strings replaced 0` (33 of 33). File 33 scans files 01 to 32 again with the same finders: `32 files; claim-format 0; environment-format 0`. Files 11 and 32 scan the cluster's server log: `480 lines; claim-format 0; environment-format 0`. File 34 holds hashes and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 09), the break copies (14 to 27) and the concurrency probe (30, 31) are the producer's own; the three merged break patches (28, 29, 31) are the test designer's |
+
+### 6.1 What was built, object by object
+
+All in M09-05, in this order: the five functions of EV13 2.4, and their grants. No table, type or `devos_private` function is added. M09-01 to M09-04 are not changed. Their helpers are called: `caller_role_class`, `token_hash`, `write_event`, `reject`, `check_claim`, `ready_value` and `is_installation_mission`.
+
+**The form every function has** is M09-03's and M09-04's (4.1, 5.1):
+- the derivation first;
+- the read block with steps (b) to (f). A decided refusal goes through `v_code`, `v_reason` and `P0D01`. Any other error is `could_not_check`, `<v_check>: its input could not be read (SQLSTATE <code>)`;
+- the write block, where an error is `write_failed`, but `P0D02`;
+- one per-call row by `reject` after a refusal;
+- fixed reasons.
+
+O (`08_catalog.txt`): each of the five has `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, ACL `{postgres=X/postgres,anon=X/postgres}`.
+
+**Parameters.** The names are those of EV13 2.4 and README 8.1, so named calls bind (`claim(work_id, declared_session_id)`, `heartbeat(claim_token)`, `release(claim_token)`, `revoke_claim(assignment_id, reason)`). The bodies read them through `ALIAS FOR $n` (M09-05:133-134, :334, :413, :496-497), never as `<function>.<parameter>`. Reason: six merged break patches rename one of these functions and wrap it (B-DM07-1, B-N08-4, B-N17-1, B-6RG-1, B-6RG-2, B-EXF-1). A body that names its parameter through the function's name stops resolving it once the function is renamed: SQLSTATE 42P01, so every call would answer `could_not_check`. That was observed on a first form of this file under B-DM07-1, then fixed. It is a trial run, not filed; 6.5 gives the filed run.
+
+**The claim token** (W9 point 4; EV3 1.7; `shared/token_format.md` section 2).
+- **Where it is made.** In `claim`'s write block (M09-05:290-292): the claim marker, written in two pieces as M09-01 writes the environment marker, and `translate(rtrim(encode(extensions.gen_random_bytes(32), 'base64'), '='), '+/', '-_')`, 43 URL-safe characters of 32 random bytes. This is the environment token's generator.
+- **Where it is hashed.** At once, by `devos_private.token_hash` (the one hash rule of both kinds, `encode(sha256(convert_to(…, 'UTF8')), 'hex')`). Only the hash goes into `assignment.claim_token_hash`.
+- **What returns it.** Only `claim`'s answer (M09-05:313). The variables holding the token and the hash are cleared after use (`v_hash` at once, `v_token` after the answer is built, or on a refusal).
+- **Who reads it back.** `heartbeat` and `release` take it as their parameter and hand it to `check_claim`, which hashes it. No function returns it. No event payload, refusal row, reason, error or notice holds the token or its hash.
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.ready_works()` (M09-05:50) | Roles: `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_kurulum`. `devos_sinav`: `{"status": "ok", "works": []}`, read from nothing (M09-05:80). Otherwise the work items for which `ready_value` is true and whose Mission is the installation's for `devos_kurulum`, or not the installation's for the others (M09-05:95). A Mission with no creation event: not listed. Rows `{id, work_id, revision, scope, purpose, impact_class}` of the current revision, in creation order. An unreadable input: `could_not_check`. Comment `devos:read …`, VOLATILE, no write block | 2.4's row with C-M05 (18 (1)); EV-C02-008 1.2 and 5.1 (c) bound 3; B 3.3 (B:132); B principle 6; DM-06, DM-36 |
+| `devos_api.claim(work_id uuid, declared_session_id text default null)` (M09-05:125) | Roles: the four. Order: `missing_field`; `exam_subject` for `devos_sinav` (M09-05:180); the work item `for update` (M09-05:187), `not_found`; its current revision; ownership (`not_owner`, or `could_not_check` without a creation event); the claims `for update` (M09-05:226), partial `could_not_check`, live `already_claimed` (M09-05:238); readiness, `not_ready` (M09-05:251) or `could_not_check`; the epoch `for share` (M09-05:257). Writes: lapsed claims `expired` with `claim_expired` (origin `rule`, M09-05:283); the Assignment (next generation, current revision, global epoch, lease now() + 30 minutes, the caller's class, the declared session, the hash); `claimed` (M09-05:298). Answer `id`, `assignment_id`, `claim_token`, `generation`, `lease_expires_at`. Refusal rows carry `target_ref` `work_id` and the declared session | 2.4's row with C-M05 (18 (2)); B 3.5 (B:150-160), principle 8; DM-01, DM-06, DM-07, DM-31; EV-C02-008 1.2, 5.1 (c) bound 3; EV3 1.7, 4.3 |
+| `devos_api.heartbeat(claim_token text)` (M09-05:326) | Roles: the four. `check_claim(token, NULL, class, true)` (the work item and the claim `for update`): `claim_missing`, `claim_unknown`, `claim_not_active` (also a cancelled work item), `claim_expired`, `claim_generation`, `claim_epoch`, `claim_class`, or `could_not_check`. Writes the lease now() + 30 minutes, `last_heartbeat_at` now(), and `heartbeat`. Answer `id`, `lease_expires_at` | 2.4's row; B 3.5; DM-07; EV3 4.3 (S8 line 2) |
+| `devos_api.release(claim_token text)` (M09-05:405) | As `heartbeat`'s check. Writes the status `released` and `released`. A second call: `claim_not_active`, nothing written. Answer `id` | 2.4's row; B 3.5; DM-01 (release locks the work item); EV13 1 item 10 |
+| `devos_api.revoke_claim(assignment_id uuid, reason text)` (M09-05:488) | Role: `devos_denetim` only, the literal `array['devos_denetim']::devos_private.role_class[]`. `assignment_id` or `reason` NULL: `missing_field` (M09-05:529). The claim (`not_found`); its work item `for update` (M09-05:545), then the claim `for update` (M09-05:551); partial: `could_not_check`; `revoked`: the exact repeat; released or expired, or active with its lease run out (M09-05:569): `claim_not_active`. Writes the status `revoked` and `claim_revoked` (payload with the reason). Refusal rows carry `target_ref` `assignment_id`. Answer `id` | 2.4's row with C-M05 (18 (3)); B 3.5 (B:157); DM-29, DM-01, DM-06 |
+| Grants (M09-05:611-636) | `revoke all … from public` and from the four API roles where they exist, on all five; `grant execute … to anon` on all five; no type, no private function | 1 item 13; T-W08-PRIV's constraint |
+
+O (`08_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the twenty `devos_api` functions.
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+- **The literals**, as the break patches read them: `ready_works`, `claim`, `heartbeat` and `release` hold `array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']`; `revoke_claim` holds `array['devos_denetim']`, the form B-5B-2 widens.
+- **The unqualified-name scan.** No hit in M09-05's five functions; its four hits are section 3.1's.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** `deployment_drift`, `read_decision`, `ready_works` and `token_role_class` carry it.
+- **The exam table's name.** It occurs in none of the five, so T-W07-N08's finder needs no exemption for them (EV-C02-008 5.1, "Not on the list"; self-check `TX-no-exam-table`; file 34: `M09-05 lines naming the exam table: 0`).
+
+### 6.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated; none is silent. No merged test is changed. EV13 section 18 (C-M05) states items 1 to 4 in the record itself.
+1. **`ready_works`' rows carry `id` beside `work_id`** (EV13 18 (1)). 2.4 names `work_id`, and T-W07-6RG and B-6RG-2 read and write `id`. Both keys hold the same uuid, as `claim`'s `id` and `assignment_id` do. Also chosen:
+   - an item whose Mission has no creation event is not listed;
+   - the rows are in creation order;
+   - an unknown readiness leaves the item off the list rather than answering `could_not_check`, which is kept for an input that cannot be read.
+2. **`claim`'s order** (EV13 18 (2)):
+   - `exam_subject` comes before any read or lock, so `devos_sinav` gets one code on every id. EV-C02-008 5.1 (c) bound 3; N08-s4 wants one code on three kinds of item.
+   - Partial claims come before `already_claimed`: 6RG-l1 and -l3 want `could_not_check`.
+   - `already_claimed` comes before readiness.
+   - Unknown readiness is `could_not_check`, not `not_ready`: item 7 (ii), and 3.5 item 4.
+   - A Mission without a creation event is `could_not_check`, as Rule O reads it (EV13 17 (5)).
+3. **`revoke_claim`** (EV13 18 (3)):
+   - `reason` is required (B 3.5, "with its reason"; DM-29 (a)). An empty string is accepted.
+   - An active claim whose lease has run out is `claim_not_active` (DM-06 (a)).
+   - The work item is locked before the claim (DM-01).
+   - The claim's epoch is not checked, so a claim of an earlier epoch can be revoked.
+   - The form check (`missing_field`) comes before the exact repeat. So an already revoked claim named without a reason is `missing_field`, not the repeat. A repeat that sends its reason again is the repeat.
+4. **A claim of an earlier epoch holds its work item** (EV13 18 (4); stated, not changed). After an epoch change, the claim produces no effect, cannot be extended or released, and still makes its work item `already_claimed` until it lapses (at most 30 minutes) or `devos_denetim` revokes it. M09-02's `ready_value` counts it as live, and M09-05 does not change M09-02. Self-check: `HB-epoch`, `RL-epoch`, `CL-earlier-epoch-still-holds`, `RC-earlier-epoch`, `CL-new-epoch`.
+5. **The events** (EV13 1 item 10; DM-31):
+   - Five events, all on aggregate `assignment` with `aggregate_revision` NULL, since an Assignment has no revisions: `claimed`, `claim_expired` (origin `rule`, the caller's class), `heartbeat`, `released` and `claim_revoked`.
+   - Payloads: the work item, the generation, the lease, the epoch or the status as each writes them, and `claim_revoked`'s reason. Never the token or its hash.
+   - `declared_session_id` goes to `claim`'s events and refusal rows. The other four take no declared session (no `p`).
+6. **Parameters read through `ALIAS FOR $n`** (6.1), so that the merged patches that rename these functions leave the renamed body working. This is not a departure from EV13; it is stated because M09-04 does otherwise (6.6 item 2).
+7. **Forms the record leaves open (chosen):**
+   - Answers: `claim` as 6.1; `heartbeat` `id` and `lease_expires_at`; `release` and `revoke_claim` `id`; `ready_works` `works`.
+   - Refusal rows: `claim` names `work_id`; `revoke_claim` `assignment_id`; `heartbeat` and `release` none, since a refused claim check names no claim.
+   - Reasons: `already_claimed`'s reason names no class (CHK-C02-025 F7, as T-W07-ROC:94 cites it).
+   - Locks: `claim` takes the work item and the claims `for update`, and the epoch `for share`. `heartbeat` and `release` take them through `check_claim` with `p_for_update`. `revoke_claim` takes the work item and the claim `for update`. `ready_works` takes no lock.
+   - The lease: `now()` + 30 minutes, the transaction's time, as `check_claim` compares it.
+
+Not departures, for the checker:
+- `claim` checks no registration (EV3 4.4; section 6's row "Registration before C04"; W9 point 4's S8 line 3 is C04's).
+- `heartbeat` and `release` refuse a claim on a cancelled work item `claim_not_active`. That is `check_claim`'s rule (3.3 item 2), not M09-05's.
+- `release` does not change the work item's `execution` (N-279 (1)).
+
+### 6.3 How W-C02-09's points are served by M09-05
+
+- **Point 1.** A versioned file later than `20261018230001`, plain SQL, no `psql` meta-command, no backslash (O, `34_git_hashes.txt`: `backslashes in M09-05: 0`). Decisions followed, with the object:
+  - the claim expiry computed, no job: `claim`, `ready_works` and `check_claim` compare the lease with `now()`, and `claim` marks a lapsed claim `expired` (`CL-lapsed`, `-marked-expired`, `-event`; `RW-cal-lists-ready`);
+  - single-claim revocation: `revoke_claim`, `devos_denetim` only (`RC-*`; 5B row R05);
+  - S8 line 2: `heartbeat` and `release` refuse another class (`HB-class-*`, `RL-class-kurulum`);
+  - registration before C04: not built (6.2);
+  - the rejected-attempt record's per-call form (`{"rejected": 1}` deltas);
+  - the events the database makes itself: `claim_expired`, origin `rule`, the caller's class;
+  - F06's list: `ready_works` carries the read marker; the other four are state-changing (`F06-list | ok | 20 devos_api functions (4 marked devos:read)`);
+  - concurrency: DM-01's lock order (6.1; the probe, 6.5).
+  - Offline, `deployment_drift` reports `no_difference`, 17 of 17 (runs 04 and 10).
+- **Point 2.** Twenty of the 55 `devos_api` functions now exist (five here). Each has definer rights, the fixed `search_path` and every DevOS name qualified (6.1's scan).
+- **Point 3.**
+  - Fourth bullet. Each of the five refuses a call with no token before any other check (`F06-refused:<fn>`, all four state-changing ones `ok`; `F06-read-refused:ready_works` `ok`; `*-no-token`). Each refuses a class not on its list with one per-call row: 5B rows R04 (`claim`, `heartbeat`, `release`), R05 (`revoke_claim`) and R20 (`ready_works`), their 30 cells `ok`; 6TK's `6TK-ka1` now runs on `revoke_claim`, `ok`.
+  - Fifth bullet. A declared session changes nothing: it is written as declared (`CL-row`, `CL-event`) and read by no check.
+  - Sixth bullet. A claim taken in an earlier epoch produces no effect: `HB-epoch`, `RL-epoch` (`claim_epoch`); T-W07-DM07's `DM07-epoch` `ok`. The effects' own refusal is M09-07's and M09-08's.
+- **Point 4.**
+  - "`claim(work_id)` returns the claim token to that call only, and the database keeps only its hash (looked for by value)":
+    - `CL-token-form`: the shape, checked at run time, never printed.
+    - `CL-hash-only`: the stored hash is the whole token's SHA-256.
+    - `CL-token-in-no-table`: no table of any schema holds the token's value; `auth.users`, not readable as owner, is named apart (`CL-tables-not-searched`).
+    - `CL-hash-in-no-other-table`.
+    - `CL-event`: no token or hash in the payload.
+    - `TK-values`: ten claim tokens, each in no table, its hash only in `assignment`, neither in an event, a refusal row or an answer's reason.
+    - `HB-extended` and `RL-state`: no token in the other answers.
+    - The token-format counts of events and refusal rows are 0.
+    - Break b07 (the token put into `claimed`'s payload) turns `CL-token-in-no-table` and `TK-values` red.
+  - The effects' refusals (another session's claim, no claim token, a fake session ID, released, expired or revoked, earlier generation or epoch) need an effect (M09-07, M09-08). Here they are shown on `heartbeat` and `release` only: `HB-null`, `-empty`, `-unknown`, `-released`, `-revoked`, `-oldgen`, `-lapsed`, `-epoch`, `-class-*`; `RL-*`; T-W07-DM07 `PASS (8/8)`.
+  - S8 line 2: `HB-class-denetim`, `HB-class-sinav`, `RL-class-kurulum` (`claim_class`); `DM07-class` `ok`.
+  - Expiry: a claim past its lease produces no effect (`HB-lapsed`, `RL-lapsed`: `claim_expired`; `DM07-lapsed` `ok`), and its work item can be claimed again (`CL-lapsed`: generation 2, the old claim `expired`).
+  - The lease (30 minutes): `CL-row`, `HB-extended`, `DM07-len` and `DM07-pos` `ok`. Its parameters are EV13 section 7's; M09-05 adds none but the epoch case of 6.2 item 4.
+- **Point 5.**
+  - Each state-changing function writes its event in the same transaction, with the token's class (`CL-event`: `this transaction`; `HB-event`, `RL-state`, `RC-state`).
+  - An exact repeat writes nothing: `RC-repeat` (`ok repeat`, `{}`). A second `claim` is `already_claimed`, and a second `release` `claim_not_active` (EV13 1 item 10).
+  - A failure planted mid-transaction leaves no half state and no orphan event: `CL-write-failed` on `assignment`, `CL-write-event-failed` on `event`, `HB-write-failed`, `RC-write-failed`. In each, only the refusal row is added.
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass:
+  - `CL-no-creation-event`, `-partial-lease`, `-partial-generation`, `-lease-unreadable` (42703), `-relation-unreadable` (42P01), `-assignment-unreadable` (42501), `-epoch-missing`, `-dependency-unknown`, `-write-P0D02`;
+  - `HB-assignment-unreadable` (42501); `RC-partial-lease`;
+  - `RW-relation-unreadable`, `RW-events-unreadable`;
+  - `RW-lease-null`: a claim whose lease is NULL leaves its item off the list.
+  - These are the forms 6RG-e4, -g3, -l1 to -l3 and -l5 plant; 6RG itself does not run yet (6.4).
+  - "A readiness group with an unknown member is not ready": `CL-dependency-unknown` and `RW-cal-not-listed` (W_depU).
+- **Point 8.**
+  - W-C02-08's four copies, W-C02-03's three and the IDC copy pass again (run 05).
+  - The staged files whose cases call the five, run in place (run 06):
+    - **T-W07-DM07 `PASS (8/8)`**, the first merged file to pass whole on these functions;
+    - 5B: the 30 cells of R04, R05 and R20 `ok`; `COULD NOT CHECK (12 of 126 …)` for rows whose functions are not built; none `bad`;
+    - 6TK `PASS (32/32)`;
+    - DM34 `PASS (10/10)` again;
+    - F06: `F06-refused:claim`, `-heartbeat`, `-release`, `-revoke_claim`, `F06-read-accepted:ready_works` and `F06-read-refused:ready_works` `ok`. Five cases of the four state-changing functions are `could_not_check` (6.4). In all, `COULD NOT CHECK (18 of 55 …)`, none `bad`.
+  - Their copies are a later pull request's (R:247; EV13 section 11).
+
+### 6.4 What M09-05 does not yet serve
+
+- **T-W07-F06's cases for `claim`, `heartbeat`, `release` and `revoke_claim`.** These are `F06-event:claim`, `-heartbeat`, `-release`, `-revoke_claim` and `F06-repeat:claim`: `could_not_check`.
+  - `claim`'s recipe, and the fixture claim of F06's claim-bearing loop (`job/w07_f06_state_change_event.sql`, the loop over `heartbeat`, `release`, `revoke_claim`, `register_artifact`, `prepare_operation`, `record_attempt`, `record_observation`, `operation_state`), plant their work items with `pg_temp.w07_plant`. Those Missions have no creation event.
+  - So `claim` answers `ownership: whether the work item lies under the installation's Mission is missing or partial`, and every fixture of that loop fails: "no recipe: its fixture could not be made".
+  - This is N-285 item (1)'s cause, reaching M09-05 (EV13 18 (5)). The same loop will keep M09-07's and M09-08's F06 cases `could_not_check` until the test designer revises it.
+- **The staged files that call these functions but need a later function stop at their `-pre` line** (run 06):
+  - T-W07-N17 needs `register_artifact`.
+  - T-W07-5C needs `register_artifact` and `prepare_operation`.
+  - T-W07-6RG needs `relate`, `register_artifact` and `prepare_operation`.
+  - T-W07-F01, F05, F07 and F08 need `prepare_operation`, `register_artifact`, `relate`, `record_attempt` or `record_observation`.
+  - T-W07-ROC and T-W07-N08 (exam fact) need `relate`, `record_eval_run` and others.
+  - Group C's files need `relate`, `record_finding`, `open_review` or W-C02-10's tables.
+  - T-W07-CONC (`job/w07_conc_claim_and_cycle.py`) was not run. Its own check of required functions lists `relate` and `register_artifact` (its line 90), so it gives COULD NOT CHECK. 6.5's probe repeats its CONC-claim form on `claim` alone.
+  - So W9 point 4's effect refusals, N17, 5C, CONC and F08 (c) are "could not check", not counted.
+- **The merged breaks of these functions** (W-C02-13's):
+  - **B-N08-4, B-EXF-1, B-6RG-1, B-6RG-2 and B-N17-1** cannot be shown until their tests run.
+  - **B-DM07-1** was applied here (6.5, run 28): three of its four red cases turn red. The fourth, `DM07-oldgen`, raises 22P02, because the patch writes the status `w07_set_aside`, which `devos_private.assignment_status` does not hold. **B-5C-1** writes the same value. So both patches cannot show that case on any build of the merged schema. This is for the test designer (EV13 18 (5)).
+  - **B-CONC-1** was applied with the probe (run 31). It does not turn the probe's CONC-claim form red: the unique constraint on (`work_ref`, `generation`), which the patch leaves, still allows one Assignment. So the break is "not shown" on this schema, for the test designer.
+  - **B-5B-2** turns its two named cases red (run 29).
+
+### 6.5 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0905` at `4f01115`, with M09-05 untracked. The main run started 2026-10-18T23:50:02Z and ended 23:50:07Z, on one cluster (`…/scratchpad/m0905_run/rerun.sh`). The break runs started 23:50:55Z and ended 23:51:41Z, on a second cluster (`…/scratchpad/m0905_run/brk.sh`).
+- **A discarded run.** A first run of `brk.sh` on the same bytes stopped in its break maker, because b05's anchor still named the text before the `ALIAS` change (`b05_claim_lapsed_not_expired: NOT MADE`). Its files 13 to 22, 33 and 34 were deleted, and `brk.sh` and `final.sh` were run again. The main run's files 01 to 12 are of the same bytes and were kept.
+- **The drivers.** `run.sh` and `drive.py` are `…/m0904_run/`'s, changed only in their paths (the clone `prd12`, the cluster under `…/m0905_run/pg`, the socket in `…/scratchpad/m5s`) and one printed word. `setup.sql` and `catalog.sql` are `…/m0903_run/`'s, unchanged. `scrub.py` and `scan.py` are new. They read the two finder patterns from `tests/C02/W-C02-07/shared/scan_patterns.json` at run time, so no driver holds a marker. The scrub replaces each claim-format string with `[claim-format string replaced]` and each environment-format string with a label of its own, and counts each format.
+- **Trial runs.** Two trial runs of the same drivers into `…/m0905_run/trial1` and `trial2`, and a diagnosis of B-DM07-1 (`dm07probe.sh`), came before. They are not filed. The first trial's self-check had three red cases, all from `auth.users`, the stand-in the owner cannot read, being counted as "holding". It was fixed by naming such tables apart (`CL-tables-not-searched`). The diagnosis showed the rename fault of 6.1. Both changes came before the filed run.
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the sixteen migrations before M09-05, each `[exit 0]` with its history row (32 `[exit 0]` lines).
+- **03, M09-05:** `CREATE FUNCTION`, `COMMENT`, `CREATE FUNCTION` ×4, `REVOKE` ×5, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 10:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 17, "migrations_expected": 17`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (95/95)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result):
+  - `W07_DM07_HEARTBEAT PASS (8/8)`;
+  - `W07_6TK_TOKEN_REASONS PASS (32/32)`, with `6TK-ka1 | ok | a verified working token on revoke_claim: a role refusal under devos_calisma, not a token code; code role_class_not_permitted`;
+  - `W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (12 of 126 could not be checked)`, none `bad`, for example `5B-R04-claim-sin | ok | v cell: … code exam_subject` and `5B-R05-revoke_claim-cal | ok | x cell: … code role_class_not_permitted`;
+  - `W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (18 of 55 could not be checked)`, none `bad`; `F06-list | ok | 20 devos_api functions (4 marked devos:read) …`; `F06-event:claim | could_not_check | the recipe's call was not accepted … "ownership: whether the work item lies under the installation's Mission is missing or partial"`;
+  - `W07_DM34_MISSION_SCOPE PASS (10/10)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`;
+  - `W07_DM19B_BURST_COUNT COULD NOT CHECK (6 of 12 …)`, `W07_N04_SELF_APPROVAL COULD NOT CHECK (4 of 4 …)`;
+  - `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, …)`: W-C02-10's, as in sections 4.5 and 5.5; it calls no M09-05 function;
+  - every other file `COULD NOT CHECK` on its `-pre` line (6.4); run 07 is T-W14-FN's `FN-pre`.
+- **08, the catalogue:** 6.1's listing.
+- **09, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC W-C02-09 M09-05; one transaction rolled back): `M0905_FUNCTIONS PASS (116/116)`.
+  - The cases: 17 for `ready_works`, 52 for `claim`, 18 for `heartbeat`, 8 for `release`, 17 for `revoke_claim` and 4 for the token and the text.
+  - Each compares the answer's code and the change of six tables; the state cases read the row after.
+  - Among them: `CL-sin-random-id`: `exam_subject`. `CL-calisma-inside`, `-denetim-inside`, `-kurulum-outside`: `not_owner`. `CL-partial-generation`: `could_not_check`. `CL-lapsed`: `ok`, `{"event": 2, "assignment": 1}`. `HB-unknown`: `claim_unknown`. `RC-null-reason`: `missing_field`. `RC-lapsed`: `claim_not_active`. `RC-repeat`: `ok repeat`, `{}`. `CL-earlier-epoch-still-holds`: `already_claimed`. `CL-new-epoch-value`: true.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt`, `event` and `assignment`.
+- **11:** the server log, `480 lines; claim-format 0; environment-format 0`. **12:** `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **13 to 27, the break copies** (`brk.py`: 14 `made (one replacement in devos_api.<fn>)`). Each copy was applied in place of M09-05 (`[apply exit 0]`). Then the self-check and the staged DM07, F06, 5B and 6TK were run, and its five functions were dropped (`[drop exit 0]`):
+  - **b01**, `already_claimed` removed: red `CL-again`, `-again-other-class`, `-again-reason-names-no-class`, `CL-earlier-epoch-still-holds` (`not_ready`).
+  - **b02**, `exam_subject` removed: red `CL-sin`, `-sin-random-id`, `-sin-installation`, and two after them.
+  - **b03**, `devos_kurulum`'s ownership clause removed: red `CL-kurulum-outside` and two after it.
+  - **b04**, `not_ready` removed: red `CL-cancelled`, `-finished`, `-mission-closed`, `-dependency-false`.
+  - **b05**, a lapsed claim not marked expired: red `CL-lapsed` (the insert hits `assignment_one_active_claim`: `write_failed`), `-marked-expired`, `-event`, `TK-values`.
+  - **b06**, the partial-claims check removed: red `CL-partial-generation`.
+  - **b07**, the token put into `claimed`'s payload: red `CL-token-in-no-table`, `TK-values`.
+  - **b08**, unknown readiness let through: red `CL-dependency-unknown`.
+  - **b09**, `heartbeat`'s extension removed: red `HB-extended`, `HB-write-failed`; **DM07 `FAIL (1 bad, …)`**, `DM07-pos | bad | … lease not extended to 30 minutes`.
+  - **b10**, `release`'s status not written: red `RL-state`, `RL-again`, `HB-released`, `CL-after-release`, and four after them; **DM07 `FAIL (1 bad, 1 could not check, …)`**, `DM07-released | bad`.
+  - **b11**, `revoke_claim`'s literal widened to `devos_calisma` (B-5B-2's form): red `RC-role-calisma`, `TX-revoke-literal`, and five after them; **5B `FAIL (1 bad, …)`**, `5B-R05-revoke_claim-cal | bad`; **6TK `FAIL (1 bad, …)`**, `6TK-ka1 | bad`.
+  - **b12**, a lapsed claim revoked: red `RC-lapsed`.
+  - **b13**, `ready_works` listing for `devos_sinav`: red `RW-sin-empty`.
+  - **b14**, `ready_works`' ownership filter removed: red `RW-cal-not-listed`, `RW-kur-only-installation`, `RW-den-as-cal`, `RW-events-unreadable`.
+  - So each check turns red when its rule is removed. DM07 caught b09 and b10; 5B and 6TK caught b11. The self-check alone caught the other eleven, because no merged test runs those rules yet (6.4).
+- **28 and 29, merged break patches on M09-05 itself** (`[M09-05 apply exit 0]`, `[patch exit 0]`, M09-05 dropped after each):
+  - **B-DM07-1:** `W07_DM07_HEARTBEAT FAIL (3 bad, 1 could not check, of 8)`: `DM07-lapsed`, `-released`, `-revoked` `bad`; `DM07-oldgen | could_not_check | … raised 22P02 invalid input value for enum devos_private.assignment_status: "w07_set_aside"` (6.4); `DM07-epoch`, `-class` green, as the patch expects.
+  - **B-5B-2:** `5B-R05-revoke_claim-cal | bad`, `W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, …)`; `6TK-ka1 | bad`, `W07_6TK_TOKEN_REASONS FAIL (1 bad, …)`, the patch's two named cases.
+- **30 and 31, the concurrency probe.** 20 runs. In each, 8 connections each issue a synthetic `devos_calisma` token inside their transaction, wait at one advisory-lock barrier, and call `claim` on one fresh work item. Each prints only its answer's status and code.
+  - **30, unpatched:** in every run `8 connections waiting; answers: 1 ok ;7 refused already_claimed; …; 1 assignments, 1 active` (20 of 20).
+  - **31, with B-CONC-1:** `claim text holds for update: false`; `unique indexes left on assignment: … assignment_work_ref_generation_key`. In every run, `1 ok`, the others `write_failed`, `not_ready` or `already_claimed`, and `1 assignments, 1 active` (20 of 20; `write_failed` in 20 runs).
+  - So the lock serializes the claims, and without it the generation's unique constraint still keeps one claim (6.4).
+- **32:** the server log, `480 lines; claim-format 0; environment-format 0`; `[cluster directory deleted: yes]`.
+- **33:** files 01 to 32 scanned with the finders of `scan_patterns.json`: `32 files; claim-format 0; environment-format 0`.
+- **34:** the hashes in the envelope; `backslashes in M09-05: 0`; `M09-05 lines naming the exam table: 0`; `M09-05 strings found by either token finder: … claim-format 0; environment-format 0`; `M09-05 lines holding either marker whole: 0`; `git status --porcelain`: M09-05 and the raw files 01 to 34 untracked, before EV13 section 18 and this section were written; `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty.
+
+### 6.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-F06's planted work items for `claim` and its claim-bearing loop sit under Missions with no creation event (6.4; N-285 item (1)'s cause). Until they get one, F06 cannot pass W9 point 8 for `claim`, `heartbeat`, `release` and `revoke_claim`, and later for the effects.
+   - B-DM07-1 and B-5C-1 write the status `w07_set_aside`, which `assignment_status` does not hold, so `DM07-oldgen` (and the cases of B-5C-1 that set a claim aside) raise 22P02 under the patch.
+   - B-CONC-1 leaves the unique constraint on (`work_ref`, `generation`), so CONC-claim cannot turn red on the merged schema (run 31).
+2. **For the executor** (reported, not done):
+   - **M09-04's state functions name their parameters through the function's name** (`cancel_work.work_id`, `mark_stale.work_id`, `reopen_for_review.work_id`: ten places in `20261018230001_w09_work_effort.sql`, for example line 789).
+     - B-ROC-1 and B-ROC-2 rename `cancel_work` (`tests/C02/W-C02-07/breaks/B-ROC-1_rule_o_reads_exam_link.sql:21`, `B-ROC-2_rule_c_removed.sql:43`).
+     - So under those patches the renamed body cannot resolve `cancel_work.work_id` (42P01, as observed for `heartbeat` in 6.1), and ROC's `cancel_work` cases become `could_not_check`, not the patches' red cases **[Inf: the mechanism observed on M09-05's first form; not run on M09-04]**.
+     - The fix is M09-04's (a migration through the migration path), or the patches'.
+   - **N-281** must be met before the first real-path `claim` (the note's own deadline; 6 above).
+   - **A claim of an earlier epoch holds its work item for up to 30 minutes** (6.2 item 4). Whether readiness should leave such a claim out is a change of 2.4 and of M09-02's `ready_value`.
+3. **For the checker of verdict (i):**
+   - EV13 section 18 with its *[C-M05]* marks;
+   - 6.2's departures, chiefly 1 to 4;
+   - the token's path in 6.1 and point 4's look by value (6.3);
+   - the self-check, the break copies and the probe, which are the producer's own.
+4. **For the producers of M09-07 and M09-08:**
+   - `check_claim` with the effect's work item, then `ready_value(work, assignment_id)` (3.5 item 4).
+   - A claim's token is never put into an effect's event or refusal row.
+   - The parameters are read through `ALIAS FOR $n` if a merged patch renames the function (B-5C-1, B-6RG-1, B-N17-1, B-F08-2, B-F08-3 rename `register_artifact` and `prepare_operation`).
+5. **Residuals:**
+   - The claim token travels as a parameter of `heartbeat` and `release` (EV3 1.7). A direct SQL caller's statement text could carry it into a server log with statement logging on. Over the Data API it is in the request body. `devos`'s log settings are not read here (as N-280's annotation leaves `log_statement` for its first program run).
+   - `ready_works` calls `is_installation_mission` once per work item, which reads every Mission's events. It is a cost, not a rule, at C02's sizes.
 

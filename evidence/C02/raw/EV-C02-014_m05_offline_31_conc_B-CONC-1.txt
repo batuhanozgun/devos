@@ -1,0 +1,25 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (concurrency probe with the merged break patch B-CONC-1 applied in place, w07.throwaway=yes)
+[patch exit 0]
+claim text holds for update: false
+unique indexes left on assignment: devos_private.assignment_pkey, devos_private.assignment_claim_token_hash_key, devos_private.assignment_work_ref_generation_key
+run 1 (work item 21): 8 connections waiting; answers: 1 ok ;1 refused not_ready;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 2 (work item 22): 8 connections waiting; answers: 1 ok ;7 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 3 (work item 23): 8 connections waiting; answers: 1 ok ;2 refused already_claimed;3 refused not_ready;2 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 4 (work item 24): 8 connections waiting; answers: 1 ok ;2 refused not_ready;5 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 5 (work item 25): 8 connections waiting; answers: 1 ok ;7 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 6 (work item 26): 8 connections waiting; answers: 1 ok ;1 refused not_ready;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 7 (work item 27): 8 connections waiting; answers: 1 ok ;7 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 8 (work item 28): 8 connections waiting; answers: 1 ok ;2 refused not_ready;5 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 9 (work item 29): 8 connections waiting; answers: 1 ok ;1 refused already_claimed;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 10 (work item 30): 8 connections waiting; answers: 1 ok ;1 refused not_ready;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 11 (work item 31): 8 connections waiting; answers: 1 ok ;7 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 12 (work item 32): 8 connections waiting; answers: 1 ok ;1 refused already_claimed;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 13 (work item 33): 8 connections waiting; answers: 1 ok ;1 refused not_ready;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 14 (work item 34): 8 connections waiting; answers: 1 ok ;3 refused not_ready;4 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 15 (work item 35): 8 connections waiting; answers: 1 ok ;1 refused not_ready;6 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 16 (work item 36): 8 connections waiting; answers: 1 ok ;2 refused not_ready;5 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 17 (work item 37): 8 connections waiting; answers: 1 ok ;2 refused already_claimed;4 refused not_ready;1 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 18 (work item 38): 8 connections waiting; answers: 1 ok ;3 refused not_ready;4 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 19 (work item 39): 8 connections waiting; answers: 1 ok ;2 refused not_ready;5 refused write_failed; other lines: 0; 1 assignments, 1 active
+run 20 (work item 40): 8 connections waiting; answers: 1 ok ;2 refused already_claimed;1 refused not_ready;4 refused write_failed; other lines: 0; 1 assignments, 1 active
+m0905 scrub (31_conc_B-CONC-1): claim-format strings replaced 0; environment-format strings replaced 0

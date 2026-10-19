@@ -1,0 +1,251 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the sixteen migrations before M09-05)
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012184638_deployment_drift.sql
+CREATE SCHEMA
+CREATE SCHEMA
+CREATE TABLE
+CREATE FUNCTION
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012184638', 'deployment_drift')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012231841_w03_fixture_apply.sql
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE VIEW
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012231841', 'w03_fixture_apply')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012232112_w03_fixture_name_differs.sql
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012232112', 'w03_fixture_name_differs')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261012232113_w03_fixture_restore_name.sql
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261012232113', 'w03_fixture_restore_name')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170201_w08_role_classes_epoch_tokens.sql
+CREATE TYPE
+COMMENT
+CREATE TABLE
+INSERT 0 1
+COMMENT
+CREATE TABLE
+COMMENT
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170201', 'w08_role_classes_epoch_tokens')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170202_w08_event_rejected_attempt.sql
+CREATE TYPE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+COMMENT
+CREATE TABLE
+CREATE INDEX
+COMMENT
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170202', 'w08_event_rejected_attempt')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TYPE
+CREATE TABLE
+CREATE INDEX
+COMMENT
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170203', 'w08_missions_decisions_needs_work')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170204_w08_findings_reviews_effects_exams.sql
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TYPE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TYPE
+CREATE TABLE
+CREATE INDEX
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170204', 'w08_findings_reviews_effects_exams')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014170205_w08_append_only_views_access.sql
+CREATE FUNCTION
+REVOKE
+DO
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+COMMENT
+COMMENT
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014170205', 'w08_append_only_views_access')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014182601_w08_ledger_transfer_schema.sql
+ALTER TABLE
+CREATE INDEX
+COMMENT
+CREATE INDEX
+COMMENT
+ALTER TYPE
+CREATE TYPE
+DROP VIEW
+ALTER TABLE
+CREATE VIEW
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014182601', 'w08_ledger_transfer_schema')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014190401_w08_finding_source_fields.sql
+CREATE TYPE
+CREATE TYPE
+ALTER TABLE
+COMMENT
+CREATE VIEW
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014190401', 'w08_finding_source_fields')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261014190402_w08_type_privileges.sql
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261014190402', 'w08_type_privileges')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261017230001_w09_identity_chain_first_part.sql
+CREATE EXTENSION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261017230001', 'w09_identity_chain_first_part')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261018203001_w09_private_helpers.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261018203001', 'w09_private_helpers')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261018214501_w09_mission_need_decision.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261018214501', 'w09_mission_need_decision')
+[exit 0]
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261018230001_w09_work_effort.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261018230001', 'w09_work_effort')
+[exit 0]
+[drive apply exit 0]
+m0905 scrub (02_apply_before): claim-format strings replaced 0; environment-format strings replaced 0
