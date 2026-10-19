@@ -1,0 +1,34 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b08_decision_repeat_writes_again, a copy of M09-11 outside the repository, applied in place of it on a fresh copy of t23)
+[database k28 from t23 exit 0]
+[apply exit 0]
+-- the self-check on k28:
+summary: M0911_FUNCTIONS FAIL (3 of 256 not as wanted)
+bad (3): TD-repeat, TD-repeat-id, TD-repeat-completed-run
+could_not_check (0): none
+detail: 84 | TD-repeat                           | f  | write_failed             | ok repeat                | {"rejected": 1}                                                 | the write failed (SQLSTATE 23505) | wanted delta {}
+detail: 85 | TD-repeat-id                        | f  | false                    | true                     | {}                                                              | the existing id and revision
+detail: 86 | TD-repeat-completed-run             | f  | write_failed             | ok repeat                | {"rejected": 1}                                                 | the write failed (SQLSTATE 23505) | wanted delta {}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k28:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 16 could not check, of 109)
+bad (2): FN-I-same-decision, FN-M-cat
+could_not_check (16): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-missing, FN-A-pos, FN-G-pos-transfer_acceptance, FN-G-pos-transfer_review, FN-G-transfer_acceptance, FN-G-transfer_review, FN-I-other-review, FN-I-same, FN-O-transfer_acceptance, FN-O-transfer_review, FN-R-declared, FN-RN-after-handover, FN-T-ev-transfer_review
+detail: FN-A-cond                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-cond-pos                    | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-fail                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-missing                     | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-pos                         | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same-decision               | bad             | transfer_decision, an exact repeat (same source, same hash): refused [write_failed the write failed (SQLSTATE 23505)], id none (first 3893ed43-b9b8-4167-9728-e21286b6f3ec); tables changed besides rejected_attempt: none (wanted accepted, the same i
+detail: FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_review, transfer_acceptance
+detail: FN-O-transfer_acceptance         | could_not_check | after the hand-over, no run_id: transfer_acceptance of that copy raised [42883 function devos_api.transfer_acceptance(jsonb) does not exist]; acceptance rows +0 (wanted accepted, +1)
+detail: FN-O-transfer_review             | could_not_check | after the hand-over, no run_id: transfer_review raised [42883 function devos_api.transfer_review(jsonb) does not exist]; review rows +0, its transferred events 0 (wanted accepted, +1, 1)
+detail: FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+red list: not as expect-red; missing none; extra ['FN-I-same-decision', 'FN-M-cat']
+m0911 scrub (28_break_b08): claim-format strings replaced 0; environment-format strings replaced 0

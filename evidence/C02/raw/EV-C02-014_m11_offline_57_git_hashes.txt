@@ -1,0 +1,91 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes of the bytes run, text counts of M09-11, and the clone's git state; written without the scrub, hashes, counts and git output only)
+5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55  supabase/migrations/20261019140001_w09_transfer_records.sql
+f6b1e9a27da391e2dea09fbc4c3f652ea3669a111fe9e32298a8239efb67a30f  evidence/C02/EV-C02-013_w09_interface.md
+0edb44cd528b8f8413b2653344de1f364e5a92304ae726c8aa0c00ed657bbc3e  fn_check.sql
+c8dec0e0f51af3f7a2bf1764175ab841b1c5f3c319d1b6526f40f095c8a51ef7  fn_head.sql
+d7d931589ce5451b7f4c391842f36eeeb1753ff3393e0367ee42ecda0bd1e3bb  fn_cases.sql
+a07e703c85cbfe49cbbd03511e43047b13dc20971946b5f1edc3bb0dcb61def8  brk.py
+e5134255dde4298dc68bd4c37313158b3d0e6055eca4c51ea98993b612b7a4f6  brk.sh
+70ddb2595f4732fb626b0ea214b88065344be40c2934324b805f11299ea7eb7a  rerun.sh
+c3a4545677f19f1564526d4d007f8998f7cdd20726ef325c2867d3b207812365  run.sh
+ed2f3c3ad0bf96a3165601388f0fbc7d4dfa1c38494dd35d9059a0f2cf28d1aa  drive.py
+162cc243ebfddd8e304576fd7dfbfc3b26e4da0c7fa4cf8d75fab182d65b5018  judge.py
+acffd5e75c00eebb44f1c7eea6135fe8eab771a88b0b1c7967bc9f33fee96049  scrub.py
+dc781262e2e00b959c4a894947de7742dbb53f8ab5c7ca15d90bf87894bdbad3  scan.py
+fa2a9cfa8e9b1bef07d784dbbb4d909582eb8ae43d2b1b8e141d5487ff129783  setup.sql
+4bd934440e11bc6f156462e001837af95f78fc3633c251a7700f738b679b1cd4  catalog.sql
+2d7ab013c99de0ade7329876974ffb4eb20945b9370f01b0c002dd9e65f1167e  final.sh
+86ab27ea00bf7a00e8e733a1bfefe95b6c9897a6fa4ff294ac89b081b3c0eec2  trialrun.sh
+backslashes in M09-11: 0
+psql meta-command lines in it: 0
+its strings found by either token finder: m0911 scan: 1 files; claim-format 0; environment-format 0
+its lines holding either marker whole: 0
+its lines naming the exam table (eval_run): 0
+its lines naming claim_live or check_claim: 0
+its lines naming a claim token: 0
+its lines naming devos_private.assignment (the family lookup of a relation end or a work element, no claim count): 3
+its lines naming created_at outside comment lines: 0
+its lines naming answered_at outside comment lines, by function: devos_api.transfer_decision(p 10; 
+$ git rev-parse HEAD; git status --porcelain
+9066ccfc33f31bd5bf088a73422b92c846f112a0
+ M evidence/C02/EV-C02-013_w09_interface.md
+?? evidence/C02/raw/EV-C02-014_m11_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_03_apply_m0911.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_05_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_06_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_07_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_08_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_09_functions.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_10_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_11_log_scan_stop.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_12_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_13_compare_t23.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_14_compare_t24.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_15_merged_B-FN-3.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_16_merged_B-FN-1.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_17_merged_B-FN-2.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_18_merged_B-FN-4.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_19_merged_B-FN-5.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_20_merged_B-FN-6.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_21_break_b01.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_22_break_b02.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_23_break_b03.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_24_break_b04.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_25_break_b05.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_26_break_b06.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_27_break_b07.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_28_break_b08.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_29_break_b09.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_30_break_b10.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_31_break_b11.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_32_break_b12.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_33_break_b13.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_34_break_b14.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_35_break_b15.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_36_break_b16.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_37_break_b17.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_38_break_b18.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_39_break_b19.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_40_break_b20.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_41_break_b21.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_42_break_b22.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_43_break_b23.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_44_break_b24.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_45_break_b25.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_46_break_b26.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_47_break_b27.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_48_break_b28.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_49_break_b29.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_50_break_b30.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_51_break_b31.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_52_break_b32.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_53_break_b33.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_54_break_b34.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_55_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_56_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_57_git_hashes.txt
+?? supabase/migrations/20261019140001_w09_transfer_records.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end of diff]
