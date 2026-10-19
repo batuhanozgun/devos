@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b36_state_tie_answered_by_chance, a copy of M09-08 outside the repository, in database k51 copied from t19)
+[database k51 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b36_state_tie_answered_by_chance.sql  (as postgres)
+[apply exit 0]
+ 240 | OS-tie-disagreeing                     | f  | false                    | true                     | {}                             | two latest observations at one time that disagree: current unknown, never one of them by chance: {"status": "ok", "ever_
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (1 of 252 not as wanted)
+[self-check done]
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: NOTICE:  W07_F07_OBSERVATION_HISTORY PASS (7/7)
+m0908 scrub (51_break_b36_state_tie_answered_by_chance): claim-format strings replaced 0; environment-format strings replaced 0

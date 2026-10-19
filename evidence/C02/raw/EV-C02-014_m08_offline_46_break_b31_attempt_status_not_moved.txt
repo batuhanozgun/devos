@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b31_attempt_status_not_moved, a copy of M09-08 outside the repository, in database k46 copied from t19)
+[database k46 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b31_attempt_status_not_moved.sql  (as postgres)
+[apply exit 0]
+ 148 | RT-answer                              | f  | false                    | true                     | {}                             | the answer: id, attempts 1, operation_status attempted
+ 149 | RT-row                                 | f  | false                    | true                     | {}                             | the Operation: attempts 1, attempted
+ 150 | RT-event                               | f  | false                    | true                     | {}                             | operation_attempted: the token's class, call, this transaction, the claim; never the claim token or its hash
+ 152 | RT-second-answer                       | f  | false                    | true                     | {}                             | every attempt counts (no exact repeat): attempts 2
+ 209 | RO-events                              | f  | false                    | true                     | {}                             | observation_recorded, and operation_status_set when the status moves: the token's class, call, the declared session
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (5 of 252 not as wanted)
+[self-check done]
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+m0908 scrub (46_break_b31_attempt_status_not_moved): claim-format strings replaced 0; environment-format strings replaced 0

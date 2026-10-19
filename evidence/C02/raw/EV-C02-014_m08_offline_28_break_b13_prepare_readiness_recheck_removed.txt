@@ -1,0 +1,14 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b13_prepare_readiness_recheck_removed, a copy of M09-08 outside the repository, in database k28 copied from t19)
+[database k28 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b13_prepare_readiness_recheck_removed.sql  (as postgres)
+[apply exit 0]
+  89 | PO-not-ready-new-dependency            | f  | ok                       | not_ready                | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+  91 | PO-readiness-unknown                   | f  | ok                       | could_not_check          | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+  92 | PO-mission-paused                      | f  | ok                       | not_ready                | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+ 251 | TX-claim-before-readiness              | f  | false                    | true                     | {}                             | prepare_operation and record_attempt call check_claim, then ready_value with their own claim (EV-C02-014 3.5 item 4, 8.6
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (4 of 252 not as wanted)
+[self-check done]
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: NOTICE:  W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: NOTICE:  W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (27/27)
+m0908 scrub (28_break_b13_prepare_readiness_recheck_removed): claim-format strings replaced 0; environment-format strings replaced 0

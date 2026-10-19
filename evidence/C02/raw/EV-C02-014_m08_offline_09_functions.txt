@@ -1,0 +1,321 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the four functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+ operation_rows_holding_a_token_format_string 
+----------------------------------------------
+                                            0
+(1 row)
+
+ observation_rows_holding_a_token_format_string 
+------------------------------------------------
+                                              0
+(1 row)
+
+  n  |                   id                   | ok |           got            |          wanted          |             delta              |                                                                                                 note                                                                                                 
+-----+----------------------------------------+----+--------------------------+--------------------------+--------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | PO-fixture-claim                       | t  | true                     | true                     | {}                             | devos_calisma's claim on A: ok
+   2 | PO-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                | the request carries no environment token
+   3 | PO-role-devos_denetim                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | prepare_operation admits only the role classes devos_calisma and devos_kurulum
+   4 | PO-role-devos_sinav                    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | prepare_operation admits only the role classes devos_calisma and devos_kurulum
+   5 | PO-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | prepare_operation admits only the role classes devos_calisma and devos_kurulum
+   6 | PO-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | prepare_operation admits only the role classes devos_calisma and devos_kurulum
+   7 | PO-pos-cal                             | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+   8 | PO-answer                              | t  | true                     | true                     | {}                             | the answer: id and operation_status prepared, no claim token
+   9 | PO-row                                 | t  | true                     | true                     | {}                             | the Operation: its fields as sent, the claim, generation and epoch from the server (the declared ones not read)
+  10 | PO-read-set                            | t  | true                     | true                     | {}                             | the stored read set: work with its revision, the claim with its generation, the epoch, the base, the target, the two entries; no dependency, no input
+  11 | PO-event                               | t  | true                     | true                     | {}                             | operation_prepared: the token's class (not the declared one), call, this transaction, the declared session, the tie; never the claim token or its hash
+  12 | PO-repeat                              | t  | ok repeat                | ok repeat                | {}                             | 
+  13 | PO-repeat-answer                       | t  | true                     | true                     | {}                             | the same record's id and its stored status
+  14 | PO-repeat-other-read-set               | t  | ok repeat                | ok repeat                | {}                             | 
+  15 | PO-repeat-late                         | t  | ok repeat                | ok repeat                | {}                             | 
+  16 | PO-repeat-real-state                   | t  | ok repeat                | ok repeat                | {}                             | 
+  17 | PO-repeat-real-state-answer            | t  | true                     | true                     | {}                             | the repeat answers the record's real state: observed
+  18 | PO-repeat-partial-record               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | idempotency_key: the key's record has a partial read set
+  19 | PO-conflict-target                     | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  20 | PO-conflict-base                       | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  21 | PO-conflict-base-absent                | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  22 | PO-conflict-payload                    | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  23 | PO-conflict-class                      | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  24 | PO-conflict-target-ref                 | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  25 | PO-conflict-no-target-ref              | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  26 | PO-conflict-epoch                      | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  27 | PO-conflict-work-revision              | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  28 | PO-conflict-reason                     | t  | true                     | true                     | {}                             | conflict's reason; the refusal row names the work item and the revision sent
+  29 | PO-namespace-other                     | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  30 | PO-namespace-other-new-record          | t  | true                     | true                     | {}                             | another namespace is another key: a record of its own
+  31 | PO-conflict-work-item                  | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+  32 | PO-p-null                              | t  | missing_field            | missing_field            | {"rejected": 1}                | p: missing
+  33 | PO-p-array                             | t  | invalid_field            | invalid_field            | {"rejected": 1}                | p: not a JSON object
+  34 | PO-missing-idempotency_namespace       | t  | missing_field            | missing_field            | {"rejected": 1}                | idempotency_namespace: missing
+  35 | PO-missing-idempotency_key             | t  | missing_field            | missing_field            | {"rejected": 1}                | idempotency_key: missing
+  36 | PO-missing-effect_class                | t  | missing_field            | missing_field            | {"rejected": 1}                | effect_class: missing
+  37 | PO-missing-target                      | t  | missing_field            | missing_field            | {"rejected": 1}                | target: missing
+  38 | PO-missing-payload_hash                | t  | missing_field            | missing_field            | {"rejected": 1}                | payload_hash: missing
+  39 | PO-missing-work_ref                    | t  | missing_field            | missing_field            | {"rejected": 1}                | work_ref: missing
+  40 | PO-null-target                         | t  | missing_field            | missing_field            | {"rejected": 1}                | target: missing
+  41 | PO-key-not-string                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                | idempotency_key: not a string
+  42 | PO-hash-not-string                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                | payload_hash: not a string
+  43 | PO-work-ref-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                | work_ref: not a uuid
+  44 | PO-no-work-revision                    | t  | could_not_check          | could_not_check          | {"rejected": 1}                | work_revision: missing
+  45 | PO-no-work-revision-reason             | t  | true                     | true                     | {}                             | R2-1's reason; the refusal row names the work item
+  46 | PO-work-revision-null                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                | work_revision: missing
+  47 | PO-work-revision-string                | t  | invalid_field            | invalid_field            | {"rejected": 1}                | work_revision: not an integer of at least 1
+  48 | PO-work-revision-zero                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                | work_revision: not an integer of at least 1
+  49 | PO-base-not-string                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                | expected_base: not a string
+  50 | PO-target-ref-form                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                | target_ref: not a uuid
+  51 | PO-target-without-revision             | t  | could_not_check          | could_not_check          | {"rejected": 1}                | target_revision: missing
+  52 | PO-target-revision-alone               | t  | invalid_field            | invalid_field            | {"rejected": 1}                | target_revision: sent without target_ref
+  53 | PO-target-null-means-none              | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  54 | PO-read-set-not-array                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                | read_set: not an array
+  55 | PO-entry-not-object                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                | read_set: each entry is {"ref": <uuid>, "revision": <integer>}
+  56 | PO-entry-element-form                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                | read_set: each entry is {"ref": <uuid>, "revision": <integer>}
+  57 | PO-entry-with-element-key              | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  58 | PO-entry-ref-form                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                | read_set: each entry is {"ref": <uuid>, "revision": <integer>}
+  59 | PO-entry-no-revision                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry was sent without its revision
+  60 | PO-entry-revision-string               | t  | invalid_field            | invalid_field            | {"rejected": 1}                | read_set: an entry's revision is not an integer of at least 1
+  61 | PO-no-claim-token                      | t  | claim_missing            | claim_missing            | {"rejected": 1}                | the call carries no claim token
+  62 | PO-empty-claim-token                   | t  | claim_missing            | claim_missing            | {"rejected": 1}                | the call carries no claim token
+  63 | PO-unknown-claim-token                 | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                | the claim token names no claim of this work item
+  64 | PO-claim-of-another-item               | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                | the claim token names no claim of this work item
+  65 | PO-work-ref-names-nothing              | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                | the claim token names no claim of this work item
+  66 | PO-claim-class                         | t  | claim_class              | claim_class              | {"rejected": 1}                | the caller's role class is not the claim's
+  67 | PO-claim-checked-before-repeat         | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                | the claim token names no claim of this work item
+  68 | PO-lapsed                              | t  | claim_expired            | claim_expired            | {"rejected": 1}                | the claim's lease has run out
+  69 | PO-revoked                             | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                | the claim is not active
+  70 | PO-cancelled-item                      | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                | the claim's work item is cancelled
+  71 | PO-earlier-generation                  | t  | claim_generation         | claim_generation         | {"rejected": 1}                | the claim is not of the work item's newest generation
+  72 | PO-earlier-epoch                       | t  | claim_epoch              | claim_epoch              | {"rejected": 1}                | the claim was made in an earlier authority epoch
+  73 | PO-class-unknown                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: names no class of the effect-class table
+  74 | PO-class-unknown-reason                | t  | true                     | true                     | {}                             | C-17's reason
+  75 | PO-class-row-deleted                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: names no class of the effect-class table
+  76 | PO-class-irreversible-null             | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: its row is partial (irreversible or mandatory_read_set missing)
+  77 | PO-class-read-set-null                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: its row is partial (irreversible or mandatory_read_set missing)
+  78 | PO-class-element-unknown               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: its mandatory read set names an element this function cannot fill
+  79 | PO-class-element-null                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: its mandatory read set names an element this function cannot fill
+  80 | PO-class-unreadable                    | t  | could_not_check          | could_not_check          | {"rejected": 1}                | effect_class: its input could not be read (SQLSTATE 42501)
+  81 | PO-class-unreadable-reason             | t  | true                     | true                     | {}                             | item 7 (iii): the check's name and the SQLSTATE, never the error text
+  82 | PO-class-light                         | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  83 | PO-class-irreversible                  | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  84 | PO-class-irreversible-event            | t  | true                     | true                     | {}                             | the class's irreversible is read from the server's table into the event (B 3.3, PC-42), never from the agent
+  85 | PO-class-declared-irreversible-ignored | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  86 | PO-revision-beyond                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                | work_revision: names no revision of the work item
+  87 | PO-stale-revision                      | t  | stale_revision           | stale_revision           | {"rejected": 1}                | work_revision: not the work item's current revision
+  88 | PO-current-after-revision              | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  89 | PO-not-ready-new-dependency            | t  | not_ready                | not_ready                | {"rejected": 1}                | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+  90 | PO-ready-dependency-resolved           | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  91 | PO-readiness-unknown                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | readiness: whether the work item is ready at the effect is missing or partial
+  92 | PO-mission-paused                      | t  | not_ready                | not_ready                | {"rejected": 1}                | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+  93 | PO-with-hard-dependency                | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  94 | PO-hard-dependency-stored              | t  | true                     | true                     | {}                             | the server fills the work item's hard dependencies (B 3.12: not left to the agent)
+  95 | PO-target-under                        | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  96 | PO-target-work                         | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+  97 | PO-target-names-nothing                | t  | could_not_check          | could_not_check          | {"rejected": 1}                | target_ref: the record could not be read
+  98 | PO-target-exam-record                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                | target_ref: the record could not be read
+  99 | PO-target-decision                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                | target_ref: names neither a Work nor an Artifact
+ 100 | PO-target-need                         | t  | invalid_field            | invalid_field            | {"rejected": 1}                | target_ref: names neither a Work nor an Artifact
+ 101 | PO-target-revision-beyond              | t  | could_not_check          | could_not_check          | {"rejected": 1}                | target_ref: the record could not be read
+ 102 | PO-target-stale                        | t  | stale_revision           | stale_revision           | {"rejected": 1}                | target_revision: not the target's current revision
+ 103 | PO-target-scope-outside                | t  | scope_outside            | scope_outside            | {"rejected": 1}                | target_ref: the target's scope does not lie within the work item's (B principle 4; F05)
+ 104 | PO-target-scope-prefix-not-label       | t  | scope_outside            | scope_outside            | {"rejected": 1}                | target_ref: the target's scope does not lie within the work item's (B principle 4; F05)
+ 105 | PO-target-work-outside                 | t  | scope_outside            | scope_outside            | {"rejected": 1}                | target_ref: the target's scope does not lie within the work item's (B principle 4; F05)
+ 106 | PO-entry-names-nothing                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry's record or revision could not be read
+ 107 | PO-entry-exam-record                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry's record or revision could not be read
+ 108 | PO-entry-need-with-revision            | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry's record or revision could not be read
+ 109 | PO-entry-revision-beyond               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry's record or revision could not be read
+ 110 | PO-entry-stale-work                    | t  | stale_revision           | stale_revision           | {"rejected": 1}                | read_set: an entry names an earlier revision of its record
+ 111 | PO-entry-stale-decision                | t  | stale_revision           | stale_revision           | {"rejected": 1}                | read_set: an entry names an earlier revision of its record
+ 112 | PO-entry-artifact-outside              | t  | scope_outside            | scope_outside            | {"rejected": 1}                | read_set: a source's scope does not lie within the work item's (B principle 4; F05)
+ 113 | PO-entry-finding-outside               | t  | scope_outside            | scope_outside            | {"rejected": 1}                | read_set: a source's scope does not lie within the work item's (B principle 4; F05)
+ 114 | PO-entry-work-outside                  | t  | scope_outside            | scope_outside            | {"rejected": 1}                | read_set: a source's scope does not lie within the work item's (B principle 4; F05)
+ 115 | PO-entries-in-scope                    | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+ 116 | PO-inputs-all-named                    | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+ 117 | PO-inputs-stored                       | t  | true                     | true                     | {}                             | the two inputs stored as inputs, the work item's own entry as the agent's
+ 118 | PO-input-left-out                      | t  | read_set_short           | read_set_short           | {"rejected": 1}                | inputs: the read set has no entry for one of the work item's inputs (F08 (d); B 3.12)
+ 119 | PO-inputs-none-named                   | t  | read_set_short           | read_set_short           | {"rejected": 1}                | inputs: the read set has no entry for one of the work item's inputs (F08 (d); B 3.12)
+ 120 | PO-input-stale                         | t  | stale_revision           | stale_revision           | {"rejected": 1}                | read_set: an entry names an earlier revision of its record
+ 121 | PO-inputs-not-mandatory                | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+ 122 | PO-inputs-partial                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                | inputs: the work item's input_refs are partial
+ 123 | PO-base-mandatory-absent               | t  | read_set_short           | read_set_short           | {"rejected": 1}                | expected_base: the effect class's read set needs it and the call gives none
+ 124 | PO-base-mandatory-null                 | t  | read_set_short           | read_set_short           | {"rejected": 1}                | expected_base: the effect class's read set needs it and the call gives none
+ 125 | PO-fixture-claim-kur                   | t  | true                     | true                     | {}                             | devos_kurulum's claim on I1: ok
+ 126 | PO-pos-kur                             | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+ 127 | PO-kur-claim-under-cal                 | t  | claim_class              | claim_class              | {"rejected": 1}                | the caller's role class is not the claim's
+ 128 | PO-claims-unreadable                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | claim: its input could not be read (SQLSTATE 42501)
+ 129 | PO-operations-unreadable               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | idempotency: its input could not be read (SQLSTATE 42501)
+ 130 | PO-revisions-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                | work_revision: its input could not be read (SQLSTATE 42501)
+ 131 | PO-relations-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                | readiness: its input could not be read (SQLSTATE 42501)
+ 132 | PO-entries-unreadable                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: its input could not be read (SQLSTATE 42501)
+ 133 | PO-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 134 | PO-write-event-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 135 | PO-write-P0D02                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                | m0908 planted failure
+ 136 | PO-P0D02-reason                        | t  | true                     | true                     | {}                             | P0D02's fixed reason is the refusal's reason
+ 137 | PO-key-taken-in-write                  | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE 23505)
+ 138 | PO-named-call                          | t  | true                     | true                     | {}                             | the parameters bind by name (claim_token, p)
+ 139 | PO-rows-hold-no-token                  | t  | true                     | true                     | {}                             | no refusal row holds the claim token
+ 140 | RT-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                | the request carries no environment token
+ 141 | RT-role-devos_denetim                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_attempt admits only the role classes devos_calisma and devos_kurulum
+ 142 | RT-role-devos_sinav                    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_attempt admits only the role classes devos_calisma and devos_kurulum
+ 143 | RT-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_attempt admits only the role classes devos_calisma and devos_kurulum
+ 144 | RT-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_attempt admits only the role classes devos_calisma and devos_kurulum
+ 145 | RT-null-id                             | t  | missing_field            | missing_field            | {"rejected": 1}                | operation_id: missing
+ 146 | RT-not-found                           | t  | not_found                | not_found                | {"rejected": 1}                | operation_id: names no Operation
+ 147 | RT-pos                                 | t  | ok                       | ok                       | {"event": 1}                   | 
+ 148 | RT-answer                              | t  | true                     | true                     | {}                             | the answer: id, attempts 1, operation_status attempted
+ 149 | RT-row                                 | t  | true                     | true                     | {}                             | the Operation: attempts 1, attempted
+ 150 | RT-event                               | t  | true                     | true                     | {}                             | operation_attempted: the token's class, call, this transaction, the claim; never the claim token or its hash
+ 151 | RT-second-counts                       | t  | ok                       | ok                       | {"event": 1}                   | 
+ 152 | RT-second-answer                       | t  | true                     | true                     | {}                             | every attempt counts (no exact repeat): attempts 2
+ 153 | RT-named-call                          | t  | true                     | true                     | {}                             | the parameters bind by name (claim_token, operation_id)
+ 154 | RT-no-claim-token                      | t  | claim_missing            | claim_missing            | {"rejected": 1}                | the call carries no claim token
+ 155 | RT-claim-of-another-item               | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                | the claim token names no claim of this work item
+ 156 | RT-claim-class                         | t  | claim_class              | claim_class              | {"rejected": 1}                | the caller's role class is not the claim's
+ 157 | RT-lapsed                              | t  | claim_expired            | claim_expired            | {"rejected": 1}                | the claim's lease has run out
+ 158 | RT-revoked                             | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                | the claim is not active
+ 159 | RT-earlier-epoch                       | t  | claim_epoch              | claim_epoch              | {"rejected": 1}                | the claim was made in an earlier authority epoch
+ 160 | RT-cancelled-item                      | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                | the claim's work item is cancelled
+ 161 | RT-work-revised                        | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | work: the work item has another revision than the one prepared (F08)
+ 162 | RT-entry-revised                       | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | read_set: a record the operation read has another revision than the one prepared (F08 (b))
+ 163 | RT-entry-work-revised                  | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | read_set: a record the operation read has another revision than the one prepared (F08 (b))
+ 164 | RT-target-revised                      | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | read_set: a record the operation read has another revision than the one prepared (F08 (b))
+ 165 | RT-new-dependency-unresolved           | t  | not_ready                | not_ready                | {"rejected": 1}                | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+ 166 | RT-new-dependency-resolved             | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | hard_dependencies: the work item's hard dependencies changed since the prepare (F08 (a))
+ 167 | RT-readiness-unknown                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | readiness: whether the work item is ready at the effect is missing or partial
+ 168 | RT-mission-paused                      | t  | not_ready                | not_ready                | {"rejected": 1}                | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+ 169 | RT-epoch-moved                         | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | authority_epoch: the operation was prepared in another authority epoch (B principle 9)
+ 170 | RT-stored-read-set-partial             | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: the operation's work, claim or authority epoch entry is missing (partial)
+ 171 | RT-stored-entry-names-nothing          | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: an entry's record or revision could not be read
+ 172 | RT-dependency-retracted                | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | hard_dependencies: the work item's hard dependencies changed since the prepare (F08 (a))
+ 173 | RT-dependency-target-moved             | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | hard_dependencies: the work item's hard dependencies changed since the prepare (F08 (a))
+ 174 | RT-with-hard-dependency                | t  | ok                       | ok                       | {"event": 1}                   | 
+ 175 | RT-operations-unreadable               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | operation: its input could not be read (SQLSTATE 42501)
+ 176 | RT-relations-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                | readiness: its input could not be read (SQLSTATE 42501)
+ 177 | RT-entries-unreadable                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                | read_set: its input could not be read (SQLSTATE 42501)
+ 178 | RT-entries-unreadable-reason           | t  | true                     | true                     | {}                             | the stored target entry's table unreadable at the re-check: the read set's check named
+ 179 | RT-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 180 | RT-write-event-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 181 | RT-nothing-half-written                | t  | true                     | true                     | {}                             | the refused attempts left attempts at 3
+ 182 | RT-reject-row                          | t  | true                     | true                     | {}                             | the refusal row names the Operation
+ 183 | RT-pos-kur                             | t  | ok                       | ok                       | {"event": 1}                   | 
+ 184 | RT-fixture-prepare-A7                  | t  | ok                       | ok                       | {"event": 1, "operation": 1}   | 
+ 185 | RT-fixture-release                     | t  | true                     | true                     | {}                             | release of A7's claim: ok
+ 186 | RT-released-claim                      | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                | the claim is not active
+ 187 | RT-prepared-under-earlier-claim        | t  | read_set_changed         | read_set_changed         | {"rejected": 1}                | claim: the operation was prepared under another claim of its work item (F08 (c))
+ 188 | PO-conflict-generation                 | t  | conflict                 | conflict                 | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+ 189 | RO-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                | the request carries no environment token
+ 190 | RO-role-devos_denetim                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_observation admits only the role classes devos_calisma and devos_kurulum
+ 191 | RO-role-devos_sinav                    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_observation admits only the role classes devos_calisma and devos_kurulum
+ 192 | RO-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_observation admits only the role classes devos_calisma and devos_kurulum
+ 193 | RO-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | record_observation admits only the role classes devos_calisma and devos_kurulum
+ 194 | RO-p-null                              | t  | missing_field            | missing_field            | {"rejected": 1}                | p: missing
+ 195 | RO-p-array                             | t  | invalid_field            | invalid_field            | {"rejected": 1}                | p: not a JSON object
+ 196 | RO-missing-operation_ref               | t  | missing_field            | missing_field            | {"rejected": 1}                | operation_ref: missing
+ 197 | RO-missing-source                      | t  | missing_field            | missing_field            | {"rejected": 1}                | source: missing
+ 198 | RO-missing-observed_effect             | t  | missing_field            | missing_field            | {"rejected": 1}                | observed_effect: missing
+ 199 | RO-source-not-string                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                | source: not a string
+ 200 | RO-ref-form                            | t  | invalid_field            | invalid_field            | {"rejected": 1}                | operation_ref: not a uuid
+ 201 | RO-effect-form                         | t  | invalid_field            | invalid_field            | {"rejected": 1}                | observed_effect: not applied, not_applied or unknown
+ 202 | RO-at-not-string                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                | observed_at: not a string
+ 203 | RO-at-not-a-time                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                | observed_at: not a time
+ 204 | RO-details-form                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                | details: not a JSON object
+ 205 | RO-not-found                           | t  | not_found                | not_found                | {"rejected": 1}                | operation_ref: names no Operation
+ 206 | RO-pos-applied                         | t  | ok                       | ok                       | {"event": 2, "observation": 1} | 
+ 207 | RO-answer                              | t  | true                     | true                     | {}                             | the answer: id and operation_status observed
+ 208 | RO-row                                 | t  | true                     | true                     | {}                             | the Observation as sent, with its observed_at
+ 209 | RO-events                              | t  | true                     | true                     | {}                             | observation_recorded, and operation_status_set when the status moves: the token's class, call, the declared session
+ 210 | RO-work-axes-untouched                 | t  | true                     | true                     | {}                             | the work item's acceptance, effect and execution axes are untouched (F07: separate questions)
+ 211 | RO-later-unknown                       | t  | ok                       | ok                       | {"event": 1, "observation": 1} | 
+ 212 | RO-earlier-row-unchanged               | t  | true                     | true                     | {}                             | a later unknown erases nothing: the earlier row unchanged, column for column (F07)
+ 213 | RO-status-stays                        | t  | true                     | true                     | {}                             | observed stays observed; no second status event
+ 214 | RO-observed-at-default                 | t  | ok                       | ok                       | {"event": 2, "observation": 1} | 
+ 215 | RO-observed-at-now                     | t  | true                     | true                     | {}                             | observed_at defaults to the transaction's time
+ 216 | RO-named-call                          | t  | true                     | true                     | {}                             | the parameter binds by name (p)
+ 217 | RO-kur-on-working-op                   | t  | not_owner                | not_owner                | {"rejected": 1}                | devos_kurulum records observations only of operations under the installation's Mission (its own records)
+ 218 | RO-cal-on-installation-op              | t  | not_owner                | not_owner                | {"rejected": 1}                | devos_calisma does not record observations of operations under the installation's Mission
+ 219 | RO-pos-kur                             | t  | ok                       | ok                       | {"event": 2, "observation": 1} | 
+ 220 | RO-mission-event-missing               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | ownership: whether the operation's work item lies under the installation's Mission is missing or partial
+ 221 | RO-mission-link-missing                | t  | could_not_check          | could_not_check          | {"rejected": 1}                | ownership: the operation's work item's Mission is missing
+ 222 | RO-operations-unreadable               | t  | could_not_check          | could_not_check          | {"rejected": 1}                | operation: its input could not be read (SQLSTATE 42501)
+ 223 | RO-events-unreadable                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                | ownership: its input could not be read (SQLSTATE 42501)
+ 224 | RO-write-failed                        | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 225 | RO-write-status-failed                 | t  | write_failed             | write_failed             | {"rejected": 1}                | the write failed (SQLSTATE P0M77)
+ 226 | RO-write-P0D02                         | t  | could_not_check          | could_not_check          | {"rejected": 1}                | m0908 planted failure
+ 227 | RO-reject-row                          | t  | true                     | true                     | {}                             | the refusal row names the Operation
+ 228 | OS-no-token                            | t  | missing                  | missing                  | {"rejected": 1}                | the request carries no environment token
+ 229 | OS-role-devos_ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | operation_state admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 230 | OS-role-devos_backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                | operation_state admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 231 | OS-read-devos_calisma                  | t  | ok                       | ok                       | {}                             | 
+ 232 | OS-read-devos_denetim                  | t  | ok                       | ok                       | {}                             | 
+ 233 | OS-read-devos_sinav                    | t  | ok                       | ok                       | {}                             | 
+ 234 | OS-read-devos_kurulum                  | t  | ok                       | ok                       | {}                             | 
+ 235 | OS-applied-then-unknown                | t  | true                     | true                     | {}                             | applied (-2 h) then unknown (-1 h): observed, ever applied, current unknown: {"status": "ok", "ever_applied": true, "current_effect": "unknown", "operation_status": "observed"}
+ 236 | OS-no-observation                      | t  | true                     | true                     | {}                             | no observation: prepared, never applied, no current effect (named call): {"status": "ok", "ever_applied": false, "current_effect": null, "operation_status": "prepared"}
+ 237 | OS-null-id                             | t  | missing_field            | missing_field            | {"rejected": 1}                | operation_id: missing
+ 238 | OS-not-found                           | t  | not_found                | not_found                | {"rejected": 1}                | operation_id: names no Operation
+ 239 | OS-out-of-order                        | t  | true                     | true                     | {}                             | current by observation time, not by arrival: {"status": "ok", "ever_applied": true, "current_effect": "not_applied", "operation_status": "observed"}
+ 240 | OS-tie-disagreeing                     | t  | true                     | true                     | {}                             | two latest observations at one time that disagree: current unknown, never one of them by chance: {"status": "ok", "ever_applied": true, "current_effect": "unknown", "operation_status": "observed"}
+ 241 | OS-answer-keys                         | t  | true                     | true                     | {}                             | the answer: status, operation_status, ever_applied, current_effect; nothing else
+ 242 | OS-observations-unreadable             | t  | could_not_check          | could_not_check          | {"rejected": 1}                | observations: its input could not be read (SQLSTATE 42501)
+ 243 | OS-observation-partial                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                | observations: an observation's effect or time is missing (partial)
+ 244 | OS-status-partial                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                | operation: its status is missing (partial)
+ 245 | OS-reject-row                          | t  | true                     | true                     | {}                             | the refusal row names the Operation
+ 246 | DK-no-delete-path                      | t  | true                     | true                     | {}                             | no function of either schema deletes from the operation table (DM-28)
+ 247 | TX-literals                            | t  | true                     | true                     | {}                             | each role list is a quoted literal in the function's own text
+ 248 | TX-alias                               | t  | true                     | true                     | {}                             | no body names a parameter through its function's name (N-288)
+ 249 | TX-no-exam-table                       | t  | true                     | true                     | {}                             | none of the four names the exam table (T-W07-N08's finder)
+ 250 | TX-read-marker                         | t  | true                     | true                     | {}                             | operation_state carries the read marker; the other three are state-changing
+ 251 | TX-claim-before-readiness              | t  | true                     | true                     | {}                             | prepare_operation and record_attempt call check_claim, then ready_value with their own claim (EV-C02-014 3.5 item 4, 8.6 item 4)
+ 252 | TX-no-withdrawn-code                   | t  | true                     | true                     | {}                             | no function returns the withdrawn code (C-17)
+(252 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS PASS (252/252)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ operation_rows_after_rollback 
+-------------------------------
+                             0
+(1 row)
+
+[psql exit 0]
+m0908 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0

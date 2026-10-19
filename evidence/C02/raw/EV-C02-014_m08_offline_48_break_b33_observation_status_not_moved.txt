@@ -1,0 +1,39 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b33_observation_status_not_moved, a copy of M09-08 outside the repository, in database k48 copied from t19)
+[database k48 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b33_observation_status_not_moved.sql  (as postgres)
+[apply exit 0]
+ 206 | RO-pos-applied                         | f  | ok                       | ok                       | {"event": 1, "observation": 1} |  | wanted delta {"event": 2, "observation": 1}
+ 207 | RO-answer                              | f  | false                    | true                     | {}                             | the answer: id and operation_status observed
+ 209 | RO-events                              | f  | false                    | true                     | {}                             | observation_recorded, and operation_status_set when the status moves: the token's class, call, the declared session
+ 213 | RO-status-stays                        | f  | false                    | true                     | {}                             | observed stays observed; no second status event
+ 214 | RO-observed-at-default                 | f  | ok                       | ok                       | {"event": 1, "observation": 1} |  | wanted delta {"event": 2, "observation": 1}
+ 219 | RO-pos-kur                             | f  | ok                       | ok                       | {"event": 1, "observation": 1} |  | wanted delta {"event": 2, "observation": 1}
+ 225 | RO-write-status-failed                 | f  | ok                       | write_failed             | {"event": 1, "observation": 1} |  | wanted delta {"rejected": 1}
+ 235 | OS-applied-then-unknown                | f  | false                    | true                     | {}                             | applied (-2 h) then unknown (-1 h): observed, ever applied, current unknown: {"status": "ok", "ever_applied": true, "cur
+ 239 | OS-out-of-order                        | f  | false                    | true                     | {}                             | current by observation time, not by arrival: {"status": "ok", "ever_applied": true, "current_effect": "not_applied", "op
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (9 of 252 not as wanted)
+[self-check done]
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: NOTICE:  W07_F07_OBSERVATION_HISTORY PASS (7/7)
+w07_f06_state_change_event.sql:  F06-event:accept                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:claim                     | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:heartbeat                 | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:open_review               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "independence_level: missing", "status": "refused", "reason_code": "missing_field"}
+w07_f06_state_change_event.sql:  F06-event:prepare_operation         | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:record_attempt            | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:record_observation        | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:record_verdict            | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "limits: not an array", "status": "refused", "reason_code": "invalid_field"}
+w07_f06_state_change_event.sql:  F06-event:register_artifact         | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:relate                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:release                   | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:retract_relation          | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: the relation's creation event is missing", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revoke_claim              | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-read-accepted:operation_state   | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-repeat:accept                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:claim                    | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:open_review              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:record_verdict           | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:relate                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:retract_relation         | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-role-token                      | bad             | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:941: ERROR:  W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 20 could not check, of 90)
+m0908 scrub (48_break_b33_observation_status_not_moved): claim-format strings replaced 0; environment-format strings replaced 0

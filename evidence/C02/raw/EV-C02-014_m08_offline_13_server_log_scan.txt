@@ -1,0 +1,4 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the server log, with the finders of tests/C02/W-C02-07/shared/scan_patterns.json)
+m0908 scan: log: 368 lines; claim-format 0; environment-format 0
+m0908 scan: 1 files; claim-format 0; environment-format 0
+m0908 scrub (13_server_log_scan): claim-format strings replaced 0; environment-format strings replaced 0

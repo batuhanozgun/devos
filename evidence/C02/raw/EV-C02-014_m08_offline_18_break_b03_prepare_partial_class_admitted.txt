@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b03_prepare_partial_class_admitted, a copy of M09-08 outside the repository, in database k18 copied from t19)
+[database k18 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b03_prepare_partial_class_admitted.sql  (as postgres)
+[apply exit 0]
+  76 | PO-class-irreversible-null             | f  | ok                       | could_not_check          | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (1 of 252 not as wanted)
+[self-check done]
+w07_6rg_rule_gate_could_not_check.sql:  6RG-c3  | bad     | effect class partial (irreversible null): accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: ERROR:  W07_6RG_RULE_GATE_COULD_NOT_CHECK FAIL (1 bad, 0 could not check, of 27)
+w07_f01_whole_intent.sql:  F01-g    | could_not_check | different authority epoch: could not plant the earlier epoch: new row for relation "operation" violates check constraint "operation_authority_epoch_check"
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT COULD NOT CHECK (1 of 13 could not be checked)
+m0908 scrub (18_break_b03_prepare_partial_class_admitted): claim-format strings replaced 0; environment-format strings replaced 0

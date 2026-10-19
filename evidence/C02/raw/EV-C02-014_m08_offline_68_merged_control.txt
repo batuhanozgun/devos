@@ -1,0 +1,15 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the unpatched control: the staged files the merged patches name, on database c68 copied from t20; then F01 on database e68 copied from t20 with the global authority epoch set to 2)
+[database c68 from t20 exit 0]
+w07_f01_whole_intent.sql:  F01-g    | could_not_check | different authority epoch: could not plant the earlier epoch: new row for relation "operation" violates check constraint "operation_authority_epoch_check"
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT COULD NOT CHECK (1 of 13 could not be checked)
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: NOTICE:  W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: NOTICE:  W07_F07_OBSERVATION_HISTORY PASS (7/7)
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: NOTICE:  W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (27/27)
+w07_5c_other_session_fake_id.sql: psql:tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql:362: NOTICE:  W07_5C_OTHER_SESSION_FAKE_ID PASS (8/8)
+w07_n17_claim_token.sql:  N17-pre | could_not_check | fixture: P0001 w07: a fixture claim was refused
+w07_n17_claim_token.sql: psql:tests/C02/W-C02-07/job/w07_n17_claim_token.sql:401: ERROR:  W07_N17_CLAIM_TOKEN COULD NOT CHECK (1 of 1 could not be checked)
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+[database e68 from t20 exit 0]
+[global authority epoch set to 2 in e68, exit 0]
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: NOTICE:  W07_F01_WHOLE_INTENT PASS (13/13)
+m0908 scrub (68_merged_control): claim-format strings replaced 0; environment-format strings replaced 0
