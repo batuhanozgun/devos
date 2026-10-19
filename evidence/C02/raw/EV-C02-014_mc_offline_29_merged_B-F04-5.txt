@@ -1,0 +1,26 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-F04-5_work_ref_walked_as_edge.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_f04_affected_records.sql,w07_n08_exam_fact.sql; expect-red=F04-e-exam,EXF-pair-reads-affected_entities,EXF-pair-reads-explain_paths,N08-x-affected_entities-cal,N08-x-affected_entities-den,N08-x-affected_entities-kur,N08-x-explain_paths-cal,N08-x-explain_paths-den,N08-x-explain_paths-kur)
+[database b29_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_f04_affected_records.sql on b29_t21:
+summary: W07_F04_AFFECTED_RECORDS FAIL (1 bad, 0 could not check, of 22)
+bad (1): F04-e-exam
+could_not_check (0): none
+red list: not as expect-red; missing ['EXF-pair-reads-affected_entities', 'EXF-pair-reads-explain_paths', 'N08-x-affected_entities-cal', 'N08-x-affected_entities-den', 'N08-x-affected_entities-kur', 'N08-x-explain_paths-cal', 'N08-x-explain_paths-den', 'N08-x-explain_paths-kur']; extra none
+-- w07_n08_exam_fact.sql on b29_t21:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-reads-affected_entities', 'EXF-pair-reads-explain_paths', 'F04-e-exam', 'N08-x-affected_entities-cal', 'N08-x-affected_entities-den', 'N08-x-affected_entities-kur', 'N08-x-explain_paths-cal', 'N08-x-explain_paths-den', 'N08-x-explain_paths-kur']; extra none
+[database b29_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_f04_affected_records.sql on b29_t20:
+summary: W07_F04_AFFECTED_RECORDS FAIL (1 bad, 0 could not check, of 22)
+bad (1): F04-e-exam
+could_not_check (0): none
+red list: not as expect-red; missing ['EXF-pair-reads-affected_entities', 'EXF-pair-reads-explain_paths', 'N08-x-affected_entities-cal', 'N08-x-affected_entities-den', 'N08-x-affected_entities-kur', 'N08-x-explain_paths-cal', 'N08-x-explain_paths-den', 'N08-x-explain_paths-kur']; extra none
+-- w07_n08_exam_fact.sql on b29_t20:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-reads-affected_entities', 'EXF-pair-reads-explain_paths', 'F04-e-exam', 'N08-x-affected_entities-cal', 'N08-x-affected_entities-den', 'N08-x-affected_entities-kur', 'N08-x-explain_paths-cal', 'N08-x-explain_paths-den', 'N08-x-explain_paths-kur']; extra none
+mcorr scrub (29_merged_B-F04-5): claim-format strings replaced 0; environment-format strings replaced 0

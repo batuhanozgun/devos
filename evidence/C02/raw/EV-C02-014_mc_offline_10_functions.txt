@@ -1,0 +1,178 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the corrective migration)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+UPDATE 1
+DO
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                   id                    | ok |        got        |      wanted       |                delta                |                                                                                                                                                     note                                                                                                                                                     
+-----+-----------------------------------------+----+-------------------+-------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | RM-widen-current-authority              | t  | mission_authority | mission_authority | {"rejected": 1}                     | owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)
+   2 | RM-widen-current-authority-reason       | t  | true              | true              | {}                                  | owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)
+   3 | RM-widen-earlier-authority              | t  | mission_authority | mission_authority | {"rejected": 1}                     | owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)
+   4 | RM-widen-earlier-authority-reason       | t  | true              | true              | {}                                  | owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)
+   5 | RM-purpose-current-authority            | t  | mission_authority | mission_authority | {"rejected": 1}                     | owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)
+   6 | RM-widen-answered-before                | t  | mission_authority | mission_authority | {"rejected": 1}                     | owner_authority: answered before the Mission's current revision (B 3.1)
+   7 | RM-widen-answered-before-reason         | t  | true              | true              | {}                                  | owner_authority: answered before the Mission's current revision (B 3.1)
+   8 | RM-widen-answered-null                  | t  | could_not_check   | could_not_check   | {"rejected": 1}                     | owner_authority: answered_at missing
+   9 | RM-widen-answered-null-reason           | t  | true              | true              | {}                                  | owner_authority: answered_at missing
+  10 | RM-widen-no-authority                   | t  | mission_authority | mission_authority | {"rejected": 1}                     | widening the scope or changing the purpose needs a Decision of Batu's named in the call (owner_authority; B 3.1)
+  11 | RM-widen-answered-equal                 | t  | ok                | ok                | {"event": 1, "mission_revision": 1} | 
+  12 | RM-widen-answered-after                 | t  | ok                | ok                | {"event": 1, "mission_revision": 1} | 
+  13 | RM-narrow-current-authority             | t  | ok                | ok                | {"event": 1, "mission_revision": 1} | 
+  14 | RM-status-only                          | t  | ok                | ok                | {"event": 1}                        | 
+  15 | RF-withdrawn-to-reviewed                | t  | invalid_field     | invalid_field     | {"rejected": 1}                     | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  16 | RF-withdrawn-to-reviewed-reason         | t  | true              | true              | {}                                  | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  17 | RF-withdrawn-to-accepted_for_use        | t  | invalid_field     | invalid_field     | {"rejected": 1}                     | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  18 | RF-withdrawn-to-accepted_for_use-reason | t  | true              | true              | {}                                  | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  19 | RF-withdrawn-to-stale                   | t  | invalid_field     | invalid_field     | {"rejected": 1}                     | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  20 | RF-withdrawn-to-stale-reason            | t  | true              | true              | {}                                  | finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)
+  21 | RF-withdrawn-unchanged                  | t  | true              | true              | {}                                  | the withdrawn finding's status is unchanged
+  22 | RF-candidate-control                    | t  | ok                | ok                | {"event": 1}                        | 
+  23 | AL-mark_stale-renamed                   | t  | ok                | ok                | {"event": 1}                        | 
+  24 | AL-cancel_work-renamed                  | t  | ok                | ok                | {"event": 1}                        | 
+  25 | AL-reopen_for_review-renamed            | t  | ok                | ok                | {"event": 1}                        | 
+  26 | AL-revise_mission-renamed               | t  | ok                | ok                | {"event": 1}                        | 
+  27 | AL-revise_work-renamed                  | t  | ok                | ok                | {"event": 1, "work_revision": 1}    | 
+  28 | AL-mark_stale                           | t  | ok                | ok                | {"event": 1}                        | 
+  29 | AL-mark_stale-repeat                    | t  | ok repeat         | ok repeat         | {}                                  | 
+  30 | AL-mark_stale-event-reason              | t  | true              | true              | {}                                  | the reason parameter reaches the event
+  31 | CL-first                                | t  | true              | true              | {}                                  | ok
+  32 | CL-first-e7                             | t  | true              | true              | {}                                  | ok
+  33 | CL-den-E2                               | t  | true              | true              | {}                                  | ok
+  34 | CL-den-E3                               | t  | true              | true              | {}                                  | ok
+  35 | CL-den-E4                               | t  | true              | true              | {}                                  | ok
+  36 | CL-den-E5                               | t  | true              | true              | {}                                  | ok
+  37 | CL-live-again                           | t  | already_claimed   | already_claimed   | {"rejected": 1}                     | the work item has an active claim whose lease has not run out
+  38 | RV-ready-live                           | t  | true              | true              | {}                                  | a live claim keeps the item not ready
+  39 | RC-revise_work-live                     | t  | other_class_claim | other_class_claim | {"rejected": 1}                     | Rule C: another role class holds an active claim on the work item
+  40 | RC-cancel_work-live                     | t  | other_class_claim | other_class_claim | {"rejected": 1}                     | Rule C: another role class holds an active claim on the work item
+  41 | RC-relate-live                          | t  | other_class_claim | other_class_claim | {"rejected": 1}                     | Rule C: another role class holds an active claim on the work item
+  42 | RC-retract_relation-live                | t  | other_class_claim | other_class_claim | {"rejected": 1}                     | Rule C: another role class holds an active claim on the work item
+  43 | EP-missing-claim                        | t  | could_not_check   | could_not_check   | {"rejected": 1}                     | epoch: the global authority epoch is missing
+  44 | EP-missing-claim-reason                 | t  | true              | true              | {}                                  | epoch: the global authority epoch is missing
+  45 | EP-missing-rule-c                       | t  | could_not_check   | could_not_check   | {"rejected": 1}                     | rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)
+  46 | EP-missing-rule-c-reason                | t  | true              | true              | {}                                  | rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)
+  47 | EP-renamed-rule-c                       | t  | could_not_check   | could_not_check   | {"rejected": 1}                     | rule_c: its input could not be read (SQLSTATE 42P01)
+  48 | EP-missing-ready                        | t  | true              | true              | {}                                  | control: ready_value with the row present
+  49 | RV-ready-after                          | t  | true              | true              | {}                                  | an earlier-epoch claim no longer keeps the item from being ready
+  50 | RW-after                                | t  | ok                | ok                | {}                                  | 
+  51 | RW-after-lists                          | t  | true              | true              | {}                                  | ready_works lists E1 and E7
+  52 | CL-after                                | t  | ok                | ok                | {"event": 2, "assignment": 1}       | 
+  53 | CL-after-generation                     | t  | true              | true              | {}                                  | 2
+  54 | CL-after-old-expired                    | t  | true              | true              | {}                                  | the earlier-epoch claim is marked expired
+  55 | CL-after-event                          | t  | true              | true              | {}                                  | {"status": "expired", "work_ref": "93cbf698-c6c3-4e00-ac2e-a0ae95c98843", "generation": 1, "authority_epoch": 1, "lease_expires_at": "2026-10-19T03:46:37.607483+00:00", "global_authority_epoch": 2}
+  56 | RC-revise_work-after                    | t  | ok                | ok                | {"event": 1, "work_revision": 1}    | 
+  57 | RC-cancel_work-after                    | t  | ok                | ok                | {"event": 1}                        | 
+  58 | RC-relate-after                         | t  | ok                | ok                | {"event": 1, "relation": 1}         | 
+  59 | RC-retract_relation-after               | t  | ok                | ok                | {"event": 1}                        | 
+  60 | CL-den-E8                               | t  | true              | true              | {}                                  | ok
+  61 | RC-revise_work-current-epoch            | t  | other_class_claim | other_class_claim | {"rejected": 1}                     | Rule C: another role class holds an active claim on the work item
+  62 | CL-current-epoch-again                  | t  | already_claimed   | already_claimed   | {"rejected": 1}                     | the work item has an active claim whose lease has not run out
+  63 | HB-old-epoch-token                      | t  | claim_epoch       | claim_epoch       | {"rejected": 1}                     | the claim was made in an earlier authority epoch
+  64 | CL-E9                                   | t  | true              | true              | {}                                  | ok
+  65 | CL-lease-lapsed                         | t  | ok                | ok                | {"event": 2, "assignment": 1}       | 
+  66 | RK-earlier-epoch                        | t  | ok                | ok                | {"event": 1}                        | 
+  67 | W-supports-from-source                  | t  | ok                | ok                | {}                                  | 
+  68 | W-supports-from-source-lists            | t  | true              | true              | {}                                  | {"status": "ok", "records": [{"ref": "0dd600eb-3fcc-4bde-8a55-84d6fafa817a", "path": ["ce57229b-43e9-4328-9d58-718759adcff1", "0dd600eb-3fcc-4bde-8a55-84d6fafa817a"]}], "complete": true}
+  69 | W-supports-from-supported               | t  | ok                | ok                | {}                                  | 
+  70 | W-supports-from-supported-not-lists     | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": true}
+  71 | W-challenges-from-source                | t  | ok                | ok                | {}                                  | 
+  72 | W-challenges-from-source-lists          | t  | true              | true              | {}                                  | {"status": "ok", "records": [{"ref": "46fb1bc4-fb6e-40b8-9d72-ace285be101c", "path": ["0f167e9a-9d05-425c-b8b3-ae2888d48362", "46fb1bc4-fb6e-40b8-9d72-ace285be101c"]}], "complete": true}
+  73 | W-challenges-from-challenged            | t  | ok                | ok                | {}                                  | 
+  74 | W-challenges-from-challenged-not-lists  | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": true}
+  75 | W-part_of-from-part                     | t  | ok                | ok                | {}                                  | 
+  76 | W-part_of-from-part-lists               | t  | true              | true              | {}                                  | {"status": "ok", "records": [{"ref": "12a31c41-de20-4b3a-987d-2705b907ba1e", "path": ["9f9af64d-67d9-4ec9-81e4-355e246fe8fe", "12a31c41-de20-4b3a-987d-2705b907ba1e"]}, {"ref": "724deb82-12a4-4ca2-9866-c4d646c30c76", "path": ["9f9af64d-67d9-4ec9-81e4-355e246fe8fe", "12a31c41-de20-4b3a-987d-2705b907ba
+  77 | W-part_of-from-whole                    | t  | ok                | ok                | {}                                  | 
+  78 | W-part_of-from-whole-lists              | t  | true              | true              | {}                                  | {"status": "ok", "records": [{"ref": "724deb82-12a4-4ca2-9866-c4d646c30c76", "path": ["12a31c41-de20-4b3a-987d-2705b907ba1e", "724deb82-12a4-4ca2-9866-c4d646c30c76"]}, {"ref": "9f9af64d-67d9-4ec9-81e4-355e246fe8fe", "path": ["12a31c41-de20-4b3a-987d-2705b907ba1e", "9f9af64d-67d9-4ec9-81e4-355e246fe8
+  79 | W-derived_from-from-source              | t  | ok                | ok                | {}                                  | 
+  80 | W-derived_from-from-source-lists        | t  | true              | true              | {}                                  | {"status": "ok", "records": [{"ref": "d5377800-b8d5-4f36-8c0c-6a75346ee9f2", "path": ["fc0c951b-f9dc-4c86-a330-5546013c51c9", "d5377800-b8d5-4f36-8c0c-6a75346ee9f2"]}], "complete": true}
+  81 | W-derived_from-from-derived             | t  | ok                | ok                | {}                                  | 
+  82 | W-derived_from-from-derived-not-lists   | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": true}
+  83 | W-paths-supports                        | t  | ok                | ok                | {}                                  | 
+  84 | W-paths-supports-one                    | t  | true              | true              | {}                                  | {"paths": [["ce57229b-43e9-4328-9d58-718759adcff1", "0dd600eb-3fcc-4bde-8a55-84d6fafa817a"]], "status": "ok", "complete": true}
+  85 | W-paths-supports-back                   | t  | ok                | ok                | {}                                  | 
+  86 | W-paths-supports-back-none              | t  | true              | true              | {}                                  | {"paths": [], "status": "ok", "complete": true}
+  87 | W-paths-part_of-up                      | t  | ok                | ok                | {}                                  | 
+  88 | W-paths-part_of-up-one                  | t  | true              | true              | {}                                  | {"paths": [["9f9af64d-67d9-4ec9-81e4-355e246fe8fe", "12a31c41-de20-4b3a-987d-2705b907ba1e"]], "status": "ok", "complete": true}
+  89 | W-paths-part_of-down                    | t  | ok                | ok                | {}                                  | 
+  90 | W-paths-part_of-down-one                | t  | true              | true              | {}                                  | {"paths": [["12a31c41-de20-4b3a-987d-2705b907ba1e", "9f9af64d-67d9-4ec9-81e4-355e246fe8fe"]], "status": "ok", "complete": true}
+  91 | W-paths-challenges-back                 | t  | ok                | ok                | {}                                  | 
+  92 | W-paths-challenges-back-none            | t  | true              | true              | {}                                  | {"paths": [], "status": "ok", "complete": true}
+  93 | W-null-type                             | t  | ok                | ok                | {}                                  | 
+  94 | W-null-type-not-complete                | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": false}
+  95 | W-null-type-from-other-end              | t  | ok                | ok                | {}                                  | 
+  96 | W-null-type-from-other-end-not-complete | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": false}
+  97 | W-null-type-paths                       | t  | ok                | ok                | {}                                  | 
+  98 | W-null-type-paths-not-complete          | t  | true              | true              | {}                                  | {"paths": [], "status": "ok", "complete": false}
+  99 | W-null-type-control                     | t  | ok                | ok                | {}                                  | 
+ 100 | W-null-type-control-complete            | t  | true              | true              | {}                                  | {"status": "ok", "records": [], "complete": true}
+ 101 | TX-alias                                | t  | true              | true              | {}                                  | no body names a parameter through its function's name (N-288)
+ 102 | TX-literal-revise_mission               | t  | true              | true              | {}                                  | array['devos_kurulum']::devos_private.role_class[]
+ 103 | TX-literal-revise_work                  | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 104 | TX-literal-mark_stale                   | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 105 | TX-literal-cancel_work                  | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 106 | TX-literal-reopen_for_review            | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 107 | TX-literal-claim                        | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 108 | TX-literal-relate                       | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 109 | TX-literal-retract_relation             | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 110 | TX-literal-affected_entities            | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 111 | TX-literal-explain_paths                | t  | true              | true              | {}                                  | array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']::devos_private.role_class[]
+ 112 | TX-literal-review_finding               | t  | true              | true              | {}                                  | array['devos_denetim']::devos_private.role_class[]
+ 113 | TX-read-marker                          | t  | true              | true              | {}                                  | the two walks carry devos:read; the other nine are state-changing
+ 114 | TX-claim-live-owner-only                | t  | true              | true              | {}                                  | claim_live: EXECUTE for its owner only
+ 115 | TX-predicate-in-six                     | t  | true              | true              | {}                                  | the six counts call claim_live and keep no count of their own
+ 116 | TX-claim-epoch-before-count             | t  | true              | true              | {}                                  | claim reads the epoch for share after locking, before judging the live count
+ 117 | TX-revoke-claim-unchanged               | t  | true              | true              | {}                                  | revoke_claim stays as built
+(117 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/mcorr_run/fn_check.sql:547: NOTICE:  MCORR_FUNCTIONS PASS (117/117)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+[psql exit 0]
+mcorr scrub (10_functions): claim-format strings replaced 0; environment-format strings replaced 0

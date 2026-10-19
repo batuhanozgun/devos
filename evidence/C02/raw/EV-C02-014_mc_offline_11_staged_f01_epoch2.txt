@@ -1,0 +1,58 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W07-F01's staged file once more, in place, after the global authority epoch is set to 2 and committed on this throwaway cluster; a self-check, never a result)
+UPDATE 1
+ epoch 
+-------
+     2
+(1 row)
+
+[psql exit 0]
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-07/job/w07_f01_whole_intent.sql
+w07_f01_whole_intent.sql: BEGIN
+w07_f01_whole_intent.sql: SET
+w07_f01_whole_intent.sql: SET
+w07_f01_whole_intent.sql: CREATE TABLE
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: CREATE FUNCTION
+w07_f01_whole_intent.sql: DO
+w07_f01_whole_intent.sql:  case_id  | outcome |                                                      detail                                                       
+w07_f01_whole_intent.sql: ----------+---------+-------------------------------------------------------------------------------------------------------------------
+w07_f01_whole_intent.sql:  F01-a    | ok      | different target: refused: conflict
+w07_f01_whole_intent.sql:  F01-b    | ok      | different expected base: refused: conflict
+w07_f01_whole_intent.sql:  F01-c    | ok      | different claim generation: refused: conflict
+w07_f01_whole_intent.sql:  F01-d1   | ok      | late retry, same intent: accepted
+w07_f01_whole_intent.sql:  F01-d2   | ok      | late retry, changed target: refused: conflict
+w07_f01_whole_intent.sql:  F01-d3   | ok      | no delete path: function bodies deleting operation rows: 0; roles with DELETE or TRUNCATE: none (control found 1)
+w07_f01_whole_intent.sql:  F01-e    | ok      | different content: refused: conflict
+w07_f01_whole_intent.sql:  F01-f    | ok      | other work item: refused: conflict
+w07_f01_whole_intent.sql:  F01-g    | ok      | different authority epoch: refused: conflict
+w07_f01_whole_intent.sql:  F01-pos1 | ok      | first prepare: accepted
+w07_f01_whole_intent.sql:  F01-pos2 | ok      | exact repeat: accepted
+w07_f01_whole_intent.sql:  F01-t1   | ok      | different effect class: refused: conflict
+w07_f01_whole_intent.sql:  F01-t2   | ok      | another namespace: accepted | accepted as a record of its own (the namespace read as part of the key)
+w07_f01_whole_intent.sql: (13 rows)
+w07_f01_whole_intent.sql: 
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: NOTICE:  W07_F01_WHOLE_INTENT PASS (13/13)
+w07_f01_whole_intent.sql: DO
+w07_f01_whole_intent.sql: ROLLBACK
+database test w07_f01_whole_intent.sql: passed
+[drive dbtests exit 0]
+mcorr scrub (11_staged_f01_epoch2): claim-format strings replaced 0; environment-format strings replaced 0

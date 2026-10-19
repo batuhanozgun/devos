@@ -1,0 +1,835 @@
+offline, PostgreSQL 16.x, counts: no (no database: the unified difference, one line of context, of each function the corrective migration replaces against its merged text, written by scratchpad/mcorr_run/build.py when it built the migration)
+--- merged devos_private.ready_value
++++ corrective devos_private.ready_value
+@@ -1,2 +1,2 @@
+-create function devos_private.ready_value(p_work_id uuid, p_own_claim uuid default null)
++create or replace function devos_private.ready_value(p_work_id uuid, p_own_claim uuid default null)
+ returns boolean
+@@ -8,2 +8,4 @@
+ declare
++  p_work alias for $1;
++  p_own alias for $2;
+   v_exec devos_private.work_execution;
+@@ -25,3 +27,3 @@
+     left join devos_private.mission_revision mr on mr.id = r.mission_revision_id
+-   where w.id = p_work_id;
++   where w.id = p_work;
+   if not found then
+@@ -41,7 +43,7 @@
+ 
+-  select coalesce(bool_or(a.status = 'active' and a.lease_expires_at > now()), false),
+-         coalesce(bool_or(a.status is null or (a.status = 'active' and a.lease_expires_at is null)), false)
++  select coalesce(bool_or(devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)), false),
++         coalesce(bool_or(devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null), false)
+     into v_live, v_partial
+     from devos_private.assignment a
+-   where a.work_ref = p_work_id and a.id is distinct from p_own_claim;
++   where a.work_ref = p_work and a.id is distinct from p_own;
+   v_value_claims := case when v_live then false when v_partial then null else true end;
+@@ -53,3 +55,3 @@
+       from devos_private.relation r
+-     where r.from_ref = p_work_id
++     where r.from_ref = p_work
+        and (r.type is null or r.type = 'depends_on')
+--- merged devos_api.revise_mission
++++ corrective devos_api.revise_mission
+@@ -1,2 +1,2 @@
+-create function devos_api.revise_mission(p jsonb)
++create or replace function devos_api.revise_mission(p jsonb)
+ returns jsonb
+@@ -8,2 +8,3 @@
+ declare
++  p_in alias for $1;
+   v_fn constant text := 'revise_mission';
+@@ -26,2 +27,3 @@
+   v_danswered integer;
++  v_danswered_at timestamptz;
+   v_mstatus devos_private.mission_status;
+@@ -33,2 +35,3 @@
+   v_cur_authority uuid;
++  v_cur_created timestamptz;
+   v_new_purpose text;
+@@ -50,4 +53,4 @@
+   end if;
+-  if jsonb_typeof(p -> 'declared_session_id') = 'string' then
+-    v_decl := p ->> 'declared_session_id';
++  if jsonb_typeof(p_in -> 'declared_session_id') = 'string' then
++    v_decl := p_in ->> 'declared_session_id';
+   end if;
+@@ -63,3 +66,3 @@
+     v_check := 'input';
+-    if p is null then
++    if p_in is null then
+       v_code := 'missing_field'; v_reason := 'p: missing';
+@@ -67,3 +70,3 @@
+     end if;
+-    if jsonb_typeof(p) <> 'object' then
++    if jsonb_typeof(p_in) <> 'object' then
+       v_code := 'invalid_field'; v_reason := 'p: not a JSON object';
+@@ -71,3 +74,3 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'id'), 'null') = 'null' then
++    if coalesce(jsonb_typeof(p_in -> 'id'), 'null') = 'null' then
+       v_code := 'missing_field'; v_reason := 'id: missing';
+@@ -75,4 +78,4 @@
+     end if;
+-    if jsonb_typeof(p -> 'id') <> 'string'
+-       or (p ->> 'id') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
++    if jsonb_typeof(p_in -> 'id') <> 'string'
++       or (p_in ->> 'id') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+       v_code := 'invalid_field'; v_reason := 'id: not a uuid';
+@@ -80,5 +83,5 @@
+     end if;
+-    v_id := (p ->> 'id')::uuid;
++    v_id := (p_in ->> 'id')::uuid;
+     v_target := v_id;
+-    if coalesce(jsonb_typeof(p -> 'base_revision'), 'null') = 'null' then
++    if coalesce(jsonb_typeof(p_in -> 'base_revision'), 'null') = 'null' then
+       v_code := 'missing_field'; v_reason := 'base_revision: missing';
+@@ -86,3 +89,3 @@
+     end if;
+-    if jsonb_typeof(p -> 'base_revision') <> 'number' or (p ->> 'base_revision') !~ '^[1-9][0-9]{0,8}$' then
++    if jsonb_typeof(p_in -> 'base_revision') <> 'number' or (p_in ->> 'base_revision') !~ '^[1-9][0-9]{0,8}$' then
+       v_code := 'invalid_field'; v_reason := 'base_revision: not an integer of at least 1';
+@@ -90,6 +93,6 @@
+     end if;
+-    v_base := (p ->> 'base_revision')::integer;
++    v_base := (p_in ->> 'base_revision')::integer;
+     v_target_rev := v_base;
+     foreach v_key in array array['purpose', 'scope', 'acceptance', 'reason'] loop
+-      if coalesce(jsonb_typeof(p -> v_key), 'null') not in ('null', 'string') then
++      if coalesce(jsonb_typeof(p_in -> v_key), 'null') not in ('null', 'string') then
+         v_code := 'invalid_field'; v_reason := v_key || ': not a string';
+@@ -98,3 +101,3 @@
+     end loop;
+-    if jsonb_typeof(p -> 'scope') = 'string' and (p ->> 'scope') !~ '^[a-z][a-z0-9_]*([.][a-z][a-z0-9_]*)*$' then
++    if jsonb_typeof(p_in -> 'scope') = 'string' and (p_in ->> 'scope') !~ '^[a-z][a-z0-9_]*([.][a-z][a-z0-9_]*)*$' then
+       v_code := 'invalid_field'; v_reason := 'scope: not a dotted path of lower-case labels';
+@@ -102,3 +105,3 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'constraints'), 'null') not in ('null', 'array') then
++    if coalesce(jsonb_typeof(p_in -> 'constraints'), 'null') not in ('null', 'array') then
+       v_code := 'invalid_field'; v_reason := 'constraints: not an array';
+@@ -106,4 +109,4 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'status'), 'null') <> 'null'
+-       and (jsonb_typeof(p -> 'status') <> 'string' or (p ->> 'status') not in ('active', 'paused', 'closed')) then
++    if coalesce(jsonb_typeof(p_in -> 'status'), 'null') <> 'null'
++       and (jsonb_typeof(p_in -> 'status') <> 'string' or (p_in ->> 'status') not in ('active', 'paused', 'closed')) then
+       v_code := 'invalid_field'; v_reason := 'status: not active, paused or closed';
+@@ -111,5 +114,5 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'owner_authority'), 'null') <> 'null' then
+-      if jsonb_typeof(p -> 'owner_authority') <> 'string'
+-         or (p ->> 'owner_authority') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
++    if coalesce(jsonb_typeof(p_in -> 'owner_authority'), 'null') <> 'null' then
++      if jsonb_typeof(p_in -> 'owner_authority') <> 'string'
++         or (p_in ->> 'owner_authority') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+         v_code := 'invalid_field'; v_reason := 'owner_authority: not a uuid';
+@@ -117,4 +120,4 @@
+       end if;
+-      v_authority := (p ->> 'owner_authority')::uuid;
+-      if coalesce(jsonb_typeof(p -> 'owner_authority_revision'), 'null') = 'null' then
++      v_authority := (p_in ->> 'owner_authority')::uuid;
++      if coalesce(jsonb_typeof(p_in -> 'owner_authority_revision'), 'null') = 'null' then
+         v_code := 'could_not_check'; v_reason := 'owner_authority_revision: missing';
+@@ -122,4 +125,4 @@
+       end if;
+-      if jsonb_typeof(p -> 'owner_authority_revision') <> 'number'
+-         or (p ->> 'owner_authority_revision') !~ '^[1-9][0-9]{0,8}$' then
++      if jsonb_typeof(p_in -> 'owner_authority_revision') <> 'number'
++         or (p_in ->> 'owner_authority_revision') !~ '^[1-9][0-9]{0,8}$' then
+         v_code := 'invalid_field'; v_reason := 'owner_authority_revision: not an integer of at least 1';
+@@ -127,5 +130,5 @@
+       end if;
+-      v_authority_rev := (p ->> 'owner_authority_revision')::integer;
++      v_authority_rev := (p_in ->> 'owner_authority_revision')::integer;
+       v_authority_sent := true;
+-    elsif coalesce(jsonb_typeof(p -> 'owner_authority_revision'), 'null') <> 'null' then
++    elsif coalesce(jsonb_typeof(p_in -> 'owner_authority_revision'), 'null') <> 'null' then
+       v_code := 'missing_field'; v_reason := 'owner_authority: missing (owner_authority_revision is sent without it)';
+@@ -145,4 +148,4 @@
+     end if;
+-    select r.revision, r.purpose, r.scope, r.constraints, r.acceptance, r.owner_authority
+-      into v_cur_rev, v_cur_purpose, v_cur_scope, v_cur_constraints, v_cur_acceptance, v_cur_authority
++    select r.revision, r.purpose, r.scope, r.constraints, r.acceptance, r.owner_authority, r.created_at
++      into v_cur_rev, v_cur_purpose, v_cur_scope, v_cur_constraints, v_cur_acceptance, v_cur_authority, v_cur_created
+       from devos_private.mission_revision r where r.mission_id = v_id order by r.revision desc limit 1;
+@@ -152,11 +155,11 @@
+     end if;
+-    v_new_purpose := coalesce(case when jsonb_typeof(p -> 'purpose') = 'string' then p ->> 'purpose' end, v_cur_purpose);
+-    v_new_scope := coalesce(case when jsonb_typeof(p -> 'scope') = 'string' then p ->> 'scope' end, v_cur_scope);
+-    v_new_acceptance := coalesce(case when jsonb_typeof(p -> 'acceptance') = 'string' then p ->> 'acceptance' end,
++    v_new_purpose := coalesce(case when jsonb_typeof(p_in -> 'purpose') = 'string' then p_in ->> 'purpose' end, v_cur_purpose);
++    v_new_scope := coalesce(case when jsonb_typeof(p_in -> 'scope') = 'string' then p_in ->> 'scope' end, v_cur_scope);
++    v_new_acceptance := coalesce(case when jsonb_typeof(p_in -> 'acceptance') = 'string' then p_in ->> 'acceptance' end,
+                                  v_cur_acceptance);
+-    v_new_constraints := coalesce(case when jsonb_typeof(p -> 'constraints') = 'array' then p -> 'constraints' end,
++    v_new_constraints := coalesce(case when jsonb_typeof(p_in -> 'constraints') = 'array' then p_in -> 'constraints' end,
+                                   v_cur_constraints);
+     v_new_authority := coalesce(v_authority, v_cur_authority);
+-    v_new_status := coalesce(case when jsonb_typeof(p -> 'status') = 'string'
+-                                  then (p ->> 'status')::devos_private.mission_status end, v_mstatus);
++    v_new_status := coalesce(case when jsonb_typeof(p_in -> 'status') = 'string'
++                                  then (p_in ->> 'status')::devos_private.mission_status end, v_mstatus);
+     v_content_changed := v_new_purpose is distinct from v_cur_purpose or v_new_scope is distinct from v_cur_scope
+@@ -181,3 +184,3 @@
+       v_check := 'reason';
+-      if coalesce(jsonb_typeof(p -> 'reason'), 'null') <> 'string' then
++      if coalesce(jsonb_typeof(p_in -> 'reason'), 'null') <> 'string' then
+         v_code := 'missing_field'; v_reason := 'reason: missing (a call that writes a new revision needs one)';
+@@ -190,3 +193,3 @@
+       v_check := 'owner_authority';
+-      select d.class, d.status, d.answered_revision into v_dclass, v_dstatus, v_danswered
++      select d.class, d.status, d.answered_revision, d.answered_at into v_dclass, v_dstatus, v_danswered, v_danswered_at
+         from devos_private.decision d where d.id = v_authority for share;
+@@ -237,2 +240,24 @@
+                       || '(owner_authority; B 3.1)';
++          raise exception using errcode = 'P0D01', message = 'devos refusal';
++        end if;
++        -- N-284 option C (EV-C02-013 section 22 (1)): a new decision of Batu's. (1) Not the owner authority of any
++        -- revision of this Mission, current or earlier.
++        perform 1 from devos_private.mission_revision r where r.mission_id = v_id and r.owner_authority = v_authority;
++        if found then
++          v_code := 'mission_authority';
++          v_reason := 'owner_authority: a Decision this Mission already rests on cannot widen it (B 3.1, B 3.17)';
++          raise exception using errcode = 'P0D01', message = 'devos refusal';
++        end if;
++        -- (2) Answered no earlier than the Mission's current revision was written; an equal time passes.
++        if v_danswered_at is null then
++          v_code := 'could_not_check'; v_reason := 'owner_authority: answered_at missing';
++          raise exception using errcode = 'P0D01', message = 'devos refusal';
++        end if;
++        if v_cur_created is null then
++          v_code := 'could_not_check'; v_reason := 'mission: its current revision''s created_at is missing (partial)';
++          raise exception using errcode = 'P0D01', message = 'devos refusal';
++        end if;
++        if v_danswered_at < v_cur_created then
++          v_code := 'mission_authority';
++          v_reason := 'owner_authority: answered before the Mission''s current revision (B 3.1)';
+           raise exception using errcode = 'P0D01', message = 'devos refusal';
+@@ -263,3 +288,3 @@
+       values (v_id, v_rev, v_new_purpose, v_new_scope, v_new_constraints, v_new_acceptance, v_new_authority,
+-              case when jsonb_typeof(p -> 'reason') = 'string' then p ->> 'reason' end);
++              case when jsonb_typeof(p_in -> 'reason') = 'string' then p_in ->> 'reason' end);
+       perform devos_private.write_event('mission', v_id, v_rev, 'mission_revised',
+@@ -268,3 +293,3 @@
+                            'owner_authority', v_new_authority, 'owner_authority_revision', v_authority_rev,
+-                           'reason', case when jsonb_typeof(p -> 'reason') = 'string' then p ->> 'reason' end),
++                           'reason', case when jsonb_typeof(p_in -> 'reason') = 'string' then p_in ->> 'reason' end),
+         v_class::text, 'call', v_decl);
+@@ -275,3 +300,3 @@
+         jsonb_strip_nulls(jsonb_build_object('status', v_new_status::text, 'previous_status', v_mstatus::text,
+-                           'reason', case when jsonb_typeof(p -> 'reason') = 'string' then p ->> 'reason' end)),
++                           'reason', case when jsonb_typeof(p_in -> 'reason') = 'string' then p_in ->> 'reason' end)),
+         v_class::text, 'call', v_decl);
+--- merged devos_api.revise_work
++++ corrective devos_api.revise_work
+@@ -1,2 +1,2 @@
+-create function devos_api.revise_work(p jsonb)
++create or replace function devos_api.revise_work(p jsonb)
+ returns jsonb
+@@ -8,2 +8,3 @@
+ declare
++  p_in alias for $1;
+   v_fn constant text := 'revise_work';
+@@ -69,4 +70,4 @@
+   end if;
+-  if jsonb_typeof(p -> 'declared_session_id') = 'string' then
+-    v_decl := p ->> 'declared_session_id';
++  if jsonb_typeof(p_in -> 'declared_session_id') = 'string' then
++    v_decl := p_in ->> 'declared_session_id';
+   end if;
+@@ -82,3 +83,3 @@
+     v_check := 'input';
+-    if p is null then
++    if p_in is null then
+       v_code := 'missing_field'; v_reason := 'p: missing';
+@@ -86,3 +87,3 @@
+     end if;
+-    if jsonb_typeof(p) <> 'object' then
++    if jsonb_typeof(p_in) <> 'object' then
+       v_code := 'invalid_field'; v_reason := 'p: not a JSON object';
+@@ -90,3 +91,3 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'id'), 'null') = 'null' then
++    if coalesce(jsonb_typeof(p_in -> 'id'), 'null') = 'null' then
+       v_code := 'missing_field'; v_reason := 'id: missing';
+@@ -94,4 +95,4 @@
+     end if;
+-    if jsonb_typeof(p -> 'id') <> 'string'
+-       or (p ->> 'id') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
++    if jsonb_typeof(p_in -> 'id') <> 'string'
++       or (p_in ->> 'id') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+       v_code := 'invalid_field'; v_reason := 'id: not a uuid';
+@@ -99,4 +100,4 @@
+     end if;
+-    v_id := (p ->> 'id')::uuid;
+-    if coalesce(jsonb_typeof(p -> 'base_revision'), 'null') = 'null' then
++    v_id := (p_in ->> 'id')::uuid;
++    if coalesce(jsonb_typeof(p_in -> 'base_revision'), 'null') = 'null' then
+       v_code := 'missing_field'; v_reason := 'base_revision: missing';
+@@ -104,3 +105,3 @@
+     end if;
+-    if jsonb_typeof(p -> 'base_revision') <> 'number' or (p ->> 'base_revision') !~ '^[1-9][0-9]{0,8}$' then
++    if jsonb_typeof(p_in -> 'base_revision') <> 'number' or (p_in ->> 'base_revision') !~ '^[1-9][0-9]{0,8}$' then
+       v_code := 'invalid_field'; v_reason := 'base_revision: not an integer of at least 1';
+@@ -108,3 +109,3 @@
+     end if;
+-    v_base := (p ->> 'base_revision')::integer;
++    v_base := (p_in ->> 'base_revision')::integer;
+     v_target_rev := v_base;
+@@ -112,3 +113,3 @@
+                                  'acceptance_ref', 'effort_policy_ref', 'reason'] loop
+-      if coalesce(jsonb_typeof(p -> v_key), 'null') not in ('null', 'string') then
++      if coalesce(jsonb_typeof(p_in -> v_key), 'null') not in ('null', 'string') then
+         v_code := 'invalid_field'; v_reason := v_key || ': not a string';
+@@ -117,3 +118,3 @@
+     end loop;
+-    if jsonb_typeof(p -> 'scope') = 'string' and (p ->> 'scope') !~ '^[a-z][a-z0-9_]*([.][a-z][a-z0-9_]*)*$' then
++    if jsonb_typeof(p_in -> 'scope') = 'string' and (p_in ->> 'scope') !~ '^[a-z][a-z0-9_]*([.][a-z][a-z0-9_]*)*$' then
+       v_code := 'invalid_field'; v_reason := 'scope: not a dotted path of lower-case labels';
+@@ -121,3 +122,3 @@
+     end if;
+-    if jsonb_typeof(p -> 'impact_class') = 'string' and (p ->> 'impact_class') not in ('routine', 'high') then
++    if jsonb_typeof(p_in -> 'impact_class') = 'string' and (p_in ->> 'impact_class') not in ('routine', 'high') then
+       v_code := 'invalid_field'; v_reason := 'impact_class: not routine or high';
+@@ -125,4 +126,4 @@
+     end if;
+-    if jsonb_typeof(p -> 'effort_policy_ref') = 'string'
+-       and (p ->> 'effort_policy_ref') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
++    if jsonb_typeof(p_in -> 'effort_policy_ref') = 'string'
++       and (p_in ->> 'effort_policy_ref') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+       v_code := 'invalid_field'; v_reason := 'effort_policy_ref: not a uuid';
+@@ -130,4 +131,4 @@
+     end if;
+-    if coalesce(jsonb_typeof(p -> 'mission_revision'), 'null') <> 'null' then
+-      if jsonb_typeof(p -> 'mission_revision') <> 'number' or (p ->> 'mission_revision') !~ '^[1-9][0-9]{0,8}$' then
++    if coalesce(jsonb_typeof(p_in -> 'mission_revision'), 'null') <> 'null' then
++      if jsonb_typeof(p_in -> 'mission_revision') <> 'number' or (p_in ->> 'mission_revision') !~ '^[1-9][0-9]{0,8}$' then
+         v_code := 'invalid_field'; v_reason := 'mission_revision: not an integer of at least 1';
+@@ -135,6 +136,6 @@
+       end if;
+-      v_mrev := (p ->> 'mission_revision')::integer;
++      v_mrev := (p_in ->> 'mission_revision')::integer;
+     end if;
+     foreach v_key in array array['input_refs', 'target_refs', 'method_refs', 'mandatory_needs'] loop
+-      if coalesce(jsonb_typeof(p -> v_key), 'null') not in ('null', 'array') then
++      if coalesce(jsonb_typeof(p_in -> v_key), 'null') not in ('null', 'array') then
+         v_code := 'invalid_field'; v_reason := v_key || ': not an array';
+@@ -144,4 +145,4 @@
+     foreach v_key in array array['input_refs', 'target_refs'] loop
+-      if jsonb_typeof(p -> v_key) = 'array' then
+-        for v_el in select x.value from jsonb_array_elements(p -> v_key) x loop
++      if jsonb_typeof(p_in -> v_key) = 'array' then
++        for v_el in select x.value from jsonb_array_elements(p_in -> v_key) x loop
+           if jsonb_typeof(v_el) <> 'object' or coalesce(jsonb_typeof(v_el -> 'ref'), 'null') <> 'string'
+@@ -210,5 +211,6 @@
+     v_check := 'rule_c';
+-    select count(*) filter (where a.status is null
+-                              or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+-           count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
++    select count(*) filter (where a.status is null or (a.status = 'active' and a.role_class is null)
++                              or devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null),
++           count(*) filter (where devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)
++                              and a.role_class <> v_class)
+       into v_partial, v_other
+@@ -216,3 +218,3 @@
+     if v_partial > 0 then
+-      v_code := 'could_not_check'; v_reason := 'rule_c: a claim on the work item lacks its status, lease or role class (partial)';
++      v_code := 'could_not_check'; v_reason := 'rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)';
+       raise exception using errcode = 'P0D01', message = 'devos refusal';
+@@ -236,17 +238,17 @@
+     end if;
+-    v_new_scope := coalesce(case when jsonb_typeof(p -> 'scope') = 'string' then p ->> 'scope' end, v_cur_scope);
+-    v_new_purpose := coalesce(case when jsonb_typeof(p -> 'purpose') = 'string' then p ->> 'purpose' end, v_cur_purpose);
+-    v_new_impact := coalesce(case when jsonb_typeof(p -> 'impact_class') = 'string'
+-                                  then (p ->> 'impact_class')::devos_private.impact_class end, v_cur_impact);
+-    v_new_consumer := case when jsonb_typeof(p -> 'consumer') = 'string' then p ->> 'consumer' else v_cur_consumer end;
+-    v_new_return_to := case when jsonb_typeof(p -> 'return_to') = 'string' then p ->> 'return_to' else v_cur_return_to end;
+-    v_new_stop_rule := case when jsonb_typeof(p -> 'stop_rule') = 'string' then p ->> 'stop_rule' else v_cur_stop_rule end;
+-    v_new_acceptance_ref := case when jsonb_typeof(p -> 'acceptance_ref') = 'string' then p ->> 'acceptance_ref'
++    v_new_scope := coalesce(case when jsonb_typeof(p_in -> 'scope') = 'string' then p_in ->> 'scope' end, v_cur_scope);
++    v_new_purpose := coalesce(case when jsonb_typeof(p_in -> 'purpose') = 'string' then p_in ->> 'purpose' end, v_cur_purpose);
++    v_new_impact := coalesce(case when jsonb_typeof(p_in -> 'impact_class') = 'string'
++                                  then (p_in ->> 'impact_class')::devos_private.impact_class end, v_cur_impact);
++    v_new_consumer := case when jsonb_typeof(p_in -> 'consumer') = 'string' then p_in ->> 'consumer' else v_cur_consumer end;
++    v_new_return_to := case when jsonb_typeof(p_in -> 'return_to') = 'string' then p_in ->> 'return_to' else v_cur_return_to end;
++    v_new_stop_rule := case when jsonb_typeof(p_in -> 'stop_rule') = 'string' then p_in ->> 'stop_rule' else v_cur_stop_rule end;
++    v_new_acceptance_ref := case when jsonb_typeof(p_in -> 'acceptance_ref') = 'string' then p_in ->> 'acceptance_ref'
+                                  else v_cur_acceptance_ref end;
+-    v_new_policy := case when jsonb_typeof(p -> 'effort_policy_ref') = 'string' then (p ->> 'effort_policy_ref')::uuid
++    v_new_policy := case when jsonb_typeof(p_in -> 'effort_policy_ref') = 'string' then (p_in ->> 'effort_policy_ref')::uuid
+                          else v_cur_policy end;
+-    v_new_input := case when jsonb_typeof(p -> 'input_refs') = 'array' then p -> 'input_refs' else v_cur_input end;
+-    v_new_target := case when jsonb_typeof(p -> 'target_refs') = 'array' then p -> 'target_refs' else v_cur_target end;
+-    v_new_method := case when jsonb_typeof(p -> 'method_refs') = 'array' then p -> 'method_refs' else v_cur_method end;
+-    v_new_needs := case when jsonb_typeof(p -> 'mandatory_needs') = 'array' then p -> 'mandatory_needs' else v_cur_needs end;
++    v_new_input := case when jsonb_typeof(p_in -> 'input_refs') = 'array' then p_in -> 'input_refs' else v_cur_input end;
++    v_new_target := case when jsonb_typeof(p_in -> 'target_refs') = 'array' then p_in -> 'target_refs' else v_cur_target end;
++    v_new_method := case when jsonb_typeof(p_in -> 'method_refs') = 'array' then p_in -> 'method_refs' else v_cur_method end;
++    v_new_needs := case when jsonb_typeof(p_in -> 'mandatory_needs') = 'array' then p_in -> 'mandatory_needs' else v_cur_needs end;
+ 
+@@ -268,3 +270,3 @@
+       v_check := 'reason';
+-      if coalesce(jsonb_typeof(p -> 'reason'), 'null') <> 'string' then
++      if coalesce(jsonb_typeof(p_in -> 'reason'), 'null') <> 'string' then
+         v_code := 'missing_field'; v_reason := 'reason: missing (a call that writes a new revision needs one)';
+@@ -292,5 +294,5 @@
+       foreach v_key in array array['input_refs', 'target_refs'] loop
+-        if jsonb_typeof(p -> v_key) = 'array' then
++        if jsonb_typeof(p_in -> v_key) = 'array' then
+           v_check := v_key;
+-          for v_el in select x.value from jsonb_array_elements(p -> v_key) x loop
++          for v_el in select x.value from jsonb_array_elements(p_in -> v_key) x loop
+             v_ref := (v_el ->> 'ref')::uuid;
+@@ -333,3 +335,3 @@
+ 
+-      if jsonb_typeof(p -> 'effort_policy_ref') = 'string' then
++      if jsonb_typeof(p_in -> 'effort_policy_ref') = 'string' then
+         v_check := 'effort_policy_ref';
+@@ -383,3 +385,3 @@
+             v_new_return_to, v_new_stop_rule, v_new_acceptance_ref, v_new_impact, v_new_policy, v_new_method, v_new_needs,
+-            p ->> 'reason');
++            p_in ->> 'reason');
+     perform devos_private.write_event('work', v_id, v_rev, 'work_revised',
+@@ -389,3 +391,3 @@
+         'stop_rule', v_new_stop_rule, 'acceptance_ref', v_new_acceptance_ref, 'effort_policy_ref', v_new_policy,
+-        'method_refs', v_new_method, 'mandatory_needs', v_new_needs, 'reason', p ->> 'reason')),
++        'method_refs', v_new_method, 'mandatory_needs', v_new_needs, 'reason', p_in ->> 'reason')),
+       v_class::text, 'call', v_decl);
+--- merged devos_api.mark_stale
++++ corrective devos_api.mark_stale
+@@ -1,2 +1,2 @@
+-create function devos_api.mark_stale(work_id uuid, reason text)
++create or replace function devos_api.mark_stale(work_id uuid, reason text)
+ returns jsonb
+@@ -8,2 +8,4 @@
+ declare
++  p_work alias for $1;
++  p_reason alias for $2;
+   v_fn constant text := 'mark_stale';
+@@ -36,3 +38,3 @@
+     v_check := 'input';
+-    if work_id is null then
++    if p_work is null then
+       v_code := 'missing_field'; v_reason := 'work_id: missing';
+@@ -43,3 +45,3 @@
+     v_check := 'work';
+-    select w.qualification into v_qual from devos_private.work w where w.id = work_id for update;
++    select w.qualification into v_qual from devos_private.work w where w.id = p_work for update;
+     if not found then
+@@ -53,3 +55,3 @@
+     select r.revision, r.mission_revision_id into v_cur_rev, v_cur_mrev
+-      from devos_private.work_revision r where r.work_id = mark_stale.work_id order by r.revision desc limit 1;
++      from devos_private.work_revision r where r.work_id = p_work order by r.revision desc limit 1;
+     if not found or v_cur_rev is null then
+@@ -67,3 +69,3 @@
+     if v_class = 'devos_sinav' then
+-      perform 1 from devos_private.eval_run e where e.work_ref = mark_stale.work_id;
++      perform 1 from devos_private.eval_run e where e.work_ref = p_work;
+       if not found then
+@@ -94,3 +96,3 @@
+     if v_qual = 'stale' then
+-      v_answer := jsonb_build_object('status', 'ok', 'id', work_id, 'repeat', true);
++      v_answer := jsonb_build_object('status', 'ok', 'id', p_work, 'repeat', true);
+     end if;
+@@ -103,3 +105,3 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+@@ -112,6 +114,6 @@
+     v_check := 'write';
+-    update devos_private.work w set qualification = 'stale' where w.id = mark_stale.work_id;
+-    perform devos_private.write_event('work', work_id, v_cur_rev, 'work_marked_stale',
++    update devos_private.work w set qualification = 'stale' where w.id = p_work;
++    perform devos_private.write_event('work', p_work, v_cur_rev, 'work_marked_stale',
+       jsonb_strip_nulls(jsonb_build_object('qualification', 'stale', 'previous_qualification', v_qual::text,
+-                                           'reason', reason)),
++                                           'reason', p_reason)),
+       v_class::text, 'call', null);
+@@ -124,5 +126,5 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+-  return jsonb_build_object('status', 'ok', 'id', work_id);
++  return jsonb_build_object('status', 'ok', 'id', p_work);
+ end
+--- merged devos_api.cancel_work
++++ corrective devos_api.cancel_work
+@@ -1,2 +1,2 @@
+-create function devos_api.cancel_work(work_id uuid, reason text)
++create or replace function devos_api.cancel_work(work_id uuid, reason text)
+ returns jsonb
+@@ -8,2 +8,4 @@
+ declare
++  p_work alias for $1;
++  p_reason alias for $2;
+   v_fn constant text := 'cancel_work';
+@@ -38,3 +40,3 @@
+     v_check := 'input';
+-    if work_id is null then
++    if p_work is null then
+       v_code := 'missing_field'; v_reason := 'work_id: missing';
+@@ -45,3 +47,3 @@
+     v_check := 'work';
+-    select w.execution into v_exec from devos_private.work w where w.id = work_id for update;
++    select w.execution into v_exec from devos_private.work w where w.id = p_work for update;
+     if not found then
+@@ -55,3 +57,3 @@
+     select r.revision, r.mission_revision_id into v_cur_rev, v_cur_mrev
+-      from devos_private.work_revision r where r.work_id = cancel_work.work_id order by r.revision desc limit 1;
++      from devos_private.work_revision r where r.work_id = p_work order by r.revision desc limit 1;
+     if not found or v_cur_rev is null then
+@@ -69,3 +71,3 @@
+     if v_class = 'devos_sinav' then
+-      perform 1 from devos_private.eval_run e where e.work_ref = cancel_work.work_id;
++      perform 1 from devos_private.eval_run e where e.work_ref = p_work;
+       if not found then
+@@ -96,9 +98,10 @@
+     v_check := 'rule_c';
+-    select count(*) filter (where a.status is null
+-                              or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+-           count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
++    select count(*) filter (where a.status is null or (a.status = 'active' and a.role_class is null)
++                              or devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null),
++           count(*) filter (where devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)
++                              and a.role_class <> v_class)
+       into v_partial, v_other
+-      from devos_private.assignment a where a.work_ref = cancel_work.work_id;
++      from devos_private.assignment a where a.work_ref = p_work;
+     if v_partial > 0 then
+-      v_code := 'could_not_check'; v_reason := 'rule_c: a claim on the work item lacks its status, lease or role class (partial)';
++      v_code := 'could_not_check'; v_reason := 'rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)';
+       raise exception using errcode = 'P0D01', message = 'devos refusal';
+@@ -112,3 +115,3 @@
+     if v_exec = 'cancelled' then
+-      v_answer := jsonb_build_object('status', 'ok', 'id', work_id, 'repeat', true);
++      v_answer := jsonb_build_object('status', 'ok', 'id', p_work, 'repeat', true);
+     end if;
+@@ -121,3 +124,3 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+@@ -130,6 +133,6 @@
+     v_check := 'write';
+-    update devos_private.work w set execution = 'cancelled' where w.id = cancel_work.work_id;
+-    perform devos_private.write_event('work', work_id, v_cur_rev, 'work_cancelled',
++    update devos_private.work w set execution = 'cancelled' where w.id = p_work;
++    perform devos_private.write_event('work', p_work, v_cur_rev, 'work_cancelled',
+       jsonb_strip_nulls(jsonb_build_object('execution', 'cancelled', 'previous_execution', v_exec::text,
+-                                           'reason', reason)),
++                                           'reason', p_reason)),
+       v_class::text, 'call', null);
+@@ -142,5 +145,5 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+-  return jsonb_build_object('status', 'ok', 'id', work_id);
++  return jsonb_build_object('status', 'ok', 'id', p_work);
+ end
+--- merged devos_api.reopen_for_review
++++ corrective devos_api.reopen_for_review
+@@ -1,2 +1,2 @@
+-create function devos_api.reopen_for_review(work_id uuid, reason text)
++create or replace function devos_api.reopen_for_review(work_id uuid, reason text)
+ returns jsonb
+@@ -8,2 +8,4 @@
+ declare
++  p_work alias for $1;
++  p_reason alias for $2;
+   v_fn constant text := 'reopen_for_review';
+@@ -36,3 +38,3 @@
+     v_check := 'input';
+-    if work_id is null then
++    if p_work is null then
+       v_code := 'missing_field'; v_reason := 'work_id: missing';
+@@ -43,3 +45,3 @@
+     v_check := 'work';
+-    select w.qualification into v_qual from devos_private.work w where w.id = work_id for update;
++    select w.qualification into v_qual from devos_private.work w where w.id = p_work for update;
+     if not found then
+@@ -53,3 +55,3 @@
+     select r.revision, r.mission_revision_id into v_cur_rev, v_cur_mrev
+-      from devos_private.work_revision r where r.work_id = reopen_for_review.work_id order by r.revision desc limit 1;
++      from devos_private.work_revision r where r.work_id = p_work order by r.revision desc limit 1;
+     if not found or v_cur_rev is null then
+@@ -68,3 +70,3 @@
+       if v_class = 'devos_sinav' then
+-        perform 1 from devos_private.eval_run e where e.work_ref = reopen_for_review.work_id;
++        perform 1 from devos_private.eval_run e where e.work_ref = p_work;
+         if not found then
+@@ -96,3 +98,3 @@
+     if v_qual = 'needs_review' then
+-      v_answer := jsonb_build_object('status', 'ok', 'id', work_id, 'repeat', true);
++      v_answer := jsonb_build_object('status', 'ok', 'id', p_work, 'repeat', true);
+     end if;
+@@ -105,3 +107,3 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+@@ -114,6 +116,6 @@
+     v_check := 'write';
+-    update devos_private.work w set qualification = 'needs_review' where w.id = reopen_for_review.work_id;
+-    perform devos_private.write_event('work', work_id, v_cur_rev, 'work_reopened_for_review',
++    update devos_private.work w set qualification = 'needs_review' where w.id = p_work;
++    perform devos_private.write_event('work', p_work, v_cur_rev, 'work_reopened_for_review',
+       jsonb_strip_nulls(jsonb_build_object('qualification', 'needs_review', 'previous_qualification', v_qual::text,
+-                                           'reason', reason)),
++                                           'reason', p_reason)),
+       v_class::text, 'call', null);
+@@ -126,5 +128,5 @@
+   if v_code is not null then
+-    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, work_id);
++    return devos_private.reject(v_fn, v_class, v_code, v_reason, null, p_work);
+   end if;
+-  return jsonb_build_object('status', 'ok', 'id', work_id);
++  return jsonb_build_object('status', 'ok', 'id', p_work);
+ end
+--- merged devos_api.claim
++++ corrective devos_api.claim
+@@ -1,2 +1,2 @@
+-create function devos_api.claim(work_id uuid, declared_session_id text default null)
++create or replace function devos_api.claim(work_id uuid, declared_session_id text default null)
+ returns jsonb
+@@ -25,2 +25,3 @@
+   v_epoch bigint;
++  v_lapsed uuid[];
+   v_old record;
+@@ -102,7 +103,28 @@
+     perform 1 from devos_private.assignment a where a.work_ref = p_work for update;
++
++    -- (f) The global authority epoch, for share, after the claims (DM-01's order of locks: the work item, the claims,
++    -- the epoch), and before the live count is judged (EV-C02-013 section 22 (3)): the epoch the claim is made in.
++    v_check := 'epoch';
++    select g.epoch into v_epoch from devos_private.global_authority_epoch g where g.singleton for share;
++    if not found then
++      v_code := 'could_not_check'; v_reason := 'epoch: the global authority epoch is missing';
++      raise exception using errcode = 'P0D01', message = 'devos refusal';
++    end if;
++    if v_epoch is null then
++      v_code := 'could_not_check'; v_reason := 'epoch: its value is missing (partial)';
++      raise exception using errcode = 'P0D01', message = 'devos refusal';
++    end if;
++
++    -- (f) The live claims (devos_private.claim_live: active, lease not run out, of the current epoch), and the active
++    -- claims that count as lapsed (lease run out, or an earlier epoch), which the write block marks expired.
++    v_check := 'claims';
+     select count(*) filter (where a.status is null or a.generation is null
+-                              or (a.status = 'active' and a.lease_expires_at is null)),
+-           count(*) filter (where a.status = 'active' and a.lease_expires_at > now()),
+-           max(a.generation)
+-      into v_partial, v_live, v_newest
++                              or devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null),
++           count(*) filter (where devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)),
++           max(a.generation),
++           coalesce(array_agg(a.id order by a.generation)
++                      filter (where a.status = 'active'
++                                and not devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)),
++                    '{}'::uuid[])
++      into v_partial, v_live, v_newest, v_lapsed
+       from devos_private.assignment a where a.work_ref = p_work;
+@@ -130,13 +152,2 @@
+ 
+-    -- (f) The global authority epoch, for share, last in DM-01's order: the epoch the claim is made in.
+-    v_check := 'epoch';
+-    select g.epoch into v_epoch from devos_private.global_authority_epoch g where g.singleton for share;
+-    if not found then
+-      v_code := 'could_not_check'; v_reason := 'epoch: the global authority epoch is missing';
+-      raise exception using errcode = 'P0D01', message = 'devos refusal';
+-    end if;
+-    if v_epoch is null then
+-      v_code := 'could_not_check'; v_reason := 'epoch: its value is missing (partial)';
+-      raise exception using errcode = 'P0D01', message = 'devos refusal';
+-    end if;
+   exception
+@@ -154,9 +165,12 @@
+     v_check := 'write';
+-    -- DM-06: the claim that next takes the work item marks a lapsed claim expired, with its event (origin rule).
++    -- DM-06 with N-289 B: the claim that next takes the work item marks every claim that counts as lapsed expired (its
++    -- lease run out, or an earlier authority epoch; the read block's list), with its event (origin rule), whose payload
++    -- names the claim's epoch beside the global epoch read, so a reader tells the two ends of a claim apart.
+     for v_old in update devos_private.assignment a set status = 'expired'
+-                  where a.work_ref = p_work and a.status = 'active' and a.lease_expires_at <= now()
+-                  returning a.id, a.generation, a.lease_expires_at loop
++                  where a.id = any (v_lapsed) and a.status = 'active'
++                  returning a.id, a.generation, a.lease_expires_at, a.authority_epoch loop
+       perform devos_private.write_event('assignment', v_old.id, null, 'claim_expired',
+         jsonb_build_object('work_ref', p_work, 'generation', v_old.generation, 'status', 'expired',
+-                           'lease_expires_at', v_old.lease_expires_at),
++                           'lease_expires_at', v_old.lease_expires_at, 'authority_epoch', v_old.authority_epoch,
++                           'global_authority_epoch', v_epoch),
+         v_class::text, 'rule', p_session);
+--- merged devos_api.relate
++++ corrective devos_api.relate
+@@ -1,2 +1,2 @@
+-create function devos_api.relate(p jsonb)
++create or replace function devos_api.relate(p jsonb)
+ returns jsonb
+@@ -295,5 +295,6 @@
+         v_check := 'rule_c';
+-        select count(*) filter (where a.status is null
+-                                  or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+-               count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
++        select count(*) filter (where a.status is null or (a.status = 'active' and a.role_class is null)
++                                  or devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null),
++               count(*) filter (where devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)
++                                  and a.role_class <> v_class)
+           into v_partial, v_other
+@@ -302,3 +303,3 @@
+           v_code := 'could_not_check';
+-          v_reason := 'rule_c: a claim on the work item lacks its status, lease or role class (partial)';
++          v_reason := 'rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)';
+           raise exception using errcode = 'P0D01', message = 'devos refusal';
+--- merged devos_api.retract_relation
++++ corrective devos_api.retract_relation
+@@ -1,2 +1,2 @@
+-create function devos_api.retract_relation(relation_id uuid, reason text)
++create or replace function devos_api.retract_relation(relation_id uuid, reason text)
+ returns jsonb
+@@ -130,5 +130,6 @@
+         v_check := 'rule_c';
+-        select count(*) filter (where a.status is null
+-                                  or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+-               count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
++        select count(*) filter (where a.status is null or (a.status = 'active' and a.role_class is null)
++                                  or devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch) is null),
++               count(*) filter (where devos_private.claim_live(a.status, a.lease_expires_at, a.authority_epoch)
++                                  and a.role_class <> v_class)
+           into v_partial, v_other
+@@ -137,3 +138,3 @@
+           v_code := 'could_not_check';
+-          v_reason := 'rule_c: a claim on the work item lacks its status, lease or role class (partial)';
++          v_reason := 'rule_c: a claim on the work item lacks its status, lease, role class or epoch (partial)';
+           raise exception using errcode = 'P0D01', message = 'devos refusal';
+--- merged devos_api.affected_entities
++++ corrective devos_api.affected_entities
+@@ -1,2 +1,2 @@
+-create function devos_api.affected_entities(root uuid, limits jsonb)
++create or replace function devos_api.affected_entities(root uuid, limits jsonb)
+ returns jsonb
+@@ -107,3 +107,9 @@
+     while cardinality(v_frontier) > 0 and not v_stop loop
+-      if exists (select 1 from devos_private.relation r where r.to_ref = any (v_frontier) and r.validity is null) then
++      if exists (select 1 from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r where r.changed = any (v_frontier) and r.validity is null)
++         or exists (select 1 from devos_private.relation x
++                     where x.type is null and (x.from_ref = any (v_frontier) or x.to_ref = any (v_frontier))) then
+         v_complete := false;
+@@ -111,4 +117,8 @@
+       if v_depth >= v_max_depth then
+-        if exists (select 1 from devos_private.relation r
+-                    where r.to_ref = any (v_frontier) and r.validity <> 'retracted' and not (r.from_ref = any (v_seen))) then
++        if exists (select 1 from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++                    where r.changed = any (v_frontier) and r.validity <> 'retracted' and not (r.affected = any (v_seen))) then
+           v_complete := false;
+@@ -118,5 +128,9 @@
+       v_depth := v_depth + 1;
+-      select coalesce(array_agg(distinct r.from_ref), '{}'::uuid[]) into v_cand
+-        from devos_private.relation r
+-       where r.to_ref = any (v_frontier) and r.validity <> 'retracted' and not (r.from_ref = any (v_seen));
++      select coalesce(array_agg(distinct r.affected), '{}'::uuid[]) into v_cand
++        from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++       where r.changed = any (v_frontier) and r.validity <> 'retracted' and not (r.affected = any (v_seen));
+       exit when cardinality(v_cand) = 0;
+@@ -146,6 +160,10 @@
+       v_next := '{}'::uuid[];
+-      for v_e in select distinct on (r.from_ref) r.from_ref as node, r.to_ref as parent
+-                   from devos_private.relation r
+-                  where r.to_ref = any (v_frontier) and r.validity <> 'retracted' and r.from_ref = any (v_vis)
+-                  order by r.from_ref, r.to_ref loop
++      for v_e in select distinct on (r.affected) r.affected as node, r.changed as parent
++                   from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++                  where r.changed = any (v_frontier) and r.validity <> 'retracted' and r.affected = any (v_vis)
++                  order by r.affected, r.changed loop
+         if v_count >= v_max_records then
+--- merged devos_api.explain_paths
++++ corrective devos_api.explain_paths
+@@ -1,2 +1,2 @@
+-create function devos_api.explain_paths(root uuid, target uuid, limits jsonb)
++create or replace function devos_api.explain_paths(root uuid, target uuid, limits jsonb)
+ returns jsonb
+@@ -133,3 +133,9 @@
+     while cardinality(v_frontier) > 0 loop
+-      if exists (select 1 from devos_private.relation r where r.to_ref = any (v_frontier) and r.validity is null) then
++      if exists (select 1 from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r where r.changed = any (v_frontier) and r.validity is null)
++         or exists (select 1 from devos_private.relation x
++                     where x.type is null and (x.from_ref = any (v_frontier) or x.to_ref = any (v_frontier))) then
+         v_complete := false;
+@@ -138,4 +144,8 @@
+         -- Any edge out of the last level, to a record seen or not, may lengthen a path beyond max_depth.
+-        if exists (select 1 from devos_private.relation r
+-                    where r.to_ref = any (v_frontier) and r.validity <> 'retracted') then
++        if exists (select 1 from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++                    where r.changed = any (v_frontier) and r.validity <> 'retracted') then
+           v_complete := false;
+@@ -145,5 +155,9 @@
+       v_depth := v_depth + 1;
+-      select coalesce(array_agg(distinct r.from_ref), '{}'::uuid[]) into v_cand
+-        from devos_private.relation r
+-       where r.to_ref = any (v_frontier) and r.validity <> 'retracted' and not (r.from_ref = any (v_seen));
++      select coalesce(array_agg(distinct r.affected), '{}'::uuid[]) into v_cand
++        from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++       where r.changed = any (v_frontier) and r.validity <> 'retracted' and not (r.affected = any (v_seen));
+       v_vis := '{}'::uuid[];
+@@ -178,5 +192,9 @@
+         into v_ea, v_eb
+-        from (select distinct r.to_ref as parent, r.from_ref as node
+-                from devos_private.relation r
+-               where r.to_ref = any (v_frontier) and r.validity <> 'retracted' and r.from_ref = any (v_region)) d;
++        from (select distinct r.changed as parent, r.affected as node
++                from (select x.validity, x.to_ref as changed, x.from_ref as affected from devos_private.relation x
++               where x.type is not null and x.type not in ('supports', 'challenges')
++              union all
++              select x.validity, x.from_ref, x.to_ref from devos_private.relation x
++               where x.type in ('supports', 'challenges', 'part_of')) r
++               where r.changed = any (v_frontier) and r.validity <> 'retracted' and r.affected = any (v_region)) d;
+       v_frontier := v_vis;
+--- merged devos_api.review_finding
++++ corrective devos_api.review_finding
+@@ -1,2 +1,2 @@
+-create function devos_api.review_finding(finding_id uuid, revision integer, status text)
++create or replace function devos_api.review_finding(finding_id uuid, revision integer, status text)
+ returns jsonb
+@@ -77,2 +77,8 @@
+       v_code := 'could_not_check'; v_reason := 'finding: its status is missing (partial)';
++      raise exception using errcode = 'P0D01', message = 'devos refusal';
++    end if;
++    -- N-296 (3) option B (EV-C02-013 section 22 (5)): leaving withdrawn, the writer's status, is not a review.
++    if v_status = 'withdrawn' then
++      v_code := 'invalid_field';
++      v_reason := 'finding: a withdrawn finding is not under review (EV-C02-008 section 4 item 2)';
+       raise exception using errcode = 'P0D01', message = 'devos refusal';
+mcorr scrub (66_function_diff): claim-format strings replaced 0; environment-format strings replaced 0

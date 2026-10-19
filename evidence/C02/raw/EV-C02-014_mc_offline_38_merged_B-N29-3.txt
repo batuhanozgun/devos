@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-N29-3_link_to_decision.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_n29_impact_class.sql; expect-red=N29-link-high_impact,N29-link-depends_on,N29-link-batu)
+[database b38_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_n29_impact_class.sql on b38_t21:
+summary: W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N29-pre
+red list: not as expect-red; missing ['N29-link-batu', 'N29-link-depends_on', 'N29-link-high_impact']; extra none
+[database b38_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_n29_impact_class.sql on b38_t20:
+summary: W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N29-pre
+red list: not as expect-red; missing ['N29-link-batu', 'N29-link-depends_on', 'N29-link-high_impact']; extra none
+mcorr scrub (38_merged_B-N29-3): claim-format strings replaced 0; environment-format strings replaced 0

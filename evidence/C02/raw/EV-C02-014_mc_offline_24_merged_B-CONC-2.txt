@@ -1,0 +1,28 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-CONC-2_dependency_queue_removed.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_conc_claim_and_cycle.py; expect-red=CONC-cyc2,CONC-cyc4)
+[database b24_t21 from t21 exit 0]
+[patch exit 0]
+-- conc (tests/C02/W-C02-07/job/w07_conc_claim_and_cycle.py, merged) on b24_t21:
+summary: W07_CONC_CLAIM_AND_CYCLE FAIL (3 bad, 0 could not check, of 8)
+bad (3): CONC-claim, CONC-cyc2, CONC-cyc4
+could_not_check (0): none
+red list: not as expect-red; missing none; extra ['CONC-claim']
+[patch again for the revised program, exit 0]
+-- conc_rev (w07_conc_claim_and_cycle.py at c45f2fc, pull request #375, from scratchpad/mcorr_run/conc_rev/) on b24_t21:
+summary: W07_CONC_CLAIM_AND_CYCLE FAIL (2 bad, 0 could not check, of 8)
+bad (2): CONC-cyc2, CONC-cyc4
+could_not_check (0): none
+red list: exactly as expect-red (2)
+[database b24_t20 from t20 exit 0]
+[patch exit 0]
+-- conc (tests/C02/W-C02-07/job/w07_conc_claim_and_cycle.py, merged) on b24_t20:
+summary: W07_CONC_CLAIM_AND_CYCLE FAIL (2 bad, 0 could not check, of 8)
+bad (2): CONC-cyc2, CONC-cyc4
+could_not_check (0): none
+red list: exactly as expect-red (2)
+[patch again for the revised program, exit 0]
+-- conc_rev (w07_conc_claim_and_cycle.py at c45f2fc, pull request #375, from scratchpad/mcorr_run/conc_rev/) on b24_t20:
+summary: W07_CONC_CLAIM_AND_CYCLE FAIL (2 bad, 0 could not check, of 8)
+bad (2): CONC-cyc2, CONC-cyc4
+could_not_check (0): none
+red list: exactly as expect-red (2)
+mcorr scrub (24_merged_B-CONC-2): claim-format strings replaced 0; environment-format strings replaced 0

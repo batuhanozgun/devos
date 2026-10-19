@@ -1,0 +1,59 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (comparison and break runs: setup)
+start 2026-10-19T03:16:38Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+40
+[template t20 exit 0]
+2
+[template t21 exit 0]
+made k01_claim_live_ignores_epoch
+made k02_claim_count_without_predicate
+made k03_claim_expires_lease_only
+made k04_claim_expired_payload_without_epoch
+made k05_ready_value_without_predicate
+made k06_rule_c_revise_work_old_count
+made k07_rule_c_cancel_work_old_count
+made k08_rule_c_relate_old_count
+made k09_rule_c_retract_relation_old_count
+made k10_widening_own_decision_admitted
+made k11_widening_order_of_answers_removed
+made k12_widening_equal_time_refused
+made k13_supports_as_built
+made k14_part_of_one_way
+made k15_null_type_counted_complete
+made k16_withdrawn_finding_admitted
+made k17_mark_stale_parameter_through_function_name
+made k18_claim_live_unreadable_epoch_as_live
+mcorr scrub (14_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0

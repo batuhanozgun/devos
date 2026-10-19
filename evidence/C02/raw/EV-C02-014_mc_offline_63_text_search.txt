@@ -1,0 +1,47 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the text search at this head: every line of a top-level migration file that names lease_expires_at, and every file that reads devos_private.assignment; the definitions the corrective migration replaces are superseded at apply, run 09 gives the catalogue's current set)
+supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql:207:  lease_expires_at timestamptz not null,
+supabase/migrations/20261018203001_w09_private_helpers.sql:77:-- "lease_expires_at"}, or {"status": "refused", "reason_code", "reason"}, which the caller turns into its v_code and
+supabase/migrations/20261018203001_w09_private_helpers.sql:130:    select a.id, a.work_revision, a.status, a.lease_expires_at, a.generation, a.authority_epoch, a.role_class
+supabase/migrations/20261018203001_w09_private_helpers.sql:134:    select a.id, a.work_revision, a.status, a.lease_expires_at, a.generation, a.authority_epoch, a.role_class
+supabase/migrations/20261018203001_w09_private_helpers.sql:202:                            'generation', v_generation, 'authority_epoch', v_claim_epoch, 'lease_expires_at', v_lease);
+supabase/migrations/20261018203001_w09_private_helpers.sql:356:  select coalesce(bool_or(a.status = 'active' and a.lease_expires_at > now()), false),
+supabase/migrations/20261018203001_w09_private_helpers.sql:357:         coalesce(bool_or(a.status is null or (a.status = 'active' and a.lease_expires_at is null)), false)
+supabase/migrations/20261018230001_w09_work_effort.sql:538:                              or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+supabase/migrations/20261018230001_w09_work_effort.sql:539:           count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
+supabase/migrations/20261018230001_w09_work_effort.sql:968:                              or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+supabase/migrations/20261018230001_w09_work_effort.sql:969:           count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
+supabase/migrations/20261018235501_w09_claims.sql:123:-- {"status": "ok", "id", "assignment_id" (the same), "claim_token", "generation", "lease_expires_at"}. No exact repeat:
+supabase/migrations/20261018235501_w09_claims.sql:228:                              or (a.status = 'active' and a.lease_expires_at is null)),
+supabase/migrations/20261018235501_w09_claims.sql:229:           count(*) filter (where a.status = 'active' and a.lease_expires_at > now()),
+supabase/migrations/20261018235501_w09_claims.sql:281:                  where a.work_ref = p_work and a.status = 'active' and a.lease_expires_at <= now()
+supabase/migrations/20261018235501_w09_claims.sql:282:                  returning a.id, a.generation, a.lease_expires_at loop
+supabase/migrations/20261018235501_w09_claims.sql:285:                           'lease_expires_at', v_old.lease_expires_at),
+supabase/migrations/20261018235501_w09_claims.sql:294:                                          generation, authority_epoch, lease_expires_at)
+supabase/migrations/20261018235501_w09_claims.sql:300:                         'authority_epoch', v_epoch, 'lease_expires_at', v_lease),
+supabase/migrations/20261018235501_w09_claims.sql:314:                                 'generation', v_generation, 'lease_expires_at', v_lease);
+supabase/migrations/20261018235501_w09_claims.sql:324:-- (the Assignment), "lease_expires_at"}. No exact repeat: each extends from its own time. devos_calisma,
+supabase/migrations/20261018235501_w09_claims.sql:385:    update devos_private.assignment a set lease_expires_at = v_lease, last_heartbeat_at = now() where a.id = v_id;
+supabase/migrations/20261018235501_w09_claims.sql:387:      jsonb_build_object('work_ref', v_work, 'lease_expires_at', v_lease), v_class::text, 'call', null);
+supabase/migrations/20261018235501_w09_claims.sql:397:  return jsonb_build_object('status', 'ok', 'id', v_id, 'lease_expires_at', v_lease);
+supabase/migrations/20261018235501_w09_claims.sql:550:    select a.status, a.lease_expires_at, a.generation into v_status, v_lease, v_generation
+supabase/migrations/20261019010001_w09_relations.sql:362:                                  or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+supabase/migrations/20261019010001_w09_relations.sql:363:               count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
+supabase/migrations/20261019010001_w09_relations.sql:605:                                  or (a.status = 'active' and (a.lease_expires_at is null or a.role_class is null))),
+supabase/migrations/20261019010001_w09_relations.sql:606:               count(*) filter (where a.status = 'active' and a.lease_expires_at > now() and a.role_class <> v_class)
+-- files reading devos_private.assignment, with their counts of lines:
+supabase/migrations/20261014170203_w08_missions_decisions_needs_work.sql:5
+supabase/migrations/20261014170204_w08_findings_reviews_effects_exams.sql:1
+supabase/migrations/20261018203001_w09_private_helpers.sql:6
+supabase/migrations/20261018230001_w09_work_effort.sql:4
+supabase/migrations/20261018235501_w09_claims.sql:10
+supabase/migrations/20261019010001_w09_relations.sql:8
+supabase/migrations/20261019030001_w09_knowledge_product_review.sql:2
+supabase/migrations/20261019050001_w09_external_effect.sql:2
+-- the corrective migration's own lines naming lease_expires_at outside claim_live's calls:
+1528:                  returning a.id, a.generation, a.lease_expires_at, a.authority_epoch loop
+1531:                           'lease_expires_at', v_old.lease_expires_at, 'authority_epoch', v_old.authority_epoch,
+1541:                                          generation, authority_epoch, lease_expires_at)
+1547:                         'authority_epoch', v_epoch, 'lease_expires_at', v_lease),
+1561:                                 'generation', v_generation, 'lease_expires_at', v_lease);
+[end of search]
+mcorr scrub (63_text_search): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,28 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k01_claim_live_ignores_epoch, a copy of the corrective migration outside the repository, applied in place of it on a fresh copy of t20)
+[database k44 from t20 exit 0]
+[apply exit 0]
+-- the self-check on k44:
+summary: MCORR_FUNCTIONS FAIL (10 of 117 not as wanted)
+bad (10): RV-ready-after, RW-after-lists, CL-after, CL-after-generation, CL-after-old-expired, CL-after-event, RC-revise_work-after, RC-cancel_work-after, RC-relate-after, RC-retract_relation-after
+could_not_check (0): none
+-- w07_dm07_heartbeat.sql on k44:
+summary: W07_DM07_HEARTBEAT PASS (8/8)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f08_recheck_at_effect.sql on k44:
+summary: W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_6rg_rule_gate_could_not_check.sql on k44:
+summary: W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (27/27)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n17_claim_token.sql on k44:
+summary: W07_N17_CLAIM_TOKEN PASS (13/13)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+mcorr scrub (44_break_k01): claim-format strings replaced 0; environment-format strings replaced 0
