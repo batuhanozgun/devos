@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-07/breaks/B-N04-3_accept_counts_transfer_copy.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=w07_n04_self_approval.sql; expect-red=N04-T2)
+[database b26 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on b26:
+summary: W07_N04_SELF_APPROVAL FAIL (1 bad, 0 could not check, of 19)
+bad (1): N04-T2
+could_not_check (0): none
+detail: N04-T2            | bad     | accept of the transfer's devos_kurulum copy, with the audit token: accepted (wanted refused, the target unchanged); acceptance proposed -> accepted
+red list: exactly as expect-red (1)
+m0912 scrub (26_merged_B-N04-3): claim-format strings replaced 0; environment-format strings replaced 0

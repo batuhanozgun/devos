@@ -1,0 +1,41 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b01_review_gate_admits_calisma, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k28 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k28:
+summary: M0912_FUNCTIONS FAIL (16 of 119 not as wanted)
+bad (16): G-transfer_review-devos_calisma, TV-run-never, TV-run-completed, TV-run-none, TV-target-unwritten, TV-trev-unwritten, TV-trev-norevs, TV-write-failed, TV-write-mark-failed, TV-write-P0D02, TV-after-handover-run, TV-after-handover, TV-pos, TV-pos-row, TV-pos-mark, TX-literals
+could_not_check (0): none
+detail: 1 | G-transfer_review-devos_calisma     | f  | ok                       | role_class_not_permitted | {"event": 1, "review": 1, "verdict": 1} |  | wanted delta {"rejected": 1}
+detail: 24 | TV-run-never                        | f  | ok repeat                | run_not_open             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 25 | TV-run-completed                    | f  | ok repeat                | run_not_open             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 26 | TV-run-none                         | f  | ok repeat                | run_not_open             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 27 | TV-target-unwritten                 | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 28 | TV-trev-unwritten                   | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 29 | TV-trev-norevs                      | f  | ok repeat                | invalid_field            | {}                                      |  | wanted delta {"rejected": 1}
+detail: 30 | TV-write-failed                     | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 31 | TV-write-mark-failed                | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 32 | TV-write-P0D02                      | f  | ok repeat                | could_not_check          | {}                                      |  | wanted delta {"rejected": 1}
+detail: 34 | TV-after-handover-run               | f  | ok repeat                | run_not_open             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 35 | TV-after-handover                   | f  | ok repeat                | ok                       | {}                                      |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 36 | TV-pos                              | f  | ok repeat                | ok                       | {}                                      |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 37 | TV-pos-row                          | f  | false                    | true                     | {}                                      | the Review copy as sent; reviewer_role_class from the token, not the key sent
+detail: 39 | TV-pos-mark                         | f  | false                    | true                     | {}                                      | its one event, the transferred mark on the Review, with the Verdict's id; none on the Verdict
+detail: 112 | TX-literals                         | f  | false                    | true                     | {}                                      | the role list a literal in each text (B:48)
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k28:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-G-transfer_review
+could_not_check (0): none
+detail: FN-G-transfer_review             | bad     | devos_calisma: refused [missing_field kind: missing]; devos_denetim: refused [role_class_not_permitted transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted transfer_re
+red list: not as expect-red; missing none; extra ['FN-G-transfer_review']
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k28:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql on k28:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 0 could not check, of 324)
+bad (1): 5B-R19-transfer_review-cal
+could_not_check (0): none
+detail: 5B-R19-transfer_review-cal        | bad     | x cell: transfer_review with the devos_calisma token must be refused for its role class; code missing_field; err - ; ra {"transfer_review|missing_field|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing none; extra ['5B-R19-transfer_review-cal']
+m0912 scrub (28_break_b01): claim-format strings replaced 0; environment-format strings replaced 0

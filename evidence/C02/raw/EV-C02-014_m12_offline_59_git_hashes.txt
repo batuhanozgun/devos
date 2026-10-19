@@ -1,0 +1,140 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes of the bytes run, the copies against their staged files, text counts of M09-12, and the clone's git state; written without the scrub, hashes, counts and git output only)
+a0ef20464a2143a75f64adf7eab3351aa7909e472e64f1ba78e5e5601e4269ab  supabase/migrations/20261019160001_w09_transfer_copies.sql
+a721cdadd4ee329a87055dc64d392e819b73d4b6acf00f5d34258ad411264870  evidence/C02/EV-C02-013_w09_interface.md
+46b976bf3cc1e658d77719b52b6581f00a4dbe1174b5886f95d6b47a4ec07bd1  fn_check.sql
+f02dd63bfcfd2c51464c2ff3ba8d1367fbb5ee4456ca79e19b297ef5fae07382  fn_head.sql
+c0e9be3e5119e1195da30682bb11c98ac3623121a15a53e3a7394ec8a8e53ab7  fn_cases.sql
+d07500954c7eefc6a097af3547515ef3f3dac7d2f9067125c523643c67e2c212  brk.py
+6ceb19fcb444a71b428a80a661038bdb1f8e1085f37d5bc15dfef13f6c095637  brk.sh
+9d3ef3ec4eb791da079a16629680916a0fb139bdfd234a8e88852dd36c4176bc  rerun.sh
+c0ff44cbe55b3c1f68c860229e455c9fd4866f55ad858b5333b521b4492d316d  run.sh
+b88ac43a2a70ac796179e6dde39cf78b990ab83e719679e5156a06fba0847a92  drive.py
+359c23d652166d506bfe52ae9dd318a3ca5282a0ff8e3070efc7a47bfdaf4fe6  judge.py
+79a242cf8c54bbb999a9eb3f6b7e4a3b52fb4cab2ca1b493b413c052981269f0  scrub.py
+c3b959550b741bc419b388d54bc1325ce65f55d4b42fc523dcecead1067f467e  scan.py
+fa2a9cfa8e9b1bef07d784dbbb4d909582eb8ae43d2b1b8e141d5487ff129783  setup.sql
+4bd934440e11bc6f156462e001837af95f78fc3633c251a7700f738b679b1cd4  catalog.sql
+8c5013f93bdb9e4efb267b39a64ec06690c0bdfe9f61cecdf21e6d3f09173391  final.sh
+the copies: staged file, its last commit on this branch, SHA-256 of the staged file and of the copy, equal or not
+tests/C02/W-C02-07/job/w07_5a_positive_control.sql c59bf3e 49a1624208c065826bab845517c09da8184ce56a4d9d2ecdafb1afd151e3c0c2 49a1624208c065826bab845517c09da8184ce56a4d9d2ecdafb1afd151e3c0c2 equal
+tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql 04da0de 9dabddaf600f286a2013bf85da6443f71d7e8c2b8bbc33cbf173dabfe50fdce7 9dabddaf600f286a2013bf85da6443f71d7e8c2b8bbc33cbf173dabfe50fdce7 equal
+tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql ff6fe0f a96159a3ed4ee1fd6b16923c0322dcdb460a69b098867f697e4dd7b8f8fce5e4 a96159a3ed4ee1fd6b16923c0322dcdb460a69b098867f697e4dd7b8f8fce5e4 equal
+tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql 3e81482 6809cc507384ebbd4614ac3ab156720c27d85c9eb6bfaceff6725f126ac5b911 6809cc507384ebbd4614ac3ab156720c27d85c9eb6bfaceff6725f126ac5b911 equal
+tests/C02/W-C02-07/job/w07_conc_claim_and_cycle.py 9d98d20 ff634668170cde418c4a197dce9259a5990fd059f9d975f09ef93eaf3bb44105 ff634668170cde418c4a197dce9259a5990fd059f9d975f09ef93eaf3bb44105 equal
+tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql 04da0de 423b27e2b71c21a03fef159dc868b7ad0ce9eaea31a02ccd5385566cadcea784 423b27e2b71c21a03fef159dc868b7ad0ce9eaea31a02ccd5385566cadcea784 equal
+tests/C02/W-C02-07/job/w07_dm19_rejected_attempt_survives.sql 72fdffe d0c9d4de69aa11e589ce4575b14b6095fe18a3fc680a96832cee8e664e72ce95 d0c9d4de69aa11e589ce4575b14b6095fe18a3fc680a96832cee8e664e72ce95 equal
+tests/C02/W-C02-07/job/w07_dm19b_burst_count.sql ff6fe0f ace9cbeee978725d1710702b337ff0eb732c2d41a4fa0843519866d3516596cd ace9cbeee978725d1710702b337ff0eb732c2d41a4fa0843519866d3516596cd equal
+tests/C02/W-C02-07/job/w07_dm34_mission_scope.sql 04da0de fb0942750ed70905427028d66f34902748085d8464682528e79d9a7fce399392 fb0942750ed70905427028d66f34902748085d8464682528e79d9a7fce399392 equal
+tests/C02/W-C02-07/job/w07_f01_whole_intent.sql 589bf2d a0aca0eb219b407d03a9a3015409c91e03856239dbcea389902e2ff25090e6e3 a0aca0eb219b407d03a9a3015409c91e03856239dbcea389902e2ff25090e6e3 equal
+tests/C02/W-C02-07/job/w07_f04_affected_records.sql 589bf2d aecc1d6c38d0121f843550b049511a2f88a59cfedbb2758f0b8f6e6c78e122f8 aecc1d6c38d0121f843550b049511a2f88a59cfedbb2758f0b8f6e6c78e122f8 equal
+tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql b960e29 8b58d13186bbb90055cd39540c6b5985294376bc2e6820551f184ce51b254f90 8b58d13186bbb90055cd39540c6b5985294376bc2e6820551f184ce51b254f90 equal
+tests/C02/W-C02-07/job/w07_f07_observation_history.sql 04da0de a6326621ff353692a85c8b418898b18f29a68b5ec9baf8315182bc0a3b7d3e28 a6326621ff353692a85c8b418898b18f29a68b5ec9baf8315182bc0a3b7d3e28 equal
+tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql 589bf2d b5e3683ff9de437c761ad8b593be7f12dfff7cee56bd00352f74711aa2644ac2 b5e3683ff9de437c761ad8b593be7f12dfff7cee56bd00352f74711aa2644ac2 equal
+tests/C02/W-C02-07/job/w07_k05_many_paths.sql 6b2dedb a293dc50ffbff02b2e4b9eae0041661c9cee5457c1d9a8206157f9308d24077d a293dc50ffbff02b2e4b9eae0041661c9cee5457c1d9a8206157f9308d24077d equal
+tests/C02/W-C02-07/job/w07_n08_exam_fact.sql 9d98d20 610bf1b968babe73188488d134805e9c0552babf006238bf389e1daf12c85a98 610bf1b968babe73188488d134805e9c0552babf006238bf389e1daf12c85a98 equal
+tests/C02/W-C02-07/job/w07_n09_finding_gate.sql 589bf2d 98d8b40b13e24360ff42611c899a01bd663400602dff263abc26ad33588d176a 98d8b40b13e24360ff42611c899a01bd663400602dff263abc26ad33588d176a equal
+tests/C02/W-C02-07/job/w07_n17_claim_token.sql 72fdffe abdc2e82006ba35d0bdfdd77ae80a71d7f0425bf6d0105aa5c3ef530acf9c9dd abdc2e82006ba35d0bdfdd77ae80a71d7f0425bf6d0105aa5c3ef530acf9c9dd equal
+tests/C02/W-C02-07/job/w07_n25_verdict_staleness.sql 72fdffe b0ed8da26ac51ebad0673acfcc2397f8d7977900accb11b227b771b82ee198e8 b0ed8da26ac51ebad0673acfcc2397f8d7977900accb11b227b771b82ee198e8 equal
+tests/C02/W-C02-07/job/w07_n29_mission_widening.sql 589bf2d 1af246bce16e81b2ad048c25a25ab562ce253457fd3c6a7336886270bc83eebd 1af246bce16e81b2ad048c25a25ab562ce253457fd3c6a7336886270bc83eebd equal
+tests/C02/W-C02-07/job/w07_rel_relation_status.sql c59bf3e 5fc519717cdaab12da6e9f29681a87085c391f6124075dcb936d86e11a5ac472 5fc519717cdaab12da6e9f29681a87085c391f6124075dcb936d86e11a5ac472 equal
+tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql 04da0de 0d6764447dfdc56f2addd52cb6a66be03a67dc768661a3138ed8d4518bab7c21 0d6764447dfdc56f2addd52cb6a66be03a67dc768661a3138ed8d4518bab7c21 equal
+files in supabase/migrations/tests/: 31; with a backslash: 0
+backslashes in M09-12: 0
+psql meta-command lines in it: 0
+its strings found by either token finder: m0912 scan: 1 files; claim-format 0; environment-format 0
+its lines holding either marker whole: 0
+the copies' lines holding either marker whole: 0
+its lines naming the exam table (eval_run): 0
+its lines naming claim_live or check_claim: 0
+its lines naming a claim token: 0
+its lines naming devos_private.assignment (the family lookup of a reference, no claim count): 3
+its lines naming created_at outside comment lines: 1
+its lines naming answered_at outside comment lines: 0
+$ git rev-parse HEAD; git status --porcelain
+7fc7537f8a3ab8a675bb4811c914027e12d3f08e
+ M evidence/C02/EV-C02-013_w09_interface.md
+ M evidence/C02/EV-C02-014_w09_build.md
+?? evidence/C02/raw/EV-C02-014_m12_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_03_apply_m0912.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_05_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_06_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_07_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_08_functions.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_09_folder_sql_fresh.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_10_folder_conc_first.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_11_folder_sql_after_conc.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_12_folder_conc_second.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_13_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_14_log_scan_stop.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_15_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_16_compare_t24.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_17_compare_t25.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_18_merged_B-FN-1.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_19_merged_B-FN-2.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_20_merged_B-FN-3.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_21_merged_B-FN-4.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_22_merged_B-FN-5.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_23_merged_B-FN-6.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_24_merged_B-N04-1.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_25_merged_B-N04-2.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_26_merged_B-N04-3.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_27_merged_B-N01-2.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_28_break_b01.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_29_break_b02.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_30_break_b03.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_31_break_b04.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_32_break_b05.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_33_break_b06.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_34_break_b07.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_35_break_b08.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_36_break_b09.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_37_break_b10.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_38_break_b11.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_39_break_b12.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_40_break_b13.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_41_break_b14.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_42_break_b15.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_43_break_b16.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_44_break_b17.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_45_break_b18.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_46_break_b19.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_47_break_b20.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_48_break_b21.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_49_break_b22.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_50_break_b23.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_51_break_b24.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_52_break_b25.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_53_break_b26.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_54_break_b27.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_55_break_b28.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_56_break_b29.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_57_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_58_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_m12_offline_59_git_hashes.txt
+?? supabase/migrations/20261019160001_w09_transfer_copies.sql
+?? supabase/migrations/tests/w07_5a_positive_control.sql
+?? supabase/migrations/tests/w07_5c_other_session_fake_id.sql
+?? supabase/migrations/tests/w07_6rg_rule_gate_could_not_check.sql
+?? supabase/migrations/tests/w07_6tk_token_reasons.sql
+?? supabase/migrations/tests/w07_conc_claim_and_cycle.py
+?? supabase/migrations/tests/w07_dm07_heartbeat.sql
+?? supabase/migrations/tests/w07_dm19_rejected_attempt_survives.sql
+?? supabase/migrations/tests/w07_dm19b_burst_count.sql
+?? supabase/migrations/tests/w07_dm34_mission_scope.sql
+?? supabase/migrations/tests/w07_f01_whole_intent.sql
+?? supabase/migrations/tests/w07_f04_affected_records.sql
+?? supabase/migrations/tests/w07_f05_scope_both_sides.sql
+?? supabase/migrations/tests/w07_f07_observation_history.sql
+?? supabase/migrations/tests/w07_f08_recheck_at_effect.sql
+?? supabase/migrations/tests/w07_k05_many_paths.sql
+?? supabase/migrations/tests/w07_n08_exam_fact.sql
+?? supabase/migrations/tests/w07_n09_finding_gate.sql
+?? supabase/migrations/tests/w07_n17_claim_token.sql
+?? supabase/migrations/tests/w07_n25_verdict_staleness.sql
+?? supabase/migrations/tests/w07_n29_mission_widening.sql
+?? supabase/migrations/tests/w07_rel_relation_status.sql
+?? supabase/migrations/tests/w14_fn_transfer_functions.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end of diff]

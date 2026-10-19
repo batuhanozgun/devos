@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-07/breaks/B-N01-2_sample_written_by_agent.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=w07_n01_need_justification.sql; expect-red=N01-tok-devos_calisma,N01-tok-devos_denetim,N01-tok-devos_sinav,N01-tok-devos_kurulum)
+[database b27 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-07/job/w07_n01_need_justification.sql on b27:
+summary: W07_N01_NEED_JUSTIFICATION COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N01-pre
+detail: N01-pre | could_not_check | devos_private.sample_stream does not exist
+red list: not as expect-red; missing ['N01-tok-devos_calisma', 'N01-tok-devos_denetim', 'N01-tok-devos_kurulum', 'N01-tok-devos_sinav']; extra none
+m0912 scrub (27_merged_B-N01-2): claim-format strings replaced 0; environment-format strings replaced 0

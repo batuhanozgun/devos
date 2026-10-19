@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b04_review_repeat_writes_again, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k31 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k31:
+summary: M0912_FUNCTIONS FAIL (4 of 119 not as wanted)
+bad (4): TV-repeat, TV-repeat-id, TV-repeat-completed-run, TV-conflict
+could_not_check (0): none
+detail: 40 | TV-repeat                           | f  | write_failed             | ok repeat                | {"rejected": 1}                         | the write failed (SQLSTATE 23505) | wanted delta {}
+detail: 41 | TV-repeat-id                        | f  | false                    | true                     | {}                                      | the existing ids
+detail: 42 | TV-repeat-completed-run             | f  | run_not_open             | ok repeat                | {"rejected": 1}                         | run_id: names no open run (completed; EV-C02-013 3.1) | wanted delta {}
+detail: 43 | TV-conflict                         | f  | write_failed             | conflict                 | {"rejected": 1}                         | the write failed (SQLSTATE 23505)
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k31:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-I-same
+could_not_check (0): none
+detail: FN-I-same                        | bad     | transfer_review, an exact repeat (same source, same hash): refused [write_failed the write failed (SQLSTATE 23505)], id none (first 10566f1d-2229-43b3-a7aa-5b723325159e); tables changed besides rejected_attempt: none (wanted accepted, the same id, none)
+red list: not as expect-red; missing none; extra ['FN-I-same']
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k31:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (31_break_b04): claim-format strings replaced 0; environment-format strings replaced 0

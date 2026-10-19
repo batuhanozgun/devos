@@ -1,0 +1,78 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b10_review_mark_not_written, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k37 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k37:
+summary: M0912_FUNCTIONS FAIL (49 of 119 not as wanted)
+bad (49): TV-write-mark-failed, TV-after-handover, TV-pos, TV-pos-mark, TV-repeat, TV-repeat-id, TV-repeat-completed-run, TV-conflict, TV-no-target, TV-no-target-lacks, TV-target-trev, TV-target-review, TV-indeterminate, TV-verdict-defaults, TA-fail, TA-indeterminate, TA-cond, TA-cond-other-event, TA-review-use, TA-ce-unwritten, TA-ce-event-unwritten, TA-target-unwritten, TA-target-finding, TA-target-review, TA-trev-unwritten, TA-trev-stale, TA-work-not-installation, TA-decision-cal, TA-decision-open, TA-decision-open-exploration, TA-write-failed, TA-write-mark-failed, TA-write-state-failed, TA-write-state-event-failed, TA-after-handover, TA-pos, TA-pos-row, TA-pos-mark, TA-pos-state, TA-repeat, TA-repeat-id, TA-conflict, TA-work-already-accepted, TA-cond-pos, TA-cond-pos-mark, TA-decision-pos, TA-decision-pos-state, TA-decision-accepted, TA-no-mission
+could_not_check (0): none
+detail: 31 | TV-write-mark-failed                | f  | ok                       | write_failed             | {"review": 1, "verdict": 1} |  | wanted delta {"rejected": 1}
+detail: 35 | TV-after-handover                   | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 36 | TV-pos                              | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 39 | TV-pos-mark                         | f  | false                    | true                     | {}                          | its one event, the transferred mark on the Review, with the Verdict's id; none on the Verdict
+detail: 40 | TV-repeat                           | f  | ok                       | ok repeat                | {"review": 1, "verdict": 1} |  | wanted delta {}
+detail: 41 | TV-repeat-id                        | f  | false                    | true                     | {}                          | the existing ids
+detail: 42 | TV-repeat-completed-run             | f  | run_not_open             | ok repeat                | {"rejected": 1}             | run_id: names no open run (completed; EV-C02-013 3.1) | wanted delta {}
+detail: 43 | TV-conflict                         | f  | ok                       | conflict                 | {"review": 1, "verdict": 1} |  | wanted delta {"rejected": 1}
+detail: 44 | TV-no-target                        | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 45 | TV-no-target-lacks                  | f  | false                    | true                     | {}                          | lacks names target_ref (B 3.11)
+detail: 46 | TV-target-trev                      | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 47 | TV-target-review                    | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 48 | TV-indeterminate                    | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 49 | TV-verdict-defaults                 | f  | ok                       | ok                       | {"review": 1, "verdict": 1} |  | wanted delta {"event": 1, "review": 1, "verdict": 1}
+detail: 72 | TA-fail                             | f  | could_not_check          | verdict_failed           | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 73 | TA-indeterminate                    | f  | could_not_check          | verdict_failed           | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 74 | TA-cond                             | f  | could_not_check          | conditions_not_recorded  | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 75 | TA-cond-other-event                 | f  | could_not_check          | conditions_not_recorded  | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 76 | TA-review-use                       | f  | could_not_check          | invalid_field            | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 77 | TA-ce-unwritten                     | f  | could_not_check          | reference_missing        | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 78 | TA-ce-event-unwritten               | f  | could_not_check          | reference_missing        | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 80 | TA-target-unwritten                 | f  | could_not_check          | reference_missing        | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 81 | TA-target-finding                   | f  | could_not_check          | invalid_field            | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 82 | TA-target-review                    | f  | could_not_check          | invalid_field            | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 83 | TA-trev-unwritten                   | f  | could_not_check          | reference_missing        | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 84 | TA-trev-stale                       | f  | could_not_check          | stale_revision           | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 85 | TA-work-not-installation            | f  | could_not_check          | not_owner                | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 87 | TA-decision-cal                     | f  | could_not_check          | not_owner                | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 89 | TA-decision-open                    | f  | could_not_check          | invalid_field            | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 90 | TA-decision-open-exploration        | f  | could_not_check          | open_exploration         | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 91 | TA-write-failed                     | f  | could_not_check          | write_failed             | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 92 | TA-write-mark-failed                | f  | could_not_check          | write_failed             | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 93 | TA-write-state-failed               | f  | could_not_check          | write_failed             | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 94 | TA-write-state-event-failed         | f  | could_not_check          | write_failed             | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 97 | TA-after-handover                   | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 2, "acceptance": 1}
+detail: 98 | TA-pos                              | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 2, "acceptance": 1}
+detail: 99 | TA-pos-row                          | f  | false                    | true                     | {}                          | the Acceptance as sent; owner_authority D-010's Decision, from the installation's Mission, not the key sent
+detail: 100 | TA-pos-mark                         | f  | false                    | true                     | {}                          | its one event, the mark; lacks names ledger_entry
+detail: 101 | TA-pos-state                        | f  | false                    | true                     | {}                          | the Work accepted, with acceptance_set at its revision, in the same call
+detail: 102 | TA-repeat                           | f  | could_not_check          | ok repeat                | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {}
+detail: 103 | TA-repeat-id                        | f  | false                    | true                     | {}                          | the existing id
+detail: 104 | TA-conflict                         | f  | could_not_check          | conflict                 | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+detail: 105 | TA-work-already-accepted            | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 1, "acceptance": 1}
+detail: 106 | TA-cond-pos                         | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 2, "acceptance": 1}
+detail: 107 | TA-cond-pos-mark                    | f  | false                    | true                     | {}                          | a ledger_entry event named: lacks empty
+detail: 108 | TA-decision-pos                     | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 2, "acceptance": 1}
+detail: 109 | TA-decision-pos-state               | f  | false                    | true                     | {}                          | the Decision accepted from answered, with acceptance_set
+detail: 110 | TA-decision-accepted                | f  | could_not_check          | ok                       | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial) | wanted delta {"event": 1, "acceptance": 1}
+detail: 111 | TA-no-mission                       | f  | could_not_check          | reference_missing        | {"rejected": 1}             | review_ref: the Review's creation event is missing (partial)
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k37:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (10 bad, 1 could not check, of 109)
+bad (10): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-pos, FN-I-other-review, FN-I-same, FN-O-transfer_acceptance, FN-O-transfer_review, FN-T-ev-transfer_review, FN-T-half-ev-transfer_review
+could_not_check (1): FN-R-declared
+detail: FN-A-cond                        | bad             | transfer_acceptance naming a conditional copy, current_evidence naming only it: could_not_check [could_not_check review_ref: the Review's creation event is missing (partial)]; acceptance rows +0; the Work's acceptance proposed; tables changed besi
+detail: FN-A-cond-pos                    | bad             | transfer_acceptance naming a conditional copy, current_evidence naming it and a ledger_entry event as {"event_id": n}: could_not_check [could_not_check review_ref: the Review's creation event is missing (partial)]; acceptance rows +0; the Work's a
+detail: FN-A-fail                        | bad             | transfer_acceptance naming a fail copy: could_not_check [could_not_check review_ref: the Review's creation event is missing (partial)]; acceptance rows +0; the Work's acceptance proposed; tables changed besides rejected_attempt: none (wanted refus
+detail: FN-A-pos                         | bad             | transfer_acceptance naming a pass copy: could_not_check [could_not_check review_ref: the Review's creation event is missing (partial)]; acceptance rows +0; the Work's acceptance proposed; tables changed besides rejected_attempt: none (wanted accep
+detail: FN-I-other-review                | bad             | transfer_review, the same source with another hash: accepted; tables changed besides rejected_attempt: review, verdict; its transferred events 0; rejected_attempt rows +0 (wanted refused, none, 1, at least 1)
+detail: FN-I-same                        | bad             | transfer_review, an exact repeat (same source, same hash): accepted, id 63a00be2-2f98-4274-b278-473cc94a61dc (first 5524f0cc-6b49-4806-b065-0d2c66c93d83); tables changed besides rejected_attempt: review, verdict (wanted accepted, the same id, none
+detail: FN-O-transfer_acceptance         | bad             | after the hand-over, no run_id: transfer_acceptance of that copy could_not_check [could_not_check review_ref: the Review's creation event is missing (partial)]; acceptance rows +0 (wanted accepted, +1)
+detail: FN-O-transfer_review             | bad             | after the hand-over, no run_id: transfer_review accepted; review rows +1, its transferred events 0 (wanted accepted, +1, 1)
+detail: FN-R-declared                    | could_not_check | declared devos_denetim and origin owner: accepted; the copy's reviewer_role_class devos_kurulum, its events none (wanted devos_kurulum, devos_kurulum/call)
+detail: FN-T-ev-transfer_review          | bad             | transfer_review: accepted; its transferred events 0 (wanted one, naming the record 4a132bfb-f3ab-4324-9a1f-4eed0af715b1, role_class devos_kurulum, origin call, the transfer_source sent); review rows +1
+detail: FN-T-half-ev-transfer_review     | bad             | transfer_review with the transferred event's write made to fail: accepted; tables changed besides rejected_attempt: review, verdict; its transferred events 0 (wanted not accepted, none, 0)
+red list: not as expect-red; missing none; extra ['FN-A-cond', 'FN-A-cond-pos', 'FN-A-fail', 'FN-A-pos', 'FN-I-other-review', 'FN-I-same', 'FN-O-transfer_acceptance', 'FN-O-transfer_review', 'FN-T-ev-transfer_review', 'FN-T-half-ev-transfer_review']
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k37:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (37_break_b10): claim-format strings replaced 0; environment-format strings replaced 0

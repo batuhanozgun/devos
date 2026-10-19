@@ -1,0 +1,181 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of M09-12)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                 id                  | ok |           got            |          wanted          |                  delta                  |                                                                     note                                                                     
+-----+-------------------------------------+----+--------------------------+--------------------------+-----------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------
+   1 | G-transfer_review-devos_calisma     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   2 | G-transfer_review-devos_denetim     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   3 | G-transfer_review-devos_sinav       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   4 | G-transfer_review-devos_ci          | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   5 | G-transfer_review-devos_backup      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_review admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   6 | G-transfer_review-no-token          | t  | missing                  | missing                  | {"rejected": 1}                         | the request carries no environment token
+   7 | TV-kind-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                         | kind: missing
+   8 | TV-kind-sample                      | t  | kind_not_allowed         | kind_not_allowed         | {"rejected": 1}                         | kind: a sample Review is opened only by the database (B 3.11; EV-C02-008 2.2 condition 2)
+   9 | TV-kind-other                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | kind: not review
+  10 | TV-src-kind                         | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | transfer_source.kind: not verdict (EV-C02-013 3.1)
+  11 | TV-src-sha                          | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | transfer_source.sha256: not 64 lower-case hexadecimal characters
+  12 | TV-basis-missing                    | t  | missing_field            | missing_field            | {"rejected": 1}                         | basis_refs: missing
+  13 | TV-basis-empty                      | t  | missing_field            | missing_field            | {"rejected": 1}                         | basis_refs: empty (a review's basis is mandatory, B section 4)
+  14 | TV-basis-object                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | basis_refs: not an array
+  15 | TV-rds-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                         | reviewer_declared_session: missing
+  16 | TV-use-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                         | use: missing
+  17 | TV-level-other                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | independence_level: a copy of an installation checker verdict is fresh_context_subagent (B 3.11)
+  18 | TV-verdict-missing                  | t  | missing_field            | missing_field            | {"rejected": 1}                         | verdict: missing
+  19 | TV-result-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                         | verdict.result: missing
+  20 | TV-result-other                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | verdict.result: not pass, fail, conditional or indeterminate
+  21 | TV-limits-string                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | verdict.limits: not an array
+  22 | TV-target-not-uuid                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_ref: not a uuid
+  23 | TV-trev-alone                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_revision: sent without target_ref, so it names nothing
+  24 | TV-run-never                        | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: names no open run (never begun; EV-C02-013 3.1)
+  25 | TV-run-completed                    | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: names no open run (completed; EV-C02-013 3.1)
+  26 | TV-run-none                         | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: none named, and the ledger is not handed over (EV-C02-013 3.1)
+  27 | TV-target-unwritten                 | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | target_ref: names no record written yet (EV-C02-013 3.1, "Order"; 3.2)
+  28 | TV-trev-unwritten                   | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | target_revision: names no revision of the record written yet (EV-C02-013 3.1, "Order")
+  29 | TV-trev-norevs                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_revision: the record named has no revisions
+  30 | TV-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  31 | TV-write-mark-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  32 | TV-write-P0D02                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | m0912 planted failure
+  33 | TV-events-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | handover: its input could not be read (SQLSTATE 42501)
+  34 | TV-after-handover-run               | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: after the hand-over a copy names no run (EV-C02-013 3.1)
+  35 | TV-after-handover                   | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  36 | TV-pos                              | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  37 | TV-pos-row                          | t  | true                     | true                     | {}                                      | the Review copy as sent; reviewer_role_class from the token, not the key sent
+  38 | TV-pos-verdict                      | t  | true                     | true                     | {}                                      | one Verdict, as sent
+  39 | TV-pos-mark                         | t  | true                     | true                     | {}                                      | its one event, the transferred mark on the Review, with the Verdict's id; none on the Verdict
+  40 | TV-repeat                           | t  | ok repeat                | ok repeat                | {}                                      | 
+  41 | TV-repeat-id                        | t  | true                     | true                     | {}                                      | the existing ids
+  42 | TV-repeat-completed-run             | t  | ok repeat                | ok repeat                | {}                                      | 
+  43 | TV-conflict                         | t  | conflict                 | conflict                 | {"rejected": 1}                         | transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)
+  44 | TV-no-target                        | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  45 | TV-no-target-lacks                  | t  | true                     | true                     | {}                                      | lacks names target_ref (B 3.11)
+  46 | TV-target-trev                      | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  47 | TV-target-review                    | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  48 | TV-indeterminate                    | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  49 | TV-verdict-defaults                 | t  | ok                       | ok                       | {"event": 1, "review": 1, "verdict": 1} | 
+  50 | G-transfer_acceptance-devos_calisma | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_acceptance admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  51 | G-transfer_acceptance-devos_denetim | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_acceptance admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  52 | G-transfer_acceptance-devos_sinav   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_acceptance admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  53 | G-transfer_acceptance-devos_ci      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_acceptance admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  54 | G-transfer_acceptance-devos_backup  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                         | transfer_acceptance admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  55 | G-transfer_acceptance-no-token      | t  | missing                  | missing                  | {"rejected": 1}                         | the request carries no environment token
+  56 | TA-src-kind                         | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | transfer_source.kind: not acceptance (EV-C02-013 3.1)
+  57 | TA-target-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                         | target_ref: missing
+  58 | TA-review-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                         | review_ref: missing
+  59 | TA-review-not-uuid                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | review_ref: not a uuid
+  60 | TA-use-other                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | accepted_use: an installation acceptance's copy is installation_acceptance (B 3.11; EV-C02-005 2.4)
+  61 | TA-scope-other                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | scope: not installation (the transfer copies installation acceptances; B 3.11; EV-C02-005 2.4)
+  62 | TA-ce-missing                       | t  | missing_field            | missing_field            | {"rejected": 1}                         | current_evidence: missing
+  63 | TA-ce-not-array                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | current_evidence: not an array
+  64 | TA-ce-bad-entry                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | current_evidence: each entry is a record's uuid or {"event_id": <integer>} (EV-C02-013 3.2)
+  65 | TA-ce-no-review                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | current_evidence: does not name the Review copy (B 3.11: the Acceptance names that verdict)
+  66 | TA-residual-object                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | residual_decisions: not an array
+  67 | TA-run-never                        | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: names no open run (never begun; EV-C02-013 3.1)
+  68 | TA-run-none                         | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: none named, and the ledger is not handed over (EV-C02-013 3.1)
+  69 | TA-review-unwritten                 | t  | verdict_missing          | verdict_missing          | {"rejected": 1}                         | review_ref: names no Review copy (EV-C02-013 3.2)
+  70 | TA-review-not-copy                  | t  | verdict_missing          | verdict_missing          | {"rejected": 1}                         | review_ref: the Review is no copy the transfer wrote (its creation event is not transferred)
+  71 | TA-review-no-event                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | review_ref: the Review's creation event is missing (partial)
+  72 | TA-fail                             | t  | verdict_failed           | verdict_failed           | {"rejected": 1}                         | the Review copy's verdict is fail or indeterminate, which accepts nothing (B 3.11; EV-C02-005 2.4)
+  73 | TA-indeterminate                    | t  | verdict_failed           | verdict_failed           | {"rejected": 1}                         | the Review copy's verdict is fail or indeterminate, which accepts nothing (B 3.11; EV-C02-005 2.4)
+  74 | TA-cond                             | t  | conditions_not_recorded  | conditions_not_recorded  | {"rejected": 1}                         | a conditional verdict, and current_evidence names no ledger_entry event that records its conditions met (EV-C02-005 2.4)
+  75 | TA-cond-other-event                 | t  | conditions_not_recorded  | conditions_not_recorded  | {"rejected": 1}                         | a conditional verdict, and current_evidence names no ledger_entry event that records its conditions met (EV-C02-005 2.4)
+  76 | TA-review-use                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | accepted_use: not the use the Review copy was for; a verdict is not carried over to another use (B 3.11)
+  77 | TA-ce-unwritten                     | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | current_evidence: an entry names no record written yet (EV-C02-013 3.1, "Order")
+  78 | TA-ce-event-unwritten               | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | current_evidence: an entry names no event written yet (EV-C02-013 3.1, "Order")
+  79 | TA-two-missions                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | installation_mission: which Mission is the installation's cannot be told (missing or partial)
+  80 | TA-target-unwritten                 | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | target_ref: names no record written yet (EV-C02-013 3.1, "Order")
+  81 | TA-target-finding                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_ref: an installation acceptance's copy sets a Work or a Decision accepted (EV-C02-013 3.2)
+  82 | TA-target-review                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_ref: an installation acceptance's copy sets a Work or a Decision accepted (EV-C02-013 3.2)
+  83 | TA-trev-unwritten                   | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | target_revision: names no revision of the record written yet (EV-C02-013 3.1, "Order")
+  84 | TA-trev-stale                       | t  | stale_revision           | stale_revision           | {"rejected": 1}                         | target_revision: not the target's current revision
+  85 | TA-work-not-installation            | t  | not_owner                | not_owner                | {"rejected": 1}                         | rule_o: devos_kurulum sets accepted only a work item under the installation's Mission (EV-C02-013 3.2, R2-2)
+  86 | TA-work-mission-no-event            | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | rule_o: whether the Work's Mission is the installation's is missing or partial
+  87 | TA-decision-cal                     | t  | not_owner                | not_owner                | {"rejected": 1}                         | rule_o: devos_kurulum sets accepted only a decision the installation opened or transferred (EV-C02-013 3.2, R2-2)
+  88 | TA-decision-no-event                | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | rule_o: the Decision's creation event is missing (partial)
+  89 | TA-decision-open                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                         | target_ref: a Decision is set accepted only from answered (EV-C02-013 3.2; EV-C02-005 2.4)
+  90 | TA-decision-open-exploration        | t  | open_exploration         | open_exploration         | {"rejected": 1}                         | B 3.17: a decision in open_exploration is not accepted before its options or single_viable_path_reason are entered
+  91 | TA-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  92 | TA-write-mark-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  93 | TA-write-state-failed               | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  94 | TA-write-state-event-failed         | t  | write_failed             | write_failed             | {"rejected": 1}                         | the write failed (SQLSTATE P0M77)
+  95 | TA-events-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                         | handover: its input could not be read (SQLSTATE 42501)
+  96 | TA-after-handover-run               | t  | run_not_open             | run_not_open             | {"rejected": 1}                         | run_id: after the hand-over a copy names no run (EV-C02-013 3.1)
+  97 | TA-after-handover                   | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}           | 
+  98 | TA-pos                              | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}           | 
+  99 | TA-pos-row                          | t  | true                     | true                     | {}                                      | the Acceptance as sent; owner_authority D-010's Decision, from the installation's Mission, not the key sent
+ 100 | TA-pos-mark                         | t  | true                     | true                     | {}                                      | its one event, the mark; lacks names ledger_entry
+ 101 | TA-pos-state                        | t  | true                     | true                     | {}                                      | the Work accepted, with acceptance_set at its revision, in the same call
+ 102 | TA-repeat                           | t  | ok repeat                | ok repeat                | {}                                      | 
+ 103 | TA-repeat-id                        | t  | true                     | true                     | {}                                      | the existing id
+ 104 | TA-conflict                         | t  | conflict                 | conflict                 | {"rejected": 1}                         | transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)
+ 105 | TA-work-already-accepted            | t  | ok                       | ok                       | {"event": 1, "acceptance": 1}           | 
+ 106 | TA-cond-pos                         | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}           | 
+ 107 | TA-cond-pos-mark                    | t  | true                     | true                     | {}                                      | a ledger_entry event named: lacks empty
+ 108 | TA-decision-pos                     | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}           | 
+ 109 | TA-decision-pos-state               | t  | true                     | true                     | {}                                      | the Decision accepted from answered, with acceptance_set
+ 110 | TA-decision-accepted                | t  | ok                       | ok                       | {"event": 1, "acceptance": 1}           | 
+ 111 | TA-no-mission                       | t  | reference_missing        | reference_missing        | {"rejected": 1}                         | installation_mission: no Mission's creation event is transferred (EV-C02-013 3.2)
+ 112 | TX-literals                         | t  | true                     | true                     | {}                                      | the role list a literal in each text (B:48)
+ 113 | TX-signature                        | t  | true                     | true                     | {}                                      | each is devos_api.<name>(p jsonb) returns jsonb
+ 114 | TX-alias                            | t  | true                     | true                     | {}                                      | parameters through ALIAS FOR $n (N-288)
+ 115 | TX-not-read                         | t  | true                     | true                     | {}                                      | neither carries devos:read (F06)
+ 116 | TX-no-claim                         | t  | true                     | true                     | {}                                      | neither handles a claim token, counts a live claim, names the exam table or writes a time column (created_at is read only to order a lookup)
+ 117 | TX-definer                          | t  | true                     | true                     | {}                                      | definer rights, VOLATILE, the fixed search_path, owner postgres, EXECUTE for anon only
+ 118 | TX-fourteen                         | t  | true                     | true                     | {}                                      | the fourteen of B section 4's ledger-transfer row exist with definer rights
+ 119 | TX-api-count                        | t  | true                     | true                     | {}                                      | devos_api holds 55 functions (EV-C02-013 section 2)
+(119 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0912_run/fn_check.sql:482: NOTICE:  M0912_FUNCTIONS PASS (119/119)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ review_rows_after_rollback 
+----------------------------
+                          0
+(1 row)
+
+[psql exit 0]
+m0912 scrub (08_functions): claim-format strings replaced 0; environment-format strings replaced 0

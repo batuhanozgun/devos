@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-14/breaks/B-FN-5_record_outside_its_transaction.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-T-half-ev-transfer_review,FN-T-half-rec-transfer_review)
+[database b22 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on b22:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 0 could not check, of 109)
+bad (2): FN-T-half-ev-transfer_review, FN-T-half-rec-transfer_review
+could_not_check (0): none
+detail: FN-T-half-ev-transfer_review     | bad     | transfer_review with the transferred event's write made to fail: refused [write_failed the write failed (SQLSTATE P0W15)]; tables changed besides rejected_attempt: review; its transferred events 0 (wanted not accepted, none, 0)
+detail: FN-T-half-rec-transfer_review    | bad     | transfer_review with the Verdict's write made to fail: refused [write_failed the write failed (SQLSTATE P0W15)]; tables changed besides rejected_attempt: review; its transferred events 0 (wanted not accepted, none, 0)
+red list: exactly as expect-red (2)
+m0912 scrub (22_merged_B-FN-5): claim-format strings replaced 0; environment-format strings replaced 0
