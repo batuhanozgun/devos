@@ -24,7 +24,9 @@ of the runs, and the claims; all labelled SYNTHETIC W-C02-07 and listed in the o
 Transport: several direct connections through psql, each acting as role anon with the x-devos-env-token header set
 by set_config (transport sql-set-role, several connections). Tokens: each connection issues its own synthetic token
 with devos_private.issue_env_token inside the database, keeps it in a session setting, never in a statement text, a
-table or the output, and revokes it before it ends; claim tokens stay in the same way inside their session.
+table or the output; the program revokes it by its env_tokens row ID once every connection of its run has ended
+(revised 2026-10-19, N-299 (1): a revocation raises the global authority epoch, so none is made during a run); claim
+tokens stay in the same way inside their session.
 Exit codes: 0 PASS, 1 FAIL, 3 COULD NOT CHECK. The last line is "W07_CONC_CLAIM_AND_CYCLE PASS|FAIL|COULD NOT CHECK (...)"
 (README section 3).
 """
@@ -118,7 +120,14 @@ def helpers():
 
 
 def worker_script(cls, lock_no, call, pre='', prep=''):
-    """One racing connection: its own token; optional pre-steps; wait at the barrier; one call; commit; revoke."""
+    """One racing connection: its own token; optional pre-steps; wait at the barrier; one call; commit.
+
+    Revised under ledger rule 3, 2026-10-19, before any result (note N-299 item (1); CHK-C02-095 C1): the connection no
+    longer revokes its own token. revoke_env_token raises the global authority epoch (B:47, B:377), so a revocation made
+    as soon as one connection committed changed the epoch while the run's other connections could still judge their
+    claims; under N-289 B (a claim of an earlier epoch counts as lapsed) a later loser then counted the winner's claim
+    as lapsed and claimed too. The connection prints its token's env_tokens row ID (an ID, not a token), and race()
+    revokes every token of the run by that ID only after all of the run's connections have ended."""
     return f"""
 do $w$ declare b text[]; i text; begin
   lock table devos_private.env_tokens in share row exclusive mode;  -- this connection's row is the only new one
@@ -127,6 +136,7 @@ do $w$ declare b text[]; i text; begin
   select id::text into strict i from devos_private.env_tokens where not (id::text = any(b));
   perform set_config('w07.tok_id', i, false);
 end $w$;
+select 'W07|tid|' || current_setting('w07.tok_id');
 {pre}
 begin;
 select pg_advisory_xact_lock_shared({LOCK_KEY}, {lock_no});
@@ -139,19 +149,24 @@ reset role;
 select 'W07|t1|' || extract(epoch from clock_timestamp());
 commit;
 select 'W07|t2|' || extract(epoch from clock_timestamp());
-do $w$ begin execute format('select devos_private.revoke_env_token(%L)', current_setting('w07.tok_id'));
-  perform set_config('w07.tok', '', false); end $w$;
+select set_config('w07.tok', '', false) = '';
 select 'W07|done';
 """
 
 
+UUID_RE = re.compile('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
+
+
 def parse(out, err):
-    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'errors': re.findall('ERROR:[' + WS + ']+([0-9A-Z]{5})', err)}
+    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'tid': None,
+           'errors': re.findall('ERROR:[' + WS + ']+([0-9A-Z]{5})', err)}
     for line in out.splitlines():
         parts = line.split('|')
         if parts[0] != 'W07':
             continue
-        if parts[1] == 'r':
+        if parts[1] == 'tid' and len(parts) > 2 and UUID_RE.match(parts[2]):
+            res['tid'] = parts[2]
+        elif parts[1] == 'r':
             res['status'], res['reason'] = parts[2], parts[3] if len(parts) > 3 else ''
         elif parts[1] in ('t0', 't2'):
             res[parts[1]] = float(parts[2])
@@ -192,6 +207,14 @@ def race(lock_no, scripts):
             out, err = p.communicate()
         results.append(parse(out, err))
     holder.wait()
+    # Every connection of the run has ended (each was waited for above): only now are the run's tokens revoked, each by
+    # its env_tokens row ID, so no revocation raises the global authority epoch while a connection of the run can still
+    # judge its claim (N-299 (1); CHK-C02-095 C1). A token whose ID was not printed stays unrevoked and is counted by
+    # CONC-tokens.
+    tids = [r['tid'] for r in results if r['tid']]
+    if tids:
+        run_sql('do $v$ declare i text; begin foreach i in array array[' + ', '.join(f"'{t}'" for t in tids)
+                + "]::text[] loop execute format('select devos_private.revoke_env_token(%L)', i); end loop; end $v$;" + NL)
     return results, waiting
 
 
