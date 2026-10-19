@@ -30,6 +30,10 @@ tokens stay in the same way inside their session. CONC-tokens judges the tokens 
 row IDs it recorded as it issued them, and counts apart any token issued during its run that it did not record; tokens
 already unrevoked before it began (in the job, the tokens step's six) are not its own and are not counted (revised
 2026-10-19 under ledger rule 3, CHK-C02-106 C1 route (b); N-304 (4)).
+Pipes and connections (revised 2026-10-19 under ledger rule 3, W-C02-09's first job result): a racing connection reads
+its script from a file, never from a pipe the program closes; a connection that cannot be made (psql exit 2 before any
+answer) makes its run not judged, could_not_check with the reason, unless the run still shows a forbidden state; a race's
+tokens are revoked on every path. The specification's revision section of that date holds.
 Exit codes: 0 PASS, 1 FAIL, 3 COULD NOT CHECK. The last line is "W07_CONC_CLAIM_AND_CYCLE PASS|FAIL|COULD NOT CHECK (...)"
 (README section 3).
 """
@@ -37,8 +41,10 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 
@@ -105,13 +111,19 @@ def clean(text):
     return REDACT.sub('[withheld]', (text or '').strip().replace(NL, ' '))[:300]
 
 
-def psql_cmd():
-    return [shutil.which('psql') or 'psql', '-X', '-q', '-At', '-v', 'VERBOSITY=sqlstate', '-f', '-']
+def psql_cmd(script='-'):
+    return [shutil.which('psql') or 'psql', '-X', '-q', '-At', '-v', 'VERBOSITY=sqlstate', '-f', script]
 
 
 def run_sql(sql, stop_on_error=True, timeout=WAIT_S * 4):
+    """One owner connection. Revised 2026-10-19 (W-C02-09's first job result): a connection that was not made (psql exit 2,
+    no output, libpq's "failed:") ran no statement, so it is tried again, at most three times in all, 1 s apart."""
     cmd = psql_cmd() + ['-v', 'ON_ERROR_STOP=%d' % (1 if stop_on_error else 0)]
-    p = subprocess.run(cmd, input=sql, capture_output=True, text=True, timeout=timeout)
+    for attempt in range(3):
+        p = subprocess.run(cmd, input=sql, capture_output=True, text=True, timeout=timeout)
+        if not (p.returncode == 2 and not p.stdout.strip() and 'failed:' in p.stderr):
+            break
+        time.sleep(1)
     return p.returncode, p.stdout, p.stderr
 
 
@@ -161,15 +173,47 @@ UUID_RE = re.compile('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 # The env_tokens row IDs of the racing connections' tokens, as race() collects them, and the number of connections that
 # printed none (CONC-tokens; revised 2026-10-19, CHK-C02-106 C1 route (b)). IDs only, never a token or a hash.
 ISSUED, NO_TID = [], [0]
+# Connections that could not be made (revised under ledger rule 3, 2026-10-19, W-C02-09's first job result): the
+# barrier holders and racing connections whose psql ended with exit 2 (libpq's connection failed or was lost, psql's
+# documented code) before it printed any W07 line, counted over all runs.
+UNMADE = [0]
 
 
-def parse(out, err):
-    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'tid': None,
+def conn_reason(err):
+    """A connection failure's reason, without the server's name or address: the text after libpq's last 'failed:'."""
+    text = (err or '').strip()
+    if 'failed:' in text:
+        text = text.rsplit('failed:', 1)[1]
+    return clean(text.splitlines()[-1] if text.splitlines() else '') or 'no message'
+
+
+def send(proc, text, close=False):
+    """Writes to a psql's standard input; True when written. Never raises on a pipe that a psql which ended has closed,
+    or on a pipe already closed (revised 2026-10-19, W-C02-09's first job result: the program must never fail on its
+    own pipes)."""
+    ok = True
+    try:
+        if text:
+            proc.stdin.write(text)
+            proc.stdin.flush()
+    except (OSError, ValueError):
+        ok = False
+    if close:
+        try:
+            proc.stdin.close()
+        except (OSError, ValueError):
+            ok = False
+    return ok
+
+
+def parse(out, err, rc=None):
+    res = {'status': None, 'reason': '', 't0': None, 't2': None, 'tid': None, 'rc': rc, 'any': False,
            'errors': re.findall('ERROR:[' + WS + ']+([0-9A-Z]{5})', err)}
     for line in out.splitlines():
         parts = line.split('|')
         if parts[0] != 'W07':
             continue
+        res['any'] = True
         if parts[1] == 'tid' and len(parts) > 2 and UUID_RE.match(parts[2]):
             res['tid'] = parts[2]
         elif parts[1] == 'r':
@@ -180,50 +224,98 @@ def parse(out, err):
 
 
 def race(lock_no, scripts):
-    """Starts every script behind one barrier, releases them together, returns their parsed results."""
+    """Starts every script behind one barrier, releases them together; returns their parsed results, the number seen
+    waiting at the barrier, and the reasons of the connections that could not be made (empty when every one was made).
+
+    Revised under ledger rule 3, 2026-10-19 (W-C02-09's first job result, run 39244595442): each racing connection
+    reads its script from a file (psql -f <file>, standard input /dev/null) instead of a pipe that the program closed
+    and that communicate() then flushed (on Python 3.12.3, the ubuntu-24.04 runner's python3, that flush of a closed
+    file raised ValueError, which ended the program in its first race); every write to the holder's pipe goes through
+    send(); a connection that could not be made is named, not judged; and the run's tokens are revoked on every path,
+    an error's included."""
+    tmp = tempfile.mkdtemp(prefix='w07conc-')
+    herr = open(os.path.join(tmp, 'holder.err'), 'w+', encoding='utf-8')
     holder = subprocess.Popen(psql_cmd() + ['-v', 'ON_ERROR_STOP=1'], stdin=subprocess.PIPE,
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
-    holder.stdin.write(f'select pg_advisory_lock({LOCK_KEY}, {lock_no});' + NL)
-    holder.stdin.flush()  # the holder's session stays idle, holding the lock, until it is told to release it
-    lock_q = ("select count(*) filter (where granted and mode = 'ExclusiveLock') || '|' || "
-              "count(*) filter (where not granted and mode = 'ShareLock') from pg_locks "
-              f"where locktype = 'advisory' and classid = {LOCK_KEY} and objid = {lock_no} and objsubid = 2;")
-    deadline = time.time() + WAIT_S
-    while time.time() < deadline and run_sql(lock_q)[1].strip().split('|')[0] != '1':
-        time.sleep(0.1)
-    procs = [subprocess.Popen(psql_cmd() + ['-v', 'ON_ERROR_STOP=0'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE, text=True) for _ in scripts]
-    for p, s in zip(procs, scripts):
-        p.stdin.write(s)
-        p.stdin.close()
-    waiting = 0
-    while time.time() < deadline:
-        waiting = int((run_sql(lock_q)[1].strip().split('|') + ['0', '0'])[1] or 0)
-        if waiting >= len(scripts):
-            break
-        time.sleep(0.05)
-    holder.stdin.write(f'select pg_advisory_unlock({LOCK_KEY}, {lock_no});' + NL)  # every waiting connection starts at once
-    holder.stdin.close()
-    results = []
-    for p in procs:
-        try:
-            out, err = p.communicate(timeout=WAIT_S * 2)
-        except subprocess.TimeoutExpired:
+                              stdout=subprocess.DEVNULL, stderr=herr, text=True)
+    procs, results, waiting, unmade = [], [], 0, []
+    try:
+        # The holder's session stays idle, holding the lock, until it is told to release it.
+        send(holder, f'select pg_advisory_lock({LOCK_KEY}, {lock_no});' + NL)
+        lock_q = ("select count(*) filter (where granted and mode = 'ExclusiveLock') || '|' || "
+                  "count(*) filter (where not granted and mode = 'ShareLock') from pg_locks "
+                  f"where locktype = 'advisory' and classid = {LOCK_KEY} and objid = {lock_no} and objsubid = 2;")
+        deadline = time.time() + WAIT_S
+        held = False
+        while time.time() < deadline and holder.poll() is None:
+            held = run_sql(lock_q)[1].strip().split('|')[0] == '1'
+            if held:
+                break
+            time.sleep(0.1)
+        if not held:
+            # No barrier: no racing connection is started, so the run issues no token and is not judged.
+            UNMADE[0] += 1
+            if holder.poll() is None:
+                unmade.append(f'the barrier holder did not take its lock within {WAIT_S} s')
+            else:
+                herr.seek(0)
+                unmade.append(f'the barrier holder could not connect or ended (psql exit {holder.returncode}): '
+                              + conn_reason(herr.read()))
+            return results, waiting, unmade
+        for k, s in enumerate(scripts):
+            path = os.path.join(tmp, f'c{k}.sql')
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(s)
+            procs.append(subprocess.Popen(psql_cmd(path) + ['-v', 'ON_ERROR_STOP=0'], stdin=subprocess.DEVNULL,
+                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True))
+        while time.time() < deadline:
+            waiting = int((run_sql(lock_q)[1].strip().split('|') + ['0', '0'])[1] or 0)
+            ended = [p.returncode for p in procs if p.poll() is not None]
+            # Every connection waits, or the rest have ended; or one ended with psql's exit 2 (its connection failed):
+            # the run cannot be a full race, and a refusal can also stop this count's own reads, so it is released now.
+            if waiting + len(ended) >= len(scripts) or 2 in ended:
+                break
+            time.sleep(0.05)
+        send(holder, f'select pg_advisory_unlock({LOCK_KEY}, {lock_no});' + NL, close=True)  # all start at once
+        for p in procs:
+            try:
+                out, err = p.communicate(timeout=WAIT_S * 2)
+            except subprocess.TimeoutExpired:
+                p.kill()
+                out, err = p.communicate()
+            res = parse(out, err, p.returncode)
+            results.append(res)
+            if res['rc'] == 2 and not res['any']:
+                UNMADE[0] += 1
+                unmade.append(f'connection {len(results)} of {len(scripts)} could not be made (psql exit 2): '
+                              + conn_reason(err))
+    finally:
+        for p in procs[len(results):]:  # only after an error: end the rest and keep what they printed
             p.kill()
-            out, err = p.communicate()
-        results.append(parse(out, err))
-    holder.wait()
-    # Every connection of the run has ended (each was waited for above): only now are the run's tokens revoked, each by
-    # its env_tokens row ID, so no revocation raises the global authority epoch while a connection of the run can still
-    # judge its claim (N-299 (1); CHK-C02-095 C1). A token whose ID was not printed stays unrevoked and is counted by
-    # CONC-tokens.
-    tids = [r['tid'] for r in results if r['tid']]
-    ISSUED.extend(tids)
-    NO_TID[0] += len(results) - len(tids)
-    if tids:
-        run_sql('do $v$ declare i text; begin foreach i in array array[' + ', '.join(f"'{t}'" for t in tids)
-                + "]::text[] loop execute format('select devos_private.revoke_env_token(%L)', i); end loop; end $v$;" + NL)
-    return results, waiting
+            try:
+                out, err = p.communicate(timeout=WAIT_S)
+            except Exception:
+                out, err = '', ''
+            results.append(parse(out or '', err or '', p.returncode))
+        send(holder, '', close=True)
+        try:
+            holder.wait(timeout=WAIT_S)
+        except subprocess.TimeoutExpired:
+            holder.kill()
+            holder.wait()
+        herr.close()
+        shutil.rmtree(tmp, ignore_errors=True)
+        # Every connection of the run has ended (each was waited for above): only now are the run's tokens revoked, each
+        # by its env_tokens row ID, so no revocation raises the global authority epoch while a connection of the run can
+        # still judge its claim (N-299 (1); CHK-C02-095 C1). A token whose ID was not printed stays unrevoked and is
+        # counted by CONC-tokens.
+        tids = [r['tid'] for r in results if r['tid']]
+        ISSUED.extend(tids)
+        NO_TID[0] += len(results) - len(tids)
+        if tids:
+            run_sql('do $v$ declare i text; begin foreach i in array array[' + ', '.join(f"'{t}'" for t in tids)
+                    + "]::text[] loop execute format('select devos_private.revoke_env_token(%L)', i); end loop; end $v$;"
+                    + NL)
+    return results, waiting, unmade
 
 
 def overlapped(results):
@@ -305,7 +397,7 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
     print(f'fixtures: one owner-planted Decision of class batu with its revision, one Mission and {n_work} work items '
           f'under scope {scope} (synthetic, devos-test only; left in place, append-only)')
 
-    cases, errors, nxt = {}, [], 0
+    cases, errors, errors_unmade, nxt = {}, [], [], 0
     expected_refusal_errors = set()
 
     def take(k):
@@ -328,52 +420,88 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
         rc_, o, e = run_sql(sql)
         return int(o.strip()) if rc_ == 0 and o.strip().lstrip('-').isdigit() else None
 
+    # A run in which a connection could not be made (race()'s third value; revised under ledger rule 3, 2026-10-19,
+    # W-C02-09's first job result) is judged only for a forbidden state it still shows, which is bad as in any run; it
+    # is otherwise not judged, and its case is could_not_check, never ok. A run whose connections were all made is
+    # judged exactly as before.
+    def outcome(bad, cnc):
+        return 'bad' if bad else 'could_not_check' if cnc else 'ok'
+
+    def not_judged(cnc):
+        return ('; not judged (a connection not made, or an owner read failed): ' + '; '.join(cnc[:3])) if cnc else ''
+
     # 1. One claim of many concurrent connections; one always succeeds.
-    claim_bad, claim_pos_bad, overlap_bad, lock_no = [], [], [], 1
+    claim_bad, claim_pos_bad, overlap_bad, claim_cnc, lock_no = [], [], [], [], 1
     for run in range(RUNS_CLAIM):
         (w,) = take(1)
         scripts = [worker_script('devos_calisma', lock_no, f"devos_api.claim('{w[0]}'::uuid, 'w07_fixture_session_{i}')")
                    for i in range(N_CONN)]
-        res, waiting = race(lock_no, scripts)
+        res, waiting, unmade = race(lock_no, scripts)
         lock_no += 1
         oks = sum(1 for r in res if r['status'] == 'ok')
         active = db_count(f"select count(*) from devos_private.assignment where work_ref = '{w[0]}'::uuid;")
-        errors += [e for r in res for e in r['errors']]
+        (errors_unmade if unmade else errors).extend(e for r in res for e in r['errors'])
+        if unmade:
+            if oks > 1 or (active is not None and active > 1):
+                claim_bad.append(f'run {run + 1}: ok {oks}, assignments {active}, with {len(unmade)} connection(s) not made')
+            claim_cnc.append(f'run {run + 1}: ' + '; '.join(unmade[:2]))
+            overlap_bad.append(f'run {run + 1}: waiting {waiting}, {len(unmade)} connection(s) not made')
+            continue
+        if active is None and oks <= 1 and all(r['status'] in ('ok', 'refused') for r in res):
+            # the owner read failed: no observation of the Assignments, and none of the answers is bad (revised 2026-10-19)
+            claim_cnc.append(f'run {run + 1}: the Assignment count could not be read')
+            if oks < 1:
+                claim_pos_bad.append(f'run {run + 1}')
+            if waiting < N_CONN or not overlapped(res):
+                overlap_bad.append(f'run {run + 1}: waiting {waiting}')
+            continue
         if oks != 1 or active != 1 or any(r['status'] not in ('ok', 'refused') for r in res):
             claim_bad.append(f'run {run + 1}: ok {oks}, assignments {active}, statuses {sorted(str(r["status"]) for r in res)}')
         if oks < 1:
             claim_pos_bad.append(f'run {run + 1}')
         if waiting < N_CONN or not overlapped(res):
             overlap_bad.append(f'run {run + 1}: waiting {waiting}')
-    cases['CONC-claim'] = ('bad' if claim_bad else 'ok', f'{RUNS_CLAIM} runs of {N_CONN} connections; exactly one claim each: '
-                           + ('; '.join(claim_bad[:5]) or 'yes'))
-    cases['CONC-pos'] = ('bad' if claim_pos_bad else 'ok', 'one claim succeeded in every run' if not claim_pos_bad
-                         else 'no claim succeeded in ' + ', '.join(claim_pos_bad))
+    cases['CONC-claim'] = (outcome(claim_bad, claim_cnc), f'{RUNS_CLAIM} runs of {N_CONN} connections; exactly one claim '
+                           'each: ' + ('; '.join(claim_bad[:5]) or ('yes' if not claim_cnc else 'none seen otherwise'))
+                           + not_judged(claim_cnc))
+    cases['CONC-pos'] = (outcome(claim_pos_bad, claim_cnc), ('one claim succeeded in every run' + (' judged' if claim_cnc else '')
+                         if not claim_pos_bad
+                         else 'no claim succeeded in ' + ', '.join(claim_pos_bad)) + not_judged(claim_cnc))
     cases['CONC-overlap'] = ('could_not_check' if overlap_bad else 'ok', 'transactions overlapped in every run' if not overlap_bad
                              else 'overlap not shown: ' + '; '.join(overlap_bad[:5]))
 
     # 2. Two opposing hard dependencies added at once; 3. a cycle of four closed by four edges at once.
     def cycle_runs(runs, size, case):
-        bad = []
+        bad, cnc = [], []
         nonlocal lock_no, errors
         for run in range(runs):
             ws = take(size)
             edges = [(ws[i], ws[(i + 1) % size]) for i in range(size)]
-            res, waiting = race(lock_no, [worker_script('devos_calisma', lock_no, relate_call(a, b)) for a, b in edges])
+            res, waiting, unmade = race(lock_no, [worker_script('devos_calisma', lock_no, relate_call(a, b)) for a, b in edges])
             lock_no += 1
-            errors += [e for r in res for e in r['errors']]
+            (errors_unmade if unmade else errors).extend(e for r in res for e in r['errors'])
             id_list = ','.join(f"'{w[0]}'::uuid" for w in ws)
             hard = db_count(f"select count(*) from devos_private.relation where hard and from_ref in ({id_list}) "
                             f"and to_ref in ({id_list});")
             oks = sum(1 for r in res if r['status'] == 'ok')
+            if unmade:
+                if hard is not None and hard >= size:
+                    bad.append(f'run {run + 1}: accepted {oks}, hard edges {hard} (a cycle needs {size}), with '
+                               f'{len(unmade)} connection(s) not made')
+                cnc.append(f'run {run + 1}: ' + '; '.join(unmade[:2]))
+                continue
+            if hard is None and oks == size - 1:  # the owner read failed; the answers alone are right (revised 2026-10-19)
+                cnc.append(f'run {run + 1}: the hard edges could not be counted')
+                continue
             if hard is None or hard >= size or oks != size - 1:
                 bad.append(f'run {run + 1}: accepted {oks}, hard edges {hard} (a cycle needs {size})')
-        cases[case] = ('bad' if bad else 'ok', f'{runs} runs; no cycle of {size} formed: ' + ('; '.join(bad[:5]) or 'yes'))
+        cases[case] = (outcome(bad, cnc), f'{runs} runs; no cycle of {size} formed: '
+                       + ('; '.join(bad[:5]) or ('yes' if not cnc else 'none seen otherwise')) + not_judged(cnc))
     cycle_runs(RUNS_CYC2, 2, 'CONC-cyc2')
     cycle_runs(RUNS_CYC4, 4, 'CONC-cyc4')
 
     # 4. A late effect by the claimant racing revoke_claim and a new hard dependency (DM-01, DM-06).
-    late_bad = []
+    late_bad, late_cnc = [], []
     for run in range(RUNS_LATE):
         w, x = take(2)
         payload = json.dumps({**ref(w, 'work'), 'path': f'w07_fixture/conc_{run_id}_{run}', 'commit': 'a7' * 20,
@@ -386,23 +514,38 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
         rev = worker_script('devos_denetim', lock_no, "devos_api.revoke_claim(current_setting('w07.aid')::uuid, 'w07_fixture SYNTHETIC W-C02-07 race')",
                             prep=f"select set_config('w07.aid', coalesce((select id::text from devos_private.assignment where work_ref = '{w[0]}'::uuid and status = 'active'), ''), true) is not null;")
         dep = worker_script('devos_calisma', lock_no, relate_call(w, x))
-        res, waiting = race(lock_no, [eff, rev, dep])
+        res, waiting, unmade = race(lock_no, [eff, rev, dep])
         lock_no += 1
-        errors += [e for r in res for e in r['errors']]
+        (errors_unmade if unmade else errors).extend(e for r in res for e in r['errors'])
+        if len(res) != 3:  # no barrier: race() started no connection
+            late_cnc.append(f'run {run + 1}: ' + '; '.join(unmade[:2]))
+            continue
         e, r_, d = res
         if e['status'] == 'ok' and ((r_['status'] == 'ok' and r_['t2'] is not None and e['t0'] is not None and e['t0'] > r_['t2'])
                                     or (d['status'] == 'ok' and d['t2'] is not None and e['t0'] is not None and e['t0'] > d['t2'])):
             late_bad.append(f'run {run + 1}: the effect began after a committed revocation or dependency and was accepted')
-        if e['status'] is None or r_['status'] is None or d['status'] is None:
+        if unmade:
+            late_cnc.append(f'run {run + 1}: ' + '; '.join(unmade[:2]))
+        elif e['status'] is None or r_['status'] is None or d['status'] is None:
             late_bad.append(f'run {run + 1}: a connection gave no answer')
-    cases['CONC-late'] = ('bad' if late_bad else 'ok', f'{RUNS_LATE} runs; no effect of a revoked or blocked claim landed: '
-                          + ('; '.join(late_bad[:5]) or 'yes'))
+    cases['CONC-late'] = (outcome(late_bad, late_cnc), f'{RUNS_LATE} runs; no effect of a revoked or blocked claim landed: '
+                          + ('; '.join(late_bad[:5]) or ('yes' if not late_cnc else 'none seen otherwise'))
+                          + not_judged(late_cnc))
 
     # 5. The failure frequency DM-01 names: errors other than the expected refusals, over every run.
+    # Revised 2026-10-19 (W-C02-09's first job result): errors of a run in which a connection could not be made are
+    # counted apart. A deadlock, serialization failure, lock timeout or cancel among them is bad as in any run; any other
+    # (the run's own statements meeting a partner that never connected, such as revoke_claim of an empty Assignment id,
+    # 22P02, and the aborted transaction after it, 25P02) makes the case could_not_check, never ok.
     counts = {c: errors.count(c) for c in sorted(set(errors))}
     serious = {c: n for c, n in counts.items() if c in ('40P01', '40001', '55P03', '57014')}
-    cases['CONC-err'] = ('bad' if counts else 'ok', 'raised errors by SQLSTATE (deadlock 40P01, serialization 40001, '
-                         f'lock timeout 55P03, cancel 57014 among them): {counts or "none"}; of which serious {serious or "none"}')
+    counts_u = {c: errors_unmade.count(c) for c in sorted(set(errors_unmade))}
+    serious_u = {c: n for c, n in counts_u.items() if c in ('40P01', '40001', '55P03', '57014')}
+    cases['CONC-err'] = ('bad' if counts or serious_u else 'could_not_check' if counts_u else 'ok',
+                         'raised errors by SQLSTATE (deadlock 40P01, serialization 40001, '
+                         f'lock timeout 55P03, cancel 57014 among them): {counts or "none"}; of which serious {serious or "none"}'
+                         + (f'; in runs with a connection not made, counted apart: {counts_u}, of which serious '
+                            f'{serious_u or "none"}' if counts_u else ''))
 
     # Tokens: every token this run issued is revoked (env_tokens' revoked_at, B 3.27). Revised under ledger rule 3,
     # 2026-10-19 (CHK-C02-106 C1 route (b); N-304 (4)): judged by the row IDs this program recorded as it issued its
@@ -420,7 +563,8 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
     tok = [l.split('|')[2:5] for l in out.splitlines() if l.startswith('W07|tok|')]
     tok = [int(v) for v in tok[0]] if rc == 0 and len(tok) == 1 and all(v.isdigit() for v in tok[0]) else None
     detail = (f'{len(own)} tokens this run issued and recorded ({len(setup_tids)} for the fixtures, {len(ISSUED)} for '
-              f'the connections; {NO_TID[0]} connections printed no ID); unrevoked before the run, not counted: '
+              f'the connections; {NO_TID[0]} connections printed no ID; {UNMADE[0]} connections not made); unrevoked before '
+              f'the run, not counted: '
               f'{len(base_ids)}')
     if tok is None:
         cases['CONC-tokens'] = ('could_not_check', 'env_tokens could not be read after the runs: ' + clean(err))
@@ -445,7 +589,14 @@ do $s$ begin perform pg_temp.w07_revoke_since_mark();  -- w07.k's and w07.w's ro
     finish('PASS', f'{len(cases)}/{len(cases)}', 0)
 
 
+def terminated(signum, frame):
+    """SIGTERM (the job's `timeout 600`) as an error (revised 2026-10-19): a race's finally still revokes its tokens, and
+    the program ends with its last line, COULD NOT CHECK."""
+    raise RuntimeError('ended by SIGTERM: the time limit of the job step')
+
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, terminated)
     try:
         main()
     except SystemExit:
