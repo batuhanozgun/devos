@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-06 with the merged break patch tests/C02/W-C02-07/breaks/B-F04-3_could_not_check_as_clean.sql applied in place, w07.throwaway=yes)
+[M09-06 apply exit 0]
+[patch exit 0]
+w07_f04_affected_records.sql:  F04-m1         | bad             | affected_entities with a root that names no record: returned {"paths": [], "status": "ok", "records": [], "complete": true}; wanted status refused with reason_code could_not_check
+w07_f04_affected_records.sql:  F04-m2         | bad             | explain_paths with a root that names no record: returned {"paths": [], "status": "ok", "records": [], "complete": true}; wanted status refused with reason_code could_not_check
+w07_f04_affected_records.sql:  F04-m4-cal     | could_not_check | control: relate between two records Rule O gives devos_calisma was not accepted, so the end check is not shown to be reached: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f04_affected_records.sql:  F04-u1         | bad             | affected_entities with the relation table unreadable (renamed for the call): returned {"paths": [], "status": "ok", "records": [], "complete": true}; wanted status refused with reason_code could_not_check
+w07_f04_affected_records.sql:  F04-u2         | bad             | explain_paths with the relation table unreadable (renamed for the call): returned {"paths": [], "status": "ok", "records": [], "complete": true}; wanted status refused with reason_code could_not_check
+w07_f04_affected_records.sql: psql:tests/C02/W-C02-07/job/w07_f04_affected_records.sql:737: ERROR:  W07_F04_AFFECTED_RECORDS FAIL (4 bad, 1 could not check, of 22)
+NOTICE:  function devos_api.relate_w07_orig(jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (37_merged_B-F04-3): claim-format strings replaced 0; environment-format strings replaced 0

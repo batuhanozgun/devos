@@ -2,10 +2,10 @@
 id: EV-C02-014
 item: W-C02-09
 kind: build
-produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366); section 6 (M09-05) by agent `ad37a946776298dc5` (named at filing, L-369)"
+produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366); section 6 (M09-05) by agent `ad37a946776298dc5` (named at filing, L-369); section 7 (M09-06) by agent `aba07f336ee1706f3` (named at filing, L-372)"
 main_at: 1cdbb4e99cc5306e4dadf1e431ebbade7b03b68f
 date: 2026-10-17
-claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); section 5: M09-04, the six functions of Work and effort policy (EV-C02-013 2.3), as versioned SQL, with EV-C02-013 section 17 (written at main d032a84); section 6: M09-05, the five functions of readiness and claim (EV-C02-013 2.4), as versioned SQL, with EV-C02-013 section 18 (written at main 4f01115); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; section 2 records M09-01's apply to both projects; the applies of M09-02 to M09-04 are recorded in plan/ledger/C02-log.md (L-360, L-364, L-368), and nothing is applied by section 6; each section is judged by a fresh checker of the same session (verdicts named in the log), not independently tested (corrected 2026-10-19, L-371, CHK-C02-091 C1)"
+claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); section 5: M09-04, the six functions of Work and effort policy (EV-C02-013 2.3), as versioned SQL, with EV-C02-013 section 17 (written at main d032a84); section 6: M09-05, the five functions of readiness and claim (EV-C02-013 2.4), as versioned SQL, with EV-C02-013 section 18 (written at main 4f01115); section 7: M09-06, the four functions of Relation (EV-C02-013 2.5), as versioned SQL, with EV-C02-013 section 19 (written on M09-05's head c8449e4); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; section 2 records M09-01's apply to both projects; the applies of M09-02 to M09-04 are recorded in plan/ledger/C02-log.md (L-360, L-364, L-368, and M09-05's in L-372), and nothing is applied by section 7; each section is judged by a fresh checker of the same session (verdicts named in the log), not independently tested (corrected 2026-10-19, L-371, CHK-C02-091 C1)"
 ---
 
 # EV-C02-014 · W-C02-09's build
@@ -1137,3 +1137,255 @@ The runs:
    - The claim token travels as a parameter of `heartbeat` and `release` (EV3 1.7). A direct SQL caller's statement text could carry it into a server log with statement logging on. Over the Data API it is in the request body. `devos`'s log settings are not read here (as N-280's annotation leaves `log_statement` for its first program run).
    - `ready_works` calls `is_installation_mission` once per work item, which reads every Mission's events. It is a cost, not a rule, at C02's sizes.
 
+## 7. M09-06: Relation
+
+The producer's record of `supabase/migrations/20261019010001_w09_relations.sql` (M09-06). It was written on branch `claude/c02-w09-m0906` at `c8449e41e32d0f76a5037158f6bc3c4e0dc7406f`: `main` `4f01115` with M09-01 to M09-04, plus M09-05 (`20261018235501_w09_claims.sql`) from its pull request, under review. M09-06 builds on M09-05 and does not change it. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at that commit, with EV13's correction section 19 added by the same producer. M09-06 means the file above, and M09-06:n a line of it. `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 19 first.** EV13 gained "19. Correction, 2026-10-19 (M09-06)", with marks *[C-M06]* in 2.5's rows `relate`, `retract_relation`, `affected_entities` and `explain_paths`. It states the forms 7.2 lists, and takes the stricter side in one reading (7.2 item 2). M09-06's checker judges it.
+- **The note items that bind M09-06's commit, checked on the branch before the SQL** (`plan/work/C02.md`):
+  - **Binding M09-06's commit: none open and unmet.**
+  - N-279 (15), CHK-C02-077 K1: "before the first commit of the migrations that build `revise_work` and `retract_relation`". **Met.** EV13 R2-6 took option (a). The test designer moved `ROC-x-o-mission-unreadable`'s revoke to `devos_private.mission_revision` (`job/w07_roc_ownership_and_claim_class.sql`, `pg_temp.roc_x_access`; CHK-C02-089 finding 5 read it there). CHK-C02-081 judged it.
+  - N-279 (12), its `group_mode` part (6RG, F08 and CONC send `group_mode` without `group_id`): "before the first commit of the migration that builds the function concerned". **Met.** EV13 R2-5 decided it: `group_mode` alone makes a group of its own. "No test changes" (EV13:126). M09-06 builds it (7.1).
+  - N-279 (10), the rules Revision 1 added: R1-2 (a `relate` end that names no record is `could_not_check`) and R1-3 (`exam_record` for `devos_sinav`). **Met.** CHK-C02-077 and CHK-C02-081 judged them.
+  - N-279 (5), CHK-C02-076 C2 (`relate`'s refusal, with its code, for a `devos_sinav` call whose end is an EvalRun). **Met** by R1-3, before the test designer's revision merged.
+  - N-288 (parameters named through the function's name). It binds M09-06's form, not its commit. **Met:** every body reads its parameters through `ALIAS FOR $n` (7.1).
+  - EV-C02-014 3.5 item 4 and 5.6 item 4, for this producer. "Call `hard_dependency_cycle` before locking the work item's row; map a helper's NULL to `could_not_check`" is **met** (M09-06:236 before :300; M09-06:409-415). "`relate` and `retract_relation` check Rule O and Rule C with the same reads, written inline" is **met** (7.1).
+  - N-279 (2): Relation ends that are Events, for `transfer_relation` (M09-11), before W-C02-14's first run. Not M09-06's: `relate`'s ends are uuids, and an Event's bigint id is no uuid (`invalid_field`).
+  - N-281, its L-369 annotation: no real-path `claim` until it is met. M09-06 makes no claim and returns no token. Its runs are offline.
+  - N-279 (1), (17), (18), (19), (21), N-280, N-282, N-283 (6) and (7), N-284 to N-287 and N-289: their deadlines are C03's work list, M09-08, M09-12, each Group B file's first result or copy, W-C02-10's sampling call, the first `.py` copy, the first migration adding a role class, a test file's first result or copy, verdict (ii), and M09-09. None falls at M09-06's commit. N-283 (7) and N-285 (1) bear on tests that call M09-06's functions; 7.4 says what they mean here.
+- **Appendix B principle 3** binds no function here. Relation has no revisions; `retract_relation` sets state (7.2 item 2).
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | Branch `claude/c02-w09-m0906` at `c8449e4`, clean before this work. The runs were made with M09-06, EV13's section 19 and the raw files uncommitted (O, `49_git_hashes.txt`). Bytes run: M09-06 `f13b7f00df8e32ffe939851dbb60f2c22bfb0ad690c2e1933690e58c335dd0c3`; the self-check `…/scratchpad/m0906_run/fn_check.sql` `37919c13b2a5eca115c22f1b77ad407e2f72509ebf45400e3f8377cd40836dbb`; the break maker `…/scratchpad/m0906_run/brk.py` `03d88d11578258baa350ad98b40d11d539cd75632851a0c9203d69e79d60df3e` (the other drivers' hashes are in file 49). EV13 with its section 19, at this record's writing: `464e9ae3519a2525dbb62b00760bf20178381e3e6e71ed39509933b9c5f09606`. A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1 and 3 to 6: one throwaway PostgreSQL 16.15 cluster per run, unix socket only (in `…/scratchpad/m6s`, short enough for the 107-byte socket limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, `12_stop.txt` and `47_breaks_stop.txt`: `[cluster directory deleted: yes]`). Stand-ins: M09-02's `setup.sql`, a byte-identical copy (`fa2a9cfa…9783`). The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `c8449e4`; EV13 with Revisions 1 and 2, its corrections 15 to 18, and its section 19 (for M09-06's checker) |
+| Input | The eighteen migrations (the branch's seventeen and M09-06); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `tests/C02/W-C02-07/job/` and T-W14-FN's, run in place; the producer's self-check; twenty break copies of M09-06 made outside the repository (`…/scratchpad/m0906_brk/`, by `brk.py`); eleven merged break patches of `tests/C02/W-C02-07/breaks/` applied in place on the throwaway cluster (B-REL-1, B-F04-1 to B-F04-9, B-K05-1), and B-CONC-2 with a concurrency probe of the producer's own (`conc.sh`, `coord.sql`, `worker.sql`, `conc_setup.sql`) |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m06_offline_01_init_setup.txt` to `…_49_git_hashes.txt`, written directly by `…/scratchpad/m0906_run/rerun.sh` (01 to 12), `brk.sh` (13 to 47) and `final.sh` (48, 49). Every file but `49` passed through `scrub.py`, M09-05's filter, which reads the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time and replaces each claim-format and each environment-format string with a fixed label. Each file ends `claim-format strings replaced 0; environment-format strings replaced 0` (48 of 48). File 48 scans files 01 to 47 again with the same finders: `47 files; claim-format 0; environment-format 0`. Files 11 and 47 scan the cluster's server log: `466 lines; claim-format 0; environment-format 0` and `1278 lines; claim-format 0; environment-format 0`. File 49 holds hashes and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 09), the break copies (14 to 33) and the concurrency probe (45, 46) are the producer's own; the merged break patches (34 to 44, 46) are the test designer's |
+
+### 7.1 What was built, object by object
+
+All in M09-06, in this order: the four functions of EV13 2.5, and their grants. No table, type or `devos_private` function is added. M09-01 to M09-05 are not changed. Their helpers are called: `caller_role_class`, `write_event`, `reject`, `hard_dependency_cycle` and `is_installation_mission`.
+
+**The form every function has** is M09-03's to M09-05's (4.1, 5.1, 6.1):
+- the derivation first;
+- the read block with steps (b) to (f). A decided refusal goes through `v_code`, `v_reason` and `P0D01`. Any other error is `could_not_check`, `<v_check>: its input could not be read (SQLSTATE <code>)`;
+- for `relate` and `retract_relation`, the write block, where an error is `write_failed`, but `P0D02`; the two walks are reads and have none;
+- one per-call row by `reject` after a refusal;
+- fixed reasons.
+
+O (`08_catalog.txt`): each of the four has `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, ACL `{postgres=X/postgres,anon=X/postgres}`.
+
+**Parameters.** The names are those of EV13 2.5 and README 8.1, so named calls bind: `relate(p)`, `retract_relation(relation_id, reason)`, `affected_entities(root, limits)`, `explain_paths(root, target, limits)`. The bodies read them through `ALIAS FOR $n` (M09-06:74, :482-483, :676-677, :864-866), never as `<function>.<parameter>` (N-288). Fourteen merged patches rename one of these functions and wrap it (B-F04-1 to B-F04-9, B-K05-1, B-N29-3, B-ROC-2, B-ROC-3, B-6RG-1), and B-REL-1 copies `relate` under a new name. Self-check `TX-alias` shows no body names a parameter so.
+
+**Rule O and Rule C** (EV-C02-008 1.7.1; EV13 2.3, "What Rule O reads") are written inline in `relate` and `retract_relation`, with M09-04's reads and reasons:
+- Rule O reads the work item's current `work_revision` row, the `mission_revision` it names, that Mission's events through `is_installation_mission`, and for `devos_sinav` the exam link. It never reads `devos_private.mission`.
+- Rule C reads `devos_private.assignment`.
+- The reasons name the rule, never the item's opener or the claimant's class (`RL-c-reason-names-no-class`).
+
+**Relation ends and the walks' records** (EV13 19 (1), (3)). Fourteen families are looked up by one `union all` over their tables: Work, Mission, Decision, Finding and Artifact (with revisions), and Need, Relation, EffortPolicy, Assignment, Review, Verdict, Acceptance, Operation and Observation. EvalRun is read only when the caller's class is `devos_sinav`: M09-06:264-272 in `relate`, and the same branch in the root, target and walk checks. So for every other class the answer does not depend on the exam table, even when it cannot be read (`AE-eval-unreadable-cal`: `ok`, with `eval_run` revoked from the owner).
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.relate(p jsonb)` (M09-06:66) | Roles `devos_calisma`, `devos_sinav`, `devos_kurulum`. The form, then `relation_rule` (M09-06:224-229). For a hard `depends_on`, `hard_dependency_cycle` (M09-06:236), whose advisory lock comes before any row lock. The ends: `from_ref` (its row `for update`, M09-06:300-313), then `to_ref`; `exam_record` for `devos_sinav` (M09-06:268); otherwise `could_not_check`, `<end>: the record could not be read`, the same text for a missing record, a missing or partial revision, or an exam record. Rule O when `from_ref` is a work item; Rule C when the relation is hard (M09-06:358-374). The group (M09-06:378-390). The exact repeat (M09-06:392-406). The cycle: `cycle` (M09-06:417) or `could_not_check`. Writes the Relation (`group_id` its own id when `group_mode` comes alone, M09-06:438-440) and `relation_created` (origin `call`, `aggregate_revision` NULL). Answer `{"status": "ok", "id"}` | 2.5's row with R1-2, R1-3, R2-5 and C-M06 (19 (1)); B 3.4; W9 point 6; DM-01; EV-C02-008 1.2, 1.7.1, 5.1 (b) |
+| `devos_api.retract_relation(relation_id uuid, reason text)` (M09-06:474) | Roles as `relate`. `relation_id` NULL: `missing_field`. The relation (`not_found`); its work item `for update` (M09-06:534), then the relation `for update` (M09-06:537). Rule O: the creation event (none, or its type NULL: `could_not_check`, M09-06:545-556); transferred: `devos_kurulum` only (M09-06:558); then the work-item clauses when `from_ref` is a work item. Rule C for a hard relation from a work item. Already retracted: the exact repeat. Writes `validity` `retracted` and `relation_retracted` (payload `validity`, `previous_validity`, `reason`). Refusal rows carry `target_ref` `relation_id`. Answer `{"status": "ok", "id"}` | 2.5's row with C-M06 (19 (2)); EV-C02-008 1.7.1; section 4's row on Rule O for relations |
+| `devos_api.affected_entities(root uuid, limits jsonb)` (M09-06:668) | Roles `devos_calisma`, `devos_denetim`, `devos_sinav`, `devos_kurulum`. `limits` `max_depth` (5) and `max_records` (500). The root a record the caller may see, else `could_not_check`, `root: the record could not be read`. Breadth first along the edges of 19 (3): each record once (`distinct on`, M09-06:814-817), with the first path to it; `complete` false at a record limit (M09-06:818), at `max_depth` with an unwalked edge left, or when a record was hidden or missing or an edge partial. Answer `{"status": "ok", "records": [{"ref", "path"}], "complete"}`. Comment `devos:read …` | 2.5's row with C-M06 (19 (3)); B section 4 (Relation); Appendix C F04, K05; DM-35 as EV-C02-008 5.1 narrows it; DM-36 |
+| `devos_api.explain_paths(root uuid, target uuid, limits jsonb)` (M09-06:856) | Roles as `affected_entities`. `limits` `max_depth` (5) and `max_paths` (20). Root and target checked as the root above; equal: `invalid_field`. The region within `max_depth`, breadth first, then a depth-first search through the records that can reach the target, for simple paths, stopping after `max_paths` + 1 paths or 20000 steps (M09-06:875). `complete` false as 19 (4) lists, among them any edge out of the last level (M09-06:993) and a path cut at `max_depth` (M09-06:1079). Answer `{"status": "ok", "paths": [[root, …, target]], "complete"}`. Comment `devos:read …` | 2.5's row with C-M06 (19 (4)); Appendix C F04 ("separate and bounded") |
+| Grants (M09-06:1114-1140) | `revoke all … from public` and from the four API roles where they exist, on all four; `grant execute … to anon` on all four; no type, no private function | 1 item 13; T-W08-PRIV's constraint |
+
+O (`08_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the twenty-four `devos_api` functions.
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+- **The literals**, as the break patches read them: `relate` and `retract_relation` hold `array['devos_calisma', 'devos_sinav', 'devos_kurulum']`; `affected_entities` and `explain_paths` hold `array['devos_calisma', 'devos_denetim', 'devos_sinav', 'devos_kurulum']`.
+- **The unqualified-name scan.** No hit in M09-06's four functions; its four hits are section 3.1's.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** `affected_entities`, `deployment_drift`, `explain_paths`, `read_decision`, `ready_works`, `token_role_class` carry it.
+- **The exam table's name.** It occurs in all four functions' text (the `devos_sinav` branches above), and all four are on T-W07-N08's list of functions exempt by name (`job/w07_n08_exam_records.sql:284-286`; EV-C02-008 5.1, "The exemption list"). Self-check `TX-exam-table`.
+
+### 7.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated; none is silent. No merged test is changed. EV13 section 19 (C-M06) states items 1 to 6 in the record itself.
+1. **`relate`'s order and forms** (EV13 19 (1)):
+   - `relation_rule` comes with the form, since it reads nothing; the table's CHECK is its backstop in the write block (break k01: `write_failed` then).
+   - The cycle helper runs before the ends, for DM-01's lock order. Its answer is used last, after the repeat.
+   - The fourteen families; a revision sent for a record without revisions is a revision it does not have; an earlier revision of a Work is accepted.
+   - Only the `from_ref` row is locked (`for update`), never the `to_ref`'s, so that `A -> B` and `B -> A` cannot deadlock.
+   - `hard` with a type other than `depends_on` is accepted: Rule C applies, the cycle check does not.
+   - The exact repeat is 2.5's key among `current` relations: a call that differs only in `scope`, `method` or `epistemic_status` gets the existing relation (`RL-repeat-key-only`).
+   - The refusal row names no target; the declared session goes to the event and the row.
+2. **`retract_relation` on a transferred relation from a work item: both clauses** (EV13 19 (2)). `devos_kurulum` retracts it only when the work item lies under the installation's Mission (`RT-transferred-kur-ordinary-item`: `not_owner`; `RT-transferred-kur-inst` and `-decision`: `ok`). This is the stricter of two readings of EV-C02-008 1.7.1. T-W07-ROC reads the other (7.4). Also chosen:
+   - `reason` may be NULL (`RT-reason-null`);
+   - the creation event is the relation's first event, and none or a NULL type is `could_not_check`;
+   - the work item is locked before the relation;
+   - no advisory lock: retracting cannot close a cycle.
+3. **The walks' edge, for every type** (EV13 19 (3)): `to_ref` changed, `from_ref` affected. It is T-W07-F04's reading of `derived_from`, taken for every type. `stale` relations are walked; `retracted` ones are not; a NULL `validity` makes the result not complete (`AE-validity`, `AE-partial-edge`). The residual for `supports`, `challenges` and `part_of` is in 7.6.
+4. **`affected_entities`' forms:** `records` `{ref, path}` with the first breadth-first path; the root never listed; `complete` as 19 (3) says.
+5. **`explain_paths`' forms** (EV13 19 (4)):
+   - A target equal to the root is `invalid_field`.
+   - The step bound, 20000, is chosen; at it, `complete` is false.
+   - An edge out of the last level at `max_depth`, to a record seen or not, makes `complete` false. This was found by the self-check's `EP-cut` in a trial run and fixed before the filed run: a path can return into the region and still be longer than `max_depth`.
+6. **The limits:** each a JSON integer of at least 1 (up to nine digits), else `invalid_field`; JSON null or absent is the default; `explain_paths`' `max_depth` default 5, as 2.5's "As above".
+7. **Open samples are not withheld here.** EV-C02-008 5.2 (d) gives that to W-C02-10, with the sampling: C02's schema has no block state yet. Until then a `sample` Review is a record like any other for `relate` and the walks. This is not a departure, but it is stated because 2.5's row names it.
+
+Not departures, for the checker:
+- `relate` checks no Rule O when `from_ref` is not a work item (EV13 section 4: "`relate` checks nothing more for them"; `RL-o-from-decision-kur`: `ok`).
+- `relate` checks no scope containment between the relation and its ends: 2.5 names none.
+- The ledger-transfer form of a Relation (`transfer_relation`) is M09-11's.
+
+### 7.3 How W-C02-09's points are served by M09-06
+
+- **Point 1.** A versioned file later than `20261018235501`, plain SQL, no `psql` meta-command, no backslash (O, `49_git_hashes.txt`: `backslashes in M09-06: 0`). Decisions followed, with the object:
+  - the rejected-attempt record's per-call form: `reject`, on every refusal (`{"rejected": 1}` deltas);
+  - F06's list: the two walks carry the read marker; `relate` and `retract_relation` are state-changing (`24 devos_api functions (6 marked devos:read)`, `F06-list | ok`);
+  - concurrency: DM-01's lock order, the dependency queue first (7.1; the probe, 7.5).
+  - Offline, `deployment_drift` reports `no_difference`, 18 of 18 (runs 04 and 10).
+- **Point 2.** Twenty-four of the 55 `devos_api` functions now exist (four here). Each has definer rights, the fixed `search_path` and every DevOS name qualified (7.1's scan).
+- **Point 3.**
+  - Fourth bullet. Each of the four refuses a call with no token before any other check (`F06-refused:relate`, `-retract_relation`, `F06-read-refused:affected_entities`, `-explain_paths`, `ok`; the self-check's `*-no-token`). Each refuses a class not on its list with one per-call row: 5B rows R21 and R22, their 24 cells `ok`; the self-check's `*-role-*` cases.
+  - Fifth bullet. A declared role name changes nothing (`RL-declared-role-ignored`: `not_owner`); a declared session is written as declared (`RL-pos-event`).
+- **Point 5.**
+  - Each state-changing function writes its event in the same transaction, with the token's class (`RL-pos-event`: `relation_created`, `devos_calisma`, `call`, this transaction; `RT-pos-state`).
+  - An exact repeat writes no event and raises no error (`RL-repeat`, `RL-repeat-key-only`, `RL-group-own-repeat`, `RT-repeat`: `ok repeat`, `{}`).
+  - A failure planted mid-transaction leaves no half state and no orphan event (`RL-write-failed` on `relation`, `RL-write-event-failed` on `event`, `RT-write-failed`: only the refusal row is added; `RL-write-P0D02`: `could_not_check` with its reason).
+- **Point 6.** `relate` with `model_extracted` and `observation` is refused `relation_rule`, on both of its branches (`RL-rule-about`, `RL-rule-hard`; T-W07-REL's `REL-a`, `REL-b` `ok`); with `model_extracted` and `inference` it is accepted (`RL-pos-model-inference`, the row read after). T-W07-REL's own positives cannot pass on its fixtures (7.4).
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass:
+  - `relate`: `RL-end-from-random`, `-to-random`, `-to-revision-999`, `-to-no-revision`, `-need-with-revision`, `-env-token-row`; `RL-o-no-event`, `-mission-revision-unreadable` (42501), `-events-unreadable` (42501); `RL-c-partial`, `-unreadable` (42501); `RL-cycle-partial`; `RL-read-unreadable` (42P01), the form 6RG-r4 plants;
+  - `retract_relation`: `RT-no-creation-event`, `-creation-event-partial`, `-event-unreadable` (42501), the forms T-W07-ROC's `ROC-x-o-event-*` plant;
+  - the walks: `AE-root-random`, `AE-unreadable` (42P01), `EP-target-random`, `EP-unreadable`; T-W07-F04's F04-m1, -m2, -u1 and -u2 `ok`.
+  - At a limit, the walks return `complete` false and never "nothing else is affected": F04-d1, -d2, -a-bounded `ok`; `AE-depth`, `AE-records`, `EP-bounded`, `EP-depth`, `EP-cut`.
+- **Point 8.**
+  - W-C02-08's four copies, W-C02-03's three and the IDC copy pass again (run 05).
+  - The staged files whose cases call the four, run in place (run 06):
+    - **T-W07-K05 `PASS (6/6)`**, the first merged file to pass whole on these functions;
+    - **T-W07-F04 `COULD NOT CHECK (1 of 22 …)`**: 21 cases `ok`, and `F04-m4-cal` `could_not_check` at its control (7.4);
+    - T-W07-REL `FAIL (2 bad, …)`: `REL-a` and `REL-b` `ok`, `REL-pos` and `-pos2` `bad` (7.4);
+    - T-W07-5A's positive control `FAIL (1 bad, …)` (7.4);
+    - F06: the four functions' refused and read cases `ok`; `F06-role-token` `bad`, and `relate`'s and `retract_relation`'s event and repeat cases `could_not_check` (7.4); in all `FAIL (1 bad, 19 could not check, of 65)`;
+    - 5B: the 24 cells of R21 and R22 `ok`; `COULD NOT CHECK (10 of 148 could not be checked)` for rows whose functions are not built; none `bad`;
+    - DM07, DM34, 6TK, IDC, 5A and DM02 pass again.
+  - Their copies are a later pull request's (R:247; EV13 section 11).
+
+### 7.4 What M09-06 does not yet serve
+
+*[Dated line, 2026-10-19, L-373; CHK-C02-092 C3: the test revision this record calls unmerged (#367) is merged at the head that verdict (i) judged (`69d3632`). There, by CHK-C02-092's run: `DM11-pos-supersede` is `ok` and DM11 is FAIL (5 bad of 8: DM11-a to -e, W-C02-10's answer gate); F06 is FAIL (1 bad, 9 could not check, of 64): `F06-role-token` bad, `relate`'s and `retract_relation`'s event and repeat cases `could_not_check` from N-291's cause. The F06, DM11 and other numbers above for the files #367 changed were taken on `c8449e4`'s test bytes.]*
+
+- **Merged tests whose fixtures cannot reach `relate` on a correct build** (EV13 19 (5)). Each plants its work items with `pg_temp.w07_plant`, whose Missions have no creation event. So Rule O answers `could_not_check` (EV13 17 (5)), as N-285 item (1) found for M09-04's functions:
+  - **T-W07-REL** (W9 point 6's test): `REL-pos` and `REL-pos2` are `bad`. So the merged break B-REL-1 cannot be shown either: under it `REL-a` and `REL-b` stay `ok`, refused by Rule O before its wrapper's flip matters (run 34).
+  - **T-W07-5A's positive control** (`job/w07_5a_positive_control.sql`, assigned to W-C02-09 by EV13 section 11): `5A-pos` is `bad`.
+  - **T-W07-F04**: `F04-m4-cal` is `could_not_check`, since its control `relate` between two planted items is refused. So B-F04-8, whose only red case is `F04-m4-cal`, cannot be shown (run 42).
+  - **T-W07-F06**: `F06-event:relate` and `F06-repeat:relate` are `could_not_check`. `F06-role-token` is `bad`; its `devos_kurulum` call also needs a work item under the installation's Mission. `F06-orphan-a` and `-b` pass for the wrong reason: Rule O refuses before the planted failure is reached. `retract_relation`'s recipe plants a relation with no creation event: `could_not_check`. The test designer's unmerged revision of F06 (branch `claude/c02-w07-n285-tests`, read only, not run) leaves these recipes as they are.
+  - **The merged files prefer a break.** Break k09 reads a Mission with no creation event as not the installation's. Under it, T-W07-F04 goes to `PASS (22/22)` and T-W07-REL to `PASS (4/4)` (run 22), as F06 preferred M09-04's k08 (5.5). That is the cause of the cases above, shown from the other side.
+- **T-W07-ROC's `ROC-o-retract_relation-kur-transferred`.** The hook `transferred_relation` plants the relation from `w_cal`, an ordinary work item, and wants `devos_kurulum` accepted. Under 7.2 item 2 that is `not_owner`. ROC does not run yet: it needs `register_artifact`.
+- **T-W07-DM11.** It now runs, since `relate` exists. `DM11-a` to `-e` are `bad`: they test W-C02-10's answer gate (B 3.17, DM-11; DM11 is W-C02-10's copy, EV13 section 11), not M09-06. `DM11-pos-supersede` sends no `scope` and is refused `missing_field` (N-283 item (7); revised on the unmerged branch).
+- **The staged files that call these functions but need a later function stop at their `-pre` line** (run 06):
+  - T-W07-6RG (its r0 to r4 are `relate`'s) needs `register_artifact` and `prepare_operation`;
+  - T-W07-ROC, T-W07-N08 (exam fact and records), T-W07-N29 and Group C's other files need `register_artifact`, `record_eval_run`, `record_finding`, `open_review` or W-C02-10's tables;
+  - T-W07-DM19 needs `accept`;
+  - T-W07-CONC (`job/w07_conc_claim_and_cycle.py`) was not run: its own check of required functions lists `register_artifact` (its line 90), so it gives COULD NOT CHECK. 7.5's probe repeats its CONC-cyc2 and CONC-cyc4 forms on `relate` alone.
+  - So W9 point 8's Concurrency (both claims), F08's new hard dependency (F08 (a)) and 6RG's reference cases are "could not check", not counted.
+- **The merged breaks of these functions** (W-C02-13's):
+  - Shown here (runs 35 to 40, 43, 44): B-F04-1 (`F04-a-rows`, `-b-rows`), B-F04-2 (`-c-flag`, `-d1`, `-d2`), B-F04-3 (`-m1`, `-m2`, `-u1`, `-u2`), B-F04-4 and B-F04-5 (`-e-exam`), B-F04-6 (`-m3`, `-m4-paths`), B-F04-9 (`-c-sin`), B-K05-1 (`K05-rows`): each turns exactly its named cases red. B-CONC-2, on the probe (run 46).
+  - **B-F04-7** cannot be shown as merged. Its wrapper inserts `p->>'type'` and `p->>'method'`, text, into enum columns, which PostgreSQL refuses (SQLSTATE 42804). So `F04-m4-sin` and `-kur` become `could_not_check` (run 41). Its header says "the prober adapts it to the build's before the run".
+  - B-REL-1 and B-F04-8: above.
+  - B-6RG-1, B-ROC-2, B-ROC-3, B-N29-3: their tests do not run yet.
+
+### 7.5 The offline runs, with their raw lines
+
+*[Dated line, 2026-10-19, L-373; CHK-C02-092 C3: the test revision this record calls unmerged (#367) is merged at the head that verdict (i) judged (`69d3632`). There, by CHK-C02-092's run: `DM11-pos-supersede` is `ok` and DM11 is FAIL (5 bad of 8: DM11-a to -e, W-C02-10's answer gate); F06 is FAIL (1 bad, 9 could not check, of 64): `F06-role-token` bad, `relate`'s and `retract_relation`'s event and repeat cases `could_not_check` from N-291's cause. The F06, DM11 and other numbers above for the files #367 changed were taken on `c8449e4`'s test bytes.]*
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0906` at `c8449e4`, with M09-06, EV13's section 19 and the raw files untracked. The main run started 2026-10-19T00:38:41Z and ended 2026-10-19T00:38:48Z, on one cluster (`…/scratchpad/m0906_run/rerun.sh`). The break runs started 2026-10-19T00:38:48Z and ended 2026-10-19T00:42:07Z, on a second cluster (`…/scratchpad/m0906_run/brk.sh`).
+- **The drivers.** `run.sh`, `drive.py`, `scrub.py` and `scan.py` are `…/m0905_run/`'s, changed only in their paths (the clone `prd09`, the cluster under `…/m0906_run/pg`, the socket in `…/scratchpad/m6s`) and one printed word. `setup.sql` and `catalog.sql` are copies of `…/m0903_run/`'s, unchanged. `fn_check.sql` keeps M09-05's harness (`m_call`, `m_case`, `m_rec`) with M09-06's counted tables and cases. `brk.py`, `brk.sh`, `final.sh` and the probe follow M09-05's forms.
+- **Trial runs.** Trial runs came before, none of them filed: the main run's steps once (`…/m0906_run/trial1`), the self-check alone three times (`…/m0906_run/trialfn.sh`), and the break runs once (`…/m0906_run/trial2`). The second self-check trial, the first with the cases `EP-cut`, `EP-uncut` and `EP-simple`, had one red case, `EP-cut`, which found 7.2 item 5's fault in `explain_paths`. M09-06 was fixed and the third trial went green. The break trial ran on the fixed bytes. Before it, break k11 was reworded so that it models its fault, a missing creation event read as "not transferred"; its first form still answered `could_not_check` through the partial-type check.
+- **A discarded filed set.** A first set of files 01 to 49 was made on bytes whose catalogue scan (run 08, part 5) had two false hits in `relate`: "from another", in a reason text, and "update too", in a comment. Both phrases were reworded (no logic changed), those files were deleted, and every run was made again. The files filed here are the second set, of the envelope's bytes.
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the seventeen migrations before M09-06, each `[exit 0]` with its history row (34 `[exit 0]` lines).
+- **03, M09-06:** `CREATE FUNCTION` ×3, `COMMENT`, `CREATE FUNCTION`, `COMMENT`, `REVOKE` ×4, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 10:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 18, "migrations_expected": 18`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (95/95)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result):
+  - `W07_K05_MANY_PATHS PASS (6/6)`;
+  - `W07_F04_AFFECTED_RECORDS COULD NOT CHECK (1 of 22 could not be checked)`, for example `F04-a-rows | ok | 54 rows for a graph of 55 records (unique: t; …)`, `F04-a-bounded | ok | … {"n": 3, "ok": true, "complete": false}`, `F04-m4-sin | ok`, `F04-m4-kur | ok`, `F04-m4-cal | could_not_check | control: relate between two records Rule O gives devos_calisma was not accepted …` (7.4);
+  - `W07_REL_RELATION_STATUS FAIL (2 bad, 0 could not check, of 4)`: `REL-a | ok | … relation_rule`, `REL-b | ok`, `REL-pos | bad | returned {… "rule_o: whether the work item lies under the installation's Mission is missing or partial" …}`, `REL-pos2 | bad` (7.4);
+  - `W07_5A_POSITIVE_CONTROL FAIL (1 bad, 0 could not check, of 1)` (7.4);
+  - `W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 19 could not check, of 65)`, with `24 devos_api functions (6 marked devos:read)`; `F06-role-token | bad` (7.4);
+  - `W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (10 of 148 could not be checked)`, none `bad`, for example `5B-R21-relate-den | ok | x cell: … code role_class_not_permitted`;
+  - `W07_DM11_ANSWER_REVISION FAIL (6 bad, 0 could not check, of 8)`: W-C02-10's answer gate and N-283 (7) (7.4);
+  - `W07_DM07_HEARTBEAT PASS (8/8)`, `W07_DM34_MISSION_SCOPE PASS (10/10)`, `W07_6TK_TOKEN_REASONS PASS (32/32)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`;
+  - `W07_DM19B_BURST_COUNT COULD NOT CHECK (6 of 12 could not be checked)`, `W07_N04_SELF_APPROVAL COULD NOT CHECK (4 of 4 could not be checked)`;
+  - `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, 0 could not check, of 3)`: W-C02-10's, as in sections 4.5 to 6.5; it calls no M09-06 function;
+  - every other file `COULD NOT CHECK` on its `-pre` line (7.4); run 07 is T-W14-FN's `FN-pre`.
+- **08, the catalogue:** 7.1's listing.
+- **09, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC W-C02-09 M09-06; one transaction rolled back): `M0906_FUNCTIONS PASS (193/193)`.
+  - The cases: 93 for `relate`, 29 for `retract_relation`, 38 for `affected_entities`, 28 for `explain_paths` and 5 for the text.
+  - Each compares the answer's code and the change of seven tables; the state cases read the row after.
+  - Among them: `RL-exam-cal-to-as-none` and `-from-as-none` (an exam record end answered for `devos_calisma` with the very reason of a missing record); `RL-exam-sin-to`: `exam_record`; `RL-o-cal-exam`: `ok`; `RL-c-other-class`: `other_class_claim`, `RL-c-own-class` and `-lapsed`: `ok`; `RL-group-own-row`: `group_id` its own id; `RL-group-id-other-from`: `invalid_field`; `RL-cycle-two` and `-three`: `cycle`; `RL-cycle-lock`: the advisory lock (9001, 1) held; `RT-transferred-kur-ordinary-item`: `not_owner`; `AE-hidden-cal-flag` (the exam record's id nowhere, `complete` false), `AE-hidden-sin-found`; `AE-diamond-cycle-records`; `EP-diamond-paths`; `EP-cut-flag`; `EP-simple-path`; `TX-cycle-before-row-lock`.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt`, `event` and `relation`.
+- **11:** the server log, `466 lines; claim-format 0; environment-format 0`. **12:** `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **13 to 33, the break copies** (`brk.py`: 20 `made (one replacement in devos_api.<fn>)`). Each copy was applied in place of M09-06 (`[apply exit 0]`). Then the self-check and the staged F04, K05, REL, F06 and 5B were run, and its four functions were dropped (`[drop exit 0]`):
+  - **k01**, relate relation rule removed: `M0906_FUNCTIONS FAIL (2 of 193 not as wanted)`, red `RL-rule-about`, `RL-rule-hard`.
+  - **k02**, relate cycle refusal removed: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `RL-cycle-self`, `RL-cycle-two`, `RL-cycle-three`.
+  - **k03**, relate exam end read for every class: `M0906_FUNCTIONS FAIL (5 of 193 not as wanted)`, red `RL-exam-cal-to`, `RL-exam-cal-to-as-none`, `RL-exam-cal-from`, `RL-exam-cal-from-as-none`, `RL-exam-kur-to`; merged: `F04-m4-kur` `bad`.
+  - **k04**, relate end check removed: `M0906_FUNCTIONS FAIL (13 of 193 not as wanted)`, red `RL-end-from-random`, `RL-end-to-random`, `RL-end-to-revision-999`, `RL-end-same-text-revision`, `RL-end-to-no-revision`, `RL-end-same-text-partial`, `RL-end-need-with-revision`, `RL-end-env-token-row`, `RL-exam-cal-to`, `RL-exam-cal-to-as-none`, `RL-exam-cal-from`, `RL-exam-cal-from-as-none`, `RL-exam-kur-to`; merged: `F04-m4-kur` `bad`.
+  - **k05**, relate rule o kurulum removed: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `RL-o-kur-ord`.
+  - **k06**, relate rule c removed: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `RL-c-other-class`.
+  - **k07**, relate repeat removed: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `RL-repeat`, `RL-repeat-key-only`, `RL-group-own-repeat`.
+  - **k08**, relate group check removed: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `RL-group-id-other-from`, `RL-group-id-other-mode`, `RL-group-readiness`.
+  - **k09**, relate no event mission as ordinary: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `RL-o-no-event`; **the merged files prefer this break:** `W07_F04_AFFECTED_RECORDS PASS (22/22)`, `W07_REL_RELATION_STATUS PASS (4/4)` (7.4).
+  - **k10**, retract transferred clause removed: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `RT-transferred-cal`, `RT-transferred-sin`, `RT-transferred-kur-decision`.
+  - **k11**, retract missing creation event passes: `M0906_FUNCTIONS FAIL (2 of 193 not as wanted)`, red `RT-no-creation-event`, `RT-creation-event-partial`.
+  - **k12**, retract rule c removed: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `RT-c-other-class`.
+  - **k13**, retract rule o calisma removed: `M0906_FUNCTIONS FAIL (2 of 193 not as wanted)`, red `RT-o-cal-inst`, `RT-o-kur-inst`.
+  - **k14**, affected no deduplication: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `AE-diamond-cycle-records`; merged: `F04-a-rows` `bad`, `K05-rows` `bad`.
+  - **k15**, affected always complete: `M0906_FUNCTIONS FAIL (6 of 193 not as wanted)`, red `AE-depth-flag`, `AE-records-flag`, `AE-hidden-cal-flag`, `AE-hidden-den-flag`, `AE-validity-records`, `AE-partial-edge-flag`; merged: `F04-c-flag` `bad`, `F04-d1` `bad`, `F04-d2` `bad`.
+  - **k16**, affected exam records shown to every class: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `AE-hidden-cal-flag`, `AE-hidden-den-flag`, `AE-eval-unreadable-cal`; merged: `F04-c-flag` `bad`, `F04-c-noleak` `bad`.
+  - **k17**, affected missing root answered empty: `M0906_FUNCTIONS FAIL (3 of 193 not as wanted)`, red `AE-root-random`, `AE-root-exam-cal`, `AE-root-exam-as-none`; merged: `F04-m1` `bad`.
+  - **k18**, explain max paths not enforced: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `EP-bounded-flag`; merged: `F04-a-bounded` `bad`, `F04-a-paths` `bad`, `K05-paths` `bad`.
+  - **k19**, explain cut not flagged: `M0906_FUNCTIONS FAIL (2 of 193 not as wanted)`, red `EP-depth-flag`, `EP-cut-flag`.
+  - **k20**, explain paths not simple: `M0906_FUNCTIONS FAIL (1 of 193 not as wanted)`, red `EP-simple-path`.
+  - So each check turns red when its rule is removed. F04 caught k03 and k04 (through `F04-m4-kur`) and k14 to k18; K05 caught k14 and k18. The self-check alone caught the other thirteen, because no merged test runs those rules yet, or runs them only on fixtures Rule O refuses first (7.4).
+- **34 to 44, merged break patches on M09-06 itself** (`[M09-06 apply exit 0]`, `[patch exit 0]`, M09-06 dropped after each): as 7.4 lists.
+  - **34, B-REL-1:** `W07_REL_RELATION_STATUS FAIL (2 bad, 0 could not check, of 4)`; `REL-pos` `bad`, `REL-pos2` `bad`.
+  - **35, B-F04-1:** `W07_F04_AFFECTED_RECORDS FAIL (2 bad, 1 could not check, of 22)`; `F04-a-rows` `bad`, `F04-b-rows` `bad`, `F04-m4-cal` `could_not_check`.
+  - **36, B-F04-2:** `W07_F04_AFFECTED_RECORDS FAIL (3 bad, 1 could not check, of 22)`; `F04-c-flag` `bad`, `F04-d1` `bad`, `F04-d2` `bad`, `F04-m4-cal` `could_not_check`.
+  - **37, B-F04-3:** `W07_F04_AFFECTED_RECORDS FAIL (4 bad, 1 could not check, of 22)`; `F04-m1` `bad`, `F04-m2` `bad`, `F04-m4-cal` `could_not_check`, `F04-u1` `bad`, `F04-u2` `bad`.
+  - **38, B-F04-4:** `W07_F04_AFFECTED_RECORDS FAIL (1 bad, 1 could not check, of 22)`; `F04-e-exam` `bad`, `F04-m4-cal` `could_not_check`.
+  - **39, B-F04-5:** `W07_F04_AFFECTED_RECORDS FAIL (1 bad, 1 could not check, of 22)`; `F04-e-exam` `bad`, `F04-m4-cal` `could_not_check`.
+  - **40, B-F04-6:** `W07_F04_AFFECTED_RECORDS FAIL (2 bad, 1 could not check, of 22)`; `F04-m3` `bad`, `F04-m4-cal` `could_not_check`, `F04-m4-paths` `bad`.
+  - **41, B-F04-7:** `W07_F04_AFFECTED_RECORDS COULD NOT CHECK (3 of 22 could not be checked)`; `F04-m4-cal` `could_not_check`, `F04-m4-kur` `could_not_check`, `F04-m4-sin` `could_not_check`.
+  - **42, B-F04-8:** `W07_F04_AFFECTED_RECORDS COULD NOT CHECK (1 of 22 could not be checked)`; `F04-m4-cal` `could_not_check`.
+  - **43, B-F04-9:** `W07_F04_AFFECTED_RECORDS FAIL (1 bad, 1 could not check, of 22)`; `F04-c-sin` `bad`, `F04-m4-cal` `could_not_check`.
+  - **44, B-K05-1:** `W07_K05_MANY_PATHS FAIL (1 bad, 0 could not check, of 6)`; `K05-rows` `bad`.
+- **45 and 46, the concurrency probe.** 20 runs of 2 connections adding `a -> b` and `b -> a` (hard `depends_on`) at once, then 20 runs of 4 connections closing a cycle of four. Each connection issues a synthetic `devos_calisma` token inside its transaction, waits at one advisory-lock barrier, and calls `relate` once. Each prints only its answer's status and code.
+  - **45, unpatched:** two at once: `2 connections waiting; answers: 1 ok ;1 refused cycle; other lines: 0; hard edges among them: 1` (20 of 20); four at once: `4 connections waiting; answers: 3 ok ;1 refused cycle; other lines: 0; hard edges among them: 3` (20 of 20).
+  - **46, with B-CONC-2:** `hard_dependency_cycle holds the exclusive advisory lock: false`, `relate holds for update: false`; two at once: `2 connections waiting; answers: 2 ok ; other lines: 0; hard edges among them: 2` (20 of 20); four at once: `4 connections waiting; answers: 4 ok ; other lines: 0; hard edges among them: 4` (20 of 20).
+  - So the dependency queue serializes the cycle checks, and without it two or four concurrent writes close a cycle.
+- **47:** the server log, `1278 lines; claim-format 0; environment-format 0`; `[cluster directory deleted: yes]`.
+- **48:** files 01 to 47 scanned with the finders of `scan_patterns.json`: `47 files; claim-format 0; environment-format 0`.
+- **49:** the hashes in the envelope; `backslashes in M09-06: 0`; `M09-06 lines naming the exam table: 9`; `M09-06 strings found by either token finder: m0906 scan: 1 files; claim-format 0; environment-format 0`; `M09-06 lines holding either marker whole: 0`; `git status --porcelain`: M09-06, EV13 and the raw files 01 to 49, before this section was written; `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty.
+
+### 7.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-REL, T-W07-5A's positive control, T-W07-F04's `F04-m4-cal`, T-W07-F06's `relate` and `retract_relation` recipes and `F06-role-token`, and T-W07-DM19's `DM19-b` and `-c` plant their work items under Missions with no creation event (7.4). They need a Mission opened with `open_mission`, or a planted `mission_opened` event, and `F06-role-token` a work item under the installation's Mission. F06's `retract_relation` recipe needs a relation made by `relate`, or a planted creation event. This is N-285 item (1)'s cause, in files that note does not name. Until then REL cannot pass W9 point 6's test, and B-REL-1 and B-F04-8 cannot be shown.
+   - T-W07-ROC's hook `transferred_relation` plants from `w_cal`; under EV13 19 (2) `ROC-o-retract_relation-kur-transferred` needs a relation from `w_inst`, or from a record that is not a work item.
+   - B-F04-7 writes text into enum columns (42804), so it cannot be shown as merged (7.4).
+2. **For the executor** (reported, not done):
+   - **The walks' direction for every type** (7.2 item 3). For `supports`, `challenges` and `part_of`, the record affected may be the `to_ref`. As built, a walk from a supporting source misses what it supports. A per-type direction needs a source: C04's relation search design, or a decision with a checker. Before the walks are used for impact analysis beyond `derived_from` and `depends_on`. *[Dated line, 2026-10-19, L-373; CHK-C02-092 C1: one source does bear on it. Appendix B 3.4's third rule (`plan/Ek_B_Veri_Modeli.md`, line 149: when a supporting source goes stale, what it supports falls back into re-evaluation) points, for `supports`, to `from_ref` changed and `to_ref` affected, the opposite of what is built; as built, a walk from a supporting source returns no record and `complete: true` (CHK-C02-092 finding 4). The decision is N-292's.]*
+   - **EV13 19 (2)'s stricter reading** of Rule O on transferred relations, for M09-06's checker to judge against ROC's expectation.
+3. **For the checker of verdict (i):**
+   - EV13 section 19 with its *[C-M06]* marks;
+   - 7.2's departures, chiefly 1, 2, 3 and 5;
+   - the self-check, the break copies and the probe, which are the producer's own.
+4. **For the producers of M09-08 and M09-11:**
+   - `transfer_relation` (M09-11) applies `relate`'s family rules (EV13 3.2; EV-C02-008 5.2 (b)) and must call `hard_dependency_cycle` before any row lock, as `relate` does.
+   - F08's re-check at the effect reads hard dependencies through `ready_value` (3.5 item 4). A hard `depends_on` that `relate` adds after a claim serializes with the effect on the work item's row (M09-06:300).
+5. **Residuals:**
+   - The walks look a record up in fourteen tables per level (one `union all`), and `explain_paths` keeps its region in memory. That is a cost, not a rule, at C02's sizes; C04's measurement (T-W07-K05's "Not covered") sizes it.
+   - An unreadable table among the fourteen makes every `relate`, and every walk, `could_not_check` (`RL-c-unreadable` reports `from_ref`'s check). That fails closed.

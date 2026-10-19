@@ -1,0 +1,51 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k14_affected_no_deduplication, a copy of M09-06 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f k14_affected_no_deduplication.sql  (as postgres)
+[apply exit 0]
+ 146 | AE-diamond-cycle-records         | f  | false                    | true                     | {}                          | gt, h1, gm once each; the root not listed; complete
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0906_run/fn_check.sql:573: NOTICE:  M0906_FUNCTIONS FAIL (1 of 193 not as wanted)
+[self-check done]
+w07_f04_affected_records.sql:  F04-a-rows     | bad             | 72 rows for a graph of 55 records (unique: f; 23 ms)
+w07_f04_affected_records.sql:  F04-m4-cal     | could_not_check | control: relate between two records Rule O gives devos_calisma was not accepted, so the end check is not shown to be reached: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f04_affected_records.sql: psql:tests/C02/W-C02-07/job/w07_f04_affected_records.sql:737: ERROR:  W07_F04_AFFECTED_RECORDS FAIL (1 bad, 1 could not check, of 22)
+w07_k05_many_paths.sql:  K05-rows     | bad     | 72 rows for 55 records (unique: f)
+w07_k05_many_paths.sql: psql:tests/C02/W-C02-07/job/w07_k05_many_paths.sql:397: ERROR:  W07_K05_MANY_PATHS FAIL (1 bad, 0 could not check, of 6)
+w07_rel_relation_status.sql:  REL-pos  | bad     | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; relation rows 0 -> 0; new events 0; stored none
+w07_rel_relation_status.sql:  REL-pos2 | bad     | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; relation rows 0 -> 0; new events 0; stored none
+w07_rel_relation_status.sql: psql:tests/C02/W-C02-07/job/w07_rel_relation_status.sql:322: ERROR:  W07_REL_RELATION_STATUS FAIL (2 bad, 0 could not check, of 4)
+w07_f06_state_change_event.sql:  F06-event:cancel_work               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:claim                     | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:heartbeat                 | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:mark_stale                | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:relate                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:release                   | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:reopen_for_review         | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:retract_relation          | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: the relation's creation event is missing", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revise_work               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revoke_claim              | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:set_effort_policy         | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-repeat:cancel_work              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:claim                    | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:mark_stale               | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:relate                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:reopen_for_review        | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:retract_relation         | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:revise_work              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:set_effort_policy        | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-role-token                      | bad             | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:879: ERROR:  W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 19 could not check, of 65)
+w07_5b_authorization_matrix.sql:  5B-row-R06                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R07                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R25                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (10 of 148 could not be checked)
+NOTICE:  function devos_api.relate_w07_orig(jsonb) does not exist, skipping
+NOTICE:  function devos_api.affected_entities_w07_orig(uuid,jsonb) does not exist, skipping
+NOTICE:  function devos_api.explain_paths_w07_orig(uuid,uuid,jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (27_break_k14_affected_no_deduplication): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,76 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (hashes of the bytes run, and the clone's git state; written without the scrub, hashes and git output only)
+f13b7f00df8e32ffe939851dbb60f2c22bfb0ad690c2e1933690e58c335dd0c3  supabase/migrations/20261019010001_w09_relations.sql
+37919c13b2a5eca115c22f1b77ad407e2f72509ebf45400e3f8377cd40836dbb  fn_check.sql
+03d88d11578258baa350ad98b40d11d539cd75632851a0c9203d69e79d60df3e  brk.py
+c5be2d90ecfea03e809fe4bdf972262a4afd9de442e8827f9563d5a0dbed56cd  brk.sh
+95327fe254bcf687add86c43e1e8698a55bd192439089247888fdc638a8848f1  rerun.sh
+66f6bf82939bcb0314ac21583c42685b354ce565542f7bb4718b10b9586ad53f  run.sh
+4943b5025b93bb0e09ea661ca1f0be4a8ae9fd146c83cc5285e1944f7894908a  drive.py
+d7dbe101fa6bcee33b728a99c202d07edccecd0b965f5e95c607b2a8799c531b  scrub.py
+252e6215e03b80bc210593d5a50c51294a5c525dedc3342ac46056076d54e98c  scan.py
+fa2a9cfa8e9b1bef07d784dbbb4d909582eb8ae43d2b1b8e141d5487ff129783  setup.sql
+4bd934440e11bc6f156462e001837af95f78fc3633c251a7700f738b679b1cd4  catalog.sql
+689cb5e83a47faa4b3cda2349788c1fb6560135f066d82556938bfa644084bed  conc.sh
+34018fce3291beed622763d4200e2fbeeae32bc5f83f76dec66855d66e940cb9  conc_setup.sql
+6692bd2629a88b14744d3a489ec94520ae72ce8281fcce6816cf316bd364b705  coord.sql
+d60f1bf6f625c214d6d18100a0d74781b51dbce9adc66fc7c127b9938b5389a0  worker.sql
+f642c3dfdc4a8430de01f4d28a6b40e0ae5b3f77adc895a857918e933de1601b  final.sh
+backslashes in M09-06: 0
+M09-06 lines naming the exam table: 9
+M09-06 strings found by either token finder: m0906 scan: 1 files; claim-format 0; environment-format 0
+M09-06 lines holding either marker whole: 0
+$ git rev-parse HEAD; git status --porcelain
+c8449e41e32d0f76a5037158f6bc3c4e0dc7406f
+ M evidence/C02/EV-C02-013_w09_interface.md
+?? evidence/C02/raw/EV-C02-014_m06_offline_01_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_02_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_03_apply_m0906.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_04_drift.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_05_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_06_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_07_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_08_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_09_functions.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_10_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_11_server_log_scan.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_12_stop.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_13_breaks_setup.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_14_break_k01_relate_relation_rule_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_15_break_k02_relate_cycle_refusal_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_16_break_k03_relate_exam_end_read_for_every_class.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_17_break_k04_relate_end_check_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_18_break_k05_relate_rule_o_kurulum_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_19_break_k06_relate_rule_c_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_20_break_k07_relate_repeat_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_21_break_k08_relate_group_check_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_22_break_k09_relate_no_event_mission_as_ordinary.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_23_break_k10_retract_transferred_clause_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_24_break_k11_retract_missing_creation_event_passes.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_25_break_k12_retract_rule_c_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_26_break_k13_retract_rule_o_calisma_removed.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_27_break_k14_affected_no_deduplication.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_28_break_k15_affected_always_complete.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_29_break_k16_affected_exam_records_shown_to_every_class.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_30_break_k17_affected_missing_root_answered_empty.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_31_break_k18_explain_max_paths_not_enforced.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_32_break_k19_explain_cut_not_flagged.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_33_break_k20_explain_paths_not_simple.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_34_merged_B-REL-1.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_35_merged_B-F04-1.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_36_merged_B-F04-2.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_37_merged_B-F04-3.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_38_merged_B-F04-4.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_39_merged_B-F04-5.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_40_merged_B-F04-6.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_41_merged_B-F04-7.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_42_merged_B-F04-8.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_43_merged_B-F04-9.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_44_merged_B-K05-1.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_45_conc_unpatched.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_46_conc_B-CONC-2.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_47_breaks_stop.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_48_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_m06_offline_49_git_hashes.txt
+?? supabase/migrations/20261019010001_w09_relations.sql
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end of diff]
