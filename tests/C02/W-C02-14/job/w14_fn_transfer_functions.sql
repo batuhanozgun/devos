@@ -56,6 +56,12 @@
 -- decided forms: ownership of an event's record and of a relation's ends, the input commit compared with the run's, the
 -- locks 9005, 9006 and 9007 in each function's text, and the two partial indexes. Until that migration is recorded as
 -- applied, these 70 are could_not_check and the file is COULD NOT CHECK (README section 3); then each is judged.
+-- Revised under ledger rule 3, 2026-10-19 (note N-308; CHK-C02-112 finding 9, its breaks x2, x3 and x12; EV-C02-013
+-- 28 (2) to (5) and (8)), after this file's first result and before any result of the cases added, with the corrective
+-- migration 20261019180001_w09_transfer_corrections.sql merged: 25 cases (the seventh block below), additions only:
+-- where each lock statement stands in its function's text relative to the hand-over read, the key read and the
+-- function's later locks (FN-LO-*), and a Decision end whose first event is of a type other than decision_opened or
+-- transferred (FN-OW-rel-dec-type). No earlier case ID, expected outcome or judging rule changed.
 -- Safety: no psql meta-command and no backslash; owner-level states (a planted hand-over, a trigger that raises) are
 -- made inside subtransactions that are undone; stops at its first error; one row per case, then PASS, FAIL or COULD NOT
 -- CHECK (FAIL and COULD NOT CHECK raise).
@@ -2956,6 +2962,177 @@ begin
         || ' ' || left(sqlerrm, 160));
     end;
   end loop;
+end $$;
+
+-- Added under ledger rule 3, 2026-10-19 (note N-308 on plan/work/C02.md; CHK-C02-112 finding 9 and its breaks x2, x3 and
+-- x12; EV-C02-013 28 (2) to (5) and (8)), after this file's first result and before any result of these cases: the
+-- seventh block. The sixth block's FN-LK cases read that each lock statement is in its function's text; these read where
+-- it stands there (structural, the same text: pg_get_functiondef, line comments and white space removed, of the body
+-- that names itself in v_fn). FN-LO-9005-<fn> (thirteen): 9005 comes before the function's first read of the
+-- ledger_handed_over event and before every other lock statement of its text (9007, 9002, 9004, the call of
+-- hard_dependency_cycle, which takes 9001, and every row lock, for share or for update): 28 (2)'s step 1 and 28 (4).
+-- FN-LO-9007-<fn> (the ten keyed by S2): 9007 comes before the key read (the first read of a transferred event by
+-- transfer_source kind and source_id) and before 9004, the call of hard_dependency_cycle and every row lock: 28 (2)'s
+-- step 2 and 28 (5). FN-LO-9006-prepare_operation: 9006 comes before the key read of the Operation row (28 (3)).
+-- When the lock statement or the read is not found in the text, the case is could_not_check, never ok: a missing lock
+-- is FN-LK's bad, and a read worded otherwise needs the test designer's revision. FN-OW-rel-dec-type (28 (8): a
+-- Decision's creation event "has a type other than decision_opened or transferred: could_not_check"): FN-OW-rel-dec-pos's
+-- call with to_ref a Decision planted by the owner whose first event is acceptance_set of devos_kurulum (its creation
+-- event missing, a later event of the installation present): could_not_check. It is judged only when, in this block,
+-- that pair is accepted and the same call on a Decision with no event at all (FN-OW-rel-dec-cnc's) is refused
+-- could_not_check, so that it answers the type clause alone: without that half the case is could_not_check, and
+-- FN-OW-rel-dec-cnc carries it. Gated as the sixth block is, on the corrective migration's history row.
+-- The position of p_lock and of the first occurrence of each anchor in a function's own text (w14_lockheld's bodies:
+-- every devos_api function whose text names itself p_name in v_fn, else the function p_sig). held: true when p_lock
+-- comes before every anchor of p_must (each must be found) and before every anchor of p_may that is found; null when
+-- p_lock or an anchor of p_must is not found, or the function does not exist (then the result is null).
+create function pg_temp.w14_lockat(p_name text, p_sig text, p_lock text, p_must text[], p_may text[]) returns jsonb
+language plpgsql as $f$
+declare o oid; n int := 0; t text; texts text[] := '{}'; pl int; pa int; a text; ok boolean := true; why text := '';
+begin
+  for o in select p.oid from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+            where s.nspname = 'devos_api' and position('v_fn constant text := ''' || p_name || ''';' in p.prosrc) > 0 loop
+    n := n + 1;
+    texts := texts || regexp_replace(regexp_replace(pg_get_functiondef(o), '--[^' || chr(10) || ']*', '', 'g'),
+                                     '[[:space:]]', '', 'g');
+  end loop;
+  if n = 0 then
+    if to_regprocedure(p_sig) is null then return null; end if;
+    texts := array[pg_temp.w14_fntext(p_sig)];
+  end if;
+  foreach t in array texts loop
+    pl := position(p_lock in t);
+    if pl = 0 then
+      return jsonb_build_object('held', null, 'bodies', greatest(n, 1), 'why', p_lock || ' is not in the text, so where it '
+        || 'stands cannot be read (its absence is the sixth block''s FN-LK case)');
+    end if;
+    why := why || case when why = '' then '' else ' | ' end || p_lock || ' at ' || pl;
+    foreach a in array coalesce(p_must, '{}') loop
+      pa := position(a in t);
+      if pa = 0 then
+        return jsonb_build_object('held', null, 'bodies', greatest(n, 1), 'why', 'the read ' || a || ' is not found in the '
+          || 'text (worded otherwise: the test designer revises the anchor before a result)');
+      end if;
+      why := why || ', ' || a || ' at ' || pa;
+      ok := ok and pl < pa;
+    end loop;
+    foreach a in array coalesce(p_may, '{}') loop
+      pa := position(a in t);
+      if pa > 0 then why := why || ', ' || a || ' at ' || pa; ok := ok and pl < pa; end if;
+    end loop;
+  end loop;
+  return jsonb_build_object('held', ok, 'bodies', greatest(n, 1), 'why', why);
+end $f$;
+-- A Decision planted by the owner with its revision 1 and one event on it, of the type and class given (w14_pdec's
+-- form; the first event's type is the one thing varied).
+create function pg_temp.w14_tdec(p_type text, p_class text) returns text language plpgsql as $f$
+declare dc jsonb;
+begin
+  dc := pg_temp.w14_plant('devos_private.decision', '{"class": "high_impact", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w14_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc -> 'id', 'revision', 1,
+          'question', 'w14_fixture SYNTHETIC W-C02-14 a decision whose first event is of a chosen type', 'alternatives_state',
+          'compared'));
+  insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin)
+  values ('decision', (dc ->> 'id')::uuid, 1, p_type, '{"w14_fixture": "SYNTHETIC W-C02-14"}', p_class, 'call');
+  return dc ->> 'id';
+end $f$;
+
+do $$
+declare tag text := pg_temp.w14_tag(); run text; i jsonb; wi text; dk text; dn text; dx text; t jsonb; tk jsonb; tn jsonb;
+        sid text; nb bigint; ids text[]; acc jsonb; kp text; kn text; r jsonb; f text; nm text; lk text; mu text[]; ma text[];
+        h text := 'event_type=''ledger_handed_over''';
+        k text := 'event_type=''transferred''and(e.payload->''transfer_source''->>''kind'')=';
+        later text[] := array['forshare', 'forupdate'];
+        keyed text[] := array['transfer_event', 'transfer_artifact', 'transfer_mission', 'transfer_work', 'transfer_relation',
+                              'transfer_decision', 'transfer_need', 'transfer_finding', 'transfer_review', 'transfer_acceptance'];
+begin
+  if pg_temp.w14_pre() is not null then return; end if;  -- FN-pre is recorded by the first block
+  ids := array(select 'FN-LO-9005-' || x from unnest(array['begin_transfer_run', 'end_transfer_run', 'record_handover']
+                 || keyed) x)
+      || array(select 'FN-LO-9007-' || x from unnest(keyed) x) || array['FN-LO-9006-prepare_operation', 'FN-OW-rel-dec-type'];
+  -- The sixth block's gate: could_not_check until the corrective migration w09_transfer_corrections is recorded as applied.
+  begin
+    if to_regclass('supabase_migrations.schema_migrations') is not null then
+      execute 'select count(*) from supabase_migrations.schema_migrations h where h.name = ''w09_transfer_corrections''' into nb;
+    end if;
+  exception when others then nb := -1;
+  end;
+  if coalesce(nb, 0) <= 0 then
+    perform pg_temp.w14_rec(x, 'could_not_check', case when nb = -1 then 'the migration history could not be read, so '
+      || 'whether the corrective migration w09_transfer_corrections is applied cannot be told' else 'the corrective migration '
+      || 'w09_transfer_corrections (EV-C02-018 16 decision 12) is not recorded as applied, so its rules cannot be judged yet '
+      || '(README section 3: before the build exists)' end) from unnest(ids) x;
+    return;
+  end if;
+
+  -- Where each lock statement stands (28 (2) to (5)).
+  for nm, f, lk, mu, ma in
+      select 'FN-LO-9005-' || x, x, 'pg_advisory_xact_lock_shared(9005,0)', array[h],
+             array['pg_advisory_xact_lock(9007,', 'pg_advisory_xact_lock(9002,', 'pg_advisory_xact_lock(9004,',
+                   'hard_dependency_cycle('] || later
+        from unnest(array['begin_transfer_run', 'end_transfer_run'] || keyed) x
+      union all select 'FN-LO-9005-record_handover', 'record_handover', 'pg_advisory_xact_lock(9005,0)', array[h], later
+      union all select 'FN-LO-9007-' || x, x, 'pg_advisory_xact_lock(9007,', array[k],
+             array['pg_advisory_xact_lock(9004,', 'hard_dependency_cycle('] || later from unnest(keyed) x
+      union all select 'FN-LO-9006-prepare_operation', 'prepare_operation', 'pg_advisory_xact_lock(9006,',
+             array['o.idempotency_namespace=v_nsando.idempotency_key=v_ikey'], later loop
+    begin
+      r := pg_temp.w14_lockat(f, 'devos_api.' || f || case when f = 'prepare_operation' then '(text,jsonb)' else '(jsonb)' end,
+                              lk, mu, ma);
+      if r is null then
+        perform pg_temp.w14_rec(nm, 'could_not_check', 'devos_api.' || f || ' does not exist (FN-M-cat fails, or F01''s)');
+      else
+        perform pg_temp.w14_check(nm, (r ->> 'held')::boolean, f || '''s own text (' || (r ->> 'bodies') || ' body naming itself '
+          || f || '), comments and white space removed, positions: ' || (r ->> 'why') || ' (wanted ' || lk
+          || case when right(lk, 1) = ',' then '…)' else '' end || ' before each read named and before each later lock found)');
+      end if;
+    exception when others then
+      perform pg_temp.w14_rec(nm, 'could_not_check', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate
+        || ' ' || left(sqlerrm, 160));
+    end;
+  end loop;
+
+  -- FN-OW-rel-dec-type (28 (8)).
+  if pg_temp.w14_handovers() > 0 then
+    perform pg_temp.w14_rec('FN-OW-rel-dec-type', 'could_not_check', 'a ledger_handed_over event is already in this database, '
+      || 'so the state before the hand-over cannot be planted');
+    return;
+  end if;
+  begin
+    if to_regprocedure('devos_api.transfer_relation(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_owt');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    wi := pg_temp.w14_iwork(run);
+    dk := pg_temp.w14_pdec('answered', 'devos_kurulum', 'compared'); dn := pg_temp.w14_ndec();
+    dx := pg_temp.w14_tdec('acceptance_set', 'devos_kurulum');
+    tk := pg_temp.w14_try('transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run, 'sid',
+            tag || '_OWT-pos', 'from', wi, 'to', dk)) || jsonb_build_object('to_revision', 1));
+    kp := pg_temp.w14_kind(tk -> 'r');
+    tn := pg_temp.w14_try('transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run, 'sid',
+            tag || '_OWT-none', 'from', wi, 'to', dn)) || jsonb_build_object('to_revision', 1));
+    kn := case when coalesce(pg_temp.w14_refused_with(tn, 'could_not_check'), false) then 'refused could_not_check'
+               else pg_temp.w14_kind(tn -> 'r') || ' ' || pg_temp.w14_brief(tn -> 'r') end;
+    sid := tag || '_OWT-type';
+    t := pg_temp.w14_try('transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run, 'sid', sid,
+           'from', wi, 'to', dx)) || jsonb_build_object('to_revision', 1));
+    acc := jsonb_build_array(jsonb_build_object('id', 'FN-OW-rel-dec-type',
+      'cond', case when kp is distinct from 'accepted' or kn <> 'refused could_not_check' then null
+                   else pg_temp.w14_refused_with(t, 'could_not_check') and pg_temp.w14_marks(sid) = 0 end,
+      'detail', format('transfer_relation with to_ref a Decision whose first event is acceptance_set of devos_kurulum (no '
+        || 'decision_opened or transferred event): %s; marks of the source %s; its pair (FN-OW-rel-dec-pos''s call, made again '
+        || 'here): %s; the same call on a Decision with no event (FN-OW-rel-dec-cnc''s): %s (judged only when the pair is '
+        || 'accepted and that call refused could_not_check)', pg_temp.w14_say(t, 'refused could_not_check, none, at least 1'),
+        pg_temp.w14_marks(sid), coalesce(kp, 'not made'), kn)));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := jsonb_build_array(jsonb_build_object('id', 'FN-OW-rel-dec-type', 'cond', null, 'detail', sqlerrm));
+    when others then acc := jsonb_build_array(jsonb_build_object('id', 'FN-OW-rel-dec-type', 'cond', null, 'detail',
+      'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
+  end;
+  perform pg_temp.w14_check(x ->> 'id', (x ->> 'cond')::boolean, x ->> 'detail') from jsonb_array_elements(acc) x;
 end $$;
 
 select case_id, outcome, detail from w14_results order by case_id;
