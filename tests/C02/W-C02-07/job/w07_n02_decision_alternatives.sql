@@ -16,6 +16,9 @@
 -- deleted row) are planted inside a subtransaction and undone before the next case. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_N02_DECISION_ALTERNATIVES PASS as a notice, or FAIL / COULD NOT CHECK as
 -- an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-18 (N-283 (6)), before any result of this file: N02-oe-answer-* and
+-- -accept-* count only the rule's kind of error as the refusal; see the specification's "Revision under ledger rule 3
+-- (N-283 (6), 2026-10-18)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -525,6 +528,22 @@ begin
       pg_temp.w07_args('decision', 'open_exploration', nextval('w07_seq')::int, c), 'accepted', null, 'decision');
   end loop;
 end $f$;
+-- Revised under ledger rule 3, 2026-10-18 (N-283 (6); CHK-C02-088 C1): a negative case of a rule held on the tables
+-- is ok only when the write is refused by that rule's kind of error: SQLSTATE 23514 (check_violation, what a CHECK
+-- raises) or 23001 (restrict_violation, what W-C02-08's table rules raise: devos_private.refuse_change, migration
+-- 20261014170205). No migration builds these rules yet (W-C02-10's), so the codes are an assumed interface (the
+-- specification's "Interface assumed"). Any other error (22P02 from a fixture, 42xxx from a call that could not be
+-- formed, 23502 from a missing column, a plain raise) did not show the rule: the case is the test's own
+-- could_not_check, never ok. No error at all is bad, as before.
+create function pg_temp.n02_rule_judge(p_case text, e text, p_held boolean, p_detail text) returns void language plpgsql as $f$
+begin
+  if e is not null and split_part(e, ' ', 1) <> all (array['23514', '23001']) then
+    perform pg_temp.w07_put(p_case, 'could_not_check', p_detail || ': refused by an error that is not the rule''s refusal '
+      || '(wanted SQLSTATE 23514 or 23001): ' || e);
+  else
+    perform pg_temp.w07_rec(p_case, e is not null and p_held, p_detail || ': ' || coalesce('refused (' || e || ')', 'ACCEPTED'));
+  end if;
+end $f$;
 create function pg_temp.n02_oe() returns void language plpgsql as $f$
 declare c text; t text; d text; e text; st text;
 begin
@@ -532,12 +551,10 @@ begin
     t := case c when 'high_impact' then 'hi' else 'batu' end;
     d := pg_temp.w07_decision(c, 'open_exploration');
     e := pg_temp.w07_set_status(d, 'answered', pg_temp.w07_rev(d)); st := pg_temp.w07_dec_state(d);
-    perform pg_temp.w07_rec('N02-oe-answer-' || t, e is not null and st like 'status open %',
-      'answer of a decision in open_exploration with no options and no single_viable_path_reason: '
-      || coalesce('refused (' || e || ')', 'ACCEPTED') || '; then ' || st);
+    perform pg_temp.n02_rule_judge('N02-oe-answer-' || t, e, st like 'status open %',
+      'answer of a decision in open_exploration with no options and no single_viable_path_reason; then ' || st);
     e := pg_temp.w07_set_status(d, 'accepted', null); st := pg_temp.w07_dec_state(d);
-    perform pg_temp.w07_rec('N02-oe-accept-' || t, e is not null and st like 'status open %',
-      'acceptance of the same decision: ' || coalesce('refused (' || e || ')', 'ACCEPTED') || '; then ' || st);
+    perform pg_temp.n02_rule_judge('N02-oe-accept-' || t, e, st like 'status open %', 'acceptance of the same decision; then ' || st);
     e := pg_temp.w07_new_revision(d, jsonb_build_object('alternatives_state', 'single_viable_path',
       'single_viable_path_reason', 'SYNTHETIC W-C02-07: only form A fits the existing w07_fixture foreign keys'));
     if e is not null then

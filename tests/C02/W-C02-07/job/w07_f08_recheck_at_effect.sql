@@ -9,6 +9,8 @@
 -- tests/C02/W-C02-07/T-W07-F08_recheck_at_effect.md. Expiry is planted as passed (no wait; README section 9).
 -- Runs: the migration job's devos-test step as postgres (README 5.1 (a)); the break harness's throwaway database (5.2).
 -- Transport: sql-set-role (role anon, header simulated with set_config; the record says so).
+-- Revised under ledger rule 3, 2026-10-18 (N-285 (4)), before any result: F08 (b)'s and (w)'s revisions change the
+-- scope; see the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists it ends in
 -- COULD NOT CHECK. Output: one row per case, then PASS (notice) or FAIL / COULD NOT CHECK (raised).
 begin;
@@ -374,9 +376,15 @@ begin
     r := pg_temp.w07_prepare(w, cb->>'claim_token',
            pg_temp.w07_op08(wb, 'w07_fixture_key_f08_b', jsonb_build_array(pg_temp.w07_ref(wb), pg_temp.w07_ref(wsrc))));
     if r->>'status' is distinct from 'ok' then raise exception 'prepare refused: %', coalesce(r->>'reason_code', r->>'w07_raised'); end if;
+    -- Revised under ledger rule 3, 2026-10-18 (N-285 (4); CHK-C02-089 C1): the source's revision narrows its scope (under
+    -- the Mission's and wb's, so it stays a source in scope, F05 (b)) and gives its reason, and the guard asks for a new
+    -- revision; sent with the scope it already had, the first version was an exact repeat (EV-C02-013 2.3 and R2-9): the
+    -- source did not change, so F08-b was bad and F08-pos3 named a revision that does not exist.
     x := pg_temp.w07_call(w, 'select devos_api.revise_work($2)', null, jsonb_build_object('id', wsrc->>'id',
-           'base_revision', (wsrc->>'revision')::int, 'scope', sc, 'reason', 'w07_fixture SYNTHETIC W-C02-07 source change'));
-    if x->>'status' is distinct from 'ok' then raise exception 'the source could not be revised'; end if;
+           'base_revision', (wsrc->>'revision')::int, 'scope', sc || '.src', 'reason', 'w07_fixture SYNTHETIC W-C02-07 source change: the scope narrowed'));
+    if x->>'status' is distinct from 'ok' or coalesce((x->>'revision')::int, 0) <= (wsrc->>'revision')::int then
+      raise exception 'the source could not be revised: %', coalesce(x->>'reason_code', x->>'w07_raised', x->>'status');
+    end if;
     s0 := pg_temp.w07_state();
     perform pg_temp.w07_judge('F08-b a source in the read set changed',
       pg_temp.w07_call(w, 'select devos_api.record_attempt($1, $3::uuid)', cb->>'claim_token', null, r->>'id'), 'refused',
@@ -448,14 +456,18 @@ begin
   -- effect then names the revision it was claimed at; (pos7) the same effect on a work item not revised. They differ
   -- only in the revision made between the claim and the effect.
   begin
+    -- Revised under ledger rule 3, 2026-10-18 (N-285 (4); CHK-C02-089 C1): the revision narrows the scope and gives its
+    -- reason, and the guard asks for a new revision (the first version, an exact repeat, wrote none, so F08-w was bad);
+    -- the effect names the narrowed scope, which lies within both revisions', so the revision named is the only thing
+    -- it differs in from F08-pos7, not a scope the current revision no longer covers.
     x := pg_temp.w07_call(w, 'select devos_api.revise_work($2)', null, jsonb_build_object('id', ww->>'id',
-           'base_revision', (ww->>'revision')::int, 'scope', sc, 'reason', 'w07_fixture SYNTHETIC W-C02-07 work change'));
-    if x->>'status' is distinct from 'ok' then
+           'base_revision', (ww->>'revision')::int, 'scope', sc || '.w', 'reason', 'w07_fixture SYNTHETIC W-C02-07 work change: the scope narrowed'));
+    if x->>'status' is distinct from 'ok' or coalesce((x->>'revision')::int, 0) <= (ww->>'revision')::int then
       raise exception 'the work item could not be revised: %', coalesce(x->>'reason_code', x->>'w07_raised', x->>'status');
     end if;
     s0 := pg_temp.w07_state();
     perform pg_temp.w07_judge('F08-w the work item revised after the claim',
-      pg_temp.w07_effect(w, cw->>'claim_token', ww, 'f08/w'), 'refused',
+      pg_temp.w07_effect(w, cw->>'claim_token', ww, 'f08/w', sc || '.w'), 'refused',
       case when pg_temp.w07_state() <> s0 then 'state changed' end);
   exception when others then
     perform pg_temp.w07_cnc('F08-w the work item revised after the claim', left(sqlerrm, 200));
