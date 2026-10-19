@@ -1,0 +1,6 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-N25-1_stale_verdict_accepted.sql applied in place, w07.throwaway=yes, in database p45 copied from t19)
+[database p45 from t19 exit 0]
+[patch exit 0]
+w07_n25_verdict_staleness.sql:  N25-pos | bad     | raised 23514 new row for relation "acceptance" violates check constraint "acceptance_scope_check"; acceptance rows 0 -> 0
+w07_n25_verdict_staleness.sql: psql:tests/C02/W-C02-07/job/w07_n25_verdict_staleness.sql:340: ERROR:  W07_N25_VERDICT_STALENESS FAIL (1 bad, 0 could not check, of 5)
+m0907 scrub (45_merged_B-N25-1): claim-format strings replaced 0; environment-format strings replaced 0

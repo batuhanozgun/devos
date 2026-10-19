@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-CONC-1_claim_lock_and_index_removed.sql applied in place, w07.throwaway=yes, in database p51 copied from t19)
+[database p51 from t19 exit 0]
+[patch exit 0]
+CONC-claim | ok | 20 runs of 8 connections; exactly one claim each: yes
+CONC-cyc2 | ok | 20 runs; no cycle of 2 formed: yes
+CONC-cyc4 | ok | 20 runs; no cycle of 4 formed: yes
+CONC-err | ok | raised errors by SQLSTATE (deadlock 40P01, serialization 40001, lock timeout 55P03, cancel 57014 among them): none; of which serious none
+CONC-late | ok | 10 runs; no effect of a revoked or blocked claim landed: yes
+CONC-overlap | ok | transactions overlapped in every run
+CONC-pos | ok | one claim succeeded in every run
+CONC-tokens | ok | synthetic tokens of this run left unrevoked: 0
+W07_CONC_CLAIM_AND_CYCLE PASS (8/8)
+m0907 scrub (51_merged_B-CONC-1): claim-format strings replaced 0; environment-format strings replaced 0

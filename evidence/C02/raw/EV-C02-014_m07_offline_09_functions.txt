@@ -1,0 +1,331 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the seven functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+ artifact_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                  id                  | ok |           got            |          wanted          |                        delta                        |                                                                           note                                                                           
+-----+--------------------------------------+----+--------------------------+--------------------------+-----------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | RF-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+   2 | RF-role-devos_denetim                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_finding admits only the role classes devos_calisma and devos_kurulum
+   3 | RF-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_finding admits only the role classes devos_calisma and devos_kurulum
+   4 | RF-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_finding admits only the role classes devos_calisma and devos_kurulum
+   5 | RF-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_finding admits only the role classes devos_calisma and devos_kurulum
+   6 | RF-pos-cal                           | t  | ok                       | ok                       | {"event": 1, "finding": 1, "finding_revision": 1}   | 
+   7 | RF-answer                            | t  | true                     | true                     | {}                                                  | the answer carries id and revision 1
+   8 | RF-row                               | t  | true                     | true                     | {}                                                  | the finding as written: candidate, private_derived by default, its three fields
+   9 | RF-event                             | t  | true                     | true                     | {}                                                  | finding_recorded: the token's class (not the declared one), call, this transaction, the declared session, no key without a value
+  10 | RF-pos-kur                           | t  | ok                       | ok                       | {"event": 1, "finding": 1, "finding_revision": 1}   | 
+  11 | RF-p-null                            | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  12 | RF-p-array                           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  13 | RF-missing-claim                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | claim: missing
+  14 | RF-missing-scope                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | scope: missing
+  15 | RF-missing-counter_evidence_searched | t  | missing_field            | missing_field            | {"rejected": 1}                                     | counter_evidence_searched: missing
+  16 | RF-missing-changeable                | t  | missing_field            | missing_field            | {"rejected": 1}                                     | changeable: missing
+  17 | RF-missing-epistemic_status          | t  | missing_field            | missing_field            | {"rejected": 1}                                     | epistemic_status: missing
+  18 | RF-missing-current_authority         | t  | missing_field            | missing_field            | {"rejected": 1}                                     | current_authority: missing
+  19 | RF-null-claim                        | t  | missing_field            | missing_field            | {"rejected": 1}                                     | claim: missing
+  20 | RF-scope-form                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | scope: not a dotted path of lower-case labels
+  21 | RF-changeable-not_recorded           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | changeable: not yes or no (not_recorded is admitted only on a record the ledger transfer writes, B 3.8)
+  22 | RF-counter-not_recorded              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | counter_evidence_searched: not_recorded is admitted only on a record the ledger transfer writes (B 3.8)
+  23 | RF-changeable-boolean                | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | changeable: not a string
+  24 | RF-epistemic-form                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | epistemic_status: not observation, user_decision, inference, hypothesis or proposal
+  25 | RF-authority-form                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | current_authority: not can_open_work, instruction or information_only
+  26 | RF-source-type-form                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_type: not one of Appendix B 3.8's source types
+  27 | RF-source-type-given                 | t  | ok                       | ok                       | {"event": 1, "finding": 1, "finding_revision": 1}   | 
+  28 | RF-spans-not-array                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_spans: not an array
+  29 | RF-span-no-primary                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_spans: each entry is an object whose primary, a boolean, says whether its source is primary
+  30 | RF-span-date-form                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_spans: a read_at is not a date (YYYY-MM-DD)
+  31 | RF-span-date-impossible              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_spans: a read_at is not a date (YYYY-MM-DD)
+  32 | RF-fresh-form                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | fresh_until: not a date (YYYY-MM-DD)
+  33 | RF-fresh-given                       | t  | ok                       | ok                       | {"event": 1, "finding": 1, "finding_revision": 1}   | 
+  34 | RF-fresh-row                         | t  | true                     | true                     | {}                                                  | fresh_until, agent_addressed [], privacy_class, the optional fields as sent
+  35 | RF-agent-form                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | agent_addressed: not an array
+  36 | RF-privacy-form                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | privacy_class: not private_derived, public or private
+  37 | RF-status-reviewed                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | status: a finding is recorded as candidate; review_finding moves it (EV-C02-008 1.2)
+  38 | RF-confidence-form                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | confidence: not a string
+  39 | RF-counter-empty-left-to-the-gate    | t  | ok                       | ok                       | {"event": 1, "finding": 1, "finding_revision": 1}   | 
+  40 | RF-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+  41 | RF-write-event-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+  42 | RF-write-P0D02                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | m0907 planted failure
+  43 | RF-P0D02-reason                      | t  | true                     | true                     | {}                                                  | P0D02's fixed reason is the refusal's reason
+  44 | RV-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  45 | RV-role-devos_calisma                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | review_finding admits only the role class devos_denetim
+  46 | RV-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | review_finding admits only the role class devos_denetim
+  47 | RV-role-devos_kurulum                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | review_finding admits only the role class devos_denetim
+  48 | RV-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | review_finding admits only the role class devos_denetim
+  49 | RV-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | review_finding admits only the role class devos_denetim
+  50 | RV-null-id                           | t  | missing_field            | missing_field            | {"rejected": 1}                                     | finding_id: missing
+  51 | RV-null-revision                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | revision: missing
+  52 | RV-null-status                       | t  | missing_field            | missing_field            | {"rejected": 1}                                     | status: missing
+  53 | RV-revision-zero                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | revision: not an integer of at least 1
+  54 | RV-status-withdrawn                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | status: only reviewed, accepted_for_use or stale (a review's transitions; EV-C02-008 1.2)
+  55 | RV-status-candidate                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | status: only reviewed, accepted_for_use or stale (a review's transitions; EV-C02-008 1.2)
+  56 | RV-not-found                         | t  | not_found                | not_found                | {"rejected": 1}                                     | finding_id: names no Finding
+  57 | RV-stale                             | t  | stale_revision           | stale_revision           | {"rejected": 1}                                     | revision: not the Finding's current revision
+  58 | RV-revision-beyond                   | t  | stale_revision           | stale_revision           | {"rejected": 1}                                     | revision: not the Finding's current revision
+  59 | RV-reject-row                        | t  | true                     | true                     | {}                                                  | the refusal row names the finding and the revision sent
+  60 | RV-current-of-two                    | t  | ok                       | ok                       | {"event": 1}                                        | 
+  61 | RV-reviewed                          | t  | ok                       | ok                       | {"event": 1}                                        | 
+  62 | RV-state                             | t  | true                     | true                     | {}                                                  | the status moved, finding_reviewed with the previous status and the revision
+  63 | RV-repeat                            | t  | ok repeat                | ok repeat                | {}                                                  | 
+  64 | RV-accept-not-changeable             | t  | ok                       | ok                       | {"event": 1}                                        | 
+  65 | RV-N09-pos-dated-primary             | t  | ok                       | ok                       | {"event": 1}                                        | 
+  66 | RV-N09-a-undated                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | N09 (B 3.8): information that can change is not accepted for use while a primary source span is undated
+  67 | RV-N09-b-secondary-only              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | N09 (B 3.8): information that can change is not accepted for use without a primary source span
+  68 | RV-N09-c-no-span                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | N09 (B 3.8): information that can change is not accepted for use without a primary source span
+  69 | RV-N09-d-date-on-secondary           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | N09 (B 3.8): information that can change is not accepted for use while a primary source span is undated
+  70 | RV-N09-two-primary-one-undated       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | N09 (B 3.8): information that can change is not accepted for use while a primary source span is undated
+  71 | RV-N09-status-kept                   | t  | true                     | true                     | {}                                                  | the refused moves left each status
+  72 | RV-undated-may-be-reviewed           | t  | ok                       | ok                       | {"event": 1}                                        | 
+  73 | RV-undated-may-go-stale              | t  | ok                       | ok                       | {"event": 1}                                        | 
+  74 | RV-not_recorded-changeable           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | B 3.8: a finding whose counter_evidence_searched or changeable holds not_recorded cannot move to reviewed or accepted_for_use until a review enters both
+  75 | RV-not_recorded-counter              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | B 3.8: a finding whose counter_evidence_searched or changeable holds not_recorded cannot move to reviewed or accepted_for_use until a review enters both
+  76 | RV-not_recorded-may-go-stale         | t  | ok                       | ok                       | {"event": 1}                                        | 
+  77 | RV-span-partial                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | source_spans: an entry lacks its primary or secondary marker (partial)
+  78 | RV-span-date-unreadable              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | source_spans: a primary span's read_at could not be read as a date
+  79 | RV-unreadable                        | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | finding: its input could not be read (SQLSTATE 42501)
+  80 | RV-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+  81 | RA-fixture-claim                     | t  | true                     | true                     | {}                                                  | devos_calisma's claim on A: ok
+  82 | RA-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  83 | RA-role-devos_denetim                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | register_artifact admits only the role classes devos_calisma and devos_kurulum
+  84 | RA-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | register_artifact admits only the role classes devos_calisma and devos_kurulum
+  85 | RA-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | register_artifact admits only the role classes devos_calisma and devos_kurulum
+  86 | RA-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | register_artifact admits only the role classes devos_calisma and devos_kurulum
+  87 | RA-pos-cal                           | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+  88 | RA-answer                            | t  | true                     | true                     | {}                                                  | the answer: id and revision 1
+  89 | RA-row                               | t  | true                     | true                     | {}                                                  | the artifact and its revision 1 as sent
+  90 | RA-event                             | t  | true                     | true                     | {}                                                  | artifact_registered: the tie (work_ref, work_revision, assignment_id, generation), never the claim token or its hash
+  91 | RA-status-current                    | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+  92 | RA-commit-64                         | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+  93 | RA-scope-under                       | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+  94 | RA-p-null                            | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  95 | RA-p-array                           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  96 | RA-missing-work_ref                  | t  | missing_field            | missing_field            | {"rejected": 1}                                     | work_ref: missing
+  97 | RA-missing-path                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | path: missing
+  98 | RA-missing-kind                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | kind: missing
+  99 | RA-missing-scope                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | scope: missing
+ 100 | RA-work-ref-form                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | work_ref: not a uuid
+ 101 | RA-no-work-revision                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | work_revision: missing
+ 102 | RA-work-revision-null                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | work_revision: missing
+ 103 | RA-no-work-revision-reason           | t  | true                     | true                     | {}                                                  | R2-1's reason; the refusal row names the work item
+ 104 | RA-work-revision-string              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | work_revision: not an integer of at least 1
+ 105 | RA-scope-form                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | scope: not a dotted path of lower-case labels
+ 106 | RA-commit-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | commit: not 40 or 64 lower-case hexadecimal characters
+ 107 | RA-status-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | status: not candidate, current or superseded
+ 108 | RA-no-claim-token                    | t  | claim_missing            | claim_missing            | {"rejected": 1}                                     | the call carries no claim token
+ 109 | RA-empty-claim-token                 | t  | claim_missing            | claim_missing            | {"rejected": 1}                                     | the call carries no claim token
+ 110 | RA-unknown-claim-token               | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                                     | the claim token names no claim of this work item
+ 111 | RA-claim-of-another-item             | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                                     | the claim token names no claim of this work item
+ 112 | RA-work-ref-names-nothing            | t  | claim_unknown            | claim_unknown            | {"rejected": 1}                                     | the claim token names no claim of this work item
+ 113 | RA-claim-class                       | t  | claim_class              | claim_class              | {"rejected": 1}                                     | the caller's role class is not the claim's
+ 114 | RA-revision-beyond                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | work_revision: names no revision of the work item
+ 115 | RA-scope-outside                     | t  | scope_outside            | scope_outside            | {"rejected": 1}                                     | scope: the artifact's scope does not lie within the work item's (B principle 4)
+ 116 | RA-scope-prefix-not-label            | t  | scope_outside            | scope_outside            | {"rejected": 1}                                     | scope: the artifact's scope does not lie within the work item's (B principle 4)
+ 117 | RA-stale-revision                    | t  | stale_revision           | stale_revision           | {"rejected": 1}                                     | work_revision: not the work item's current revision
+ 118 | RA-current-after-revision            | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 119 | RA-stale-after-revision              | t  | stale_revision           | stale_revision           | {"rejected": 1}                                     | work_revision: not the work item's current revision
+ 120 | RA-not-ready-new-dependency          | t  | not_ready                | not_ready                | {"rejected": 1}                                     | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+ 121 | RA-ready-dependency-resolved         | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 122 | RA-readiness-unknown                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | readiness: whether the work item is ready at the effect is missing or partial
+ 123 | RA-mission-paused                    | t  | not_ready                | not_ready                | {"rejected": 1}                                     | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+ 124 | RA-cancelled-item                    | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                                     | the claim's work item is cancelled
+ 125 | RA-lapsed                            | t  | claim_expired            | claim_expired            | {"rejected": 1}                                     | the claim's lease has run out
+ 126 | RA-revoked                           | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                                     | the claim is not active
+ 127 | RA-earlier-generation                | t  | claim_generation         | claim_generation         | {"rejected": 1}                                     | the claim is not of the work item's newest generation
+ 128 | RA-earlier-epoch                     | t  | claim_epoch              | claim_epoch              | {"rejected": 1}                                     | the claim was made in an earlier authority epoch
+ 129 | RA-fixture-release                   | t  | true                     | true                     | {}                                                  | release of A4's claim: ok
+ 130 | RA-released                          | t  | claim_not_active         | claim_not_active         | {"rejected": 1}                                     | the claim is not active
+ 131 | RA-fixture-claim-kur                 | t  | true                     | true                     | {}                                                  | devos_kurulum's claim on I1: ok
+ 132 | RA-pos-kur                           | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 133 | RA-kur-claim-under-cal               | t  | claim_class              | claim_class              | {"rejected": 1}                                     | the caller's role class is not the claim's
+ 134 | RA-claims-unreadable                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | claim: its input could not be read (SQLSTATE 42501)
+ 135 | RA-epoch-missing                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | claim: its input could not be read (SQLSTATE 42P01)
+ 136 | RA-revisions-unreadable              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | work_revision: its input could not be read (SQLSTATE 42501)
+ 137 | RA-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 138 | RA-write-event-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 139 | RA-write-P0D02                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | m0907 planted failure
+ 140 | RA-rows-hold-no-token                | t  | true                     | true                     | {}                                                  | no refusal row holds the claim token
+ 141 | OR-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+ 142 | OR-role-devos_calisma                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | open_review admits only the role class devos_denetim
+ 143 | OR-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | open_review admits only the role class devos_denetim
+ 144 | OR-role-devos_kurulum                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | open_review admits only the role class devos_denetim
+ 145 | OR-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | open_review admits only the role class devos_denetim
+ 146 | OR-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | open_review admits only the role class devos_denetim
+ 147 | OR-pos                               | t  | ok                       | ok                       | {"event": 1, "review": 1}                           | 
+ 148 | OR-row                               | t  | true                     | true                     | {}                                                  | the Review: criterion written to criterion_ref (R1-7), the token's class as reviewer, the declared session as declared
+ 149 | OR-event                             | t  | true                     | true                     | {}                                                  | review_opened under devos_denetim
+ 150 | OR-kind-sample                       | t  | kind_not_allowed         | kind_not_allowed         | {"rejected": 1}                                     | kind: a sample Review is opened only by the database (B 3.11; EV-C02-008 2.2 condition 2)
+ 151 | OR-kind-sample-bad-target            | t  | kind_not_allowed         | kind_not_allowed         | {"rejected": 1}                                     | kind: a sample Review is opened only by the database (B 3.11; EV-C02-008 2.2 condition 2)
+ 152 | OR-kind-other                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | kind: not review
+ 153 | OR-p-null                            | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+ 154 | OR-missing-kind                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | kind: missing
+ 155 | OR-missing-target_ref                | t  | missing_field            | missing_field            | {"rejected": 1}                                     | target_ref: missing
+ 156 | OR-missing-use                       | t  | missing_field            | missing_field            | {"rejected": 1}                                     | use: missing
+ 157 | OR-missing-independence_level        | t  | missing_field            | missing_field            | {"rejected": 1}                                     | independence_level: missing
+ 158 | OR-missing-basis_refs                | t  | missing_field            | missing_field            | {"rejected": 1}                                     | basis_refs: missing
+ 159 | OR-basis-empty                       | t  | missing_field            | missing_field            | {"rejected": 1}                                     | basis_refs: empty (a review's basis is mandatory)
+ 160 | OR-basis-not-array                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | basis_refs: not an array
+ 161 | OR-basis-bare-uuid                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | basis_refs: each entry is {"ref": <uuid>, "revision": <integer>} (the revision for a record with revisions)
+ 162 | OR-basis-revision-form               | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | basis_refs: each entry is {"ref": <uuid>, "revision": <integer>} (the revision for a record with revisions)
+ 163 | OR-independence-form                 | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | independence_level: not one of Appendix B 3.11's six levels
+ 164 | OR-target-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | target_ref: not a uuid
+ 165 | OR-target-revision-form              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | target_revision: not an integer of at least 1
+ 166 | OR-target-random                     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 167 | OR-target-exam-record                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 168 | OR-target-exam-as-none               | t  | true                     | true                     | {}                                                  | an exam record as target answers as a record that does not exist
+ 169 | OR-target-no-revision                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 170 | OR-target-revision-beyond            | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 171 | OR-target-stale                      | t  | stale_revision           | stale_revision           | {"rejected": 1}                                     | target_revision: not the target's current revision
+ 172 | OR-target-current-of-two             | t  | ok                       | ok                       | {"event": 1, "review": 1}                           | 
+ 173 | OR-target-need                       | t  | ok                       | ok                       | {"event": 1, "review": 1}                           | 
+ 174 | OR-target-need-with-revision         | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 175 | OR-basis-random                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | basis_refs: a record could not be read
+ 176 | OR-basis-no-revision                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | basis_refs: a record could not be read
+ 177 | OR-basis-exam-record                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | basis_refs: a record could not be read
+ 178 | OR-basis-earlier-revision            | t  | ok                       | ok                       | {"event": 1, "review": 1}                           | 
+ 179 | OR-criterion-version-number          | t  | ok                       | ok                       | {"event": 1, "review": 1}                           | 
+ 180 | OR-targets-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: its input could not be read (SQLSTATE 42501)
+ 181 | OR-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 182 | VD-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+ 183 | VD-role-devos_calisma                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_verdict admits only the role class devos_denetim
+ 184 | VD-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_verdict admits only the role class devos_denetim
+ 185 | VD-role-devos_kurulum                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_verdict admits only the role class devos_denetim
+ 186 | VD-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_verdict admits only the role class devos_denetim
+ 187 | VD-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_verdict admits only the role class devos_denetim
+ 188 | VD-pos                               | t  | ok                       | ok                       | {"event": 1, "verdict": 1}                          | 
+ 189 | VD-row                               | t  | true                     | true                     | {}                                                  | the Verdict, its lists defaulted to [], verdict_recorded under devos_denetim
+ 190 | VD-missing-review                    | t  | missing_field            | missing_field            | {"rejected": 1}                                     | review_ref: missing
+ 191 | VD-missing-result                    | t  | missing_field            | missing_field            | {"rejected": 1}                                     | result: missing
+ 192 | VD-result-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | result: not pass, fail, conditional or indeterminate (B 3.11)
+ 193 | VD-review-form                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | review_ref: not a uuid
+ 194 | VD-limits-string                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | limits: not an array
+ 195 | VD-review-random                     | t  | not_found                | not_found                | {"rejected": 1}                                     | review_ref: names no Review
+ 196 | VD-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 197 | VD-reviews-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | review: its input could not be read (SQLSTATE 42501)
+ 198 | VD-fail                              | t  | ok                       | ok                       | {"event": 1, "verdict": 1}                          | 
+ 199 | VD-indeterminate                     | t  | ok                       | ok                       | {"event": 1, "verdict": 1}                          | 
+ 200 | AC-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+ 201 | AC-role-devos_calisma                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | accept admits only the role class devos_denetim
+ 202 | AC-role-devos_sinav                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | accept admits only the role class devos_denetim
+ 203 | AC-role-devos_kurulum                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | accept admits only the role class devos_denetim
+ 204 | AC-role-devos_ci                     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | accept admits only the role class devos_denetim
+ 205 | AC-role-devos_backup                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | accept admits only the role class devos_denetim
+ 206 | AC-null-verdict                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | verdict_ref: missing
+ 207 | AC-null-use                          | t  | missing_field            | missing_field            | {"rejected": 1}                                     | accepted_use: missing
+ 208 | AC-not-found                         | t  | not_found                | not_found                | {"rejected": 1}                                     | verdict_ref: names no Verdict
+ 209 | AC-fail                              | t  | verdict_failed           | verdict_failed           | {"rejected": 1}                                     | the verdict's result is fail or indeterminate, which accepts nothing (B 3.11)
+ 210 | AC-indeterminate                     | t  | verdict_failed           | verdict_failed           | {"rejected": 1}                                     | the verdict's result is fail or indeterminate, which accepts nothing (B 3.11)
+ 211 | AC-N25-c-other-use                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | accepted_use: not the use the Review was for; a verdict is not carried over to another use (B 3.11)
+ 212 | AC-N25-a-first-basis-revised         | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | basis_refs: a newer revision exists, so the verdict is stale (B 3.11; N25)
+ 213 | AC-N25-d-second-basis-revised        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | basis_refs: a newer revision exists, so the verdict is stale (B 3.11; N25)
+ 214 | AC-N25-b-criterion-revised           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | criterion: a newer revision exists, so the verdict is stale (B 3.11; N25)
+ 215 | AC-target-revised                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | target_ref: a newer revision exists, so the verdict is stale (B 3.11; N25)
+ 216 | AC-reviews-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | review: its input could not be read (SQLSTATE 42501)
+ 217 | AC-write-failed                      | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 218 | AC-write-work-failed                 | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 219 | AC-N25-pos                           | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}                       | 
+ 220 | AC-state                             | t  | true                     | true                     | {}                                                  | the Work accepted; the Acceptance names its target, revision, use, scope and the verdict
+ 221 | AC-events                            | t  | true                     | true                     | {}                                                  | accepted on the Acceptance and acceptance_set on the Work, under devos_denetim
+ 222 | AC-repeat                            | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 223 | AC-transfer-copy                     | t  | verdict_missing          | verdict_missing          | {"rejected": 1}                                     | the verdict's Review is not the audit environment's, so it is no audit verdict (B section 2; B 3.11)
+ 224 | AC-no-reviewer                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | review: its reviewer's role class is missing (partial)
+ 225 | AC-target-names-nothing              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | target_ref: the record could not be read
+ 226 | AC-basis-empty                       | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | basis_refs: missing (partial)
+ 227 | AC-basis-bare-string                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | basis_refs: an entry is not {"ref", "revision"} (partial)
+ 228 | AC-criterion-names-nothing           | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | criterion: the record could not be read
+ 229 | AC-decision-target                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | target_ref: an Acceptance holds its target's scope, and a record of this family has none
+ 230 | AC-artifact-target-conditional       | t  | ok                       | ok                       | {"event": 1, "acceptance": 1}                       | 
+ 231 | AC-basis-without-revisions           | t  | ok                       | ok                       | {"event": 2, "acceptance": 1}                       | 
+ 232 | AC-same-verdict-other-use            | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | accepted_use: not the use the Review was for; a verdict is not carried over to another use (B 3.11)
+ 233 | RR-no-token                          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+ 234 | RR-devos_calisma                     | t  | ok                       | ok                       | {}                                                  | 
+ 235 | RR-devos_calisma-answer              | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 236 | RR-devos_denetim                     | t  | ok                       | ok                       | {}                                                  | 
+ 237 | RR-devos_denetim-answer              | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 238 | RR-devos_sinav                       | t  | ok                       | ok                       | {}                                                  | 
+ 239 | RR-devos_sinav-answer                | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 240 | RR-devos_kurulum                     | t  | ok                       | ok                       | {}                                                  | 
+ 241 | RR-devos_kurulum-answer              | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 242 | RR-devos_ci                          | t  | ok                       | ok                       | {}                                                  | 
+ 243 | RR-devos_ci-answer                   | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 244 | RR-devos_backup                      | t  | ok                       | ok                       | {}                                                  | 
+ 245 | RR-devos_backup-answer               | t  | true                     | true                     | {}                                                  | the Review with its three verdicts
+ 246 | RR-null                              | t  | missing_field            | missing_field            | {"rejected": 1}                                     | review_id: missing
+ 247 | RR-not-found                         | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 248 | RR-sample-devos_calisma              | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 249 | RR-sample-devos_calisma-as-none      | t  | true                     | true                     | {}                                                  | a sample answered as an id that names no Review
+ 250 | RR-sample-devos_sinav                | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 251 | RR-sample-devos_sinav-as-none        | t  | true                     | true                     | {}                                                  | a sample answered as an id that names no Review
+ 252 | RR-sample-devos_kurulum              | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 253 | RR-sample-devos_kurulum-as-none      | t  | true                     | true                     | {}                                                  | a sample answered as an id that names no Review
+ 254 | RR-sample-devos_ci                   | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 255 | RR-sample-devos_ci-as-none           | t  | true                     | true                     | {}                                                  | a sample answered as an id that names no Review
+ 256 | RR-sample-devos_backup               | t  | not_found                | not_found                | {"rejected": 1}                                     | review_id: names no Review
+ 257 | RR-sample-devos_backup-as-none       | t  | true                     | true                     | {}                                                  | a sample answered as an id that names no Review
+ 258 | RR-sample-devos_denetim              | t  | ok                       | ok                       | {}                                                  | 
+ 259 | RR-sample-devos_denetim-answer       | t  | true                     | true                     | {}                                                  | the audit environment reads the sample and its verdict
+ 260 | RR-unreadable                        | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | verdicts: its input could not be read (SQLSTATE 42501)
+ 261 | TX-literals                          | t  | true                     | true                     | {}                                                  | each role list is a quoted literal in the function's own text
+ 262 | TX-one-quoted-audit-class            | t  | true                     | true                     | {}                                                  | the audit class is quoted once, in the role list, so the merged widening patches widen the gate alone
+ 263 | TX-alias                             | t  | true                     | true                     | {}                                                  | no body names a parameter through its function's name
+ 264 | TX-no-exam-table                     | t  | true                     | true                     | {}                                                  | none of the seven names the exam table (T-W07-N08's finder)
+ 265 | TX-read-marker                       | t  | true                     | true                     | {}                                                  | read_review carries the read marker; the other six are state-changing
+ 266 | TX-claim-before-readiness            | t  | true                     | true                     | {}                                                  | register_artifact calls check_claim, then ready_value with its own claim (EV-C02-014 3.5 item 4)
+(266 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0907_run/fn_check.sql:697: NOTICE:  M0907_FUNCTIONS PASS (266/266)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ review_rows_after_rollback 
+----------------------------
+                          0
+(1 row)
+
+[psql exit 0]
+m0907 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0

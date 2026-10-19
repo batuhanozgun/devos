@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-N09-1_undated_accepted.sql applied in place, w07.throwaway=yes, in database p44 copied from t19)
+[database p44 from t19 exit 0]
+[patch exit 0]
+w07_n09_finding_gate.sql:  N09-a   | bad     | returned {"status": "ok", "finding_status": "accepted_for_use"}; status accepted_for_use
+w07_n09_finding_gate.sql:  N09-b   | bad     | returned {"status": "ok", "finding_status": "accepted_for_use"}; status accepted_for_use
+w07_n09_finding_gate.sql:  N09-c   | bad     | returned {"status": "ok", "finding_status": "accepted_for_use"}; status accepted_for_use
+w07_n09_finding_gate.sql:  N09-d   | bad     | returned {"status": "ok", "finding_status": "accepted_for_use"}; status accepted_for_use
+w07_n09_finding_gate.sql: psql:tests/C02/W-C02-07/job/w07_n09_finding_gate.sql:336: ERROR:  W07_N09_FINDING_GATE FAIL (4 bad, 0 could not check, of 5)
+m0907 scrub (44_merged_B-N09-1): claim-format strings replaced 0; environment-format strings replaced 0

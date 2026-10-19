@@ -1,0 +1,8 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b12_artifact_token_in_event, a copy of M09-07 outside the repository, in database k26 copied from t18)
+[database k26 from t18 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b12_artifact_token_in_event.sql  (as postgres)
+[apply exit 0]
+  90 | RA-event                             | f  | false                    | true                     | {}                                                  | artifact_registered: the tie (work_ref, work_revision, assignment_id, generation), never the claim to
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0907_run/fn_check.sql:697: NOTICE:  M0907_FUNCTIONS FAIL (1 of 266 not as wanted)
+[self-check done]
+m0907 scrub (26_break_b12_artifact_token_in_event): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-DM19-1_no_record.sql applied in place, w07.throwaway=yes, in database p46 copied from t19)
+[database p46 from t19 exit 0]
+[patch exit 0]
+w07_dm19_rejected_attempt_survives.sql:  DM19-a   | bad     | returned {"reason": "accept admits only the role class devos_denetim", "status": "refused", "reason_code": "role_class_not_permitted"}; devos_private.acceptance rows 0 -> 0; new events 0; new per-call records 0
+w07_dm19_rejected_attempt_survives.sql:  DM19-c   | bad     | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; devos_private.relation rows 1 -> 1; new events 0; new per-call records 0
+w07_dm19_rejected_attempt_survives.sql:  DM19-d   | bad     | returned {"reason": "the request carries no environment token", "status": "refused", "reason_code": "missing"}; devos_private.acceptance rows 0 -> 0; new events 0; counted total for (accept, missing, none) 0 -> 0
+w07_dm19_rejected_attempt_survives.sql:  DM19-pos | bad     | returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}; acceptance rows 0 -> 0; new events' role classes []; new records 0
+w07_dm19_rejected_attempt_survives.sql: psql:tests/C02/W-C02-07/job/w07_dm19_rejected_attempt_survives.sql:401: ERROR:  W07_DM19_REJECTED_ATTEMPT_SURVIVES FAIL (4 bad, 0 could not check, of 5)
+m0907 scrub (46_merged_B-DM19-1): claim-format strings replaced 0; environment-format strings replaced 0

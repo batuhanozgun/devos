@@ -1,0 +1,20 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all nineteen migrations with the merged break patch tests/C02/W-C02-07/breaks/B-N04-1_kurulum_accepts.sql applied in place, w07.throwaway=yes, in database p42 copied from t19)
+[database p42 from t19 exit 0]
+[patch exit 0]
+w07_n04_self_approval.sql:  N04-T1            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2-pos        | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-k2            | bad             | accept with the devos_kurulum token: code not_found; err - ; ra {"accept|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_n04_self_approval.sql:  N04-p3            | could_not_check | the audit verdict on the planted review was not accepted; the arguments are revised before the first result (README section 8): code missing_field; err - ; ra {"record_verdict|missing_field|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_n04_self_approval.sql:  N04-p4            | could_not_check | the audit acceptance was not accepted; the arguments are revised before the first result (README section 8): code not_found; err - ; ra {"accept|not_found|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_n04_self_approval.sql: psql:tests/C02/W-C02-07/job/w07_n04_self_approval.sql:634: ERROR:  W07_N04_SELF_APPROVAL FAIL (1 bad, 5 could not check, of 19)
+w07_5b_authorization_matrix.sql:  5B-R07-accept-kur               | bad             | x cell: accept with the devos_kurulum token must be refused for its role class; code not_found; err - ; ra {"accept|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 7 could not check, of 187)
+m0907 scrub (42_merged_B-N04-1): claim-format strings replaced 0; environment-format strings replaced 0
