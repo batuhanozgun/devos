@@ -1,6 +1,12 @@
--- Synthetic test data (plan Section 8 item 13): the decisions, review and verdict planted here are made up inside
--- this transaction (uses 'w07_fixture_use_one' and 'w07_fixture_use_two', text 'w07_fixture SYNTHETIC W-C02-07');
--- no personal or business data; the token is kept in a PL/pgSQL variable only. Nothing is committed.
+-- Synthetic test data (plan Section 8 item 13): the decisions, finding, review and verdict planted here are made up
+-- inside this transaction (uses 'w07_fixture_use_one' and 'w07_fixture_use_two', text 'w07_fixture SYNTHETIC W-C02-07',
+-- scope 'synthetic.w07fixture'); no personal or business data; the token is kept in a PL/pgSQL variable only. Nothing
+-- is committed.
+-- Revised under ledger rule 3 (N-293 (1), 2026-10-19; no result of this file had been counted): the planted Review is
+-- the audit environment's (reviewer_role_class devos_denetim) on a target that names a record (a planted Finding at its
+-- revision 1), as M09-07's accept needs (EV-C02-013 section 20 (6)); and each refused case first shows, in a rolled-back
+-- inner block, that the same call without its change is accepted, so that it is refused for its own rule. See the
+-- specification's section "Revision under ledger rule 3 (N-293 (1), (6), 2026-10-19)".
 --
 -- Claim (Appendix C N25, its C02 part: the database's staleness rule, B 3.11): when a verdict's basis_refs, its
 -- criterion or its use changes, the old verdict cannot be used for acceptance; a verdict whose basis stays the same
@@ -269,18 +275,30 @@ begin
     (r - 'id' - 'created_at') || jsonb_build_object('revision', (r->>'revision')::int + 1));
 end $f$;
 
--- One case: plant the basis (two decisions), the criterion (a decision) and a passing verdict on use one; apply the
--- change p_change; call accept with p_use; p_accept: whether it must succeed.
+-- One case: plant the target (a finding at its revision 1), the basis (two decisions), the criterion (a decision) and
+-- a passing verdict of the audit environment on use one; apply the change p_change; call accept with p_use; p_accept:
+-- whether it must succeed. For a refused case (p_accept false), the same verdict is first accepted for use one with no
+-- change, inside an inner block that is then rolled back (the control): if that is not accepted, the fixture, not the
+-- staleness rule, would refuse the case, which is then the test's own could_not_check (N-293 (1)).
 create function pg_temp.w07_n25_case(p_id text, p_change text, p_use text, p_tok text, p_accept boolean)
 returns void language plpgsql as $f$
-declare d1 text; d2 text; crit text; v jsonb; c jsonb; n0 bigint; n1 bigint;
+declare d1 text; d2 text; crit text; tgt text; v jsonb; c jsonb; c0 jsonb; n0 bigint; n1 bigint;
 begin
   begin
     d1 := pg_temp.w07_decision(); d2 := pg_temp.w07_decision(); crit := pg_temp.w07_decision();
+    tgt := pg_temp.w07_plant('devos_private.finding_revision', '{"revision": 1}')->>'finding_id';
     v := pg_temp.w07_plant('devos_private.verdict', jsonb_build_object('result', 'pass', 'review_ref',
-      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', gen_random_uuid(),
+      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', tgt,
         'target_revision', 1, 'use', 'w07_fixture_use_one', 'criterion_ref', crit, 'criterion_version', 1,
+        'reviewer_role_class', 'devos_denetim', 'independence_level', 'fresh_context_subagent',
         'basis_refs', jsonb_build_array(jsonb_build_object('ref', d1, 'revision', 1), jsonb_build_object('ref', d2, 'revision', 1))))->'id'));
+    if not p_accept then
+      begin
+        c0 := pg_temp.w07_call('accept', jsonb_build_object('verdict_ref', v->'id', 'accepted_use', 'w07_fixture_use_one'), p_tok);
+        raise exception using errcode = 'P0W08', message = 'w07: undo the control';
+      exception when sqlstate 'P0W08' then null;
+      end;
+    end if;
     if p_change = 'basis_first' then perform pg_temp.w07_revise(d1);
     elsif p_change = 'basis_second' then perform pg_temp.w07_revise(d2);
     elsif p_change = 'criterion' then perform pg_temp.w07_revise(crit);
@@ -296,6 +314,9 @@ begin
   end;
   if c ? 'interface' then
     perform pg_temp.w07_rec(p_id, 'could_not_check', pg_temp.w07_show(c));
+  elsif not p_accept and (c0 ? 'interface' or pg_temp.w07_refused(c0)) then
+    perform pg_temp.w07_rec(p_id, 'could_not_check', 'the same call without the change was not accepted, so a refusal '
+      || 'would not be the staleness rule''s: control ' || pg_temp.w07_show(c0));
   else
     perform pg_temp.w07_check(p_id, case when p_accept then not pg_temp.w07_refused(c) and n1 = n0 + 1
                                          else pg_temp.w07_refused(c) and n1 = n0 end,

@@ -25,6 +25,10 @@
 -- of this file: the transferred relation devos_kurulum retracts is planted from the installation's item, and a new case
 -- ROC-o-retract_relation-kur-transferred-cal keeps the stricter reading (devos_kurulum on a transferred relation from an
 -- ordinary item: not_owner); see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
+-- Revised under ledger rule 3, 2026-10-19 (N-293 (5)), before any result of this file: part X's cases issue their
+-- synthetic devos_calisma token before the input is planted, so that ROC-x-o-event-unreadable's revoke of the event
+-- table from the function's owner no longer stops the token's own issue (issue_env_token writes an event); see the
+-- specification's "Revision under ledger rule 3 (N-293 (5), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -959,12 +963,44 @@ begin
   return n;
 exception when others then return null;
 end $f$;
+-- Revised under ledger rule 3 (N-293 (5), 2026-10-19): a call with a token issued before the plant. The body is
+-- pg_temp.w07_call's (Group A helpers v1, above) for the two functions part X calls, without its issue of the token:
+-- the token is issued by roc_x_case before the plant, since issue_env_token writes an event, and the event table is
+-- one of the inputs part X makes unreadable to the functions' owner (the first version issued it after the revoke, so
+-- ROC-x-o-event-unreadable answered the test's own could_not_check on every build). The token is kept in a variable
+-- only and set to null after the call.
+create function pg_temp.roc_x_call(p_tok text, p_fn text, p_args jsonb) returns jsonb language plpgsql as $f$
+declare r jsonb; st text; msg text; cu text;
+begin
+  perform set_config('request.headers', json_build_object('x-devos-env-token', p_tok)::text, true);
+  begin
+    execute 'set local role anon';
+    if p_fn = 'retract_relation' then  -- README 8.1: (relation_id uuid, reason text)
+      execute 'select devos_api.retract_relation(($1->>''relation_id'')::uuid, $1->>''reason'')' into r using p_args;
+    else
+      execute format('select devos_api.%I($1)', p_fn) into r using p_args;
+    end if;
+    cu := current_user;
+    execute 'reset role';
+  exception when others then
+    get stacked diagnostics st = returned_sqlstate, msg = message_text;
+    r := jsonb_build_object('status', 'refused', 'raised', true, 'sqlstate', st, 'message', left(msg, 160));
+    cu := 'anon';
+  end;
+  perform set_config('request.headers', '{}', true);
+  if r is null or jsonb_typeof(r) <> 'object' then
+    r := jsonb_build_object('status', 'unknown', 'raw', left(coalesce(r::text, 'null'), 60)); end if;
+  return r || jsonb_build_object('w07_user', cu, 'w07_session_user', session_user);
+end $f$;
 create function pg_temp.roc_x_case(p_case text, p_fn text, p_args jsonb, p_kind text, p_id text, p_target text)
 returns text language plpgsql as $f$
-declare r jsonb; s0 jsonb; s1 jsonb; e0 bigint; e1 bigint; pe text; k text; ret text;
+declare r jsonb; s0 jsonb; s1 jsonb; e0 bigint; e1 bigint; pe text; k text; ret text; tok text;
 begin
   begin
     begin
+      -- N-293 (5): the token first, before any input is planted or made unreadable.
+      execute 'select devos_private.issue_env_token($1)::text' into tok using 'devos_calisma';
+      if left(tok, 1) = '{' then tok := (tok::jsonb)->>'token'; end if;
       perform pg_temp.roc_x_prep(p_kind, p_id);
       s0 := pg_temp.roc_snap(); e0 := pg_temp.roc_x_events(p_target);
       perform pg_temp.roc_x_access(p_kind, p_fn, true);
@@ -972,7 +1008,8 @@ begin
       pe := sqlstate || ' ' || left(sqlerrm, 160);
       raise exception using errcode = 'P0W7U', message = 'w07: plant failed';
     end;
-    r := pg_temp.w07_call('devos_calisma', p_fn, p_args);
+    r := pg_temp.roc_x_call(tok, p_fn, p_args);
+    tok := null;
     perform pg_temp.roc_x_access(p_kind, p_fn, false);
     s1 := pg_temp.roc_snap(); e1 := pg_temp.roc_x_events(p_target);
     raise exception using errcode = 'P0W7U', message = 'w07: undo the case';

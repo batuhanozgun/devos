@@ -8,6 +8,11 @@
 -- none of the build's logic. Synthetic (plan Section 8 item 13): no data. Applied only by the break harness on its
 -- throwaway database (README 5.2), never under supabase/migrations/. No psql meta-command. The whole change runs
 -- inside the guard's block.
+-- Revised under ledger rule 3 (N-293's further fault, 2026-10-19; no result of this break had been counted): the
+-- wrapper wrote a text value into the Assignment's role_class, an enum column (devos_private.role_class), so every
+-- wrapped call raised 42804 and the red cases came out could_not_check (as B-F04-7's, N-291). The two values are now
+-- cast to the column's type. The rule removed and the red list are unchanged (T-W07-N17, "Revision under ledger rule 3
+-- (N-293 (4), 2026-10-19)").
 do $b$
 declare f record;
 begin
@@ -28,9 +33,11 @@ begin
         rc := devos_private.caller_role_class(%4$L);
         select id, role_class into aid, old from devos_private.assignment
          where claim_token_hash = encode(sha256(convert_to(coalesce(p_claim_token, ''), 'UTF8')), 'hex');
-        if aid is not null and rc is not null then update devos_private.assignment set role_class = rc where id = aid; end if;
+        if aid is not null and rc is not null then
+          update devos_private.assignment set role_class = rc::devos_private.role_class where id = aid;
+        end if;
         r := devos_api.%3$I(%5$s);
-        if aid is not null then update devos_private.assignment set role_class = old where id = aid; end if;
+        if aid is not null then update devos_private.assignment set role_class = old::devos_private.role_class where id = aid; end if;
         return r;
       end $f$ $p$, f.fn, f.params, f.fn || '_w07_orig', f.fn, f.args);
     execute format('grant execute on function devos_api.%I%s to anon', f.fn, f.sig);
