@@ -1,0 +1,27 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-14/breaks/B-FN-2_begin_run_after_handover.sql applied in place, w07.throwaway=yes, on a fresh copy of t24; header: -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-C-begin_transfer_run)
+[database b17 from t24 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on b17:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 16 could not check, of 109)
+bad (2): FN-C-begin_transfer_run, FN-M-cat
+could_not_check (16): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-missing, FN-A-pos, FN-G-pos-transfer_acceptance, FN-G-pos-transfer_review, FN-G-transfer_acceptance, FN-G-transfer_review, FN-I-other-review, FN-I-same, FN-O-transfer_acceptance, FN-O-transfer_review, FN-R-declared, FN-RN-after-handover, FN-T-ev-transfer_review
+detail: FN-A-cond                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-cond-pos                    | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-fail                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-missing                     | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-pos                         | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-C-begin_transfer_run          | bad             | after the ledger_handed_over event: accepted; tables changed besides rejected_attempt: event (wanted refused, none); before it the same call was accepted
+detail: FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_review, transfer_acceptance
+detail: FN-O-transfer_acceptance         | could_not_check | after the hand-over, no run_id: transfer_acceptance of that copy raised [42883 function devos_api.transfer_acceptance(jsonb) does not exist]; acceptance rows +0 (wanted accepted, +1)
+detail: FN-O-transfer_review             | could_not_check | after the hand-over, no run_id: transfer_review raised [42883 function devos_api.transfer_review(jsonb) does not exist]; review rows +0, its transferred events 0 (wanted accepted, +1, 1)
+detail: FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+red list: not as expect-red; missing none; extra ['FN-M-cat']
+m0911 scrub (17_merged_B-FN-2): claim-format strings replaced 0; environment-format strings replaced 0
