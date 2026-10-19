@@ -1,0 +1,289 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of M09-10)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                 id                  | ok |           got            |          wanted          |                        delta                        |                                                             note                                                              
+-----+-------------------------------------+----+--------------------------+--------------------------+-----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------
+   1 | G-begin_transfer_run-no-token       | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+   2 | G-begin_transfer_run-devos_calisma  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   3 | G-begin_transfer_run-devos_denetim  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   4 | G-begin_transfer_run-devos_sinav    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   5 | G-begin_transfer_run-devos_ci       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   6 | G-begin_transfer_run-devos_backup   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+   7 | G-begin_transfer_run-kur            | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+   8 | G-begin_transfer_run-null           | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+   9 | G-begin_transfer_run-array          | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  10 | G-end_transfer_run-no-token         | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  11 | G-end_transfer_run-devos_calisma    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  12 | G-end_transfer_run-devos_denetim    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  13 | G-end_transfer_run-devos_sinav      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  14 | G-end_transfer_run-devos_ci         | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  15 | G-end_transfer_run-devos_backup     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  16 | G-end_transfer_run-kur              | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+  17 | G-end_transfer_run-null             | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  18 | G-end_transfer_run-array            | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  19 | G-record_handover-no-token          | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  20 | G-record_handover-devos_calisma     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  21 | G-record_handover-devos_denetim     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  22 | G-record_handover-devos_sinav       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  23 | G-record_handover-devos_ci          | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  24 | G-record_handover-devos_backup      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  25 | G-record_handover-kur               | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+  26 | G-record_handover-null              | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  27 | G-record_handover-array             | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  28 | G-transfer_event-no-token           | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  29 | G-transfer_event-devos_calisma      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  30 | G-transfer_event-devos_denetim      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  31 | G-transfer_event-devos_sinav        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  32 | G-transfer_event-devos_ci           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  33 | G-transfer_event-devos_backup       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  34 | G-transfer_event-kur                | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+  35 | G-transfer_event-null               | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  36 | G-transfer_event-array              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  37 | G-record_ledger_entry-no-token      | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  38 | G-record_ledger_entry-devos_calisma | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  39 | G-record_ledger_entry-devos_denetim | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  40 | G-record_ledger_entry-devos_sinav   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  41 | G-record_ledger_entry-devos_ci      | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  42 | G-record_ledger_entry-devos_backup  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  43 | G-record_ledger_entry-kur           | t  | missing_field            | missing_field            | {"rejected": 1}                                     | stage_work_id: missing
+  44 | G-record_ledger_entry-null          | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  45 | G-record_ledger_entry-array         | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  46 | G-transfer_artifact-no-token        | t  | missing                  | missing                  | {"rejected": 1}                                     | the request carries no environment token
+  47 | G-transfer_artifact-devos_calisma   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  48 | G-transfer_artifact-devos_denetim   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  49 | G-transfer_artifact-devos_sinav     | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  50 | G-transfer_artifact-devos_ci        | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  51 | G-transfer_artifact-devos_backup    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                                     | transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)
+  52 | G-transfer_artifact-kur             | t  | missing_field            | missing_field            | {"rejected": 1}                                     | transfer_source: missing
+  53 | G-transfer_artifact-null            | t  | missing_field            | missing_field            | {"rejected": 1}                                     | p: missing
+  54 | G-transfer_artifact-array           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | p: not a JSON object
+  55 | BR-run-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+  56 | BR-run-empty                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | run_id: not a non-empty string
+  57 | BR-run-number                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | run_id: not a non-empty string
+  58 | BR-input-short                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | input_commit: not 40 lower-case hexadecimal characters
+  59 | BR-input-upper                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | input_commit: not 40 lower-case hexadecimal characters
+  60 | BR-manifest-40                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | manifest_sha256: not 64 lower-case hexadecimal characters
+  61 | BR-counts-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                                     | counts: missing
+  62 | BR-counts-array                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | counts: not an object of non-negative integers
+  63 | BR-counts-negative                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | counts: not an object of non-negative integers
+  64 | BR-counts-fraction                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | counts: not an object of non-negative integers
+  65 | BR-phase-completed                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | phase: not begun
+  66 | BR-mode-other                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | mode: not ahead, full or verdict_copies
+  67 | BR-after-handover                   | t  | handed_over              | handed_over              | {"rejected": 1}                                     | begin_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+  68 | BR-run-partial                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | run: a transfer_run event of the run lacks its phase (partial)
+  69 | BR-events-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | handover: its input could not be read (SQLSTATE 42501)
+  70 | BR-events-unreadable-reason         | t  | true                     | true                     | {}                                                  | item 7 (iii): the check's name and the SQLSTATE
+  71 | BR-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+  72 | BR-write-P0D02                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | m0910 planted failure
+  73 | BR-pos                              | t  | ok                       | ok                       | {"event": 1}                                        | 
+  74 | BR-pos-answer                       | t  | true                     | true                     | {}                                                  | answer {"id": "4ee9a41f-ff96-4b4c-b99e-4fffd79a1289", "status": "ok"}
+  75 | BR-pos-event                        | t  | true                     | true                     | {}                                                  | one transfer_run event on the run's new aggregate: the six keys as sent, the token's class, origin call, the declared session
+  76 | BR-repeat                           | t  | ok repeat                | ok repeat                | {}                                                  | 
+  77 | BR-repeat-id                        | t  | true                     | true                     | {}                                                  | the resume answers the run's id
+  78 | BR-conflict-manifest                | t  | conflict                 | conflict                 | {"rejected": 1}                                     | run_id: a run of this id is begun with another input commit, manifest, counts or mode
+  79 | BR-conflict-mode                    | t  | conflict                 | conflict                 | {"rejected": 1}                                     | run_id: a run of this id is begun with another input commit, manifest, counts or mode
+  80 | BR-conflict-counts                  | t  | conflict                 | conflict                 | {"rejected": 1}                                     | run_id: a run of this id is begun with another input commit, manifest, counts or mode
+  81 | BR-named-call                       | t  | ok                       | ok                       | {"event": 1}                                        | 
+  82 | ER-run-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+  83 | ER-counts-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                                     | counts: missing
+  84 | ER-counts-string                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | counts: not an object of non-negative integers
+  85 | ER-phase-begun                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | phase: not completed
+  86 | ER-never-begun                      | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: names no run begun (EV-C02-013 3.1)
+  87 | ER-after-handover                   | t  | handed_over              | handed_over              | {"rejected": 1}                                     | end_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+  88 | ER-run-partial                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | run: a transfer_run event of the run lacks its phase (partial)
+  89 | ER-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+  90 | ER-pos                              | t  | ok                       | ok                       | {"event": 1}                                        | 
+  91 | ER-pos-id                           | t  | true                     | true                     | {}                                                  | the answer names the run's aggregate
+  92 | ER-pos-event                        | t  | true                     | true                     | {}                                                  | one transfer_run event of phase completed on the run's aggregate, its payload as sent
+  93 | ER-repeat                           | t  | ok repeat                | ok repeat                | {}                                                  | 
+  94 | ER-repeat-id                        | t  | true                     | true                     | {}                                                  | the repeat answers the run's aggregate (R2-9)
+  95 | ER-other-counts                     | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: the run is completed, with other counts (EV-C02-013 3.1)
+  96 | BR-completed-run-resumed            | t  | ok repeat                | ok repeat                | {}                                                  | 
+  97 | TA-source-missing                   | t  | missing_field            | missing_field            | {"rejected": 1}                                     | transfer_source: missing
+  98 | TA-source-sha-missing               | t  | missing_field            | missing_field            | {"rejected": 1}                                     | transfer_source.sha256: missing
+  99 | TA-source-kind-other                | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | transfer_source.kind: not artifact (EV-C02-013 3.1)
+ 100 | TA-source-commit-short              | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | transfer_source: input_commit or last_commit not 40 lower-case hexadecimal characters
+ 101 | TA-source-sha-40                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | transfer_source.sha256: not 64 lower-case hexadecimal characters
+ 102 | TA-path-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | path: missing
+ 103 | TA-commit-64                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | commit: not 40 lower-case hexadecimal characters
+ 104 | TA-kind-other                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | kind: not git_file or git_tree
+ 105 | TA-scope-other                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | scope: not installation (the transfer copies installation records; EV-C02-005 1.2 row 19)
+ 106 | TA-status-other                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | status: not candidate, current or superseded
+ 107 | TA-declared-array                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | declared: not a JSON object
+ 108 | TA-run-number                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | run_id: not a non-empty string
+ 109 | TA-no-run                           | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: none named, and the ledger is not handed over (EV-C02-013 3.1)
+ 110 | TA-run-never-begun                  | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: names no open run (never begun; EV-C02-013 3.1)
+ 111 | TA-run-completed                    | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: names no open run (completed; EV-C02-013 3.1)
+ 112 | TA-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 113 | TA-write-mark-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 114 | TA-write-P0D02                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | m0910 planted failure
+ 115 | TA-P0D02-reason                     | t  | true                     | true                     | {}                                                  | P0D02's fixed reason
+ 116 | TA-pos                              | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 117 | TA-pos-answer                       | t  | true                     | true                     | {}                                                  | answer {"id": "813788e6-74a0-406d-9d5b-547338b7e454", "status": "ok", "revision": 1}
+ 118 | TA-pos-rows                         | t  | true                     | true                     | {}                                                  | the Artifact and its revision 1 as sent
+ 119 | TA-pos-mark                         | t  | true                     | true                     | {}                                                  | one transferred event on the Artifact: transfer_source, run_id, lacks, declared and source_fields verbatim; nothing else
+ 120 | TA-repeat                           | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 121 | TA-repeat-id                        | t  | true                     | true                     | {}                                                  | the existing id and revision
+ 122 | TA-repeat-completed-run             | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 123 | TA-conflict                         | t  | conflict                 | conflict                 | {"rejected": 1}                                     | transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)
+ 124 | TA-status-default                   | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 125 | TA-status-default-current           | t  | true                     | true                     | {}                                                  | status absent: current
+ 126 | TA-after-verdict-file               | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 127 | TA-after-tree                       | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 128 | TA-after-other-file                 | t  | handed_over              | handed_over              | {"rejected": 1}                                     | transfer_artifact: the ledger is handed over, and this is neither a verdict file nor a tree (B section 4)
+ 129 | TA-after-verdict-path-prefix        | t  | handed_over              | handed_over              | {"rejected": 1}                                     | transfer_artifact: the ledger is handed over, and this is neither a verdict file nor a tree (B section 4)
+ 130 | TA-after-with-run                   | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: after the hand-over a copy names no run (EV-C02-013 3.1)
+ 131 | TA-after-repeat                     | t  | true                     | true                     | {}                                                  | a verdict file copied before the hand-over: the same call after it, with no run, is the exact repeat
+ 132 | TA-after-mark                       | t  | true                     | true                     | {}                                                  | after the hand-over the mark records "run_id": null and "after_handover": true (3.1)
+ 133 | TE-run-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+ 134 | TE-kind-not-event                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | transfer_source.kind: not one of the six event kinds (EV-C02-013 3.1)
+ 135 | TE-type-outside                     | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | event_type: not one of the six event kinds (EV-C02-013 3.2)
+ 136 | TE-type-mismatch                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | event_type: not the kind of transfer_source (EV-C02-013 3.2)
+ 137 | TE-type-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | event_type: missing
+ 138 | TE-agg-type-mismatch                | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | aggregate_type: not the family a note_line event concerns (need; EV-C02-013 3.2)
+ 139 | TE-agg-id-not-uuid                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | aggregate_id: not a uuid
+ 140 | TE-agg-revision-zero                | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | aggregate_revision: not an integer of at least 1
+ 141 | TE-need-revision                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | aggregate_revision: a Need has no revisions
+ 142 | TE-text-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | text: missing
+ 143 | TE-text-object                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | text: not a string
+ 144 | TE-entry-id-missing                 | t  | missing_field            | missing_field            | {"rejected": 1}                                     | entry_id: missing
+ 145 | TE-entry-date-bad                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | entry_date: not a date (YYYY-MM-DD)
+ 146 | TE-source-fields-string             | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | source_fields: not a JSON object
+ 147 | TE-after-handover                   | t  | handed_over              | handed_over              | {"rejected": 1}                                     | transfer_event: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 148 | TE-run-never-begun                  | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: names no open run (never begun; EV-C02-013 3.1)
+ 149 | TE-run-completed                    | t  | run_not_open             | run_not_open             | {"rejected": 1}                                     | run_id: names no open run (completed; EV-C02-013 3.1)
+ 150 | TE-agg-names-nothing                | t  | reference_missing        | reference_missing        | {"rejected": 1}                                     | aggregate_id: names no work (or no such revision) written yet (EV-C02-013 3.1)
+ 151 | TE-agg-a-need-as-work               | t  | reference_missing        | reference_missing        | {"rejected": 1}                                     | aggregate_id: names no work (or no such revision) written yet (EV-C02-013 3.1)
+ 152 | TE-agg-revision-beyond              | t  | reference_missing        | reference_missing        | {"rejected": 1}                                     | aggregate_id: names no work (or no such revision) written yet (EV-C02-013 3.1)
+ 153 | TE-state-row-other-mission          | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | aggregate_id: a ledger_state_row is an event of the installation's Mission (EV-C02-013 3.2)
+ 154 | TE-state-row-mission-untold         | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+ 155 | TE-state-row-two-installations      | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+ 156 | TE-works-unreadable                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | aggregate: its input could not be read (SQLSTATE 42501)
+ 157 | TE-works-unreadable-reason          | t  | true                     | true                     | {}                                                  | item 7 (iii)
+ 158 | TE-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 159 | TE-write-mark-failed                | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 160 | TE-pos                              | t  | ok                       | ok                       | {"event": 2}                                        | 
+ 161 | TE-pos-answer                       | t  | true                     | true                     | {}                                                  | answer {"id": 1215, "status": "ok"}
+ 162 | TE-pos-event                        | t  | true                     | true                     | {}                                                  | the record_line event on the Work: its text only, the token's class
+ 163 | TE-pos-mark                         | t  | true                     | true                     | {}                                                  | one transferred event on the same aggregate, naming the event by event_id (S2's key on transferred events only)
+ 164 | TE-repeat                           | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 165 | TE-repeat-id                        | t  | true                     | true                     | {}                                                  | the repeat answers the event's id
+ 166 | TE-repeat-completed-run             | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 167 | TE-conflict                         | t  | conflict                 | conflict                 | {"rejected": 1}                                     | transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)
+ 168 | TE-ledger-entry                     | t  | ok                       | ok                       | {"event": 2}                                        | 
+ 169 | TE-ledger-entry-payload             | t  | true                     | true                     | {}                                                  | a ledger_entry: its text and parsed keys; a key sent as JSON null is left out
+ 170 | TE-note-line                        | t  | ok                       | ok                       | {"event": 2}                                        | 
+ 171 | TE-state-row                        | t  | ok                       | ok                       | {"event": 2}                                        | 
+ 172 | TE-usage-on-other-mission-work      | t  | ok                       | ok                       | {"event": 2}                                        | 
+ 173 | LE-stage-missing                    | t  | missing_field            | missing_field            | {"rejected": 1}                                     | stage_work_id: missing
+ 174 | LE-stage-not-uuid                   | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | stage_work_id: not a uuid
+ 175 | LE-entry-empty                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | entry_id: not a non-empty string
+ 176 | LE-date-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | entry_date: missing
+ 177 | LE-date-time                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | entry_date: not a date (YYYY-MM-DD)
+ 178 | LE-text-missing                     | t  | missing_field            | missing_field            | {"rejected": 1}                                     | text: missing
+ 179 | LE-stage-names-nothing              | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | stage_work_id: the record could not be read
+ 180 | LE-other-mission                    | t  | not_owner                | not_owner                | {"rejected": 1}                                     | Rule O: devos_kurulum writes ledger entries only on a work item under the installation's Mission (EV-C02-008 1.7.1)
+ 181 | LE-other-mission-reason             | t  | true                     | true                     | {}                                                  | the reason names the rule, never the opener
+ 182 | LE-mission-no-event                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | ownership: whether the work item lies under the installation's Mission is missing or partial
+ 183 | LE-events-unreadable                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | rule_o: its input could not be read (SQLSTATE 42501)
+ 184 | LE-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 185 | LE-pos                              | t  | ok                       | ok                       | {"event": 1}                                        | 
+ 186 | LE-pos-event                        | t  | true                     | true                     | {}                                                  | one ledger_entry event on the stage's Work at its current revision; a key not read (run_id) is ignored
+ 187 | LE-pos-no-mark                      | t  | true                     | true                     | {}                                                  | no transferred event (a new entry, not a transfer)
+ 188 | LE-repeat                           | t  | ok repeat                | ok repeat                | {}                                                  | 
+ 189 | LE-repeat-id                        | t  | true                     | true                     | {}                                                  | the repeat answers the event's id
+ 190 | LE-conflict-text                    | t  | conflict                 | conflict                 | {"rejected": 1}                                     | entry_id: a ledger entry of this ID is recorded with another text, work item or field
+ 191 | LE-conflict-stage                   | t  | conflict                 | conflict                 | {"rejected": 1}                                     | entry_id: a ledger entry of this ID is recorded with another text, work item or field
+ 192 | LE-conflict-transferred-entry       | t  | conflict                 | conflict                 | {"rejected": 1}                                     | entry_id: a ledger entry of this ID is recorded with another text, work item or field
+ 193 | LE-after-handover                   | t  | ok                       | ok                       | {"event": 1}                                        | 
+ 194 | HO-run-missing                      | t  | missing_field            | missing_field            | {"rejected": 1}                                     | run_id: missing
+ 195 | HO-mark-short                       | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | mark_commit: not 40 lower-case hexadecimal characters
+ 196 | HO-sha-40                           | t  | invalid_field            | invalid_field            | {"rejected": 1}                                     | handed_over_sha256: not 64 lower-case hexadecimal characters
+ 197 | HO-input-missing                    | t  | missing_field            | missing_field            | {"rejected": 1}                                     | input_commit: missing
+ 198 | HO-run-never-begun                  | t  | reference_missing        | reference_missing        | {"rejected": 1}                                     | run_id: names no run begun (EV-C02-013 3.2)
+ 199 | HO-no-installation                  | t  | reference_missing        | reference_missing        | {"rejected": 1}                                     | installation_mission: no Mission's creation event is transferred (EV-C02-013 3.2)
+ 200 | HO-two-installations                | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | installation_mission: which Mission is the installation's cannot be told (missing or partial)
+ 201 | HO-mission-revisions-unreadable     | t  | could_not_check          | could_not_check          | {"rejected": 1}                                     | installation_mission: its input could not be read (SQLSTATE 42501)
+ 202 | HO-after-handover                   | t  | handed_over              | handed_over              | {"rejected": 1}                                     | record_handover: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 203 | HO-write-failed                     | t  | write_failed             | write_failed             | {"rejected": 1}                                     | the write failed (SQLSTATE P0M77)
+ 204 | HO-completed-run                    | t  | ok                       | ok                       | {"event": 1}                                        | 
+ 205 | HO-pos                              | t  | ok                       | ok                       | {"event": 1}                                        | 
+ 206 | HO-pos-id                           | t  | true                     | true                     | {}                                                  | the answer names the installation's Mission
+ 207 | HO-pos-event                        | t  | true                     | true                     | {}                                                  | the one ledger_handed_over event on the installation's Mission, its payload the four keys
+ 208 | HO-second-call                      | t  | handed_over              | handed_over              | {"rejected": 1}                                     | record_handover: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 209 | CL-begin                            | t  | handed_over              | handed_over              | {"rejected": 1}                                     | begin_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 210 | CL-end                              | t  | handed_over              | handed_over              | {"rejected": 1}                                     | end_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 211 | CL-event                            | t  | handed_over              | handed_over              | {"rejected": 1}                                     | transfer_event: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 212 | CL-event-repeat                     | t  | handed_over              | handed_over              | {"rejected": 1}                                     | transfer_event: the ledger is handed over (a ledger_handed_over event exists; B section 4)
+ 213 | CL-ledger-entry                     | t  | ok                       | ok                       | {"event": 1}                                        | 
+ 214 | CL-artifact-verdict                 | t  | ok                       | ok                       | {"event": 1, "artifact": 1, "artifact_revision": 1} | 
+ 215 | TX-literals                         | t  | true                     | true                     | {}                                                  | each holds the role list as the literal array['devos_kurulum'] (B:48)
+ 216 | TX-signature                        | t  | true                     | true                     | {}                                                  | each is devos_api.<name>(p jsonb) returns jsonb (EV-C02-013 3; section 10, "Signatures")
+ 217 | TX-alias                            | t  | true                     | true                     | {}                                                  | parameters through ALIAS FOR $n (N-288)
+ 218 | TX-not-read                         | t  | true                     | true                     | {}                                                  | none carries devos:read (F06: all six change state)
+ 219 | TX-no-claim                         | t  | true                     | true                     | {}                                                  | none handles a claim token, counts a claim or names the exam table
+ 220 | TX-definer                          | t  | true                     | true                     | {}                                                  | definer rights, VOLATILE, the fixed search_path, owner postgres, EXECUTE for anon only
+(220 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0910_run/fn_check.sql:539: NOTICE:  M0910_FUNCTIONS PASS (220/220)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ artifact_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+[psql exit 0]
+m0910 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0

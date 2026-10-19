@@ -1,0 +1,167 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W14-FN's staged file, run in place, not a copy; a self-check, never a result)
+$ psql -X -v ON_ERROR_STOP=1 -f tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql
+w14_fn_transfer_functions.sql: BEGIN
+w14_fn_transfer_functions.sql: SET
+w14_fn_transfer_functions.sql: SET
+w14_fn_transfer_functions.sql: CREATE TABLE
+w14_fn_transfer_functions.sql: CREATE TABLE
+w14_fn_transfer_functions.sql: INSERT 0 1
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: DO
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: CREATE FUNCTION
+w14_fn_transfer_functions.sql: DO
+w14_fn_transfer_functions.sql:              case_id              |     outcome     |                                                                                                                                                                                                                                                                                                          detail                                                                                                                                                                                                                                                                                                          
+w14_fn_transfer_functions.sql: ----------------------------------+-----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w14_fn_transfer_functions.sql:  FN-A-cond                        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-A-cond-pos                    | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-A-fail                        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-A-missing                     | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-A-pos                         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-begin_transfer_run          | ok              | after the ledger_handed_over event: refused [handed_over begin_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)]; tables changed besides rejected_attempt: none (wanted refused, none); before it the same call was accepted
+w14_fn_transfer_functions.sql:  FN-C-end_transfer_run            | ok              | after the ledger_handed_over event: refused [handed_over end_transfer_run: the ledger is handed over (a ledger_handed_over event exists; B section 4)]; tables changed besides rejected_attempt: none (wanted refused, none); before it the same call was accepted
+w14_fn_transfer_functions.sql:  FN-C-record_handover             | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_decision           | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_event              | ok              | after the ledger_handed_over event: refused [handed_over transfer_event: the ledger is handed over (a ledger_handed_over event exists; B section 4)]; tables changed besides rejected_attempt: none (wanted refused, none); before it the same call was accepted
+w14_fn_transfer_functions.sql:  FN-C-transfer_finding            | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_finding(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_mission            | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_need               | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_relation           | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_relation(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-C-transfer_work               | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-CY-cycle                      | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-CY-pos                        | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-begin_transfer_run          | ok              | devos_calisma: refused [role_class_not_permitted begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted begin_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refused [
+w14_fn_transfer_functions.sql:  FN-G-end_transfer_run            | ok              | devos_calisma: refused [role_class_not_permitted end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted end_transfer_run admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refused [role_cla
+w14_fn_transfer_functions.sql:  FN-G-pos-begin_transfer_run      | ok              | devos_kurulum, the same input: refused [missing_field run_id: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-end_transfer_run        | ok              | devos_kurulum, the same input: refused [missing_field run_id: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-record_handover         | ok              | devos_kurulum, the same input: refused [missing_field run_id: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-record_ledger_entry     | ok              | devos_kurulum, the same input: refused [missing_field stage_work_id: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_artifact       | ok              | devos_kurulum, the same input: refused [missing_field transfer_source: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_decision       | could_not_check | devos_api.transfer_decision(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_event          | ok              | devos_kurulum, the same input: refused [missing_field run_id: missing] (wanted no refusal for the class or the token)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_finding        | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_mission        | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_need           | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_relation       | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-pos-transfer_work           | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-record_handover             | ok              | devos_calisma: refused [role_class_not_permitted record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted record_handover admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refused [role_class_n
+w14_fn_transfer_functions.sql:  FN-G-record_ledger_entry         | ok              | devos_calisma: refused [role_class_not_permitted record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted record_ledger_entry admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refus
+w14_fn_transfer_functions.sql:  FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_artifact           | ok              | devos_calisma: refused [role_class_not_permitted transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted transfer_artifact admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refused [role
+w14_fn_transfer_functions.sql:  FN-G-transfer_decision           | could_not_check | devos_api.transfer_decision(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_event              | ok              | devos_calisma: refused [role_class_not_permitted transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_denetim: refused [role_class_not_permitted transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_sinav: refused [role_class_not_permitted transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_ci: refused [role_class_not_permitted transfer_event admits only the role class devos_kurulum (B section 4, the ledger transfer)]; devos_backup: refused [role_class_not_p
+w14_fn_transfer_functions.sql:  FN-G-transfer_finding            | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_mission            | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_need               | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_relation           | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-G-transfer_work               | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-other-decision              | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-other-end_transfer_run      | ok              | end_transfer_run, the same key with other counts: refused [run_not_open run_id: the run is completed, with other counts (EV-C02-013 3.1)]; tables changed besides rejected_attempt: none; transferred events of the source 0; rejected_attempt rows +1 (wanted refused run_not_open, none, 0, at least 1)
+w14_fn_transfer_functions.sql:  FN-I-other-record_ledger_entry   | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_artifact     | ok              | transfer_artifact, the same key with another hash: refused [conflict transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)]; tables changed besides rejected_attempt: none; transferred events of the source 1; rejected_attempt rows +1 (wanted refused conflict, none, 1, at least 1)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_event        | ok              | transfer_event, the same key with another hash: refused [conflict transfer_source: this source is already transferred with another sha256 (EV-C02-013 3.1)]; tables changed besides rejected_attempt: none; transferred events of the source 1; rejected_attempt rows +1 (wanted refused conflict, none, 1, at least 1)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_finding      | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_mission      | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_need         | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_relation     | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-other-transfer_work         | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-same-decision               | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-same-end_transfer_run       | ok              | end_transfer_run, an exact repeat: accepted, id a9f8e0a6-c980-40ba-bd22-228d54400e7d (first a9f8e0a6-c980-40ba-bd22-228d54400e7d); tables changed besides rejected_attempt: none (wanted accepted, the same id, none)
+w14_fn_transfer_functions.sql:  FN-I-same-record_handover        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-same-record_ledger_entry    | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_artifact      | ok              | transfer_artifact, an exact repeat: accepted, id 051f5f70-73b3-4769-aa72-58450a5f56eb (first 051f5f70-73b3-4769-aa72-58450a5f56eb); tables changed besides rejected_attempt: none (wanted accepted, the same id, none)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_event         | ok              | transfer_event, an exact repeat: accepted, id 1142 (first 1142); tables changed besides rejected_attempt: none (wanted accepted, the same id, none)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_finding       | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_mission       | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_need          | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_relation      | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-I-same-transfer_work          | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_review, transfer_acceptance, transfer_need, transfer_finding
+w14_fn_transfer_functions.sql:  FN-MA-class                      | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-MA-pos                        | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-MA-revision                   | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-MA-source                     | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-MA-status                     | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-O-record_ledger_entry         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-O-transfer_acceptance         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-O-transfer_artifact           | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-O-transfer_artifact-other     | ok              | after the hand-over, no run_id: transfer_artifact of a file that is not a verdict file refused [handed_over transfer_artifact: the ledger is handed over, and this is neither a verdict file nor a tree (B section 4)]; tables changed besides rejected_attempt: none (wanted refused, none); before it the same call with a run was accepted
+w14_fn_transfer_functions.sql:  FN-O-transfer_review             | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-RN-completed                  | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-RN-never                      | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-RN-pos                        | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-ev-end_transfer_run         | ok              | end_transfer_run: accepted; tables changed besides event and rejected_attempt: none; new events: transfer_run; roles/origins: devos_kurulum/call (wanted accepted, writing {"d": {}, "ev": {"transferred": 0, "transfer_run": 1}}, every event devos_kurulum/call, the answer's id naming what it wrote)
+w14_fn_transfer_functions.sql:  FN-T-ev-record_handover          | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-T-ev-record_ledger_entry      | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_artifact        | ok              | transfer_artifact: accepted; tables changed besides event and rejected_attempt: artifact, artifact_revision; new events: transferred; roles/origins: devos_kurulum/call (wanted accepted, writing {"d": {"artifact": 1, "artifact_revision": 1}, "ev": {"transferred": 1}}, every event devos_kurulum/call, the answer's id naming what it wrote)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_decision        | could_not_check | transfer_decision: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); decision rows +0
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_event           | ok              | transfer_event: accepted; tables changed besides event and rejected_attempt: none; new events: record_line,transferred; roles/origins: devos_kurulum/call (wanted accepted, writing {"d": {}, "ev": {"record_line": 1, "transferred": 1}}, every event devos_kurulum/call, the answer's id naming what it wrote)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_finding         | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_mission         | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_need            | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_relation        | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+w14_fn_transfer_functions.sql:  FN-T-ev-transfer_work            | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-end_transfer_run    | ok              | end_transfer_run with its transfer_run event's write made to fail: refused [write_failed the write failed (SQLSTATE P0W15)]; tables changed besides rejected_attempt: none; transferred events of the source 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-record_handover     | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-T-half-ev-record_ledger_entry | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_artifact   | ok              | transfer_artifact with its transferred event's write made to fail: refused [write_failed the write failed (SQLSTATE P0W15)]; tables changed besides rejected_attempt: none; transferred events of the source 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_decision   | ok              | transfer_decision with the transferred event's write made to fail: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]; tables changed besides rejected_attempt: none; its transferred events 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_event      | ok              | transfer_event with its transferred event's write made to fail: refused [write_failed the write failed (SQLSTATE P0W15)]; tables changed besides rejected_attempt: none; transferred events of the source 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_finding    | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_mission    | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_need       | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_relation   | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_review     | ok              | transfer_review with the transferred event's write made to fail: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; tables changed besides rejected_attempt: none; its transferred events 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql:  FN-T-half-ev-transfer_work       | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+w14_fn_transfer_functions.sql:  FN-T-half-rec-transfer_review    | ok              | transfer_review with the Verdict's write made to fail: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; tables changed besides rejected_attempt: none; its transferred events 0 (wanted not accepted, none, 0)
+w14_fn_transfer_functions.sql: (109 rows)
+w14_fn_transfer_functions.sql: 
+w14_fn_transfer_functions.sql: psql:tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql:1254: ERROR:  W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 77 could not check, of 109)
+w14_fn_transfer_functions.sql: CONTEXT:  PL/pgSQL function inline_code_block line 7 at RAISE
+database test w14_fn_transfer_functions.sql: not passed (psql exit 3)
+[drive dbtests exit 1]
+m0910 scrub (07_staged_w14): claim-format strings replaced 0; environment-format strings replaced 0

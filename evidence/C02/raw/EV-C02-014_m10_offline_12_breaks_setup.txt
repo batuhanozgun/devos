@@ -1,0 +1,71 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (comparison and break runs: setup)
+start 2026-10-19T04:22:43Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+44
+[template t22 exit 0]
+2
+[template t23 exit 0]
+made b01_begin_admits_working (1 edit(s))
+made b02_begin_after_handover (1 edit(s))
+made b03_begin_conflict_removed (1 edit(s))
+made b04_begin_repeat_writes_again (1 edit(s))
+made b05_end_after_handover (1 edit(s))
+made b06_end_repeat_after_run_not_open (1 edit(s))
+made b07_end_never_begun_unchecked (1 edit(s))
+made b08_handover_after_handover (1 edit(s))
+made b09_handover_run_unchecked (1 edit(s))
+made b10_handover_installation_unchecked (1 edit(s))
+made b11_event_after_handover (1 edit(s))
+made b12_event_conflict_removed (1 edit(s))
+made b13_event_run_unchecked (1 edit(s))
+made b14_event_aggregate_unchecked (1 edit(s))
+made b15_event_type_kind_mismatch_admitted (1 edit(s))
+made b16_event_mark_without_event_id (1 edit(s))
+made b17_event_state_row_any_mission (1 edit(s))
+made b18_ledger_entry_rule_o_removed (2 edit(s))
+made b19_ledger_entry_conflict_removed (1 edit(s))
+made b20_ledger_entry_writes_a_mark (1 edit(s))
+made b21_artifact_after_handover_any_file (1 edit(s))
+made b22_artifact_verdict_path_unanchored (1 edit(s))
+made b23_artifact_run_after_handover_admitted (1 edit(s))
+made b24_artifact_open_run_unchecked (1 edit(s))
+made b25_artifact_conflict_removed (1 edit(s))
+made b26_artifact_mark_not_after_handover (1 edit(s))
+made b27_artifact_any_scope (1 edit(s))
+made b28_artifact_repeat_writes_again (1 edit(s))
+made b29_event_repeat_writes_again (1 edit(s))
+29 break copies made
+m0910 scrub (12_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0

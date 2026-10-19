@@ -1,0 +1,92 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b22_artifact_verdict_path_unanchored, a copy of M09-10 outside the repository, applied in place of it on a fresh copy of t22)
+[database k42 from t22 exit 0]
+[apply exit 0]
+-- the self-check on k42:
+summary: M0910_FUNCTIONS FAIL (1 of 220 not as wanted)
+bad (1): TA-after-verdict-path-prefix
+could_not_check (0): none
+detail: 129 | TA-after-verdict-path-prefix        | f  | ok                       | handed_over              | {"event": 1, "artifact": 1, "artifact_revision": 1} |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k42:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 77 could not check, of 109)
+bad (1): FN-M-cat
+could_not_check (77): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-missing, FN-A-pos, FN-C-record_handover, FN-C-transfer_decision, FN-C-transfer_finding, FN-C-transfer_mission, FN-C-transfer_need, FN-C-transfer_relation, FN-C-transfer_work, FN-CY-cycle, FN-CY-pos, FN-G-pos-transfer_acceptance, FN-G-pos-transfer_decision, FN-G-pos-transfer_finding, FN-G-pos-transfer_mission, FN-G-pos-transfer_need, FN-G-pos-transfer_relation, FN-G-pos-transfer_review, FN-G-pos-transfer_work, FN-G-transfer_acceptance, FN-G-transfer_decision, FN-G-transfer_finding, FN-G-transfer_mission, FN-G-transfer_need, FN-G-transfer_relation, FN-G-transfer_review, FN-G-transfer_work, FN-I-other-decision, FN-I-other-record_ledger_entry, FN-I-other-review, FN-I-other-transfer_finding, FN-I-other-transfer_mission, FN-I-other-transfer_need, FN-I-other-transfer_relation, FN-I-other-transfer_work, FN-I-same, FN-I-same-decision ...
+detail: FN-A-cond                        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-A-cond-pos                    | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-A-fail                        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-A-missing                     | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-A-pos                         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-C-record_handover             | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-C-transfer_decision           | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-C-transfer_finding            | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_finding(jsonb) does not exist]
+detail: FN-C-transfer_mission            | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-C-transfer_need               | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-C-transfer_relation           | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: raised [42883 function devos_api.transfer_relation(jsonb) does not exist]
+detail: FN-C-transfer_work               | could_not_check | the control (the same call before the hand-over) was not accepted with the chosen keys: a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-CY-cycle                      | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-CY-pos                        | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_decision       | could_not_check | devos_api.transfer_decision(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_finding        | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_mission        | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_need           | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_relation       | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_work           | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_decision           | could_not_check | devos_api.transfer_decision(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_finding            | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_mission            | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_need               | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_relation           | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_work               | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-decision              | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-I-other-record_ledger_entry   | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-other-transfer_finding      | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-transfer_mission      | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-transfer_need         | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-transfer_relation     | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-transfer_work         | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same-decision               | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-I-same-record_handover        | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-I-same-record_ledger_entry    | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-I-same-transfer_finding       | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-same-transfer_mission       | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-same-transfer_need          | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-same-transfer_relation      | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-same-transfer_work          | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+detail: FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_mission, transfer_work, transfer_relation, transfer_decision, transfer_review, transfer_acceptance, transfer_need, transfer_finding
+detail: FN-MA-class                      | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+detail: FN-MA-pos                        | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+detail: FN-MA-revision                   | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+detail: FN-MA-source                     | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+detail: FN-MA-status                     | could_not_check | transfer_mission or transfer_decision does not exist (FN-M-cat fails)
+detail: FN-O-record_ledger_entry         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-O-transfer_acceptance         | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-O-transfer_artifact           | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-O-transfer_review             | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-RN-completed                  | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-RN-never                      | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-RN-pos                        | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-record_handover          | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-T-ev-record_ledger_entry      | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-T-ev-transfer_decision        | could_not_check | transfer_decision: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); decision rows +0
+detail: FN-T-ev-transfer_finding         | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_mission         | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_need            | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_relation        | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+detail: FN-T-ev-transfer_work            | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-half-ev-record_handover     | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-T-half-ev-record_ledger_entry | could_not_check | a prerequisite (transfer_decision with source ID D-010) was not accepted: raised [42883 function devos_api.transfer_decision(jsonb) does not exist]
+detail: FN-T-half-ev-transfer_finding    | could_not_check | devos_api.transfer_finding(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-half-ev-transfer_mission    | could_not_check | devos_api.transfer_mission(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-half-ev-transfer_need       | could_not_check | devos_api.transfer_need(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-half-ev-transfer_relation   | could_not_check | devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-half-ev-transfer_work       | could_not_check | devos_api.transfer_work(jsonb) does not exist (FN-M-cat fails)
+red list: not as expect-red; missing none; extra ['FN-M-cat']
+m0910 scrub (42_break_b22): claim-format strings replaced 0; environment-format strings replaced 0
