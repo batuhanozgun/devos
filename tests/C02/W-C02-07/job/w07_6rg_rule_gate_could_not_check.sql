@@ -8,6 +8,8 @@
 -- kept apart from clean and from fail, and lets no write through; a readiness group with an unknown member is not
 -- ready (W-C02-07 point 6; W-C02-09 point 7; plan Section 8 item 14; PC-16; B principle 6; EV-C02-002 DM-01, DM-06,
 -- DM-37). Specification: tests/C02/W-C02-07/T-W07-6RG_rule_gate_could_not_check.md.
+-- Added under ledger rule 3, 2026-10-19 (N-301): the two reads that hand a gate check its input, the epoch's
+-- (authority_epoch: 6RG-a0 to -a2) and the fingerprint store's (fingerprint_matches: 6RG-f0, -f1; Appendix C N06).
 -- Runs: the migration job's devos-test step as postgres (README 5.1 (a)); the break harness's throwaway database (5.2).
 -- Transport: sql-set-role (role anon, header simulated with set_config; the record says so).
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists it ends in
@@ -390,7 +392,7 @@ do $$
 declare why text; k text; w text; m jsonb; sc text := 'synthetic.w07.rg'; ep text[]; ept text; epc text; wt text;
         wr1 jsonb; wr2 jsonb; wr3 jsonb; wr4 jsonb; wr5 jsonb; wg1 jsonb; wg2 jsonb; wm1 jsonb; wm2 jsonb; wl jsonb;
         cr1 jsonb; cl jsonb; x jsonb; ref1 jsonb; plant text; g record; eff text := 'select devos_api.register_artifact($1, $2)';
-        art jsonb; asg text := 'devos_private.assignment';
+        art jsonb; asg text := 'devos_private.assignment'; ci text;
 begin
   why := pg_temp.w07_pre(array['devos_private.issue_env_token(text)', 'devos_api.open_mission(jsonb)',
     'devos_api.admit_work(jsonb)', 'devos_api.claim(uuid,text)', 'devos_api.relate(jsonb)', 'devos_api.ready_works()',
@@ -518,6 +520,36 @@ begin
   perform pg_temp.w07_planted('6RG-l4 lease missing, at the effect', plant, w, eff, cl->>'claim_token',
     art || jsonb_build_object('work_ref', wl->>'id', 'work_revision', (wl->>'revision')::int), null, 'could_not_check');
   perform pg_temp.w07_ready_case('6RG-l5 lease missing: ready_works() does not offer the work item', plant, w, wl->>'id', false);
+
+  -- 6. Added under ledger rule 3, 2026-10-19 (N-301; EV-C02-014 section 11, k17 and k20): the two reads that hand a
+  -- check of the gate its input, the global authority epoch (authority_epoch, EV-C02-008 1.4 row R12; B principle 9)
+  -- and the fingerprint store (fingerprint_matches, row R13; Appendix C N06: "with the fingerprint store absent, the
+  -- write is stopped as 'could not check', not let through as clean"). Each answers its missing or partial input
+  -- "could not check", never clean; each beside its positive control on readable input.
+  perform pg_temp.w07_planted('6RG-a0 positive control: the epoch read with its row readable', null, w,
+    'select devos_api.authority_epoch()', null, null, null, 'ok');
+  perform pg_temp.w07_planted('6RG-a1 epoch row missing, at its read',
+    format('alter table %s disable trigger user; delete from %s', ept, ept), w, 'select devos_api.authority_epoch()',
+    null, null, null, 'could_not_check');
+  perform pg_temp.w07_planted('6RG-a2 epoch value partial (null), at its read',
+    format('alter table %s disable trigger user; alter table %s alter column %I drop not null; update %s set %I = null', ept, ept, epc, ept, epc),
+    w, 'select devos_api.authority_epoch()', null, null, null, 'could_not_check');
+  begin
+    ci := pg_temp.w07_tok('devos_ci');
+  exception when others then
+    ci := null;
+  end;
+  if ci is null then
+    perform pg_temp.w07_cnc('6RG-f0 positive control', 'the devos_ci token could not be issued');
+    perform pg_temp.w07_cnc('6RG-f1 fingerprint store absent', 'the devos_ci token could not be issued');
+  else
+    perform pg_temp.w07_planted('6RG-f0 positive control: the fingerprint read with the store readable', null, ci,
+      'select devos_api.fingerprint_matches(array[$1])', 'w07_fixture_hash_rg', null, null, 'ok');
+    perform pg_temp.w07_planted('6RG-f1 fingerprint store absent (unreadable), at its read',
+      'alter table devos_private.leak_fingerprint rename to w07_hidden_leak_fingerprint', ci,
+      'select devos_api.fingerprint_matches(array[$1])', 'w07_fixture_hash_rg', null, null, 'could_not_check');
+    ci := null;
+  end if;
 
   -- Per check: the answers seen, with the denominator (README section 3).
   -- Interface v1's kinds (w07_answer_kind; phase C5, CHK-C02-030 C8): clean (ok), fail (any other refusal) and could

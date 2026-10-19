@@ -7,6 +7,9 @@
 -- (EV-C02-002 DM-24), and the exam token accesses. Specification: tests/C02/W-C02-07/T-W07-N08_exam_records.md (part A).
 -- Phase C4b (EV-C02-008 5.1): the reader finder exempts functions by name (nine, and from 2026-10-19 ten, with
 -- open_decision; N-286); their answers, N08-s3, N08-s4 and the EXF pairs are part X, w07_n08_exam_fact.sql.
+-- Revised under ledger rule 3, 2026-10-19 (N-301): a reader whose parameter names an exam record reads an EvalRun that
+-- record_eval_run wrote (N08-rp), and three cases are added: N08-s5 (the link only in EvalRun, B 3.15), N08-wp3 (a run
+-- naming an earlier revision, B 3.15) and N08-s6 (a partial claim at the second layer, EV-C02-008 5.1 (c) bound 3).
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',
@@ -349,10 +352,38 @@ begin
   return id;
 end $f$;
 
+-- Revised under ledger rule 3, 2026-10-19 (N-301; k06 of EV-C02-014 section 11): the rows of every devos_private table
+-- whose text names p_id, as {table: count}; columns whose names hold "hash" or "token" are left out, so nothing derived
+-- from a token is read. N08-s5 compares it before and after an exam run (B 3.15: the link "lives only here").
+create function pg_temp.n08_naming(p_id text) returns jsonb language plpgsql as $f$
+declare t record; cols text; n bigint; r jsonb := '{}';
+begin
+  for t in select c.oid, c.relname from pg_class c join pg_namespace s on s.oid = c.relnamespace
+           where s.nspname = 'devos_private' and c.relkind in ('r', 'p') order by c.relname loop
+    select string_agg(quote_ident(attname), ', ' order by attnum) into cols from pg_attribute
+     where attrelid = t.oid and attnum > 0 and not attisdropped and attname !~* '(hash|token)';
+    continue when cols is null;
+    execute format('select count(*) from devos_private.%I x where strpos(row(%s)::text, %L) > 0', t.relname, cols, p_id)
+      into n;
+    if n > 0 then r := r || jsonb_build_object(t.relname, n); end if;
+  end loop;
+  return r;
+end $f$;
+
+-- The p jsonb form of record_eval_run (README 8.1, interface v1), for one planted work item and revision.
+create function pg_temp.n08_run_sql(p_work text, p_rev int, p_set text) returns text language sql as $f$
+  select format('select to_jsonb(w07x) from devos_api.record_eval_run(%L::jsonb) as w07x limit 1', jsonb_build_object(
+    'work_ref', p_work, 'work_revision', p_rev, 'eval_set_id', p_set, 'eval_set_version', 'w07_fixture_v1',
+    'subject_role', 'w07_fixture_role', 'subject_release', 'w07_fixture_release', 'runner_session', 'w07_fixture_session',
+    'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07'), 'run_at', now()))
+$f$;
+
 do $$
 declare why text; api text := pg_temp.w07_cfg('api_role'); i jsonb; toks jsonb := '{}'; scrub text[] := '{}'; cls text;
         r jsonb; fw oid; sqlw text; wid text; mrid text; c record; ev regclass; evname text; n int; lst text;
         four text[] := array['devos_calisma', 'devos_denetim', 'devos_kurulum', 'devos_ci']; nread int := 0;
+        pform boolean := false; eid text; rx jsonb; nm0 jsonb; nm1 jsonb; nmd jsonb; sqlr text; named boolean;
+        plant text;
 begin
   why := pg_temp.w07_pre_common();
   if why is null and to_regclass(pg_temp.w07_cfg('evalrun_table')) is null then why := pg_temp.w07_cfg('evalrun_table') || ' does not exist'; end if;
@@ -366,50 +397,14 @@ begin
     toks := toks || jsonb_build_object(cls, i->>'tok'); scrub := scrub || (i->>'tok');
   end loop;
   fw := pg_temp.w07_fn('record_eval_run'); sqlw := pg_temp.w07_sql_for(fw);
+  pform := (select pronargs = 1 and proargnames[1] = 'p' and proargtypes[0] = 'jsonb'::regtype from pg_proc where oid = fw);
   -- Writing an exam record with the working, audit, installation and CI tokens is refused (B 3.15; EV-C02-003 §4.5).
   foreach cls in array four loop
     r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>cls), sqlw, scrub);
     perform pg_temp.w07_put('N08-w-' || cls, pg_temp.w07_is_role_refusal(r, 'record_eval_run', cls),
       'record_eval_run with the ' || cls || ' token: ' || pg_temp.w07_says(r));
   end loop;
-  -- Reading: every devos_api function whose text reads the exam records' table refuses the same four tokens.
-  -- Phase C4b (EV-C02-008 5.1, its list for T-W07-N08 after CHK-C02-027 D): nine functions are exempt by name, fixed
-  -- before any result, and open_decision a tenth from 2026-10-19 (N-286), before any result. Each admits some of the
-  -- four classes and reads the table only on the branch where the caller's class is devos_sinav (Rule O's sin limit,
-  -- in open_decision for the work item work_ref names; set_effort_policy's kind (a); relate's own reason for sin; the
-  -- exam record shown to sin by the two walks). Their answers to the four classes are part X's N08-x-<function>-<class> cases
-  -- (w07_n08_exam_fact.sql); relate's refusal of an exam record as an end is T-W07-F04's F04-m4.
-  select string_agg(p.proname, ', ' order by p.proname) into lst from pg_proc p join pg_namespace s on s.oid = p.pronamespace
-   where s.nspname = 'devos_api' and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]') and p.proname = any(pg_temp.n08_exempt());
-  raise notice 'T-W07-N08: exempt by name (EV-C02-008 5.1), naming %: %', ev, coalesce(lst, 'none');
-  for c in select p.oid, p.proname from pg_proc p join pg_namespace s on s.oid = p.pronamespace
-           where s.nspname = 'devos_api' and p.oid <> fw and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]')
-             and p.proname <> 'competence_summary' and not p.proname = any(pg_temp.n08_exempt()) order by 2 loop
-    nread := nread + 1;
-    foreach cls in array four loop
-      r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>cls), pg_temp.w07_sql_for(c.oid), scrub);
-      perform pg_temp.w07_put('N08-r-' || c.proname || '-' || cls, pg_temp.w07_is_role_refusal(r, c.proname, cls),
-        c.proname || ' (reads the exam records) with the ' || cls || ' token: ' || pg_temp.w07_says(r));
-    end loop;
-    r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), pg_temp.w07_sql_for(c.oid), scrub);
-    perform pg_temp.w07_put('N08-rp-' || c.proname, pg_temp.w07_is_accepted(r, 'devos_sinav', false),
-      c.proname || ' with the exam token is accepted: ' || pg_temp.w07_says(r));
-  end loop;
-  raise notice 'T-W07-N08: % devos_api functions other than record_eval_run read %', nread, ev;
-  -- The exam fact lives only in the exam records (EV-C02-002 DM-24): no other table of devos_private names an exam or
-  -- eval column or refers to the exam records' table.
-  select string_agg(format('%s.%s', k.relname, a.attname), ', '), count(*) into lst, n
-  from pg_attribute a join pg_class k on k.oid = a.attrelid join pg_namespace s on s.oid = k.relnamespace
-  where s.nspname = 'devos_private' and k.relkind in ('r', 'p') and k.oid <> ev and a.attnum > 0 and not a.attisdropped
-    and a.attname ~* '(exam|eval)' and k.relname !~* '(exam|eval)';
-  perform pg_temp.w07_put('N08-s1', n = 0, 'columns naming an exam or eval outside the exam records: ' || coalesce(lst, 'none'));
-  select string_agg(k.relname, ', '), count(*) into lst, n from pg_constraint f join pg_class k on k.oid = f.conrelid
-  where f.contype = 'f' and f.confrelid = ev and f.conrelid <> ev and k.relname !~* '(exam|eval)';
-  perform pg_temp.w07_put('N08-s2', n = 0, 'tables outside the exam records that refer to them: ' || coalesce(lst, 'none'));
-  -- Positive: the exam environment writes (P1 at the gate; P2 on a planted work item), and the same call with the
-  -- working token is refused.
-  r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), sqlw, scrub);
-  perform pg_temp.w07_put('N08-wp1', pg_temp.w07_passed_gate(r, 'record_eval_run'), 'record_eval_run, exam token, gate: ' || pg_temp.w07_says(r));
+  -- The planted work item (N08-wp2's, moved here before the readers by the revision of 2026-10-19, N-301 (1)).
   begin
     wid := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
     -- Revised under ledger rule 3, 2026-10-19, before any result (found in N-286's self-check): an EvalRun names a work
@@ -429,14 +424,106 @@ begin
     wid := null;
     perform pg_temp.w07_cnc('N08-wp2', 'the work item fixture could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 100));
   end;
+  -- Revised under ledger rule 3, 2026-10-19 (N-301 (1)): the exam record the readers read. One EvalRun, written by
+  -- record_eval_run with the exam token on the planted work item and kept (not undone) until the file's rollback, so
+  -- that a reader whose parameter names an exam record reads a record that exists (EV-C02-013 2.8: an id that names no
+  -- EvalRun is not_found). N08-s5 (k06; B 3.15: the link "lives only here") judges that write: the rows that name the
+  -- work item's id, in any devos_private table, grow by one, in EvalRun's table, and nowhere else (no event payload,
+  -- no other row carries the link).
+  if wid is null or not pform then
+    perform pg_temp.w07_cnc('N08-s5', 'no planted work item, or record_eval_run is not of the form p jsonb (README 8.1)');
+  else
+    nm0 := pg_temp.n08_naming(wid);
+    begin
+      perform set_config('request.headers', pg_temp.w07_h(toks->>'devos_sinav'), true);
+      execute format('set local role %I', api);
+      execute pg_temp.n08_run_sql(wid, 1, 'w07_fixture_eval_set_read') into rx;
+      execute 'reset role';
+      perform set_config('request.headers', '{}', true);
+    exception when others then
+      rx := jsonb_build_object('w07_raised', sqlstate);
+    end;
+    nm1 := pg_temp.n08_naming(wid);
+    select coalesce(jsonb_object_agg(k, coalesce((nm1->>k)::bigint, 0) - coalesce((nm0->>k)::bigint, 0)), '{}') into nmd
+      from (select jsonb_object_keys(nm0 || nm1) k) s
+     where coalesce((nm1->>k)::bigint, 0) <> coalesce((nm0->>k)::bigint, 0);
+    if strpos(coalesce(rx::text, ''), toks->>'devos_sinav') > 0 then
+      rx := jsonb_build_object('w07_raised', 'the answer held a presented token value');
+    end if;
+    if rx->>'status' = 'ok' and rx->>'id' ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+      execute format('select id::text from %s where id::text = %L', ev, rx->>'id') into eid;
+    end if;
+    if eid is null then
+      perform pg_temp.w07_cnc('N08-s5', 'the exam run that the readers read was not accepted: '
+        || coalesce(rx->>'w07_raised', concat_ws(' ', rx->>'status', rx->>'reason_code', rx->>'reason')));
+    else
+      perform pg_temp.w07_put('N08-s5', nmd = jsonb_build_object(evname, 1),
+        'exam run on the planted work item, exam token, accepted; rows naming the work item''s id, added by the call, '
+        || 'by table: ' || nmd::text || ' (wanted {"' || evname || '": 1})');
+    end if;
+  end if;
+  -- Reading: every devos_api function whose text reads the exam records' table refuses the same four tokens.
+  -- Phase C4b (EV-C02-008 5.1, its list for T-W07-N08 after CHK-C02-027 D): nine functions are exempt by name, fixed
+  -- before any result, and open_decision a tenth from 2026-10-19 (N-286), before any result. Each admits some of the
+  -- four classes and reads the table only on the branch where the caller's class is devos_sinav (Rule O's sin limit,
+  -- in open_decision for the work item work_ref names; set_effort_policy's kind (a); relate's own reason for sin; the
+  -- exam record shown to sin by the two walks). Their answers to the four classes are part X's N08-x-<function>-<class> cases
+  -- (w07_n08_exam_fact.sql); relate's refusal of an exam record as an end is T-W07-F04's F04-m4.
+  select string_agg(p.proname, ', ' order by p.proname) into lst from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+   where s.nspname = 'devos_api' and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]') and p.proname = any(pg_temp.n08_exempt());
+  raise notice 'T-W07-N08: exempt by name (EV-C02-008 5.1), naming %: %', ev, coalesce(lst, 'none');
+  for c in select p.oid, p.proname from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+           where s.nspname = 'devos_api' and p.oid <> fw and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]')
+             and p.proname <> 'competence_summary' and not p.proname = any(pg_temp.n08_exempt()) order by 2 loop
+    nread := nread + 1;
+    -- Revised under ledger rule 3, 2026-10-19 (N-301 (1)): a reader whose parameter names an exam record (a name that
+    -- holds "eval" or "exam") is given the EvalRun written above, not a random uuid, in all five calls; the four
+    -- refusals then refuse a record that exists. N08-rp asks more than before: accepted, and the answer carries the
+    -- record read (its id). With no EvalRun to give, N08-rp of such a reader is could_not_check, never a pass.
+    named := (select coalesce(bool_or(a ~* '(eval|exam)'), false) from pg_proc p, unnest(coalesce(p.proargnames, '{}')) a
+               where p.oid = c.oid);
+    sqlr := pg_temp.w07_sql_for(c.oid, case when named and eid is not null
+                                            then jsonb_build_object('(eval|exam)', quote_literal(eid) || '::uuid')
+                                            else '{}'::jsonb end);
+    foreach cls in array four loop
+      r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>cls), sqlr, scrub);
+      perform pg_temp.w07_put('N08-r-' || c.proname || '-' || cls, pg_temp.w07_is_role_refusal(r, c.proname, cls),
+        c.proname || ' (reads the exam records) with the ' || cls || ' token'
+        || case when named and eid is not null then ', on an existing EvalRun' else '' end || ': ' || pg_temp.w07_says(r));
+    end loop;
+    r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), sqlr, scrub);
+    if named and eid is null then
+      perform pg_temp.w07_cnc('N08-rp-' || c.proname, c.proname || ' names an exam record and no EvalRun was written to '
+        || 'read (N08-s5): ' || pg_temp.w07_says(r));
+    else
+      perform pg_temp.w07_put('N08-rp-' || c.proname, pg_temp.w07_is_accepted(r, 'devos_sinav', false)
+          and (not named or strpos(coalesce((r->'res')::text, ''), eid) > 0),
+        c.proname || ' with the exam token is accepted' || case when named then ' and returns the EvalRun read' else '' end
+        || ': ' || pg_temp.w07_says(r) || case when named then '; the answer names the EvalRun read: '
+        || (strpos(coalesce((r->'res')::text, ''), eid) > 0)::text else '' end);
+    end if;
+  end loop;
+  raise notice 'T-W07-N08: % devos_api functions other than record_eval_run read %', nread, ev;
+  -- The exam fact lives only in the exam records (EV-C02-002 DM-24): no other table of devos_private names an exam or
+  -- eval column or refers to the exam records' table.
+  select string_agg(format('%s.%s', k.relname, a.attname), ', '), count(*) into lst, n
+  from pg_attribute a join pg_class k on k.oid = a.attrelid join pg_namespace s on s.oid = k.relnamespace
+  where s.nspname = 'devos_private' and k.relkind in ('r', 'p') and k.oid <> ev and a.attnum > 0 and not a.attisdropped
+    and a.attname ~* '(exam|eval)' and k.relname !~* '(exam|eval)';
+  perform pg_temp.w07_put('N08-s1', n = 0, 'columns naming an exam or eval outside the exam records: ' || coalesce(lst, 'none'));
+  select string_agg(k.relname, ', '), count(*) into lst, n from pg_constraint f join pg_class k on k.oid = f.conrelid
+  where f.contype = 'f' and f.confrelid = ev and f.conrelid <> ev and k.relname !~* '(exam|eval)';
+  perform pg_temp.w07_put('N08-s2', n = 0, 'tables outside the exam records that refer to them: ' || coalesce(lst, 'none'));
+  -- Positive: the exam environment writes (P1 at the gate; P2 on a planted work item), and the same call with the
+  -- working token is refused.
+  r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), sqlw, scrub);
+  perform pg_temp.w07_put('N08-wp1', pg_temp.w07_passed_gate(r, 'record_eval_run'), 'record_eval_run, exam token, gate: ' || pg_temp.w07_says(r));
+  -- (The work item is planted above, before the readers, since the revision of 2026-10-19, N-301 (1).)
   if wid is not null then
     -- Phase C4b: interface v1 (README 8.1) gives record_eval_run one parameter p jsonb with B 3.14's EvalRun fields, which
     -- the substitution by argument name below never reached; with that form the payload names the work item in work_ref.
-    if (select pronargs = 1 and proargnames[1] = 'p' and proargtypes[0] = 'jsonb'::regtype from pg_proc where oid = fw) then
-      sqlw := format('select to_jsonb(w07x) from devos_api.record_eval_run(%L::jsonb) as w07x limit 1', jsonb_build_object(
-        'work_ref', wid, 'work_revision', 1, 'eval_set_id', 'w07_fixture_eval_set', 'eval_set_version', 'w07_fixture_v1',
-        'subject_role', 'w07_fixture_role', 'subject_release', 'w07_fixture_release', 'runner_session', 'w07_fixture_session',
-        'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07'), 'run_at', now()));
+    if pform then
+      sqlw := pg_temp.n08_run_sql(wid, 1, 'w07_fixture_eval_set');
     else
       sqlw := pg_temp.w07_sql_for(fw, jsonb_build_object('work', quote_literal(wid)));
     end if;
@@ -450,6 +537,57 @@ begin
     r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_calisma'), sqlw, scrub);
     perform pg_temp.w07_put('N08-w2-devos_calisma', pg_temp.w07_is_role_refusal(r, 'record_eval_run', 'devos_calisma'),
       'the same exam run with the working token: ' || pg_temp.w07_says(r));
+    -- Added under ledger rule 3, 2026-10-19 (N-301; EV-C02-014 section 11, "the earlier revision accepted"). N08-wp3:
+    -- B 3.15's work_ref names "+revision: the work item an exam task was opened as", and a subject's revision of its task
+    -- is a new revision (EV-C02-008 1.7.1), so a run naming revision 1 of a work item whose current revision is 2 is
+    -- accepted, with its event under devos_sinav. It differs from N08-wp2 in the planted revision 2 only; with N08-wp2
+    -- not accepted, it is could_not_check (the arguments, not the rule).
+    if pform and mrid is not null then
+      plant := format('insert into devos_private.work_revision (work_id, revision, mission_revision_id, scope, purpose, '
+        || 'impact_class) values (%L, 2, %L, %L, %L, (enum_range(null::devos_private.impact_class))[1])', wid, mrid,
+        'synthetic.w07_fixture', 'w07_fixture SYNTHETIC W-C02-07 revised by its subject');
+      r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), pg_temp.n08_run_sql(wid, 1, 'w07_fixture_eval_set_earlier'),
+        scrub, '{}', plant);
+      if r ? 'plant_error' then
+        perform pg_temp.w07_cnc('N08-wp3', 'revision 2 could not be planted: ' || (r->>'plant_error'));
+      elsif (select outcome from w07_results where case_id = 'N08-wp2') is distinct from 'ok' then
+        perform pg_temp.w07_cnc('N08-wp3', 'N08-wp2 was not accepted, so a refusal here would not be the rule''s: '
+          || pg_temp.w07_says(r));
+      else
+        perform pg_temp.w07_put('N08-wp3', pg_temp.w07_is_accepted(r, 'devos_sinav', true),
+          'record_eval_run naming revision 1 while revision 2 is current, exam token: ' || pg_temp.w07_says(r));
+      end if;
+    else
+      perform pg_temp.w07_cnc('N08-wp3', 'record_eval_run is not of the form p jsonb, or no Mission revision was planted');
+    end if;
+    -- Added under ledger rule 3, 2026-10-19 (N-301; k21). N08-s6: EV-C02-008 5.1 (c) bound 3's second layer refuses to
+    -- name a work item with an active claim of class devos_sinav. A claim on the work item whose role class is absent
+    -- (planted by the owner, a state only a fault makes: the column's NOT NULL dropped for the plant) cannot be told the
+    -- exam class's or not, so the run is not admitted as clean: refused could_not_check, recorded once under
+    -- devos_sinav, no EvalRun row and no event (plan Section 8 item 14; W-C02-09 point 7).
+    if pform then
+      plant := format('alter table devos_private.assignment disable trigger user; '
+        || 'alter table devos_private.assignment alter column role_class drop not null; '
+        || 'insert into devos_private.assignment (work_ref, work_revision, role_class, claim_token_hash, generation, '
+        || 'authority_epoch, lease_expires_at, status) values (%L, 1, null, %L, 1, 1, now() + interval ''30 minutes'', '
+        || '''active'')', wid, md5(gen_random_uuid()::text) || md5(gen_random_uuid()::text));
+      r := pg_temp.w07_call(api, pg_temp.w07_h(toks->>'devos_sinav'), pg_temp.n08_run_sql(wid, 1, 'w07_fixture_eval_set_partial'),
+        scrub, '{}', plant);
+      if r ? 'plant_error' then
+        perform pg_temp.w07_cnc('N08-s6', 'the partial claim could not be planted: ' || (r->>'plant_error'));
+      else
+        perform pg_temp.w07_put('N08-s6', r->>'err' is null and pg_temp.w07_code(r) = 'could_not_check'
+            and (r->'ra'->>'record_eval_run|could_not_check|devos_sinav')::numeric = 1
+            and (select count(*) from jsonb_object_keys(r->'ra')) = 1
+            and r->'events' = '[]'::jsonb and r->'changed' = '[]'::jsonb and not (r->'echo')::boolean,
+          'record_eval_run on a work item whose claim lacks its role class, exam token: ' || pg_temp.w07_says(r));
+      end if;
+    else
+      perform pg_temp.w07_cnc('N08-s6', 'record_eval_run is not of the form p jsonb (README 8.1)');
+    end if;
+  else
+    perform pg_temp.w07_cnc('N08-wp3', 'no planted work item');
+    perform pg_temp.w07_cnc('N08-s6', 'no planted work item');
   end if;
   toks := null; scrub := null;
 end $$;
