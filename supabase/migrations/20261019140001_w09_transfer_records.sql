@@ -1530,14 +1530,24 @@ begin
       end if;
       v_alt := (p_in ->> 'alternatives_state')::devos_private.alternatives_state;
     end if;
+    -- answered_at (CHK-C02-104 C1; EV-C02-013 26 (5)): the text is matched before any cast, so that PostgreSQL's
+    -- special inputs (now, today, tomorrow, yesterday, infinity, -infinity, epoch) and a date-time without an offset
+    -- are refused. A date-time carries Z or an explicit offset; a bare date is read as 00:00 UTC. Neither reading
+    -- depends on the session's TimeZone or DateStyle. The value cast must be finite.
     if jsonb_typeof(p_in -> 'answered_at') = 'string' then
       begin
-        v_answered_at := (p_in ->> 'answered_at')::timestamptz;
+        if (p_in ->> 'answered_at') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' then
+          v_answered_at := ((p_in ->> 'answered_at') || 'T00:00:00Z')::timestamptz;
+        elsif (p_in ->> 'answered_at')
+              ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}(:[0-9]{2}([.][0-9]{1,6})?)?(Z|[+-][0-9]{2}(:?[0-9]{2})?)$' then
+          v_answered_at := (p_in ->> 'answered_at')::timestamptz;
+        end if;
       exception when others then
         v_answered_at := null;
       end;
-      if v_answered_at is null then
-        v_code := 'invalid_field'; v_reason := 'answered_at: not a time';
+      if v_answered_at is null or not isfinite(v_answered_at) then
+        v_code := 'invalid_field';
+        v_reason := 'answered_at: not a finite date (YYYY-MM-DD, read as 00:00 UTC) or date-time with Z or an offset';
         raise exception using errcode = 'P0D01', message = 'devos refusal';
       end if;
     end if;

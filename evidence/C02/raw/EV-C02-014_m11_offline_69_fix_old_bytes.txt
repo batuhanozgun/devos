@@ -1,0 +1,156 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the sensitivity run: M09-11's old bytes, 7fc7537, in its place, then the same self-check; a comparison, never a result)
+start 2026-10-19T05:25:37Z
+5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+46
+[old M09-11 apply exit 0]
+summary: M0911_FUNCTIONS FAIL (21 of 287 not as wanted)
+bad (21): TD-answered-at-special-1:now, TD-answered-at-special-2:today, TD-answered-at-special-3:tomorrow, TD-answered-at-special-4:yesterday, TD-answered-at-special-5:infinity, TD-answered-at-special-6:-infinity, TD-answered-at-special-7:epoch, TD-answered-at-special-8:NOW, TD-answered-at-special-9:~now, TD-answered-at-special-10:Infinity, TD-answered-at-special-12:today~10:00Z, TD-answered-at-special-13:2026-10-05~allballs, TD-answered-at-special-16:2026-10-05T17:50:00, TD-answered-at-special-17:2026-10-05~17:50, TD-answered-at-special-18:20261005T175000Z, TD-answered-at-special-19:J2461319, TD-answered-at-special-20:10/05/2026, TD-answered-at-special-22:2026-10-05T17:50:00.1234567Z, TD-answered-at-special-reason, TD-answered-at-special-none, TD-answered-at-date-row
+could_not_check (0): none
+detail: 65 | TD-answered-at-special-1:now                           | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 66 | TD-answered-at-special-2:today                         | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 67 | TD-answered-at-special-3:tomorrow                      | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 68 | TD-answered-at-special-4:yesterday                     | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 69 | TD-answered-at-special-5:infinity                      | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 70 | TD-answered-at-special-6:-infinity                     | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 71 | TD-answered-at-special-7:epoch                         | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 72 | TD-answered-at-special-8:NOW                           | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 73 | TD-answered-at-special-9:~now                          | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 74 | TD-answered-at-special-10:Infinity                     | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 76 | TD-answered-at-special-12:today~10:00Z                 | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 77 | TD-answered-at-special-13:2026-10-05~allballs          | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 80 | TD-answered-at-special-16:2026-10-05T17:50:00          | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 81 | TD-answered-at-special-17:2026-10-05~17:50             | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 82 | TD-answered-at-special-18:20261005T175000Z             | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 83 | TD-answered-at-special-19:J2461319                     | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 84 | TD-answered-at-special-20:10/05/2026                   | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 86 | TD-answered-at-special-22:2026-10-05T17:50:00.1234567Z | f  | ok                       | invalid_field            | {"event": 1, "decision": 1, "decision_revision": 1}             |  | wanted delta {"rejected": 1}
+detail: 88 | TD-answered-at-special-reason                          | f  | false                    | true                     | {}                                                              | the 23 refusals carry the fixed reason
+detail: 89 | TD-answered-at-special-none                            | f  | false                    | true                     | {}                                                              | no transferred Decision holds an answer time yet (none of the 23 wrote one)
+detail: 91 | TD-answered-at-date-row                                | f  | false                    | true                     | {}                                                              | a bare date under TimeZone Asia/Kolkata reads as 00:00 UTC
+-- every staged file of job/ and T-W14-FN's, in place, on the old bytes: summary lines
+NOTICE:  W07_5A_NO_DIRECT_WRITES PASS (168/168)
+database test w07_5a_no_direct_writes.sql: passed
+NOTICE:  W07_5A_POSITIVE_CONTROL PASS (1/1)
+database test w07_5a_positive_control.sql: passed
+NOTICE:  W07_5B_AUTHORIZATION_MATRIX PASS (312/312)
+database test w07_5b_authorization_matrix.sql: passed
+NOTICE:  W07_5C_OTHER_SESSION_FAKE_ID PASS (8/8)
+database test w07_5c_other_session_fake_id.sql: passed
+ERROR:  W07_5D_FORMAT_GATES_EMPTY COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_5d_format_gates_empty.sql: not passed (psql exit 3)
+NOTICE:  W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (32/32)
+database test w07_6rg_rule_gate_could_not_check.sql: passed
+ERROR:  W07_6ST_SETTINGS_COULD_NOT_CHECK COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_6st_settings_could_not_check.sql: not passed (psql exit 3)
+NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+database test w07_6tk_token_reasons.sql: passed
+NOTICE:  W07_DM02_REVISION_APPEND_ONLY PASS (21/21)
+database test w07_dm02_revision_append_only.sql: passed
+NOTICE:  W07_DM07_HEARTBEAT PASS (8/8)
+database test w07_dm07_heartbeat.sql: passed
+ERROR:  W07_DM11_ANSWER_REVISION FAIL (5 bad, 0 could not check, of 8)
+database test w07_dm11_answer_revision.sql: not passed (psql exit 3)
+NOTICE:  W07_DM19_REJECTED_ATTEMPT_SURVIVES PASS (5/5)
+database test w07_dm19_rejected_attempt_survives.sql: passed
+NOTICE:  W07_DM19B_BURST_COUNT PASS (14/14)
+database test w07_dm19b_burst_count.sql: passed
+NOTICE:  W07_DM34_MISSION_SCOPE PASS (10/10)
+database test w07_dm34_mission_scope.sql: passed
+ERROR:  W07_DM47_PATH_TABLE COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_dm47_path_table.sql: not passed (psql exit 3)
+NOTICE:  W07_F01_WHOLE_INTENT PASS (13/13)
+database test w07_f01_whole_intent.sql: passed
+NOTICE:  W07_F04_AFFECTED_RECORDS PASS (32/32)
+database test w07_f04_affected_records.sql: passed
+NOTICE:  W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+database test w07_f05_scope_both_sides.sql: passed
+ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (2 of 141 could not be checked)
+database test w07_f06_state_change_event.sql: not passed (psql exit 3)
+NOTICE:  W07_F07_OBSERVATION_HISTORY PASS (7/7)
+database test w07_f07_observation_history.sql: passed
+NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (29/29)
+database test w07_f08_recheck_at_effect.sql: passed
+ERROR:  W07_FGFIND_FINDING_GATE COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_fgfind_finding_gate.sql: not passed (psql exit 3)
+NOTICE:  W07_IDC_IDENTITY_CHAIN PASS (43/43)
+database test w07_idc_identity_chain.sql: passed
+NOTICE:  W07_K05_MANY_PATHS PASS (6/6)
+database test w07_k05_many_paths.sql: passed
+ERROR:  W07_N01_NEED_JUSTIFICATION COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_n01_need_justification.sql: not passed (psql exit 3)
+ERROR:  W07_N02_DECISION_ALTERNATIVES COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_n02_decision_alternatives.sql: not passed (psql exit 3)
+ERROR:  W07_N03_EFFORT_POLICY COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_n03_effort_policy.sql: not passed (psql exit 3)
+ERROR:  W07_N04_SELF_APPROVAL COULD NOT CHECK (3 of 19 could not be checked)
+database test w07_n04_self_approval.sql: not passed (psql exit 3)
+NOTICE:  W07_N08_EXAM_FACT PASS (61/61)
+database test w07_n08_exam_fact.sql: passed
+NOTICE:  W07_N08_EXAM_RECORDS PASS (17/17)
+database test w07_n08_exam_records.sql: passed
+NOTICE:  W07_N09_FINDING_GATE PASS (11/11)
+database test w07_n09_finding_gate.sql: passed
+NOTICE:  W07_N17_CLAIM_TOKEN PASS (13/13)
+database test w07_n17_claim_token.sql: passed
+NOTICE:  W07_N25_VERDICT_STALENESS PASS (5/5)
+database test w07_n25_verdict_staleness.sql: passed
+ERROR:  W07_N28_SAMPLE_EXEMPTION COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_n28_sample_exemption.sql: not passed (psql exit 3)
+ERROR:  W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, 0 could not check, of 3)
+database test w07_n28_verifier_does_not_repair.sql: not passed (psql exit 3)
+ERROR:  W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_n29_impact_class.sql: not passed (psql exit 3)
+NOTICE:  W07_N29_MISSION_WIDENING PASS (8/8)
+database test w07_n29_mission_widening.sql: passed
+NOTICE:  W07_REL_RELATION_STATUS PASS (4/4)
+database test w07_rel_relation_status.sql: passed
+NOTICE:  W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS (84/84)
+database test w07_roc_ownership_and_claim_class.sql: passed
+ERROR:  W07_T31_PLANTED_RATE COULD NOT CHECK (1 of 1 could not be checked)
+database test w07_t31_planted_rate.sql: not passed (psql exit 3)
+w14_fn_transfer_functions.sql: psql:tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql:1254: ERROR:  W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 16 could not check, of 109)
+database test w14_fn_transfer_functions.sql: not passed (psql exit 3)
+-- w07_f06_state_change_event.sql on the old bytes, by case
+summary: W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (2 of 141 could not be checked)
+bad (0): none
+could_not_check (2): F06-event:transfer_relation, F06-repeat:transfer_relation
+detail: F06-event:transfer_relation              | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "a current relation with the same type, ends, revisions, hard, group and use exists (B 3.4)", "status": "refused", "reason_code": "conflict"}
+detail: F06-repeat:transfer_relation             | could_not_check | no accepted call to repeat
+-- w07_5b_authorization_matrix.sql on the old bytes, by case
+summary: W07_5B_AUTHORIZATION_MATRIX PASS (312/312)
+bad (0): none
+could_not_check (0): none
+-- w14_fn_transfer_functions.sql on the old bytes, by case
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 16 could not check, of 109)
+bad (1): FN-M-cat
+could_not_check (16): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-missing, FN-A-pos, FN-G-pos-transfer_acceptance, FN-G-pos-transfer_review, FN-G-transfer_acceptance, FN-G-transfer_review, FN-I-other-review, FN-I-same, FN-O-transfer_acceptance, FN-O-transfer_review, FN-R-declared, FN-RN-after-handover, FN-T-ev-transfer_review
+detail: FN-A-cond                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-cond-pos                    | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-fail                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-missing                     | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-pos                         | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_review, transfer_acceptance
+detail: FN-O-transfer_acceptance         | could_not_check | after the hand-over, no run_id: transfer_acceptance of that copy raised [42883 function devos_api.transfer_acceptance(jsonb) does not exist]; acceptance rows +0 (wanted accepted, +1)
+detail: FN-O-transfer_review             | could_not_check | after the hand-over, no run_id: transfer_review raised [42883 function devos_api.transfer_review(jsonb) does not exist]; review rows +0, its transferred events 0 (wanted accepted, +1, 1)
+detail: FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+m0911 scan: log: 242 lines; claim-format 0; environment-format 0
+m0911 scan: 1 files; claim-format 0; environment-format 0
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[cluster directory deleted: yes]
+end 2026-10-19T05:25:56Z
+m0911 scrub (69_fix_old_bytes): claim-format strings replaced 0; environment-format strings replaced 0
