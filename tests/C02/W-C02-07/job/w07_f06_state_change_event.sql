@@ -23,6 +23,11 @@
 -- retract_relation's relation is made through relate, F06-role-token relates two items under the installation's
 -- Mission, the orphan cases first show their call accepted without the planted failure, and set_effort_policy's exact
 -- repeat is a case; see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
+-- Revised under ledger rule 3, 2026-10-19 (N-293 (2); EV-C02-013 section 20 (4) to (6)), before any result of this
+-- file: accept's Verdict is on the audit environment's Review of a planted Finding at its revision, with a basis of a
+-- planted Decision at its revision; open_review's recipe sends independence_level and a non-empty basis_refs of
+-- {ref, revision}; record_verdict's recipe sends limits as an array; see the specification's "Revision under ledger
+-- rule 3 (N-293 (2), N-294 (2), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -425,6 +430,7 @@ declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 
         nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
         om jsonb; om_fail text;  -- N-285 (1)
         wv jsonb := '{}'; im text; imr text; i1 jsonb; i2 jsonb; rel_k jsonb; ctl jsonb;  -- N-291
+        acc_t jsonb; acc_b jsonb;  -- N-293 (2)
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -444,9 +450,21 @@ begin
     end;
     a := pg_temp.w07_plant('devos_private.work_revision', wv); b := pg_temp.w07_plant('devos_private.work_revision', wv);
     d := pg_temp.w07_plant('devos_private.work_revision', wv);
+    -- Revised under ledger rule 3, before any result (N-293 (2); EV-C02-013 section 20 (6); 2026-10-19): accept counts
+    -- only the audit environment's Review (reviewer_role_class devos_denetim), and reads its target and every basis
+    -- entry at the record's current revision; the first version's Review had no reviewer, a target that named no
+    -- record and an empty basis, so accept answered could_not_check. Target: a planted Finding at its revision 1 (a
+    -- family with a scope, which an Acceptance holds); basis: a planted Decision at its revision 1. acc_b also serves
+    -- open_review's basis below.
+    acc_t := pg_temp.w07_plant('devos_private.finding_revision', jsonb_build_object('revision', 1,
+      'claim', 'w07_fixture SYNTHETIC W-C02-07 accept target', 'changeable', 'no', 'source_spans', '[]'::jsonb,
+      'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found'));
+    acc_b := pg_temp.w07_plant('devos_private.decision_revision', '{"revision": 1}');
     v := pg_temp.w07_plant('devos_private.verdict', jsonb_build_object('result', 'pass', 'review_ref',
-      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', gen_random_uuid(),
-        'target_revision', 1, 'use', 'w07_fixture_use_one', 'basis_refs', '[]'::jsonb))->'id'));
+      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', acc_t->'finding_id',
+        'target_revision', 1, 'use', 'w07_fixture_use_one', 'reviewer_role_class', 'devos_denetim',
+        'independence_level', 'fresh_context_subagent',
+        'basis_refs', jsonb_build_array(jsonb_build_object('ref', acc_b->'decision_id', 'revision', 1))))->'id'));
     fd := pg_temp.w07_plant('devos_private.finding', '{"status": "candidate", "scope": "synthetic.w07fixture"}');
     perform pg_temp.w07_plant('devos_private.finding_revision', jsonb_build_object('finding_id', fd->'id', 'revision', 1,
       'claim', 'w07_fixture SYNTHETIC W-C02-07 claim', 'changeable', 'no', 'source_spans', '[]'::jsonb,
@@ -482,8 +500,11 @@ begin
       'scope', 'synthetic.w07fixture', 'changeable', 'no', 'source_spans', '[]'::jsonb,
       'counter_evidence_searched', 'w07_fixture SYNTHETIC: none found', 'epistemic_status', 'observation',
       'current_authority', 'information_only')),
+    -- N-293 (2); EV-C02-013 section 20 (4): independence_level is required, and basis_refs is a non-empty array of
+    -- {ref, revision}, each a record at a revision it has (the first version sent neither, so open_review refused it).
     'open_review', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('kind', 'review', 'target_ref', a->'work_id',
-      'target_revision', a->'revision', 'use', 'w07_fixture_use_f06', 'basis_refs', '[]'::jsonb)));
+      'target_revision', a->'revision', 'use', 'w07_fixture_use_f06', 'independence_level', 'fresh_context_subagent',
+      'basis_refs', jsonb_build_array(jsonb_build_object('ref', acc_b->'decision_id', 'revision', 1)))));
 
   -- Phase C3 (G5): a recipe for every other state-changing C02 function Appendix B section 4 names whose call README
   -- section 8.1 lets this file form (its argument names are 8.1's, fixed or chosen). Each recipe's fixture is made in
@@ -589,7 +610,9 @@ begin
       'target_revision', wk->'revision', 'use', 'w07_fixture_use_two', 'basis_refs', '[]'::jsonb));
     recipes := recipes || jsonb_build_object(
       'record_verdict', jsonb_build_object('class', 'devos_denetim', 'args', jsonb_build_object('review_ref', x->'id',
-        'result', 'pass', 'evidence_refs', '[]'::jsonb, 'objections', '[]'::jsonb, 'limits', 'w07_fixture SYNTHETIC W-C02-07')),
+        -- N-293 (2); EV-C02-013 section 20 (5): limits is an array (the first version sent a string: invalid_field).
+        'result', 'pass', 'evidence_refs', '[]'::jsonb, 'objections', '[]'::jsonb,
+        'limits', jsonb_build_array('w07_fixture SYNTHETIC W-C02-07'))),
       'record_eval_run', jsonb_build_object('class', 'devos_sinav', 'args', jsonb_build_object(
         'eval_set_id', 'w07_fixture_eval_set', 'eval_set_version', '1', 'subject_role', 'w07_fixture',
         'subject_release', 'w07_fixture', 'runner_session', 'w07_fixture_session_f06',

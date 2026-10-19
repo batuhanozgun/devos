@@ -1,0 +1,18 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-F07-1_observations_overwritten.sql applied in place, w07.throwaway=yes, in database p60 copied from t20)
+[database p60 from t20 exit 0]
+[patch exit 0]
+(the wrapper's update statement in its own form, on no row: a text expression assigned to the enum column observed_effect)
+ERROR:  column "observed_effect" is of type devos_private.observed_effect but expression is of type text
+LINE 1: ... devos_private.observation set observed_effect = ('{"observe...
+                                                             ^
+HINT:  You will need to rewrite or cast the expression.
+observed_effect is of type devos_private.observed_effect
+w07_f07_observation_history.sql:  F07-a1  | could_not_check | applied then unknown: history kept: an observation was not recorded
+w07_f07_observation_history.sql:  F07-a2  | could_not_check | applied then unknown: current state: an observation was not recorded
+w07_f07_observation_history.sql:  F07-b1  | could_not_check | out of order: history kept: an observation was not recorded
+w07_f07_observation_history.sql:  F07-b2  | could_not_check | out of order: current state by observation time: an observation was not recorded
+w07_f07_observation_history.sql:  F07-c1  | could_not_check | merged then reverted: history kept: an observation was not recorded
+w07_f07_observation_history.sql:  F07-c2  | could_not_check | merged then reverted: current state: an observation was not recorded
+w07_f07_observation_history.sql:  F07-c3  | could_not_check | merged then reverted: acceptance separate: an observation was not recorded
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: ERROR:  W07_F07_OBSERVATION_HISTORY COULD NOT CHECK (7 of 7 could not be checked)
+m0908 scrub (60_merged_B-F07-1): claim-format strings replaced 0; environment-format strings replaced 0

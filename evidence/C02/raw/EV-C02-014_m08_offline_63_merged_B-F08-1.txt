@@ -1,0 +1,5 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-F08-1_dependency_recheck_removed.sql applied in place, w07.throwaway=yes, in database p63 copied from t20)
+[database p63 from t20 exit 0]
+[patch exit 0]
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+m0908 scrub (63_merged_B-F08-1): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,17 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-08)
+$ psql -X -d postgres -v ON_ERROR_STOP=1 --single-transaction -f supabase/migrations/20261019050001_w09_external_effect.sql
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+REVOKE
+REVOKE
+REVOKE
+REVOKE
+DO
+[exit 0]
+$ psql -X -d postgres -q -v ON_ERROR_STOP=1 -c insert into supabase_migrations.schema_migrations (version, name) values ('20261019050001', 'w09_external_effect')
+[exit 0]
+[drive apply exit 0]
+m0908 scrub (03_apply_m0908): claim-format strings replaced 0; environment-format strings replaced 0

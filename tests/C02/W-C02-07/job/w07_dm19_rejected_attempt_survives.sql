@@ -14,6 +14,12 @@
 -- file: the two work items sit under a Mission opened through open_mission, so that Rule O can read its creation event;
 -- DM19-b first shows its call accepted without the planted failure, and DM19-c names the cycle refusal it is about; see
 -- the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
+-- Revised again under ledger rule 3, 2026-10-19 (N-293 (1), N-294 (4); no result of this file had been counted): the
+-- planted Review is the audit environment's (reviewer_role_class devos_denetim), on a target that names a record (a
+-- planted Finding at its revision 1) with a basis of one planted Decision at its revision 1, as M09-07's accept needs
+-- (EV-C02-013 section 20 (6)); and DM19-c's guard makes only a returned refusal with another reason code the test's own
+-- could_not_check, so an accepted DM19-c call is bad again (CHK-C02-094 C1 (b)); see the specification's "Revision
+-- under ledger rule 3 (N-293 (1), N-294 (4), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -353,7 +359,10 @@ begin
     return;
   end if;
   raised := c->>'error' is not null;
-  if p_want_code is not null and not raised and c->'result'->>'reason_code' is distinct from p_want_code then
+  -- N-294 (4): only a returned refusal (status refused) with another reason code is the test's own could_not_check; an
+  -- accepted call, or any other answer, falls through to the outcome rule below, which makes it bad.
+  if p_want_code is not null and not raised and c->'result'->>'status' = 'refused'
+     and c->'result'->>'reason_code' is distinct from p_want_code then
     perform pg_temp.w07_rec(p_id, 'could_not_check', format('the refusal is not the %s refusal the case is about: ', p_want_code)
       || pg_temp.w07_show(c));
     return;
@@ -396,9 +405,16 @@ begin
     perform pg_temp.w07_plant('devos_private.relation', jsonb_build_object('type', 'depends_on', 'from_ref', a->'ref',
       'from_revision', a->'revision', 'to_ref', b->'ref', 'to_revision', b->'revision', 'hard', true,
       'scope', 'synthetic.w07fixture', 'method', 'recorded', 'epistemic_status', 'observation', 'validity', 'current'));
+    -- N-293 (1): the audit environment's Review, on a planted Finding at its revision 1, with a basis of one planted
+    -- Decision at its revision 1 (EV-C02-013 section 20 (6): accept counts only a devos_denetim Review, and reads the
+    -- target and every basis entry at its current revision).
     v := pg_temp.w07_plant('devos_private.verdict', jsonb_build_object('result', 'pass', 'review_ref',
-      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', gen_random_uuid(),
-        'target_revision', 1, 'use', 'w07_fixture_use_one', 'basis_refs', '[]'::jsonb))->'id'));
+      pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review',
+        'target_ref', pg_temp.w07_plant('devos_private.finding_revision', '{"revision": 1}')->'finding_id',
+        'target_revision', 1, 'use', 'w07_fixture_use_one', 'reviewer_role_class', 'devos_denetim',
+        'independence_level', 'fresh_context_subagent',
+        'basis_refs', jsonb_build_array(jsonb_build_object('ref',
+          pg_temp.w07_plant('devos_private.decision_revision', '{"revision": 1}')->'decision_id', 'revision', 1))))->'id'));
   exception when others then
     perform pg_temp.w07_rec('DM19-pre', 'could_not_check', 'fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200));
     return;

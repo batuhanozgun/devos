@@ -10,6 +10,11 @@
 -- Transport: sql-set-role (role anon, header simulated with set_config; the record says so, W-C02-09 point 3).
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists it ends in
 -- COULD NOT CHECK. Output: one row per case, then PASS (notice) or FAIL / COULD NOT CHECK (raised).
+-- Revised under ledger rule 3, 2026-10-19 (N-293 (4); EV-C02-013 section 18 (2) step 6), before any result of this
+-- file: devos_kurulum's work item W3 is admitted under the installation's Mission (the hook installation_mission, as
+-- T-W07-ROC, T-W07-F04 and T-W07-F06 fill it), since claim gives devos_kurulum only those items; the first version
+-- admitted it under the test's own Mission, so its claim was refused not_owner and the file stopped at N17-pre. See the
+-- specification's "Revision under ledger rule 3 (N-293 (4), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -295,9 +300,19 @@ create function pg_temp.w07_alter(p_token text) returns text language sql as $f$
   select overlay(p_token placing case when right(p_token, 1) = 'a' then 'b' else 'a' end from length(p_token) for 1)
 $f$;
 
+-- Hooks (README section 8). Revised under ledger rule 3 (N-293 (4), 2026-10-19): installation_mission, copied byte for
+-- byte from job/w07_roc_ownership_and_claim_class.sql's pg_temp.roc_hook (filled there before any result, EV-C02-013
+-- section 4, 2026-10-17): as owner, a Mission and its revision 1 on a batu Decision answered at owner level, and one
+-- transferred Event on it; its scope synthetic.w07_fixture. One already in the database tested is returned as it is.
+-- Run as owner inside this rolled-back transaction; returns the Mission's id (text).
+create function pg_temp.w07_hook(p_key text) returns text language sql immutable as $f$
+  select t.v from (values
+    ('installation_mission', 'with x as (select m.id from devos_private.mission m where exists (select 1 from devos_private.event e where e.aggregate_id = m.id and e.event_type = ''transferred'') order by m.created_at limit 1), d as (insert into devos_private.decision (class, status, answered_revision, answered_at, answered_by, answer_original_tr, answer_interpretation_en) select ''batu''::devos_private.decision_class, ''answered''::devos_private.decision_status, 1, now(), ''w07_fixture SYNTHETIC W-C02-07'', ''w07_fixture SYNTHETIC yanit'', ''w07_fixture SYNTHETIC answer'' where not exists (select 1 from x) returning id), dr as (insert into devos_private.decision_revision (decision_id, revision, question) select d.id, 1, ''w07_fixture SYNTHETIC W-C02-07 decision of the installation Mission stand-in'' from d returning decision_id), m as (insert into devos_private.mission (status) select ''active''::devos_private.mission_status where not exists (select 1 from x) returning id), mr as (insert into devos_private.mission_revision (mission_id, revision, purpose, scope, acceptance, owner_authority) select m.id, 1, ''w07_fixture SYNTHETIC W-C02-07 installation Mission stand-in; not work'', ''synthetic.w07_fixture'', ''w07_fixture SYNTHETIC W-C02-07'', dr.decision_id from m, dr returning mission_id), ev as (insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin) select ''mission'', mr.mission_id, 1, ''transferred'', jsonb_build_object(''transfer_source'', jsonb_build_object(''kind'', ''mission'', ''source_id'', ''INSTALL'', ''path'', ''w07_fixture/INSTALL.md'', ''input_commit'', repeat(''a7'', 20), ''last_commit'', repeat(''a7'', 20), ''sha256'', repeat(''5e'', 32)), ''run_id'', null, ''lacks'', ''[]''::jsonb), ''devos_kurulum'', ''call''::devos_private.event_origin from mr returning aggregate_id) select coalesce((select aggregate_id::text from ev), (select id::text from x))')) t(k, v) where t.k = p_key
+$f$;
+
 do $$
 declare why text; k text; w text; a text; s text; m jsonb; w1 jsonb; w2 jsonb; w3 jsonb; w4 jsonb; w5 jsonb; c5 jsonb;
-        c1 jsonb; c2 jsonb; ck jsonb; c4 jsonb; r jsonb; s0 jsonb;
+        c1 jsonb; c2 jsonb; ck jsonb; c4 jsonb; r jsonb; s0 jsonb; im text; mi jsonb;
 begin
   why := pg_temp.w07_pre(array['devos_private.issue_env_token(text)', 'devos_api.open_mission(jsonb)',
     'devos_api.admit_work(jsonb)', 'devos_api.claim(uuid,text)', 'devos_api.heartbeat(text)', 'devos_api.release(text)',
@@ -311,7 +326,14 @@ begin
     m := pg_temp.w07_fixture_mission(k, 'synthetic.w07.n17');
     w1 := pg_temp.w07_fixture_work(w, m, 'synthetic.w07.n17');
     w2 := pg_temp.w07_fixture_work(w, m, 'synthetic.w07.n17');
-    w3 := pg_temp.w07_fixture_work(k, m, 'synthetic.w07.n17');
+    -- N-293 (4): W3 under the installation's Mission, at that Mission's current revision and within its scope (its own
+    -- scope, so that the item and its artifacts lie inside it whichever Mission the hook returns).
+    execute pg_temp.w07_hook('installation_mission') into im;
+    execute 'select jsonb_build_object(''id'', x.mission_id, ''revision'', x.revision, ''scope'', x.scope)
+               from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+       into mi using im;
+    if mi is null then raise exception 'w07: the installation''s Mission has no revision'; end if;
+    w3 := pg_temp.w07_fixture_work(k, mi, mi->>'scope');
     w4 := pg_temp.w07_fixture_work(w, m, 'synthetic.w07.n17');
     c1 := pg_temp.w07_claim(w, w1, 'w07_fixture_session_a');
     c2 := pg_temp.w07_claim(w, w2, 'w07_fixture_session_b');
@@ -355,8 +377,12 @@ begin
     pg_temp.w07_effect(w, pg_temp.w07_alter(c1->>'claim_token'), w1, 'n17/n4'), 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
   s0 := pg_temp.w07_state();
-  perform pg_temp.w07_judge('N17-n5 effect with the claim token under the audit token',
-    pg_temp.w07_effect(a, c1->>'claim_token', w1, 'n17/n5'), 'refused',
+  -- Revised under ledger rule 3 (N-293 (4)'s further fault, 2026-10-19): under the devos_kurulum token, not the audit
+  -- token. register_artifact's gate admits only devos_calisma and devos_kurulum (EV-C02-013 2.6), so the audit token was
+  -- refused at the gate (role_class_not_permitted) before the class match this case tests, and B-N17-1 could not turn
+  -- it red. devos_kurulum passes the gate, so the refusal must come from the class match (S8 line 2).
+  perform pg_temp.w07_judge('N17-n5 effect with the claim token under the devos_kurulum token',
+    pg_temp.w07_effect(k, c1->>'claim_token', w1, 'n17/n5'), 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
   s0 := pg_temp.w07_state();
   perform pg_temp.w07_judge('N17-n6 heartbeat with the claim token under the exam token',

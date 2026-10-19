@@ -15,6 +15,13 @@
 -- deployment_drift's branch for the migration login cannot be exercised here. Interface assumed: pg_temp.w07_cfg and
 -- the specification's 'Interface assumed' (README section 8). Safety: begin ... rollback; each case runs in a
 -- subtransaction that is undone. No psql meta-command. Output: one row per case, then PASS, FAIL or COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-19 (N-293 (3); EV-C02-013 section 20 (5) and (6)), before any result of this
+-- file: N04-p3 calls record_verdict with a payload naming the planted Review and a result, and N04-p4 calls accept on
+-- a Verdict planted on the audit environment's Review of a work item at its revision, with a basis, so that a correct
+-- build can accept them (the first version filled both with "neutral" arguments, which no build can accept); the same
+-- calls with the other tokens (N04-a2, -k1b, -b2) now differ from them in the token only. Part T's two planted Reviews
+-- get the same target and basis forms (a further fault of the same kind). See the specification's "Revision under
+-- ledger rule 3 (N-293 (3), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '120s';
@@ -341,10 +348,33 @@ begin
   return id;
 end $f$;
 
+-- Revised under ledger rule 3 (N-293 (3), 2026-10-19). A record a Review can be of, as M09-07's open_review and accept
+-- read it (EV-C02-013 section 20 (4) and (6)): a work item at its revision 1, under a Mission revision whose owner
+-- authority is a planted batu Decision, and a planted routine Decision at its revision 1 for the basis; all planted as
+-- the owner with scope synthetic.w07fixture. Returns {work, decision}; raises when it cannot.
+create function pg_temp.n04_target() returns jsonb language plpgsql as $f$
+declare dc uuid; db uuid; mi uuid; mr uuid; wk uuid;
+begin
+  insert into devos_private.decision (class, status, answered_revision) values ('batu', 'answered', 1) returning id into dc;
+  insert into devos_private.decision_revision (decision_id, revision, question)
+    values (dc, 1, 'w07_fixture SYNTHETIC W-C02-07 owner authority');
+  insert into devos_private.mission default values returning id into mi;
+  insert into devos_private.mission_revision (mission_id, revision, purpose, scope, acceptance, owner_authority)
+    values (mi, 1, 'w07_fixture SYNTHETIC W-C02-07 mission; not work', 'synthetic.w07fixture', 'w07_fixture SYNTHETIC W-C02-07', dc)
+    returning id into mr;
+  insert into devos_private.work default values returning id into wk;
+  insert into devos_private.work_revision (work_id, revision, mission_revision_id, scope, purpose, impact_class)
+    values (wk, 1, mr, 'synthetic.w07fixture', 'w07_fixture SYNTHETIC W-C02-07 review target', 'routine');
+  insert into devos_private.decision (class) values ('routine') returning id into db;
+  insert into devos_private.decision_revision (decision_id, revision, question)
+    values (db, 1, 'w07_fixture SYNTHETIC W-C02-07 basis');
+  return jsonb_build_object('work', wk, 'decision', db);
+end $f$;
+
 do $$
 declare why text; api text := pg_temp.w07_cfg('api_role'); i jsonb; cal text; den text; kur text; scrub text[];
         r jsonb; fv oid; fa oid; fr oid; fe oid; sqlv text; sqla text; rid text; wid text; fake jsonb;
-        sub jsonb; c record;
+        sub jsonb; c record; tg jsonb; vid text;
 begin
   why := pg_temp.w07_pre_common();
   if why is null and pg_temp.w07_fn('record_verdict') is null then why := 'devos_api.record_verdict does not exist'; end if;
@@ -430,17 +460,33 @@ begin
   perform pg_temp.w07_put('N04-p1', pg_temp.w07_passed_gate(r, 'record_verdict'), 'record_verdict, audit token, gate: ' || pg_temp.w07_says(r));
   r := pg_temp.w07_call(api, pg_temp.w07_h(den), sqla, scrub);
   perform pg_temp.w07_put('N04-p2', pg_temp.w07_passed_gate(r, 'accept'), 'accept, audit token, gate: ' || pg_temp.w07_says(r));
+  -- Revised under ledger rule 3 (N-293 (3), 2026-10-19): the Review is the audit environment's (reviewer_role_class
+  -- devos_denetim) of the work item n04_target plants, at its revision 1, with that function's Decision as its basis
+  -- (EV-C02-013 section 20 (6)); its triggers are off for this one insert, as part T's n04t_plant does (DM-41 (a), W-C02-10's,
+  -- may refuse a Review of a target planted in the same transaction). N04-p4's Verdict (result pass) is planted on it as
+  -- the owner, so that p4 does not rest on p3's call. record_verdict gets p = {review_ref, result} and accept gets that
+  -- Verdict and the Review's use, in place of the neutral values (EV-C02-013 section 20 (5): review_ref and result are
+  -- required; the first version sent neither, and a random verdict_ref).
   begin
-    rid := pg_temp.w07_plant(pg_temp.w07_cfg('review_table')::regclass);
-    wid := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    tg := pg_temp.n04_target(); wid := tg->>'work';
+    execute format('alter table %s disable trigger user', pg_temp.w07_cfg('review_table'));
+    execute format('insert into %s (kind, claim, target_ref, target_revision, use, basis_refs, reviewer_role_class, '
+                   || 'independence_level) values (''review'', ''w07_fixture SYNTHETIC W-C02-07 audit review'', $1::uuid, 1, '
+                   || '''w07_fixture_use_n04'', $2, ''devos_denetim'', ''fresh_context_subagent'') returning id::text',
+                   pg_temp.w07_cfg('review_table'))
+      into rid using wid, jsonb_build_array(jsonb_build_object('ref', tg->>'decision', 'revision', 1));
+    execute format('alter table %s enable trigger user', pg_temp.w07_cfg('review_table'));
+    insert into devos_private.verdict (review_ref, result) values (rid::uuid, 'pass') returning id::text into vid;
   exception when others then
     perform pg_temp.w07_cnc('N04-p3', 'the review or work fixture could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 100));
     perform pg_temp.w07_cnc('N04-p4', 'the review or work fixture could not be planted');
     rid := null;
   end;
   if rid is not null then
-    sub := jsonb_build_object('review', quote_literal(rid), 'target', quote_literal(wid), 'work', quote_literal(wid));
-    sqlv := pg_temp.w07_sql_for(fv, sub); sqla := pg_temp.w07_sql_for(fa, sub);
+    sqlv := pg_temp.w07_sql_for(fv, jsonb_build_object('^p$',
+              quote_literal(jsonb_build_object('review_ref', rid, 'result', 'pass')::text) || '::jsonb'));
+    sqla := pg_temp.w07_sql_for(fa, jsonb_build_object('^verdict_ref$', quote_literal(vid) || '::uuid',
+              '^accepted_use$', quote_literal('w07_fixture_use_n04')));
     r := pg_temp.w07_call(api, pg_temp.w07_h(den), sqlv, scrub);
     if pg_temp.w07_is_accepted(r, 'devos_denetim', true) then
       perform pg_temp.w07_put('N04-p3', true, 'record_verdict on the planted review, audit token: accepted; ' || pg_temp.w07_says(r));
@@ -530,7 +576,7 @@ end $f$;
 
 do $$
 declare why text; run text := 'w07_fixture_run_n04t'; r jsonb; w text; w2 text; rk text; vk text; ra text; va text;
-        rc text; ev text; a0 text; a1 text;
+        rc text; ev text; a0 text; a1 text; tg jsonb; b1 text; b2 text;
 begin
   why := pg_temp.w07_pre_common();
   if why is null and (pg_temp.w07_fn('transfer_review') is null or pg_temp.w07_fn('begin_transfer_run') is null
@@ -550,6 +596,9 @@ begin
   end if;
   -- (b) N04-T1: a copy written in the transfer's form carries role class devos_kurulum (the Review copy's
   -- reviewer_role_class, B 3.11, "from the token"; and its creation event's role_class, B 3.13).
+  -- Revised under ledger rule 3 (N-293 (3)'s further fault, 2026-10-19): the verdict's limits is an array, as the
+  -- Verdict table's check requires (verdict_limits_check; EV-C02-013 section 20 (5)); the first version sent an empty
+  -- string, which no build can write.
   begin
     w := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
     r := pg_temp.n04t_call('devos_kurulum', 'select devos_api.transfer_review($1)', jsonb_build_object('run_id', run, 'kind', 'review',
@@ -557,7 +606,7 @@ begin
       'criterion', 'plan/work/W-W07-FIXTURE.md', 'basis_refs', jsonb_build_array('w07_fixture_tree'),
       'reviewer_declared_session', 'w07_fixture_checker_run SYNTHETIC W-C02-07', 'independence_level', 'fresh_context_subagent',
       'use', 'installation_acceptance', 'verdict', jsonb_build_object('result', 'pass', 'objections', '[]'::jsonb,
-      'evidence_refs', '[]'::jsonb, 'limits', ''), 'transfer_source', pg_temp.n04t_src('verdict', 'CHK-W07-FIXTURE-1')));
+      'evidence_refs', '[]'::jsonb, 'limits', '[]'::jsonb), 'transfer_source', pg_temp.n04t_src('verdict', 'CHK-W07-FIXTURE-1')));
   exception when others then
     r := jsonb_build_object('w07_cnc', 'the target work item could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 120));
   end;
@@ -577,16 +626,23 @@ begin
   -- (c) N04-T2: accept, the rule that needs the audit environment's verdict (B:244), does not count such a copy. Two
   -- Review and Verdict rows planted at owner level, result pass, use installation_acceptance, differing only in their
   -- role class: devos_kurulum with a transferred creation event (the copy), devos_denetim (the audit's, N04-T2-pos).
+  -- Revised under ledger rule 3 (N-293 (3)'s further fault, 2026-10-19): each target is a work item at its revision 1,
+  -- named with target_revision, and each Review has a basis of one Decision at its revision 1 (pg_temp.n04_target), as
+  -- M09-07's accept reads them (EV-C02-013 section 20 (6)); the first version's targets had no revision and its bases
+  -- were empty, so accept could accept neither Review and N04-T2-pos could not pass. The two Reviews still differ only
+  -- in their role class (and the copy's transferred event).
   begin
-    w := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
-    w2 := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    tg := pg_temp.n04_target(); w := tg->>'work'; b1 := tg->>'decision';
+    tg := pg_temp.n04_target(); w2 := tg->>'work'; b2 := tg->>'decision';
     rk := pg_temp.n04t_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture copy',
-      'target_ref', w, 'reviewer_role_class', 'devos_kurulum', 'role_class', 'devos_kurulum', 'use', 'installation_acceptance'));
+      'target_ref', w, 'target_revision', 1, 'basis_refs', jsonb_build_array(jsonb_build_object('ref', b1, 'revision', 1)),
+      'reviewer_role_class', 'devos_kurulum', 'role_class', 'devos_kurulum', 'use', 'installation_acceptance'));
     vk := pg_temp.n04t_plant('verdict', jsonb_build_object('review_ref', rk, 'result', 'pass', 'role_class', 'devos_kurulum'));
     perform pg_temp.n04t_plant('event', jsonb_build_object('aggregate_type', 'review', 'aggregate_id', rk, 'event_type', 'transferred',
       'role_class', 'devos_kurulum', 'origin', 'call', 'payload', jsonb_build_object('transfer_source', pg_temp.n04t_src('verdict', 'CHK-W07-FIXTURE-2'))));
     ra := pg_temp.n04t_plant('review', jsonb_build_object('kind', 'review', 'claim', 'SYNTHETIC W-C02-07 w07_fixture audit review',
-      'target_ref', w2, 'reviewer_role_class', 'devos_denetim', 'role_class', 'devos_denetim', 'use', 'installation_acceptance'));
+      'target_ref', w2, 'target_revision', 1, 'basis_refs', jsonb_build_array(jsonb_build_object('ref', b2, 'revision', 1)),
+      'reviewer_role_class', 'devos_denetim', 'role_class', 'devos_denetim', 'use', 'installation_acceptance'));
     va := pg_temp.n04t_plant('verdict', jsonb_build_object('review_ref', ra, 'result', 'pass', 'role_class', 'devos_denetim'));
   exception when others then
     perform pg_temp.w07_cnc(c, 'the Review and Verdict fixtures could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 120))

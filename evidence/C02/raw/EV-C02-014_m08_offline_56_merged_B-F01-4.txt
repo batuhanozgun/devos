@@ -1,0 +1,7 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-F01-4_effect_class_not_compared.sql applied in place, w07.throwaway=yes, in database p56 copied from t20)
+[database p56 from t20 exit 0]
+[patch exit 0]
+w07_f01_whole_intent.sql:  F01-g    | could_not_check | different authority epoch: could not plant the earlier epoch: new row for relation "operation" violates check constraint "operation_authority_epoch_check"
+w07_f01_whole_intent.sql:  F01-t1   | bad             | different effect class: accepted, wanted refused
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT FAIL (1 bad, 1 could not check, of 13)
+m0908 scrub (56_merged_B-F01-4): claim-format strings replaced 0; environment-format strings replaced 0

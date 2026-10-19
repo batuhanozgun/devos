@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b10_prepare_claim_of_any_item, a copy of M09-08 outside the repository, in database k25 copied from t19)
+[database k25 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b10_prepare_claim_of_any_item.sql  (as postgres)
+[apply exit 0]
+  64 | PO-claim-of-another-item               | f  | not_ready                | claim_unknown            | {"rejected": 1}                | F08: the work item is not ready at the moment of the effect (a dependency, its Mission or its execution)
+  65 | PO-work-ref-names-nothing              | f  | could_not_check          | claim_unknown            | {"rejected": 1}                | work_revision: names no revision of the work item
+  67 | PO-claim-checked-before-repeat         | f  | conflict                 | claim_unknown            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (3 of 252 not as wanted)
+[self-check done]
+w07_5c_other_session_fake_id.sql: psql:tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql:362: NOTICE:  W07_5C_OTHER_SESSION_FAKE_ID PASS (8/8)
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: NOTICE:  W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: NOTICE:  W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+m0908 scrub (25_break_b10_prepare_claim_of_any_item): claim-format strings replaced 0; environment-format strings replaced 0

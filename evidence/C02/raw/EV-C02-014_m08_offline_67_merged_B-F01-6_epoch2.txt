@@ -1,0 +1,7 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations, the global authority epoch set to 2 and committed on database q67 copied from t20, then the merged break patch B-F01-6 applied in place, w07.throwaway=yes; F01-g's plant needs an epoch above 1)
+[database q67 from t20 exit 0]
+[global authority epoch set to 2 in q67, exit 0]
+[patch exit 0]
+w07_f01_whole_intent.sql:  F01-g    | bad     | different authority epoch: accepted, wanted refused
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT FAIL (1 bad, 0 could not check, of 13)
+m0908 scrub (67_merged_B-F01-6_epoch2): claim-format strings replaced 0; environment-format strings replaced 0

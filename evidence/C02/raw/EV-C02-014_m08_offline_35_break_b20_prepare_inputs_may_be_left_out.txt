@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b20_prepare_inputs_may_be_left_out, a copy of M09-08 outside the repository, in database k35 copied from t19)
+[database k35 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b20_prepare_inputs_may_be_left_out.sql  (as postgres)
+[apply exit 0]
+ 118 | PO-input-left-out                      | f  | ok                       | read_set_short           | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+ 119 | PO-inputs-none-named                   | f  | ok repeat                | read_set_short           | {}                             |  | wanted delta {"rejected": 1}
+ 120 | PO-input-stale                         | f  | ok repeat                | stale_revision           | {}                             |  | wanted delta {"rejected": 1}
+ 122 | PO-inputs-partial                      | f  | ok repeat                | could_not_check          | {}                             |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (4 of 252 not as wanted)
+[self-check done]
+w07_f08_recheck_at_effect.sql:  F08-d    | bad     | a read set without one mandatory input: accepted, wanted refused
+w07_f08_recheck_at_effect.sql: psql:tests/C02/W-C02-07/job/w07_f08_recheck_at_effect.sql:514: ERROR:  W07_F08_RECHECK_AT_EFFECT FAIL (1 bad, 0 could not check, of 17)
+m0908 scrub (35_break_b20_prepare_inputs_may_be_left_out): claim-format strings replaced 0; environment-format strings replaced 0

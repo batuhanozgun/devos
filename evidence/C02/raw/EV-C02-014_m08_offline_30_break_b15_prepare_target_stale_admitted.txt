@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b15_prepare_target_stale_admitted, a copy of M09-08 outside the repository, in database k30 copied from t19)
+[database k30 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b15_prepare_target_stale_admitted.sql  (as postgres)
+[apply exit 0]
+ 102 | PO-target-stale                        | f  | ok                       | stale_revision           | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+ 103 | PO-target-scope-outside                | f  | conflict                 | scope_outside            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+ 104 | PO-target-scope-prefix-not-label       | f  | conflict                 | scope_outside            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+ 105 | PO-target-work-outside                 | f  | conflict                 | scope_outside            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (4 of 252 not as wanted)
+[self-check done]
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: NOTICE:  W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+m0908 scrub (30_break_b15_prepare_target_stale_admitted): claim-format strings replaced 0; environment-format strings replaced 0
