@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-06 with the merged break patch tests/C02/W-C02-07/breaks/B-REL-1_model_extracted_observation.sql applied in place, w07.throwaway=yes)
+[M09-06 apply exit 0]
+[patch exit 0]
+w07_rel_relation_status.sql:  REL-pos  | bad     | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; relation rows 0 -> 0; new events 0; stored none
+w07_rel_relation_status.sql:  REL-pos2 | bad     | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; relation rows 0 -> 0; new events 0; stored none
+w07_rel_relation_status.sql: psql:tests/C02/W-C02-07/job/w07_rel_relation_status.sql:322: ERROR:  W07_REL_RELATION_STATUS FAIL (2 bad, 0 could not check, of 4)
+NOTICE:  function devos_api.affected_entities_w07_orig(uuid,jsonb) does not exist, skipping
+NOTICE:  function devos_api.explain_paths_w07_orig(uuid,uuid,jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (34_merged_B-REL-1): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-06 with the merged break patch tests/C02/W-C02-07/breaks/B-K05-1_no_deduplication.sql applied in place, w07.throwaway=yes)
+[M09-06 apply exit 0]
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd09/tests/C02/W-C02-07/breaks/B-K05-1_no_deduplication.sql:16: NOTICE:  schema "w07_break" already exists, skipping
+[patch exit 0]
+w07_k05_many_paths.sql:  K05-rows     | bad     | 17410 rows for 55 records (unique: f)
+w07_k05_many_paths.sql: psql:tests/C02/W-C02-07/job/w07_k05_many_paths.sql:397: ERROR:  W07_K05_MANY_PATHS FAIL (1 bad, 0 could not check, of 6)
+NOTICE:  function devos_api.relate_w07_orig(jsonb) does not exist, skipping
+NOTICE:  function devos_api.explain_paths_w07_orig(uuid,uuid,jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (44_merged_B-K05-1): claim-format strings replaced 0; environment-format strings replaced 0

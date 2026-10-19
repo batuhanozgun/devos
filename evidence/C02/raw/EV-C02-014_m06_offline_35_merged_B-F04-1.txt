@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-06 with the merged break patch tests/C02/W-C02-07/breaks/B-F04-1_no_deduplication.sql applied in place, w07.throwaway=yes)
+[M09-06 apply exit 0]
+[patch exit 0]
+w07_f04_affected_records.sql:  F04-a-rows     | bad             | 24588 rows for a graph of 55 records (unique: f; 120 ms)
+w07_f04_affected_records.sql:  F04-b-rows     | bad             | returned {"status": "ok", "records": [{"ref": "08aecab7-7711-4b7f-afbd-6f2e5f4b7c4f"}, {"ref": "ff48de51-5d81-456d-af2c-55b22e20dee2"}, {"ref": "e73e32fe-b394-40c0-9325-95b53b69d633"}, {"ref": "08aecab7-7711-4; 25 rows for c1, c2, c3 (unique: f)
+w07_f04_affected_records.sql:  F04-m4-cal     | could_not_check | control: relate between two records Rule O gives devos_calisma was not accepted, so the end check is not shown to be reached: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f04_affected_records.sql: psql:tests/C02/W-C02-07/job/w07_f04_affected_records.sql:737: ERROR:  W07_F04_AFFECTED_RECORDS FAIL (2 bad, 1 could not check, of 22)
+NOTICE:  function devos_api.relate_w07_orig(jsonb) does not exist, skipping
+NOTICE:  function devos_api.explain_paths_w07_orig(uuid,uuid,jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (35_merged_B-F04-1): claim-format strings replaced 0; environment-format strings replaced 0

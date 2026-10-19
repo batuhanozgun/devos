@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-06 with the merged break patch tests/C02/W-C02-07/breaks/B-F04-9_exam_records_dropped_for_every_class.sql applied in place, w07.throwaway=yes)
+[M09-06 apply exit 0]
+[patch exit 0]
+w07_f04_affected_records.sql:  F04-c-sin      | bad             | devos_sinav on the graph with the exam record: returned {"status": "ok", "records": [{"ref": "883c6668-8694-407f-a298-56ca1222eab0", "path": ["cceb9a0e-9a9b-4894-9eeb-105db751afbc", "883c6668-8694-407f-a298-56ca1222eab0"]}, {"ref": "665f45c1-ecdf-4e74-96f8; the exam record not found, completeness flag false (wanted found, true)
+w07_f04_affected_records.sql:  F04-m4-cal     | could_not_check | control: relate between two records Rule O gives devos_calisma was not accepted, so the end check is not shown to be reached: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f04_affected_records.sql: psql:tests/C02/W-C02-07/job/w07_f04_affected_records.sql:737: ERROR:  W07_F04_AFFECTED_RECORDS FAIL (1 bad, 1 could not check, of 22)
+NOTICE:  function devos_api.relate_w07_orig(jsonb) does not exist, skipping
+NOTICE:  function devos_api.explain_paths_w07_orig(uuid,uuid,jsonb) does not exist, skipping
+[drop exit 0]
+m0906 scrub (43_merged_B-F04-9): claim-format strings replaced 0; environment-format strings replaced 0

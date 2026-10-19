@@ -1,0 +1,248 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the four functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                id                | ok |           got            |          wanted          |            delta            |                                                    note                                                    
+-----+----------------------------------+----+--------------------------+--------------------------+-----------------------------+------------------------------------------------------------------------------------------------------------
+   1 | RL-no-token                      | t  | missing                  | missing                  | {"rejected": 1}             | the request carries no environment token
+   2 | RL-role-devos_denetim            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | relate admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+   3 | RL-role-devos_ci                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | relate admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+   4 | RL-role-devos_backup             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | relate admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+   5 | RL-p-null                        | t  | missing_field            | missing_field            | {"rejected": 1}             | p: missing
+   6 | RL-p-array                       | t  | invalid_field            | invalid_field            | {"rejected": 1}             | p: not a JSON object
+   7 | RL-missing-type                  | t  | missing_field            | missing_field            | {"rejected": 1}             | type: missing
+   8 | RL-missing-from_ref              | t  | missing_field            | missing_field            | {"rejected": 1}             | from_ref: missing
+   9 | RL-missing-to_ref                | t  | missing_field            | missing_field            | {"rejected": 1}             | to_ref: missing
+  10 | RL-missing-scope                 | t  | missing_field            | missing_field            | {"rejected": 1}             | scope: missing
+  11 | RL-missing-method                | t  | missing_field            | missing_field            | {"rejected": 1}             | method: missing
+  12 | RL-missing-epistemic_status      | t  | missing_field            | missing_field            | {"rejected": 1}             | epistemic_status: missing
+  13 | RL-type-informed_of              | t  | invalid_field            | invalid_field            | {"rejected": 1}             | type: not a relation type of Appendix B 3.4 (informed_of comes with its own fields in C06)
+  14 | RL-from-not-uuid                 | t  | invalid_field            | invalid_field            | {"rejected": 1}             | from_ref: not a uuid
+  15 | RL-revision-string               | t  | invalid_field            | invalid_field            | {"rejected": 1}             | to_revision: not an integer of at least 1
+  16 | RL-revision-zero                 | t  | invalid_field            | invalid_field            | {"rejected": 1}             | from_revision: not an integer of at least 1
+  17 | RL-scope-form                    | t  | invalid_field            | invalid_field            | {"rejected": 1}             | scope: not a dotted path of lower-case labels
+  18 | RL-hard-form                     | t  | invalid_field            | invalid_field            | {"rejected": 1}             | hard: not a boolean
+  19 | RL-use-form                      | t  | invalid_field            | invalid_field            | {"rejected": 1}             | use: not a string
+  20 | RL-method-form                   | t  | invalid_field            | invalid_field            | {"rejected": 1}             | method: not mechanical, model_extracted or recorded
+  21 | RL-status-form                   | t  | invalid_field            | invalid_field            | {"rejected": 1}             | epistemic_status: not observation, user_decision, inference, hypothesis or proposal
+  22 | RL-group-mode-form               | t  | invalid_field            | invalid_field            | {"rejected": 1}             | group_mode: not ALL or ANY
+  23 | RL-group-id-alone                | t  | missing_field            | missing_field            | {"rejected": 1}             | group_mode: missing (group_id is sent without it)
+  24 | RL-group-id-form                 | t  | invalid_field            | invalid_field            | {"rejected": 1}             | group_id: not a uuid
+  25 | RL-rule-about                    | t  | relation_rule            | relation_rule            | {"rejected": 1}             | B 3.4: a relation with method model_extracted cannot have epistemic_status observation
+  26 | RL-rule-hard                     | t  | relation_rule            | relation_rule            | {"rejected": 1}             | B 3.4: a relation with method model_extracted cannot have epistemic_status observation
+  27 | RL-pos-model-inference           | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  28 | RL-pos-row                       | t  | true                     | true                     | {}                          | the relation as written
+  29 | RL-pos-event                     | t  | true                     | true                     | {}                          | relation_created: devos_calisma, call, this transaction, the declared session, the fields
+  30 | RL-pos-recorded-observation      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  31 | RL-repeat                        | t  | ok repeat                | ok repeat                | {}                          | 
+  32 | RL-repeat-key-only               | t  | ok repeat                | ok repeat                | {}                          | 
+  33 | RL-not-repeat-revision           | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  34 | RL-not-repeat-use                | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  35 | RL-declared-role-ignored         | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_calisma does not change the work items under the installation's Mission
+  36 | RL-reject-row                    | t  | true                     | true                     | {}                          | the refusal row: class, code, no target, no id in its reason
+  37 | RL-end-from-random               | t  | could_not_check          | could_not_check          | {"rejected": 1}             | from_ref: the record could not be read
+  38 | RL-end-to-random                 | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  39 | RL-end-to-revision-999           | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  40 | RL-end-same-text-revision        | t  | true                     | true                     | {}                          | a missing revision has the reason of a missing record: to_ref: the record could not be read
+  41 | RL-end-to-no-revision            | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  42 | RL-end-same-text-partial         | t  | true                     | true                     | {}                          | a revisioned end without its revision has the same reason
+  43 | RL-end-need-with-revision        | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  44 | RL-end-need                      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  45 | RL-end-decision                  | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  46 | RL-end-env-token-row             | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  47 | RL-exam-cal-to                   | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  48 | RL-exam-cal-to-as-none           | t  | true                     | true                     | {}                          | devos_calisma: an exam record end has the reason of a missing record
+  49 | RL-exam-cal-from                 | t  | could_not_check          | could_not_check          | {"rejected": 1}             | from_ref: the record could not be read
+  50 | RL-exam-cal-from-as-none         | t  | true                     | true                     | {}                          | devos_calisma: the same as a from_ref that names no record
+  51 | RL-exam-kur-to                   | t  | could_not_check          | could_not_check          | {"rejected": 1}             | to_ref: the record could not be read
+  52 | RL-exam-sin-to                   | t  | exam_record              | exam_record              | {"rejected": 1}             | to_ref: names an exam record, which no relation may name (B 3.15; EV-C02-008 5.1 (b))
+  53 | RL-exam-sin-from                 | t  | exam_record              | exam_record              | {"rejected": 1}             | from_ref: names an exam record, which no relation may name (B 3.15; EV-C02-008 5.1 (b))
+  54 | RL-o-cal-inst                    | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_calisma does not change the work items under the installation's Mission
+  55 | RL-o-kur-ord                     | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+  56 | RL-o-sin-ord                     | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_sinav changes only the work items its exam link names
+  57 | RL-o-kur-inst                    | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  58 | RL-o-sin-exam                    | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  59 | RL-o-cal-exam                    | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  60 | RL-o-no-event                    | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: whether the work item lies under the installation's Mission is missing or partial
+  61 | RL-o-to-not-checked              | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  62 | RL-o-from-decision-kur           | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  63 | RL-o-mission-revision-unreadable | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: its input could not be read (SQLSTATE 42501)
+  64 | RL-o-events-unreadable           | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: its input could not be read (SQLSTATE 42501)
+  65 | RL-c-other-class                 | t  | other_class_claim        | other_class_claim        | {"rejected": 1}             | Rule C: another role class holds an active claim on the work item
+  66 | RL-c-reason-names-no-class       | t  | true                     | true                     | {}                          | Rule C's reason names no class
+  67 | RL-c-soft                        | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  68 | RL-c-own-class                   | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  69 | RL-c-lapsed                      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  70 | RL-c-partial                     | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_c: a claim on the work item lacks its status, lease or role class (partial)
+  71 | RL-c-unreadable                  | t  | could_not_check          | could_not_check          | {"rejected": 1}             | from_ref: its input could not be read (SQLSTATE 42501)
+  72 | RL-group-own                     | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  73 | RL-group-own-row                 | t  | true                     | true                     | {}                          | group_mode alone: group_id the relation's own id
+  74 | RL-group-own-repeat              | t  | ok repeat                | ok repeat                | {}                          | 
+  75 | RL-group-own-other-mode          | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  76 | RL-group-id                      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  77 | RL-group-id-second               | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  78 | RL-group-id-other-from           | t  | invalid_field            | invalid_field            | {"rejected": 1}             | group_id: held by a current relation with another from_ref or the other group_mode
+  79 | RL-group-id-other-mode           | t  | invalid_field            | invalid_field            | {"rejected": 1}             | group_id: held by a current relation with another from_ref or the other group_mode
+  80 | RL-group-readiness               | t  | true                     | true                     | {}                          | ready_value reads the ANY group of G2 (both members proposed): false
+  81 | RL-cycle-self                    | t  | cycle                    | cycle                    | {"rejected": 1}             | B 3.4: the hard dependency would close a cycle
+  82 | RL-cycle-pq                      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  83 | RL-cycle-qr                      | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  84 | RL-cycle-two                     | t  | cycle                    | cycle                    | {"rejected": 1}             | B 3.4: the hard dependency would close a cycle
+  85 | RL-cycle-three                   | t  | cycle                    | cycle                    | {"rejected": 1}             | B 3.4: the hard dependency would close a cycle
+  86 | RL-cycle-soft-allowed            | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  87 | RL-cycle-hard-other-type         | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+  88 | RL-cycle-partial                 | t  | could_not_check          | could_not_check          | {"rejected": 1}             | cycle: whether the hard dependency closes a cycle is missing or partial
+  89 | RL-cycle-lock                    | t  | true                     | true                     | {}                          | the hard-dependency advisory lock (9001, 1) is held by this transaction
+  90 | RL-write-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}             | the write failed (SQLSTATE P0001)
+  91 | RL-write-event-failed            | t  | write_failed             | write_failed             | {"rejected": 1}             | the write failed (SQLSTATE P0001)
+  92 | RL-write-P0D02                   | t  | could_not_check          | could_not_check          | {"rejected": 1}             | m0906 planted check: its input could not be read
+  93 | RL-read-unreadable               | t  | could_not_check          | could_not_check          | {"rejected": 1}             | from_ref: its input could not be read (SQLSTATE 42P01)
+  94 | RT-no-token                      | t  | missing                  | missing                  | {"rejected": 1}             | the request carries no environment token
+  95 | RT-role-devos_denetim            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | retract_relation admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  96 | RT-role-devos_ci                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | retract_relation admits only the role classes devos_calisma, devos_sinav and devos_kurulum
+  97 | RT-null                          | t  | missing_field            | missing_field            | {"rejected": 1}             | relation_id: missing
+  98 | RT-random                        | t  | not_found                | not_found                | {"rejected": 1}             | relation_id: names no Relation
+  99 | RT-reject-row-target             | t  | true                     | true                     | {}                          | refusal rows carry relation_id
+ 100 | RT-o-kur-ord                     | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 101 | RT-o-sin-ord                     | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_sinav changes only the work items its exam link names
+ 102 | RT-event-unreadable              | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: its input could not be read (SQLSTATE 42501)
+ 103 | RT-write-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}             | the write failed (SQLSTATE P0001)
+ 104 | RT-pos                           | t  | ok                       | ok                       | {"event": 1}                | 
+ 105 | RT-pos-state                     | t  | true                     | true                     | {}                          | validity retracted; relation_retracted with its reason
+ 106 | RT-repeat                        | t  | ok repeat                | ok repeat                | {}                          | 
+ 107 | RT-cycle-after-retract           | t  | ok                       | ok                       | {"event": 1, "relation": 1} | 
+ 108 | RT-reason-null                   | t  | ok                       | ok                       | {"event": 1}                | 
+ 109 | RT-o-cal-inst                    | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_calisma does not change the work items under the installation's Mission
+ 110 | RT-o-kur-inst                    | t  | ok                       | ok                       | {"event": 1}                | 
+ 111 | RT-o-kur-exam                    | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 112 | RT-o-sin-exam                    | t  | ok                       | ok                       | {"event": 1}                | 
+ 113 | RT-o-nonwork-sin                 | t  | ok                       | ok                       | {"event": 1}                | 
+ 114 | RT-c-other-class                 | t  | other_class_claim        | other_class_claim        | {"rejected": 1}             | Rule C: another role class holds an active claim on the work item
+ 115 | RT-c-soft                        | t  | ok                       | ok                       | {"event": 1}                | 
+ 116 | RT-no-creation-event             | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: the relation's creation event is missing
+ 117 | RT-creation-event-partial        | t  | could_not_check          | could_not_check          | {"rejected": 1}             | rule_o: the relation's creation event lacks its type (partial)
+ 118 | RT-transferred-cal               | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: a transferred relation is retracted only with devos_kurulum
+ 119 | RT-transferred-sin               | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: a transferred relation is retracted only with devos_kurulum
+ 120 | RT-transferred-kur-ordinary-item | t  | not_owner                | not_owner                | {"rejected": 1}             | Rule O: devos_kurulum changes only the work items under the installation's Mission
+ 121 | RT-transferred-kur-inst          | t  | ok                       | ok                       | {"event": 1}                | 
+ 122 | RT-transferred-kur-decision      | t  | ok                       | ok                       | {"event": 1}                | 
+ 123 | AE-no-token                      | t  | missing                  | missing                  | {"rejected": 1}             | the request carries no environment token
+ 124 | AE-role-devos_ci                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | affected_entities admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 125 | AE-role-devos_backup             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | affected_entities admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 126 | AE-root-null                     | t  | missing_field            | missing_field            | {"rejected": 1}             | root: missing
+ 127 | AE-limits-array                  | t  | invalid_field            | invalid_field            | {"rejected": 1}             | limits: not a JSON object
+ 128 | AE-limits-zero                   | t  | invalid_field            | invalid_field            | {"rejected": 1}             | max_depth: not an integer of at least 1
+ 129 | AE-limits-string                 | t  | invalid_field            | invalid_field            | {"rejected": 1}             | max_records: not an integer of at least 1
+ 130 | AE-root-random                   | t  | could_not_check          | could_not_check          | {"rejected": 1}             | root: the record could not be read
+ 131 | AE-root-exam-cal                 | t  | could_not_check          | could_not_check          | {"rejected": 1}             | root: the record could not be read
+ 132 | AE-root-exam-as-none             | t  | true                     | true                     | {}                          | an exam record root has the reason of a missing root
+ 133 | AE-root-exam-sin                 | t  | ok                       | ok                       | {}                          | 
+ 134 | AE-chain                         | t  | ok                       | ok                       | {}                          | 
+ 135 | AE-chain-records                 | t  | true                     | true                     | {}                          | ga, gb, gc, complete
+ 136 | AE-chain-path                    | t  | true                     | true                     | {}                          | gc's path is gr, ga, gb, gc
+ 137 | AE-depth                         | t  | ok                       | ok                       | {}                          | 
+ 138 | AE-depth-flag                    | t  | true                     | true                     | {}                          | two records, not complete
+ 139 | AE-depth-exact                   | t  | ok                       | ok                       | {}                          | 
+ 140 | AE-depth-exact-flag              | t  | true                     | true                     | {}                          | three records at depth 3, complete: no edge left
+ 141 | AE-records                       | t  | ok                       | ok                       | {}                          | 
+ 142 | AE-records-flag                  | t  | true                     | true                     | {}                          | one record, not complete
+ 143 | AE-direction                     | t  | ok                       | ok                       | {}                          | 
+ 144 | AE-direction-none                | t  | true                     | true                     | {}                          | nothing is derived from gc: none, complete
+ 145 | AE-diamond-cycle                 | t  | ok                       | ok                       | {}                          | 
+ 146 | AE-diamond-cycle-records         | t  | true                     | true                     | {}                          | gt, h1, gm once each; the root not listed; complete
+ 147 | AE-hidden-cal                    | t  | ok                       | ok                       | {}                          | 
+ 148 | AE-hidden-cal-flag               | t  | true                     | true                     | {}                          | gy only, not complete, the exam record's id nowhere
+ 149 | AE-hidden-den                    | t  | ok                       | ok                       | {}                          | 
+ 150 | AE-hidden-den-flag               | t  | true                     | true                     | {}                          | devos_denetim as devos_calisma
+ 151 | AE-hidden-sin                    | t  | ok                       | ok                       | {}                          | 
+ 152 | AE-hidden-sin-found              | t  | true                     | true                     | {}                          | devos_sinav: gy, the exam record and gz, complete
+ 153 | AE-validity                      | t  | ok                       | ok                       | {}                          | 
+ 154 | AE-validity-records              | t  | true                     | true                     | {}                          | the stale edge walked, the retracted one not, the dangling end not listed and the result not complete
+ 155 | AE-other-families                | t  | ok                       | ok                       | {}                          | 
+ 156 | AE-other-families-records        | t  | true                     | true                     | {}                          | a Decision and a Need are records of the walk
+ 157 | AE-partial-edge                  | t  | ok                       | ok                       | {}                          | 
+ 158 | AE-partial-edge-flag             | t  | true                     | true                     | {}                          | an edge without validity: not walked, not complete
+ 159 | AE-unreadable                    | t  | could_not_check          | could_not_check          | {"rejected": 1}             | root: its input could not be read (SQLSTATE 42P01)
+ 160 | AE-eval-unreadable-cal           | t  | ok                       | ok                       | {}                          | 
+ 161 | EP-no-token                      | t  | missing                  | missing                  | {"rejected": 1}             | the request carries no environment token
+ 162 | EP-role-devos_ci                 | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}             | explain_paths admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+ 163 | EP-target-null                   | t  | missing_field            | missing_field            | {"rejected": 1}             | target: missing
+ 164 | EP-root-is-target                | t  | invalid_field            | invalid_field            | {"rejected": 1}             | target: names the root itself
+ 165 | EP-target-random                 | t  | could_not_check          | could_not_check          | {"rejected": 1}             | target: the record could not be read
+ 166 | EP-target-exam-cal               | t  | could_not_check          | could_not_check          | {"rejected": 1}             | target: the record could not be read
+ 167 | EP-target-exam-as-none           | t  | true                     | true                     | {}                          | an exam record target has the reason of a missing target
+ 168 | EP-diamond                       | t  | ok                       | ok                       | {}                          | 
+ 169 | EP-diamond-paths                 | t  | true                     | true                     | {}                          | two simple paths gs, gt, gm and gs, h1, gm; the cycle back to gs never taken; complete
+ 170 | EP-bounded                       | t  | ok                       | ok                       | {}                          | 
+ 171 | EP-bounded-flag                  | t  | true                     | true                     | {}                          | one path, not complete
+ 172 | EP-depth                         | t  | ok                       | ok                       | {}                          | 
+ 173 | EP-depth-flag                    | t  | true                     | true                     | {}                          | gc is three steps away: none, not complete
+ 174 | EP-chain                         | t  | ok                       | ok                       | {}                          | 
+ 175 | EP-chain-path                    | t  | true                     | true                     | {}                          | one path, complete
+ 176 | EP-no-path                       | t  | ok                       | ok                       | {}                          | 
+ 177 | EP-no-path-flag                  | t  | true                     | true                     | {}                          | no path, complete
+ 178 | EP-hidden-cal                    | t  | ok                       | ok                       | {}                          | 
+ 179 | EP-hidden-cal-flag               | t  | true                     | true                     | {}                          | the path crosses an exam record: none, not complete, its id nowhere
+ 180 | EP-hidden-sin                    | t  | ok                       | ok                       | {}                          | 
+ 181 | EP-hidden-sin-path               | t  | true                     | true                     | {}                          | devos_sinav: the path through the exam record, complete
+ 182 | EP-cut                           | t  | ok                       | ok                       | {}                          | 
+ 183 | EP-cut-flag                      | t  | true                     | true                     | {}                          | the short path only, and not complete: a longer one is cut at max_depth
+ 184 | EP-uncut                         | t  | ok                       | ok                       | {}                          | 
+ 185 | EP-uncut-flag                    | t  | true                     | true                     | {}                          | both paths, complete
+ 186 | EP-simple                        | t  | ok                       | ok                       | {}                          | 
+ 187 | EP-simple-path                   | t  | true                     | true                     | {}                          | one simple path through the cycle k5 <-> k6, complete
+ 188 | EP-unreadable                    | t  | could_not_check          | could_not_check          | {"rejected": 1}             | root: its input could not be read (SQLSTATE 42P01)
+ 189 | TX-literals                      | t  | true                     | true                     | {}                          | each role list is a quoted literal in the function's own text
+ 190 | TX-alias                         | t  | true                     | true                     | {}                          | no body names a parameter through its function's name
+ 191 | TX-exam-table                    | t  | true                     | true                     | {}                          | all four name the exam table, as T-W07-N08's exempt list expects
+ 192 | TX-read-marker                   | t  | true                     | true                     | {}                          | the two walks carry the read marker; relate and retract_relation are state-changing
+ 193 | TX-cycle-before-row-lock         | t  | true                     | true                     | {}                          | relate calls hard_dependency_cycle before its first row lock (DM-01; EV-C02-014 3.5 item 4)
+(193 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0906_run/fn_check.sql:573: NOTICE:  M0906_FUNCTIONS PASS (193/193)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ relation_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+[psql exit 0]
+m0906 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0
