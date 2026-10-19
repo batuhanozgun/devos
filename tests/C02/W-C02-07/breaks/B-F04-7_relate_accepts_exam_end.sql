@@ -10,6 +10,10 @@
 -- specification assumes (revised before a first result if the build differs, README section 8). The caller's class is
 -- read through devos_api.token_role_class() (README 8.1: it carries role_class).
 -- Synthetic (plan Section 8 item 13): no data; any value it writes is labelled w07 break. No psql meta-command is used.
+-- Revised under ledger rule 3, 2026-10-19 (N-291; CHK-C02-092 finding 8), before any run of this patch: the insert casts
+-- type, method and epistemic_status to the enum types of relation's columns (devos_private.relation_type,
+-- relation_method, epistemic_status; W-C02-08's migration 20261014170203), where the first version inserted text and
+-- the patch raised 42804 when called; the red list is unchanged. T-W07-F04's "Revision under ledger rule 3 (N-291)".
 begin;  -- the guard and the change in one transaction: a refused guard aborts the whole patch
 do $g$
 begin
@@ -26,8 +30,9 @@ declare id uuid;
 begin
   if exists (select 1 from devos_private.eval_run e where e.id::text = p->>'from_ref') or exists (select 1 from devos_private.eval_run e where e.id::text = p->>'to_ref') then
     insert into devos_private.relation (type, from_ref, from_revision, to_ref, to_revision, scope, hard, method, epistemic_status)
-      values (p->>'type', (p->>'from_ref')::uuid, (p->>'from_revision')::int, (p->>'to_ref')::uuid, (p->>'to_revision')::int,
-              p->>'scope', coalesce((p->>'hard')::boolean, false), p->>'method', p->>'epistemic_status')
+      values ((p->>'type')::devos_private.relation_type, (p->>'from_ref')::uuid, (p->>'from_revision')::int, (p->>'to_ref')::uuid,
+              (p->>'to_revision')::int, p->>'scope', coalesce((p->>'hard')::boolean, false),
+              (p->>'method')::devos_private.relation_method, (p->>'epistemic_status')::devos_private.epistemic_status)
       returning relation.id into id;
     return jsonb_build_object('status', 'ok', 'id', id);
   end if;
