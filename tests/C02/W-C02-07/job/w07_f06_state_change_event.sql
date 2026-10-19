@@ -15,6 +15,9 @@
 -- Revised under ledger rule 3, 2026-10-18 (N-283; CHK-C02-086 C1 (b) and C4), before any result of this file:
 -- revise_mission's recipe sends a reason; recipes for the read functions with required arguments; see the
 -- specification's "Revision under ledger rule 3 (N-283)".
+-- Revised under ledger rule 3, 2026-10-18 (N-285 (1); EV-C02-013 section 17 (5)), before any result of this file: the
+-- work items of the five Rule O recipes sit under a Mission opened through open_mission, and revise_work's recipe
+-- changes a field; see the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -371,6 +374,30 @@ begin
   if x->'result'->>'status' is distinct from 'ok' then return p_args; end if;
   return p_args || jsonb_build_object('stage_work_id', x->'result'->'id');
 end $f$;
+-- Revised under ledger rule 3, before any result (N-285 (1); EV-C02-013 section 17 (5); 2026-10-18): the Mission the
+-- Rule O recipes' work items sit under. Rule O reads the work item's revision, the Mission revision it names and that
+-- Mission's creation event (M09-02's is_installation_mission); a planted Mission has no event, so Rule O answers
+-- could_not_check. This Mission is opened through open_mission with the devos_kurulum token, as Group A's fixture
+-- Missions are (job/w07_dm34_mission_scope.sql, pg_temp.w07_fixture_mission): an owner-planted batu Decision answered at
+-- revision 1, scope synthetic.w07fixture (the scope w07_plant gives a planted work revision). Its creation event is
+-- mission_opened, not transferred, so the devos_calisma recipes pass Rule O (EV-C02-008 1.7.1). Returns the Mission
+-- revision row; raises when it cannot be made, and the callers turn that into could_not_check with the reason.
+create function pg_temp.f06_rule_o_mission(p_kur text) returns jsonb language plpgsql as $f$
+declare dc jsonb; c jsonb; r jsonb;
+begin
+  dc := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc->'id', 'revision', 1));
+  c := pg_temp.w07_call('open_mission', jsonb_build_object('purpose', 'w07_fixture SYNTHETIC W-C02-07 Rule O mission; not work',
+         'scope', 'synthetic.w07fixture', 'owner_authority', dc->'id', 'owner_authority_revision', 1,
+         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb), p_kur);
+  if c ? 'interface' or c->>'error' is not null or c->'result'->>'status' is distinct from 'ok' then
+    raise exception 'the Rule O fixture Mission was not opened: %', pg_temp.w07_show(c);
+  end if;
+  execute 'select to_jsonb(x) from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+     into r using c->'result'->>'id';
+  if r is null then raise exception 'the Rule O fixture Mission has no revision row'; end if;
+  return r;
+end $f$;
 
 do $$
 declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 jsonb; a jsonb; b jsonb; d jsonb; rel jsonb;
@@ -380,6 +407,7 @@ declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 
         t_den text; d2 jsonb; mr jsonb; wk jsonb; cl jsonb; op jsonb; x jsonb; fn text; ct text;  -- phase C3
         fx_fail jsonb := '{}'; unformable jsonb; no_repeat jsonb;
         nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
+        om jsonb; om_fail text;  -- N-285 (1)
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -420,8 +448,6 @@ begin
     || jsonb_build_object(
     'claim', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('work_id', d->'work_id',
       'declared_session_id', 'w07_fixture_session_f06')),
-    'revise_work', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('id', b->'work_id',
-      'base_revision', b->'revision', 'scope', 'synthetic.w07fixture', 'reason', 'w07_fixture SYNTHETIC W-C02-07 revision')),
     'record_need', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('mission_ref', nm->'mission_id',
       'condition', 'w07_fixture SYNTHETIC W-C02-07 condition', 'why_needed', 'w07_fixture SYNTHETIC W-C02-07: F06 needs one accepted need')),
     'open_decision', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object('class', 'routine',
@@ -473,9 +499,35 @@ begin
   exception when others then
     fx_fail := fx_fail || jsonb_build_object('resolve_need', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
   end;
+  -- Revised under ledger rule 3, before any result (N-285 (1); EV-C02-013 section 17 (5); 2026-10-18): the five
+  -- functions that check Rule O (EV-C02-008 1.7.1; 1.7.4 for set_effort_policy's kind (a)) get work items planted under
+  -- the Mission pg_temp.f06_rule_o_mission opens, so that Rule O can read the Mission's creation event. One that cannot
+  -- be made drops the five recipes, whose cases then give could_not_check with the reason.
+  begin
+    om := pg_temp.f06_rule_o_mission(t_kur);
+  exception when others then
+    om_fail := 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150);
+    fx_fail := fx_fail || (select jsonb_object_agg(z, om_fail)
+                             from unnest(array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'set_effort_policy']) z);
+  end;
+  -- revise_work(p): a planted work item under that Mission. Revised under ledger rule 3 (N-285 (1); EV-C02-013 2.3 and
+  -- R2-9): the recipe changes a field, a scope narrowed under the planted one, with a reason (Appendix B principle 3);
+  -- sent with the scope it already had, the first version was an exact repeat, which writes no revision and no event.
+  if om_fail is null then
+    begin
+      wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', om->'id'));
+      recipes := recipes || jsonb_build_object('revise_work', jsonb_build_object('class', 'devos_calisma', 'args',
+        jsonb_build_object('id', wk->'work_id', 'base_revision', wk->'revision', 'scope', 'synthetic.w07fixture.f06',
+          'reason', 'w07_fixture SYNTHETIC W-C02-07 revision: the scope narrowed')));
+    exception when others then
+      fx_fail := fx_fail || jsonb_build_object('revise_work', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+    end;
+  end if;
   foreach fn in array array['mark_stale', 'cancel_work', 'reopen_for_review'] loop
-    begin  -- <fn>(work_id, reason): a planted work item each; reopen_for_review's planted finished and accepted
-      wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
+    continue when om_fail is not null;
+    begin  -- <fn>(work_id, reason): a planted work item each, under the Rule O Mission; reopen_for_review's planted
+           -- finished and accepted
+      wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', om->'id'));
       if fn = 'reopen_for_review' then
         update devos_private.work set execution = 'finished', acceptance = 'accepted' where id::text = wk->>'work_id';
       end if;
@@ -495,7 +547,7 @@ begin
   exception when others then
     fx_fail := fx_fail || jsonb_build_object('retract_relation', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
   end;
-  begin  -- record_verdict, record_eval_run, set_effort_policy: a planted review and work items
+  begin  -- record_verdict, record_eval_run: a planted review and work item
     wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
     x := pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', wk->'work_id',
       'target_revision', wk->'revision', 'use', 'w07_fixture_use_two', 'basis_refs', '[]'::jsonb));
@@ -506,16 +558,26 @@ begin
         'eval_set_id', 'w07_fixture_eval_set', 'eval_set_version', '1', 'subject_role', 'w07_fixture',
         'subject_release', 'w07_fixture', 'runner_session', 'w07_fixture_session_f06',
         'work_ref', wk->'work_id', 'work_revision', wk->'revision',
-        'results', '{"positive": [], "negative": []}'::jsonb, 'run_at', now())),
-      'set_effort_policy', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
-        'work_ref', wk->'work_id', 'work_revision', wk->'revision', 'level', 'high',
-        'expert_assessment_ref', 'w07_fixture SYNTHETIC W-C02-07: expert assessment of the item, high effort',
-        'non_removable_steps', '["verification", "alternatives_research", "external_source_research"]'::jsonb,
-        'status', 'active')));
+        'results', '{"positive": [], "negative": []}'::jsonb, 'run_at', now())));
   exception when others then
     fx_fail := fx_fail || (select jsonb_object_agg(z, 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150))
-                             from unnest(array['record_verdict', 'record_eval_run', 'set_effort_policy']) z);
+                             from unnest(array['record_verdict', 'record_eval_run']) z);
   end;
+  -- set_effort_policy (kind (a), an item's own policy at the default): a planted work item under the Rule O Mission
+  -- (revised under ledger rule 3, N-285 (1), 2026-10-18; the first version planted it under a Mission with no event).
+  if om_fail is null then
+    begin
+      wk := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', om->'id'));
+      recipes := recipes || jsonb_build_object(
+        'set_effort_policy', jsonb_build_object('class', 'devos_calisma', 'args', jsonb_build_object(
+          'work_ref', wk->'work_id', 'work_revision', wk->'revision', 'level', 'high',
+          'expert_assessment_ref', 'w07_fixture SYNTHETIC W-C02-07: expert assessment of the item, high effort',
+          'non_removable_steps', '["verification", "alternatives_research", "external_source_research"]'::jsonb,
+          'status', 'active')));
+    exception when others then
+      fx_fail := fx_fail || jsonb_build_object('set_effort_policy', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+    end;
+  end if;
   -- The functions that act under a claim: one planted work item and one accepted claim each (the claim token is held
   -- in the recipe's arguments, a PL/pgSQL variable, and bound through a setting, never printed or inlined).
   -- operation_state (a read, EV-C02-013 2.7; revised under ledger rule 3, N-283, 2026-10-18) reads an operation prepared

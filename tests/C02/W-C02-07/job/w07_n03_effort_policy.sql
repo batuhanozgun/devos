@@ -15,6 +15,9 @@
 -- deleted row) are planted inside a subtransaction and undone before the next case. No psql meta-command is used.
 -- Output: one row per case (case_id, outcome, detail), then W07_N03_EFFORT_POLICY PASS as a notice, or FAIL / COULD NOT CHECK as
 -- an exception (README section 3). Before the build exists it gives COULD NOT CHECK.
+-- Revised under ledger rule 3, 2026-10-18 (N-285 (2); CHK-C02-089 C2 (b)), before any result of this file: a standing
+-- policy is retired with retire_id; N03-pos-over-with-approval sends reduction_reason; N03-neg-retire-by-* name the
+-- refusal they expect; see the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -557,15 +560,26 @@ begin
     'non_removable_steps', st->'non_removable_steps', 'status', 'active');
   perform pg_temp.w07_expect('N03-pos-standing-use', 'devos_calisma', 'set_effort_policy',
     item || jsonb_build_object('work_ref', pg_temp.w07_work('routine')), 'accepted', null, 'effort_policy');
+  -- Revised under ledger rule 3, 2026-10-18 (N-285 (2)): the same reduction_reason as N03-pos-over-with-approval, so the
+  -- pair differs only in the token (form C0) and a refusal for a missing reason cannot pass this case.
   perform pg_temp.w07_expect('N03-neg-over-level', 'devos_calisma', 'set_effort_policy',
-    item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'level', 'low'), 'refused', null, 'effort_policy');
+    item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'level', 'low',
+      'reduction_reason', 'SYNTHETIC W-C02-07: a w07_fixture short query below its class level, approved by the audit environment'),
+    'refused', null, 'effort_policy');
   perform pg_temp.w07_expect('N03-neg-over-step', 'devos_calisma', 'set_effort_policy',
     item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'non_removable_steps', '["verification", "alternatives_research"]'::jsonb),
     'refused', null, 'effort_policy');
+  -- Revised under ledger rule 3, 2026-10-18 (N-285 (2); EV-C02-013 2.3 and section 17 (2)): a reduction carries its
+  -- reduction_reason (P:763: "A reduction is made with a reason and with the approval of the audit environment").
   perform pg_temp.w07_expect('N03-pos-over-with-approval', 'devos_denetim', 'set_effort_policy',
-    item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'level', 'low'), 'accepted', null, 'effort_policy');
+    item || jsonb_build_object('work_ref', pg_temp.w07_work('routine'), 'level', 'low',
+      'reduction_reason', 'SYNTHETIC W-C02-07: a w07_fixture short query below its class level, approved by the audit environment'),
+    'accepted', null, 'effort_policy');
+  -- Revised under ledger rule 3, 2026-10-18 (N-285 (2); EV-C02-013 2.3's retire_id, section 17 (2)): a standing policy
+  -- is retired with retire_id, and the refusal named is the approval rule's (not_owner: "another class: not_owner,
+  -- checked before the policy is read"), so that a refusal for another reason (the first form's missing_field) is bad.
   perform pg_temp.w07_expect('N03-neg-retire-by-calisma', 'devos_calisma', 'set_effort_policy',
-    jsonb_build_object('id', s1, 'status', 'retired'), 'refused', null, null);
+    jsonb_build_object('retire_id', s1), 'refused', array['not_owner'], null);
   execute 'select to_jsonb(p) from devos_private.effort_policy p where p.id::text = $1' into row using s1;
   perform pg_temp.w07_rec('N03-neg-retire-by-calisma', row->>'status' = 'active', 'standing policy status after the refusal: ' || coalesce(row->>'status', 'absent'));
   r := pg_temp.w07_call('devos_denetim', 'set_effort_policy', st || '{"work_class": "w07_fixture_class.second: a second synthetic class"}');
@@ -573,7 +587,7 @@ begin
     perform pg_temp.w07_put('N03-neg-retired', 'could_not_check', 'the second standing policy was refused: ' || pg_temp.w07_brief(r)); return;
   end if;
   s2 := r->>'id';
-  r := pg_temp.w07_call('devos_denetim', 'set_effort_policy', jsonb_build_object('id', s2, 'status', 'retired'));
+  r := pg_temp.w07_call('devos_denetim', 'set_effort_policy', jsonb_build_object('retire_id', s2));  -- N-285 (2)
   if pg_temp.w07_kind(r) <> 'accepted' then
     perform pg_temp.w07_put('N03-neg-retired', 'could_not_check', 'the audit token could not retire it: ' || pg_temp.w07_brief(r)); return;
   end if;
@@ -644,7 +658,7 @@ begin
   else
     s3 := x->>'id';
     r := pg_temp.w07_expect('N03-neg-retire-by-sinav', 'devos_sinav', 'set_effort_policy',
-      jsonb_build_object('id', s3, 'status', 'retired'), 'refused', null, null);
+      jsonb_build_object('retire_id', s3), 'refused', array['not_owner'], null);  -- N-285 (2), as N03-neg-retire-by-calisma
     perform pg_temp.n03_after_gate('N03-neg-retire-by-sinav', r);
     execute 'select to_jsonb(p) from devos_private.effort_policy p where p.id::text = $1' into row using s3;
     perform pg_temp.w07_rec('N03-neg-retire-by-sinav', row->>'status' = 'active', 'standing policy status after the refusal: ' || coalesce(row->>'status', 'absent'));

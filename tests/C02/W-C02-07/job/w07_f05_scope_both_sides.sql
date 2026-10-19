@@ -8,6 +8,8 @@
 -- Specification: tests/C02/W-C02-07/T-W07-F05_scope_both_sides.md.
 -- Runs: the migration job's devos-test step as postgres (README 5.1 (a)); the break harness's throwaway database (5.2).
 -- Transport: sql-set-role (role anon, header simulated with set_config; the record says so).
+-- Revised under ledger rule 3, 2026-10-18 (N-285 (4)), before any result: F05 (c)'s revision changes the scope; see
+-- the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists it ends in
 -- COULD NOT CHECK. Output: one row per case, then PASS (notice) or FAIL / COULD NOT CHECK (raised).
 begin;
@@ -359,10 +361,14 @@ begin
   end if;
 
   -- (c) the right scope, an old revision: the work item is revised, then an operation names its old revision.
+  -- Revised under ledger rule 3, 2026-10-18 (N-285 (4); CHK-C02-089 C1): the revision narrows the scope (under the
+  -- item's own, so the operation's work item stays in scope) and gives its reason; sent with the scope the item already
+  -- had, the first version was an exact repeat (EV-C02-013 2.3 and R2-9), so no new revision existed and the case was
+  -- could_not_check on a correct build.
   begin
     r := pg_temp.w07_call(w, 'select devos_api.revise_work($2)', null, jsonb_build_object('id', wa->>'id',
-           'base_revision', (wa->>'revision')::int, 'scope', 'synthetic.w07.f05.a',
-           'reason', 'w07_fixture SYNTHETIC W-C02-07 revision for F05 (c)'));
+           'base_revision', (wa->>'revision')::int, 'scope', 'synthetic.w07.f05.a.c',
+           'reason', 'w07_fixture SYNTHETIC W-C02-07 revision for F05 (c): the scope narrowed'));
     if r->>'status' is distinct from 'ok' or coalesce((r->>'revision')::int, 0) <= (wa->>'revision')::int then
       raise exception 'the new revision could not be planted';
     end if;
