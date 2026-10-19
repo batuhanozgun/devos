@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-14/breaks/B-FN-4_conflict_admitted.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-I-other-review)
+[database b21 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on b21:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-I-other-review
+could_not_check (0): none
+detail: FN-I-other-review                | bad     | transfer_review, the same source with another hash: accepted; tables changed besides rejected_attempt: event, review, verdict; its transferred events 1; rejected_attempt rows +0 (wanted refused, none, 1, at least 1)
+red list: exactly as expect-red (1)
+m0912 scrub (21_merged_B-FN-4): claim-format strings replaced 0; environment-format strings replaced 0

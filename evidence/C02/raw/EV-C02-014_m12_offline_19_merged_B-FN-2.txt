@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-14/breaks/B-FN-2_begin_run_after_handover.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-C-begin_transfer_run)
+[database b19 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on b19:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-C-begin_transfer_run
+could_not_check (0): none
+detail: FN-C-begin_transfer_run          | bad     | after the ledger_handed_over event: accepted; tables changed besides rejected_attempt: event (wanted refused, none); before it the same call was accepted
+red list: exactly as expect-red (1)
+m0912 scrub (19_merged_B-FN-2): claim-format strings replaced 0; environment-format strings replaced 0

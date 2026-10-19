@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b21_acceptance_state_not_set, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k48 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k48:
+summary: M0912_FUNCTIONS FAIL (3 of 119 not as wanted)
+bad (3): TA-write-state-failed, TA-pos-state, TA-work-already-accepted
+could_not_check (0): none
+detail: 93 | TA-write-state-failed               | f  | ok                       | write_failed             | {"event": 2, "acceptance": 1}           |  | wanted delta {"rejected": 1}
+detail: 101 | TA-pos-state                        | f  | false                    | true                     | {}                                      | the Work accepted, with acceptance_set at its revision, in the same call
+detail: 105 | TA-work-already-accepted            | f  | ok                       | ok                       | {"event": 2, "acceptance": 1}           |  | wanted delta {"event": 1, "acceptance": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k48:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (2 bad, 0 could not check, of 109)
+bad (2): FN-A-cond-pos, FN-A-pos
+could_not_check (0): none
+detail: FN-A-cond-pos                    | bad     | transfer_acceptance naming a conditional copy, current_evidence naming it and a ledger_entry event as {"event_id": n}: accepted; acceptance rows +1; the Work's acceptance proposed; tables changed besides rejected_attempt: acceptance, event (wanted accepte
+detail: FN-A-pos                         | bad     | transfer_acceptance naming a pass copy: accepted; acceptance rows +1; the Work's acceptance proposed; tables changed besides rejected_attempt: acceptance, event (wanted accepted, +1, accepted, its one transferred event)
+red list: not as expect-red; missing none; extra ['FN-A-cond-pos', 'FN-A-pos']
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k48:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (48_break_b21): claim-format strings replaced 0; environment-format strings replaced 0

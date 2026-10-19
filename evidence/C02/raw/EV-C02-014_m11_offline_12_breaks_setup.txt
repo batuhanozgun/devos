@@ -1,0 +1,76 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (comparison and break runs: setup)
+start 2026-10-19T04:59:09Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+46
+[template t23 exit 0]
+2
+[template t24 exit 0]
+made b01_decision_admits_working (1 edit(s))
+made b02_decision_after_handover (1 edit(s))
+made b03_decision_routine_admitted (2 edit(s))
+made b04_decision_open_exploration_removed (1 edit(s))
+made b05_decision_answered_at_from_the_clock (1 edit(s))
+made b06_decision_accepted_not_bound (1 edit(s))
+made b07_decision_conflict_removed (1 edit(s))
+made b08_decision_repeat_writes_again (1 edit(s))
+made b09_mission_class_status_unchecked (1 edit(s))
+made b10_mission_d010_unchecked (3 edit(s))
+made b11_mission_revision_unchecked (1 edit(s))
+made b12_mission_second_mission_admitted (1 edit(s))
+made b13_mission_after_handover (1 edit(s))
+made b14_mission_created_at_from_input (1 edit(s))
+made b15_work_any_mission (1 edit(s))
+made b16_work_routine_admitted (1 edit(s))
+made b17_work_stale_revision_admitted (1 edit(s))
+made b18_work_scope_unchecked (1 edit(s))
+made b19_work_policy_without_mark (1 edit(s))
+made b20_work_element_family_unchecked (1 edit(s))
+made b21_work_after_handover (1 edit(s))
+made b22_relation_cycle_admitted (1 edit(s))
+made b23_relation_same_relation_doubled (1 edit(s))
+made b24_relation_ends_unchecked (2 edit(s))
+made b25_relation_rule_removed (1 edit(s))
+made b26_relation_after_handover (1 edit(s))
+made b27_need_any_mission (1 edit(s))
+made b28_need_any_status (1 edit(s))
+made b29_need_without_mark (1 edit(s))
+made b30_need_after_handover (1 edit(s))
+made b31_finding_any_privacy (1 edit(s))
+made b32_finding_any_status (1 edit(s))
+made b33_finding_run_unchecked (1 edit(s))
+made b34_finding_after_handover (1 edit(s))
+34 break copies made
+m0911 scrub (12_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0

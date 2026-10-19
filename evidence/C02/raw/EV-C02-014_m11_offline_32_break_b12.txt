@@ -1,0 +1,64 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b12_mission_second_mission_admitted, a copy of M09-11 outside the repository, applied in place of it on a fresh copy of t23)
+[database k32 from t23 exit 0]
+[apply exit 0]
+-- the self-check on k32:
+summary: M0911_FUNCTIONS FAIL (34 of 256 not as wanted)
+bad (34): TM-second-mission, TM-second-source, TW-mission-revision-unwritten, TW-mission-revision-stale, TW-scope-outside, TW-input-unwritten, TW-input-a-need, TW-input-revision-unwritten, TW-write-failed, TW-write-mark-failed, TW-pos, TW-pos-answer, TW-pos-row, TW-pos-policy, TW-pos-marks, TW-repeat, TW-repeat-id, TW-conflict, TW-pos2, TN-write-failed, TN-pos, TN-pos-row, TN-pos-mark, TN-repeat, TN-repeat-id, TN-conflict, TN-resolved, CL-handover, CL-decision-repeat, CL-mission-repeat, CL-work-repeat, CL-relation-repeat, CL-need-new, CL-finding-new
+could_not_check (0): none
+detail: 116 | TM-second-mission                   | f  | ok                       | conflict                 | {"event": 1, "mission": 1, "mission_revision": 1}   |  | wanted delta {"rejected": 1}
+detail: 128 | TM-second-source                    | f  | ok                       | conflict                 | {"event": 1, "mission": 1, "mission_revision": 1}   |  | wanted delta {"rejected": 1}
+detail: 147 | TW-mission-revision-unwritten       | f  | could_not_check          | reference_missing        | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 148 | TW-mission-revision-stale           | f  | could_not_check          | stale_revision           | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 149 | TW-scope-outside                    | f  | could_not_check          | scope_outside            | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 150 | TW-input-unwritten                  | f  | could_not_check          | reference_missing        | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 151 | TW-input-a-need                     | f  | could_not_check          | invalid_field            | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 152 | TW-input-revision-unwritten         | f  | could_not_check          | reference_missing        | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 155 | TW-write-failed                     | f  | could_not_check          | write_failed             | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 156 | TW-write-mark-failed                | f  | could_not_check          | write_failed             | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 157 | TW-pos                              | f  | could_not_check          | ok                       | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {"work": 1, "event": 2, "effort_policy": 1
+detail: 158 | TW-pos-answer                       | f  | false                    | true                     | {}                                                  | the answer names the Work, revision 1 and its EffortPolicy
+detail: 159 | TW-pos-row                          | f  | false                    | true                     | {}                                                  | execution and acceptance as recorded; revision 1 tied to the Mission's revision 1; impact high
+detail: 160 | TW-pos-policy                       | f  | false                    | true                     | {}                                                  | the item's own policy, high, no reduction
+detail: 161 | TW-pos-marks                        | f  | false                    | true                     | {}                                                  | two marks: the Work's and its policy's, one source ID; the policy lacks the two steps
+detail: 162 | TW-repeat                           | f  | could_not_check          | ok repeat                | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {}
+detail: 163 | TW-repeat-id                        | f  | false                    | true                     | {}                                                  | the existing Work, revision and policy
+detail: 164 | TW-conflict                         | f  | could_not_check          | conflict                 | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 165 | TW-pos2                             | f  | could_not_check          | ok                       | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {"work": 1, "event": 2, "effort_policy": 1
+detail: 207 | TN-write-failed                     | f  | could_not_check          | write_failed             | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 208 | TN-pos                              | f  | could_not_check          | ok                       | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {"need": 1, "event": 1}
+detail: 209 | TN-pos-row                          | f  | false                    | true                     | {}                                                  | the Need as sent; origin left empty (B 3.2)
+detail: 210 | TN-pos-mark                         | f  | false                    | true                     | {}                                                  | its one event, the transferred mark
+detail: 211 | TN-repeat                           | f  | could_not_check          | ok repeat                | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {}
+detail: 212 | TN-repeat-id                        | f  | false                    | true                     | {}                                                  | the existing id
+detail: 213 | TN-conflict                         | f  | could_not_check          | conflict                 | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 214 | TN-resolved                         | f  | could_not_check          | ok                       | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial | wanted delta {"need": 1, "event": 1}
+detail: 242 | CL-handover                         | f  | false                    | true                     | {}                                                  | record_handover accepted on the Mission transfer_mission wrote
+detail: 243 | CL-decision-repeat                  | f  | ok repeat                | handed_over              | {}                                                  |  | wanted delta {"rejected": 1}
+detail: 244 | CL-mission-repeat                   | f  | ok repeat                | handed_over              | {}                                                  |  | wanted delta {"rejected": 1}
+detail: 245 | CL-work-repeat                      | f  | could_not_check          | handed_over              | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 246 | CL-relation-repeat                  | f  | ok repeat                | handed_over              | {}                                                  |  | wanted delta {"rejected": 1}
+detail: 247 | CL-need-new                         | f  | could_not_check          | handed_over              | {"rejected": 1}                                     | installation_mission: whether the Mission is the installation's is missing or partial
+detail: 248 | CL-finding-new                      | f  | ok                       | handed_over              | {"event": 1, "finding": 1, "finding_revision": 1}   |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k32:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 16 could not check, of 109)
+bad (1): FN-M-cat
+could_not_check (16): FN-A-cond, FN-A-cond-pos, FN-A-fail, FN-A-missing, FN-A-pos, FN-G-pos-transfer_acceptance, FN-G-pos-transfer_review, FN-G-transfer_acceptance, FN-G-transfer_review, FN-I-other-review, FN-I-same, FN-O-transfer_acceptance, FN-O-transfer_review, FN-R-declared, FN-RN-after-handover, FN-T-ev-transfer_review
+detail: FN-A-cond                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-cond-pos                    | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-fail                        | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-missing                     | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-A-pos                         | could_not_check | the Review copy was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-G-pos-transfer_acceptance     | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-pos-transfer_review         | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_acceptance         | could_not_check | devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)
+detail: FN-G-transfer_review             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-I-other-review                | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-I-same                        | could_not_check | the first write was not accepted with the chosen keys: raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-M-cat                         | bad             | absent, not security definer, or without a fixed search_path: transfer_review, transfer_acceptance
+detail: FN-O-transfer_acceptance         | could_not_check | after the hand-over, no run_id: transfer_acceptance of that copy raised [42883 function devos_api.transfer_acceptance(jsonb) does not exist]; acceptance rows +0 (wanted accepted, +1)
+detail: FN-O-transfer_review             | could_not_check | after the hand-over, no run_id: transfer_review raised [42883 function devos_api.transfer_review(jsonb) does not exist]; review rows +0, its transferred events 0 (wanted accepted, +1, 1)
+detail: FN-R-declared                    | could_not_check | not accepted with declared role keys added (a build may refuse unknown keys): raised [42883 function devos_api.transfer_review(jsonb) does not exist]
+detail: FN-RN-after-handover             | could_not_check | devos_api.transfer_review(jsonb) does not exist (FN-M-cat fails)
+detail: FN-T-ev-transfer_review          | could_not_check | transfer_review: raised [42883 function devos_api.transfer_review(jsonb) does not exist]; its transferred events 0 (wanted one, naming the record none, role_class devos_kurulum, origin call, the transfer_source sent); review rows +0
+red list: not as expect-red; missing none; extra ['FN-M-cat']
+m0911 scrub (32_break_b12): claim-format strings replaced 0; environment-format strings replaced 0

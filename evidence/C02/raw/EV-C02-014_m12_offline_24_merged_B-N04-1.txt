@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-07/breaks/B-N04-1_kurulum_accepts.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=w07_n04_self_approval.sql,w07_5b_authorization_matrix.sql; expect-red=N04-k2,5B-R07-accept-kur)
+[database b24 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on b24:
+summary: W07_N04_SELF_APPROVAL FAIL (1 bad, 0 could not check, of 19)
+bad (1): N04-k2
+could_not_check (0): none
+detail: N04-k2            | bad     | accept with the devos_kurulum token: code not_found; err - ; ra {"accept|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing ['5B-R07-accept-kur']; extra none
+-- tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql on b24:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 0 could not check, of 324)
+bad (1): 5B-R07-accept-kur
+could_not_check (0): none
+detail: 5B-R07-accept-kur                 | bad     | x cell: accept with the devos_kurulum token must be refused for its role class; code not_found; err - ; ra {"accept|not_found|devos_kurulum": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing ['N04-k2']; extra none
+m0912 scrub (24_merged_B-N04-1): claim-format strings replaced 0; environment-format strings replaced 0

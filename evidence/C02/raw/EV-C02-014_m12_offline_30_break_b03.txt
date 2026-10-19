@@ -1,0 +1,20 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b03_review_conflict_removed, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k30 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k30:
+summary: M0912_FUNCTIONS FAIL (1 of 119 not as wanted)
+bad (1): TV-conflict
+could_not_check (0): none
+detail: 43 | TV-conflict                         | f  | ok repeat                | conflict                 | {}                                      |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k30:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-I-other-review
+could_not_check (0): none
+detail: FN-I-other-review                | bad     | transfer_review, the same source with another hash: accepted; tables changed besides rejected_attempt: none; its transferred events 1; rejected_attempt rows +0 (wanted refused, none, 1, at least 1)
+red list: not as expect-red; missing none; extra ['FN-I-other-review']
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k30:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (30_break_b03): claim-format strings replaced 0; environment-format strings replaced 0

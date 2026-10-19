@@ -2,10 +2,10 @@
 id: EV-C02-014
 item: W-C02-09
 kind: build
-produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366); section 6 (M09-05) by agent `ad37a946776298dc5` (named at filing, L-369); section 7 (M09-06) by agent `aba07f336ee1706f3` (named at filing, L-372); section 8 (M09-07) by agent `a4e5fa9f374a2f629` (named at filing, L-374); section 9 (M09-08) by agent `af74f765a56f55dce` (named at filing, L-379; an earlier producer, `a74cae4d07776f980`, was lost at a container restart before it reported, and its draft was taken as a hint only); section 10 (the rule corrections) by agent `ad4819f8b4eb214ac` (named at filing, L-387); section 11 (M09-09) by agent `a7dafa37998b2a2b5` (named at filing, L-391); section 12 (M09-10) by agent `a6545fc03ef4f6f5b` (named at filing, L-394)"
+produced_by: "producer, fresh-context subagent of working session session_01XyxvJd3RayQk4HCrjurbVH (section 1, M09-01; the executor names the agent at filing); section 3 (M09-02) by two further producers, fresh-context subagents of the same session: agent `aa147172b0a972415` (the build, 3.1 to 3.6) and agent `ade5e8c818705b326` (route A's self-check, the copy of w07_idc_real_path.py, 3.7 and 3.8; named by the executor at filing, L-357); section 4 (M09-03) by agent `aae34814c3026b1e9`, a further producer of the same session (named at filing, L-361), its changes for CHK-C02-086 by agent `a0304cd560855cc00` (named at filing, L-362); section 5 (M09-04) by agent `a681fe739bd00cad2` (named at filing, L-366); section 6 (M09-05) by agent `ad37a946776298dc5` (named at filing, L-369); section 7 (M09-06) by agent `aba07f336ee1706f3` (named at filing, L-372); section 8 (M09-07) by agent `a4e5fa9f374a2f629` (named at filing, L-374); section 9 (M09-08) by agent `af74f765a56f55dce` (named at filing, L-379; an earlier producer, `a74cae4d07776f980`, was lost at a container restart before it reported, and its draft was taken as a hint only); section 10 (the rule corrections) by agent `ad4819f8b4eb214ac` (named at filing, L-387); section 11 (M09-09) by agent `a7dafa37998b2a2b5` (named at filing, L-391); section 12 (M09-10) by agent `a6545fc03ef4f6f5b` (named at filing, L-394); section 13 (M09-11) by agent `a530269303b8ab1a3` (named at filing, L-397); section 14 (M09-12 and the test copies) by agent `a328dd0e2f1fce94a` (named at filing, L-400)"
 main_at: 1cdbb4e99cc5306e4dadf1e431ebbade7b03b68f
 date: 2026-10-17
-claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); section 5: M09-04, the six functions of Work and effort policy (EV-C02-013 2.3), as versioned SQL, with EV-C02-013 section 17 (written at main d032a84); section 6: M09-05, the five functions of readiness and claim (EV-C02-013 2.4), as versioned SQL, with EV-C02-013 section 18 (written at main 4f01115); section 7: M09-06, the four functions of Relation (EV-C02-013 2.5), as versioned SQL, with EV-C02-013 section 19 (written on M09-05's head c8449e4); section 8: M09-07, the seven functions of knowledge, product and review (EV-C02-013 2.6), as versioned SQL, with EV-C02-013 section 20 (written on M09-06's head 69d3632); section 9: M09-08, the four functions of the external effect (EV-C02-013 2.7), as versioned SQL, with EV-C02-013 section 21 (N-279 (17)'s correction and M09-08's departures, written on M09-07's head 32fbb4e); section 10: the rule corrections, one migration carrying N-288's `ALIAS FOR $n` replacements and EV-C02-017's four build changes (EV-C02-013 sections 22 and 23, written at main 1daa352); section 11: M09-09, the six functions of exam, backup and the other reads (EV-C02-013 2.8), as versioned SQL, with EV-C02-013 section 24 (written on the rule corrections' head 3a7baa6); section 12: M09-10, the six transfer-run and event functions (EV-C02-013 3.2), as versioned SQL, with EV-C02-013 section 25 (written on M09-09's head 21847e7); offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; section 2 records M09-01's apply to both projects; the applies of M09-02 to M09-04 are recorded in plan/ledger/C02-log.md (L-360, L-364, L-368, M09-05's in L-372, M09-06's in L-374, M09-07's in L-377, M09-08's in L-383, the rule corrections' in L-391, M09-09's in L-393), and nothing is applied by section 12; each section is judged by a fresh checker of the same session (verdicts named in the log), not independently tested (corrected 2026-10-19, L-371, CHK-C02-091 C1)"
+claim: "W-C02-09's build record. Section 1: M09-01, the identity chain's first part, as versioned SQL, its test copy and the client tools/devos_rpc.py; section 3: M09-02, the private helpers, token_role_class()'s six-class literal and route A's TEMPORARY revoke with its self-check, as versioned SQL, and the copy of w07_idc_real_path.py (written at main db6d6be); section 4: M09-03, the seven functions of Mission, need and decision (EV-C02-013 2.2), as versioned SQL, with EV-C02-013's corrections 15 and 16 (written at main 9638f1d, revised on branch claude/c02-w09-m0903 at c3cd1ed for CHK-C02-086); section 5: M09-04, the six functions of Work and effort policy (EV-C02-013 2.3), as versioned SQL, with EV-C02-013 section 17 (written at main d032a84); section 6: M09-05, the five functions of readiness and claim (EV-C02-013 2.4), as versioned SQL, with EV-C02-013 section 18 (written at main 4f01115); section 7: M09-06, the four functions of Relation (EV-C02-013 2.5), as versioned SQL, with EV-C02-013 section 19 (written on M09-05's head c8449e4); section 8: M09-07, the seven functions of knowledge, product and review (EV-C02-013 2.6), as versioned SQL, with EV-C02-013 section 20 (written on M09-06's head 69d3632); section 9: M09-08, the four functions of the external effect (EV-C02-013 2.7), as versioned SQL, with EV-C02-013 section 21 (N-279 (17)'s correction and M09-08's departures, written on M09-07's head 32fbb4e); section 10: the rule corrections, one migration carrying N-288's `ALIAS FOR $n` replacements and EV-C02-017's four build changes (EV-C02-013 sections 22 and 23, written at main 1daa352); section 11: M09-09, the six functions of exam, backup and the other reads (EV-C02-013 2.8), as versioned SQL, with EV-C02-013 section 24 (written on the rule corrections' head 3a7baa6); section 12: M09-10, the six transfer-run and event functions (EV-C02-013 3.2), as versioned SQL, with EV-C02-013 section 25 (written on M09-09's head 21847e7); section 13: M09-11, the six transfer-record functions (EV-C02-013 3.2), as versioned SQL, with EV-C02-013 section 26 (written on M09-10's head 9066ccf); section 14: M09-12, the two transfer-copy functions (EV-C02-013 3.2), as versioned SQL, with EV-C02-013 section 27 (written on M09-11's head 7fc7537), and the copies of section 11 under supabase/migrations/tests/; offline runs on PostgreSQL 16.15 are supporting evidence, not counted results; section 2 records M09-01's apply to both projects; the applies of M09-02 to M09-04 are recorded in plan/ledger/C02-log.md (L-360, L-364, L-368, M09-05's in L-372, M09-06's in L-374, M09-07's in L-377, M09-08's in L-383, the rule corrections' in L-391, M09-09's in L-393, M09-10's in L-397, M09-11's in L-400), and nothing is applied by section 14; each section is judged by a fresh checker of the same session (verdicts named in the log), not independently tested (corrected 2026-10-19, L-371, CHK-C02-091 C1)"
 ---
 
 # EV-C02-014 · W-C02-09's build
@@ -2398,3 +2398,452 @@ The runs:
 5. **Residuals:**
    - The run's state and the entry ID are read from `devos_private.event` with no index for them (EV13 25 (9)).
    - Two concurrent first calls of one new transferred key: the second is `write_failed` by S2's index, not the repeat answer; its retry gets the repeat.
+
+## 13. M09-11: transfer records
+
+The producer's record of `supabase/migrations/20261019140001_w09_transfer_records.sql` (M09-11). It was written on branch `claude/c02-w09-m0911` at `9066ccfc33f31bd5bf088a73422b92c846f112a0`: `main` `cec8182` with M09-01 to M09-09 and the rule corrections merged and applied, plus M09-10 (`20261019120001_w09_transfer_runs_events.sql`, section 12) from pull request #381, under review. M09-11 builds on both and changes neither. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at `9066ccf`, with EV13's section 26 added. M09-11 means the file above, and M09-11:n a line of it at the bytes the envelope names. FN is `tests/C02/W-C02-14/T-W14-FN_transfer_functions.md`, FNJ its job file; `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 26 first.** EV13 gained "26. Correction, 2026-10-19 (M09-11)", which states the forms 13.2 lists. Its marks *[C-M11]* stand in 2.2's `open_mission` row, 2.3's `admit_work` row, 3.1's bullets "The `transferred` event" and "Order", and the six rows of 3.2. M09-11's checker judges it.
+- **The note items that bind M09-11, checked on the branch before the SQL was kept** (`plan/work/C02.md`; W9 point 10):
+  - **N-277 (3)** (git order): met. FNJ's merge (`f40f135`) and its revision of 2026-10-18 (`04da0de`) are ancestors of `9066ccf`; M09-10's first commit is earlier still (section 12).
+  - **N-288** (parameters not named through the function's name): met. Every body reads `p` through `ALIAS FOR $1` (`TX-alias`).
+  - **EV13 22 (3)** (every live-claim count through `devos_private.claim_live`) and **this record's 9.6 item 4** (no claim token in an event or a refusal row): none of the six takes a claim, counts one or names a claim token (`TX-no-claim`; file 57: `its lines naming claim_live or check_claim: 0`, `its lines naming a claim token: 0`). `devos_private.assignment` is named on three lines, in the family lookup of a relation end or a work element (as `relate` reads an end), never to count a claim.
+  - **EV13 22 (1)** (N-284 C rests on `mission_revision.created_at` being the database's time and on `answered_at` being written only by `transfer_decision`, as recorded): met.
+    - `transfer_mission` names no time column. A `created_at` key in the call is not read (`TM-pos-row`; file 57: `its lines naming created_at outside comment lines: 0`).
+    - `transfer_decision` writes `answered_at` from the call's value, cast as a time, and never from the clock (`TD-pos-row`; `TX-answered-at`; file 57: answered_at outside comments only in `transfer_decision`).
+    - Breaks b14 and b05 write them from the call and from the clock, and turn those cases red (13.5).
+  - **N-302 (1)**: `FN-T-half-ev-transfer_decision` now runs on the real `transfer_decision`, and is `ok` for the right reason. **N-302 (2)**: F06's fixture block now forms all its recipes (13.4).
+  - **N-285 (1), N-291, N-293** (planted Missions without a creation event): `transfer_work` and `transfer_need` read the Mission they name. There, a Mission whose creation event cannot be read is `could_not_check` (`TW-mission-no-event`, `TN-mission-no-event`), and Rule O is not bent. No merged recipe reaches it so. FN and F06 make the installation's Mission with `transfer_decision` (D-010) and `transfer_mission`, and N02 plants it with its `transferred` event. `transfer_relation` reads no Mission, so FNJ's planted Works (`w14_work`, under a Mission with no event) are accepted as its ends.
+  - **N-279 (21)** (the sampling call of the transfer's records): not made. EV13 3.1's "Sampling" has the four call nothing until W-C02-10 builds the function.
+- **Appendix B principle 3** binds the four families with revisions. The Mission, the Work, the Decision and the Finding are written at revision 1, and each mark names its record at revision 1 (EV-C02-005 3.3). The Relation, the Need and the EffortPolicy have no revisions, and their marks carry none.
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | Branch `claude/c02-w09-m0911` at `9066ccf`, clean before this work. The runs were made with M09-11, EV13's section 26 and the raw files uncommitted (O, `57_git_hashes.txt`). Bytes run: M09-11 `5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55`; the self-check `…/scratchpad/m0911_run/fn_check.sql` `0edb44cd528b8f8413b2653344de1f364e5a92304ae726c8aa0c00ed657bbc3e`; the break maker `…/m0911_run/brk.py` `a07e703c85cbfe49cbbd03511e43047b13dc20971946b5f1edc3bb0dcb61def8`; the other drivers' hashes are in file 57. EV13 with its section 26 as run: `f6b1e9a27da391e2dea09fbc4c3f652ea3669a111fe9e32298a8239efb67a30f` (the database runs do not read it). A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1 and 3 to 12: one throwaway PostgreSQL 16.15 cluster per script, unix socket only (in `…/scratchpad/m11s`, under the 107-byte limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, files 11 and 55: `[cluster directory deleted: yes]`). Stand-ins: `…/scratchpad/m0903_run/setup.sql`, byte for byte (`fa2a9cfa…9783`). The break runs copy each fresh database from one of two templates: `t23`, the twenty-three migrations before M09-11, and `t24`, `t23` with M09-11. The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `9066ccf`; EV13 with its sections 1 to 25, and section 26 (for M09-11's checker) |
+| Input | The twenty-four migrations (`main`'s twenty, the rule corrections, M09-09, M09-10, M09-11); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `job/` and T-W14-FN's, run in place; the producer's self-check; thirty-four break copies of M09-11 made outside the repository (`…/scratchpad/m0911_brk/`, by `brk.py`, deleted after the run); the six merged break patches of `tests/C02/W-C02-14/breaks/` B-FN-1 to B-FN-6, applied in place on the throwaway cluster |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m11_offline_01_init_setup.txt` to `…_57_git_hashes.txt`, written directly by `…/m0911_run/rerun.sh` (01 to 11), `brk.sh` (12 to 55) and `final.sh` (56, 57). Every file but 57 passed through `scrub.py` (section 10's filter, reading the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time) and ends `claim-format strings replaced 0; environment-format strings replaced 0` (56 of 56). File 56 scans files 01 to 55 again with the same finders: `55 files; claim-format 0; environment-format 0`. Files 11 and 55 scan the clusters' server logs: `228 lines; claim-format 0; environment-format 0` and `798 lines; claim-format 0; environment-format 0`. File 57 holds hashes, counts and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 09) and the break copies (21 to 54) are the producer's own; the merged files and break patches (06, 07, 13 to 20) are the test designers' |
+
+### 13.1 What was built, object by object
+
+All in M09-11, in this order: six of the fourteen functions of EV13 section 3 (section 10's row M09-11), then the grants. No table, type, comment or `devos_private` function is added. M09-01 to M09-10 and the rule corrections are not changed. Their helpers are called: `caller_role_class`, `write_event`, `reject`, `scope_within`, `hard_dependency_cycle` and `is_installation_mission`. The form of every function is M09-10's (12.1): the derivation first; the read block with steps (b) to (f); a decided refusal through `v_code`, `v_reason` and `P0D01`; any other error `could_not_check`, `<v_check>: its input could not be read (SQLSTATE <code>)`; the write block, where an error is `write_failed`, but `P0D02`; one per-call row by `reject` after a refusal; fixed reasons. O (`08_catalog.txt`): each of the six is `devos_api.<name>(p jsonb)` returning `jsonb`, with `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, and EXECUTE for `anon` only (also `TX-definer`, `TX-signature`).
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.transfer_mission(p jsonb)` (M09-11:56) | The form of 26 (2) (`scope` `installation`, M09-11:190; `owner_authority_revision` absent `could_not_check`); the closing rule; the key; the open run; one Mission under advisory lock 9004 (M09-11:291-306: a transferred Mission exists, `conflict`); the owner authority in 2.2's order (a Decision not yet written `reference_missing`, M09-11:313; `mission_authority` for class, status and revision); D-010 (M09-11:336-349). Writes the Mission, its revision 1 and its one `transferred` mark; no time from the call. Answer `{"status": "ok", "id", "revision": 1}` | 3.2's row with R1-9, R2-7, C-20 and C-M11 (26 (1), (2)); EV-C02-005 1.2 row 1, 2.1; B 3.1, B:397; DM-23 |
+| `devos_api.transfer_work(p jsonb)` (M09-11:407) | The form of 26 (3) (`scope` `installation`, `impact_class` `high`, M09-11:571-581; `effort_policy.level` `high`, M09-11:634); the closing rule; the key (a policy mark without the Work's `could_not_check`, M09-11:701); the open run; the installation's Mission (M09-11:724-743); its revision (M09-11:744-765: not written `reference_missing`, earlier `stale_revision`, the scope within it or `scope_outside`); the elements of `input_refs` and `target_refs` (M09-11:767-816). Writes the Work, its EffortPolicy, its revision 1 and two marks (M09-11:852-856). Answer `{"status": "ok", "id", "revision": 1, "effort_policy_id"}` | 3.2's row with R2-4 and C-M11 (26 (1), (3)); B 3.3, 3.18; EV-C02-005 1.2 rows 2, 3, 5, 1.4, 2.1 |
+| `devos_api.transfer_relation(p jsonb)` (M09-11:884) | `relate`'s form (19 (1)) with R2-5's group keys, `validity`, `scope` `installation` (M09-11:1061), an Event end `invalid_field` (M09-11:1023), `relation_rule` (M09-11:1131); the closing rule; the key; the open run; for a hard `depends_on` the cycle helper and its lock first (M09-11:1184-1187); the ends (M09-11:1189-1265); the group; B 3.4's exact repeat under another key, `conflict` (M09-11:1293-1297); the cycle (M09-11:1300-1311). Writes the Relation and its one mark. Answer `{"status": "ok", "id"}` | 3.2's row with R2-5 and C-M11 (26 (1), (4)); B 3.4; EV-C02-005 3.3; DM-01 |
+| `devos_api.transfer_decision(p jsonb)` (M09-11:1372) | The form of 26 (5) (`routine` `invalid_field`, M09-11:1501; `answered_at` a time, M09-11:1533-1543); `open_exploration` with the form (M09-11:1560-1568); `answered_revision` 1 for `answered`, `accepted`, `declined` or a sent `answered_at` (M09-11:1570-1572); `lacks` (M09-11:1574-1582); the closing rule; the key; the open run. Writes the Decision (answer fields and `answered_at` as sent), its revision 1 and its one mark with `lacks`. Answer `{"status": "ok", "id", "revision": 1}` | 3.2's row with R2-7, 22 (1) and C-M11 (26 (1), (5)); README 8.1; B 3.17, B:308; EV-C02-005 2.2, 2.6; DM-11 |
+| `devos_api.transfer_need(p jsonb)` (M09-11:1694) | The form of 26 (6) (`status` `open` or `resolved`, M09-11:1824); the closing rule; the key; the open run; the installation's Mission (M09-11:1896-1915). Writes the Need (`origin` empty) and its one mark. Answer `{"status": "ok", "id"}` | 3.2's row with C-M11 (26 (1), (6)); B 3.2; EV-C02-005 2.3 |
+| `devos_api.transfer_finding(p jsonb)` (M09-11:1965) | `record_finding`'s forms (20 (1)) with `not_recorded` admitted, `privacy_class` `public` and `status` `candidate` only (M09-11:2118-2127); `lacks` (M09-11:2200-2207); the closing rule; the key; the open run. Writes the Finding, its revision 1 and its one mark. Answer `{"status": "ok", "id", "revision": 1}` | 3.2's row with C-M11 (26 (1), (7)); B 3.8; EV-C02-005 1.2 row 15, S4 |
+| Grants (M09-11:2304-2335) | `revoke all … from public` and from the four API roles where they exist, on all six; `grant execute … to anon` on all six; no type, no private function | 1 item 13; T-W08-PRIV (`W08_PRIV_TYPES_FUNCTIONS PASS (96/96)`, unchanged) |
+
+O (`08_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the fifty-three `devos_api` functions.
+- **The literals.** All fifty-three `devos_api` functions hold their role-list literal, and all six of M09-11 hold `array['devos_kurulum']::devos_private.role_class[]` (`TX-literals`).
+- **The unqualified-name scan.** No hit in M09-11's six. Its four hits are section 3.1's known false ones.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** Twelve functions carry it, as in section 12; none of the six does (`TX-not-read`; F06: all six are state-changing).
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+
+### 13.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated in EV13 section 26; none is silent. No merged test is changed.
+1. **`reference_missing` for a record a copy names that is not yet written** (26 (1)). This covers `transfer_mission`'s Decision, `transfer_work`'s and `transfer_need`'s Mission, `transfer_work`'s Mission revision and elements, and `transfer_relation`'s ends. 2.2 (C-20) and 2.3 (R2-4) say `could_not_check` for `transfer_mission` and `transfer_work`. 3.1's "Order" and EV-C02-005 3.2 are taken: an order error is the transfer tool's to mend in a later phase. Both are refusals.
+2. **The mark is the record's only event** (26 (1)). No family event is written beside the `transferred` mark.
+3. **`transfer_mission`** (26 (2)):
+   - `scope` must be `installation`.
+   - The one-Mission check runs under advisory lock 9004. This is a lock no source names. Without it, two concurrent first calls of different source IDs could both write a Mission, since S2's index holds one key only.
+   - D-010's creation event, missing or of NULL type, is `could_not_check`.
+4. **`transfer_work`** (26 (3)):
+   - `scope` `installation`; `effort_policy.level` `high` only.
+   - The Mission revision must be the current one, and the scope must lie within it: `admit_work`'s family rules.
+   - The Mission's status is not judged.
+   - The revision's `effort_policy_ref` stays NULL. The policy is tied by its `work_ref`.
+   - The policy's mark carries the Work's `transfer_source` with kind `effort_policy`.
+5. **`transfer_relation`** (26 (4)):
+   - `scope` `installation`.
+   - A revision sent for a record without revisions is `invalid_field`.
+   - No Rule O or Rule C.
+   - **B 3.4's exact repeat under another key is `conflict`**. This one is chosen over two other forms: writing a second record, or answering an unmarked `ok`. It is the reason F06 cannot pass at this head (13.4).
+6. **`transfer_decision`** (26 (5)):
+   - `answered_revision` 1 also for `declined`, and whenever `answered_at` is sent. EV-C02-005 2.6 and DM-11 are taken, beyond R2-7's `answered` and `accepted`.
+   - `open_exploration` is decided with the form.
+   - `lacks` lists B 3.17's empty fields and `answer`.
+7. **`transfer_need`** (26 (6)): the Mission's status is not judged; `origin` is not read.
+8. **`transfer_finding`** (26 (7)):
+   - `scope` is not limited to `installation`.
+   - `agent_addressed` is not read.
+   - `lacks` lists the `not_recorded` gate fields and the empty optional fields.
+
+Not departures, for the checker:
+- The four sampled functions call nothing, as EV13 3.1's "Sampling" says.
+- The closing rule's place before the exact repeat is M09-10's (25 (1)), here for all six (`CL-*-repeat`).
+
+### 13.3 How W-C02-09's points are served by M09-11
+
+- **Point 1.** A versioned file later than `20261019120001`, plain SQL, no `psql` meta-command, no backslash (O, `57_git_hashes.txt`: `backslashes in M09-11: 0`, `psql meta-command lines in it: 0`). Offline, `deployment_drift` reports `no_difference`, 24 of 24 (runs 04 and 10). Decisions followed, with the object:
+  - the rejected-attempt record's per-call form: `reject` on every refusal (`{"rejected": 1}` deltas in the self-check), and the counted form for a call with no token (`G-<fn>-no-token`; FN-G-<fn>'s counted row +1);
+  - F06's list: all six are state-changing, none carries the read marker (`TX-not-read`, file 06);
+  - S1's and S2's forms as W-C02-08 built them: every mark meets `event_transferred_transfer_source`, and S2's index is the backstop of the key (`TD-repeat`, `TW-repeat`, and the others).
+- **Point 2.** Fifty-three of the 55 `devos_api` functions now exist (six here). Each has definer rights, the fixed `search_path` and every DevOS name qualified (13.1's scan).
+- **Point 3.**
+  - Fourth bullet. Each of the six refuses a call with no token before any other check (`G-<fn>-no-token`; FN-G-<fn> `ok`). Each refuses a class not on its list, with one per-call row (`G-<fn>-<class>`; 5B row R19, all thirty-six cells of the six `ok`; FN-G-<fn> `ok`).
+  - Fifth bullet. A declared role name and origin change nothing: `TD-pos` sends `role_class` `devos_denetim` and `origin` `owner`, and its mark carries `devos_kurulum` and `call`. A declared session is written as declared (`TD-pos-mark`, `TR-pos-mark`).
+- **Point 5.**
+  - Each function writes its record and its mark in the same transaction, with the token's class (`TD-pos-mark`, `TM-pos-mark`, `TW-pos-marks`, `TR-pos-mark`, `TN-pos-mark`, `TF-pos-lacks`). FN-T-ev of all six is `ok`.
+  - An exact repeat writes nothing and answers the existing id (`TD-repeat`, `TM-repeat`, `TW-repeat`, `TR-repeat`, `TN-repeat`, `TF-repeat`: `ok repeat`, `{}`). FN-I-same of all six and FN-I-same-decision are `ok`.
+  - A failure planted mid-transaction leaves no half state and no orphan event, only the refusal row (`TD-write-failed`, `TM-write-failed`, `TW-write-failed`, `TW-write-mark-failed`, `TR-write-failed`, `TN-write-failed`, `TF-write-failed`). `TD-write-P0D02` and `TF-write-P0D02` give `could_not_check` with the fixed reason. FN-T-half-ev of all six is `ok`.
+- **Point 6.** `transfer_relation` refuses `model_extracted` with `observation` (`TR-relation-rule`); the table's check is its backstop (break b25 gives `write_failed`).
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass: `TD-events-unreadable`, `TM-authority-rev-missing`, `TM-authority-no-event`, `TM-authority-answered-revision-null`, `TM-decisions-unreadable`, `TW-mission-revision-missing`, `TW-mission-no-event`, `TW-policy-mark-alone`, `TR-to-revision-missing`, `TR-relations-unreadable`, `TN-mission-no-event`.
+- **Point 8.**
+  - W-C02-08's four copies, W-C02-03's three and the IDC copy pass again (run 05).
+  - The staged files whose cases call the six, run in place (runs 06, 07; compared with `t23` in runs 13 and 14):
+    - **T-W07-5B `PASS (312/312)`** (`PASS (276/276)` on `t23`): the thirty-six cells of R19's six functions are now judged, each `ok`;
+    - **T-W07-F06 `COULD NOT CHECK (2 of 141 could not be checked)`** (`COULD NOT CHECK (6 of 117)` on `t23`): its fixture block now forms all fourteen recipes, and the six functions' `F06-refused`, `F06-event` and `F06-repeat` cases are `ok`, but for `F06-event:transfer_relation` and `F06-repeat:transfer_relation` (13.4);
+    - **T-W14-FN `FAIL (1 bad, 16 could not check, of 109)`** (`FAIL (1 bad, 77 could not check, of 109)` on `t23`): `FN-M-cat` `bad`, since `transfer_review` and `transfer_acceptance` are not built yet. Ninety-two cases are `ok`: every case of the twelve built functions, FN-MA-*, FN-RN-pos, -never and -completed, FN-CY-*, and FN-O-transfer_artifact and FN-O-record_ledger_entry, which needed the installation's Mission. The sixteen `could_not_check` cases each need `transfer_review` or `transfer_acceptance`;
+    - T-W07-N02 and T-W07-N04 as on `t23`: N02 stops at its `-pre` line (`devos_private.sample_stream`), and N04's part T needs `transfer_review`;
+    - every other file as on `t23` (file 06); none of them calls the six.
+  - Their copies are a later pull request's (R:247; EV13 section 11: T-W14-FN's passes only with M09-12).
+- **Point 10.** Twelve of the fourteen exist, each as point 2 asks; FN-M-cat's detail names the two missing.
+  - The second bullet's parts reached by the twelve:
+    - each refuses every class but `devos_kurulum` and a call with no token, with the attempt recorded (FN-G);
+    - after a planted hand-over, the ten closed ones refuse (FN-C, all ten `ok`);
+    - `transfer_artifact` and `record_ledger_entry` still write (FN-O-transfer_artifact, FN-O-record_ledger_entry `ok`);
+    - with one write planted to fail, nothing stays (FN-T-half-ev);
+    - an exact repeat writes nothing, and another hash is refused with its row (FN-I).
+  - W-C02-08's S1 to S4 still pass T-W14-SCH (`PASS (38/38)`, run 05).
+  - T-W14-FN cannot pass before M09-12, so point 10 is not met by this file alone.
+
+### 13.4 What M09-11 does not yet serve
+
+- **Merged tests that cannot pass at this head on a correct build** (EV13 26 (9)):
+  - **T-W07-F06** (`COULD NOT CHECK (2 of 141)`).
+    - **The cause.** Its `transfer_relation` recipe (`job/w07_f06_state_change_event.sql:760-763`) names the ends, type, revisions and `hard` of its `relate` recipe (`:482-483`). F06 accepts the `relate` call earlier in the same transaction, so 26 (4)'s B 3.4 rule refuses the transfer `conflict`.
+    - **The test designer's part.** The recipe needs ends of its own.
+    - **Shown.** With that rule removed (break b23), F06 is `PASS (141/141)` (file 43). So the two cases depend on that departure alone, and the checker judges the rule before the recipe changes.
+    - F06 passed at M09-09's head (section 12.4). M09-10 left it `COULD NOT CHECK (6 of 117)`, and M09-11 leaves it `COULD NOT CHECK (2 of 141)`.
+  - **T-W14-FN**: FN-M-cat needs all fourteen, and its sixteen `could_not_check` cases need M09-12's two functions.
+  - **T-W07-N02**'s `transfer_decision` cases are not reached while N02 stops at its `-pre` line (W-C02-10's `sample_stream`).
+- **The merged breaks** (runs 15 to 20, each on a fresh copy of `t24`):
+  - **B-FN-3** (`transfer_decision` does not see the hand-over): `[patch exit 0]`; `FN-C-transfer_decision` red, its whole expect-red list, beside the standing `FN-M-cat`. It is shown on the real `transfer_decision` (file 15).
+  - **B-FN-2** shows as in section 12 (file 17).
+  - **B-FN-1, B-FN-4, B-FN-5 and B-FN-6** wrap `transfer_review` and `transfer_acceptance`, which M09-12 builds: `[patch exit 3]` each, not applied, and their red lists stay unshown here (files 16, 18 to 20).
+- **Rules no merged test reaches**, resting on the producer's self-check alone. Their break copies leave every merged case as it is without the break:
+  - `transfer_decision`: `routine` (b03), `open_exploration` (b04, since N02 does not run), `answered_at` as recorded (b05), `answered_revision` for `accepted` and `declined` (b06);
+  - `transfer_mission`: one Mission (b12), no time from the call (b14);
+  - `transfer_work`: every Mission and element rule (b15 to b18, b20);
+  - `transfer_relation`: B 3.4's repeat (b23, whose only merged effect is F06's two cases, toward their passing), the ends (b24), `relation_rule` (b25);
+  - `transfer_need`: the Mission and status rules (b27, b28);
+  - `transfer_finding`: `privacy_class` and `status` (b31, b32).
+
+### 13.5 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0911` at `9066ccf`, with M09-11, EV13's section 26 and the raw files uncommitted. The main run (`…/m0911_run/rerun.sh`) ran from 2026-10-19T04:58:24Z to 04:58:39Z on one cluster. The comparison and break runs (`brk.sh`) ran from 04:59:09Z to 05:00:14Z on a second cluster. Then `final.sh` wrote files 56 and 57.
+- **The drivers.** `run.sh`, `drive.py`, `scrub.py`, `scan.py`, `judge.py` and `catalog.sql` are `…/m0910_run/`'s, changed only in their paths (the clone `prd15`, the cluster under `…/m0911_run/pg`, the socket in `…/scratchpad/m11s`) and their label words. `setup.sql` is `…/m0903_run/setup.sql`, byte for byte.
+  - `fn_check.sql` is `fn_head.sql` (M09-10's harness, with `m_ids.v` nullable, so that a break refusing a fixture call turns cases red rather than stopping the run) and `fn_cases.sql` (this migration's counted tables, fixtures and cases).
+  - `brk.py`, `brk.sh`, `rerun.sh` and `final.sh` follow section 12's forms. `brk.py` makes each edit inside one function's text only.
+- **Trial runs.** Before the filed runs (`…/m0911_run/trialrun.sh`, none filed):
+  - the migration applied once and T-W14-FN run once (`FAIL (1 bad, 16 could not check, of 109)` at its first run);
+  - every staged file once, and the self-check once (`256/256` at its first run, its rows then read directly);
+  - the break runs once (`…/m0911_run/trialA`). There, b12 stopped the self-check: a fixture id was NULL under the break. The harness's id table was then made nullable.
+  - The one-Mission advisory lock was added to M09-11 after the trials and before the filed runs.
+  - The filed runs give the same summary and bad-case lines as the trials (compared after the run), with b12 now red (34 cases).
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the twenty-three migrations before M09-11, each `[exit 0]` with its history row (46 `[exit 0]` lines). **03, M09-11:** `CREATE FUNCTION` ×6, `REVOKE` ×6, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 10:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 24, "migrations_expected": 24`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (96/96)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result):
+  - 13.3's point 8;
+  - besides, `W07_F04_AFFECTED_RECORDS PASS (32/32)`, `W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS (84/84)`, `W07_N08_EXAM_FACT PASS (61/61)`, `W07_N08_EXAM_RECORDS FAIL (1 bad, 0 could not check, of 14)` (section 11.4's `N08-rp-read_eval_run`), `W07_DM11_ANSWER_REVISION FAIL (5 bad …)`, `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad …)`, and the files of W-C02-10's tables on their `-pre` line, each as at section 12's head;
+  - run 07 is `W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 16 could not check, of 109)`, `FN-M-cat | bad | absent, not security definer, or without a fixed search_path: transfer_review, transfer_acceptance`.
+- **08, the catalogue:** 13.1's listing.
+- **09, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC m0911; one transaction rolled back): `M0911_FUNCTIONS PASS (256/256)`.
+  - **The cases by group:**
+    - 54 for the gate: six functions, five classes, no token, and three neutral calls each;
+    - 43 for `transfer_decision`, 31 for `transfer_mission`, 37 for `transfer_work`, 30 for `transfer_relation`, 19 for `transfer_need` and 27 for `transfer_finding`;
+    - 7 after the accepted hand-over (`CL-*`), and 8 for the text (`TX-*`).
+  - **How they judge.** Each case compares the answer's code and the change of thirteen counts: events, refusals, and the Mission, Work, EffortPolicy, Relation, Decision, Need and Finding tables with their revisions. The state cases read the rows after. A plant runs with its call in a subtransaction that is undone, and the delta is measured after the plant.
+  - **Cases among them.**
+    - `transfer_decision`: `TD-pos-row` (`answered_at` as sent, `answered_revision` 1, `answer` empty), `TD-pos-lacks`, `TD-declined-revision`, `TD-accepted-revision`, `TD-superseded-revision`, `TD-open-revision`, `TD-open-exploration`, -`accepted`, -`reason`, -`options`, -`open`.
+    - `transfer_mission`: `TM-authority-unwritten`, `-high-impact`, `-open`, `-revision-2`, `-not-d010`, `-opened`, `-no-event`, `-answered-revision-null`, `TM-second-mission`, `TM-second-source`, `TM-pos-row` (the database's `created_at`; a `created_at` key not read), `TM-pos-installation`.
+    - `transfer_work`: `TW-mission-not-installation`, `-no-event`, `-revision-unwritten`, `-revision-stale`, `TW-scope-outside`, `TW-input-unwritten`, `-a-need`, `-revision-unwritten`, `TW-policy-mark-alone`, `TW-pos-policy`, `TW-pos-marks`.
+    - `transfer_relation`: `TR-end-event`, `-object`, `TR-from-unwritten`, `TR-to-revision-missing`, `-unwritten`, `TR-need-with-revision`, `TR-same-relation-other-key`, `TR-group-mode-alone-row`, `TR-dep-pos`, `TR-cycle`, `TR-cycle-soft`, `TR-need-end`.
+    - `transfer_need`, `transfer_finding`: `TN-mission-not-installation`, `TN-resolved`, `TF-pos-lacks`, `TF-pos2-lacks`, `TF-write-P0D02-reason`.
+    - After the hand-over and in the text: `CL-*-repeat` (an exact repeat after the hand-over is `handed_over`), `TX-literals`, `TX-signature`, `TX-alias`, `TX-not-read`, `TX-no-claim`, `TX-no-created-at`, `TX-answered-at`, `TX-definer`.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt`, `event` and `decision`.
+- **11:** the server log, `228 lines; claim-format 0; environment-format 0`; `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **12:** the break cluster's setup, the templates `t23` and `t24` (`[template … exit 0]`), and `brk.py`: `34 break copies made`.
+- **13 and 14, the comparison** of T-W14-FN, 5B, F06, N02 and N04 on fresh copies of `t23` and `t24`: 13.3's point 8.
+- **15 to 20, the merged break patches** B-FN-3, then B-FN-1, -2 and -4 to -6, each on a fresh copy of `t24`: 13.4.
+- **21 to 54, the break copies**, each in a fresh database copied from `t23` with the copy applied in M09-11's place (`[apply exit 0]`). Then the self-check and T-W14-FN ran, and 5B for b01 and F06 for b23. Each turned the self-check red (`M0911_FUNCTIONS FAIL (n of 256 not as wanted)`). Below, the red cases named, and the merged cases that turned `bad` besides the standing `FN-M-cat`:
+  - **b01**, `transfer_decision` admits `devos_calisma`: red `G-transfer_decision-devos_calisma`, `TX-literals`; merged **`FN-G-transfer_decision`, `5B-R19-transfer_decision-cal` `bad`**. **b02**, it does not see the hand-over: red `TD-after-handover`, `CL-decision-repeat`, `TD-events-unreadable-reason`; merged **`FN-C-transfer_decision` `bad`**.
+  - **b03**, `routine` admitted: red `TD-routine` and seven knock-on cases. The admitted call writes the source's key, which later cases meet. **b04**, `open_exploration` removed: red `TD-open-exploration`, `-accepted` and seven knock-on. **b05**, `answered_at` from the clock: red `TD-pos-row`, `TD-superseded-revision`, `TX-answered-at`, `TD-answered-at-bad` and seven knock-on. **b06**, `answered_revision` only for `answered`: red `TD-declined-revision`, `TD-accepted-revision`.
+  - **b07**, `transfer_decision`'s conflict removed: red `TD-conflict`; merged **`FN-I-other-decision` `bad`**. **b08**, its repeat writes again: red `TD-repeat`, `-repeat-id`, `-repeat-completed-run`; merged **`FN-I-same-decision` `bad`**.
+  - **b09**, `transfer_mission`'s class and status unchecked: red `TM-authority-open`; merged **`FN-MA-class`, `FN-MA-status` `bad`**. The D-010 rule still refuses the high-impact Decision of `TM-authority-high-impact`. **b10**, D-010 unchecked: red `TM-authority-not-d010`, `-opened`, `-no-event` and eight knock-on. The admitted call writes the installation's Mission. Merged **`FN-MA-source` `bad`**. **b11**, the answered revision unchecked: red `TM-authority-revision-2` and eleven knock-on; merged **`FN-MA-revision` `bad`**.
+  - **b12**, a second transferred Mission admitted: red `TM-second-mission`, `TM-second-source` and thirty-two knock-on. Two installation Missions make every later Mission check `could_not_check`. **b13**, `transfer_mission` does not see the hand-over: red `TM-after-handover`, `CL-mission-repeat`; merged **`FN-C-transfer_mission` `bad`**. **b14**, `created_at` written from the call: red `TM-pos-row`, `TX-no-created-at`.
+  - **b15**, `transfer_work` on any Mission: red `TW-mission-not-installation`. **b16**, `routine` admitted: red `TW-routine` and sixteen knock-on. **b17**, an earlier Mission revision admitted: red `TW-mission-revision-stale`. **b18**, the scope unchecked: red `TW-scope-outside`. **b19**, the policy's mark not written: red `TW-pos-marks`, `TW-repeat`, `-repeat-id`; merged **`FN-T-ev-transfer_work`, `FN-I-same-transfer_work`, `FN-I-other-transfer_work` `bad`**. **b20**, an element's family unchecked: red `TW-input-a-need`. **b21**, `transfer_work` does not see the hand-over: red `TW-after-handover`, `CL-work-repeat`; merged **`FN-C-transfer_work` `bad`**.
+  - **b22**, `transfer_relation`'s cycle admitted: red `TR-cycle`, `TR-cycle-soft` (knock-on); merged **`FN-CY-cycle` `bad`**. **b23**, B 3.4's repeat removed: red `TR-same-relation-other-key`. T-W07-F06 then gives `PASS (141/141)` (13.4). **b24**, the ends unchecked: red `TR-from-unwritten`, `TR-to-revision-missing`, `-unwritten`, `TR-need-with-revision` and five knock-on. **b25**, `relation_rule` removed: red `TR-relation-rule` (the table's check makes it `write_failed`). **b26**, `transfer_relation` does not see the hand-over: red `TR-after-handover`, `CL-relation-repeat`; merged **`FN-C-transfer_relation` `bad`**.
+  - **b27**, `transfer_need` on any Mission: red `TN-mission-not-installation`, `TN-mission-no-event` and three knock-on. **b28**, any status: red `TN-status-investigating` and eight knock-on. **b29**, the Need written without its mark: red `TN-pos-mark`, `TN-repeat`, `-repeat-id`, `TN-conflict`; merged **`FN-T-ev-transfer_need`, `FN-T-half-ev-transfer_need`, `FN-I-same-transfer_need`, `FN-I-other-transfer_need` `bad`**. **b30**, `transfer_need` does not see the hand-over: red `TN-after-handover`, `CL-need-new`; merged **`FN-C-transfer_need` `bad`**.
+  - **b31**, `transfer_finding` admits any privacy class: red `TF-privacy-private` and six knock-on. **b32**, any status: red `TF-status-reviewed` and six knock-on. **b33**, its run unchecked: red `TF-run-never-begun`, `-run-completed` and four knock-on; merged **`FN-RN-never`, `FN-RN-completed` `bad`**. **b34**, `transfer_finding` does not see the hand-over: red `TF-after-handover`, `CL-finding-new`; merged **`FN-C-transfer_finding` `bad`**.
+  - So each rule built turns its self-check cases red when removed. The merged files caught nineteen of the thirty-four (b01, b02, b07 to b11, b13, b19, b21, b22, b26, b29, b30, b33, b34, and b23's change of F06 toward a pass); the self-check caught all thirty-four. Knock-on red cases follow a call the break wrongly admits outside an undone block.
+- **55:** the server log, `798 lines; claim-format 0; environment-format 0`; `[cluster directory deleted: yes]`.
+- **56:** files 01 to 55 scanned with the finders of `scan_patterns.json`: `55 files; claim-format 0; environment-format 0`.
+- **57:**
+  - the hashes in the envelope;
+  - the text counts: `backslashes in M09-11: 0`; `psql meta-command lines in it: 0`; `its strings found by either token finder: … claim-format 0; environment-format 0`; `its lines holding either marker whole: 0`; `its lines naming the exam table (eval_run): 0`; `its lines naming claim_live or check_claim: 0`; `its lines naming a claim token: 0`; three lines naming `devos_private.assignment` (the family lookup); `its lines naming created_at outside comment lines: 0`; answered_at outside comments in `transfer_decision` only;
+  - `git status --porcelain`: EV13 modified, M09-11 and the raw files untracked, before this section was written;
+  - `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty.
+
+### 13.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-F06's `transfer_relation` recipe (`job/w07_f06_state_change_event.sql:760-763`) needs ends other than its `relate` recipe's (`:482-483`), once the checker has judged EV13 26 (4)'s B 3.4 rule (13.4). Until then F06 cannot PASS at this head.
+   - Cases for the rules no merged test reaches (13.4): `transfer_work`'s Mission, revision, scope and element rules; `transfer_need`'s Mission; `transfer_finding`'s `privacy_class` and `status`; `transfer_decision`'s `routine`, `answered_at` as recorded and `answered_revision` for `declined`; `transfer_mission`'s one-Mission rule; `transfer_relation`'s ends, `relation_rule` and B 3.4's repeat.
+   - T-W07-N02's `transfer_decision` cases wait for W-C02-10's `sample_stream`.
+2. **For the executor** (reported, not done): EV13 26 (8)'s residuals.
+   - `transfer_relation` checks no ownership of its ends, as `transfer_event` checks none of its aggregate (N-302 (5)).
+   - `transfer_work` binds a transfer to the Mission's current revision.
+   - 25 (9)'s closing rule under concurrency and the input commits not compared with the run hold for these six too.
+3. **For the checker of verdict (i):**
+   - EV13 section 26 with its *[C-M11]* marks;
+   - 13.2's departures, chiefly 1 (`reference_missing` against C-20 and R2-4's wording), 3 (the advisory lock, a mechanism no source names), 5 (B 3.4's `conflict`, which F06 meets) and 6 (`answered_revision` beyond R2-7);
+   - the self-check and the break copies, which are the producer's own.
+4. **For the producer of M09-12:**
+   - FN's sixteen `could_not_check` cases and B-FN-1, -4, -5 and -6 become judged once `transfer_review` and `transfer_acceptance` exist;
+   - the installation's Mission is found as `record_handover` and `transfer_work` find it, and its `owner_authority` is D-010's by construction (R1-9);
+   - a Decision target transferred by `transfer_decision` has a `transferred` creation event of class `devos_kurulum` (R2-2's opener rule).
+
+**Revised for CHK-C02-104 C1 (2026-10-19).** CHK-C02-104 judged the branch at `7fc7537` PASS-WITH-CONDITIONS. Its C1: `transfer_decision` cast `answered_at` with `::timestamptz`, so PostgreSQL's special inputs were accepted (its probe's `TD10`, `now`, and `TD11`, `infinity`). A further producer, a fresh-context subagent of the same session (the executor names the agent), worked in a scratch clone of the branch at `7fc7537`, uncommitted. It changed only `transfer_decision`'s handling of `answered_at` (M09-11:1533-1553; 13 lines added and 3 removed); nothing else in the file is changed. It is not a verdict.
+- **The form** (EV13 26 (5), the line marked *[C-M11, CHK-C02-104 C1]*). The string is matched with a regular expression before any cast. A date `YYYY-MM-DD` is read as 00:00 UTC. A date-time is `YYYY-MM-DD`, then `T` or a space, then `HH:MM`, an optional `:SS` with an optional fraction of 1 to 6 digits, then `Z` or `±HH`, `±HHMM` or `±HH:MM`. The value cast must be finite. Anything else is `invalid_field`, with the fixed reason "answered_at: not a finite date (YYYY-MM-DD, read as 00:00 UTC) or date-time with Z or an offset".
+- **The offset rule.** A date-time without an offset is refused, so no stored value depends on the calling session's `TimeZone`. All 26 recorded `answered_at` values in `plan/decisions/` carry `Z` and match (file 72). The merged tests send `to_jsonb(now())`, which carries an offset.
+- **The bytes.** M09-11 is now `1bf9d8148bf4d848db8089570657816c24efe5feb9a5e99b9aa0a747412ada75` (it was `5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55`). M09-11:n cited above names a line at the old bytes. Every line from the old 1544 on is now 10 lines later.
+- **The drivers.** The self-check is `…/scratchpad/m0911fix_run/fn_check.sql` (`73c5059ea63c1d153fd80a2ea7fab81682564f8585664e4141978485b3371bdf`). It is `…/m0911_run/fn_check.sql` with 31 cases added in its `transfer_decision` group; nothing else in it changed. `run.sh` is `…/m0911_run/run.sh` with its paths only changed: the cluster is under `…/m0911fix_run/pg`, the socket in `…/scratchpad/m11f`. `drive.py`, `judge.py`, `scrub.py`, `scan.py`, `catalog.sql` and `fn_head.sql` are `…/m0911_run/`'s, byte for byte, and `setup.sql` is `…/m0903_run/setup.sql`, byte for byte. `rerun.sh`, `cases_new.sh` and `final.sh` are new, in `…/m0911_run/`'s forms. `m0911_old.sql` is `git show 7fc7537:` of M09-11. The hashes are in file 72.
+- **Raw evidence.** `evidence/C02/raw/EV-C02-014_m11_offline_58_fix_init_setup.txt` to `…_72_fix_git_hashes.txt`, labelled **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one**. Every file but 72 went through `scrub.py` and ends `claim-format strings replaced 0; environment-format strings replaced 0`. File 72 holds hashes, counts and git output only.
+
+The runs:
+- **58 to 68, the new bytes**, from 2026-10-19T05:25:21Z to 05:25:37Z on one cluster, deleted after.
+  - **Migrations and drift.** The twenty-four migrations apply, each `[exit 0]`. `deployment_drift` gives `no_difference`, 24 of 24, `complete: true` (61 and 67).
+  - **The eight SQL copies** pass as in 13.5: 13/13, 10/10, 12/12, 168/168, 21/21, 43/43, 96/96 and 38/38 (62).
+  - **The staged files** (63 and 64): T-W14-FN is `FAIL (1 bad, 16 could not check, of 109)` (`FN-M-cat`), F06 is `COULD NOT CHECK (2 of 141)` (`F06-event:transfer_relation`, `F06-repeat:transfer_relation`), and 5B is `PASS (312/312)`.
+- **69, the old bytes** (`7fc7537`'s M09-11) in M09-11's place on a second cluster, deleted after. Every staged file's summary line on the old bytes equals file 63's and 64's. F06, 5B and T-W14-FN are also the same case by case (70 against 69). So the change moves no merged test. Three summaries differ from 13.5's file 06 (6RG 32/32, DM19B 14/14, N08 records 17/17). Those differ because file 06 ran at `9066ccf`, before #380's test revisions (CHK-C02-104 finding 10 (b)), not because of this change.
+- **66, the self-check:** `M0911_FUNCTIONS PASS (287/287)` (it was 256/256).
+  - **The refusals.** Twenty-three strings, each under its own source ID, are each `invalid_field` with a delta of exactly one refusal row and nothing written: `now`, `today`, `tomorrow`, `yesterday`, `infinity`, `-infinity`, `epoch`, `NOW`, ` now`, `Infinity`, `allballs`, `today 10:00Z`, `2026-10-05 allballs`, `2026-10-05T17:50Z now`, the empty string, `2026-10-05T17:50:00`, `2026-10-05 17:50`, `20261005T175000Z`, `J2461319`, `10/05/2026`, `2026-13-01T00:00Z`, `2026-10-05T17:50:00.1234567Z` and `0000-01-01`.
+  - **The reason.** All 23 carry the fixed reason (`TD-answered-at-special-reason`). Afterwards no transferred Decision holds an answer time (`-none`).
+  - **Under `TimeZone` Asia/Kolkata:** `2026-10-07` is stored as `2026-10-07T00:00:00Z`, `2026-10-07T17:50+03:00` as `14:50Z`, and `2026-10-11 09:13:31.5Z` as sent.
+  - **Cases that still pass.** `TD-pos-row` (`2026-10-05T17:50:00Z`, written as sent), `TD-superseded-revision` (`+00:00`), `TD-answered-at-bad` (now with the new reason) and `TX-answered-at`.
+- **69, the same self-check on the old bytes:** `FAIL (21 of 287 not as wanted)`, which shows the new cases would catch the defect.
+  - **Accepted and written there:** 18 of the 23 strings, the seven special inputs among them.
+  - **Already refused there:** `allballs`, `2026-10-05T17:50Z now`, the empty string, `2026-13-01T00:00Z` and `0000-01-01`.
+  - **Also red there:** the reason and `-none` cases, and `TD-answered-at-date-row`, because the old cast read the bare date as midnight in Asia/Kolkata.
+- **71:** files 01 to 70 scanned with the finders of `scan_patterns.json`. **72:** the hashes and text counts (backslashes 0, either marker whole 0, `answered_at` outside comments only in `transfer_decision`), the 26 ledger values against the two expressions read from the file, and `git status`. The diff touches M09-11, EV13 and this file only, plus the new raw files; there is no diff under `tests/`, `tools/`, `plan/`, `.github/` or `.claude/`.
+- **Not done here.**
+  - Breaks b01 to b34 were not rerun: `brk.py` edits the old text. The old bytes' run (69) serves as the break of this rule.
+  - `isfinite` cannot refuse on its own, since the expressions admit finite values only, and no case separates it.
+  - C2 (N-303's annotation) is not this producer's.
+  - Nothing was applied to either project.
+
+## 14. M09-12: transfer copies, and the test copies
+
+The producer's record of `supabase/migrations/20261019160001_w09_transfer_copies.sql` (M09-12), W-C02-09's twelfth and last migration, and of the copies of section 11's staged files into `supabase/migrations/tests/`. It was written on branch `claude/c02-w09-m0912` at `7fc7537f8a3ab8a675bb4811c914027e12d3f08e`: `main` `9399614` with M09-01 to M09-10 and the rule corrections merged and applied, plus M09-11 (`20261019140001_w09_transfer_records.sql`, section 13) from pull request #382, under review. M09-12 builds on both and changes neither. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at `7fc7537`, with EV13's section 27 added. M09-12 means the file above, and M09-12:n a line of it at the bytes the envelope names. FN is `tests/C02/W-C02-14/T-W14-FN_transfer_functions.md`, FNJ its job file; `job/` is `tests/C02/W-C02-07/job/`; R is `tests/C02/W-C02-07/README.md`.
+- **EV13 section 27 first.** EV13 gained "27. Correction, 2026-10-19 (M09-12)", which states the forms 14.2 lists. Its marks *[C-M12]* stand in 3.1's bullet "The `transferred` event", the two rows of 3.2 and section 12's last item. M09-12's checker judges it.
+- **The note items that bind M09-12, checked on the branch before the SQL was kept** (`plan/work/C02.md`; W9 point 10):
+  - **N-277 (3)** (git order): met. FNJ's merge (`f40f135`) and its revision (`04da0de`) are ancestors of `7fc7537`, and so of M09-12's first commit.
+  - **N-288**: met. Both bodies read `p` through `ALIAS FOR $1` (`TX-alias`).
+  - **EV13 22 (3)** and **9.6 item 4**: neither function takes a claim, counts one or names a claim token or the exam table (`TX-no-claim`; file 59).
+  - **EV13 22 (1)**: neither writes `created_at` or `answered_at` (file 59: `answered_at` on no line outside comments; `created_at` on one, an `order by` of the repeat's Verdict lookup).
+  - **N-279 (18)** and **EV13 section 12's last item** (the Review copy's target against the Acceptance's): no rule, with the reason in EV13 27 (7).
+  - **N-302 (1)**: `FN-T-half-ev-transfer_review` and `FN-T-half-rec-transfer_review` now run on the real `transfer_review` and pass for the right reason: under B-FN-5 both turn red (file 22).
+  - **N-285 (1), N-291, N-293** (planted Missions without a creation event): `transfer_acceptance` reads Rule O for a Work target. There a Mission whose creation event cannot be read is `could_not_check` (`TA-work-mission-no-event`), and Rule O is not bent. No merged recipe reaches it so: FN and F06 make the target Work with `transfer_work` under the installation's Mission, and N02's targets are Decisions. `transfer_review` reads no Mission, so FN's planted Works (`w14_work()`, FNJ:222) are accepted as its targets.
+  - **README 5.1 (c)** ("a file is copied only when it can pass"): each copy was run and passed on this build before it was copied (14.4).
+- **Appendix B principle 3.** Neither family has revisions. The Review copy names its target's revision when one is sent; the Acceptance stores its target's current revision (EV13 27 (9)).
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | Branch `claude/c02-w09-m0912` at `7fc7537`, clean before this work. The runs were made with M09-12, the copies, EV13's section 27 and the raw files uncommitted (O, `59_git_hashes.txt`). Bytes run: M09-12 `a0ef20464a2143a75f64adf7eab3351aa7909e472e64f1ba78e5e5601e4269ab`; the self-check `…/scratchpad/m0912_run/fn_check.sql` `46b976bf3cc1e658d77719b52b6581f00a4dbe1174b5886f95d6b47a4ec07bd1`; the break maker `…/m0912_run/brk.py` `d07500954c7eefc6a097af3547515ef3f3dac7d2f9067125c523643c67e2c212`; the other drivers' hashes, and each copy's against its staged file, are in file 59. EV13 with its section 27 as run: `a721cdadd4ee329a87055dc64d392e819b73d4b6acf00f5d34258ad411264870` (the database runs do not read it). A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1 and 3 to 13: one throwaway PostgreSQL 16.15 cluster per script, unix socket only (in `/var/tmp/m12pg`, under the 107-byte limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, files 14 and 57: `[cluster directory deleted: yes]`). Stand-ins: `…/scratchpad/m0903_run/setup.sql`, byte for byte (`fa2a9cfa…9783`). The break runs copy each fresh database from one of two templates: `t24`, the twenty-four migrations before M09-12, and `t25`, `t24` with M09-12. The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `7fc7537`; EV13 with its sections 1 to 26, and section 27 (for M09-12's checker) |
+| Input | The twenty-five migrations; the folder `supabase/migrations/tests/` with the eight SQL copies before this work and the twenty-two copies made here (twenty-one SQL files and one program); every staged SQL file of `job/` and T-W14-FN's, run in place; the producer's self-check; twenty-nine break copies of M09-12 made outside the repository (`…/scratchpad/m0912_brk/`, by `brk.py`, deleted after the run); ten merged break patches applied in place on the throwaway cluster: B-FN-1 to B-FN-6, B-N04-1 to B-N04-3 and B-N01-2 |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m12_offline_01_init_setup.txt` to `…_59_git_hashes.txt`, written directly by `…/m0912_run/rerun.sh` (01 to 14), `brk.sh` (15 to 57) and `final.sh` (58, 59). Every file but 59 passed through `scrub.py` (section 10's filter, reading the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time) and ends `claim-format strings replaced 0; environment-format strings replaced 0` (58 of 58). File 58 scans files 01 to 57 again with the same finders. Files 14 and 57 scan the clusters' server logs: `186 lines; claim-format 0; environment-format 0` and `540 lines; claim-format 0; environment-format 0`. File 59 holds hashes, counts and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 08) and the break copies (28 to 56) are the producer's own; the merged files and break patches (05, 06, 09 to 12, 16 to 27) are the test designers' |
+
+### 14.1 What was built, object by object
+
+Both in M09-12, in this order: the last two of the fourteen functions of EV13 section 3 (section 10's row M09-12), then the grants. No table, type, comment or `devos_private` function is added. M09-01 to M09-11 and the rule corrections are not changed. Their helpers are called: `caller_role_class`, `write_event`, `reject` and `is_installation_mission`. The form of each function is M09-10's and M09-11's (12.1, 13.1). O (`07_catalog.txt`): each is `devos_api.<name>(p jsonb)` returning `jsonb`, with `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, and EXECUTE for `anon` only (also `TX-definer`, `TX-signature`).
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.transfer_review(p jsonb)` (M09-12:60) | The form of 27 (2): `kind` first (`sample` `kind_not_allowed`, M09-12:138); `transfer_source` of kind `verdict`; `basis_refs` a non-empty array kept as sent; `independence_level` `fresh_context_subagent` only (M09-12:252); the `verdict` object. Not closed by the hand-over. The key; the run (after the hand-over no `run_id`); `target_ref` and `target_revision`, each a record or revision written (M09-12:359-404: `reference_missing`). Writes the Review copy, its Verdict and the Review's one `transferred` mark, naming the Verdict (M09-12:421-443). Answer `{"status": "ok", "id", "verdict_id"}` | 3.2's row with C-M12 (27 (1), (2), (9)); README 8.1; B 3.11's copy rule; EV-C02-005 2.4; EV-C02-008 2.2 condition 2 |
+| `devos_api.transfer_acceptance(p jsonb)` (M09-12:481) | The form of 27 (3): `accepted_use` `installation_acceptance`, `scope` `installation`, `current_evidence` naming the Review copy (M09-12:686). The key; the run. The Review copy (M09-12:766-808: `verdict_missing`, `could_not_check`, `verdict_failed` for `fail` and `indeterminate`, the use); `current_evidence`'s entries and the ledger entry a conditional verdict needs (M09-12:810-860); the installation's Mission and its owner authority (M09-12:862-891); the target (M09-12:893-1000: its family, its row locked, its revision, Rule O or the Decision's opener, the Decision's status and `open_exploration`). Writes the Acceptance, its mark, and the target's state with `acceptance_set` (M09-12:1015-1047). Answer `{"status": "ok", "id"}` | 3.2's row with R1-9, R1-10, R2-2 and C-M12 (27 (1), (3) to (9)); README 8.1; B 3.11, 3.17; EV-C02-005 2.4 |
+| Grants (M09-12:1061-1082) | `revoke all … from public` and from the four API roles where they exist, on both; `grant execute … to anon` on both; no type, no private function | 1 item 13; T-W08-PRIV (`W08_PRIV_TYPES_FUNCTIONS PASS (96/96)`, unchanged) |
+
+O (`07_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the fifty-five `devos_api` functions (55 rows).
+- **The literals.** All fifty-five `devos_api` functions hold their role-list literal, and both of M09-12 hold `array['devos_kurulum']::devos_private.role_class[]` (`TX-literals`).
+- **The unqualified-name scan.** No hit in M09-12's two. Its four hits are section 3.1's known false ones.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** Twelve functions carry it, as in sections 12 and 13; neither of the two does (`TX-not-read`; F06: both are state-changing).
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+
+### 14.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated in EV13 section 27; none is silent. No merged test is changed.
+1. **`transfer_review`** (27 (2)):
+   - `independence_level` must be `fresh_context_subagent` (B 3.11's copy rule; any of the six was weighed).
+   - `basis_refs` entries are kept as sent, not resolved as records, unlike `open_review`'s (20 (4)), since a copy's basis is a tree and a file path and the merged recipes send strings.
+   - `target_revision` needs `target_ref`, must name a revision written, and is `invalid_field` for a family without revisions.
+   - The mark also names the Verdict (`verdict_id`), and `lacks` names `target_ref` when none is sent.
+2. **`transfer_acceptance`'s refusals that 3.2's row does not name** (27 (3), (4), (6)):
+   - `accepted_use` other than `installation_acceptance`, and a Review copy whose `use` differs from it: `invalid_field` (B 3.11's use rule).
+   - `current_evidence` that does not name the Review copy: `invalid_field` (B 3.11: the Acceptance "names that verdict").
+   - An entry naming nothing written: `reference_missing` (3.1, "Order").
+   - An `indeterminate` verdict: `verdict_failed`, as `fail` (B 3.11).
+   - A Review whose creation event is another than `transferred`: `verdict_missing`; one with no creation event, or a copy with no Verdict: `could_not_check`.
+   - `target_revision` earlier than the target's current revision: `stale_revision`.
+   - A Decision's first event of a type other than `decision_opened` or `transferred`: `could_not_check`.
+3. **The Acceptance's `target_revision`** is the target's current revision, read under its lock, when the call sends none (27 (9)).
+4. **No rule compares the Review copy's target with the Acceptance's** (27 (7); N-279 (18)).
+5. **`lacks`** of an Acceptance names `ledger_entry` when no `ledger_entry` event is named (27 (8); EV-C02-005 2.4).
+
+Not departures, for the checker:
+- Neither function is closed by the hand-over (3.1, "Closing"); the run rule after it is 3.1's with R1-8, as `transfer_artifact` builds it (25 (7)).
+- The mark as the record's only creation event is 26 (1)'s rule, here for the two.
+
+### 14.3 How W-C02-09's points are served by M09-12
+
+- **Point 1.** A versioned file later than `20261019140001`, plain SQL, no `psql` meta-command, no backslash (O, file 59). Offline, `deployment_drift` reports `no_difference`, 25 of 25 (runs 04 and 13). Decisions followed, with the object:
+  - the rejected-attempt record's per-call form: `reject` on every refusal (`{"rejected": 1}` deltas in the self-check), and the counted form for a call with no token (`G-<fn>-no-token`; FN-G-<fn>'s counted row +1);
+  - F06's list: both are state-changing, neither carries the read marker (`TX-not-read`; F06's `F06-event` and `F06-repeat` of both `ok`);
+  - S1's and S2's forms: every mark meets `event_transferred_transfer_source`, and S2's index is the backstop of the key (`TV-repeat`, `TA-repeat`).
+- **Point 2.** All 55 `devos_api` functions of EV13 section 2 now exist (`TX-api-count`; file 07, 55 rows), each with definer rights, the fixed `search_path` and every DevOS name qualified (14.1's scan). The record's list and the catalogue's agree.
+- **Point 3.**
+  - Fourth bullet. Each of the two refuses a call with no token before any other check (`G-<fn>-no-token`; FN-G-<fn> `ok`), and a class not on its list, with one per-call row (`G-<fn>-<class>`; 5B row R19, all twelve cells of the two `ok`; FN-G-<fn> `ok`).
+  - Fifth bullet. A declared role name and origin change nothing: `TV-pos` sends `role_class`, `reviewer_role_class` `devos_denetim` and `origin` `owner`, and the copy carries `devos_kurulum` and `call` (`TV-pos-row`, `TV-pos-mark`; FN-R-declared `ok`); `TA-pos` sends an `owner_authority`, and the Acceptance carries D-010's (`TA-pos-row`).
+- **Point 5.**
+  - Each writes its records and its mark in the same transaction, with the token's class (`TV-pos-mark`, `TA-pos-mark`, `TA-pos-state`, `TA-decision-pos-state`; FN-T-ev-transfer_review `ok`).
+  - An exact repeat writes nothing and answers the existing id (`TV-repeat`, `TA-repeat`: `ok repeat`, `{}`; FN-I-same `ok`; F06-repeat of both `ok`).
+  - A failure planted mid-transaction leaves no half state and no orphan event, only the refusal row (`TV-write-failed`, `TV-write-mark-failed`, `TA-write-failed`, `TA-write-mark-failed`, `TA-write-state-failed`, `TA-write-state-event-failed`; FN-T-half-ev and -rec of `transfer_review` `ok`). `TV-write-P0D02` gives `could_not_check` with the fixed reason.
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass: `TV-events-unreadable`, `TA-events-unreadable`, `TA-review-no-event`, `TA-two-missions`, `TA-work-mission-no-event`, `TA-decision-no-event`.
+- **Point 8.** W-C02-08's four copies, W-C02-03's three and the IDC copy pass again with the new copies beside them (runs 09 and 11). The copies this pull request makes, with each run, are in 14.4.
+- **Point 10.** All fourteen exist, each as point 2 asks (`TX-fourteen`; FN-M-cat `ok`).
+  - **T-W14-FN `PASS (109/109)`** (run 06, in place; runs 09 and 11, as the copy; `FAIL (1 bad, 16 could not check, of 109)` on `t24`, run 16). Each of the fourteen refuses every class but `devos_kurulum` and a call with no token, with the attempt recorded (FN-G); after a planted hand-over the ten closed ones refuse (FN-C) and `transfer_review`, `transfer_acceptance`, `transfer_artifact` (for a verdict file) and `record_ledger_entry` still write (FN-O); with one write planted to fail nothing stays (FN-T-half); an exact repeat writes nothing and another hash is refused with its row (FN-I); `transfer_acceptance` refuses a Review copy that is missing, failed, or conditional with no `ledger_entry` event, and an accepted call sets its target accepted in the same transaction (FN-A).
+  - Its six breaks each turn exactly their red lists (files 18 to 23; 14.5).
+  - W-C02-08's S1 to S4 still pass T-W14-SCH (`PASS (38/38)`, runs 09 and 11).
+  - The copy `supabase/migrations/tests/w14_fn_transfer_functions.sql` is FNJ byte for byte (file 59); the migration job runs it in `devos-test`, whose run is the counted one.
+
+### 14.4 The test copies (section 11's table), and what M09-12 does not yet serve
+
+Each row of EV13 section 11 whose "Copy by W-C02-09" says yes, with its condition, and README 5.1 (c)'s one later row. "Copied" means copied byte for byte into `supabase/migrations/tests/` under its staged name, after it passed on this build; file 59 gives each copy's SHA-256 beside its staged file's, equal for all twenty-two, and the staged file's last commit on the branch. Every staged file is unchanged on this branch (file 59: `git diff --stat HEAD -- tests/` empty). Runs: 05 and 06 in place on a fresh database; 09 as the copy, the folder run as the job's `dbtests` step runs it, on a fresh database; 10 and 12 the folder's program as the job's `dbprograms` step runs it (only `PATH`, `HOME`, `LANG` and libpq's settings in its environment, N-255's four keys on standard input, `timeout 600`); 11 the folder's SQL files again on the state run 10 committed (CONC's fixtures, and the global epoch raised by its revocations, 313 before the run as F08-e-ready's detail reads it; the run's own `select` of the epoch failed, its `psql` given no socket, and is not used). [Correction, 2026-10-19, L-402, CHK-C02-107 finding 6: runs 10 and 12 did not run the program as the job's `dbprograms` step does in one respect: no tokens step ran before them; see the CONC row and the dated paragraph after this table.]
+
+| Test | Staged file | Section 11's condition | Result on this build | Copied | Cause, if not |
+|---|---|---|---|---|---|
+| T-W07-IDC part A | `w07_idc_identity_chain.sql` | with M09-01 | `PASS (43/43)` (05, 09, 11) | already copied (M09-01) | — |
+| T-W07-IDC part B | `w07_idc_real_path.py` | after sitting A | not run offline (needs `devos-test`'s Data API) | already copied (M09-02's pull request) | — |
+| T-W07-5A positive control | `w07_5a_positive_control.sql` | yes | `PASS (1/1)` (05, 09, 11) | yes | — |
+| T-W07-5A part B | `w07_5a_exposed_schema.py` | after sitting A | not run: a Data API program, which no offline run can serve | no | Cannot be shown passing before it is copied: it needs `devos-test`'s Data API (README 5.1 (b)). A copy that failed would set `go` to `no`. For the executor: a run in `devos-test`, or a decision to copy it on the IDC part B precedent |
+| T-W07-5C | `w07_5c_other_session_fake_id.sql` | after D-1 | `PASS (8/8)` | yes | — |
+| T-W07-6RG | `w07_6rg_rule_gate_could_not_check.sql` | after D-1 | `PASS (32/32)` | yes | — |
+| T-W07-6TK part A | `w07_6tk_token_reasons.sql` | yes | `PASS (32/32)` | yes | — |
+| T-W07-6TK part B | `w07_6tk_http_reasons.py` | after sitting A | not run (Data API) | no | As 5A part B |
+| T-W07-DM07 | `w07_dm07_heartbeat.sql` | after D-1 | `PASS (8/8)` | yes | — |
+| T-W07-DM19 | `w07_dm19_rejected_attempt_survives.sql` | yes | `PASS (5/5)` | yes | — |
+| T-W07-DM19B | `w07_dm19b_burst_count.sql` | yes | `PASS (14/14)` | yes | — |
+| T-W07-DM19B part B | `w07_dm19b_burst_over_http.py` | after sitting A | not run (Data API) | no | As 5A part B |
+| T-W07-DM34 | `w07_dm34_mission_scope.sql` | after D-1 | `PASS (10/10)` | yes | — |
+| T-W07-F01 | `w07_f01_whole_intent.sql` | after D-1 | `PASS (13/13)`, at epoch 1 (05, 09) and above 313 (11) | yes | — (CONC reads its helpers from this file's copy beside it) |
+| T-W07-F04 | `w07_f04_affected_records.sql` | once `installation_mission` is filled | `PASS (32/32)` | yes | — |
+| T-W07-F05 | `w07_f05_scope_both_sides.sql` | after D-1 | `PASS (7/7)` | yes | — |
+| T-W07-F06 | `w07_f06_state_change_event.sql` | once G20's recipes and D-1, D-2 are in | `COULD NOT CHECK (2 of 147)`: `F06-event:transfer_relation`, `F06-repeat:transfer_relation` (05; on `t24` `2 of 141`, run 16) | **no** | A test fault for the test designer, N-303 (1): its `transfer_relation` recipe (`job/w07_f06_state_change_event.sql:760-763`) names the ends of its `relate` recipe (`:482-483`), accepted earlier in the same transaction, so EV13 26 (4)'s B 3.4 rule answers `conflict` (with that rule removed, 141/141 at M09-11, 13.4). Every case of M09-12's two functions is `ok` |
+| T-W07-F07 | `w07_f07_observation_history.sql` | after D-1 | `PASS (7/7)` | yes | — |
+| T-W07-F08 | `w07_f08_recheck_at_effect.sql` | after D-1 | `PASS (29/29)` | yes | — |
+| T-W07-K05 | `w07_k05_many_paths.sql` | yes | `PASS (6/6)` | yes | — |
+| T-W07-N09 | `w07_n09_finding_gate.sql` | yes | `PASS (11/11)` | yes | — |
+| T-W07-N17 | `w07_n17_claim_token.sql` | after D-1 | `PASS (13/13)` | yes | — |
+| T-W07-N25 | `w07_n25_verdict_staleness.sql` | yes | `PASS (5/5)` | yes | — |
+| T-W07-REL | `w07_rel_relation_status.sql` | yes | `PASS (4/4)` | yes | — |
+| T-W07-CONC | `w07_conc_claim_and_cycle.py` | yes | `W07_CONC_CLAIM_AND_CYCLE PASS (8/8)` as the copy, twice (10, 12), exit 0, `synthetic tokens of this run left unrevoked: 0`; runs 10 and 12 issued no tokens before it, so they did not model the job's tokens step | **no** (copied, then removed [Correction, 2026-10-19, L-401, CHK-C02-106 C1]) | CHK-C02-106 finding 3: as the job runs it, right after the tokens step's six unrevoked tokens, `CONC-tokens` counts them (every unrevoked token issued within 5 seconds of its start, not only its own) and answers `could_not_check`, so `dbprograms` fails and `go` is `no`; with a 6-second delay it passes, so the result depends on timing. A test fault: the test designer revises `CONC-tokens` to count only the tokens the program issued itself, and the copy follows in N-304's later pull request |
+| T-W07-N08 exam fact (may copy) | `w07_n08_exam_fact.sql` | if every case passes (R:248) | `PASS (61/61)` | yes | — |
+| T-W07-5B, N01–N04, N08 records, N28, N29, ROC, T31, 5D, 6ST, DM11, DM47, FGFIND | (W-C02-10's copies) | no | run in place (05): 5B `PASS (324/324)`, N04 `PASS (19/19)` (part T now on the real functions), N08 records `PASS (17/17)`, ROC `PASS (84/84)`; DM11 `FAIL (5 bad)` and N28's verifier file `FAIL (2 bad)` (W-C02-10's rules, as in section 13); the others stop at their `-pre` lines | no | W-C02-10's (R:248) |
+| T-W14-FN | `tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql` | after its recipe revision | `PASS (109/109)` (06, 09, 11) | yes | — |
+| W-C02-08's and W-C02-03's tests | the copies already there | already copied | all `PASS` (09, 11) | already copied | — |
+| T-W07-N29 widening (README 5.1 (c)'s table, not section 11's: "the corrective migration's pull request copies it"; not copied then) | `w07_n29_mission_widening.sql` | README's row | `PASS (8/8)` | yes | — (named here because its row is W-C02-09's and it was not made with the rule corrections) |
+
+So twenty-two copies are made: twenty-one SQL files and the CONC program. The folder then holds thirty-one files (twenty-nine SQL files, two programs) and every SQL file passes as the job runs it, on a fresh database (09) and on the state a first program run leaves (11), and CONC passes on both states (10, 12). No file in the folder holds a backslash (file 59).
+
+[Correction, 2026-10-19, L-401, CHK-C02-106 C1] The CONC copy is removed from this pull request (route (a) of CHK-C02-106 C1; its row above). So twenty-one copies are made, all SQL files, and the folder holds thirty files (twenty-nine SQL files and one program, `w07_idc_real_path.py`). File 59 lists twenty-two hashes because it was written before the removal; the twenty-one SQL copies are unchanged. "CONC passes on both states (10, 12)" above is not a result as the job runs it: runs 10 and 12 issued no tokens before CONC (CHK-C02-106 finding 3). The twenty-nine SQL files passing on a fresh database and after a CONC run stand (CHK-C02-106 finding 4 repeated them after the job's token issues).
+
+What M09-12 does not yet serve:
+- **T-W07-F06** cannot pass at this head on a correct build (row above); W9 point 8 names it, so point 8 is not met until the test designer revises the recipe and the file is copied.
+- **The three Data API programs** are not copied (rows above). Their claims of W9 point 3's third bullet rest, until copied, on `w07_idc_real_path.py`.
+- **T-W07-N02** and **T-W07-N28** stop at their `-pre` lines (W-C02-10's `sample_stream`), so their transfer cases (`N02-oe-transfer-accept`, `-pos`, `S-neg-open-transfer`) are not reached; **B-N01-2** is not shown (N01 the same).
+- **Rules no merged test reaches**, resting on the producer's self-check alone (their break copies leave every merged case as it is; 14.5): `transfer_review`'s `sample` refusal (b02; N28 reaches it once it runs), the run before the hand-over (b05), the target's references (b07), `independence_level` (b08) and the non-empty basis (b11); `transfer_acceptance`'s copy that is not one (b13), the Mission rule (b16), Rule O for a Work (b17), the Decision's opener, status and `open_exploration` (b18 to b20; N02 reaches the last two once it runs), the Review copy named in `current_evidence` (b22), the use (b23), the owner authority (b24), the run (b25), the key's `conflict` (b26), `target_revision` (b27), the entries (b28) and a Decision set accepted (b29; N02 the same).
+
+### 14.5 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0912` at `7fc7537`, with M09-12, the copies, EV13's section 27 and the raw files uncommitted. The main run (`…/m0912_run/rerun.sh`) ran from 2026-10-19T05:27:27Z to 05:28:59Z on one cluster. The comparison and break runs (`brk.sh`) ran from 05:29:26Z to 05:30:32Z on a second cluster. Then `final.sh` wrote files 58 and 59.
+- **The drivers.** `run.sh`, `drive.py`, `scrub.py`, `scan.py`, `judge.py` and `catalog.sql` are `…/m0911_run/`'s, changed only in their paths (the clone `prd16`, the cluster under `…/m0912_run/pg`, the socket in `/var/tmp/m12pg`) and their label words. `setup.sql` is `…/m0903_run/setup.sql`, byte for byte.
+  - `fn_check.sql` is `fn_head.sql` (M09-11's harness) and `fn_cases.sql` (this migration's counted tables, fixtures and cases).
+  - `brk.py`, `brk.sh`, `rerun.sh` and `final.sh` follow section 13's forms; `rerun.sh` also runs the folder's program as the job's `dbprograms` step does. `brk.py` makes each edit inside one function's text only.
+- **Trial runs.** Before the filed runs (`…/m0912_run/trial.sh` to `trial5.sh`, none filed): the migrations and T-W14-FN once (`PASS (109/109)` at its first run); every staged file once; CONC once and the candidate copies again on the state it committed; the self-check (`119/119` once one of its own text checks, `TX-no-claim`, was narrowed to a written `created_at`: it had counted the repeat's `order by`). The filed runs give the same summary lines as the trials.
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the twenty-four migrations before M09-12, each `[exit 0]` with its history row (48 `[exit 0]` lines). **03, M09-12:** `CREATE FUNCTION` ×2, `REVOKE` ×2, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 13:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 25, "migrations_expected": 25`, `"complete": true`.
+- **05 and 06, every staged SQL file run in place** (not copies; a self-check, never a result): 14.4's rows, and `W14_FN_TRANSFER_FUNCTIONS PASS (109/109)` (06).
+- **07, the catalogue:** 14.1's listing.
+- **08, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC m0912; one transaction rolled back): `M0912_FUNCTIONS PASS (119/119)`.
+  - **The cases by group:** 12 for the gate (two functions, five classes and no token); 43 for `transfer_review` (`TV-*`); 56 for `transfer_acceptance` (`TA-*`); 8 for the text (`TX-*`).
+  - **How they judge.** Each case compares the answer's code and the change of sixteen counts: events, refusals, and the Review, Verdict, Acceptance, Mission, Work, EffortPolicy, Relation, Decision, Need and Finding tables with their revisions. The state cases read the rows after. A plant runs with its call in a subtransaction that is undone, and the delta is measured after the plant.
+  - **Cases among them.** `TV-kind-sample` (`kind_not_allowed` with no other key sent), `TV-level-other`, `TV-basis-empty`, `TV-trev-alone`, `-unwritten`, `-norevs`, `TV-target-unwritten`, `TV-after-handover` and `-run`, `TV-pos-row`, `-verdict`, `-mark`, `TV-no-target-lacks`; `TA-no-mission`, `TA-review-unwritten`, `-not-copy`, `-no-event`, `TA-fail`, `TA-indeterminate`, `TA-cond`, `TA-cond-other-event`, `TA-review-use`, `TA-ce-no-review`, `-unwritten`, `-event-unwritten`, `TA-two-missions`, `TA-target-finding`, `TA-trev-stale`, `TA-work-not-installation`, `-mission-no-event`, `TA-decision-cal`, `-no-event`, `-open`, `-open-exploration`, `-pos-state`, `-accepted`, `TA-work-already-accepted`, `TA-cond-pos-mark`, `TA-write-state-failed`, `TA-after-handover`; `TX-literals`, `TX-signature`, `TX-alias`, `TX-not-read`, `TX-no-claim`, `TX-definer`, `TX-fourteen`, `TX-api-count`.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `review`.
+- **09 to 12, the job's folder with the copies:** 14.4.
+- **14:** the server log, `186 lines; claim-format 0; environment-format 0`; `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **15:** the break cluster's setup, the templates `t24` and `t25` (`[template … exit 0]`), and `brk.py`: `29 break copies made`.
+- **16 and 17, the comparison** of T-W14-FN, 5B, F06, N02, N04 and N28's exemption file on fresh copies of `t24` and `t25`: T-W14-FN `FAIL (1 bad, 16 could not check, of 109)` → `PASS (109/109)`; 5B `PASS (312/312)` → `PASS (324/324)`; F06 `COULD NOT CHECK (2 of 141)` → `(2 of 147)`, the same two cases; N04 `COULD NOT CHECK (3 of 19)` (`N04-T1`, `-T2`, `-T2-pos`) → `PASS (19/19)`; N02 and N28 on their `-pre` lines on both.
+- **18 to 27, the merged break patches**, each on a fresh copy of `t25`, each `[patch exit 0]`:
+  - **B-FN-1** red exactly `FN-G-transfer_review`; **B-FN-2** exactly `FN-C-begin_transfer_run`; **B-FN-3** exactly `FN-C-transfer_decision`; **B-FN-4** exactly `FN-I-other-review`; **B-FN-5** exactly `FN-T-half-ev-transfer_review`, `FN-T-half-rec-transfer_review`; **B-FN-6** exactly `FN-A-fail`. So the six are shown on the real build for the first time for B-FN-1, -4, -5 and -6.
+  - **B-N04-1** red `N04-k2` in N04 and `5B-R07-accept-kur` in 5B: together exactly its list (the judge compares each file with the whole list, so each line reads "not as expect-red" for the other file's case). **B-N04-2** exactly `N04-T1`; **B-N04-3** exactly `N04-T2`: part T's breaks are shown on the real `transfer_review` (N-293, N-294's "shown on stubs only").
+  - **B-N01-2** not shown: N01 stops at its `-pre` line (W-C02-10's).
+- **28 to 56, the break copies**, each in a fresh database copied from `t24` with the copy applied in M09-12's place (`[apply exit 0]`). Then the self-check, T-W14-FN and N04 ran, and 5B for b01 and b12. Each turned the self-check red (`M0912_FUNCTIONS FAIL (n of 119 not as wanted)`), its own case among the red. Knock-on red cases follow a call the break wrongly admits, which writes a key later cases meet. Merged cases that turned `bad`:
+  - **b01** (`transfer_review` admits `devos_calisma`): **`FN-G-transfer_review`, `5B-R19-transfer_review-cal`**. **b03** (its conflict removed): **`FN-I-other-review`**. **b04** (its repeat writes again): **`FN-I-same`**. **b06** (a `run_id` admitted after the hand-over): **`FN-RN-after-handover`**. **b09** (`reviewer_role_class` from the call): **`FN-R-declared`**. **b10** (its mark not written): **ten FN cases** (`FN-T-ev-transfer_review`, `FN-T-half-ev-transfer_review`, `FN-I-same`, `FN-I-other-review`, `FN-O-transfer_review`, `FN-O-transfer_acceptance` and the four FN-A that need a copy) and one `could_not_check`.
+  - **b12** (`transfer_acceptance` admits `devos_calisma`): **`FN-G-transfer_acceptance`, `5B-R19-transfer_acceptance-cal`**. **b14** (`fail` accepted): **`FN-A-fail`**. **b15** (the conditions unchecked): **`FN-A-cond`**. **b21** (the Work's state not set): **`FN-A-pos`, `FN-A-cond-pos`**.
+  - The other nineteen (b02, b05, b07, b08, b11, b13, b16 to b20, b22 to b29) turn no merged case red: 14.4's last bullet.
+  - So each rule built turns its self-check cases red when removed. The merged files caught ten of the twenty-nine; the self-check caught all twenty-nine.
+- **57:** the server log, `540 lines; claim-format 0; environment-format 0`; `[cluster directory deleted: yes]`.
+- **58:** files 01 to 57 scanned with the finders of `scan_patterns.json`.
+- **59:**
+  - the hashes in the envelope, and each copy's SHA-256 beside its staged file's;
+  - the text counts of M09-12 and the copies (backslashes, meta-command lines, token finders, markers, the exam table, claim names, `created_at`, `answered_at`);
+  - `git status --porcelain`: EV13 and this record modified; M09-12, the twenty-two copies and the raw files untracked;
+  - `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty (the copies are new files).
+
+### 14.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-F06's `transfer_relation` recipe (N-303 (1)); until then F06 is not copied and W9 point 8's F06 is not met.
+   - Cases, with breaks, for 14.4's rules no merged test reaches, chiefly `transfer_acceptance`'s Review-copy, Mission, ownership and key rules and `transfer_review`'s `independence_level`, and an FN-I case for `transfer_acceptance` (FN's "Not covered" (2)).
+   - T-W07-N02's and T-W07-N28's transfer cases wait for W-C02-10's `sample_stream`.
+2. **For the executor** (reported, not done):
+   - The three Data API programs of 14.4 (5A part B, 6TK part B, DM19B part B) can be shown passing only in `devos-test`: whether to copy them on IDC part B's precedent, or after a run, is the executor's.
+   - The CONC copy runs in `devos-test` at every job run (every push to `main` and every six hours, R 5.1 (c)), commits its labelled fixtures there each time and raises the global epoch by its revocations; README 5.1 (b) allows it. It claims through direct connections (`sql-set-role`), not over the Data API, so N-281's ban on real-path claims is not reached; the executor confirms that reading. [Correction, 2026-10-19, L-401, CHK-C02-106 C1] The copy is removed from this pull request and follows in N-304's later one, after the test designer's revision of `CONC-tokens`; CHK-C02-106 finding 7 judged the reading of N-281 sound.
+   - `w07_n29_mission_widening.sql` is copied here, though README 5.1 (c) gave it to the corrective migration's pull request.
+   - EV13 27 (10)'s residuals.
+3. **For the checker of verdict (i):**
+   - EV13 section 27 with its *[C-M12]* marks;
+   - 14.2's departures, chiefly 1 (`independence_level`; the basis kept as sent), 2 (the refusals 3.2's row does not name) and 4 (no target comparison);
+   - the copy table of 14.4, and the hashes in file 59;
+   - the self-check and the break copies, which are the producer's own.
