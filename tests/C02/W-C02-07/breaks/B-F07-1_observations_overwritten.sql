@@ -25,9 +25,11 @@ begin
     begin
       r := devos_api.record_observation_w07_orig(p);
       if r->>'status' = 'ok' then
-        update devos_private.observation set observed_effect = p->>'observed_effect', source = p->>'source',
-               observed_at = (p->>'observed_at')::timestamptz
-         where operation_ref = (p->>'operation_ref')::uuid and id <> (r->>'id')::uuid;
+        -- Revised under ledger rule 3, 2026-10-19 (N-297 (c)): the values are the new row's own, as stored, so each keeps
+        -- its column's type (the first version assigned the payload's text to the enum column observed_effect: 42804).
+        update devos_private.observation o set observed_effect = n.observed_effect, source = n.source, observed_at = n.observed_at
+          from devos_private.observation n
+         where n.id = (r->>'id')::uuid and o.operation_ref = n.operation_ref and o.id <> n.id;
       end if;
       return r;
     end $f$ $p$;

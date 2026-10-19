@@ -13,6 +13,10 @@
 -- scope; see the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists it ends in
 -- COULD NOT CHECK. Output: one row per case, then PASS (notice) or FAIL / COULD NOT CHECK (raised).
+-- Revised under ledger rule 3, 2026-10-19 (N-289; EV-C02-017 3 (e); EV-C02-013 22 (3); and N-297 (4)), before any
+-- result of the corrective migration and of this file: F08-e-* (after the epoch change, a claim of the earlier epoch
+-- counts as lapsed) and F08-r-prepare (prepare_operation's own readiness refusal); see the specification's "Revision
+-- under ledger rule 3 (N-289, N-297 (4), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -302,6 +306,88 @@ create function pg_temp.w07_ref(p jsonb) returns jsonb language sql as $f$
   select jsonb_build_object('ref', p->>'id', 'revision', (p->>'revision')::int)
 $f$;
 
+-- Revised under ledger rule 3, 2026-10-19 (N-289 option B; EV-C02-017 3 (e); EV-C02-013 22 (3)). A claim of another
+-- role class (devos_denetim) on a working item, planted active by the owner inside this rolled-back transaction, as
+-- T-W07-ROC plants its audit claim (the rule under test is Rule C's count, not who may claim): its lease runs 30 minutes,
+-- its epoch is p_epoch. The claim token hash is random characters, the hash of no token.
+create function pg_temp.f08_plant_claim(p_work jsonb, p_epoch bigint) returns jsonb language plpgsql as $f$
+begin
+  return pg_temp.w07_owner_insert('devos_private.assignment', jsonb_build_object('work_ref', p_work->>'id',
+    'work_revision', (p_work->>'revision')::int, 'role_class', 'devos_denetim', 'status', 'active',
+    'generation', (select coalesce(max(a.generation), 0) + 1 from devos_private.assignment a where a.work_ref::text = p_work->>'id'),
+    'authority_epoch', p_epoch, 'lease_expires_at', now() + interval '30 minutes',
+    'declared_session_id', 'w07_fixture_session_audit', 'claim_token_hash', md5(random()::text) || md5(random()::text)));
+end $f$;
+
+-- F08 (e), after (c3)'s epoch change: p_work is held by p_old, a claim of the earlier epoch.
+create function pg_temp.f08_epoch_cases(w text, p_work jsonb, p_old text, m jsonb, sc text) returns void language plpgsql as $f$
+declare r jsonb; x jsonb; ep bigint; old_ep bigint; st text; n int; ev boolean; d text; fn text; ctl boolean; cid text;
+        wk jsonb; wo jsonb; rel jsonb;
+begin
+  select g.epoch into ep from devos_private.global_authority_epoch g;
+  select a.authority_epoch into old_ep from devos_private.assignment a where a.id::text = p_old;
+  if ep is null or old_ep is null or old_ep >= ep then
+    raise exception 'w07: no earlier-epoch claim (claim epoch %, global epoch %)', old_ep, ep;
+  end if;
+  d := format('the old claim''s epoch %s, the global epoch %s', old_ep, ep);
+  -- F08-e-ready: the work item is listed as ready to claim.
+  r := pg_temp.w07_call(w, 'select devos_api.ready_works()');
+  if r ? 'w07_raised' or r->>'status' is distinct from 'ok' then
+    perform pg_temp.w07_cnc('F08-e-ready', 'ready_works not answered: ' || coalesce(r->>'w07_raised', r->>'reason_code', r->>'status'));
+  else
+    insert into w07_results values ('F08-e-ready',
+      case when exists (select 1 from jsonb_array_elements(r->'works') e where e->>'work_id' = p_work->>'id') then 'ok' else 'bad' end,
+      'ready_works lists the work item held by a claim of the earlier epoch: '
+      || exists (select 1 from jsonb_array_elements(r->'works') e where e->>'work_id' = p_work->>'id') || '; ' || d);
+  end if;
+  -- F08-e-claim: a new claim is accepted; the old claim is marked expired, with a claim_expired event of origin rule
+  -- whose payload names an epoch (a key holding "epoch" whose value is the old claim's or the global epoch); exactly one
+  -- claim is active; and the new claim makes the effect.
+  x := pg_temp.w07_claim(w, p_work, 'w07_fixture_session_e');
+  if x ? 'w07_raised' then
+    perform pg_temp.w07_cnc('F08-e-claim', 'claim raised: ' || (x->>'w07_raised'));
+    return;
+  end if;
+  select a.status::text into st from devos_private.assignment a where a.id::text = p_old;
+  select count(*) into n from devos_private.assignment a where a.work_ref::text = p_work->>'id' and a.status = 'active';
+  ev := exists (select 1 from devos_private.event e where e.aggregate_type = 'assignment' and e.aggregate_id::text = p_old
+                   and e.event_type = 'claim_expired' and e.origin::text = 'rule'
+                   and exists (select 1 from jsonb_each(e.payload) kv where kv.key like '%epoch%'
+                                 and kv.value in (to_jsonb(old_ep), to_jsonb(ep))));
+  r := case when x->>'status' = 'ok' then pg_temp.w07_effect(w, x->>'claim_token', p_work, 'f08/e_new') end;
+  insert into w07_results values ('F08-e-claim',
+    case when x->>'status' = 'ok' and st = 'expired' and n = 1 and ev and r->>'status' = 'ok' then 'ok' else 'bad' end,
+    left(format('claim: %s %s; the old claim %s; active claims %s; claim_expired naming an epoch: %s; the new claim''s effect: %s; %s',
+      x->>'status', coalesce(x->>'reason_code', ''), coalesce(st, 'absent'), n, ev,
+      coalesce(r->>'status', 'not tried') || ' ' || coalesce(r->>'reason_code', ''), d), 400));
+  -- F08-e-c-<function>: Rule C ignores a claim of another class of the earlier epoch (accepted), while the same claim of
+  -- the current epoch still stops the change (-ctl: refused other_class_claim). The pair differs only in the claim's epoch.
+  foreach fn in array array['revise_work', 'cancel_work', 'relate', 'retract_relation'] loop
+    foreach ctl in array array[false, true] loop
+      cid := 'F08-e-c-' || fn || case when ctl then '-ctl' else '' end;
+      begin
+        wk := pg_temp.w07_fixture_work(w, m, sc); wo := pg_temp.w07_fixture_work(w, m, sc);
+        if fn = 'retract_relation' then
+          rel := pg_temp.w07_dep(w, wk, wo);
+          if rel->>'status' is distinct from 'ok' then raise exception 'the relation to retract was refused: %', coalesce(rel->>'reason_code', rel->>'w07_raised'); end if;
+        end if;
+        perform pg_temp.f08_plant_claim(wk, case when ctl then ep else ep - 1 end);
+        r := case fn
+          when 'revise_work' then pg_temp.w07_call(w, 'select devos_api.revise_work($2)', null, jsonb_build_object('id', wk->>'id',
+            'base_revision', (wk->>'revision')::int, 'scope', sc || '.e', 'reason', 'w07_fixture SYNTHETIC W-C02-07 F08 (e): the scope narrowed'))
+          when 'cancel_work' then pg_temp.w07_call(w, 'select devos_api.cancel_work($3::uuid, $1)', 'w07_fixture SYNTHETIC W-C02-07 F08 (e)', null, wk->>'id')
+          when 'relate' then pg_temp.w07_dep(w, wk, wo)
+          else pg_temp.w07_call(w, 'select devos_api.retract_relation($3::uuid, $1)', 'w07_fixture SYNTHETIC W-C02-07 F08 (e)', null, rel->>'id') end;
+        perform pg_temp.w07_judge(cid || ' ' || fn || ' by devos_calisma under a devos_denetim claim of the '
+          || case when ctl then 'current' else 'earlier' end || ' epoch', r, case when ctl then 'refused' else 'ok' end,
+          case when ctl and r->>'reason_code' is distinct from 'other_class_claim' then 'refused with ' || coalesce(r->>'reason_code', '') || ', wanted other_class_claim' end);
+      exception when others then
+        perform pg_temp.w07_cnc(cid, 'fixture: ' || sqlstate || ' ' || left(sqlerrm, 200));
+      end;
+    end loop;
+  end loop;
+end $f$;
+
 do $$
 declare why text; k text; w text; a text; m jsonb; sc text := 'synthetic.w07.f08';
         wa jsonb; wx jsonb; we jsonb; wb jsonb; wsrc jsonb; wc1 jsonb; wc2 jsonb; wc3 jsonb; wd jsonb; wi1 jsonb; wi2 jsonb;
@@ -485,6 +571,29 @@ begin
       jsonb_build_array(pg_temp.w07_ref(wd), pg_temp.w07_ref(wi1)))), 'refused',
     case when pg_temp.w07_state() <> s0 then 'state changed' end);
 
+  -- Revised under ledger rule 3, 2026-10-19 (N-297 (4); CHK-C02-096 finding 8 (k5)). (r) The readiness re-check at the
+  -- prepare: a hard dependency opened after the claim makes prepare_operation itself refuse not_ready, with nothing
+  -- written (F08 (a) at the prepare; EV-C02-013 21 (C-M08)); (r-pos) the same prepare, the same key and intent, once
+  -- the dependency is resolved (planted by the owner, as F08-pos2), is accepted. They differ only in the dependency's state.
+  begin
+    wa := pg_temp.w07_fixture_work(w, m, sc); wx := pg_temp.w07_fixture_work(w, m, sc);
+    ca := pg_temp.w07_claim(w, wa);
+    if ca->>'status' is distinct from 'ok' then raise exception 'the claim was refused: %', coalesce(ca->>'reason_code', ca->>'w07_raised'); end if;
+    x := pg_temp.w07_dep(w, wa, wx);
+    if x->>'status' is distinct from 'ok' then raise exception 'relate refused: %', coalesce(x->>'reason_code', x->>'w07_raised'); end if;
+    s0 := pg_temp.w07_state();
+    r := pg_temp.w07_prepare(w, ca->>'claim_token', pg_temp.w07_op08(wa, 'w07_fixture_key_f08_r', jsonb_build_array(pg_temp.w07_ref(wa))));
+    perform pg_temp.w07_judge('F08-r-prepare prepare_operation with a hard dependency opened after the claim', r, 'refused',
+      case when pg_temp.w07_state() <> s0 then 'state changed'
+           when r->>'reason_code' is distinct from 'not_ready' then 'refused with ' || coalesce(r->>'reason_code', '') || ', wanted not_ready' end);
+    update devos_private.work set execution = 'finished', acceptance = 'accepted' where id::text = wx->>'id';
+    perform pg_temp.w07_judge('F08-r-prepare-pos the same prepare once the dependency is resolved',
+      pg_temp.w07_prepare(w, ca->>'claim_token', pg_temp.w07_op08(wa, 'w07_fixture_key_f08_r', jsonb_build_array(pg_temp.w07_ref(wa)))), 'ok');
+  exception when others then
+    perform pg_temp.w07_cnc(c, 'fixture: ' || sqlstate || ' ' || left(sqlerrm, 200))
+      from unnest(array['F08-r-prepare', 'F08-r-prepare-pos']) c;  -- the block's rows were rolled back with it
+  end;
+
   -- (c3) an authority epoch change after the claim (a synthetic token revoked, EV-C02-004 X-07). Last: it ends every
   -- claim of the old epoch.
   begin
@@ -495,6 +604,19 @@ begin
       case when pg_temp.w07_state() <> s0 then 'state changed' end);
   exception when others then
     perform pg_temp.w07_cnc('F08-c3 effect after an authority epoch change', left(sqlerrm, 200));
+  end;
+
+  -- Revised under ledger rule 3, 2026-10-19 (N-289 option B; EV-C02-017 3 (e); EV-C02-013 22 (3)), before any result of
+  -- the corrective migration. (e) Right after the epoch change of (c3), a claim of the earlier epoch counts as lapsed:
+  -- wc3, still held by cc3's claim of the earlier epoch, is ready, and a new claim is accepted; cc3's claim is marked
+  -- expired with a claim_expired event (origin rule) whose payload names its epoch; the new claim makes the effect.
+  begin
+    perform pg_temp.f08_epoch_cases(w, wc3, cc3->>'assignment_id', m, sc);
+  exception when others then
+    perform pg_temp.w07_cnc(c, 'the earlier-epoch claim could not be made (' || sqlstate || ' ' || left(sqlerrm, 160) || ')')
+      from unnest(array['F08-e-ready', 'F08-e-claim', 'F08-e-c-revise_work', 'F08-e-c-revise_work-ctl', 'F08-e-c-cancel_work',
+                        'F08-e-c-cancel_work-ctl', 'F08-e-c-relate', 'F08-e-c-relate-ctl', 'F08-e-c-retract_relation',
+                        'F08-e-c-retract_relation-ctl']) c;  -- the block's rows were rolled back with it
   end;
 end $$;
 
