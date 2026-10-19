@@ -7,9 +7,9 @@
 -- Claim. T-W07-N08 part X (phase C4b; EV-C02-008 section 5.1, N-262, decided and accepted; PC-47 place 1, B:286): the
 -- exam fact reaches no token but the exam environment's through an answer. An exam task opened with devos_sinav and
 -- named by an EvalRun through record_eval_run gets, from every function the working session calls, the answer an
--- ordinary work item opened with devos_calisma gets (property P; EXF-pair-*); the nine functions the reader finder of part
--- A exempts give the working, audit, devos_kurulum and devos_ci tokens the same answer with or without an EvalRun
--- (N08-x-<function>-<class>); record_eval_run writes nothing on the Work it names (N08-s3); devos_sinav claims no work
+-- ordinary work item opened with devos_calisma gets (property P; EXF-pair-*); the functions the reader finder of part
+-- A exempts (nine, and open_decision a tenth from 2026-10-19, N-286) give the working, audit, devos_kurulum and devos_ci
+-- tokens the same answer with or without an EvalRun (N08-x-<function>-<class>); record_eval_run writes nothing on the Work it names (N08-s3); devos_sinav claims no work
 -- item, and no EvalRun names a work item a devos_sinav claim is on (N08-s4).
 -- Specification: tests/C02/W-C02-07/T-W07-N08_exam_records.md, part X.
 -- Where it runs: the migration job's devos-test step, as postgres, after the merge's migrations (README 5.1 (a)); the
@@ -670,6 +670,19 @@ begin
       out := out || jsonb_build_array(pg_temp.n08x_step('from r to the item', r));
       r := pg_temp.w07_call(p_class, p_fn, jsonb_build_object('root', p_w, 'target', pg_temp.n08x_fx('y_' || side), 'limits', '{"max_depth": 50, "max_records": 100, "max_paths": 5}'::jsonb));
       out := out || jsonb_build_array(pg_temp.n08x_step('from the item to y', r));
+    elsif p_fn = 'open_decision' then
+      -- Revised under ledger rule 3, 2026-10-19, before any result (N-286; EV-C02-017 section 9 item 2): open_decision
+      -- called with work_ref, which ties the Decision to the item and makes relate's checks on it, Rule O among them
+      -- (EV-C02-013 2.2, R1-6). Accepted and refused calls; the payloads are the same on w_e and w_o.
+      r := pg_temp.w07_call(p_class, p_fn, pg_temp.w07_args('decision_routine', 'complete', 901)
+             || jsonb_build_object('work_ref', p_w));
+      out := out || jsonb_build_array(pg_temp.n08x_step('a routine decision tied to the item', r));
+      r := pg_temp.w07_call(p_class, p_fn, pg_temp.w07_args('decision', 'complete', 902, 'high_impact')
+             || jsonb_build_object('work_ref', p_w));
+      out := out || jsonb_build_array(pg_temp.n08x_step('a high_impact decision tied to the item', r));
+      r := pg_temp.w07_call(p_class, p_fn, (pg_temp.w07_args('decision_routine', 'complete', 903) - 'question')
+             || jsonb_build_object('work_ref', p_w));
+      out := out || jsonb_build_array(pg_temp.n08x_step('a decision tied to the item with no question', r));
     end if;
     raise exception using errcode = 'P0W7U', message = 'w07: undo the steps';
   exception
@@ -686,6 +699,7 @@ create function pg_temp.n08x_acc(p_fn text) returns int language sql immutable a
   select case p_fn when 'claim' then 1 when 'heartbeat' then 2 when 'release' then 2 when 'revise_work' then 1
     when 'mark_stale' then 1 when 'cancel_work' then 1 when 'reopen_for_review' then 2 when 'relate' then 1
     when 'retract_relation' then 1 when 'set_effort_policy' then 1 when 'affected_entities' then 1 when 'explain_paths' then 1
+    when 'open_decision' then 1
     else 0 end
 $f$;
 
@@ -695,6 +709,13 @@ declare a jsonb; b jsonb; i int; acc int := pg_temp.n08x_acc(p_fn); why text; di
 begin
   a := pg_temp.n08x_seq(p_fn, p_class, pg_temp.n08x_fx('w_e'));
   b := pg_temp.n08x_seq(p_fn, p_class, pg_temp.n08x_fx('w_o'));
+  -- Revised under ledger rule 3, 2026-10-19, before any result (N-286): a function n08x_seq has no steps for gave two
+  -- empty lists, which compared equal, so its case was ok with nothing called. No steps on either item is the test's own
+  -- could_not_check.
+  if jsonb_array_length(a) = 0 or jsonb_array_length(b) = 0 then
+    perform pg_temp.w07_put(p_case, 'could_not_check', p_fn || ' with ' || p_class || ': no step of it was run (n08x_seq has none for it)');
+    return;
+  end if;
   select string_agg(format('%s: %s', s->>'step', s->>'code'), '; ') into why
     from jsonb_array_elements(a || b) s where s->>'kind' in ('test_cnc', 'unknown');
   if why is not null then
@@ -927,16 +948,20 @@ begin
   perform pg_temp.n08x_pair('EXF-pair-reads-explain_paths', 'explain_paths', 'devos_calisma', true);
   perform pg_temp.n08x_state();
   -- N08-x-<function>-<class> (EV-C02-008 5.1, after CHK-C02-027 D): EXF-pair's comparison with each of the four tokens
-  -- the reader finder's role-refusal rule names, for the nine functions it exempts.
+  -- the reader finder's role-refusal rule names, for the functions it exempts (ten from 2026-10-19, N-286).
+  -- open_decision has no EXF-pair case, so its working-token case needs its accepted step accepted on at least one item
+  -- (otherwise could_not_check), as an EXF pair does; its other classes need none, as for the nine.
   foreach fn in array pg_temp.n08_exempt() loop
     foreach cls in array array['devos_calisma', 'devos_denetim', 'devos_kurulum', 'devos_ci'] loop
-      perform pg_temp.n08x_pair(format('N08-x-%s-%s', fn, short->>cls), fn, cls, false);
+      perform pg_temp.n08x_pair(format('N08-x-%s-%s', fn, short->>cls), fn, cls, fn = 'open_decision' and cls = 'devos_calisma');
     end loop;
   end loop;
 end $f$;
+-- The same list as in w07_n08_exam_records.sql. Revised under ledger rule 3, 2026-10-19, before any result (N-286;
+-- EV-C02-017 section 9 item 2; EV-C02-008 5.1's dated list item): open_decision is the tenth.
 create function pg_temp.n08_exempt() returns text[] language sql immutable as $f$
   select array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'relate', 'retract_relation',
-               'set_effort_policy', 'affected_entities', 'explain_paths']
+               'set_effort_policy', 'affected_entities', 'explain_paths', 'open_decision']
 $f$;
 
 do $$
