@@ -23,7 +23,7 @@ do $b$
 declare src text; o text; nw text; k int;
 begin
   src := pg_get_functiondef('devos_api.transfer_finding(jsonb)'::regprocedure);
-  o := $o$      if (p_in -> 'transfer_source' ->> 'input_commit') <> v_tcb_ic then$o$;
+  o := $o$      if (p_in -> 'transfer_source' ->> 'input_commit') <> v_run_commit then$o$;
   nw := $n$      if false then$n$;
   k := (length(src) - length(replace(src, o, ''))) / length(o);
   if k <> 1 then

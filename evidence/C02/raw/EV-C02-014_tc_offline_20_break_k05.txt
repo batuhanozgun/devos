@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k05_ic_compare_removed_in_need, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k20 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k20l exit 0]
+-- the self-check on k20:
+summary: MTC_FUNCTIONS FAIL (1 of 93 not as wanted)
+bad (1): TX-ic-transfer_need
+could_not_check (0): none
+detail: 39 | TX-ic-transfer_need             | f  | compares 0
+-- T-W14-FN on k20:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-IC-transfer_need
+could_not_check (0): none
+detail: FN-IC-transfer_need               | bad     | transfer_need with an input commit other than the run's: accepted; tables changed besides rejected_attempt: event, need; rejected_attempt rows +0 (wanted refused invalid_field, none, at least 1); marks of the source 1; its control (the run's own input co
+mtc scrub (20_break_k05): claim-format strings replaced 0; environment-format strings replaced 0

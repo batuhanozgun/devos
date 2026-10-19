@@ -1,0 +1,31 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k03_lock9005_handover_shared, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k18 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k18l exit 0]
+-- the self-check on k18:
+summary: MTC_FUNCTIONS FAIL (1 of 93 not as wanted)
+bad (1): TX-9005-record_handover
+could_not_check (0): none
+detail: 14 | TX-9005-record_handover         | f  | exclusive statements 0
+-- T-W14-FN on k18:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-LK-9005-record_handover
+could_not_check (0): none
+detail: FN-LK-9005-record_handover        | bad     | record_handover's own text (1 body naming itself record_handover), comments and white space removed, holds pg_advisory_xact_lock(9005,0): false (wanted true)
+-- T-W07-LOCKS on k18l:
+LOCKS-ho-cut | bad | events of a call (origin not owner) with an id above the hand-over event 122: 2
+LOCKS-ho-fwd:begin_transfer_run | bad | concurrent call ok , seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it;
+LOCKS-ho-fwd:end_transfer_run | bad | concurrent call ok , seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it;
+LOCKS-ho-fwd:transfer_artifact | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_decision | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_event | bad | concurrent call refused reference_missing, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; aggregate_id: names no work (or no such revision) written yet (EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_finding | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_mission | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_need | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_relation | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-fwd:transfer_work | bad | concurrent call refused run_not_open, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; run_id: names no open run (completed; EV-C02-013 3.1)
+LOCKS-ho-rev | bad | 5 runs (bad 5, could not check 0, ok 0); the hand-over waited for the uncommitted closed call: run 1: closed call ok ; hand-over ok , seen gone; the closed call's event committed and seen inside the hand-over's transaction right after its call: 0 (read committed); margins (infor
+W07_LOCKS_KEY_AND_HANDOVER_LOCKS FAIL (12 bad, 0 could not check, of 17)
+[program exit 1]
+mtc scrub (18_break_k03): claim-format strings replaced 0; environment-format strings replaced 0

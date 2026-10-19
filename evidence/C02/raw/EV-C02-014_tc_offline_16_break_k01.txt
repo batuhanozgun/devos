@@ -1,0 +1,20 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k01_lock9006_removed, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k16 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k16l exit 0]
+-- the self-check on k16:
+summary: MTC_FUNCTIONS FAIL (1 of 93 not as wanted)
+bad (1): TX-9006
+could_not_check (0): none
+detail: 29 | TX-9006                         | f  | advisory statements 0
+-- T-W14-FN on k16:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-LK-9006-prepare_operation
+could_not_check (0): none
+detail: FN-LK-9006-prepare_operation      | bad     | prepare_operation's own text (1 body naming itself prepare_operation), comments and white space removed, holds pg_advisory_xact_lock(9006,…): false (wanted true)
+-- T-W07-LOCKS on k16l:
+LOCKS-po-repeat | bad | 5 runs (bad 5, could not check 0, ok 0); the second first use answered the repeat of one record: run 1: first ok  repeat=; second refused write_failed repeat= same id=False; records 1; the second was seen wait:transactionid:::ShareLock; the write failed (SQLSTATE 23505); run 
+W07_LOCKS_KEY_AND_HANDOVER_LOCKS FAIL (1 bad, 0 could not check, of 17)
+[program exit 1]
+mtc scrub (16_break_k01): claim-format strings replaced 0; environment-format strings replaced 0

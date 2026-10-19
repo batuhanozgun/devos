@@ -1,0 +1,20 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k04_lock9007_removed_in_artifact, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k19 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k19l exit 0]
+-- the self-check on k19:
+summary: MTC_FUNCTIONS FAIL (1 of 93 not as wanted)
+bad (1): TX-9007-transfer_artifact
+could_not_check (0): none
+detail: 15 | TX-9007-transfer_artifact       | f  | kind 'artifact'
+-- T-W14-FN on k19:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-LK-9007-transfer_artifact
+could_not_check (0): none
+detail: FN-LK-9007-transfer_artifact      | bad     | transfer_artifact's own text (1 body naming itself transfer_artifact), comments and white space removed, holds pg_advisory_xact_lock(9007,…): false (wanted true)
+-- T-W07-LOCKS on k19l:
+LOCKS-tr-repeat | bad | 5 runs (bad 5, could not check 0, ok 0); the second first use answered the repeat of one record: run 1: first ok  repeat=; second refused write_failed repeat= same id=False; records 1; the second was seen wait:transactionid:::ShareLock; the write failed (SQLSTATE 23505); run 
+W07_LOCKS_KEY_AND_HANDOVER_LOCKS FAIL (1 bad, 0 could not check, of 17)
+[program exit 1]
+mtc scrub (19_break_k04): claim-format strings replaced 0; environment-format strings replaced 0

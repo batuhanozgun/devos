@@ -1,0 +1,20 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's break k02_lock9005_shared_removed_in_event, a copy of the corrections outside the repository, applied in place of them on a fresh copy of t25)
+[database k17 from t25 exit 0]
+[apply exit 0]
+[history row exit 0]
+[marked copy k17l exit 0]
+-- the self-check on k17:
+summary: MTC_FUNCTIONS FAIL (1 of 93 not as wanted)
+bad (1): TX-9005-transfer_event
+could_not_check (0): none
+detail: 4 | TX-9005-transfer_event          | f  | shared statements 0
+-- T-W14-FN on k17:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 265)
+bad (1): FN-LK-9005-transfer_event
+could_not_check (0): none
+detail: FN-LK-9005-transfer_event         | bad     | transfer_event's own text (1 body naming itself transfer_event), comments and white space removed, holds pg_advisory_xact_lock_shared(9005,0): false (wanted true)
+-- T-W07-LOCKS on k17l:
+LOCKS-ho-fwd:transfer_event | bad | concurrent call refused reference_missing, seen gone; control after the hand-over refused handed_over: made while the hand-over was uncommitted, it did not wait for it; aggregate_id: names no work (or no such revision) written yet (EV-C02-013 3.1)
+W07_LOCKS_KEY_AND_HANDOVER_LOCKS FAIL (1 bad, 0 could not check, of 17)
+[program exit 1]
+mtc scrub (17_break_k02): claim-format strings replaced 0; environment-format strings replaced 0

@@ -26,10 +26,10 @@ begin
   o := $o$    v_check := 'key';
     perform pg_catalog.pg_advisory_xact_lock(9007, pg_catalog.hashtext('decision' || ':' || v_sid));$o$;
   nw := $n$    -- w14 break: the input commit compared before the key, so an exact repeat is compared too
-    select e.payload ->> 'input_commit' into v_tcb_ic from devos_private.event e
+    select e.payload ->> 'input_commit' into v_run_commit from devos_private.event e
      where e.event_type = 'transfer_run' and e.payload ->> 'run_id' = v_run and e.payload ->> 'phase' = 'begun'
      order by e.id limit 1;
-    if v_tcb_ic is not null and (p_in -> 'transfer_source' ->> 'input_commit') <> v_tcb_ic then
+    if v_run_commit is not null and (p_in -> 'transfer_source' ->> 'input_commit') <> v_run_commit then
       v_code := 'invalid_field'; v_reason := 'w14 break: input commit compared before the key';
       raise exception using errcode = 'P0D01', message = 'devos refusal';
     end if;
