@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b19_prepare_entry_scope_check_removed, a copy of M09-08 outside the repository, in database k34 copied from t19)
+[database k34 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b19_prepare_entry_scope_check_removed.sql  (as postgres)
+[apply exit 0]
+ 112 | PO-entry-artifact-outside              | f  | ok                       | scope_outside            | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+ 113 | PO-entry-finding-outside               | f  | ok repeat                | scope_outside            | {}                             |  | wanted delta {"rejected": 1}
+ 114 | PO-entry-work-outside                  | f  | ok repeat                | scope_outside            | {}                             |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (3 of 252 not as wanted)
+[self-check done]
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: NOTICE:  W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (27/27)
+w07_f05_scope_both_sides.sql:  F05-b    | bad     | source in another scope: accepted, wanted refused
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: ERROR:  W07_F05_SCOPE_BOTH_SIDES FAIL (1 bad, 0 could not check, of 7)
+m0908 scrub (34_break_b19_prepare_entry_scope_check_removed): claim-format strings replaced 0; environment-format strings replaced 0

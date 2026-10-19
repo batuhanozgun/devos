@@ -1,0 +1,7 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-5C-1_claim_of_another_work_item.sql applied in place, w07.throwaway=yes, in database p62 copied from t20)
+[database p62 from t20 exit 0]
+[patch exit 0]
+w07_5c_other_session_fake_id.sql: psql:tests/C02/W-C02-07/job/w07_5c_other_session_fake_id.sql:362: NOTICE:  W07_5C_OTHER_SESSION_FAKE_ID PASS (8/8)
+w07_n17_claim_token.sql:  N17-pre | could_not_check | fixture: P0001 w07: a fixture claim was refused
+w07_n17_claim_token.sql: psql:tests/C02/W-C02-07/job/w07_n17_claim_token.sql:401: ERROR:  W07_N17_CLAIM_TOKEN COULD NOT CHECK (1 of 1 could not be checked)
+m0908 scrub (62_merged_B-5C-1): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b05_prepare_generation_not_compared, a copy of M09-08 outside the repository, in database k20 copied from t19)
+[database k20 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b05_prepare_generation_not_compared.sql  (as postgres)
+[apply exit 0]
+ 188 | PO-conflict-generation                 | f  | ok repeat                | conflict                 | {}                             |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (1 of 252 not as wanted)
+[self-check done]
+w07_f01_whole_intent.sql:  F01-c    | bad             | different claim generation: accepted, wanted refused
+w07_f01_whole_intent.sql:  F01-g    | could_not_check | different authority epoch: could not plant the earlier epoch: new row for relation "operation" violates check constraint "operation_authority_epoch_check"
+w07_f01_whole_intent.sql: psql:tests/C02/W-C02-07/job/w07_f01_whole_intent.sql:516: ERROR:  W07_F01_WHOLE_INTENT FAIL (1 bad, 1 could not check, of 13)
+m0908 scrub (20_break_b05_prepare_generation_not_compared): claim-format strings replaced 0; environment-format strings replaced 0

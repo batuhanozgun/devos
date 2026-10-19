@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b16_prepare_target_scope_check_removed, a copy of M09-08 outside the repository, in database k31 copied from t19)
+[database k31 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b16_prepare_target_scope_check_removed.sql  (as postgres)
+[apply exit 0]
+ 103 | PO-target-scope-outside                | f  | ok                       | scope_outside            | {"event": 1, "operation": 1}   |  | wanted delta {"rejected": 1}
+ 104 | PO-target-scope-prefix-not-label       | f  | conflict                 | scope_outside            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+ 105 | PO-target-work-outside                 | f  | conflict                 | scope_outside            | {"rejected": 1}                | idempotency_key: its record holds another intent (F01: the key is bound to the operation's whole intent)
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (3 of 252 not as wanted)
+[self-check done]
+w07_f05_scope_both_sides.sql:  F05-d    | bad     | target in another scope (prepare_operation, second path): accepted, wanted refused
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: ERROR:  W07_F05_SCOPE_BOTH_SIDES FAIL (1 bad, 0 could not check, of 7)
+m0908 scrub (31_break_b16_prepare_target_scope_check_removed): claim-format strings replaced 0; environment-format strings replaced 0

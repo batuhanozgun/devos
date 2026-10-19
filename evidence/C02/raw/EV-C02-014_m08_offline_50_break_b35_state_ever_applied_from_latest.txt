@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b35_state_ever_applied_from_latest, a copy of M09-08 outside the repository, in database k50 copied from t19)
+[database k50 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b35_state_ever_applied_from_latest.sql  (as postgres)
+[apply exit 0]
+ 235 | OS-applied-then-unknown                | f  | false                    | true                     | {}                             | applied (-2 h) then unknown (-1 h): observed, ever applied, current unknown: {"status": "ok", "ever_applied": false, "cu
+ 239 | OS-out-of-order                        | f  | false                    | true                     | {}                             | current by observation time, not by arrival: {"status": "ok", "ever_applied": false, "current_effect": "not_applied", "o
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (2 of 252 not as wanted)
+[self-check done]
+w07_f07_observation_history.sql:  F07-a2  | bad     | applied then unknown: current state: accepted; applied in the past not answered as true | wanted ever_applied true, current unknown
+w07_f07_observation_history.sql:  F07-b2  | bad     | out of order: current state by observation time: accepted; applied in the past not answered as true | wanted ever_applied true, current not_applied
+w07_f07_observation_history.sql:  F07-c2  | bad     | merged then reverted: current state: accepted; applied in the past not answered as true | wanted ever_applied true, current not_applied
+w07_f07_observation_history.sql: psql:tests/C02/W-C02-07/job/w07_f07_observation_history.sql:412: ERROR:  W07_F07_OBSERVATION_HISTORY FAIL (3 bad, 0 could not check, of 7)
+m0908 scrub (50_break_b35_state_ever_applied_from_latest): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,6 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-F05-1_target_scope_check_removed.sql applied in place, w07.throwaway=yes, in database p59 copied from t20)
+[database p59 from t20 exit 0]
+[patch exit 0]
+w07_f05_scope_both_sides.sql:  F05-pre | could_not_check | fixture: P0001 w07: fixture artifact b refused
+w07_f05_scope_both_sides.sql: psql:tests/C02/W-C02-07/job/w07_f05_scope_both_sides.sql:398: ERROR:  W07_F05_SCOPE_BOTH_SIDES COULD NOT CHECK (1 of 1 could not be checked)
+m0908 scrub (59_merged_B-F05-1): claim-format strings replaced 0; environment-format strings replaced 0
