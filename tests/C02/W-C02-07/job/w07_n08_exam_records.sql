@@ -10,6 +10,8 @@
 -- Revised under ledger rule 3, 2026-10-19 (N-301): a reader whose parameter names an exam record reads an EvalRun that
 -- record_eval_run wrote (N08-rp), and three cases are added: N08-s5 (the link only in EvalRun, B 3.15), N08-wp3 (a run
 -- naming an earlier revision, B 3.15) and N08-s6 (a partial claim at the second layer, EV-C02-008 5.1 (c) bound 3).
+-- Revised under ledger rule 3, 2026-10-19 (N-301, L-395's annotation; CHK-C02-102 C2), before N08's first result:
+-- N08-wp4 added (the EvalRun records the revision the call names, B 3.15's "+revision"); no other case changes.
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',
@@ -384,6 +386,7 @@ declare why text; api text := pg_temp.w07_cfg('api_role'); i jsonb; toks jsonb :
         four text[] := array['devos_calisma', 'devos_denetim', 'devos_kurulum', 'devos_ci']; nread int := 0;
         pform boolean := false; eid text; rx jsonb; nm0 jsonb; nm1 jsonb; nmd jsonb; sqlr text; named boolean;
         plant text;
+        rx1 jsonb; rx2 jsonb; wp4_1 int; wp4_2 int; wp4_err text;  -- N08-wp4 (N-301, 2026-10-19)
 begin
   why := pg_temp.w07_pre_common();
   if why is null and to_regclass(pg_temp.w07_cfg('evalrun_table')) is null then why := pg_temp.w07_cfg('evalrun_table') || ' does not exist'; end if;
@@ -560,6 +563,50 @@ begin
     else
       perform pg_temp.w07_cnc('N08-wp3', 'record_eval_run is not of the form p jsonb, or no Mission revision was planted');
     end if;
+    -- Added under ledger rule 3, 2026-10-19 (N-301, the annotation of L-395: CHK-C02-102 C2), before N08's first result.
+    -- N08-wp4: the EvalRun records the revision the call names (B 3.15's work_ref "+revision: the work item an exam task
+    -- was opened as"; B principle 3). With revision 2 planted as the current one, a run naming revision 1 is written with
+    -- work_revision 1, and a run naming revision 2 with 2; read as the owner inside an undone block. It asks of N08-wp3's
+    -- call what N08-wp3 does not: the row written. With N08-wp2 not accepted, or either run not accepted, it is
+    -- could_not_check (N08-wp3 judges the acceptance).
+    if pform and mrid is not null then
+      wp4_1 := null; wp4_2 := null; wp4_err := null; rx1 := null; rx2 := null;
+      begin
+        execute format('insert into devos_private.work_revision (work_id, revision, mission_revision_id, scope, purpose, '
+          || 'impact_class) values (%L, 2, %L, %L, %L, (enum_range(null::devos_private.impact_class))[1])', wid, mrid,
+          'synthetic.w07_fixture', 'w07_fixture SYNTHETIC W-C02-07 revised by its subject');
+        perform set_config('request.headers', pg_temp.w07_h(toks->>'devos_sinav'), true);
+        execute format('set local role %I', api);
+        execute pg_temp.n08_run_sql(wid, 1, 'w07_fixture_eval_set_named_1') into rx1;
+        execute pg_temp.n08_run_sql(wid, 2, 'w07_fixture_eval_set_named_2') into rx2;
+        execute 'reset role';
+        perform set_config('request.headers', '{}', true);
+        if rx1->>'status' = 'ok' then
+          execute format('select work_revision from %s where id::text = %L', ev, rx1->>'id') into wp4_1;
+        end if;
+        if rx2->>'status' = 'ok' then
+          execute format('select work_revision from %s where id::text = %L', ev, rx2->>'id') into wp4_2;
+        end if;
+        raise exception using errcode = 'P0W07', message = 'w07: undo the case';
+      exception
+        when sqlstate 'P0W07' then null;
+        when others then wp4_err := sqlstate || ' ' || left(sqlerrm, 120);
+      end;
+      if wp4_err is not null then
+        perform pg_temp.w07_cnc('N08-wp4', 'the case could not be made: ' || wp4_err);
+      elsif (select outcome from w07_results where case_id = 'N08-wp2') is distinct from 'ok' then
+        perform pg_temp.w07_cnc('N08-wp4', 'N08-wp2 was not accepted, so the rows read here would not be the rule''s');
+      elsif rx1->>'status' is distinct from 'ok' or rx2->>'status' is distinct from 'ok' then
+        perform pg_temp.w07_cnc('N08-wp4', 'a run was not accepted (N08-wp3 judges the acceptance): naming 1: '
+          || concat_ws(' ', rx1->>'status', rx1->>'reason_code') || '; naming 2: ' || concat_ws(' ', rx2->>'status', rx2->>'reason_code'));
+      else
+        perform pg_temp.w07_put('N08-wp4', wp4_1 = 1 and wp4_2 = 2,
+          'revision 2 current; the EvalRun written for a run naming revision 1 records work_revision ' || coalesce(wp4_1::text, 'none')
+          || ', for one naming revision 2, ' || coalesce(wp4_2::text, 'none') || ' (wanted 1 and 2)');
+      end if;
+    else
+      perform pg_temp.w07_cnc('N08-wp4', 'record_eval_run is not of the form p jsonb, or no Mission revision was planted');
+    end if;
     -- Added under ledger rule 3, 2026-10-19 (N-301; k21). N08-s6: EV-C02-008 5.1 (c) bound 3's second layer refuses to
     -- name a work item with an active claim of class devos_sinav. A claim on the work item whose role class is absent
     -- (planted by the owner, a state only a fault makes: the column's NOT NULL dropped for the plant) cannot be told the
@@ -587,6 +634,7 @@ begin
     end if;
   else
     perform pg_temp.w07_cnc('N08-wp3', 'no planted work item');
+    perform pg_temp.w07_cnc('N08-wp4', 'no planted work item');
     perform pg_temp.w07_cnc('N08-s6', 'no planted work item');
   end if;
   toks := null; scrub := null;
