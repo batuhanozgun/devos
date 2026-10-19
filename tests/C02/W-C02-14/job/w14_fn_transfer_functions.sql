@@ -31,9 +31,31 @@
 -- cases are judged only when the function exists and their FN-T-ev control was accepted; 23 cases added for M09-10's
 -- rules EV-C02-014 12.4 lists, record_ledger_entry's Rule O and a declared role_class (the third block below). No earlier
 -- case ID or expected outcome changed.
+-- [Corrected 2026-10-19, test round 2, part TC-B (the imprecision CHK-C02-109 finding 2 names; CHK-C02-108 C1 (a)):
+-- "before any result" reads "before any result of these cases". This file's first result is that of its 109-case form,
+-- the migration job's run 39209315850; these cases were committed on the branch at e9f7867 (06:11:33Z), before the push
+-- of main 23e2d22 (06:20:09Z) that started that run, and were not on main then (the specification's revision section of
+-- 2026-10-19).]
 -- Revised under ledger rule 3, 2026-10-19 (N-303 with its L-398 annotation; CHK-C02-104 C2, its X1 and C1), before any
 -- result: 30 cases added for M09-11's rules EV-C02-014 13.4 lists, the refusal of special and offset-less answer times
 -- and transfer_mission's one-Mission lock (the fourth block below). No earlier case ID or expected outcome changed.
+-- [Corrected 2026-10-19, test round 2, part TC-B (the same imprecision, CHK-C02-109 finding 2): "before any result" reads
+-- "before any result of these cases", for the same reason as the bracket above: the 109-case form's result came first,
+-- and these 30 cases, committed on the branch at e9f7867 before that run, were not on main then.]
+-- Revised under ledger rule 3, 2026-10-19 (N-305 (1); CHK-C02-106 C2, its findings 2 and 6 and the checker's X3), after
+-- this file's first result (its 109-case form, the migration job's run 39209315850) and before any result of the cases
+-- added: 33 cases for the rules of M09-12's transfer_review and transfer_acceptance that EV-C02-014 14.4 lists as
+-- reached by no merged case, the target's acceptance_set event (X3) and an indeterminate copy (X4) (the fifth block
+-- below). No earlier case ID or expected outcome changed.
+-- Revised under ledger rule 3, 2026-10-19, test round 2, part TC-B (EV-C02-018 section 16, decisions 2, 5, 6, 7 and 8;
+-- EV-C02-013 section 28; CHK-C02-110; N-306), after this file's first result and before any result of the cases added,
+-- and before the corrective migration exists: (1) a fixture move (decision 7; 28 (11)): transfer_event's and
+-- transfer_relation's recipes (w14_prep) and the FN-CY and FN-TR blocks plant their Works under the installation's Mission
+-- (w14_iwork), so that the cases they feed keep their outcomes on the build before and after the corrective migration; no
+-- case ID, expected outcome or judging rule changed; (2) 70 cases (the sixth block below) for the corrective migration's
+-- decided forms: ownership of an event's record and of a relation's ends, the input commit compared with the run's, the
+-- locks 9005, 9006 and 9007 in each function's text, and the two partial indexes. Until that migration is recorded as
+-- applied, these 70 are could_not_check and the file is COULD NOT CHECK (README section 3); then each is judged.
 -- Safety: no psql meta-command and no backslash; owner-level states (a planted hand-over, a trigger that raises) are
 -- made inside subtransactions that are undone; stops at its first error; one row per case, then PASS, FAIL or COULD NOT
 -- CHECK (FAIL and COULD NOT CHECK raise).
@@ -230,6 +252,25 @@ create function pg_temp.w14_work() returns text language sql as $f$
   select pg_temp.w14_plant('devos_private.work_revision', jsonb_build_object('purpose',
          'w14_fixture SYNTHETIC W-C02-14 target of a verdict copy')) ->> 'work_id'
 $f$;
+-- [Added under ledger rule 3, 2026-10-19, test round 2, part TC-B (EV-C02-018 section 16 decision 7; EV-C02-013 28 (7),
+-- (8) and (11)): a fixture move, no case ID, expected outcome or judging rule changed. A synthetic work item planted as
+-- w14_work() plants one, but with its first revision under the installation's Mission's current revision (w14_install
+-- with p_run, or the one already in the database). It feeds transfer_event's and transfer_relation's recipes (w14_prep)
+-- and the FN-CY and FN-TR blocks, whose calls decision 7's ownership rule would otherwise refuse. w14_work() stays for
+-- the uses decision 7 does not judge (a Review copy's target, FN-AC-noinst, FN-TW-element, FN-TE-never/-agg/-kind).
+-- Raises P0W17 when it cannot be made.]
+create function pg_temp.w14_iwork(p_run text) returns text language plpgsql as $f$
+declare i jsonb; mr text;
+begin
+  i := pg_temp.w14_install(p_run);
+  execute 'select x.id::text from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+    into mr using i ->> 'mission';
+  if mr is null then
+    raise exception using errcode = 'P0W17', message = 'the installation''s Mission has no revision row, so no work item can be planted under it';
+  end if;
+  return pg_temp.w14_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', mr, 'purpose',
+         'w14_fixture SYNTHETIC W-C02-14 a work item under the installation''s Mission')) ->> 'work_id';
+end $f$;
 create function pg_temp.w14_work_acceptance(p_id text) returns text language plpgsql as $f$
 declare s text;
 begin
@@ -393,8 +434,10 @@ declare i jsonb;
 begin
   if p_fn = 'transfer_mission' then return pg_temp.w14_d010(p_run);
   elsif p_fn in ('transfer_work', 'transfer_need', 'record_handover', 'transfer_acceptance') then return pg_temp.w14_install(p_run);
-  elsif p_fn = 'transfer_relation' then return jsonb_build_object('from', pg_temp.w14_work(), 'to', pg_temp.w14_work());
-  elsif p_fn = 'transfer_event' then return jsonb_build_object('target', pg_temp.w14_work());
+  -- [2026-10-19, test round 2, part TC-B, a fixture move (decision 7): the two Works and the event's Work lie under the
+  -- installation's Mission (w14_iwork); they were w14_work()'s, under a planted Mission with no creation event.]
+  elsif p_fn = 'transfer_relation' then return jsonb_build_object('from', pg_temp.w14_iwork(p_run), 'to', pg_temp.w14_iwork(p_run));
+  elsif p_fn = 'transfer_event' then return jsonb_build_object('target', pg_temp.w14_iwork(p_run));
   elsif p_fn = 'record_ledger_entry' then
     i := pg_temp.w14_install(p_run);
     return i || jsonb_build_object('stage', pg_temp.w14_need('transfer_work for the stage''s Work', pg_temp.w14_call('devos_kurulum',
@@ -1227,7 +1270,8 @@ begin
       raise exception using errcode = 'P0W17', message = 'devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)'; end if;
     run := pg_temp.w14_begin(tag || '_run_cy');
     if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
-    w1 := pg_temp.w14_work(); w2 := pg_temp.w14_work();
+    -- [2026-10-19, test round 2, part TC-B, a fixture move (decision 7): both Works under the installation's Mission.]
+    w1 := pg_temp.w14_iwork(run); w2 := pg_temp.w14_iwork(run);
     s0 := pg_temp.w14_counts();
     r := pg_temp.w14_call('devos_kurulum', 'transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run,
            'sid', tag || '_REL-CY1', 'from', w1, 'to', w2, 'type', 'depends_on', 'hard', true)));
@@ -1936,7 +1980,8 @@ begin
       raise exception using errcode = 'P0W17', message = 'devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)'; end if;
     run := pg_temp.w14_begin(tag || '_run_tr4');
     if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
-    w := pg_temp.w14_work(); w2 := pg_temp.w14_work();
+    -- [2026-10-19, test round 2, part TC-B, a fixture move (decision 7): both Works under the installation's Mission.]
+    w := pg_temp.w14_iwork(run); w2 := pg_temp.w14_iwork(run);
     t := pg_temp.w14_try('transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run, 'sid', tag || '_TR-end',
            'from', gen_random_uuid()::text, 'to', w2)));
     acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-TR-end', 'cond', pg_temp.w14_refused_with(t, 'reference_missing'),
@@ -2012,6 +2057,905 @@ begin
       || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
   end;
   perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+end $$;
+
+-- Added under ledger rule 3, 2026-10-19 (note N-305 (1); CHK-C02-106 C2 and its findings 2 and 6, the checker's X3;
+-- EV-C02-014 14.4's last bullet and 14.5; EV-C02-013 27 (2) to (9)), test round 2, part M12, after this file's first result
+-- (that of its 109-case form) and before any result of these cases: cases for the rules of M09-12's two functions that no
+-- merged case reached (the producer's break copies b02, b05, b07, b08, b11 of transfer_review; b13, b16 to b20, b22 to b29
+-- of transfer_acceptance), the presence of the target's acceptance_set event (X3), and, beyond N-305's list, an
+-- indeterminate copy (X4 of the same check's finding 6; EV-C02-013 27 (11)). New case IDs; every earlier case ID
+-- and expected outcome is kept. Each ✘ case differs from an accepted call of this file in one thing (named in the
+-- specification), and wants the reason code EV-C02-013 3.2 and section 27 give, with nothing written but
+-- rejected_attempt (+1 or more), no transferred mark of its source, and its target's state as before; another code, or
+-- an acceptance, is bad; a raised answer, a prerequisite not accepted, or a pair not accepted is could_not_check.
+-- A Review copy written with devos_kurulum (transfer_review's recipe, p_extra merged over it); raises P0W17 when not accepted.
+create function pg_temp.w14_copy(p_run text, p_sid text, p_target text, p_extra jsonb default '{}') returns text
+language plpgsql as $f$
+begin
+  return pg_temp.w14_need('transfer_review of the Review copy ' || p_sid, pg_temp.w14_call('devos_kurulum', 'transfer_review',
+    pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', p_run, 'sid', p_sid, 'target', p_target)) || p_extra));
+end $f$;
+-- A Work transferred under the installation's Mission (p_i: w14_install's answer); raises P0W17 when not accepted.
+create function pg_temp.w14_twork(p_i jsonb, p_run text, p_sid text) returns text language plpgsql as $f$
+begin
+  return pg_temp.w14_need('transfer_work for the target Work ' || p_sid, pg_temp.w14_call('devos_kurulum', 'transfer_work',
+    pg_temp.w14_recipe('transfer_work', p_i || jsonb_build_object('run', p_run, 'sid', p_sid))));
+end $f$;
+-- transfer_acceptance's recipe for one target and one Review copy, p_extra merged over it.
+create function pg_temp.w14_acc(p_run text, p_sid text, p_target text, p_review text, p_extra jsonb default '{}') returns jsonb
+language sql as $f$
+  select pg_temp.w14_recipe('transfer_acceptance', jsonb_build_object('run', p_run, 'sid', p_sid, 'target', p_target,
+           'review', p_review)) || p_extra
+$f$;
+create function pg_temp.w14_dstatus(p_id text) returns text language plpgsql as $f$
+declare s text;
+begin
+  execute 'select x.status::text from devos_private.decision x where x.id::text = $1' into s using p_id;
+  return coalesce(s, 'absent');
+end $f$;
+-- The acceptance_set events on one record, as JSON (aggregate revision, payload, class and origin).
+create function pg_temp.w14_asets(p_id text) returns jsonb language plpgsql as $f$
+declare j jsonb;
+begin
+  execute 'select coalesce(jsonb_agg(jsonb_build_object(''rev'', e.aggregate_revision, ''payload'', e.payload, ''rc'', e.role_class,
+             ''origin'', e.origin::text) order by e.id), ''[]''::jsonb) from devos_private.event e
+            where e.aggregate_id::text = $1 and e.event_type::text = ''acceptance_set''' into j using p_id;
+  return j;
+end $f$;
+-- A ✘ acceptance or review case: refused with p_code, nothing written but rejected_attempt, no mark of p_sid, and the
+-- target's state p_before as p_after. Null (could_not_check) when the answer is outside interface v1 or the test's own.
+create function pg_temp.w14_no(t jsonb, p_code text, p_sid text, p_before text, p_after text) returns boolean
+language sql as $f$
+  select case when pg_temp.w14_refused_with(t, p_code) is null then null
+              else pg_temp.w14_refused_with(t, p_code) and pg_temp.w14_marks(p_sid) = 0 and p_before is not distinct from p_after end
+$f$;
+-- A Decision planted by the owner (high_impact, the status given, answered_revision 1 when answered or accepted), its
+-- revision 1 (alternatives_state given; no options, no single_viable_path_reason), and its creation event decision_opened
+-- of the class given (call), as a Decision another function opened (EV-C02-013 27 (6): the creation event is its first
+-- event on aggregate decision).
+create function pg_temp.w14_pdec(p_status text, p_class text, p_alt text) returns text language plpgsql as $f$
+declare dc jsonb;
+begin
+  dc := pg_temp.w14_plant('devos_private.decision', jsonb_build_object('class', 'high_impact', 'status', p_status,
+          'answered_revision', case when p_status in ('answered', 'accepted') then 1 end));
+  perform pg_temp.w14_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc -> 'id', 'revision', 1,
+          'question', 'w14_fixture SYNTHETIC W-C02-14 a decision another function opened', 'alternatives_state', p_alt));
+  insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin)
+  values ('decision', (dc ->> 'id')::uuid, 1, 'decision_opened', '{"w14_fixture": "SYNTHETIC W-C02-14"}', p_class, 'call');
+  return dc ->> 'id';
+end $f$;
+
+do $$
+declare tag text := pg_temp.w14_tag(); run text; run2 text; acc jsonb; t jsonb; t2 jsonb; t3 jsonb; tp jsonb; i jsonb; om jsonb;
+        w text; w2 text; rv text; rv2 text; d text; id text; k text; kc text; ids text[]; blk text[]; nb bigint; row jsonb;
+        st0 text; st1 text; st2 text; sets jsonb; own text; c text; mrid text;
+begin
+  if pg_temp.w14_pre() is not null then return; end if;  -- FN-pre is recorded by the first block
+  ids := array['FN-RV-sample', 'FN-RV-sample-alone', 'FN-RV-never', 'FN-RV-completed', 'FN-RV-target', 'FN-RV-target-rev',
+               'FN-RV-trev-pos', 'FN-RV-level', 'FN-RV-basis', 'FN-AC-work-event', 'FN-AC-authority', 'FN-AC-notcopy',
+               'FN-AC-owner', 'FN-AC-owner-cnc', 'FN-AC-ce-noreview', 'FN-AC-ce-unwritten', 'FN-AC-ce-event-unwritten',
+               'FN-AC-use', 'FN-AC-indeterminate', 'FN-AC-never', 'FN-AC-completed', 'FN-I-same-acceptance', 'FN-I-other-acceptance',
+               'FN-AC-trev-pos', 'FN-AC-trev-stale', 'FN-AC-trev-ahead', 'FN-AC-noinst', 'FN-AC-dec-pos',
+               'FN-AC-dec-opened-pos', 'FN-AC-dec-owner', 'FN-AC-dec-open', 'FN-AC-dec-declined', 'FN-AC-dec-openexp'];
+  if pg_temp.w14_handovers() > 0 then
+    perform pg_temp.w14_rec(x, 'could_not_check', 'a ledger_handed_over event is already in this database, so the state '
+      || 'before the hand-over cannot be planted') from unnest(ids) x;
+    return;
+  end if;
+
+  -- transfer_review (EV-C02-013 3.2 and 27 (2); B 3.11's copy rule; EV-C02-008 2.2 condition 2). The control is
+  -- FN-T-ev-transfer_review's call (an open run, a planted Work as target_ref, independence_level
+  -- fresh_context_subagent, basis_refs ["w14_fixture_tree"]), accepted in this block; if it is not, every case here is
+  -- could_not_check. FN-RV-sample (✘; b02): kind sample: kind_not_allowed. FN-RV-sample-alone (✘; b02): {"kind":
+  -- "sample"} and no other key: kind_not_allowed (kind is read before any other key). FN-RV-never and FN-RV-completed
+  -- (✘; b05): a run never begun, or one end_transfer_run completed: run_not_open. FN-RV-target (✘; b07): target_ref
+  -- naming no record: reference_missing. FN-RV-target-rev (✘): target_revision 2 of a Work with one revision:
+  -- reference_missing; its pair FN-RV-trev-pos (✔): target_revision 1, accepted, stored on the copy. FN-RV-level (✘; b08):
+  -- independence_level same_session: invalid_field. FN-RV-basis (✘; b11): basis_refs []: missing_field.
+  blk := array['FN-RV-sample', 'FN-RV-sample-alone', 'FN-RV-never', 'FN-RV-completed', 'FN-RV-target', 'FN-RV-target-rev',
+               'FN-RV-trev-pos', 'FN-RV-level', 'FN-RV-basis']; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_review(jsonb)') is null or to_regprocedure('devos_api.end_transfer_run(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_review(jsonb) or end_transfer_run(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_rv5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    w := pg_temp.w14_work();
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-ctl', 'target', w)));
+    kc := pg_temp.w14_kind(t -> 'r');
+    if kc <> 'accepted' then
+      raise exception using errcode = 'P0W17', message = 'the control (FN-T-ev-transfer_review''s call) was not accepted: ' || pg_temp.w14_brief(t -> 'r'); end if;
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-sample', 'target', w))
+           || '{"kind": "sample"}');
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-sample', 'cond', pg_temp.w14_no(t, 'kind_not_allowed', tag || '_RV-sample', '', ''),
+      'detail', 'transfer_review of kind sample: ' || pg_temp.w14_say(t, 'refused kind_not_allowed, none, at least 1') || '; marks '
+        || pg_temp.w14_marks(tag || '_RV-sample') || ' (wanted 0)'));
+    t := pg_temp.w14_try('transfer_review', '{"kind": "sample"}');
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-sample-alone', 'cond', pg_temp.w14_no(t, 'kind_not_allowed', tag || '_none', '', ''),
+      'detail', 'transfer_review with {"kind": "sample"} and no other key: ' || pg_temp.w14_say(t, 'refused kind_not_allowed, none, at least 1')));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', tag || '_run_rv5_never_begun',
+           'sid', tag || '_RV-never', 'target', w)));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-never', 'cond', pg_temp.w14_no(t, 'run_not_open', tag || '_RV-never', '', ''),
+      'detail', 'transfer_review naming a run never begun: ' || pg_temp.w14_say(t, 'refused run_not_open, none, at least 1')));
+    run2 := pg_temp.w14_begin(tag || '_run_rv5_done');
+    if run2 is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe for the second run'; end if;
+    perform pg_temp.w14_need('end_transfer_run of the second run', pg_temp.w14_call('devos_kurulum', 'end_transfer_run',
+      pg_temp.w14_recipe('end_transfer_run', jsonb_build_object('run', run2))));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run2, 'sid', tag || '_RV-done', 'target', w)));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-completed', 'cond', pg_temp.w14_no(t, 'run_not_open', tag || '_RV-done', '', ''),
+      'detail', 'transfer_review naming a run end_transfer_run completed: ' || pg_temp.w14_say(t, 'refused run_not_open, none, at least 1')));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-target',
+           'target', gen_random_uuid()::text)));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-target', 'cond', pg_temp.w14_no(t, 'reference_missing', tag || '_RV-target', '', ''),
+      'detail', 'transfer_review whose target_ref names no record: ' || pg_temp.w14_say(t, 'refused reference_missing, none, at least 1')));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-trev2', 'target', w))
+           || '{"target_revision": 2}');
+    tp := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-trev1', 'target', w))
+           || '{"target_revision": 1}');
+    k := pg_temp.w14_kind(tp -> 'r');
+    row := pg_temp.w14_row('devos_private.review', 'id', pg_temp.w14_id(tp -> 'r'));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-trev-pos',
+      'cond', pg_temp.w14_accepted_and(tp, (row ->> 'target_revision')::int = 1 and row ->> 'target_ref' = w
+                and pg_temp.w14_marks(tag || '_RV-trev1') = 1),
+      'detail', 'transfer_review with target_revision 1 of a Work with one revision: ' || pg_temp.w14_brief(tp -> 'r')
+        || '; stored target_ref is the Work: ' || coalesce((row ->> 'target_ref' = w)::text, 'no row') || ', target_revision '
+        || coalesce(row ->> 'target_revision', 'none') || ', marks ' || pg_temp.w14_marks(tag || '_RV-trev1') || ' (wanted accepted, true, 1, 1)'));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-target-rev',
+      'cond', case when k <> 'accepted' then null else pg_temp.w14_no(t, 'reference_missing', tag || '_RV-trev2', '', '') end,
+      'detail', 'transfer_review with target_revision 2 of a Work with one revision: ' || pg_temp.w14_say(t, 'refused reference_missing, none, at least 1')
+        || '; its pair FN-RV-trev-pos: ' || k));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-level', 'target', w))
+           || '{"independence_level": "same_session"}');
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-level', 'cond', pg_temp.w14_no(t, 'invalid_field', tag || '_RV-level', '', ''),
+      'detail', 'transfer_review with independence_level same_session: ' || pg_temp.w14_say(t, 'refused invalid_field, none, at least 1')));
+    t := pg_temp.w14_try('transfer_review', pg_temp.w14_recipe('transfer_review', jsonb_build_object('run', run, 'sid', tag || '_RV-basis', 'target', w))
+           || '{"basis_refs": []}');
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-RV-basis', 'cond', pg_temp.w14_no(t, 'missing_field', tag || '_RV-basis', '', ''),
+      'detail', 'transfer_review with basis_refs []: ' || pg_temp.w14_say(t, 'refused missing_field, none, at least 1')));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+
+  -- transfer_acceptance on a Work (EV-C02-013 3.2 and 27 (3) to (9); B 3.11; EV-C02-005 2.4). Each target is a Work of
+  -- its own, transferred under the installation's Mission, named by a pass Review copy of its own, unless the case says
+  -- otherwise. FN-AC-work-event (✔; the checker's X3): FN-A-pos's call is accepted, the Work is accepted, and exactly one
+  -- acceptance_set event is on the Work at its current revision (1), with payload acceptance accepted, previous_acceptance
+  -- proposed, the Acceptance's id and the copy's id, devos_kurulum/call; the new events are that one and the Acceptance's
+  -- one transferred mark; the Acceptance records target_revision 1. It is the pair of the ✘ cases of this block: if it is
+  -- not accepted, they are could_not_check. FN-AC-authority (✔; b24): with an owner_authority key added (a random uuid),
+  -- accepted, and the Acceptance's owner_authority is the installation's Mission's current revision's (27 (5)).
+  -- FN-AC-notcopy (✘; b13): a Review planted by the owner whose creation event is review_opened (pass, its use
+  -- installation_acceptance): verdict_missing. FN-AC-owner (✘; b17): the target a Work under a Mission opened through
+  -- open_mission: not_owner. FN-AC-owner-cnc (✘): under a Mission with no creation event: could_not_check (W-C02-09 point
+  -- 7). FN-AC-ce-noreview (✘; b22): current_evidence naming the target Work only: invalid_field. FN-AC-ce-unwritten (✘;
+  -- b28): current_evidence naming the copy and a uuid of no record: reference_missing. FN-AC-ce-event-unwritten (✘): the
+  -- copy and an event_id of no event: reference_missing. FN-AC-use (✘; b23): the copy's use w14_fixture_other_use:
+  -- invalid_field. FN-AC-indeterminate (✘; the checker's X4 of CHK-C02-106, finding 6): a copy whose verdict is
+  -- indeterminate: verdict_failed (B 3.11: indeterminate accepts nothing; EV-C02-013 27 (4)). FN-AC-never and
+  -- FN-AC-completed (✘; b25): a run never begun, or one completed: run_not_open.
+  blk := array['FN-AC-work-event', 'FN-AC-authority', 'FN-AC-notcopy', 'FN-AC-owner', 'FN-AC-owner-cnc', 'FN-AC-ce-noreview',
+               'FN-AC-ce-unwritten', 'FN-AC-ce-event-unwritten', 'FN-AC-use', 'FN-AC-indeterminate', 'FN-AC-never',
+               'FN-AC-completed']; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null or to_regprocedure('devos_api.transfer_review(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_acceptance(jsonb) or transfer_review(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_ac5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    -- FN-AC-work-event.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-ev'); rv := pg_temp.w14_copy(run, tag || '_RVC-ev', w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-ev', w, rv));
+    kc := pg_temp.w14_kind(t -> 'r'); id := pg_temp.w14_id(t -> 'r');
+    sets := pg_temp.w14_asets(w); row := pg_temp.w14_row('devos_private.acceptance', 'id', id);
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-work-event',
+      'cond', pg_temp.w14_accepted_and(t, pg_temp.w14_work_acceptance(w) = 'accepted' and (t -> 'ch') ? 'acceptance' and jsonb_array_length(sets) = 1
+                and (sets -> 0 ->> 'rev')::int = 1 and sets -> 0 -> 'payload' ->> 'acceptance' = 'accepted'
+                and sets -> 0 -> 'payload' ->> 'previous_acceptance' = 'proposed' and sets -> 0 -> 'payload' ->> 'acceptance_id' = id
+                and sets -> 0 -> 'payload' ->> 'review_ref' = rv and sets -> 0 ->> 'rc' = 'devos_kurulum' and sets -> 0 ->> 'origin' = 'call'
+                and pg_temp.w14_types(t -> 'evs') = 'acceptance_set,transferred' and pg_temp.w14_marks(tag || '_AC-ev') = 1
+                and (row ->> 'target_revision')::int = 1),
+      'detail', 'transfer_acceptance of a pass copy on a Work under the installation''s Mission: ' || pg_temp.w14_brief(t -> 'r')
+        || '; the Work''s acceptance ' || pg_temp.w14_work_acceptance(w) || '; its acceptance_set events ' || sets::text
+        || '; new events ' || pg_temp.w14_types(t -> 'evs') || '; the Acceptance''s target_revision ' || coalesce(row ->> 'target_revision', 'none')
+        || ' (wanted accepted, accepted, one event at revision 1 with accepted/proposed/the ids, devos_kurulum/call; '
+        || 'acceptance_set,transferred; 1)'));
+    -- FN-AC-authority.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-auth'); rv := pg_temp.w14_copy(run, tag || '_RVC-auth', w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-auth', w, rv, jsonb_build_object('owner_authority', gen_random_uuid()::text)));
+    row := pg_temp.w14_row('devos_private.acceptance', 'id', pg_temp.w14_id(t -> 'r'));
+    execute 'select x.owner_authority::text from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+      into own using i ->> 'mission';
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-authority',
+      'cond', pg_temp.w14_accepted_and(t, own is not null and row ->> 'owner_authority' = own),
+      'detail', 'transfer_acceptance with an owner_authority key sent: ' || pg_temp.w14_brief(t -> 'r') || '; the Acceptance''s '
+        || 'owner_authority is the installation''s Mission''s current revision''s: ' || coalesce((row ->> 'owner_authority' = own)::text, 'no')
+        || ' (wanted accepted, true)'));
+    -- FN-AC-notcopy.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-nc');
+    rv := pg_temp.w14_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', w, 'use', 'installation_acceptance',
+            'basis_refs', '["w14_fixture_tree"]'::jsonb, 'reviewer_role_class', 'devos_denetim',
+            'independence_level', 'fresh_context_subagent')) ->> 'id';
+    perform pg_temp.w14_plant('devos_private.verdict', jsonb_build_object('review_ref', rv, 'result', 'pass'));
+    insert into devos_private.event (aggregate_type, aggregate_id, event_type, payload, role_class, origin)
+    values ('review', rv::uuid, 'review_opened', '{"w14_fixture": "SYNTHETIC W-C02-14"}', 'devos_denetim', 'call');
+    st0 := pg_temp.w14_work_acceptance(w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-nc', w, rv));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-notcopy',
+      'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, 'verdict_missing', tag || '_AC-nc', st0, pg_temp.w14_work_acceptance(w)) end,
+      'detail', 'transfer_acceptance naming a Review whose creation event is review_opened (pass): ' || pg_temp.w14_say(t, 'refused verdict_missing, none, at least 1')
+        || '; the Work''s acceptance ' || st0 || ' then ' || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    -- FN-AC-owner and FN-AC-owner-cnc: the target under a Mission that is not the installation's.
+    foreach c in array array['owner', 'owner-cnc'] loop
+      om := pg_temp.w14_other_mission(c = 'owner');
+      w := pg_temp.w14_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', om ->> 'mission_revision_id',
+             'purpose', 'w14_fixture SYNTHETIC W-C02-14 a Work outside the installation')) ->> 'work_id';
+      rv := pg_temp.w14_copy(run, tag || '_RVC-' || c, w);
+      st0 := pg_temp.w14_work_acceptance(w);
+      t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-' || c, w, rv));
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-' || c,
+        'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, case c when 'owner' then 'not_owner' else 'could_not_check' end,
+                  tag || '_AC-' || c, st0, pg_temp.w14_work_acceptance(w)) end,
+        'detail', 'transfer_acceptance on a Work under a Mission ' || case c when 'owner' then 'opened through open_mission: '
+          else 'with no creation event: ' end || pg_temp.w14_say(t, 'refused ' || case c when 'owner' then 'not_owner' else 'could_not_check' end
+          || ', none, at least 1') || '; the Work''s acceptance ' || st0 || ' then ' || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    end loop;
+    -- FN-AC-ce-noreview, FN-AC-ce-unwritten, FN-AC-ce-event-unwritten: one target and one copy.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-ce'); rv := pg_temp.w14_copy(run, tag || '_RVC-ce', w);
+    execute 'select coalesce(max(e.id), 0) + 1000000 from devos_private.event e' into nb;
+    foreach c in array array['noreview', 'unwritten', 'event-unwritten'] loop
+      st0 := pg_temp.w14_work_acceptance(w);
+      t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-ce-' || c, w, rv, jsonb_build_object('current_evidence',
+             case c when 'noreview' then jsonb_build_array(w) when 'unwritten' then jsonb_build_array(rv, gen_random_uuid()::text)
+                    else jsonb_build_array(rv, jsonb_build_object('event_id', nb)) end)));
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-ce-' || c,
+        'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, case c when 'noreview' then 'invalid_field' else 'reference_missing' end,
+                  tag || '_AC-ce-' || c, st0, pg_temp.w14_work_acceptance(w)) end,
+        'detail', 'transfer_acceptance whose current_evidence ' || case c when 'noreview' then 'names the target Work only, not the copy: '
+          when 'unwritten' then 'names the copy and a uuid of no record: ' else 'names the copy and an event_id of no event: ' end
+          || pg_temp.w14_say(t, 'refused ' || case c when 'noreview' then 'invalid_field' else 'reference_missing' end || ', none, at least 1')
+          || '; the Work''s acceptance ' || st0 || ' then ' || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    end loop;
+    -- FN-AC-use.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-use'); rv := pg_temp.w14_copy(run, tag || '_RVC-use', w, '{"use": "w14_fixture_other_use"}');
+    st0 := pg_temp.w14_work_acceptance(w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-use', w, rv));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-use',
+      'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, 'invalid_field', tag || '_AC-use', st0, pg_temp.w14_work_acceptance(w)) end,
+      'detail', 'transfer_acceptance naming a copy whose use is w14_fixture_other_use: ' || pg_temp.w14_say(t, 'refused invalid_field, none, at least 1')
+        || '; the Work''s acceptance ' || st0 || ' then ' || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    -- FN-AC-indeterminate.
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-ind'); rv := pg_temp.w14_copy(run, tag || '_RVC-ind', w,
+           '{"verdict": {"result": "indeterminate", "objections": [], "evidence_refs": [], "limits": []}}');
+    st0 := pg_temp.w14_work_acceptance(w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-ind', w, rv));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-indeterminate',
+      'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, 'verdict_failed', tag || '_AC-ind', st0, pg_temp.w14_work_acceptance(w)) end,
+      'detail', 'transfer_acceptance naming a copy whose verdict is indeterminate: ' || pg_temp.w14_say(t, 'refused verdict_failed, none, at least 1')
+        || '; the Work''s acceptance ' || st0 || ' then ' || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    -- FN-AC-never and FN-AC-completed.
+    run2 := pg_temp.w14_begin(tag || '_run_ac5_done');
+    if run2 is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe for the second run'; end if;
+    perform pg_temp.w14_need('end_transfer_run of the second run', pg_temp.w14_call('devos_kurulum', 'end_transfer_run',
+      pg_temp.w14_recipe('end_transfer_run', jsonb_build_object('run', run2))));
+    foreach c in array array['never', 'completed'] loop
+      w := pg_temp.w14_twork(i, run, tag || '_W-AC-' || c); rv := pg_temp.w14_copy(run, tag || '_RVC-' || c, w);
+      st0 := pg_temp.w14_work_acceptance(w);
+      t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(case c when 'never' then tag || '_run_ac5_never_begun' else run2 end,
+             tag || '_AC-' || c, w, rv));
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-' || c,
+        'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, 'run_not_open', tag || '_AC-' || c, st0, pg_temp.w14_work_acceptance(w)) end,
+        'detail', 'transfer_acceptance naming ' || case c when 'never' then 'a run never begun: ' else 'a run end_transfer_run completed: ' end
+          || pg_temp.w14_say(t, 'refused run_not_open, none, at least 1') || '; the Work''s acceptance ' || st0 || ' then '
+          || pg_temp.w14_work_acceptance(w) || '; its pair FN-AC-work-event: ' || kc));
+    end loop;
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+
+  -- transfer_acceptance's key (EV-C02-013 3.1 and 27 (1); S2). FN-I-same-acceptance (✔): an accepted call made again,
+  -- the same source and hash: accepted, the same id, no family table changed. FN-I-other-acceptance (✘; b26): the same
+  -- source with another sha256: refused conflict, the source keeps its one mark; if the first call is not accepted, both
+  -- are could_not_check.
+  blk := array['FN-I-same-acceptance', 'FN-I-other-acceptance']; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_ak5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-key'); rv := pg_temp.w14_copy(run, tag || '_RVC-key', w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-key', w, rv));
+    k := pg_temp.w14_kind(t -> 'r');
+    t2 := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-key', w, rv));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-I-same-acceptance',
+      'cond', case when k <> 'accepted' then null else pg_temp.w14_accepted_and(t2, pg_temp.w14_id(t2 -> 'r') = pg_temp.w14_id(t -> 'r')
+                and jsonb_array_length(t2 -> 'ch') = 0) end,
+      'detail', 'transfer_acceptance made again with the same source and hash: ' || pg_temp.w14_brief(t2 -> 'r') || '; the same id: '
+        || coalesce((pg_temp.w14_id(t2 -> 'r') = pg_temp.w14_id(t -> 'r'))::text, 'no') || '; tables changed besides rejected_attempt: '
+        || (t2 -> 'ch')::text || ' (wanted accepted, true, none); the first: ' || k));
+    t3 := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-key', w, rv, jsonb_build_object('transfer_source',
+            pg_temp.w14_src('acceptance', tag || '_AC-key', 'two'))));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-I-other-acceptance',
+      'cond', case when k <> 'accepted' or pg_temp.w14_refused_with(t3, 'conflict') is null then null
+                   else pg_temp.w14_refused_with(t3, 'conflict') and pg_temp.w14_marks(tag || '_AC-key') = 1 end,
+      'detail', 'transfer_acceptance, the same source with another sha256: ' || pg_temp.w14_say(t3, 'refused conflict, none, at least 1')
+        || '; marks of the source ' || pg_temp.w14_marks(tag || '_AC-key') || ' (wanted 1); the first: ' || k));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+
+  -- transfer_acceptance's target_revision (EV-C02-013 27 (6)): with a revision 2 of the target Work planted by the owner
+  -- (the same Mission revision, scope and impact as revision 1), FN-AC-trev-stale (✘; b27) target_revision 1:
+  -- stale_revision; FN-AC-trev-ahead (✘) target_revision 3: reference_missing; FN-AC-trev-pos (✔) target_revision 2:
+  -- accepted, the Acceptance records 2 and the Work is accepted. The two ✘ calls are made first, on the same Work and copy.
+  blk := array['FN-AC-trev-pos', 'FN-AC-trev-stale', 'FN-AC-trev-ahead']; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_ar5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    w := pg_temp.w14_twork(i, run, tag || '_W-AC-trev');
+    execute 'select x.mission_revision_id::text from devos_private.work_revision x where x.work_id::text = $1 and x.revision = 1'
+      into mrid using w;
+    if mrid is null then raise exception using errcode = 'P0W17', message = 'the target Work has no revision 1'; end if;
+    perform pg_temp.w14_plant('devos_private.work_revision', jsonb_build_object('work_id', w, 'revision', 2, 'mission_revision_id', mrid,
+      'scope', 'installation', 'purpose', 'w14_fixture SYNTHETIC W-C02-14 a later revision of the target', 'impact_class', 'high'));
+    rv := pg_temp.w14_copy(run, tag || '_RVC-trev', w);
+    st0 := pg_temp.w14_work_acceptance(w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-trev1', w, rv, '{"target_revision": 1}'));
+    st1 := pg_temp.w14_work_acceptance(w);
+    t2 := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-trev3', w, rv, '{"target_revision": 3}'));
+    st2 := pg_temp.w14_work_acceptance(w);
+    tp := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-trev2', w, rv, '{"target_revision": 2}'));
+    k := pg_temp.w14_kind(tp -> 'r');
+    row := pg_temp.w14_row('devos_private.acceptance', 'id', pg_temp.w14_id(tp -> 'r'));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-trev-pos',
+      'cond', pg_temp.w14_accepted_and(tp, (row ->> 'target_revision')::int = 2 and pg_temp.w14_work_acceptance(w) = 'accepted'),
+      'detail', 'transfer_acceptance with target_revision 2, the Work''s current revision: ' || pg_temp.w14_brief(tp -> 'r')
+        || '; the Acceptance''s target_revision ' || coalesce(row ->> 'target_revision', 'none') || ', the Work''s acceptance '
+        || pg_temp.w14_work_acceptance(w) || ' (wanted accepted, 2, accepted)'));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-trev-stale',
+      'cond', case when k <> 'accepted' then null else pg_temp.w14_no(t, 'stale_revision', tag || '_AC-trev1', st0, st1) end,
+      'detail', 'transfer_acceptance with target_revision 1 of a Work at revision 2: ' || pg_temp.w14_say(t, 'refused stale_revision, none, at least 1')
+        || '; the Work''s acceptance ' || st0 || ' then ' || st1 || '; its pair FN-AC-trev-pos: ' || k));
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-trev-ahead',
+      'cond', case when k <> 'accepted' then null else pg_temp.w14_no(t2, 'reference_missing', tag || '_AC-trev3', st1, st2) end,
+      'detail', 'transfer_acceptance with target_revision 3 of a Work at revision 2: ' || pg_temp.w14_say(t2, 'refused reference_missing, none, at least 1')
+        || '; the Work''s acceptance ' || st1 || ' then ' || st2 || '; its pair FN-AC-trev-pos: ' || k));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+
+  -- FN-AC-noinst (✘; b16; EV-C02-013 27 (5)): with no installation Mission, transfer_acceptance of a pass copy on a planted
+  -- Work is refused reference_missing (before its target is read). It needs a database with no transferred Mission, else
+  -- could_not_check; its pair is FN-A-pos (the same call with the installation's Mission made first).
+  blk := array['FN-AC-noinst']; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_acceptance(jsonb) does not exist (FN-M-cat fails)'; end if;
+    execute 'select count(*) from devos_private.event e where e.event_type::text = ''transferred'' and e.aggregate_type::text = ''mission'''
+      into nb;
+    if nb > 0 then raise exception using errcode = 'P0W17', message = 'a transferred Mission is already in this database, so its absence '
+      || 'cannot be planted'; end if;
+    run := pg_temp.w14_begin(tag || '_run_an5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    w := pg_temp.w14_work(); rv := pg_temp.w14_copy(run, tag || '_RVC-noinst', w);
+    st0 := pg_temp.w14_work_acceptance(w);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-noinst', w, rv));
+    acc := jsonb_build_array(jsonb_build_object('id', 'FN-AC-noinst', 'cond', pg_temp.w14_no(t, 'reference_missing', tag || '_AC-noinst', st0,
+             pg_temp.w14_work_acceptance(w)),
+      'detail', 'transfer_acceptance with no installation Mission: ' || pg_temp.w14_say(t, 'refused reference_missing, none, at least 1')));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+
+  -- transfer_acceptance on a Decision (EV-C02-013 3.2 and 27 (6), (9); R2-2; B 3.17). FN-AC-dec-pos (✔; b29 and the
+  -- Decision's acceptance_set event): a Decision transferred with devos_kurulum (class high_impact, answered, alternatives
+  -- compared) is set accepted: +1 acceptance, its one mark, the Decision's status accepted, and exactly one acceptance_set
+  -- event on it at revision 1 with payload status accepted, previous_status answered, the Acceptance's id and the copy's
+  -- id, devos_kurulum/call. FN-AC-dec-opened-pos (✔): a Decision planted with a decision_opened creation event of class
+  -- devos_kurulum (answered, compared): accepted, status accepted. FN-AC-dec-owner (✘; b18): the same, its creation event
+  -- of class devos_calisma: not_owner. FN-AC-dec-open and FN-AC-dec-declined (✘; b19): a Decision transferred with status
+  -- open or declined: invalid_field. FN-AC-dec-openexp (✘; b20): FN-AC-dec-opened-pos's Decision with alternatives_state
+  -- open_exploration, no options and no single_viable_path_reason: open_exploration. Each ✘ case's Decision keeps its
+  -- status; if its pair is not accepted, it is could_not_check.
+  blk := array['FN-AC-dec-pos', 'FN-AC-dec-opened-pos', 'FN-AC-dec-owner', 'FN-AC-dec-open', 'FN-AC-dec-declined', 'FN-AC-dec-openexp'];
+  acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_acceptance(jsonb)') is null or to_regprocedure('devos_api.transfer_decision(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_acceptance(jsonb) or transfer_decision(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_ad5');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    -- FN-AC-dec-pos.
+    d := pg_temp.w14_need('transfer_decision of the target Decision', pg_temp.w14_call('devos_kurulum', 'transfer_decision',
+           pg_temp.w14_recipe('transfer_decision', jsonb_build_object('run', run, 'sid', tag || '_D-AC-pos'))));
+    rv := pg_temp.w14_copy(run, tag || '_RVC-dpos', d);
+    t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-dpos', d, rv));
+    kc := pg_temp.w14_kind(t -> 'r'); id := pg_temp.w14_id(t -> 'r'); sets := pg_temp.w14_asets(d);
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-dec-pos',
+      'cond', pg_temp.w14_accepted_and(t, pg_temp.w14_dstatus(d) = 'accepted' and (t -> 'ch') ? 'acceptance'
+                and pg_temp.w14_marks(tag || '_AC-dpos') = 1 and jsonb_array_length(sets) = 1 and (sets -> 0 ->> 'rev')::int = 1
+                and sets -> 0 -> 'payload' ->> 'status' = 'accepted' and sets -> 0 -> 'payload' ->> 'previous_status' = 'answered'
+                and sets -> 0 -> 'payload' ->> 'acceptance_id' = id and sets -> 0 -> 'payload' ->> 'review_ref' = rv
+                and sets -> 0 ->> 'rc' = 'devos_kurulum' and sets -> 0 ->> 'origin' = 'call'
+                and pg_temp.w14_types(t -> 'evs') = 'acceptance_set,transferred'),
+      'detail', 'transfer_acceptance of a pass copy on a transferred answered Decision: ' || pg_temp.w14_brief(t -> 'r')
+        || '; the Decision''s status ' || pg_temp.w14_dstatus(d) || '; its acceptance_set events ' || sets::text || '; new events '
+        || pg_temp.w14_types(t -> 'evs') || ' (wanted accepted, accepted, one event at revision 1 with accepted/answered/the ids, '
+        || 'devos_kurulum/call; acceptance_set,transferred)'));
+    -- FN-AC-dec-opened-pos, FN-AC-dec-owner, FN-AC-dec-openexp: planted Decisions with a decision_opened creation event.
+    d := pg_temp.w14_pdec('answered', 'devos_kurulum', 'compared'); rv := pg_temp.w14_copy(run, tag || '_RVC-dop', d);
+    tp := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-dop', d, rv));
+    k := pg_temp.w14_kind(tp -> 'r');
+    acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-dec-opened-pos',
+      'cond', pg_temp.w14_accepted_and(tp, pg_temp.w14_dstatus(d) = 'accepted' and pg_temp.w14_marks(tag || '_AC-dop') = 1),
+      'detail', 'transfer_acceptance on a Decision whose creation event is decision_opened of class devos_kurulum: '
+        || pg_temp.w14_brief(tp -> 'r') || '; its status ' || pg_temp.w14_dstatus(d) || ' (wanted accepted, accepted)'));
+    foreach c in array array['owner', 'openexp'] loop
+      d := case c when 'owner' then pg_temp.w14_pdec('answered', 'devos_calisma', 'compared')
+                  else pg_temp.w14_pdec('answered', 'devos_kurulum', 'open_exploration') end;
+      rv := pg_temp.w14_copy(run, tag || '_RVC-d' || c, d);
+      st0 := pg_temp.w14_dstatus(d);
+      t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-d' || c, d, rv));
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-dec-' || c,
+        'cond', case when k <> 'accepted' then null else pg_temp.w14_no(t, case c when 'owner' then 'not_owner' else 'open_exploration' end,
+                  tag || '_AC-d' || c, st0, pg_temp.w14_dstatus(d)) end,
+        'detail', 'transfer_acceptance on a Decision ' || case c when 'owner' then 'whose creation event is decision_opened of class devos_calisma: '
+          else 'in open_exploration with no options and no single_viable_path_reason: ' end
+          || pg_temp.w14_say(t, 'refused ' || case c when 'owner' then 'not_owner' else 'open_exploration' end || ', none, at least 1')
+          || '; its status ' || st0 || ' then ' || pg_temp.w14_dstatus(d) || '; its pair FN-AC-dec-opened-pos: ' || k));
+    end loop;
+    -- FN-AC-dec-open and FN-AC-dec-declined: transferred Decisions in another status.
+    foreach c in array array['open', 'declined'] loop
+      d := pg_temp.w14_need('transfer_decision of status ' || c, pg_temp.w14_call('devos_kurulum', 'transfer_decision',
+             pg_temp.w14_recipe('transfer_decision', jsonb_build_object('run', run, 'sid', tag || '_D-AC-' || c, 'status', c))));
+      rv := pg_temp.w14_copy(run, tag || '_RVC-d' || c, d);
+      st0 := pg_temp.w14_dstatus(d);
+      t := pg_temp.w14_try('transfer_acceptance', pg_temp.w14_acc(run, tag || '_AC-d' || c, d, rv));
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-AC-dec-' || c,
+        'cond', case when kc <> 'accepted' then null else pg_temp.w14_no(t, 'invalid_field', tag || '_AC-d' || c, st0, pg_temp.w14_dstatus(d)) end,
+        'detail', 'transfer_acceptance on a transferred Decision of status ' || c || ': ' || pg_temp.w14_say(t, 'refused invalid_field, none, at least 1')
+          || '; its status ' || st0 || ' then ' || pg_temp.w14_dstatus(d) || '; its pair FN-AC-dec-pos: ' || kc));
+    end loop;
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(e ->> 'id', (e ->> 'cond')::boolean, e ->> 'detail') from jsonb_array_elements(acc) e;
+end $$;
+
+-- Added under ledger rule 3, 2026-10-19 (EV-C02-018 section 16, decisions 2, 5, 6, 7 and 8, with its dated line; EV-C02-013
+-- section 28; CHK-C02-110; note N-306), test round 2, part TC-B, after this file's first result (that of its 109-case form)
+-- and before any result of these cases and before the corrective migration exists: the sixth block. Cases for the decided
+-- forms of the corrective migration w09_transfer_corrections: ownership in transfer_event and transfer_relation (decision 7;
+-- 28 (7), (8)), the input commit compared with the run's (decision 6; 28 (6)), the structural presence of locks 9005, 9006
+-- and 9007 in each function's text (decisions 5 and 2; 28 (2) to (5); FN-TM-lock's form; their two-connection behaviour is
+-- part TC-A's, under tests/C02/W-C02-07/), and the two partial indexes (decision 8; 28 (9)). New case IDs; every earlier
+-- case ID and expected outcome is kept. Each ✘ case differs from an accepted call of this block (its pair, named in the
+-- specification) in one thing and wants the reason code section 28 gives, with nothing written but rejected_attempt (+1 or
+-- more) and no transferred mark of its source; another code, or an acceptance, is bad; a raised answer, a prerequisite not
+-- accepted, or a pair not accepted is the test's own could_not_check. Until the corrective migration is recorded as
+-- applied, every case here is could_not_check (the gate below); judged on a build without it, the 62 ✘ cases are bad and
+-- the eight ✔ cases ok (the specification's self-check of part TC-B, file 04).
+-- A synthetic work item planted under a given Mission revision (w14_work()'s form; the Mission is the one thing varied).
+create function pg_temp.w14_mwork(p_mrid text) returns text language sql as $f$
+  select pg_temp.w14_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', p_mrid, 'purpose',
+         'w14_fixture SYNTHETIC W-C02-14 a work item under a chosen Mission')) ->> 'work_id'
+$f$;
+-- A synthetic Need planted under a given Mission (mission_ref is the one thing varied).
+create function pg_temp.w14_mneed(p_mission text) returns text language sql as $f$
+  select pg_temp.w14_plant('devos_private.need', jsonb_build_object('mission_ref', p_mission, 'condition',
+         'w14_fixture SYNTHETIC W-C02-14 a need under a chosen Mission', 'why_needed', 'w14_fixture SYNTHETIC W-C02-14')) ->> 'id'
+$f$;
+-- A Decision planted by the owner with its revision 1 and no event at all (no creation event: R2-2's clause cannot tell).
+create function pg_temp.w14_ndec() returns text language plpgsql as $f$
+declare dc jsonb;
+begin
+  dc := pg_temp.w14_plant('devos_private.decision', '{"class": "high_impact", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w14_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc -> 'id', 'revision', 1,
+          'question', 'w14_fixture SYNTHETIC W-C02-14 a decision with no creation event', 'alternatives_state', 'compared'));
+  return dc ->> 'id';
+end $f$;
+-- A run whose begun event lacks its input commit: one transfer_run event (phase begun) planted by the owner, its payload
+-- begin_transfer_run's but without input_commit (begin_transfer_run refuses such a form, EV-C02-013 28 (6), so only the
+-- owner can make it). Returns the run_id.
+create function pg_temp.w14_prun(p_run text) returns text language plpgsql as $f$
+begin
+  insert into devos_private.event (aggregate_type, aggregate_id, event_type, payload, role_class, origin)
+  values ('transfer_run', gen_random_uuid(), 'transfer_run', jsonb_build_object('run_id', p_run, 'manifest_sha256',
+          pg_temp.w14_hex('w14 manifest ' || p_run, 64), 'counts', '{}'::jsonb, 'phase', 'begun', 'mode', 'ahead',
+          'w14_fixture', 'SYNTHETIC W-C02-14: a begun event without its input commit'), 'owner', 'owner');
+  return p_run;
+end $f$;
+-- The eleven functions decision 6 compares (EV-C02-013 28 (6)): the ten keyed by S2 that name a run, and record_handover.
+create function pg_temp.w14_eleven() returns text[] language sql immutable as $f$
+  select array['transfer_event', 'transfer_artifact', 'transfer_mission', 'transfer_work', 'transfer_relation',
+               'transfer_decision', 'transfer_need', 'transfer_finding', 'transfer_review', 'transfer_acceptance', 'record_handover']
+$f$;
+-- What each of the eleven needs before its call, as p_o keys, written under the open run p_run: w14_prep's for the eight
+-- it covers; a planted Work as transfer_review's target; the installation's Mission, a Work transferred under it and a
+-- pass Review copy naming it for transfer_acceptance; nothing for transfer_decision.
+create function pg_temp.w14_icprep(p_fn text, p_run text, p_sid text) returns jsonb language plpgsql as $f$
+declare i jsonb; w text;
+begin
+  if p_fn = 'transfer_decision' then return '{}'::jsonb;
+  elsif p_fn = 'transfer_review' then return jsonb_build_object('target', pg_temp.w14_work());
+  elsif p_fn = 'transfer_acceptance' then
+    i := pg_temp.w14_install(p_run);
+    w := pg_temp.w14_twork(i, p_run, p_sid || '-W');
+    return i || jsonb_build_object('target', w, 'review', pg_temp.w14_copy(p_run, p_sid || '-RV', w));
+  end if;
+  return pg_temp.w14_prep(p_fn, p_run);
+end $f$;
+-- A function's own text with its line comments and all white space removed (FN-TM-lock's form, comments also left out).
+create function pg_temp.w14_fntext(p_sig text) returns text language plpgsql as $f$
+begin
+  if to_regprocedure(p_sig) is null then return null; end if;
+  return regexp_replace(regexp_replace(pg_get_functiondef(to_regprocedure(p_sig)), '--[^' || chr(10) || ']*', '', 'g'),
+                        '[[:space:]]', '', 'g');
+end $f$;
+-- Whether a function's own body holds p_want (w14_fntext's form). The body is that of every devos_api function whose
+-- text names itself p_name in the build's v_fn constant (each of the fourteen does), so a wrapper that W-C02-07's harness
+-- puts under the name and that delegates to the renamed build function (B-FN-1 to B-FN-7) is not read in its place;
+-- when no function names itself so, the function named p_sig is read. Null when neither exists.
+create function pg_temp.w14_lockheld(p_name text, p_sig text, p_want text) returns jsonb language plpgsql as $f$
+declare o oid; n int := 0; ok boolean := true;
+begin
+  for o in select p.oid from pg_proc p join pg_namespace s on s.oid = p.pronamespace
+            where s.nspname = 'devos_api' and position('v_fn constant text := ''' || p_name || ''';' in p.prosrc) > 0 loop
+    n := n + 1;
+    ok := ok and position(p_want in regexp_replace(regexp_replace(pg_get_functiondef(o), '--[^' || chr(10) || ']*', '', 'g'),
+                                                   '[[:space:]]', '', 'g')) > 0;
+  end loop;
+  if n = 0 then
+    if to_regprocedure(p_sig) is null then return null; end if;
+    ok := position(p_want in pg_temp.w14_fntext(p_sig)) > 0;
+  end if;
+  return jsonb_build_object('held', ok, 'bodies', n);
+end $f$;
+-- An index expression or predicate as pg_get_expr gives it, with casts, parentheses and white space removed.
+create function pg_temp.w14_norm(p text) returns text language sql immutable as $f$
+  select regexp_replace(regexp_replace(coalesce(p, ''), '::[a-z_."]+', '', 'g'), '[[:space:]()]', '', 'g')
+$f$;
+
+do $$
+declare tag text := pg_temp.w14_tag(); run text; prun text; acc jsonb; t jsonb; i jsonb; om jsonb; oz jsonb; po jsonb; rcp jsonb;
+        wi text; wi2 text; wo text; wz text; ni text; no_ text; nz text; dk text; dt text; dc text; dn text; kp text; k text;
+        f text; c text; sid text; ctl text; ids text[]; blk text[]; oic text; src text; want text; nm text; rid text; run2 text;
+        r jsonb; ends jsonb; e jsonb; pair text; nb bigint;
+begin
+  if pg_temp.w14_pre() is not null then return; end if;  -- FN-pre is recorded by the first block
+  oic := pg_temp.w14_hex('w14 another input commit', 40);
+  ids := array['FN-OW-ev-work-pos', 'FN-OW-ev-work-other', 'FN-OW-ev-work-cnc', 'FN-OW-ev-need-pos', 'FN-OW-ev-need-other',
+               'FN-OW-ev-need-cnc', 'FN-OW-rel-pos', 'FN-OW-rel-from-other', 'FN-OW-rel-from-cnc', 'FN-OW-rel-to-other',
+               'FN-OW-rel-to-cnc', 'FN-OW-rel-need-pos', 'FN-OW-rel-need-other', 'FN-OW-rel-need-cnc', 'FN-OW-rel-mission-pos',
+               'FN-OW-rel-mission-other', 'FN-OW-rel-mission-cnc', 'FN-OW-rel-dec-pos', 'FN-OW-rel-dec-tr-pos',
+               'FN-OW-rel-dec-owner', 'FN-OW-rel-dec-cnc', 'FN-IC-repeat']
+      || array(select x || g from unnest(array['FN-IC-', 'FN-IC-cnc-']) x, unnest(pg_temp.w14_eleven()) g);
+  -- Before its build exists, a test gives COULD NOT CHECK (W-C02-07's README section 3): every case of this block is
+  -- could_not_check until the corrective migration, named w09_transfer_corrections by EV-C02-018 16 decision 12 and
+  -- EV-C02-013 28 (1), is recorded as applied in the migration history. Once it is, every case is judged.
+  -- [2026-10-19, part TC-B's second designer, before any result of this block: a history that cannot be read leaves the
+  -- gate closed (could_not_check), instead of stopping the file on the error.]
+  begin
+    if to_regclass('supabase_migrations.schema_migrations') is not null then
+      execute 'select count(*) from supabase_migrations.schema_migrations h where h.name = ''w09_transfer_corrections''' into nb;
+    end if;
+  exception when others then nb := -1;
+  end;
+  if coalesce(nb, 0) <= 0 then
+    perform pg_temp.w14_rec(x, 'could_not_check', case when nb = -1 then 'the migration history could not be read, so '
+      || 'whether the corrective migration w09_transfer_corrections is applied cannot be told' else 'the corrective migration '
+      || 'w09_transfer_corrections (EV-C02-018 16 decision 12) is not recorded as applied, so its rules cannot be judged yet '
+      || '(README section 3: before the build exists)' end)
+      from unnest(ids || array(select 'FN-LK-9005-' || x from unnest(array['begin_transfer_run', 'end_transfer_run',
+        'transfer_event', 'transfer_artifact', 'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision',
+        'transfer_need', 'transfer_finding', 'transfer_review', 'transfer_acceptance', 'record_handover']) x)
+        || array(select 'FN-LK-9007-' || x from unnest(array['transfer_event', 'transfer_artifact', 'transfer_mission',
+        'transfer_work', 'transfer_relation', 'transfer_decision', 'transfer_need', 'transfer_finding', 'transfer_review',
+        'transfer_acceptance']) x) || array['FN-LK-9006-prepare_operation', 'FN-IX-run', 'FN-IX-entry']) x;
+    return;
+  end if;
+  if pg_temp.w14_handovers() > 0 then
+    perform pg_temp.w14_rec(x, 'could_not_check', 'a ledger_handed_over event is already in this database, so the state '
+      || 'before the hand-over cannot be planted') from unnest(ids) x;
+  else
+
+  -- Ownership in transfer_event (decision 7; EV-C02-013 28 (7); R2-2's form; Rule O's devos_kurulum clause as
+  -- record_ledger_entry builds it). FN-OW-ev-work-pos (✔, the pair): a record_line event on a Work under the
+  -- installation's Mission, accepted with its mark. FN-OW-ev-work-other (✘): the same on a Work under a Mission opened
+  -- through open_mission: not_owner. FN-OW-ev-work-cnc (✘): under a planted Mission with no creation event:
+  -- could_not_check. FN-OW-ev-need-pos (✔), -need-other (✘), -need-cnc (✘): a note_line event on a Need whose
+  -- mission_ref is each of the same three Missions. A Mission aggregate (ledger_state_row) keeps its built check (28 (7):
+  -- nothing is added; FN-TE-staterow-pos and FN-TE-staterow).
+  blk := ids[1:6]; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_event(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_event(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_owe');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    om := pg_temp.w14_other_mission(true); oz := pg_temp.w14_other_mission(false);
+    wi := pg_temp.w14_iwork(run); wo := pg_temp.w14_mwork(om ->> 'mission_revision_id'); wz := pg_temp.w14_mwork(oz ->> 'mission_revision_id');
+    ni := pg_temp.w14_mneed(i ->> 'mission'); no_ := pg_temp.w14_mneed(om ->> 'mission'); nz := pg_temp.w14_mneed(oz ->> 'mission');
+    foreach c in array array['work', 'need'] loop
+      sid := tag || '_OWE-' || c || '-pos';
+      t := pg_temp.w14_try('transfer_event', pg_temp.w14_recipe('transfer_event', jsonb_build_object('run', run, 'sid', sid,
+             'kind', case c when 'work' then 'record_line' else 'note_line' end, 'target', case c when 'work' then wi else ni end))
+             || jsonb_build_object('aggregate_type', c));
+      kp := pg_temp.w14_kind(t -> 'r');
+      acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-OW-ev-' || c || '-pos',
+        'cond', pg_temp.w14_accepted_and(t, pg_temp.w14_marks(sid) = 1 and exists (select 1 from jsonb_array_elements(t -> 'evs') x
+                  where x ->> 'type' = case c when 'work' then 'record_line' else 'note_line' end
+                    and x ->> 'agg' = case c when 'work' then wi else ni end)),
+        'detail', format('transfer_event on a %s under the installation''s Mission: %s; new events %s; marks of the source %s (wanted '
+          || 'accepted, its event on that %s, one mark)', c, pg_temp.w14_brief(t -> 'r'), pg_temp.w14_types(t -> 'evs'),
+          pg_temp.w14_marks(sid), c)));
+      foreach k in array array['other', 'cnc'] loop
+        sid := tag || '_OWE-' || c || '-' || k;
+        t := pg_temp.w14_try('transfer_event', pg_temp.w14_recipe('transfer_event', jsonb_build_object('run', run, 'sid', sid,
+               'kind', case c when 'work' then 'record_line' else 'note_line' end,
+               'target', case c || '-' || k when 'work-other' then wo when 'work-cnc' then wz when 'need-other' then no_ else nz end))
+               || jsonb_build_object('aggregate_type', c));
+        want := case k when 'other' then 'not_owner' else 'could_not_check' end;
+        acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-OW-ev-' || c || '-' || k,
+          'cond', case when kp <> 'accepted' then null else pg_temp.w14_refused_with(t, want) and pg_temp.w14_marks(sid) = 0 end,
+          'detail', format('transfer_event on a %s under %s: %s; marks of the source %s; its pair FN-OW-ev-%s-pos: %s', c,
+            case k when 'other' then 'a Mission opened through open_mission' else 'a Mission planted with no creation event' end,
+            pg_temp.w14_say(t, 'refused ' || want || ', none, at least 1'), pg_temp.w14_marks(sid), c, kp)));
+      end loop;
+    end loop;
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(x ->> 'id', (x ->> 'cond')::boolean, x ->> 'detail') from jsonb_array_elements(acc) x;
+
+  -- Ownership of transfer_relation's ends (decision 7; EV-C02-013 28 (8)). Every call is the FN-T-ev-transfer_relation
+  -- recipe (type about, method mechanical, from a Work under the installation's Mission) with one end varied. The pairs
+  -- (✔): FN-OW-rel-pos (to another Work under the installation's Mission), FN-OW-rel-need-pos (to a Need under it, no
+  -- to_revision), FN-OW-rel-mission-pos (to the installation's Mission at its current revision), FN-OW-rel-dec-pos (to a
+  -- Decision whose creation event is decision_opened of devos_kurulum) and FN-OW-rel-dec-tr-pos (to the transferred D-010
+  -- Decision, its creation event transferred of devos_kurulum). The ✘ cases: a Work under a Mission opened through
+  -- open_mission as from_ref or to_ref (not_owner), or under a Mission planted with no creation event (could_not_check),
+  -- pair FN-OW-rel-pos; a Need or a Mission of those two kinds as to_ref (not_owner; could_not_check), pairs -need-pos and
+  -- -mission-pos; a Decision whose creation event is of devos_calisma (not_owner) or that has no event (could_not_check),
+  -- pair -dec-pos.
+  blk := ids[7:21]; acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_relation(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_relation(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_owr');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    i := pg_temp.w14_install(run);
+    om := pg_temp.w14_other_mission(true); oz := pg_temp.w14_other_mission(false);
+    wi := pg_temp.w14_iwork(run); wi2 := pg_temp.w14_iwork(run);
+    wo := pg_temp.w14_mwork(om ->> 'mission_revision_id'); wz := pg_temp.w14_mwork(oz ->> 'mission_revision_id');
+    ni := pg_temp.w14_mneed(i ->> 'mission'); no_ := pg_temp.w14_mneed(om ->> 'mission'); nz := pg_temp.w14_mneed(oz ->> 'mission');
+    dk := pg_temp.w14_pdec('answered', 'devos_kurulum', 'compared'); dt := pg_temp.w14_d010(run) ->> 'decision';
+    dc := pg_temp.w14_pdec('answered', 'devos_calisma', 'compared'); dn := pg_temp.w14_ndec();
+    -- (case, from, to, to_revision, the pair, the code wanted; a pair's own row has the code 'ok')
+    ends := jsonb_build_array(
+      jsonb_build_array('pos', wi, wi2, 1, 'pos', 'ok'), jsonb_build_array('from-other', wo, wi, 1, 'pos', 'not_owner'),
+      jsonb_build_array('from-cnc', wz, wi, 1, 'pos', 'could_not_check'), jsonb_build_array('to-other', wi, wo, 1, 'pos', 'not_owner'),
+      jsonb_build_array('to-cnc', wi, wz, 1, 'pos', 'could_not_check'),
+      jsonb_build_array('need-pos', wi, ni, null, 'need-pos', 'ok'), jsonb_build_array('need-other', wi, no_, null, 'need-pos', 'not_owner'),
+      jsonb_build_array('need-cnc', wi, nz, null, 'need-pos', 'could_not_check'),
+      jsonb_build_array('mission-pos', wi, i ->> 'mission', (i ->> 'mission_revision')::int, 'mission-pos', 'ok'),
+      jsonb_build_array('mission-other', wi, om ->> 'mission', 1, 'mission-pos', 'not_owner'),
+      jsonb_build_array('mission-cnc', wi, oz ->> 'mission', 1, 'mission-pos', 'could_not_check'),
+      jsonb_build_array('dec-pos', wi, dk, 1, 'dec-pos', 'ok'), jsonb_build_array('dec-tr-pos', wi, dt, 1, 'dec-tr-pos', 'ok'),
+      jsonb_build_array('dec-owner', wi, dc, 1, 'dec-pos', 'not_owner'), jsonb_build_array('dec-cnc', wi, dn, 1, 'dec-pos', 'could_not_check'));
+    for e in select x from jsonb_array_elements(ends) x loop
+      c := e ->> 0; sid := tag || '_OWR-' || c;
+      t := pg_temp.w14_try('transfer_relation', pg_temp.w14_recipe('transfer_relation', jsonb_build_object('run', run, 'sid', sid,
+             'from', e ->> 1, 'to', e ->> 2)) || jsonb_build_object('to_revision', e -> 3));
+      if e ->> 5 = 'ok' then
+        acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-OW-rel-' || c, 'kind', pg_temp.w14_kind(t -> 'r'),
+          'cond', pg_temp.w14_accepted_and(t, (t -> 'ch') = '["event", "relation"]'::jsonb and pg_temp.w14_marks(sid) = 1),
+          'detail', format('transfer_relation %s: %s; tables changed besides rejected_attempt: %s; marks of the source %s (wanted '
+            || 'accepted, event and relation, one mark)', case c when 'pos' then 'between two Works under the installation''s Mission'
+              when 'need-pos' then 'to a Need under the installation''s Mission' when 'mission-pos' then 'to the installation''s Mission'
+              when 'dec-pos' then 'to a Decision opened with devos_kurulum' else 'to the transferred D-010 Decision' end,
+            pg_temp.w14_brief(t -> 'r'), coalesce((select string_agg(x, ', ') from jsonb_array_elements_text(t -> 'ch') x), 'none'),
+            pg_temp.w14_marks(sid))));
+      else
+        pair := (select x ->> 'kind' from jsonb_array_elements(acc) x where x ->> 'id' = 'FN-OW-rel-' || (e ->> 4));
+        acc := acc || jsonb_build_array(jsonb_build_object('id', 'FN-OW-rel-' || c,
+          'cond', case when pair is distinct from 'accepted' then null
+                       else pg_temp.w14_refused_with(t, e ->> 5) and pg_temp.w14_marks(sid) = 0 end,
+          'detail', format('transfer_relation with %s: %s; marks of the source %s; its pair FN-OW-rel-%s: %s', case c
+              when 'from-other' then 'from_ref a Work under a Mission opened through open_mission'
+              when 'from-cnc' then 'from_ref a Work under a Mission with no creation event'
+              when 'to-other' then 'to_ref a Work under a Mission opened through open_mission'
+              when 'to-cnc' then 'to_ref a Work under a Mission with no creation event'
+              when 'need-other' then 'to_ref a Need under a Mission opened through open_mission'
+              when 'need-cnc' then 'to_ref a Need under a Mission with no creation event'
+              when 'mission-other' then 'to_ref a Mission opened through open_mission'
+              when 'mission-cnc' then 'to_ref a Mission planted with no creation event'
+              when 'dec-owner' then 'to_ref a Decision whose creation event is decision_opened of devos_calisma'
+              else 'to_ref a Decision with no creation event' end,
+            pg_temp.w14_say(t, 'refused ' || (e ->> 5) || ', none, at least 1'), pg_temp.w14_marks(sid), e ->> 4, coalesce(pair, 'not made'))));
+      end if;
+    end loop;
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', sqlerrm)) from unnest(blk) x);
+    when others then acc := (select jsonb_agg(jsonb_build_object('id', x, 'cond', null, 'detail', 'the test stopped on its own error '
+      || '(README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160))) from unnest(blk) x);
+  end;
+  perform pg_temp.w14_check(x ->> 'id', (x ->> 'cond')::boolean, x ->> 'detail') from jsonb_array_elements(acc) x;
+
+  -- The input commit (decision 6; EV-C02-013 28 (6); EV-C02-005 3.2, "A run is fixed by its input commit"). For each of
+  -- the eleven: its control, the recipe with its prerequisites under an open run, accepted (not a case of its own; if it is
+  -- not accepted, both cases are could_not_check). FN-IC-<fn> (✘): the same call with transfer_source.input_commit (for
+  -- record_handover, input_commit) another well-formed commit than the run's: invalid_field. FN-IC-cnc-<fn> (✘): the
+  -- same call naming a run whose begun event lacks its input commit (planted by the owner): could_not_check.
+  foreach f in array pg_temp.w14_eleven() loop
+    ctl := null; acc := '[]';
+    if to_regprocedure('devos_api.' || f || '(jsonb)') is null then
+      perform pg_temp.w14_rec(x, 'could_not_check', 'devos_api.' || f || '(jsonb) does not exist (FN-M-cat fails)')
+        from unnest(array['FN-IC-' || f, 'FN-IC-cnc-' || f]) x;
+      continue;
+    end if;
+    foreach c in array array['ctl', 'ic', 'cnc'] loop
+      begin
+        run := pg_temp.w14_begin(tag || '_run_ic' || c || '_' || f);
+        if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+        sid := tag || '_IC' || c || '-' || f;
+        po := pg_temp.w14_icprep(f, run, sid) || jsonb_build_object('run', run, 'sid', sid);
+        if c = 'cnc' then po := po || jsonb_build_object('run', pg_temp.w14_prun(tag || '_run_icpart_' || f)); end if;
+        rcp := pg_temp.w14_recipe(f, po);
+        if c = 'ic' then
+          rcp := case when f = 'record_handover' then rcp || jsonb_build_object('input_commit', oic)
+                      else jsonb_set(rcp, '{transfer_source,input_commit}', to_jsonb(oic)) end;
+        end if;
+        t := pg_temp.w14_try(f, rcp);
+        if c = 'ctl' then
+          ctl := pg_temp.w14_kind(t -> 'r') || ' ' || pg_temp.w14_brief(t -> 'r');
+        else
+          want := case c when 'ic' then 'invalid_field' else 'could_not_check' end;
+          acc := acc || jsonb_build_array(jsonb_build_object('id', case c when 'ic' then 'FN-IC-' else 'FN-IC-cnc-' end || f,
+            'cond', case when ctl is null or ctl not like 'accepted%' then null
+                         else pg_temp.w14_refused_with(t, want) and pg_temp.w14_marks(sid) = 0 end,
+            'detail', format('%s %s: %s; marks of the source %s; its control (the run''s own input commit): %s', f,
+              case c when 'ic' then 'with an input commit other than the run''s' else 'naming a run whose begun event lacks its input commit' end,
+              pg_temp.w14_say(t, 'refused ' || want || ', none, at least 1'), pg_temp.w14_marks(sid), coalesce(ctl, 'not made'))));
+        end if;
+        raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+      exception
+        when sqlstate 'P0W14' then null;
+        when sqlstate 'P0W17' then
+          if c = 'ctl' then ctl := 'not accepted: ' || sqlerrm;
+          else acc := acc || jsonb_build_array(jsonb_build_object('id', case c when 'ic' then 'FN-IC-' else 'FN-IC-cnc-' end || f,
+                 'cond', null, 'detail', sqlerrm)); end if;
+        when others then
+          if c = 'ctl' then ctl := 'the test stopped on its own error: ' || sqlstate;
+          else acc := acc || jsonb_build_array(jsonb_build_object('id', case c when 'ic' then 'FN-IC-' else 'FN-IC-cnc-' end || f,
+                 'cond', null, 'detail', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' '
+                 || left(sqlerrm, 160))); end if;
+      end;
+    end loop;
+    perform pg_temp.w14_check(x ->> 'id', (x ->> 'cond')::boolean, x ->> 'detail') from jsonb_array_elements(acc) x;
+  end loop;
+
+  -- FN-IC-repeat (✔; EV-C02-013 28 (6), "Never for an exact repeat, which comes before it"; R2-9; EV-C02-005:297): a
+  -- Decision accepted in one run, then the exact same call (same source, same sha256, the first run's input commit)
+  -- naming a second open run begun with another input commit: the exact repeat, accepted with the first id, nothing
+  -- written. A build that compared the input commit before the key would refuse it invalid_field.
+  acc := '[]';
+  begin
+    if to_regprocedure('devos_api.transfer_decision(jsonb)') is null then
+      raise exception using errcode = 'P0W17', message = 'devos_api.transfer_decision(jsonb) does not exist (FN-M-cat fails)'; end if;
+    run := pg_temp.w14_begin(tag || '_run_icr1');
+    if run is null then raise exception using errcode = 'P0W17', message = 'begin_transfer_run did not accept its recipe, so no run is open'; end if;
+    r := pg_temp.w14_call('devos_kurulum', 'begin_transfer_run', pg_temp.w14_recipe('begin_transfer_run',
+           jsonb_build_object('run', tag || '_run_icr2')) || jsonb_build_object('input_commit', oic));
+    if pg_temp.w14_kind(r) <> 'accepted' then raise exception using errcode = 'P0W17', message = 'begin_transfer_run with another '
+      || 'input commit was not accepted: ' || pg_temp.w14_brief(r); end if;
+    run2 := tag || '_run_icr2'; sid := tag || '_ICR-decision';
+    rid := pg_temp.w14_need('transfer_decision in the first run', pg_temp.w14_call('devos_kurulum', 'transfer_decision',
+             pg_temp.w14_recipe('transfer_decision', jsonb_build_object('run', run, 'sid', sid))));
+    t := pg_temp.w14_try('transfer_decision', pg_temp.w14_recipe('transfer_decision', jsonb_build_object('run', run2, 'sid', sid)));
+    acc := jsonb_build_array(jsonb_build_object('id', 'FN-IC-repeat',
+      'cond', pg_temp.w14_accepted_and(t, pg_temp.w14_id(t -> 'r') = rid and jsonb_array_length(t -> 'ch') = 0),
+      'detail', format('the exact repeat of an accepted transfer_decision naming a second run begun with another input commit: %s, '
+        || 'id %s (first %s); tables changed besides rejected_attempt: %s (wanted accepted, the same id, none)',
+        pg_temp.w14_brief(t -> 'r'), coalesce(pg_temp.w14_id(t -> 'r'), 'none'), rid,
+        coalesce((select string_agg(x, ', ') from jsonb_array_elements_text(t -> 'ch') x), 'none'))));
+    raise exception using errcode = 'P0W14', message = 'w14: undo the block';
+  exception
+    when sqlstate 'P0W14' then null;
+    when sqlstate 'P0W17' then acc := jsonb_build_array(jsonb_build_object('id', 'FN-IC-repeat', 'cond', null, 'detail', sqlerrm));
+    when others then acc := jsonb_build_array(jsonb_build_object('id', 'FN-IC-repeat', 'cond', null, 'detail',
+      'the test stopped on its own error (README section 3 (ii)): ' || sqlstate || ' ' || left(sqlerrm, 160)));
+  end;
+  perform pg_temp.w14_check(x ->> 'id', (x ->> 'cond')::boolean, x ->> 'detail') from jsonb_array_elements(acc) x;
+  end if;
+
+  -- The locks (decisions 5 and 2; EV-C02-013 28 (2) to (5)), structural, in FN-TM-lock's form: each function's own text
+  -- (pg_get_functiondef, line comments and white space removed; the body that names itself in v_fn, w14_lockheld) takes
+  -- the lock. FN-LK-9005-<fn>: the twelve that read
+  -- the hand-over take pg_advisory_xact_lock_shared(9005, 0), record_handover pg_advisory_xact_lock(9005, 0).
+  -- FN-LK-9007-<fn>: the ten keyed by S2 take pg_advisory_xact_lock(9007, …). FN-LK-9006-prepare_operation:
+  -- pg_advisory_xact_lock(9006, …). One session cannot show that a lock orders two calls, nor where in the function it is
+  -- taken; those are part TC-A's two-connection cases.
+  for f, want, nm in
+      select x, 'pg_advisory_xact_lock_shared(9005,0)', 'FN-LK-9005-' || x from unnest(array['begin_transfer_run', 'end_transfer_run',
+        'transfer_event', 'transfer_artifact', 'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision',
+        'transfer_need', 'transfer_finding', 'transfer_review', 'transfer_acceptance']) x
+      union all select 'record_handover', 'pg_advisory_xact_lock(9005,0)', 'FN-LK-9005-record_handover'
+      union all select x, 'pg_advisory_xact_lock(9007,', 'FN-LK-9007-' || x from unnest(array['transfer_event', 'transfer_artifact',
+        'transfer_mission', 'transfer_work', 'transfer_relation', 'transfer_decision', 'transfer_need', 'transfer_finding',
+        'transfer_review', 'transfer_acceptance']) x
+      union all select 'prepare_operation', 'pg_advisory_xact_lock(9006,', 'FN-LK-9006-prepare_operation' loop
+    begin
+      r := pg_temp.w14_lockheld(f, 'devos_api.' || f || case when f = 'prepare_operation' then '(text,jsonb)' else '(jsonb)' end, want);
+      if r is null then
+        perform pg_temp.w14_rec(nm, 'could_not_check', 'devos_api.' || f || ' does not exist (FN-M-cat fails, or F01''s)');
+      else
+        perform pg_temp.w14_check(nm, (r ->> 'held')::boolean, f || '''s own text (' || (r ->> 'bodies') || ' body naming itself '
+          || f || '), comments and white space removed, holds ' || want || (case when right(want, 1) = ',' then '…)' else '' end)
+          || ': ' || (r ->> 'held') || ' (wanted true)');
+      end if;
+    exception when others then
+      perform pg_temp.w14_rec(nm, 'could_not_check', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate
+        || ' ' || left(sqlerrm, 160));
+    end;
+  end loop;
+
+  -- The two partial indexes (decision 8; EV-C02-018 section 8; EV-C02-013 28 (9)), a catalogue read: on devos_private.event
+  -- a valid index, not unique, of one key, the expression payload ->> 'run_id' where event_type = 'transfer_run'
+  -- (FN-IX-run), and payload ->> 'entry_id' where event_type = 'ledger_entry' (FN-IX-entry). The index's name is not judged.
+  for nm, want, src in select * from (values ('FN-IX-run', 'payload->>''run_id''', 'event_type=''transfer_run'''),
+                                             ('FN-IX-entry', 'payload->>''entry_id''', 'event_type=''ledger_entry''')) v loop
+    begin
+      select string_agg(ci.relname, ', ') into rid
+        from pg_index x join pg_class ci on ci.oid = x.indexrelid
+       where x.indrelid = 'devos_private.event'::regclass and x.indisvalid and not x.indisunique and x.indnkeyatts = 1
+         and pg_temp.w14_norm(pg_get_expr(x.indexprs, x.indrelid)) = want
+         and pg_temp.w14_norm(pg_get_expr(x.indpred, x.indrelid)) = src;
+      perform pg_temp.w14_check(nm, rid is not null, format('an index on devos_private.event of %s where %s, valid, not unique, one '
+        || 'key: %s (wanted one)', want, src, coalesce(rid, 'none')));
+    exception when others then
+      perform pg_temp.w14_rec(nm, 'could_not_check', 'the test stopped on its own error (README section 3 (ii)): ' || sqlstate
+        || ' ' || left(sqlerrm, 160));
+    end;
+  end loop;
 end $$;
 
 select case_id, outcome, detail from w14_results order by case_id;

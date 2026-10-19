@@ -242,12 +242,17 @@ def main():
                'w07-needs-database (N-255)', 3)
     if not shutil.which('psql'):
         finish('COULD NOT CHECK', 'psql is not on the path given', 3)
+    # Revised under ledger rule 3 (test round 2, part TC-C, 2026-10-19): the role's existence is read as 1 or 0. Before,
+    # the boolean was concatenated to text, which reads true or false, never t, so this refusal never fired.
     rc, out, err = run_sql("select coalesce(current_setting('w07.throwaway', true), '') || '|' || "
-                           "exists (select 1 from pg_roles where rolname = 'supabase_admin');")
+                           "(exists (select 1 from pg_roles where rolname = 'supabase_admin'))::int;")
     if rc != 0:
         finish('COULD NOT CHECK', 'the database could not be reached: ' + clean(err), 3)
-    marker, supa = out.strip().split('|')
-    if marker == 'yes' and supa == 't':
+    parts = out.strip().rsplit('|', 1)
+    marker, supa = parts if len(parts) == 2 else ('', '')
+    if supa not in ('0', '1'):
+        finish('COULD NOT CHECK', 'whether role supabase_admin exists could not be read', 3)
+    if marker == 'yes' and supa == '1':
         finish('COULD NOT CHECK', 'w07.throwaway is yes but role supabase_admin exists: neither the harness database '
                'nor devos-test', 3)
     missing = [n for n in NEED if run_sql(
