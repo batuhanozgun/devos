@@ -1,5 +1,7 @@
--- w07-break: test=supabase/migrations/tests/w07_f04_affected_records.sql; expect-red=F04-c-flag,F04-d1,F04-d2
+-- w07-break: test=supabase/migrations/tests/w07_f04_affected_records.sql; expect-red=F04-c-flag,F04-d1,F04-d2,F04-dir-null
 -- Removes the completeness flag (Appendix C F04 (d): "nothing else is affected" is not said): devos_api.affected_entities(uuid, jsonb) is renamed and wrapped; the wrapper returns the build's answer with complete set to true.
+-- Revised under ledger rule 3, 2026-10-19 (N-292): F04-dir-null, a case added then, is added to the red list (the
+-- wrapper's complete true also hides the NULL-type relation's "not complete"); no earlier red case changed.
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
