@@ -6,6 +6,8 @@
 -- Claim: a burst of calls without a verified token adds no rows beyond one counted row per function, reason code and
 -- hour, whose count grows by one per call; a revoked token is counted, not recorded one by one (EV-C02-002 DM-19 and
 -- section 6; EV-C02-003 section 15, row "Calls with no verified token from outside"; EV-C02-004 X-04, X-05).
+-- Added under ledger rule 3, 2026-10-19 (N-301): B:270's counted row "changes only during its hour and is exported
+-- after it", at mark_exported (DM19B-me-hour) and read_rejected_attempts (DM19B-rr-hour); planted synthetic counted rows.
 -- Specification: tests/C02/W-C02-07/T-W07-DM19B_burst_count.md (part A; part B is
 -- supabase/migrations/tests/w07_dm19b_burst_over_http.py over the Data API). Serves W-C02-09 point 3.
 -- Runs: in devos-test by the migration job's test step as postgres, calls as anon with the header simulated
@@ -322,7 +324,7 @@ end $f$;
 do $$
 declare why text; t_cal text; t_rev text; t_bad text; t_unk text; fn text; n int := 20; v jsonb; c jsonb;
         ra0 text[]; ra jsonb; i int; forms text[] := array['missing', 'empty', 'malformed', 'unknown', 'revoked'];
-        f text; tok text; args jsonb;
+        f text; tok text; args jsonb; t_bak text; t_den text; rid text[];
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -374,6 +376,65 @@ begin
   perform pg_temp.w07_check('DM19B-pos', not pg_temp.w07_refused(c) and position('devos_calisma' in c->>'result') > 0
       and jsonb_array_length(ra) = 0,
     pg_temp.w07_show(c) || '; new records ' || jsonb_array_length(ra));
+
+  -- Added under ledger rule 3, 2026-10-19 (N-301; EV-C02-014 section 11, k09 and k15): B:270's rule for a counted row,
+  -- "A counted row changes only during its hour and is exported after it", at the two functions M09-09 builds on it.
+  -- Two counted rows are planted by the owner (a synthetic function name, reason code missing, role class none): one
+  -- of an hour that has ended (two hours ago) and one of the current hour.
+  begin
+    rid := array[
+      (pg_temp.w07_plant('devos_private.rejected_attempt', jsonb_build_object('function_name', 'w07_fixture_dm19b_past',
+        'role_class', 'none', 'reason_code', 'missing', 'count', 3,
+        'counted_hour', (date_trunc('hour', now() at time zone 'UTC') - interval '2 hours') at time zone 'UTC'))->>'id'),
+      (pg_temp.w07_plant('devos_private.rejected_attempt', jsonb_build_object('function_name', 'w07_fixture_dm19b_now',
+        'role_class', 'none', 'reason_code', 'missing', 'count', 3,
+        'counted_hour', date_trunc('hour', now() at time zone 'UTC') at time zone 'UTC'))->>'id'),
+      -- For DM19B-rr-hour: a counted row of the current hour created before since (one second before the read's
+      -- since), whose count holds calls made after it.
+      (pg_temp.w07_plant('devos_private.rejected_attempt', jsonb_build_object('function_name', 'w07_fixture_dm19b_open',
+        'role_class', 'none', 'reason_code', 'missing', 'count', 3, 'created_at', now() - interval '1 second',
+        'counted_hour', date_trunc('hour', now() at time zone 'UTC') at time zone 'UTC'))->>'id')];
+    t_bak := pg_temp.w07_token('devos_backup');
+    t_den := pg_temp.w07_token('devos_denetim');
+  exception when others then
+    rid := null;
+    perform pg_temp.w07_rec('DM19B-me-hour', 'could_not_check', 'fixtures could not be made: ' || sqlstate);
+    perform pg_temp.w07_rec('DM19B-rr-hour', 'could_not_check', 'fixtures could not be made: ' || sqlstate);
+  end;
+  if rid is not null then
+    -- DM19B-me-hour (k09): mark_exported over the two rows' range, with the backup token, marks the row whose hour has
+    -- ended (the positive half: a function that marks nothing fails) and leaves the current hour's row unmarked.
+    c := pg_temp.w07_call('mark_exported', jsonb_build_object('table', 'rejected_attempt',
+      'from_id', least(rid[1]::bigint, rid[2]::bigint), 'to_id', greatest(rid[1]::bigint, rid[2]::bigint)), t_bak);
+    t_bak := null;
+    if c ? 'interface' or c->>'error' is not null or jsonb_typeof(c->'result') <> 'object' then
+      perform pg_temp.w07_rec('DM19B-me-hour', 'could_not_check', pg_temp.w07_show(c));
+    else
+      perform pg_temp.w07_check('DM19B-me-hour', c->'result'->>'status' = 'ok'
+          and (select exported_at is not null from devos_private.rejected_attempt where id = rid[1]::bigint)
+          and (select exported_at is null from devos_private.rejected_attempt where id = rid[2]::bigint),
+        format('mark_exported, backup token: %s; the ended hour''s row marked %s, the current hour''s row marked %s',
+          pg_temp.w07_show(c),
+          (select exported_at is not null from devos_private.rejected_attempt where id = rid[1]::bigint),
+          (select exported_at is not null from devos_private.rejected_attempt where id = rid[2]::bigint)));
+    end if;
+    -- DM19B-rr-hour (k15): read_rejected_attempts(since now()), with the audit token, returns the current hour's
+    -- counted row created one second before since: its hour is open, so it can hold calls made after since.
+    c := pg_temp.w07_call('read_rejected_attempts', jsonb_build_object('since', now()), t_den);
+    t_den := null;
+    if c ? 'interface' or c->>'error' is not null or jsonb_typeof(c->'result') <> 'object' then
+      perform pg_temp.w07_rec('DM19B-rr-hour', 'could_not_check', pg_temp.w07_show(c));
+    elsif c->'result'->>'status' <> 'ok' or jsonb_typeof(c->'result'->'rows') <> 'array' then
+      perform pg_temp.w07_check('DM19B-rr-hour', false, 'read_rejected_attempts, audit token, not accepted: '
+        || coalesce(c->'result'->>'status', '') || ' ' || coalesce(c->'result'->>'reason_code', ''));
+    else
+      perform pg_temp.w07_check('DM19B-rr-hour', exists (select 1 from jsonb_array_elements(c->'result'->'rows') e
+          where e->>'id' = rid[3]),
+        format('read_rejected_attempts(since now()), audit token: ok, %s rows; the open hour''s counted row created '
+          || 'before since returned: %s', jsonb_array_length(c->'result'->'rows'),
+          exists (select 1 from jsonb_array_elements(c->'result'->'rows') e where e->>'id' = rid[3])));
+    end if;
+  end if;
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;
