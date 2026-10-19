@@ -1,0 +1,38 @@
+EV-C02-014 raw, CHK-C02-115 C2 (and C3's connector answer): reads of devos through the read-only connector, by the executor, 2026-10-19 about 13:50Z, main at 04c5e88. Read-only selects; their texts are below; output transcribed from the tool's result. counts: yes (the real project).
+
+The connector's project: get_project_url answered https://zyqgltzfzkdvrmvxlamz.supabase.co, which is devos (the job log's devos-test ref is cqbzxexxwrrbrlszoseg). So the connector does not reach devos-test (C3).
+
+(a) select r as role, has_schema_privilege(r, 'pg_catalog', 'CREATE') as pg_catalog_create, has_database_privilege(r, current_database(), 'TEMPORARY') as db_temporary from unnest(array['public','anon','authenticated','authenticator','service_role','postgres']) as r
+role|pg_catalog_create|db_temporary
+public|false|false
+anon|false|false
+authenticated|false|false
+authenticator|false|false
+service_role|false|false
+postgres|false|true
+
+(b) select m.rolname as member, g.rolname as granted_role, am.inherit_option, am.set_option, am.admin_option, gr.rolname as grantor from pg_auth_members am join pg_roles m on m.oid = am.member join pg_roles g on g.oid = am.roleid join pg_roles gr on gr.oid = am.grantor where m.rolname in ('anon','authenticated','authenticator','service_role') or g.rolname in ('anon','authenticated','authenticator','service_role') order by 1, 2
+member|granted_role|inherit|set|admin|grantor
+authenticator|anon|false|true|false|supabase_admin
+authenticator|authenticated|false|true|false|supabase_admin
+authenticator|service_role|false|true|false|supabase_admin
+postgres|anon|true|true|true|supabase_admin
+postgres|authenticated|true|true|true|supabase_admin
+postgres|authenticator|true|true|true|supabase_admin
+postgres|service_role|true|true|true|supabase_admin
+supabase_realtime_admin|anon|false|true|false|supabase_admin
+supabase_realtime_admin|authenticated|false|true|false|supabase_admin
+supabase_realtime_admin|service_role|false|true|false|supabase_admin
+supabase_storage_admin|authenticator|false|true|false|supabase_admin
+(No row has one of the four API roles as member of any other role except authenticator's three; none of anon, authenticated, service_role holds TEMPORARY or CREATE on pg_catalog, by (a).)
+
+(c1) select n.nspname as schema, c.relkind as kind, count(*) as n, string_agg(c.relname, ',' order by c.relname) as names from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname in ('devos_private','devos_api') group by 1, 2 order by 1, 2
+devos_private|S|3|event_id_seq,leak_fingerprint_id_seq,rejected_attempt_id_seq
+devos_private|i|47|acceptance_pkey,artifact_pkey,artifact_revision_artifact_id_revision_key,artifact_revision_pkey,assignment_claim_token_hash_key,assignment_one_active_claim,assignment_pkey,assignment_work_ref_generation_key,decision_pkey,decision_revision_decision_id_revision_key,decision_revision_pkey,effect_class_pkey,effort_policy_pkey,env_tokens_pkey,env_tokens_token_hash_key,eval_run_pkey,event_aggregate_idx,event_ledger_entry_idx,event_one_ledger_handover,event_pkey,event_transfer_run_idx,event_transferred_key,event_tx_idx,finding_pkey,finding_revision_finding_id_revision_key,finding_revision_pkey,function_deployment_pkey,global_authority_epoch_pkey,leak_fingerprint_hash_idx,leak_fingerprint_pkey,mission_pkey,mission_revision_mission_id_revision_key,mission_revision_pkey,need_pkey,observation_pkey,operation_idempotency_namespace_idempotency_key_key,operation_pkey,rejected_attempt_counted_key,rejected_attempt_pkey,relation_from_idx,relation_pkey,relation_to_idx,review_pkey,verdict_pkey,work_pkey,work_revision_pkey,work_revision_work_id_revision_key
+devos_private|r|27|acceptance,artifact,artifact_revision,assignment,decision,decision_revision,effect_class,effort_policy,env_tokens,eval_run,event,finding,finding_revision,function_deployment,global_authority_epoch,leak_fingerprint,mission,mission_revision,need,observation,operation,rejected_attempt,relation,review,verdict,work,work_revision
+devos_private|v|5|artifact_current,decision_current,finding_current,mission_current,work_current
+(No row for devos_api: no relation there.)
+
+(c2) select n.nspname as schema, t.typtype as typtype, count(*) as n, string_agg(t.typname, ',' order by t.typname) as names from pg_type t join pg_namespace n on n.oid = t.typnamespace left join pg_class c on c.oid = t.typrelid where n.nspname in ('devos_private','devos_api') and (t.typrelid = 0 or c.relkind = 'c') and t.typelem = 0 group by 1, 2 order by 1, 2
+devos_private|e|32|alternatives_state,artifact_status,assignment_status,current_authority,decision_class,decision_status,effort_policy_status,epistemic_status,event_origin,finding_changeable,finding_status,fingerprint_origin,group_mode,impact_class,independence_level,mission_status,need_origin,need_status,observed_effect,operation_status,privacy_class,relation_method,relation_type,relation_validity,review_kind,role_class,source_type,verdict_result,work_acceptance,work_effect,work_execution,work_qualification
+(No domain or standalone composite type; none in devos_api.)
