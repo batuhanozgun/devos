@@ -5,8 +5,8 @@
 -- T-W07-N08: N08's database part in C02 (EV-C02-003 §4.5; PC-43 place 10): every access to the exam records with the
 -- working, audit, devos_kurulum and devos_ci tokens is refused, the exam fact lives only in the exam records
 -- (EV-C02-002 DM-24), and the exam token accesses. Specification: tests/C02/W-C02-07/T-W07-N08_exam_records.md (part A).
--- Phase C4b (EV-C02-008 5.1): the reader finder exempts nine functions by name; their answers, N08-s3, N08-s4 and the
--- EXF pairs are part X, w07_n08_exam_fact.sql.
+-- Phase C4b (EV-C02-008 5.1): the reader finder exempts functions by name (nine, and from 2026-10-19 ten, with
+-- open_decision; N-286); their answers, N08-s3, N08-s4 and the EXF pairs are part X, w07_n08_exam_fact.sql.
 --
 -- Runs: in devos-test by the migration job's test step as postgres (README 5.1 (a)), and on the break harness's
 -- throwaway database (README 5.2). transport sql-set-role: the header is simulated with set_config('request.headers',
@@ -279,10 +279,13 @@ exception when others then
 end $f$;
 -- ===== end of the helper block =====
 
--- Phase C4b: the nine functions the reader finder exempts by name (EV-C02-008 5.1, after CHK-C02-027 D).
+-- Phase C4b: the functions the reader finder exempts by name (EV-C02-008 5.1, after CHK-C02-027 D). Revised under
+-- ledger rule 3, 2026-10-19, before any result (N-286; EV-C02-017 section 9 item 2; EV-C02-008 5.1's dated list item):
+-- open_decision is the tenth. Called with work_ref it makes relate's checks, Rule O among them (EV-C02-013 2.2, R1-6),
+-- and reads EvalRun's table only on the devos_sinav branch. The same list is in w07_n08_exam_fact.sql.
 create function pg_temp.n08_exempt() returns text[] language sql immutable as $f$
   select array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'relate', 'retract_relation',
-               'set_effort_policy', 'affected_entities', 'explain_paths']
+               'set_effort_policy', 'affected_entities', 'explain_paths', 'open_decision']
 $f$;
 
 create function pg_temp.w07_pre_common() returns text language plpgsql as $f$
@@ -348,7 +351,7 @@ end $f$;
 
 do $$
 declare why text; api text := pg_temp.w07_cfg('api_role'); i jsonb; toks jsonb := '{}'; scrub text[] := '{}'; cls text;
-        r jsonb; fw oid; sqlw text; wid text; c record; ev regclass; evname text; n int; lst text;
+        r jsonb; fw oid; sqlw text; wid text; mrid text; c record; ev regclass; evname text; n int; lst text;
         four text[] := array['devos_calisma', 'devos_denetim', 'devos_kurulum', 'devos_ci']; nread int := 0;
 begin
   why := pg_temp.w07_pre_common();
@@ -371,9 +374,10 @@ begin
   end loop;
   -- Reading: every devos_api function whose text reads the exam records' table refuses the same four tokens.
   -- Phase C4b (EV-C02-008 5.1, its list for T-W07-N08 after CHK-C02-027 D): nine functions are exempt by name, fixed
-  -- before any result. Each admits some of the four classes and reads the table only on the branch where the caller's
-  -- class is devos_sinav (Rule O's sin limit; set_effort_policy's kind (a); relate's own reason for sin; the exam record
-  -- shown to sin by the two walks). Their answers to the four classes are part X's N08-x-<function>-<class> cases
+  -- before any result, and open_decision a tenth from 2026-10-19 (N-286), before any result. Each admits some of the
+  -- four classes and reads the table only on the branch where the caller's class is devos_sinav (Rule O's sin limit,
+  -- in open_decision for the work item work_ref names; set_effort_policy's kind (a); relate's own reason for sin; the
+  -- exam record shown to sin by the two walks). Their answers to the four classes are part X's N08-x-<function>-<class> cases
   -- (w07_n08_exam_fact.sql); relate's refusal of an exam record as an end is T-W07-F04's F04-m4.
   select string_agg(p.proname, ', ' order by p.proname) into lst from pg_proc p join pg_namespace s on s.oid = p.pronamespace
    where s.nspname = 'devos_api' and p.prosrc ~* ('[[:<:]]' || evname || '[[:>:]]') and p.proname = any(pg_temp.n08_exempt());
@@ -408,7 +412,21 @@ begin
   perform pg_temp.w07_put('N08-wp1', pg_temp.w07_passed_gate(r, 'record_eval_run'), 'record_eval_run, exam token, gate: ' || pg_temp.w07_says(r));
   begin
     wid := pg_temp.w07_plant(pg_temp.w07_cfg('work_table')::regclass);
+    -- Revised under ledger rule 3, 2026-10-19, before any result (found in N-286's self-check): an EvalRun names a work
+    -- item's revision (B 3.15: work_ref with its revision; W-C02-08's foreign key (work_ref, work_revision) to
+    -- work_revision), and the planted work item had none, so no build could accept N08-wp2's exam run. The work item now
+    -- gets its revision 1, under a planted Mission revision, each with the scope form the schema's CHECK asks.
+    if to_regclass('devos_private.work_revision') is not null and to_regclass('devos_private.mission_revision') is not null then
+      execute format('insert into devos_private.mission_revision (mission_id, revision, purpose, scope, acceptance, owner_authority) '
+        || 'values (%L, 1, %L, %L, %L, %L) returning id::text', pg_temp.w07_plant('devos_private.mission'::regclass),
+        'w07_fixture SYNTHETIC W-C02-07', 'synthetic.w07_fixture', 'w07_fixture SYNTHETIC W-C02-07',
+        pg_temp.w07_plant('devos_private.decision'::regclass)) into mrid;
+      execute format('insert into devos_private.work_revision (work_id, revision, mission_revision_id, scope, purpose, impact_class) '
+        || 'values (%L, 1, %L, %L, %L, (enum_range(null::devos_private.impact_class))[1])', wid, mrid,
+        'synthetic.w07_fixture', 'w07_fixture SYNTHETIC W-C02-07');
+    end if;
   exception when others then
+    wid := null;
     perform pg_temp.w07_cnc('N08-wp2', 'the work item fixture could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 100));
   end;
   if wid is not null then
