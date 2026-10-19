@@ -25,6 +25,10 @@
 -- of this file: the transferred relation devos_kurulum retracts is planted from the installation's item, and a new case
 -- ROC-o-retract_relation-kur-transferred-cal keeps the stricter reading (devos_kurulum on a transferred relation from an
 -- ordinary item: not_owner); see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
+-- Revised under ledger rule 3, 2026-10-19 (N-300 (1)), before any result of this file: open_decision's Rule O, with
+-- work_ref, for its gate's three classes and the three kinds (ROC-o-open_decision-*; each refusal must carry not_owner),
+-- and ROC-leak-open_decision; no other case changes. See the specification's "Revision under ledger rule 3 (N-300 (1),
+-- 2026-10-19)".
 -- Revised under ledger rule 3, 2026-10-19 (N-293 (5)), before any result of this file: part X's cases issue their
 -- synthetic devos_calisma token before the input is planted, so that ROC-x-o-event-unreadable's revoke of the event
 -- table from the function's owner no longer stops the token's own issue (issue_env_token writes an event); see the
@@ -730,9 +734,31 @@ begin
       end loop;
     end loop;
   end loop;
+  -- Added under ledger rule 3, 2026-10-19 (N-300 (1); CHK-C02-098 finding 1.3), before any result of this file:
+  -- open_decision's Rule O. Called with work_ref, open_decision makes the checks relate makes for the relation about it
+  -- writes from the work item (EV-C02-013 2.2, R1-6), Rule O on the work item among them, so its devos_sinav branch reads
+  -- the exam link as relate's does (EV-C02-008 5.1, its tenth exempt function; 1.7.1's sin limit). No merged case reached
+  -- that branch. ROC-o-open_decision-<class>-<kind> for its gate's three classes (cal, sin, kur; EV-C02-013 2.2) and the
+  -- three kinds, with the table above; the call is a routine decision tied to the item. ROC-leak-open_decision below.
+  -- Each refused case must carry Rule O's reason code not_owner (a refusal with another code is bad; could_not_check is
+  -- the test's own could_not_check), so that a refusal by another rule is not read as Rule O's.
+  fn := 'open_decision';
+  foreach cls in array array['devos_calisma', 'devos_sinav', 'devos_kurulum'] loop
+    foreach kind in array array['cal', 'inst', 'exam'] loop
+      cid := format('ROC-o-%s-%s-%s', fn, short->>cls, kind);
+      w := pg_temp.roc_fx('w_' || kind);
+      if w is null then
+        perform pg_temp.w07_put(cid, 'could_not_check', coalesce(pg_temp.roc_fx(kind || '_why'), 'no work item of this kind')); continue;
+      end if;
+      want := expect->cls->>kind;
+      perform pg_temp.roc_case(cid, cls, fn, jsonb_build_object('class', 'routine',
+        'question', 'SYNTHETIC W-C02-07 w07_fixture decision tied to a work item', 'work_ref', w), want, null,
+        case when want = 'refused' then 'not_owner' end);
+    end loop;
+  end loop;
   -- The exam fact not leaked by Rules O and C (1.7.1): devos_calisma's answer on the exam task equals its answer on an
-  -- ordinary working item, function by function (status and reason code).
-  foreach fn in array array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'relate', 'retract_relation'] loop
+  -- ordinary working item, function by function (status and reason code). open_decision added 2026-10-19 (N-300 (1)).
+  foreach fn in array array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'relate', 'retract_relation', 'open_decision'] loop
     cid := 'ROC-leak-' || fn;
     if exists (select 1 from roc_ans a join roc_ans b on true where a.case_id = format('ROC-o-%s-cal-cal', fn)
                and b.case_id = format('ROC-o-%s-cal-exam', fn) and 'test_cnc' not in (a.kind, b.kind) and 'unknown' not in (a.kind, b.kind)) then
