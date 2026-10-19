@@ -93,6 +93,7 @@ Each table quotes Appendix C's clauses with their line. A class rule with severa
 | F04-x2 | — | 5.1's table: F04-c-sin, the filter goes by class | F04-c-sin; B-F04-9 | — |
 | F04-x3 | — | 5.1's table: F04-m3, an exam record as root answered as no record | F04-m3; B-F04-6 | — |
 | F04-x4 | — | 5.1's table (CHK-C02-032 condition 3): F04-m4, `relate` refuses an exam record as an end, answered for `devos_calisma` and `devos_kurulum` as no record; `explain_paths` with it as target likewise. The work item is named per token (CHK-C02-037 F4), with a control that reaches the end check | F04-m4-cal, F04-m4-sin, F04-m4-kur (the hook `installation_mission`, G21), F04-m4-paths; B-F04-6, B-F04-7, B-F04-8 | — |
+| F04-x5 | — | N-292 option B (EV-C02-017 section 9 item 4; EV-C02-013 22 (4); not Appendix C), added under ledger rule 3 on 2026-10-19: the walks' direction per relation type, and a NULL-type relation not walked and making the result not complete. Serves W-C02-09 point 8 (the corrective migration) | F04-dir-supports, -challenges, -part_of, -derived_from (`affected_entities` from each end), each with its `-paths` case (`explain_paths` both ways); F04-dir-null, F04-dir-null-paths; B-F04-10 (one direction for every type: the six supports, challenges and part_of cases), B-F04-11 (the NULL type walked: the two null cases); B-F04-2's red list gains F04-dir-null | — |
 
 ### F05 · `T-W07-F05` · `T-W07-F05_scope_both_sides.md` (Ek_C:70-77)
 
@@ -171,6 +172,8 @@ F07-a2, -b2 and -c2 read the current state through `devos_api.operation_state(op
 | F08-p1 | 103 | "After the dependency is resolved, the effect can be made" | F08-pos2 | — |
 | F08-p2 | 103 | "an independent exploration work item can continue under another claim" | F08-pos1 | — |
 | F08-b1 | 104 | "When the re-check at the moment of effect is removed, (a) must pass" | B-F08-1 (F08-a); B-F08-2 (F08-c1, -c2, -c3, -g1); B-F08-3 (F08-c1, -g1, -g2); B-F08-4 (F08-w) (phase C3 added the last two and -g1) | — |
+| F08-x1 | — | N-289 option B (EV-C02-017 section 9 item 3; EV-C02-013 22 (3); not Appendix C), added under ledger rule 3 on 2026-10-19: after (c3)'s epoch change a claim of the earlier epoch counts as lapsed, for readiness, for `claim` and for Rule C. Serves W-C02-09 points 4 and 8 (the corrective migration) | F08-e-ready, F08-e-claim (the old claim marked `expired`, `claim_expired` of origin `rule` naming an epoch, one active claim, the new claim's effect made); F08-e-c-revise_work, -cancel_work, -relate, -retract_relation, each with its `-ctl` (the same claim of the current epoch: `other_class_claim`); B-F08-5 (the shared predicate counting earlier-epoch claims again: the six non-control cases) | — |
+| F08-x2 | 100 | "dependencies" at the prepare (N-297 (4); CHK-C02-096 finding 8 (k5)), added under ledger rule 3 on 2026-10-19: `prepare_operation`'s own readiness refusal | F08-r-prepare (`not_ready`, nothing written), F08-r-prepare-pos (the same prepare once the dependency is resolved); B-F08-6 (readiness at the prepare removed: F08-r-prepare) | — |
 
 ### Concurrency · `T-W07-CONC` · `T-W07-CONC_claim_and_cycle.md` (Ek_C:106-110)
 
@@ -284,6 +287,7 @@ If no function reads EvalRun's table, N08 prints a notice. The read is then clos
 | N09-p1 | 126 | "A dated finding with a primary source can" | N09-pos | — |
 | N09-s1 | 126 | Stage "C02, C04": the C04 part | none | C04, where a span's Source record decides primary or secondary (Appendix C's stage column; PC-42 place 15; N-212 item 5) |
 | N09-x1 | — | Class rule, examples and break (none in Appendix C) | Form C0, the designer's additions; B-N09-1 | — |
+| N09-x2 | — | N-296 (3) option B (EV-C02-017 section 9 item 5; EV-C02-013 22 (5); not Appendix C), added under ledger rule 3 on 2026-10-19: `review_finding` refuses to move a `withdrawn` Finding. Serves W-C02-09 point 8 (the corrective migration) | N09-wd-reviewed, -accepted_for_use, -stale (`invalid_field`, the status unchanged, one RejectedAttempt row each); N09-wd-pos-reviewed, -accepted_for_use, -stale (the same Finding `candidate`: accepted); B-N09-2 (the three N09-wd refusals); B-N09-1's red list gains N09-wd-accepted_for_use | — |
 
 ### N17 · `T-W07-N17` · `T-W07-N17_claim_token.md` (Ek_C:134, as PC-43 place 11 writes it; with N-136)
 
@@ -342,6 +346,7 @@ Real-token form: `T-W07-RT` cases RT-cal-p2, RT-cal-n6 and RT-cal-n8 (the last l
 | N29-n7 | 146 | "a routine-labelled item that only a declared trigger makes high-impact, planted in a run, reaches the audit environment through the sample review" | N29-sample-work (and N29-sample-decision, W-C02-10 point 3's routine decisions); N29-share-work_routine, N29-share-decision_routine | — |
 | N29-p1 | 146 | "A routine work item with no trigger is accepted and runs without extra gates" | N29-pos-admit, N29-pos-artifact, N29-pos-operation, N29-pos-link | — |
 | N29-x1 | — | Class rule, examples and break (none in Appendix C) | Form C0, the designer's additions; N29-pos-dec-high-on-high, N29-pos-mis-open-batu, N29-pos-mis-widen-batu; B-N29-1 to B-N29-6 | — |
+| N29-x2 | 146 | "… or widens a Mission, are rejected", beyond the class (B:60, B:106 with B:305; N-284 option C, EV-C02-017 section 9 item 1; EV-C02-013 22 (1)), added under ledger rule 3 on 2026-10-19 in N29's second file `job/w07_n29_mission_widening.sql`, which serves W-C02-09 point 8 (the corrective migration; the main file needs W-C02-10's tables) | N29-w-same, N29-w-earlier, N29-w-current (a Decision this Mission rests on: `mission_authority`), N29-w-before (answered before the current revision: `mission_authority`), N29-w-null (`answered_at` NULL: `could_not_check`); N29-w-pos-equal (answered at the same time: accepted), N29-w-pos-after (accepted), N29-w-pos-narrow (a narrowing naming the current owner authority: accepted); B-N29-7 (condition 1 removed: same, earlier, current), B-N29-8 (condition 2 removed: before, null) | — |
 
 ### K05 · `T-W07-K05` · `T-W07-K05_many_paths.md` (Ek_C:160, with C3's introduction at Ek_C:152)
 
@@ -457,7 +462,7 @@ Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value r
 | `T-W07-N01` · `T-W07-N01_need_justification.md` | C | W-C02-10 points 2, 3 and 7 | Part B (phase C4b) runs only under the harness on the throwaway database (G25) | None; about 100 calls in one transaction. Part B: four transactions per stream, seconds (phase C4b's self-check, 2026-10-12) |
 | `T-W07-N02` · `T-W07-N02_decision_alternatives.md` | C | W-C02-10 points 6 and 7 | — (phase C5: the transfer cases need W-C02-09's transfer functions, built before W-C02-10) | None (spec, 2026-10-12) |
 | `T-W07-N03` · `T-W07-N03_effort_policy.md` | C | W-C02-10 points 2, 5 and 7 | Real tokens: `T-W07-RT` (RT-cal-n4) | None (spec, 2026-10-12) |
-| `T-W07-N29` · `T-W07-N29_impact_class.md` | C | W-C02-10 points 3, 4 and 7 | Constraint case: C05 | None (spec, 2026-10-12) |
+| `T-W07-N29` · `T-W07-N29_impact_class.md` | C | W-C02-10 points 3, 4 and 7. Its second file `job/w07_n29_mission_widening.sql` (N-284, 2026-10-19): W-C02-09 point 8 | Constraint case: C05 | None (spec, 2026-10-12; the second file, spec revision of 2026-10-19) |
 | `T-W07-T31` · `T-W07-T31_planted_rate.md` | C | W-C02-10 points 3 and 7; W-C02-13 point 5 | Part B (phase C4b) runs only under the harness on the throwaway database (G25) | None; about 120 calls in one transaction. Part B: seconds (phase C4b's self-check, 2026-10-12) |
 | `T-W07-5D` · `T-W07-5D_format_gates_empty.md` | C | W-C02-10 points 2, 3 and 7 | — | None; about 230 calls in one transaction (spec, 2026-10-12) |
 | `T-W07-FGFIND` · `T-W07-FGFIND_finding_gate.md` | C | W-C02-10 points 2, 3 and 7 | — | None (spec, 2026-10-12) |
@@ -476,7 +481,7 @@ Not counted as checks C02 builds: W-C02-09 point 3's look for a token by value r
 | N18 and the transfer checks' tests | — | W-C02-14 point 13 | Not written: W-C02-06's design first | Stated when written |
 
 Counts: 41 tests and the harness, mapped.
-- 23 tests serve W-C02-09 (phase C4b adds `T-W07-N08` by its part X), and 5A's positive control does too.
+- 23 tests serve W-C02-09 (phase C4b adds `T-W07-N08` by its part X), and 5A's positive control does too. [2026-10-19, N-284: so does `T-W07-N29`'s second file, `w07_n29_mission_widening.sql`; `T-W07-N29` is counted once, under W-C02-10.]
 - 15 serve W-C02-10. `T-W07-5B` and `T-W07-ROC` are among them and serve both items.
 - 2 serve W-C02-08 (`T-W07-DM02`, and `T-W07-5A`'s negatives).
 - 2 serve W-C02-12 (`T-W07-RT`, `T-W07-6SC`).

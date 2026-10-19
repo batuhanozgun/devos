@@ -10,6 +10,8 @@
 -- set_config('request.headers', ..., true); this shows neither that the Data API passes the header nor a network secret.
 -- Safety: everything is inside begin ... rollback; no psql meta-command; before the build exists the file ends in
 -- COULD NOT CHECK. Output: one row per case, then PASS (notice) or FAIL / COULD NOT CHECK (raised).
+-- Revised under ledger rule 3, 2026-10-19 (N-297 (c)), before any result of this file: F01-g's plant is valid at global
+-- epoch 1; see the specification's "Revision under ledger rule 3 (N-297, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -415,7 +417,10 @@ begin
   begin
     r := pg_temp.w07_prepare(w, c->>'claim_token', pg_temp.w07_op(w1, 'w07_fixture_key_4'));
     if r->>'status' is distinct from 'ok' then raise exception 'prepare of key 4 refused'; end if;
-    update devos_private.operation set authority_epoch = authority_epoch - 1
+    -- Revised under ledger rule 3, 2026-10-19 (N-297 (c); CHK-C02-096 C1 (c)): one lower only where the stored epoch is
+    -- above 1, else one higher. At global epoch 1 the stored epoch is 1, and one lower broke the column's check
+    -- (authority_epoch >= 1), so F01-g was could_not_check there; either way the stored epoch differs from the claim's.
+    update devos_private.operation set authority_epoch = case when authority_epoch > 1 then authority_epoch - 1 else authority_epoch + 1 end
      where idempotency_namespace = 'w07_fixture' and idempotency_key = 'w07_fixture_key_4';
     get diagnostics n = row_count;
     if n <> 1 then raise exception 'the epoch plant touched % rows', n; end if;

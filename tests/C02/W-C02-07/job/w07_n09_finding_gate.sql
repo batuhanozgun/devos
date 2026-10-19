@@ -9,6 +9,9 @@
 -- Runs: in devos-test by the migration job's test step as postgres; review_finding is called as anon with an audit
 -- token's header simulated (sql-set-role); with its break on the throwaway database. Safety: no psql meta-command;
 -- stops at its first error.
+-- Revised under ledger rule 3, 2026-10-19 (N-296 (3); EV-C02-017 5 (e); EV-C02-013 22 (5)), before any result of the
+-- corrective migration: six N09-wd-* cases, a withdrawn Finding refused and a candidate one accepted, each status;
+-- see the specification's "Revision under ledger rule 3 (N-296 (3), 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '60s';
@@ -292,6 +295,45 @@ begin
   end if;
 end $f$;
 
+-- Revised under ledger rule 3, 2026-10-19 (N-296 (3) option B; EV-C02-017 5 (e); EV-C02-013 22 (5)), before any
+-- result of the corrective migration: review_finding refuses to move a withdrawn Finding (invalid_field). The Finding
+-- is N09-pos's (changeable, its primary span dated, so every gate on entry passes) with its status planted by the
+-- owner; withdrawn for N09-wd-<status>, candidate for N09-wd-pos-<status>, the one thing the pair differs in. A refusal
+-- must name invalid_field and withdrawn (EV-C02-013 22 (5)'s reason), leave the status withdrawn, and add exactly one
+-- RejectedAttempt row of review_finding with that code and the audit class; an acceptance must set the status.
+create function pg_temp.w07_n09_wd(p_id text, p_from text, p_to text, p_tok text) returns void language plpgsql as $f$
+declare fx jsonb; c jsonb; st text; ra0 text[]; ra jsonb; ok boolean;
+begin
+  begin
+    fx := pg_temp.w07_finding(jsonb_build_array(pg_temp.w07_span(true, date '2026-10-01')), true);
+    execute 'update devos_private.finding set status = $1::devos_private.finding_status where id::text = $2' using p_from, fx->>'id';
+    ra0 := pg_temp.w07_ids('devos_private.rejected_attempt');
+    c := pg_temp.w07_call('review_finding', jsonb_build_object('finding_id', fx->'id', 'revision', fx->'revision',
+           'status', p_to), p_tok);
+    execute 'select status::text from devos_private.finding where id::text = $1' using fx->>'id' into st;
+    ra := pg_temp.w07_ra('review_finding', ra0);
+    raise exception using errcode = 'P0W07', message = 'w07: undo the case';
+  exception when sqlstate 'P0W07' then null;
+            when others then
+              perform pg_temp.w07_rec(p_id, 'could_not_check', 'the finding could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 160));
+              return;
+  end;
+  if c ? 'interface' or c->>'error' is not null then
+    perform pg_temp.w07_rec(p_id, 'could_not_check', pg_temp.w07_show(c));
+    return;
+  end if;
+  if p_from = 'withdrawn' then
+    ok := pg_temp.w07_refused(c) and c->'result'->>'reason_code' = 'invalid_field'
+          and strpos(lower(coalesce(c->'result'->>'reason', '')), 'withdrawn') > 0 and st = 'withdrawn'
+          and jsonb_array_length(ra) = 1 and ra->0->>'reason_code' = 'invalid_field' and ra->0->>'role_class' = 'devos_denetim';
+  else
+    ok := not pg_temp.w07_refused(c) and st = p_to;
+  end if;
+  perform pg_temp.w07_check(p_id, ok, format('review_finding from %s to %s: %s; status after %s; %s RejectedAttempt row(s) %s',
+    p_from, p_to, pg_temp.w07_show(c), coalesce(st, 'absent'), jsonb_array_length(coalesce(ra, '[]')),
+    coalesce((select string_agg(concat_ws(' ', e->>'role_class', e->>'reason_code'), ', ') from jsonb_array_elements(ra) e), '')));
+end $f$;
+
 do $$
 declare why text; tok text;
 begin
@@ -318,6 +360,9 @@ begin
     true, tok, false);
   -- N09-pos: the same as N09-a with the primary span dated: accepted.
   perform pg_temp.w07_n09_case('N09-pos', jsonb_build_array(pg_temp.w07_span(true, date '2026-10-01')), true, tok, true);
+  -- N-296 (3) B (2026-10-19): a withdrawn Finding is not moved to any of the three statuses; a candidate one is.
+  perform pg_temp.w07_n09_wd('N09-wd-' || s, 'withdrawn', s, tok) from unnest(array['reviewed', 'accepted_for_use', 'stale']) s;
+  perform pg_temp.w07_n09_wd('N09-wd-pos-' || s, 'candidate', s, tok) from unnest(array['reviewed', 'accepted_for_use', 'stale']) s;
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;

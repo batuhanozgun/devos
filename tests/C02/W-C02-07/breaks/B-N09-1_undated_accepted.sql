@@ -1,5 +1,7 @@
--- w07-break: test=supabase/migrations/tests/w07_n09_finding_gate.sql; expect-red=N09-a,N09-b,N09-c,N09-d
+-- w07-break: test=supabase/migrations/tests/w07_n09_finding_gate.sql; expect-red=N09-a,N09-b,N09-c,N09-d,N09-wd-accepted_for_use
 -- Removes N09's rule (a changeable finding needs a dated primary span before accepted_for_use, B 3.8; DM-26): triggers on devos_private.finding that read the spans are disabled, and devos_api.review_finding(uuid, integer, text) is wrapped so that a refused move to accepted_for_use is made anyway, with nothing else of the function kept.
+-- Revised under ledger rule 3, 2026-10-19 (N-296 (3)): N09-wd-accepted_for_use, a case added then, is added to the red
+-- list (the wrapper makes every refused move to accepted_for_use, the withdrawn Finding's too); no earlier red case changed.
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.

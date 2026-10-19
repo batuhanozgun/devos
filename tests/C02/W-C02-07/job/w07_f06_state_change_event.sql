@@ -28,6 +28,9 @@
 -- planted Decision at its revision; open_review's recipe sends independence_level and a non-empty basis_refs of
 -- {ref, revision}; record_verdict's recipe sends limits as an array; see the specification's "Revision under ledger
 -- rule 3 (N-293 (2), N-294 (2), 2026-10-19)".
+-- Revised under ledger rule 3, 2026-10-19 (N-284; EV-C02-017 1 (e); EV-C02-013 22 (1)), before any result of the
+-- corrective migration: revise_mission's Decision d2 carries answered_at; see the specification's "Revision under
+-- ledger rule 3 (N-284, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -513,7 +516,12 @@ begin
   t_den := pg_temp.w07_token('devos_denetim');
   begin  -- open_mission, revise_mission, admit_work: a planted answered batu Decision (B 3.1) and a planted Mission
     -- Revised before any result (EV-C02-013 R2-7, 2026-10-18): answered_revision 1, the revision answered (DM-11 (a)).
-    d2 := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
+    -- Revised under ledger rule 3, before any result it judges (EV-C02-017 1 (e); EV-C02-013 22 (1); 2026-10-19): d2 is
+    -- answered at now(), the time mr below is written in this transaction, so revise_mission's order of answers
+    -- ("answered_at not earlier than the current revision's created_at", equal passes) holds; planted without it,
+    -- answered_at was NULL and the recipe would be could_not_check. d2 is the owner authority of no revision of mr's Mission.
+    d2 := pg_temp.w07_plant('devos_private.decision', jsonb_build_object('class', 'batu', 'status', 'answered',
+            'answered_revision', 1, 'answered_at', now()));
     if to_regclass('devos_private.decision_revision') is not null then
       perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', d2->'id', 'revision', 1));
     end if;
