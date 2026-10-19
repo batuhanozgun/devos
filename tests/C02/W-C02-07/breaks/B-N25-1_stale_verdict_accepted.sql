@@ -1,5 +1,7 @@
 -- w07-break: test=supabase/migrations/tests/w07_n25_verdict_staleness.sql; expect-red=N25-a,N25-b,N25-c,N25-d
 -- Removes the staleness rule (B 3.11: a verdict whose basis_refs, criterion or use changed cannot be used for acceptance): devos_api.accept(uuid, text) is wrapped so that a refused acceptance is written anyway, as a plain Acceptance row, with nothing else of the function kept.
+-- Revised under ledger rule 3 (N-293 (6), 2026-10-19): the planted row's scope; the rule removed and the red list are
+-- unchanged (T-W07-N25, "Revision under ledger rule 3 (N-293 (1), (6), 2026-10-19)").
 -- Plan Section 8 item 3 (PC-42): applied ONLY by W-C02-07's break harness (tests/C02/W-C02-07/harness/) on a throwaway
 -- PostgreSQL built from supabase/migrations/, never on devos-test or devos; it sits outside supabase/migrations/, so the
 -- migration job never applies it. Synthetic (plan Section 8 item 13): no data. No psql meta-command is used.
@@ -46,8 +48,10 @@ declare r jsonb;
 begin
   r := to_jsonb(devos_api.accept_w07_orig(verdict_ref, accepted_use));
   if r->>'status' = 'refused' then
+    -- scope: a dotted path the table's check admits (acceptance_scope_check; N-293 (6), 2026-10-19: the plain writer's
+    -- text value 'w07_break SYNTHETIC' raised 23514 there, so the break could not be shown).
     perform w07_break.put('devos_private.acceptance', jsonb_build_object('accepted_use', accepted_use,
-      'current_evidence', jsonb_build_array(verdict_ref)));
+      'current_evidence', jsonb_build_array(verdict_ref), 'scope', 'synthetic.w07break'));
     return jsonb_build_object('status', 'ok');
   end if;
   return r;
