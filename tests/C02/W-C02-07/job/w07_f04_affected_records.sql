@@ -1,5 +1,6 @@
 -- Synthetic test data (plan Section 8 item 13): every graph below is made up inside this transaction: random uuids
--- named by role in the graph (m0..m18, a1..b18, c1..c3, n1..n40), relation rows of type derived_from with scope
+-- named by role in the graph (m0..m18, a1..b18, c1..c3, n1..n40, x and y), relation rows of type derived_from (and,
+-- since N-292, one each of supports, challenges and part_of, and one planted with a NULL type) with scope
 -- 'synthetic.w07fixture'; synthetic exam runs (EvalRun rows) planted by the owner, one of them a relation end whose
 -- results carry the marker 'w07_fixture_hidden_node SYNTHETIC W-C02-07', and work items whose purpose is 'w07_fixture_* SYNTHETIC
 -- W-C02-07'. No personal or business data; tokens are kept in PL/pgSQL variables only. Nothing is committed.
@@ -16,6 +17,9 @@
 -- Revised under ledger rule 3, 2026-10-19 (N-291; EV-C02-013 section 17 (5) and 19 (5)), before any result of this
 -- file: F04-m4-cal's two ordinary work items sit under a Mission opened through open_mission, so that Rule O can read
 -- its creation event; see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
+-- Revised under ledger rule 3, 2026-10-19 (N-292; EV-C02-017 4 (e); EV-C02-013 22 (4)), before any result of the
+-- corrective migration: ten F04-dir-* cases, the walks' direction per relation type and a NULL-type relation, in a
+-- block of their own after the earlier cases; see the specification's "Revision under ledger rule 3 (N-292, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -752,6 +756,113 @@ begin
     perform pg_temp.w07_cnc_answer(case when fn = 'affected_entities' then 'F04-u1' else 'F04-u2' end, c,
       fn || ' with the relation table unreadable (renamed for the call)');
   end loop;
+end $$;
+
+-- Revised under ledger rule 3, 2026-10-19 (N-292 option B; EV-C02-017 4 (e); EV-C02-013 22 (4)), before any result of
+-- the corrective migration: the walks' direction per relation type. An edge is a pair (record changed, record
+-- affected): (to_ref, from_ref) for derived_from and the other built types, (from_ref, to_ref) for supports and
+-- challenges, both pairs for part_of; a relation whose type is NULL is not walked and makes the result not complete.
+-- Each type has a graph of its own with one relation from y to x (two work items planted by the owner, as F04's other
+-- nodes): "y supports x" is from_ref y, to_ref x (B 3.4's subject-to-object reading; B:149). No other F04 case changes.
+create function pg_temp.f04_dir_edge(p_g text, p_from text, p_to text, p_type text) returns void language plpgsql as $f$
+declare x uuid := pg_temp.w07_n(p_g, p_from); y uuid := pg_temp.w07_n(p_g, p_to);
+begin
+  perform pg_temp.w07_plant('devos_private.relation', jsonb_build_object('from_ref', x, 'from_revision', 1, 'to_ref', y,
+    'to_revision', 1, 'hard', false, 'scope', 'synthetic.w07fixture', 'method', 'recorded', 'epistemic_status', 'inference',
+    'validity', 'current') || case when p_type is null then '{}'::jsonb else jsonb_build_object('type', p_type) end);
+  insert into w07_edges values (p_g, x, y);
+end $f$;
+-- One walk from p_root: the names (graph p_g) it lists and its completeness flag; 'cnc' when it was not answered in form.
+create function pg_temp.f04_dir_walk(p_g text, p_root text, p_tok text) returns jsonb language plpgsql as $f$
+declare c jsonb;
+begin
+  c := pg_temp.w07_call('affected_entities', jsonb_build_object('root', pg_temp.w07_n(p_g, p_root),
+         'limits', '{"max_depth": 10, "max_records": 100}'::jsonb), p_tok);
+  if c ? 'interface' or pg_temp.w07_refused(c) then return jsonb_build_object('cnc', pg_temp.w07_show(c)); end if;
+  return jsonb_build_object('names', to_jsonb(pg_temp.w07_names(c, p_g)), 'complete', pg_temp.w07_complete(c));
+end $f$;
+-- One explain_paths call from p_root to p_target: the paths as lists of names, and the completeness flag.
+create function pg_temp.f04_dir_paths(p_g text, p_root text, p_target text, p_tok text) returns jsonb language plpgsql as $f$
+declare c jsonb; ps jsonb;
+begin
+  c := pg_temp.w07_call('explain_paths', jsonb_build_object('root', pg_temp.w07_n(p_g, p_root), 'target', pg_temp.w07_n(p_g, p_target),
+         'limits', '{"max_depth": 10, "max_paths": 3}'::jsonb), p_tok);
+  if c ? 'interface' or pg_temp.w07_refused(c) then return jsonb_build_object('cnc', pg_temp.w07_show(c)); end if;
+  select coalesce(jsonb_agg(q.names), '[]') into ps from (
+    select (select jsonb_agg(coalesce(n.name, '?') order by o.i) from jsonb_array_elements_text(
+              case when jsonb_typeof(p) = 'array' then p else coalesce(p->'nodes', p->'refs', '[]') end) with ordinality o(ref, i)
+              left join w07_nodes n on n.g = p_g and n.ref::text = o.ref) as names
+      from jsonb_array_elements(case when jsonb_typeof(c->'result'->'paths') = 'array' then c->'result'->'paths' else '[]' end) p) q;
+  return jsonb_build_object('paths', ps, 'complete', pg_temp.w07_complete(c));
+end $f$;
+-- Judges two observations against what each must be; either not answered in form makes the case could_not_check.
+create function pg_temp.f04_dir_judge(p_id text, a jsonb, a_want jsonb, b jsonb, b_want jsonb, p_what text) returns void
+language plpgsql as $f$
+begin
+  if a ? 'cnc' or b ? 'cnc' then
+    perform pg_temp.w07_rec(p_id, 'could_not_check', p_what || ': not answered in form: ' || coalesce(a->>'cnc', '') || ' ' || coalesce(b->>'cnc', ''));
+  else
+    perform pg_temp.w07_check(p_id, a @> a_want and a_want @> (a - 'cnc') and b @> b_want and b_want @> (b - 'cnc'),
+      format('%s: got %s and %s; wanted %s and %s', p_what, a, b, a_want, b_want));
+  end if;
+end $f$;
+
+do $$
+declare tok text; t text; a jsonb; b jsonb; pa jsonb; pb jsonb; okc constant jsonb := '{"complete": true}';
+begin
+  if exists (select 1 from w07_results where case_id = 'F04-pre') then return; end if;  -- F04-pre is recorded already
+  begin
+    tok := pg_temp.w07_token('devos_calisma');
+    foreach t in array array['supports', 'challenges', 'part_of', 'derived_from'] loop
+      perform pg_temp.f04_dir_edge('dir_' || t, 'y', 'x', t);
+    end loop;
+  exception when others then
+    perform pg_temp.w07_rec(c, 'could_not_check', 'the direction fixtures could not be made: ' || sqlstate || ' ' || left(sqlerrm, 200))
+      from unnest(array['F04-dir-supports', 'F04-dir-supports-paths', 'F04-dir-challenges', 'F04-dir-challenges-paths',
+                        'F04-dir-part_of', 'F04-dir-part_of-paths', 'F04-dir-derived_from', 'F04-dir-derived_from-paths',
+                        'F04-dir-null', 'F04-dir-null-paths']) c;
+    return;
+  end;
+  -- supports and challenges (y supports x): a change of y affects x; a change of x does not reach y.
+  foreach t in array array['supports', 'challenges'] loop
+    perform pg_temp.f04_dir_judge('F04-dir-' || t, pg_temp.f04_dir_walk('dir_' || t, 'y', tok), okc || '{"names": ["x"]}',
+      pg_temp.f04_dir_walk('dir_' || t, 'x', tok), okc || '{"names": []}', 'y ' || t || ' x: affected_entities from y, then from x');
+    perform pg_temp.f04_dir_judge('F04-dir-' || t || '-paths', pg_temp.f04_dir_paths('dir_' || t, 'y', 'x', tok),
+      okc || '{"paths": [["y", "x"]]}', pg_temp.f04_dir_paths('dir_' || t, 'x', 'y', tok), okc || '{"paths": []}',
+      'y ' || t || ' x: explain_paths(y, x), then explain_paths(x, y)');
+  end loop;
+  -- part_of (y part_of x): both directions.
+  perform pg_temp.f04_dir_judge('F04-dir-part_of', pg_temp.f04_dir_walk('dir_part_of', 'y', tok), okc || '{"names": ["x"]}',
+    pg_temp.f04_dir_walk('dir_part_of', 'x', tok), okc || '{"names": ["y"]}', 'y part_of x: affected_entities from y, then from x');
+  perform pg_temp.f04_dir_judge('F04-dir-part_of-paths', pg_temp.f04_dir_paths('dir_part_of', 'y', 'x', tok),
+    okc || '{"paths": [["y", "x"]]}', pg_temp.f04_dir_paths('dir_part_of', 'x', 'y', tok), okc || '{"paths": [["x", "y"]]}',
+    'y part_of x: explain_paths(y, x), then explain_paths(x, y)');
+  -- derived_from (y derived_from x), as built: a change of x affects y; a change of y does not reach x.
+  perform pg_temp.f04_dir_judge('F04-dir-derived_from', pg_temp.f04_dir_walk('dir_derived_from', 'x', tok), okc || '{"names": ["y"]}',
+    pg_temp.f04_dir_walk('dir_derived_from', 'y', tok), okc || '{"names": []}', 'y derived_from x: affected_entities from x, then from y');
+  perform pg_temp.f04_dir_judge('F04-dir-derived_from-paths', pg_temp.f04_dir_paths('dir_derived_from', 'x', 'y', tok),
+    okc || '{"paths": [["x", "y"]]}', pg_temp.f04_dir_paths('dir_derived_from', 'y', 'x', tok), okc || '{"paths": []}',
+    'y derived_from x: explain_paths(x, y), then explain_paths(y, x)');
+  -- A relation whose type is NULL (partial input; EV-C02-013 section 1 item 7 (ii)). relation.type is NOT NULL, so the
+  -- constraint is dropped and the row planted inside a subtransaction that is undone right after the four calls. The
+  -- type decides the direction, so an edge of unknown type may hide an affected record from either end: it is not
+  -- walked, and a walk that meets it from either end is not complete.
+  begin
+    execute 'alter table devos_private.relation alter column type drop not null';
+    perform pg_temp.f04_dir_edge('dir_null', 'y', 'x', null);
+    a := pg_temp.f04_dir_walk('dir_null', 'x', tok); b := pg_temp.f04_dir_walk('dir_null', 'y', tok);
+    pa := pg_temp.f04_dir_paths('dir_null', 'x', 'y', tok); pb := pg_temp.f04_dir_paths('dir_null', 'y', 'x', tok);
+    raise exception using errcode = 'P0W07', message = 'w07: undo the NULL-type plant';
+  exception
+    when sqlstate 'P0W07' then null;
+    when others then
+      a := jsonb_build_object('cnc', 'the NULL-type relation could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 150));
+      b := a; pa := a; pb := a;
+  end;
+  perform pg_temp.f04_dir_judge('F04-dir-null', a, '{"complete": false, "names": []}', b, '{"complete": false, "names": []}',
+    'a NULL-type relation from y to x: affected_entities from x, then from y');
+  perform pg_temp.f04_dir_judge('F04-dir-null-paths', pa, '{"complete": false, "paths": []}', pb, '{"complete": false, "paths": []}',
+    'a NULL-type relation from y to x: explain_paths(x, y), then explain_paths(y, x)');
 end $$;
 
 select case_id, outcome, detail from w07_results order by case_id;
