@@ -1,0 +1,66 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break runs: setup)
+start 2026-10-19T01:18:48Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+36
+[template t18 exit 0]
+2
+[template t19 exit 0]
+b01_finding_counter_not_recorded_admitted.sql: made (one replacement in devos_api.record_finding)
+b02_finding_changeable_not_recorded_admitted.sql: made (one replacement in devos_api.record_finding)
+b03_review_no_primary_span_accepted.sql: made (one replacement in devos_api.review_finding)
+b04_review_undated_primary_accepted.sql: made (one replacement in devos_api.review_finding)
+b05_review_not_recorded_moves.sql: made (one replacement in devos_api.review_finding)
+b06_review_stale_revision_removed.sql: made (one replacement in devos_api.review_finding)
+b07_artifact_absent_revision_read_as_current.sql: made (one replacement in devos_api.register_artifact)
+b08_artifact_stale_revision_removed.sql: made (one replacement in devos_api.register_artifact)
+b09_artifact_readiness_recheck_removed.sql: made (one replacement in devos_api.register_artifact)
+b10_artifact_scope_check_removed.sql: made (one replacement in devos_api.register_artifact)
+b11_artifact_claim_of_any_item.sql: made (one replacement in devos_api.register_artifact)
+b12_artifact_token_in_event.sql: made (one replacement in devos_api.register_artifact)
+b13_review_kind_sample_code_removed.sql: made (one replacement in devos_api.open_review)
+b14_review_target_stale_admitted.sql: made (one replacement in devos_api.open_review)
+b15_review_reference_check_removed.sql: made (one replacement in devos_api.open_review)
+b16_review_empty_basis_admitted.sql: made (one replacement in devos_api.open_review)
+b17_verdict_result_check_removed.sql: made (one replacement in devos_api.record_verdict)
+b18_accept_failed_verdict.sql: made (one replacement in devos_api.accept)
+b19_accept_other_use.sql: made (one replacement in devos_api.accept)
+b20_accept_stale_verdict.sql: made (one replacement in devos_api.accept)
+b21_accept_transfer_copy_as_audit.sql: made (one replacement in devos_api.accept)
+b22_accept_repeat_removed.sql: made (one replacement in devos_api.accept)
+b23_accept_work_state_not_set.sql: made (one replacement in devos_api.accept)
+b24_read_sample_not_withheld.sql: made (one replacement in devos_api.read_review)
+b25_read_verdicts_dropped.sql: made (one replacement in devos_api.read_review)
+m0907 scrub (14_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0

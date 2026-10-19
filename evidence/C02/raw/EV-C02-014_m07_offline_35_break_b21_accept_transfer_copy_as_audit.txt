@@ -1,0 +1,36 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b21_accept_transfer_copy_as_audit, a copy of M09-07 outside the repository, in database k35 copied from t18)
+[database k35 from t18 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b21_accept_transfer_copy_as_audit.sql  (as postgres)
+[apply exit 0]
+ 223 | AC-transfer-copy                     | f  | ok                       | verdict_missing          | {"event": 2, "acceptance": 1}                       |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0907_run/fn_check.sql:697: NOTICE:  M0907_FUNCTIONS FAIL (1 of 266 not as wanted)
+[self-check done]
+w07_n25_verdict_staleness.sql:  N25-pos | bad     | returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}; acceptance rows 0 -> 0
+w07_n25_verdict_staleness.sql: psql:tests/C02/W-C02-07/job/w07_n25_verdict_staleness.sql:340: ERROR:  W07_N25_VERDICT_STALENESS FAIL (1 bad, 0 could not check, of 5)
+w07_dm19_rejected_attempt_survives.sql:  DM19-pos | bad     | returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}; acceptance rows 0 -> 0; new events' role classes []; new records 1
+w07_dm19_rejected_attempt_survives.sql: psql:tests/C02/W-C02-07/job/w07_dm19_rejected_attempt_survives.sql:401: ERROR:  W07_DM19_REJECTED_ATTEMPT_SURVIVES FAIL (1 bad, 0 could not check, of 5)
+w07_n04_self_approval.sql:  N04-T1            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2            | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-T2-pos        | could_not_check | the ledger transfer's functions or accept are not all there (W-C02-09 builds them; EV-C02-005 section 15 S5)
+w07_n04_self_approval.sql:  N04-p3            | could_not_check | the audit verdict on the planted review was not accepted; the arguments are revised before the first result (README section 8): code missing_field; err - ; ra {"record_verdict|missing_field|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_n04_self_approval.sql:  N04-p4            | could_not_check | the audit acceptance was not accepted; the arguments are revised before the first result (README section 8): code not_found; err - ; ra {"accept|not_found|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_n04_self_approval.sql: psql:tests/C02/W-C02-07/job/w07_n04_self_approval.sql:634: ERROR:  W07_N04_SELF_APPROVAL COULD NOT CHECK (5 of 19 could not be checked)
+w07_f06_state_change_event.sql:  F06-event:accept                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "review: its reviewer's role class is missing (partial)", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:claim                     | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:heartbeat                 | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:open_review               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "independence_level: missing", "status": "refused", "reason_code": "missing_field"}
+w07_f06_state_change_event.sql:  F06-event:record_verdict            | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "limits: not an array", "status": "refused", "reason_code": "invalid_field"}
+w07_f06_state_change_event.sql:  F06-event:register_artifact         | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:relate                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:release                   | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:retract_relation          | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: the relation's creation event is missing", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revoke_claim              | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-repeat:accept                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:claim                    | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:open_review              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:record_verdict           | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:relate                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:retract_relation         | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-role-token                      | bad             | returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:941: ERROR:  W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 16 could not check, of 82)
+m0907 scrub (35_break_b21_accept_transfer_copy_as_audit): claim-format strings replaced 0; environment-format strings replaced 0

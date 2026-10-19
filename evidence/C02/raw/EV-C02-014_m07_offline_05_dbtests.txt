@@ -1,0 +1,630 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the eight SQL copies of supabase/migrations/tests/, as the job's dbtests step runs them)
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w03_drift_could_not_check.sql
+w03_drift_could_not_check.sql: BEGIN
+w03_drift_could_not_check.sql: SET
+w03_drift_could_not_check.sql: SET
+w03_drift_could_not_check.sql: CREATE TABLE
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: CREATE FUNCTION
+w03_drift_could_not_check.sql: DO
+w03_drift_could_not_check.sql:                              case_id                             | outcome |         detail         
+w03_drift_could_not_check.sql: -----------------------------------------------------------------+---------+------------------------
+w03_drift_could_not_check.sql:  C01 positive control: well-formed expected, records readable    | ok      | status no_difference
+w03_drift_could_not_check.sql:  C02 expected missing (null)                                     | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C03 expected empty object                                       | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C04 expected not an object                                      | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C05 migrations not an array                                     | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C06 a migration without its version                             | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C07 functions absent (break: skips the function versions)       | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C08 commit absent                                               | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C09 the same version twice                                      | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C10 history table unreadable (renamed)                          | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C11 function record unreadable (renamed)                        | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C12 history table partly unreadable (its name column renamed)   | ok      | status could_not_check
+w03_drift_could_not_check.sql:  C13 function record partly unreadable (its hash column renamed) | ok      | status could_not_check
+w03_drift_could_not_check.sql: (13 rows)
+w03_drift_could_not_check.sql: 
+w03_drift_could_not_check.sql: psql:supabase/migrations/tests/w03_drift_could_not_check.sql:230: NOTICE:  W03_DRIFT_COULD_NOT_CHECK PASS (13/13)
+w03_drift_could_not_check.sql: DO
+w03_drift_could_not_check.sql: ROLLBACK
+database test w03_drift_could_not_check.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w03_drift_detects.sql
+w03_drift_detects.sql: BEGIN
+w03_drift_detects.sql: SET
+w03_drift_detects.sql: SET
+w03_drift_detects.sql: CREATE TABLE
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: CREATE FUNCTION
+w03_drift_detects.sql: DO
+w03_drift_detects.sql:                                   case_id                                  | outcome |        detail        
+w03_drift_detects.sql: ---------------------------------------------------------------------------+---------+----------------------
+w03_drift_detects.sql:  S01 positive control: everything on main is recorded                      | ok      | status no_difference
+w03_drift_detects.sql:  S02 merged, not applied (form i and ii): one version                      | ok      | status differences
+w03_drift_detects.sql:  S03 merged, not applied: two versions                                     | ok      | status differences
+w03_drift_detects.sql:  S04 applied and not on main                                               | ok      | status differences
+w03_drift_detects.sql:  S05 name differs                                                          | ok      | status differences
+w03_drift_detects.sql:  S06 function differs (form iii)                                           | ok      | status differences
+w03_drift_detects.sql:  S07 function on main, not deployed                                        | ok      | status differences
+w03_drift_detects.sql:  S08 function deployed, not on main                                        | ok      | status differences
+w03_drift_detects.sql:  S09 a migration and a function at once                                    | ok      | status differences
+w03_drift_detects.sql:  S10 positive control: no function on main and none recorded (C02's state) | ok      | status no_difference
+w03_drift_detects.sql: (10 rows)
+w03_drift_detects.sql: 
+w03_drift_detects.sql: psql:supabase/migrations/tests/w03_drift_detects.sql:223: NOTICE:  W03_DRIFT_DETECTS PASS (10/10)
+w03_drift_detects.sql: DO
+w03_drift_detects.sql: ROLLBACK
+database test w03_drift_detects.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w03_fixture_apply_read.sql
+w03_fixture_apply_read.sql: BEGIN
+w03_fixture_apply_read.sql: SET
+w03_fixture_apply_read.sql: SET
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ server: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1), database postgres, session user postgres, read at 2026-10-19T01:18:31Z UTC
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ positive control: table auth.users present
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ positive control: table devos_private.function_deployment present
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ history_name: ["w03_fixture_apply"]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ history_rows: 1
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ schema: "w03_fixture"
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ table_columns: [["id", "integer", true, null], ["note", "text", true, "'synthetic'::text"]]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ table_comment: "Synthetic test fixture (plan Section 8 item 13), W-C02-03 T-W03-05"
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ table_kind: "r"
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ table_other_constraints: 0
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ table_primary_key: ["PRIMARY KEY (id)"]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ view_columns: [["id", "integer"], ["note", "text"]]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ view_kind: "v"
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ view_options: ["security_invoker=true"]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ view_reads: ["w03_fixture.apply_check"]
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ view definition (printed, not compared; its layout is the server's):  SELECT id, note FROM w03_fixture.apply_check;
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ break (a), the default planted as 'w03_other': fields found different: {table_columns}
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_READ break (b), the history read with version 29990101000009: 0 rows
+w03_fixture_apply_read.sql: psql:supabase/migrations/tests/w03_fixture_apply_read.sql:178: NOTICE:  W03_FIXTURE_APPLY_READ PASS (12/12 fields as the fixture file; positive control 2/2; breaks 2/2)
+w03_fixture_apply_read.sql: DO
+w03_fixture_apply_read.sql: ROLLBACK
+database test w03_fixture_apply_read.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_5a_no_direct_writes.sql
+w07_5a_no_direct_writes.sql: BEGIN
+w07_5a_no_direct_writes.sql: SET
+w07_5a_no_direct_writes.sql: SET
+w07_5a_no_direct_writes.sql: CREATE TABLE
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: CREATE FUNCTION
+w07_5a_no_direct_writes.sql: DO
+w07_5a_no_direct_writes.sql:                   case_id                  | outcome |                                                                                           detail                                                                                           
+w07_5a_no_direct_writes.sql: -------------------------------------------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_5a_no_direct_writes.sql:  5A-cat-api                                | ok      | tables, views or sequences in devos_api: none
+w07_5a_no_direct_writes.sql:  5A-cat-default                            | ok      | default privileges that would give PUBLIC or an application role a privilege on a table or sequence a later migration adds to devos_private
+w07_5a_no_direct_writes.sql:  5A-cat-grantees                           | ok      | other grantees on devos_private relations (not the owner, postgres, service_role or supabase_admin): none
+w07_5a_no_direct_writes.sql:  5A-cat-priv                               | ok      | privileges on devos_private or its objects held by PUBLIC or an application role: none on relations
+w07_5a_no_direct_writes.sql:  5A-r:anon:acceptance                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:artifact                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:artifact_revision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:assignment                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:decision                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:decision_revision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:effect_class                    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:effort_policy                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:env_tokens                      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:eval_run                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:event                           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:finding                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:finding_revision                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:function_deployment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:global_authority_epoch          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:leak_fingerprint                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:mission                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:mission_revision                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:need                            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:observation                     | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:operation                       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:rejected_attempt                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:relation                        | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:review                          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:verdict                         | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:work                            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:anon:work_revision                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:acceptance             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:artifact               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:artifact_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:assignment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:decision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:decision_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:effect_class           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:effort_policy          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:env_tokens             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:eval_run               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:event                  | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:finding                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:finding_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:function_deployment    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:global_authority_epoch | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:leak_fingerprint       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:mission                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:mission_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:need                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:observation            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:operation              | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:rejected_attempt       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:relation               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:review                 | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:verdict                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:work                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticated:work_revision          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:acceptance             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:artifact               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:artifact_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:assignment             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:decision               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:decision_revision      | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:effect_class           | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:effort_policy          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:env_tokens             | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:eval_run               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:event                  | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:finding                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:finding_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:function_deployment    | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:global_authority_epoch | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:leak_fingerprint       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:mission                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:mission_revision       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:need                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:observation            | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:operation              | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:rejected_attempt       | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:relation               | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:review                 | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:verdict                | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:work                   | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-r:authenticator:work_revision          | ok      | direct SELECT gave 42501
+w07_5a_no_direct_writes.sql:  5A-roles                                  | ok      | roles tried: anon, authenticated, authenticator; outside the line: the migration role and the project owner (postgres), service_role and Supabase's own roles (W-C02-08 "Not covered" (e))
+w07_5a_no_direct_writes.sql:  5A-snap                                   | ok      | tables whose row count or content changed: none
+w07_5a_no_direct_writes.sql:  5A-w:anon:acceptance                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:artifact                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:artifact_revision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:assignment                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:decision                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:decision_revision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:effect_class                    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:effort_policy                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:env_tokens                      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:eval_run                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:event                           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:finding                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:finding_revision                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:function_deployment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:global_authority_epoch          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:leak_fingerprint                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:mission                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:mission_revision                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:need                            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:observation                     | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:operation                       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:rejected_attempt                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:relation                        | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:review                          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:verdict                         | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:work                            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:anon:work_revision                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:acceptance             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:artifact               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:artifact_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:assignment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:decision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:decision_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:effect_class           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:effort_policy          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:env_tokens             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:eval_run               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:event                  | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:finding                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:finding_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:function_deployment    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:global_authority_epoch | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:leak_fingerprint       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:mission                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:mission_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:need                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:observation            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:operation              | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:rejected_attempt       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:relation               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:review                 | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:verdict                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:work                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticated:work_revision          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:acceptance             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:artifact               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:artifact_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:assignment             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:decision               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:decision_revision      | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:effect_class           | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:effort_policy          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:env_tokens             | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:eval_run               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:event                  | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:finding                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:finding_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:function_deployment    | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:global_authority_epoch | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:leak_fingerprint       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:mission                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:mission_revision       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:need                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:observation            | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:operation              | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:rejected_attempt       | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:relation               | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:review                 | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:verdict                | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:work                   | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql:  5A-w:authenticator:work_revision          | ok      | INSERT, UPDATE, DELETE, TRUNCATE refused for lack of privilege (42501)
+w07_5a_no_direct_writes.sql: (168 rows)
+w07_5a_no_direct_writes.sql: 
+w07_5a_no_direct_writes.sql: psql:supabase/migrations/tests/w07_5a_no_direct_writes.sql:383: NOTICE:  W07_5A_NO_DIRECT_WRITES PASS (168/168)
+w07_5a_no_direct_writes.sql: DO
+w07_5a_no_direct_writes.sql: ROLLBACK
+database test w07_5a_no_direct_writes.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_dm02_revision_append_only.sql
+w07_dm02_revision_append_only.sql: BEGIN
+w07_dm02_revision_append_only.sql: SET
+w07_dm02_revision_append_only.sql: SET
+w07_dm02_revision_append_only.sql: CREATE TABLE
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: CREATE FUNCTION
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "work_revision"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "work_revision"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "assignment"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "eval_run"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "operation"
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:348: NOTICE:  truncate cascades to table "observation"
+w07_dm02_revision_append_only.sql: DO
+w07_dm02_revision_append_only.sql:            case_id            | outcome |                                                                                                                                              detail                                                                                                                                               
+w07_dm02_revision_append_only.sql: ------------------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-del   | ok      | refused (raised 23001 devos_private.artifact_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-ins   | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-trunc | ok      | as deployed: refused (raised 23001 devos_private.artifact_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.artifact_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-artifact_revision-upd   | ok      | refused (raised 23001 devos_private.artifact_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-del   | ok      | refused (raised 23001 devos_private.decision_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-ins   | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-trunc | ok      | as deployed: refused (raised 23001 devos_private.decision_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.decision_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-decision_revision-upd   | ok      | refused (raised 23001 devos_private.decision_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-del    | ok      | refused (raised 23001 devos_private.finding_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-ins    | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-trunc  | ok      | as deployed: refused (raised 23001 devos_private.finding_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 0 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.finding_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-finding_revision-upd    | ok      | refused (raised 23001 devos_private.finding_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-list                    | ok      | revision tables found: artifact_revision, decision_revision, finding_revision, mission_revision, work_revision
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-del    | ok      | refused (raised 23001 devos_private.mission_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-ins    | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-trunc  | ok      | as deployed: refused (raised 23001 devos_private.mission_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 5 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.mission_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-mission_revision-upd    | ok      | refused (raised 23001 devos_private.mission_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-del       | ok      | refused (raised 23001 devos_private.work_revision is append-only: DELETE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-ins       | ok      | a new revision row was appended at the owner level
+w07_dm02_revision_append_only.sql:  DM02-work_revision-trunc     | ok      | as deployed: refused (raised 23001 devos_private.work_revision is append-only: TRUNCATE refused) | own rule alone (user triggers of the 4 other tables the cascade reaches disabled for the attempt): refused (raised 23001 devos_private.work_revision is append-only: TRUNCATE refused)
+w07_dm02_revision_append_only.sql:  DM02-work_revision-upd       | ok      | refused (raised 23001 devos_private.work_revision is append-only: UPDATE refused)
+w07_dm02_revision_append_only.sql: (21 rows)
+w07_dm02_revision_append_only.sql: 
+w07_dm02_revision_append_only.sql: psql:supabase/migrations/tests/w07_dm02_revision_append_only.sql:363: NOTICE:  W07_DM02_REVISION_APPEND_ONLY PASS (21/21)
+w07_dm02_revision_append_only.sql: DO
+w07_dm02_revision_append_only.sql: ROLLBACK
+database test w07_dm02_revision_append_only.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w07_idc_identity_chain.sql
+w07_idc_identity_chain.sql: BEGIN
+w07_idc_identity_chain.sql: SET
+w07_idc_identity_chain.sql: SET
+w07_idc_identity_chain.sql: CREATE TABLE
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: CREATE FUNCTION
+w07_idc_identity_chain.sql: DO
+w07_idc_identity_chain.sql:              case_id              | outcome |                                                                              detail                                                                               
+w07_idc_identity_chain.sql: ----------------------------------+---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w07_idc_identity_chain.sql:  IDC-d-devos_backup               | ok      | token_role_class() answered devos_backup (wanted devos_backup); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_calisma              | ok      | token_role_class() answered devos_calisma (wanted devos_calisma); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_ci                   | ok      | token_role_class() answered devos_ci (wanted devos_ci); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_denetim              | ok      | token_role_class() answered devos_denetim (wanted devos_denetim); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_kurulum              | ok      | token_role_class() answered devos_kurulum (wanted devos_kurulum); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-d-devos_sinav                | ok      | token_role_class() answered devos_sinav (wanted devos_sinav); code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-e1                           | ok      | functions whose result or error held a presented value: none
+w07_idc_identity_chain.sql:  IDC-f1                           | ok      | distinct prefixes 1 (wanted 1); random parts of 43 URL-safe characters: t; prefix ends in _ and names no class: t
+w07_idc_identity_chain.sql:  IDC-i-devos_backup               | ok      | one env_tokens row of class devos_backup, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_calisma              | ok      | one env_tokens row of class devos_calisma, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_ci                   | ok      | one env_tokens row of class devos_ci, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_denetim              | ok      | one env_tokens row of class devos_denetim, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_kurulum              | ok      | one env_tokens row of class devos_kurulum, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-i-devos_sinav                | ok      | one env_tokens row of class devos_sinav, not revoked: t; events added [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner, role_class owner)
+w07_idc_identity_chain.sql:  IDC-n-acl                        | ok      | issue/revoke functions with EXECUTE for PUBLIC (or the default ACL) or an application role: 0 (wanted 0)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-anon              | ok      | issue_env_token as role anon: state 42501 (wanted 42501, insufficient privilege); changed []; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-authenticated     | ok      | issue_env_token as role authenticated: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticated (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-authenticator     | ok      | issue_env_token as role authenticator: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticator (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-as-service_role      | ok      | issue_env_token as role service_role: state 42501 (wanted 42501, insufficient privilege); changed []; as service_role (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_backup   | ok      | issue_env_token with the devos_backup token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_calisma  | ok      | issue_env_token with the devos_calisma token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_ci       | ok      | issue_env_token with the devos_ci token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_denetim  | ok      | issue_env_token with the devos_denetim token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_kurulum  | ok      | issue_env_token with the devos_kurulum token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-issue-token-devos_sinav    | ok      | issue_env_token with the devos_sinav token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-anon             | ok      | revoke_env_token as role anon: state 42501 (wanted 42501, insufficient privilege); changed []; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-authenticated    | ok      | revoke_env_token as role authenticated: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticated (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-authenticator    | ok      | revoke_env_token as role authenticator: state 42501 (wanted 42501, insufficient privilege); changed []; as authenticator (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-as-service_role     | ok      | revoke_env_token as role service_role: state 42501 (wanted 42501, insufficient privilege); changed []; as service_role (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_backup  | ok      | revoke_env_token with the devos_backup token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_calisma | ok      | revoke_env_token with the devos_calisma token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_ci      | ok      | revoke_env_token with the devos_ci token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_denetim | ok      | revoke_env_token with the devos_denetim token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_kurulum | ok      | revoke_env_token with the devos_kurulum token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-n-revoke-token-devos_sinav   | ok      | revoke_env_token with the devos_sinav token as anon: state 42501 (wanted 42501); as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-r1                           | ok      | epoch 1 to 2 (wanted +1); revoked_at set: t; events [{"origin": "owner", "role_class": "owner"}] (wanted one, origin owner)
+w07_idc_identity_chain.sql:  IDC-r2                           | ok      | the revoked working token: code revoked; err - ; ra {"token_role_class|revoked|none": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_idc_identity_chain.sql:  IDC-r3                           | ok      | after the revocation the audit token answers devos_denetim (wanted devos_denetim: an epoch change ends claims, not tokens)
+w07_idc_identity_chain.sql:  IDC-s1                           | ok      | env_tokens columns: id, issued_at, revoked_at, role_class, token_hash (wanted exactly id, role_class, token_hash, issued_at, revoked_at)
+w07_idc_identity_chain.sql:  IDC-s2                           | ok      | the global authority epoch table holds 1 rows (wanted 1)
+w07_idc_identity_chain.sql:  IDC-s3                           | ok      | Event has 2 of role_class and origin
+w07_idc_identity_chain.sql:  IDC-s4                           | ok      | RejectedAttempt has 5 of the 5 key columns, and 0 columns named for a token, header or value (wanted 0)
+w07_idc_identity_chain.sql:  IDC-v1                           | ok      | tables holding a token value: none; not searched (not readable as owner): auth.users
+w07_idc_identity_chain.sql: (43 rows)
+w07_idc_identity_chain.sql: 
+w07_idc_identity_chain.sql: psql:supabase/migrations/tests/w07_idc_identity_chain.sql:485: NOTICE:  W07_IDC_IDENTITY_CHAIN PASS (43/43)
+w07_idc_identity_chain.sql: DO
+w07_idc_identity_chain.sql: ROLLBACK
+database test w07_idc_identity_chain.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w08_priv_types_functions.sql
+w08_priv_types_functions.sql: BEGIN
+w08_priv_types_functions.sql: SET
+w08_priv_types_functions.sql: SET
+w08_priv_types_functions.sql: CREATE TABLE
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE FUNCTION
+w08_priv_types_functions.sql: CREATE TABLE
+w08_priv_types_functions.sql: CREATE TABLE
+w08_priv_types_functions.sql: psql:supabase/migrations/tests/w08_priv_types_functions.sql:286: NOTICE:  W08_PRIV server: PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1), database postgres, session user postgres, current user postgres, read at 2026-10-19T01:18:31Z UTC
+w08_priv_types_functions.sql: DO
+w08_priv_types_functions.sql:                                   case_id                                   | outcome |                                                                                                                                                                                                                                                                                              detail                                                                                                                                                                                                                                                                                               
+w08_priv_types_functions.sql: ----------------------------------------------------------------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w08_priv_types_functions.sql:  PRIV-ctl-function-closed                                                   | ok      | control held (positive): readings: ok on the planted owner-only synthetic function w08_fixture_fn_closed(), owner postgres, ACL {postgres=X/postgres}; grantees other than the owner: none; EXECUTE held by: none
+w08_priv_types_functions.sql:  PRIV-ctl-function-default                                                  | ok      | control held (negative): readings: bad on the synthetic function w08_fixture_fn_default(), owner postgres, ACL null (the default {=X/postgres,postgres=X/postgres}); grantees other than the owner: PUBLIC EXECUTE; EXECUTE held by: public, anon, authenticated, authenticator, service_role; its ACL is null, read through acldefault
+w08_priv_types_functions.sql:  PRIV-ctl-function-public                                                   | ok      | control held (negative): readings: bad on the synthetic function w08_fixture_fn_public(), owner postgres, ACL {postgres=X/postgres,=X/postgres}; grantees other than the owner: PUBLIC EXECUTE; EXECUTE held by: public, anon, authenticated, authenticator, service_role
+w08_priv_types_functions.sql:  PRIV-ctl-type-anon                                                         | ok      | control held (negative): readings: bad on the synthetic type w08_fixture_type_anon, owner postgres, ACL {postgres=U/postgres,anon=U/postgres}; grantees other than the owner: anon USAGE; USAGE held by: anon; its array w08_fixture_type_anon[], USAGE held by: anon
+w08_priv_types_functions.sql:  PRIV-ctl-type-closed                                                       | ok      | control held (positive): readings: ok on the planted owner-only synthetic type w08_fixture_type_closed, owner postgres, ACL {postgres=U/postgres}; grantees other than the owner: none; USAGE held by: none; its array w08_fixture_type_closed[], USAGE held by: none
+w08_priv_types_functions.sql:  PRIV-ctl-type-default                                                      | ok      | control held (negative): readings: bad on the synthetic type w08_fixture_type_default, owner postgres, ACL null (the default {=U/postgres,postgres=U/postgres}); grantees other than the owner: PUBLIC USAGE; USAGE held by: public, anon, authenticated, authenticator, service_role; its array w08_fixture_type_default[], USAGE held by: public, anon, authenticated, authenticator, service_role; its ACL is null, read through acldefault
+w08_priv_types_functions.sql:  PRIV-ctl-type-public                                                       | ok      | control held (negative): readings: bad on the synthetic type w08_fixture_type_public, owner postgres, ACL {postgres=U/postgres,=U/postgres}; grantees other than the owner: PUBLIC USAGE; USAGE held by: public, anon, authenticated, authenticator, service_role; its array w08_fixture_type_public[], USAGE held by: public, anon, authenticated, authenticator, service_role
+w08_priv_types_functions.sql:  PRIV-facl:caller_role_class(text)                                          | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:check_claim(text,uuid,role_class,boolean)                        | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:hard_dependency_cycle(uuid,uuid)                                 | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:is_installation_mission(uuid)                                    | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:issue_env_token(text)                                            | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:ready_value(uuid,uuid)                                           | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:refuse_change()                                                  | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:reject(text,role_class,text,text,text,uuid,integer)              | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:reject_counted(text,text)                                        | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:revoke_env_token(uuid)                                           | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:scope_within(text,text)                                          | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:token_hash(text)                                                 | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-facl:write_event(text,uuid,integer,text,jsonb,text,event_origin,text) | ok      | owner postgres; ACL {postgres=X/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-fexec:anon                                                            | ok      | has_function_privilege(anon, function, EXECUTE) asked on all 13 function(s) of devos_private; true on: none
+w08_priv_types_functions.sql:  PRIV-fexec:authenticated                                                   | ok      | has_function_privilege(authenticated, function, EXECUTE) asked on all 13 function(s) of devos_private; true on: none
+w08_priv_types_functions.sql:  PRIV-fexec:authenticator                                                   | ok      | has_function_privilege(authenticator, function, EXECUTE) asked on all 13 function(s) of devos_private; true on: none
+w08_priv_types_functions.sql:  PRIV-fexec:public                                                          | ok      | has_function_privilege(public, function, EXECUTE) asked on all 13 function(s) of devos_private; true on: none
+w08_priv_types_functions.sql:  PRIV-fexec:service_role                                                    | ok      | has_function_privilege(service_role, function, EXECUTE) asked on all 13 function(s) of devos_private; true on: none
+w08_priv_types_functions.sql:  PRIV-pos                                                                   | ok      | the readings saw 128 types of devos_private (32 composite, 32 enum, 64 true array), 64 of them with privileges of their own and 64 true array types, and 13 function(s): caller_role_class(text), check_claim(text,uuid,role_class,boolean), hard_dependency_cycle(uuid,uuid), is_installation_mission(uuid), issue_env_token(text), ready_value(uuid,uuid), refuse_change(), reject(text,role_class,text,text,text,uuid,integer), reject_counted(text,text), revoke_env_token(uuid), scope_within(text,text), token_hash(text), write_event(text,uuid,integer,text,jsonb,text,event_origin,text)
+w08_priv_types_functions.sql:  PRIV-tacl:acceptance                                                       | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:alternatives_state                                               | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:artifact                                                         | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:artifact_current                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:artifact_revision                                                | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:artifact_status                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:assignment                                                       | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:assignment_status                                                | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:current_authority                                                | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:decision                                                         | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:decision_class                                                   | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:decision_current                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:decision_revision                                                | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:decision_status                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:effect_class                                                     | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:effort_policy                                                    | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:effort_policy_status                                             | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:env_tokens                                                       | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:epistemic_status                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:eval_run                                                         | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:event                                                            | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:event_origin                                                     | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:finding                                                          | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:finding_changeable                                               | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:finding_current                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:finding_revision                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:finding_status                                                   | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:fingerprint_origin                                               | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:function_deployment                                              | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:global_authority_epoch                                           | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:group_mode                                                       | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:impact_class                                                     | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:independence_level                                               | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:leak_fingerprint                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:mission                                                          | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:mission_current                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:mission_revision                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:mission_status                                                   | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:need                                                             | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:need_origin                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:need_status                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:observation                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:observed_effect                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:operation                                                        | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:operation_status                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:privacy_class                                                    | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:rejected_attempt                                                 | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:relation                                                         | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:relation_method                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:relation_type                                                    | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:relation_validity                                                | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:review                                                           | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:review_kind                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:role_class                                                       | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:source_type                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:verdict                                                          | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:verdict_result                                                   | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work                                                             | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_acceptance                                                  | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_current                                                     | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_effect                                                      | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_execution                                                   | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_qualification                                               | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tacl:work_revision                                                    | ok      | owner postgres; ACL {postgres=U/postgres}; grantees other than the owner: none
+w08_priv_types_functions.sql:  PRIV-tuse:anon                                                             | ok      | has_type_privilege(anon, type, USAGE) asked on all 128 types of devos_private (64 true array); true on: none
+w08_priv_types_functions.sql:  PRIV-tuse:authenticated                                                    | ok      | has_type_privilege(authenticated, type, USAGE) asked on all 128 types of devos_private (64 true array); true on: none
+w08_priv_types_functions.sql:  PRIV-tuse:authenticator                                                    | ok      | has_type_privilege(authenticator, type, USAGE) asked on all 128 types of devos_private (64 true array); true on: none
+w08_priv_types_functions.sql:  PRIV-tuse:public                                                           | ok      | has_type_privilege(public, type, USAGE) asked on all 128 types of devos_private (64 true array); true on: none
+w08_priv_types_functions.sql:  PRIV-tuse:service_role                                                     | ok      | has_type_privilege(service_role, type, USAGE) asked on all 128 types of devos_private (64 true array); true on: none
+w08_priv_types_functions.sql: (95 rows)
+w08_priv_types_functions.sql: 
+w08_priv_types_functions.sql: psql:supabase/migrations/tests/w08_priv_types_functions.sql:301: NOTICE:  W08_PRIV_TYPES_FUNCTIONS PASS (95/95)
+w08_priv_types_functions.sql: DO
+w08_priv_types_functions.sql: ROLLBACK
+database test w08_priv_types_functions.sql: passed
+$ psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/tests/w14_sch_transfer_schema.sql
+w14_sch_transfer_schema.sql: BEGIN
+w14_sch_transfer_schema.sql: SET
+w14_sch_transfer_schema.sql: SET
+w14_sch_transfer_schema.sql: CREATE TABLE
+w14_sch_transfer_schema.sql: CREATE TABLE
+w14_sch_transfer_schema.sql: INSERT 0 1
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: CREATE FUNCTION
+w14_sch_transfer_schema.sql: DO
+w14_sch_transfer_schema.sql:             case_id             | outcome |                                                                                                                                                             detail                                                                                                                                                              
+w14_sch_transfer_schema.sql: --------------------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+w14_sch_transfer_schema.sql:  SCH-S1-commit                  | ok      | input_commit of 7 hexadecimal characters: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-commit-nonhex           | ok      | input_commit of 40 characters, none hexadecimal: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source" | input_commit of 40 characters, the 20th not hexadecimal: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-commit-null             | ok      | input_commit JSON null, the other five fields well formed: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-handover-two            | ok      | a second ledger_handed_over event: refused: 23505 duplicate key value violates unique constraint "event_one_ledger_handover"; such events before 1, after 1
+w14_sch_transfer_schema.sql:  SCH-S1-miss-input_commit       | ok      | transfer_source without input_commit: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-miss-kind               | ok      | transfer_source without kind: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-miss-last_commit        | ok      | transfer_source without last_commit: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-miss-path               | ok      | transfer_source without path: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-miss-sha256             | ok      | transfer_source without sha256: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-miss-source_id          | ok      | transfer_source without source_id: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-nosrc                   | ok      | a transferred event with no transfer_source: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-null-kind               | ok      | transfer_source with kind JSON null, the other five fields well formed: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-null-source_id          | ok      | transfer_source with source_id JSON null, the other five fields well formed: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-src-array               | ok      | transfer_source an array of its six field names, not an object: refused: 23514 new row for relation "event" violates check constraint "event_transferred_transfer_source"
+w14_sch_transfer_schema.sql:  SCH-S1-type-batu_step          | ok      | event_type batu_step: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-ledger_entry       | ok      | event_type ledger_entry: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-ledger_handed_over | ok      | the first ledger_handed_over event: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-ledger_state_row   | ok      | event_type ledger_state_row: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-note_line          | ok      | event_type note_line: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-record_line        | ok      | event_type record_line: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-transfer_run       | ok      | event_type transfer_run: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-transferred        | ok      | event_type transferred: accepted
+w14_sch_transfer_schema.sql:  SCH-S1-type-usage_reading      | ok      | event_type usage_reading: accepted
+w14_sch_transfer_schema.sql:  SCH-S2-cat                     | ok      | unique partial index found: devos_private.event_transferred_key
+w14_sch_transfer_schema.sql:  SCH-S2-dup-other               | ok      | a second transferred event, same kind and source ID, another hash: refused: 23505 duplicate key value violates unique constraint "event_transferred_key"; events of the key before 1, after 1
+w14_sch_transfer_schema.sql:  SCH-S2-dup-same                | ok      | a second transferred event, same kind, source ID and hash: refused: 23505 duplicate key value violates unique constraint "event_transferred_key"; events of the key before 1, after 1
+w14_sch_transfer_schema.sql:  SCH-S2-pos-kind                | ok      | same source ID, another kind: accepted
+w14_sch_transfer_schema.sql:  SCH-S2-pos-sid                 | ok      | same kind, another source ID: accepted
+w14_sch_transfer_schema.sql:  SCH-S3-closed                  | ok      | a status B 3.17 does not list: refused: 22P02 invalid input value for enum devos_private.decision_status: "w14_fixture_not_a_status"
+w14_sch_transfer_schema.sql:  SCH-S3-declined                | ok      | status declined: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-acc-use                 | ok      | accepted_use installation_acceptance: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-art-git_file            | ok      | kind git_file: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-art-git_tree            | ok      | kind git_tree: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-ces-nr                  | ok      | counter_evidence_searched not_recorded: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-chg-closed              | ok      | changeable outside yes / no / not_recorded: refused: 22P02 invalid input value for enum devos_private.finding_changeable: "w14_fixture_maybe"
+w14_sch_transfer_schema.sql:  SCH-S4-chg-no                  | ok      | changeable no: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-chg-nr                  | ok      | changeable not_recorded: accepted
+w14_sch_transfer_schema.sql:  SCH-S4-chg-yes                 | ok      | changeable yes: accepted
+w14_sch_transfer_schema.sql: (38 rows)
+w14_sch_transfer_schema.sql: 
+w14_sch_transfer_schema.sql: psql:supabase/migrations/tests/w14_sch_transfer_schema.sql:498: NOTICE:  W14_SCH_TRANSFER_SCHEMA PASS (38/38)
+w14_sch_transfer_schema.sql: DO
+w14_sch_transfer_schema.sql: ROLLBACK
+database test w14_sch_transfer_schema.sql: passed
+[drive dbtests exit 0]
+m0907 scrub (05_dbtests): claim-format strings replaced 0; environment-format strings replaced 0

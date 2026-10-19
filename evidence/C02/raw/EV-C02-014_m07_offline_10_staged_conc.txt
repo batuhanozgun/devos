@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W07-CONC's staged program, run in place, not a copy; a self-check, never a result; input: the break harness's form, four keys with null values; it commits its synthetic fixtures on this throwaway cluster)
+fixtures: one owner-planted Decision of class batu with its revision, one Mission and 160 work items under scope synthetic.w07.conc.rf70b92e9 (synthetic, devos-test only; left in place, append-only)
+CONC-claim | ok | 20 runs of 8 connections; exactly one claim each: yes
+CONC-cyc2 | ok | 20 runs; no cycle of 2 formed: yes
+CONC-cyc4 | ok | 20 runs; no cycle of 4 formed: yes
+CONC-err | ok | raised errors by SQLSTATE (deadlock 40P01, serialization 40001, lock timeout 55P03, cancel 57014 among them): none; of which serious none
+CONC-late | ok | 10 runs; no effect of a revoked or blocked claim landed: yes
+CONC-overlap | ok | transactions overlapped in every run
+CONC-pos | ok | one claim succeeded in every run
+CONC-tokens | ok | synthetic tokens of this run left unrevoked: 0
+W07_CONC_CLAIM_AND_CYCLE PASS (8/8)
+[conc exit 0]
+m0907 scrub (10_staged_conc): claim-format strings replaced 0; environment-format strings replaced 0

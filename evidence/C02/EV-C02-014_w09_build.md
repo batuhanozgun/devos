@@ -1385,3 +1385,270 @@ The runs:
 5. **Residuals:**
    - The walks look a record up in fourteen tables per level (one `union all`), and `explain_paths` keeps its region in memory. That is a cost, not a rule, at C02's sizes; C04's measurement (T-W07-K05's "Not covered") sizes it.
    - An unreadable table among the fourteen makes every `relate`, and every walk, `could_not_check` (`RL-c-unreadable` reports `from_ref`'s check). That fails closed.
+
+## 8. M09-07: knowledge, product and review
+
+The producer's record of `supabase/migrations/20261019030001_w09_knowledge_product_review.sql` (M09-07). It was written on branch `claude/c02-w09-m0907` at `69d3632d4e7fb1de6c50db437d3459f1d24824a8`: `main` `5b96842` with M09-01 to M09-05, plus M09-06 (`20261019010001_w09_relations.sql`) from its pull request #369, under review. M09-07 builds on M09-06 and does not change it. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at that commit, with EV13's correction section 20 added by the same producer. M09-07 means the file above, and M09-07:n a line of it. `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 20 first.** EV13 gained "20. Correction, 2026-10-19 (M09-07)", with marks *[C-M07]* in the seven rows of 2.6. It states the forms 8.2 lists, takes the sources' side against 2.6's wording in one place (8.2 item 2), and names the refusals sources require that 2.6's rows do not (8.2 items 3 and 6). M09-07's checker judges it.
+- **The note items that bind M09-07's commit, checked on the branch before the SQL** (`plan/work/C02.md`):
+  - **Binding M09-07's commit: none open and unmet.**
+  - N-279 (10), first part: whether `register_artifact`'s `work_revision` is required, "before the first commit of the migration that builds the function". **Met.** EV13 R2-1 decided it (required; absent: `could_not_check`; the tie in the event's payload), CHK-C02-081 judged it, and M09-07 builds it (M09-07:556-559, :662-666). R1-7 (`criterion` written to `criterion_ref`), which N-279 (10) puts to the joint verdict, is judged and built (M09-07:928-931).
+  - N-288 (parameters named through the function's name). It binds M09-07's form, not its commit. **Met:** every body reads its parameters through `ALIAS FOR $n` (M09-07:54, :290-292, :494-495, :699, :969, :1104-1105, :1408). Self-check `TX-alias`.
+  - This record's 3.5 item 4 and 6.6 item 4, for this producer. "Call `check_claim`, then `ready_value(work, assignment_id)` at an effect" is **met** (M09-07:597, :622; `TX-claim-before-readiness`). "A claim's token is never put into an effect's event or refusal row" is **met** (`RA-event`, `RA-rows-hold-no-token`; break b12). "`ALIAS FOR $n` if a merged patch renames the function" is **met** (above).
+  - N-281, with its L-369 annotation: no real-path `claim` until it is met. M09-07 makes no claim and returns no token; `register_artifact` takes one as a parameter, as `heartbeat` does (6.6 item 5's residual). Its runs are offline.
+  - N-279 (19): Group B's files (5B, 6TK, N04, N08) are audited for the `env_token` counting fault before each file's first result. That is not a commit of M09-07; 5B and N04 run here in place, which is not a result.
+  - N-279 (1), (2), (3), (17), (18), (21), N-280, N-282, N-283 (6), N-284, N-286, N-287, N-289, N-290, N-292: their deadlines are C03's work list, W-C02-14's first run, M09-08, M09-12, W-C02-10's sampling call, the first `.py` copy, the first migration adding a role class, a test file's first result or copy, verdict (ii), M09-09, each break's first run and the pull requests that copy F05, F08 or 5C. None falls at M09-07's commit. N-285 (1), N-290 (1) and N-291 bear on tests that call M09-07's functions; 8.4 says what they mean here.
+- **Appendix B principle 3** binds `record_finding` and `register_artifact`, which write revision 1 of a record (no reason: there is no earlier revision), and the references every function here reads: an effect names its work item's revision (R2-1), a review its target's and each basis entry's (8.2 item 4), and `accept` compares them with the current revisions (8.2 item 6). `review_finding`, `record_verdict` and `accept` write state or records without revisions.
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | Branch `claude/c02-w09-m0907` at `69d3632`, clean before this work. The runs were made with M09-07, EV13's section 20 and the raw files uncommitted (O, `56_git_hashes.txt`). Bytes run: M09-07 `9677e7b3794eca13e4c059f27218fd10a9f74c9c132260643b419825621983d7`; the self-check `…/scratchpad/m0907_run/fn_check.sql` `7975085a01edf8647df355772698f32024b1bba82b2be4a9438d0dc392e49cde`; the break maker `…/scratchpad/m0907_run/brk.py` `60722b878b2f7000c5664988d9f5fe57ebae9b0490bb95605b9c4c21bae8bd62` (the other drivers' hashes are in file 56). EV13 with its section 20, as run and as written here: `c44c57ba20f68cea2c958db9e2841bb23fac27f307797c06fd8ff7c61159046b`. A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1 and 3 to 7: one throwaway PostgreSQL 16.15 cluster per run, unix socket only (in `…/scratchpad/m7s`, short enough for the 107-byte socket limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, `13_stop.txt` and `54_breaks_stop.txt`: `[cluster directory deleted: yes]`). Stand-ins: M09-02's `setup.sql`, a byte-identical copy (`fa2a9cfa…9783`). The break runs copy each fresh database from one of two template databases (`t18`, the eighteen migrations before M09-07; `t19`, all nineteen), so no break leaves anything for the next. The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `69d3632`; EV13 with Revisions 1 and 2, its corrections 15 to 19, and its section 20 (for M09-07's checker) |
+| Input | The nineteen migrations (the branch's eighteen and M09-07); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `tests/C02/W-C02-07/job/` and T-W14-FN's, and T-W07-CONC's program `job/w07_conc_claim_and_cycle.py`, run in place; the producer's self-check; twenty-five break copies of M09-07 made outside the repository (`…/scratchpad/m0907_brk/`, by `brk.py`); thirteen merged break patches of `tests/C02/W-C02-07/breaks/` applied in place on the throwaway cluster (8.5, runs 40 to 52) |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_m07_offline_01_init_setup.txt` to `…_56_git_hashes.txt`, written directly by `…/scratchpad/m0907_run/rerun.sh` (01 to 13), `brk.sh` (14 to 54) and `final.sh` (55, 56). Every file but `56` passed through `scrub.py`, M09-05's filter, which reads the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time and replaces each claim-format and each environment-format string with a fixed label. Each file ends `claim-format strings replaced 0; environment-format strings replaced 0` (55 of 55). File 55 scans files 01 to 54 again with the same finders: `54 files; claim-format 0; environment-format 0`. Files 12 and 54 scan the cluster's server log: `438 lines; claim-format 0; environment-format 0` and `1068 lines; claim-format 0; environment-format 0`. File 56 holds hashes and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 09) and the break copies (15 to 39) are the producer's own; the merged break patches (40 to 52) and the merged program (10) are the test designers' |
+
+### 8.1 What was built, object by object
+
+All in M09-07, in this order: the seven functions of EV13 2.6, and their grants. No table, type or `devos_private` function is added. M09-01 to M09-06 are not changed. Their helpers are called: `caller_role_class`, `write_event`, `reject`, `scope_within`, `check_claim` and `ready_value`.
+
+**The form every function has** is M09-03's to M09-06's (4.1, 5.1, 6.1, 7.1):
+- the derivation first;
+- the read block with steps (b) to (f). A decided refusal goes through `v_code`, `v_reason` and `P0D01`. Any other error is `could_not_check`, `<v_check>: its input could not be read (SQLSTATE <code>)`;
+- for the six state-changing functions, the write block, where an error is `write_failed`, but `P0D02`; `read_review` has none;
+- one per-call row by `reject` after a refusal;
+- fixed reasons.
+
+O (`08_catalog.txt`): each of the seven has `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`, ACL `{postgres=X/postgres,anon=X/postgres}`.
+
+**Parameters.** The names are those of EV13 2.6 and README 8.1, so named calls bind: `record_finding(p)`, `review_finding(finding_id, revision, status)`, `register_artifact(claim_token, p)`, `open_review(p)`, `record_verdict(p)`, `accept(verdict_ref, accepted_use)`, `read_review(review_id)`. The bodies read them through `ALIAS FOR $n` (N-288). Merged patches that rename one of these functions and wrap it: B-N09-1, B-N25-1, B-N04-3, B-N17-1, B-5C-1, B-F05-1, B-F08-1 to -4, B-6RG-1, B-N01-2, B-N29-1, B-5D-4, B-FGFIND-1 and -2, B-6ST-2 and -3. Under B-N09-1 and B-N25-1 the renamed bodies kept working (runs 44, 45).
+
+**References these functions read** (EV13 20 (4), (6)). A review's target and basis entries, and a verdict's criterion when it is a uuid, are looked up in the fourteen families of M09-06's `relate` by one `union all` (M09-07:848-862, :1256-1270), with the revision rule of M09-06 (revisioned families need an existing revision; the others take none). None of the seven names the exam table (`TX-no-exam-table`; file 56: `M09-07 lines naming the exam table: 0`), so T-W07-N08's finder takes in none of them, and an exam record is, for every class, a record these functions cannot find (`OR-target-exam-as-none`).
+
+**The role lists against the merged widening patches.** B-5B-1, B-5B-3 and B-N04-1 widen a role list by rewriting every quoted `'devos_denetim'` in the function's text. `accept` and `read_review` name the audit class a second time, for the reviewer check and the sample rule, so there it is written in two pieces (`'devos_' || 'denetim'`, M09-07:1199, :1449), and the patches widen the gate alone (`TX-one-quoted-audit-class`; run 42: B-N04-1 turns exactly `N04-k2` and `5B-R07-accept-kur` red).
+
+| Object | What it does | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_api.record_finding(p jsonb)` (M09-07:46) | Roles `devos_calisma`, `devos_kurulum`. The form of 20 (1): six required strings; `not_recorded` in `counter_evidence_searched` (M09-07:123) or `changeable`: `invalid_field`; each span an object with a boolean `primary` and, when dated, a `read_at` date. Writes the Finding (`candidate`, `private_derived` by default), its revision 1 and `finding_recorded` (revision 1, the record's fields, keys without a value left out). Answer `{"status": "ok", "id", "revision": 1}` | 2.6's row with C-M07 (20 (1)); B 3.8, principles 10 and 12; DM-12, DM-25, DM-26; EV-C02-005 S4 |
+| `devos_api.review_finding(finding_id uuid, revision integer, status text)` (M09-07:282) | Role `devos_denetim`. Order of 20 (2): `missing_field`; `invalid_field` for a status but `reviewed`, `accepted_for_use`, `stale`; the Finding `for update` (M09-07:352), `not_found`; `stale_revision` (M09-07:369); the exact repeat; `not_recorded`: `invalid_field` (M09-07:384); N09 for `accepted_for_use` of a changeable finding: no primary span (M09-07:426) or an undated one (M09-07:431), `invalid_field`; a partial span `could_not_check`. Writes the status and `finding_reviewed` (`status`, `previous_status`, `revision`). Refusal rows carry `finding_id` and the revision sent (only when it is at least 1). Answer `{"status": "ok", "id"}` | 2.6's row with C-M07 (20 (2)); B 3.8; DM-26; Appendix C N09; EV-C02-008 1.2 |
+| `devos_api.register_artifact(claim_token text, p jsonb)` (M09-07:486) | Roles `devos_calisma`, `devos_kurulum`. Form, then `check_claim(token, work_ref, class, false)` (M09-07:597): every claim code of 2.4; `work_revision` naming none: `could_not_check`, earlier: `stale_revision` (M09-07:616); `ready_value(work, own claim)` (M09-07:622): `not_ready` (M09-07:628) or `could_not_check`; `scope_outside` (M09-07:641). Writes the Artifact, its revision 1 and `artifact_registered` with `{work_ref, work_revision, assignment_id, generation}`. Refusal rows carry `work_ref` and `work_revision`. Answer `{"status": "ok", "id", "revision": 1}` | 2.6's row with R2-1 and C-M07 (20 (3)); B 3.5, 3.10, principles 3, 4, 8; Appendix C F05, F08 (a), (c), (w); EV3 4.3 (S8 line 2) |
+| `devos_api.open_review(p jsonb)` (M09-07:691) | Role `devos_denetim`. `kind` `sample`: `kind_not_allowed` (M09-07:759), before any other key; the form; a non-empty `basis_refs` of `{ref, revision}` (empty: `missing_field`, M09-07:818); the target and each basis entry a record with its revision (`could_not_check`); a revisioned target at its current revision, its row `for share` (M09-07:889-901), else `stale_revision` (M09-07:909). Writes the Review (`criterion` to `criterion_ref`; `reviewer_role_class` the token's; `reviewer_declared_session` as declared) and `review_opened`. Answer `{"status": "ok", "id"}` | 2.6's row with R1-7 and C-M07 (20 (4)); B 3.11 and section 4's Review row; EV-C02-008 2.2 condition 2 |
+| `devos_api.record_verdict(p jsonb)` (M09-07:961) | Role `devos_denetim`. `review_ref` and `result` required; `result` one of four; the three lists arrays, default `[]`; the Review `for share` (M09-07:1044), `not_found`. Writes the Verdict and `verdict_recorded`. Answer `{"status": "ok", "id"}` | 2.6's row with C-M07 (20 (5)); B 3.11 |
+| `devos_api.accept(verdict_ref uuid, accepted_use text)` (M09-07:1096) | Role `devos_denetim`. Order of 20 (6): `missing_field`; the Verdict, `not_found`; `verdict_failed` (M09-07:1178); the Review: reviewer class NULL `could_not_check` (M09-07:1194), not the audit class `verdict_missing` (M09-07:1199-1200); the use (M09-07:1211); the target (its family with a scope, M09-07:1284; its row `for update`, M09-07:1289-1301), the basis entries and the criterion, each stale at an earlier revision (M09-07:1328, `invalid_field`) or partial (`could_not_check`); the exact repeat (M09-07:1341). Writes the Acceptance (`current_evidence` the verdict), `accepted`, and on a Work target `acceptance_set` (M09-07:1374). Refusal rows carry `verdict_ref`. Answer `{"status": "ok", "id"}` | 2.6's row with C-M07 (20 (6)); B section 2, 3.11; Appendix C N25, N04; EV3 4.2; EV-C02-005 section 12 |
+| `devos_api.read_review(review_id uuid)` (M09-07:1400) | All six classes, as a literal. `missing_field`; `not_found`; a Review without its kind `could_not_check`; a `sample` for a class but the audit one: `not_found`, the same reason text (M09-07:1449). Answer `{"status": "ok", "review", "verdicts"}`. Comment `devos:read …` | 2.6's row with C-M07 (20 (7)); section 4's row R12; EV-C02-008 1.4, 5.2 (a); DM-36 |
+| Grants (M09-07:1476-1506) | `revoke all … from public` and from the four API roles where they exist, on all seven; `grant execute … to anon` on all seven; no type, no private function | 1 item 13; T-W08-PRIV's constraint |
+
+O (`08_catalog.txt`):
+- **EXECUTE.** No one but the owner holds it on a function of either schema, except `anon`, on the thirty-one `devos_api` functions.
+- **Types.** No `devos_private` type has PUBLIC USAGE.
+- **The literals**, as the break patches read them: `record_finding` and `register_artifact` hold `array['devos_calisma', 'devos_kurulum']`; `review_finding`, `open_review`, `record_verdict` and `accept` hold `array['devos_denetim']`; `read_review` the six.
+- **The unqualified-name scan.** No hit in M09-07's seven functions; its four hits are section 3.1's.
+- **Dynamic SQL.** No function of either schema holds `execute`.
+- **The read marker.** `affected_entities`, `deployment_drift`, `explain_paths`, `read_decision`, `read_review`, `ready_works`, `token_role_class` carry it.
+
+### 8.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated; none is silent. No merged test is changed. EV13 section 20 (C-M07) states items 1 to 7 in the record itself.
+1. **`record_finding`'s forms** (EV13 20 (1)): `not_recorded` refused in `counter_evidence_searched` too (B 3.8; 3.2's `transfer_finding` row), `changeable` a JSON string, each span an object with a boolean `primary` and, when dated, a `read_at` date (DM-26 (a)). An empty `counter_evidence_searched` is accepted: it is W-C02-10's format gate (`RF-counter-empty-left-to-the-gate`).
+2. **`review_finding`'s N09 reads the spans' markers and dates, not `fresh_until`** (EV13 20 (2)). 2.6's row says "no `fresh_until` or no primary span". B 3.8 and DM-26 (b) read the spans, and T-W07-N09's N09-pos is accepted with no `fresh_until`. This takes the sources' side; under 2.6's wording N09's positive control would be refused. "Every primary span dated" is the stricter of two readings (`RV-N09-two-primary-one-undated`: `invalid_field`). No transition order between the three statuses is built (B 3.8 gives none).
+3. **`register_artifact` re-checks readiness at the effect** (EV13 20 (3)): `ready_value` with the caller's own claim, after the claim and the revision. F08 (a) and 3.5 item 4 ask it; 2.6's row does not name it. It also refuses an effect under a paused Mission (`RA-mission-paused`: `not_ready`).
+4. **`open_review`'s references** (EV13 20 (4)):
+   - The target and each basis entry are records with the revision they need (`could_not_check` otherwise, R1-2).
+   - A revisioned target must be named at its current revision, else `stale_revision` (chosen; a review judges the current revision, as an effect does).
+   - `basis_refs` entries are `{ref, revision}` (B 3.11). An empty basis is `missing_field` (B section 4). Earlier basis revisions are accepted; `accept` judges them.
+5. **`record_verdict`'s lists are arrays** (EV13 20 (5)): the table's checks require it, so a string `limits` is `invalid_field`.
+6. **`accept`** (EV13 20 (6)):
+   - **The audit verdict.** A Review whose `reviewer_role_class` is not `devos_denetim` is `verdict_missing`; NULL is `could_not_check`. Sources: B section 2, B 3.11, EV3 4.2, EV-C02-005 section 12, T-W07-N04's N04-T2.
+   - **Staleness in full.** The use, the target's revision, every basis entry's revision and a record criterion's version; each stale one is `invalid_field` (B 3.11; N25). A non-record criterion is a residual (8.6).
+   - **The target** must be of a family with a scope (Work, Mission, Finding, Artifact, Relation); another is `invalid_field` (`AC-decision-target`).
+   - **The exact repeat** comes after every check.
+   - **The Acceptance's fields** are chosen: `current_evidence` `["<verdict id>"]`, `owner_authority` NULL, `scope` the target's, `target_revision` the Review's.
+7. **`read_review` withholds every `sample`** from every class but the audit one (EV13 20 (7)): C02's schema cannot yet tell a complete block, so a complete block's sample is delayed, never an open one shown. M09-06 did not withhold samples in `relate` and the walks (7.2 item 7); `read_review` returns the Review itself, which EV13 2.6's row names.
+8. **Forms the record leaves open (chosen):**
+   - Answers as 8.1.
+   - Refusal rows: `review_finding` names the finding and revision, `register_artifact` the work item and revision, `open_review` the target, `record_verdict` the review, `accept` the verdict, `read_review` the review; `record_finding` none.
+   - Events: `finding_recorded` and `artifact_registered` at revision 1; `finding_reviewed` at the current revision; `review_opened`, `verdict_recorded` and `accepted` without a revision (no revisions in their families); `acceptance_set` on the Work at its current revision.
+   - Locks: `review_finding` the Finding `for update`; `register_artifact` through `check_claim` (`for share`); `open_review` the target's identity row `for share`; `record_verdict` the Review `for share`; `accept` the target's row `for update`.
+
+Not departures, for the checker:
+- `register_artifact` checks no Rule O: ownership was checked when the claim was taken (`claim`, 18 (2)), and the claim check binds the effect to that claim's class and work item.
+- No function compares declared sessions (B 3.11's "the reviewing session cannot be the session that produced"): a declared session carries no authority (B principle 8). C03's audit environment or W-C02-10 carries that rule.
+- DM-41's trigger, the sample's own rules and the format gates are W-C02-10's.
+
+### 8.3 How W-C02-09's points are served by M09-07
+
+- **Point 1.** A versioned file later than `20261019010001`, plain SQL, no `psql` meta-command, no backslash (O, `56_git_hashes.txt`: `backslashes in M09-07: 0`). Decisions followed, with the object:
+  - the rejected-attempt record's per-call form: `reject`, on every refusal (`{"rejected": 1}` deltas);
+  - F06's list: `read_review` carries the read marker; the other six are state-changing (`F06-list | ok | 31 devos_api functions (7 marked devos:read)`);
+  - the claim expiry computed: `register_artifact` refuses a lapsed claim through `check_claim` (`RA-lapsed`: `claim_expired`).
+  - Offline, `deployment_drift` reports `no_difference`, 19 of 19 (runs 04 and 11).
+- **Point 2.** Thirty-one of the 55 `devos_api` functions now exist (seven here). Each has definer rights, the fixed `search_path` and every DevOS name qualified (8.1's scan).
+- **Point 3.**
+  - Fourth bullet. Each of the seven refuses a call with no token before any other check (`F06-refused:*` and `F06-read-refused:read_review` `ok`; the self-check's `*-no-token`; DM19B's `DM19B-accept-*`, `PASS (12/12)`). Each refuses a class not on its list with one per-call row: 5B rows R06, R07, R12 (`read_review`) and R25, every cell `ok`.
+  - Fifth bullet. A declared role name changes nothing (`RF-pos-cal` sends `role_class` `devos_denetim` and `origin` `owner`: the event carries `devos_calisma` and `call`; `OR-pos` sends `reviewer_role_class` `devos_calisma`: the Review carries `devos_denetim`). A declared session is written as declared (`RF-event`, `RA-event`, `OR-row`).
+- **Point 4** (the effects' claim refusals, now on an effect):
+  - with another work item's claim: `RA-claim-of-another-item`, `RA-work-ref-names-nothing` (`claim_unknown`);
+  - with no claim token: `RA-no-claim-token`, `RA-empty-claim-token` (`claim_missing`); an unknown one: `RA-unknown-claim-token`;
+  - released, expired or revoked: `RA-released`, `RA-cancelled-item` (`claim_not_active`), `RA-lapsed` (`claim_expired`), `RA-revoked`;
+  - an earlier generation: `RA-earlier-generation` (`claim_generation`); an earlier epoch: `RA-earlier-epoch` (`claim_epoch`);
+  - S8 line 2: `RA-claim-class`, `RA-kur-claim-under-cal` (`claim_class`).
+  - T-W07-CONC's `CONC-late` (a late effect racing `revoke_claim` and a new hard dependency) `ok`, in the merged program's `PASS (8/8)` (run 10).
+  - T-W07-N17 and T-W07-5C do not reach their cases (8.4).
+- **Point 5.**
+  - Each state-changing function writes its event in the same transaction, with the token's class (`RF-event`, `RV-state`, `RA-event`, `OR-event`, `VD-row`, `AC-events`: this transaction, the token's class, `call`). F06's `F06-event:record_finding` and `F06-event:review_finding` `ok`.
+  - An exact repeat writes nothing: `RV-repeat`, `AC-repeat` (`ok repeat`, `{}`); `F06-repeat:review_finding` `ok`.
+  - A failure planted mid-transaction leaves no half state and no orphan event: `RF-write-failed`, `RF-write-event-failed`, `RV-write-failed`, `RA-write-failed`, `RA-write-event-failed`, `OR-write-failed`, `VD-write-failed`, `AC-write-failed`, `AC-write-work-failed` (only the refusal row is added); `*-write-P0D02`: `could_not_check` with its reason.
+- **Point 7.** Missing, unreadable and partial input gives `could_not_check` with its reason, never a pass:
+  - references: `RA-no-work-revision`, `-work-revision-null`, `-revision-beyond`; `OR-target-random`, `-exam-record`, `-no-revision`, `-revision-beyond`, `-need-with-revision`, `OR-basis-random`, `-no-revision`, `-exam-record`; `AC-target-names-nothing`, `-basis-empty`, `-basis-bare-string`, `-criterion-names-nothing`;
+  - partial records: `RV-span-partial`, `-span-date-unreadable`; `AC-no-reviewer`; `RA-readiness-unknown`;
+  - unreadable tables: `RV-unreadable`, `RA-claims-unreadable`, `-epoch-missing`, `-revisions-unreadable`, `OR-targets-unreadable`, `VD-reviews-unreadable`, `AC-reviews-unreadable`, `RR-unreadable`.
+- **Point 8.**
+  - W-C02-08's four copies, W-C02-03's three and the IDC copy pass again (run 05).
+  - The staged files whose cases call the seven, run in place (runs 06, 07, 10):
+    - **T-W07-N09 `PASS (5/5)`**, its C02 part whole;
+    - **T-W07-DM19B `PASS (12/12)`**;
+    - **T-W07-CONC `PASS (8/8)`**, its program run in place for the first time (`CONC-claim`, `-cyc2`, `-cyc4`, `-late`, `-err`, `-overlap`, `-pos`, `-tokens`): both of Concurrency's claims, with the connections and repetitions W-C02-07 wrote;
+    - **T-W07-ROC runs for the first time**: 81 of 83 `ok`, `FAIL (1 bad, 1 could not check, of 83)` (8.4);
+    - 5B: the cells of R06, R07, R12 and R25 `ok`; `COULD NOT CHECK (7 of 187 could not be checked)` for rows whose functions are not built; none `bad`;
+    - F06: the seven's refused and read cases `ok`, `record_finding`'s and `review_finding`'s event cases and `review_finding`'s repeat `ok`; in all `FAIL (1 bad, 16 could not check, of 82)` (8.4);
+    - N25 `FAIL (1 bad, 0 could not check, of 5)`, DM19 `FAIL (1 bad, 0 could not check, of 5)`, N04 `COULD NOT CHECK (5 of 19 could not be checked)` (8.4);
+    - DM07, DM34, 6TK, K05, IDC, 5A and DM02 pass again.
+  - Their copies are a later pull request's (R:247; EV13 section 11).
+
+### 8.4 What M09-07 does not yet serve
+
+- **Merged tests that cannot pass on a correct build** (EV13 20 (8)), for the test designer:
+  - **T-W07-N25** (W9 point 8's N25): its fixture Review has no `reviewer_role_class` and a `target_ref` that names no record (`job/w07_n25_verdict_staleness.sql:280-283`). So `N25-pos` is `could_not_check` and `bad`, and `N25-a` to `-d` pass for the wrong reason: they are refused before the staleness checks. The rules they test are shown by the self-check (`AC-N25-a` to `-d`, `AC-N25-pos`) and by breaks b19 and b20.
+  - **B-N25-1** writes an Acceptance with `scope` `w07_break SYNTHETIC`, which `acceptance_scope_check` refuses (run 45: `raised 23514 … acceptance_scope_check`), so it cannot be shown on the merged schema.
+  - **T-W07-DM19**'s `DM19-pos` has the same fixture, and an empty basis (`job/w07_dm19_rejected_attempt_survives.sql:344-346`): `bad`.
+  - **T-W07-F06**: the `accept` recipe (the same fixture), the `open_review` recipe (no `independence_level`, an empty `basis_refs`, `:459-460`), the `record_verdict` recipe (`limits` a string, `:555-556`) and the `register_artifact` fixture claim (a planted Mission with no creation event, N-285 (1)) are `could_not_check`. `F06-role-token` is `bad`, M09-06's (7.4).
+  - **T-W07-N04**: `N04-p3` and `N04-p4` call `record_verdict` and `accept` with neutral arguments (no `result`; no verdict), `could_not_check`. Part T needs the ledger transfer's functions.
+  - **B-N04-3** reads `devos_private.verdict.role_class`, which does not exist. Under it `N04-b1`, `-b2`, `-e2` and `-k2` raise 42703 and turn red, not `N04-T2` (run 43).
+  - **T-W07-N17** stops at its `-pre` line: its `devos_kurulum` claim on W3 is refused `not_owner`, since W3 lies under the test Mission, not the installation's (M09-05's `claim`, EV13 18 (2)). Until W3 lies under the installation's Mission (hook `installation_mission`), N17, and so B-N17-1 and B-5C-1, cannot run.
+  - **T-W07-ROC**:
+    - `ROC-o-retract_relation-kur-transferred` is `bad`, M09-06's reading (7.4).
+    - `ROC-x-o-event-unreadable` is `could_not_check`: its call helper issues the token after `event` is revoked from the owner, so `issue_env_token` cannot write its event (the test's own fault). So B-ROC-3 cannot turn that case red (run 50).
+    - B-ROC-1 and B-ROC-2 turn every `cancel_work` case red (runs 48, 49): N-288's fault in M09-04, as CHK-C02-091 finding 9 found.
+- **The staged files that call these functions but need a later function stop at their `-pre` line** (run 06): 5C, 6RG, 6ST, F01, F05, F07, F08 and N29 need `prepare_operation`; N08 (exam records) `record_eval_run`; 5D, FGFIND, N01, N02, N03, N28 (sample exemption), T31 and DM47 W-C02-10's tables; T-W14-FN the ledger transfer's group. So W9 point 8's F01, F05, F07, F08, N17 and 5C, and the merged breaks B-N17-1, B-5C-1, B-F05-1, B-F08-1 to -4, B-6RG-1 (with N-290 (1)'s fault in five of them), B-N01-2, B-5D-4, B-FGFIND-1 to -3, B-6ST-2, -3 and B-N29-1, are "could not check", not counted.
+- **The merged breaks run here** (runs 40 to 52, each on a fresh copy of `t19`; run 53 is their unpatched control):
+  - B-5B-1: `5B-R07-record_verdict-cal`, `N04-a1`, `-a2`, `-c1`, `-c2` red. `N04-e1-record_verdict`, in its red list, does not exist: `record_verdict` has no session argument.
+  - B-5B-3: `5B-R25-review_finding-cal` red.
+  - B-N04-1: `N04-k2`, `5B-R07-accept-kur` red.
+  - B-N09-1: `N09-a` to `-d` red.
+  - B-DM19-1: `DM19-a`, `-c`, `-d` red.
+  - B-DM19B-1: the ten burst cases red.
+  - B-ROC-2: its five named cases red, beside the `cancel_work` cases above.
+  - B-ROC-3: its named cases red but `ROC-x-o-event-unreadable`.
+  - B-CONC-2: `CONC-cyc2`, `-cyc4` red.
+  - Not shown: B-CONC-1 (`CONC` stays `PASS (8/8)`: the `(work_ref, generation)` constraint, N-287 (2)); B-N04-3 and B-N25-1 (above).
+- **W-C02-10's** DM-41 trigger: T-W07-N28's `N28-a`, `-b` stay `bad` (run 06); `open_review` exists now, so those cases reach the trigger W-C02-10 builds.
+
+### 8.5 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0907` at `69d3632`, with M09-07, EV13's section 20 and the raw files untracked. The main run started 2026-10-19T01:18:29Z and ended 01:18:48Z, on one cluster (`…/scratchpad/m0907_run/rerun.sh`). The break runs started 01:18:48Z and ended 01:20:02Z, on a second cluster (`…/scratchpad/m0907_run/brk.sh`).
+- **The drivers.** `run.sh`, `drive.py`, `scrub.py`, `scan.py`, `setup.sql` and `catalog.sql` are `…/m0906_run/`'s, changed only in their paths (the clone `prd10`, the cluster under `…/m0907_run/pg`, the socket in `…/scratchpad/m7s`) and one printed word; `setup.sql` is byte-identical. `fn_check.sql` keeps M09-06's harness (`m_call`, `m_case`, `m_rec`) with M09-07's counted tables, claim tokens bound from transaction-local settings, and M09-07's cases. `brk.py`, `brk.sh`, `final.sh` follow M09-06's forms; `brk.sh` copies each database from a template.
+- **Trial runs.** Trial runs came before, none of them filed: the self-check alone three times (`…/m0907_run/trialfn.sh`), the main run once (`…/m0907_run/trial1`) and the break runs once (`…/m0907_run/trial2`).
+  - The first self-check trial stopped on an ambiguous variable in the harness.
+  - The second had 33 red cases. Thirty-one were the harness's: its claim helper stored the claim's id under the work item's key. One was a check that read a refusal row its own undone subtransaction had removed.
+  - One was a fault in M09-07, found by `RV-revision-zero`: `review_finding`'s refusal row wrote a `target_revision` of 0, which `rejected_attempt`'s check refuses, so the call raised 23514. M09-07 now names the revision only when it is at least 1.
+  - The third trial went green. The filed break runs give the same summary as the trial's, line for line (compared after the run).
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the eighteen migrations before M09-07, each `[exit 0]` with its history row (36 `[exit 0]` lines).
+- **03, M09-07:** `CREATE FUNCTION` ×7, `COMMENT`, `REVOKE` ×7, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 11:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 19, "migrations_expected": 19`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (95/95)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result):
+  - `W07_N09_FINDING_GATE PASS (5/5)`, `W07_DM19B_BURST_COUNT PASS (12/12)`;
+  - `W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (1 bad, 1 could not check, of 83)`: `ROC-o-retract_relation-kur-transferred | bad | … not_owner`, `ROC-x-o-event-unreadable | could_not_check | … test_cnc` (8.4);
+  - `W07_N25_VERDICT_STALENESS FAIL (1 bad, …, of 5)`: `N25-pos | bad | returned {"reason": "review: its reviewer's role class is missing (partial)" …}`; `W07_DM19_REJECTED_ATTEMPT_SURVIVES FAIL (1 bad, …, of 5)`: `DM19-pos | bad` (the same reason);
+  - `W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 16 could not check, of 82)`, with `31 devos_api functions (7 marked devos:read)`; `F06-event:record_finding | ok`, `F06-event:review_finding | ok`, `F06-repeat:review_finding | ok | exact repeat …`, `F06-read-accepted:read_review | ok`; `F06-event:accept`, `:open_review`, `:record_verdict`, `:register_artifact` `could_not_check` (8.4);
+  - `W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (7 of 187 could not be checked)`, none `bad`, for example `5B-R07-accept-kur | ok | x cell: … code role_class_not_permitted` and `5B-R25-review_finding-den | ok | v cell: … code invalid_field`;
+  - `W07_N04_SELF_APPROVAL COULD NOT CHECK (5 of 19 could not be checked)`, none `bad`;
+  - `W07_DM07_HEARTBEAT PASS (8/8)`, `W07_DM34_MISSION_SCOPE PASS (10/10)`, `W07_6TK_TOKEN_REASONS PASS (32/32)`, `W07_K05_MANY_PATHS PASS (6/6)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`;
+  - as before M09-07: `W07_F04_AFFECTED_RECORDS COULD NOT CHECK (1 of 22 …)`, `W07_REL_RELATION_STATUS FAIL (2 bad, …)`, `W07_5A_POSITIVE_CONTROL FAIL (1 bad, …)` (7.4), `W07_DM11_ANSWER_REVISION FAIL (5 bad, …)` and `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, …)` (W-C02-10's);
+  - every other file `COULD NOT CHECK` on its `-pre` line (8.4); run 07 is T-W14-FN's `FN-pre`.
+- **08, the catalogue:** 8.1's listing.
+- **09, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC W-C02-09 M09-07; one transaction rolled back): `M0907_FUNCTIONS PASS (266/266)`.
+  - The cases: 43 for `record_finding`, 37 for `review_finding`, 60 for `register_artifact`, 41 for `open_review`, 18 for `record_verdict`, 33 for `accept`, 28 for `read_review` and 6 for the text.
+  - Each compares the answer's code and the change of eleven tables; the state cases read the rows after.
+  - Among them: `RV-N09-a-undated` to `-d-date-on-secondary` and `-two-primary-one-undated`: `invalid_field`; `RV-N09-pos-dated-primary`: `ok`; `RA-not-ready-new-dependency`: `not_ready`, `RA-ready-dependency-resolved`: `ok`; `RA-stale-revision`: `stale_revision`, `RA-current-after-revision`: `ok`; `OR-kind-sample`: `kind_not_allowed`; `OR-target-exam-as-none`; `AC-transfer-copy`: `verdict_missing`; `AC-N25-a` to `-d`, `AC-target-revised`: `invalid_field`; `AC-N25-pos`: `ok`, `{"acceptance": 1, "event": 2}`; `AC-repeat`: `ok repeat`, `{}`; `RR-sample-<class>-as-none` for the five classes, `RR-sample-devos_denetim`: `ok`.
+  - Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, `artifact_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt`, `event` and `review`.
+- **10, T-W07-CONC's program, run in place** (input: the break harness's form, four keys with null values; its synthetic fixtures committed on the throwaway cluster): `fixtures: one owner-planted Decision of class batu with its revision, one Mission and 160 work items …`, the eight cases `ok`, `W07_CONC_CLAIM_AND_CYCLE PASS (8/8)`, `[conc exit 0]`.
+- **12:** the server log, `438 lines; claim-format 0; environment-format 0`. **13:** `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **14:** the break cluster's setup, the templates `t18` and `t19` (`[template … exit 0]`), and `brk.py`: 25 `made (one replacement in devos_api.<fn>)`.
+- **15 to 39, the break copies**, each in a fresh database copied from `t18` (`[apply exit 0]`), then the self-check and the staged files that call the function broken:
+  - **b01**, `counter_evidence_searched` `not_recorded` admitted: `FAIL (1 of 266)`, red `RF-counter-not_recorded`.
+  - **b02**, `changeable` `not_recorded` admitted: red `RF-changeable-not_recorded`.
+  - **b03**, no primary span accepted: red `RV-N09-b-secondary-only`, `-c-no-span`, `RV-N09-status-kept`; merged **`N09-b`, `N09-c` `bad`**.
+  - **b04**, an undated primary span accepted: red `RV-N09-a-undated`, `-d-date-on-secondary`, `-two-primary-one-undated`, `RV-N09-status-kept`; merged **`N09-a`, `N09-d` `bad`**.
+  - **b05**, `not_recorded` moves: red `RV-not_recorded-changeable`, `-counter`.
+  - **b06**, `review_finding`'s `stale_revision` removed: red `RV-stale`, `RV-revision-beyond` and three others.
+  - **b07**, an absent `work_revision` read as the current one: red `RA-no-work-revision`, `-work-revision-null`, `-no-work-revision-reason`.
+  - **b08**, `register_artifact`'s `stale_revision` removed: red `RA-stale-revision`, `-stale-after-revision`.
+  - **b09**, the readiness re-check removed: red `RA-not-ready-new-dependency`, `-readiness-unknown`, `-mission-paused`, `TX-claim-before-readiness`.
+  - **b10**, the scope check removed: red `RA-scope-outside`, `-scope-prefix-not-label`.
+  - **b11**, the claim of any work item admitted: red `RA-claim-of-another-item`, `-work-ref-names-nothing`.
+  - **b12**, the claim token put into `artifact_registered`: red `RA-event` (no staged file is run under this break, so that no output can print an event's payload).
+  - **b13**, `kind_not_allowed` removed: red `OR-kind-sample`, `-kind-sample-bad-target`.
+  - **b14**, a stale target admitted: red `OR-target-stale`.
+  - **b15**, the reference check removed: red `OR-target-random`, `-exam-record`, `-exam-as-none`, `-no-revision`, `-revision-beyond`, `-need-with-revision`, `OR-basis-random`, `-no-revision`, `-exam-record`.
+  - **b16**, an empty basis admitted: red `OR-basis-empty`.
+  - **b17**, `record_verdict`'s result check removed: red `VD-result-form`.
+  - **b18**, a failed verdict accepted: red `AC-fail`, `AC-indeterminate` and two others.
+  - **b19**, another use accepted: red `AC-N25-c-other-use`, `AC-same-verdict-other-use` and two others.
+  - **b20**, a stale verdict accepted: red `AC-N25-a-first-basis-revised`, `-d-second-basis-revised`, `-b-criterion-revised`, `AC-target-revised`.
+  - **b21**, the transfer's copy accepted as an audit verdict: red `AC-transfer-copy`.
+  - **b22**, `accept`'s repeat removed: red `AC-repeat`.
+  - **b23**, the Work's acceptance not set: red `AC-state`, `AC-events`, `AC-basis-without-revisions` and two others.
+  - **b24**, samples not withheld: red the ten `RR-sample-<class>` and `-as-none` cases.
+  - **b25**, verdicts dropped from `read_review`: red the seven `RR-*-answer` cases.
+  - So each check turns red when its rule is removed. N09 caught b03 and b04; the self-check alone caught the other twenty-three, because the merged files that would test them do not reach those rules on a correct build (8.4).
+- **40 to 52, merged break patches**, each in a fresh database copied from `t19` (`[patch exit 0]`): as 8.4 lists.
+  - **40, B-5B-1:** `W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, …)`, `W07_N04_SELF_APPROVAL FAIL (4 bad, 5 could not check, of 19)`.
+  - **41, B-5B-3:** `5B-R25-review_finding-cal | bad`.
+  - **42, B-N04-1:** `N04-k2 | bad`, `5B-R07-accept-kur | bad`.
+  - **43, B-N04-3:** `N04-b1`, `-b2`, `-e2`, `-k2` `bad`, each `err 42703 column v.role_class does not exist`.
+  - **44, B-N09-1:** `W07_N09_FINDING_GATE FAIL (4 bad, 0 could not check, of 5)`.
+  - **45, B-N25-1:** `N25-pos | bad | raised 23514 … acceptance_scope_check`; `N25-a` to `-d` stay `ok`.
+  - **46, B-DM19-1:** `DM19-a`, `-c`, `-d` `bad` (and `DM19-pos`, as unpatched).
+  - **47, B-DM19B-1:** `W07_DM19B_BURST_COUNT FAIL (10 bad, 0 could not check, of 12)`.
+  - **48, B-ROC-1:** `FAIL (13 bad, 1 could not check, of 83)`, the twelve `cancel_work` cases and M09-06's case. **49, B-ROC-2:** `FAIL (16 bad, 3 could not check, of 83)`. **50, B-ROC-3:** `FAIL (9 bad, 1 could not check, of 83)`.
+  - **51, B-CONC-1:** `W07_CONC_CLAIM_AND_CYCLE PASS (8/8)`. **52, B-CONC-2:** `FAIL (2 bad, 0 could not check, of 8)`, `CONC-cyc2`, `CONC-cyc4`.
+- **53, the unpatched control** of the same files on a fresh copy of `t19`: as run 06 and run 10 (N09 and DM19B `PASS`, N25 and DM19 one `bad` each, ROC `FAIL (1 bad, 1 could not check, of 83)`, CONC `PASS (8/8)`).
+- **54:** the server log, `1068 lines; claim-format 0; environment-format 0`; `[cluster directory deleted: yes]`.
+- **55:** files 01 to 54 scanned with the finders of `scan_patterns.json`: `54 files; claim-format 0; environment-format 0`.
+- **56:** the hashes in the envelope; `backslashes in M09-07: 0`; `M09-07 lines naming the exam table: 0`; `M09-07 strings found by either token finder: m0907 scan: 1 files; claim-format 0; environment-format 0`; `M09-07 lines holding either marker whole: 0`; `git status --porcelain`: EV13 modified, M09-07 and the raw files 01 to 56 untracked, before this section was written; `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty.
+
+### 8.6 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done: no test file is changed here):
+   - T-W07-N25 and T-W07-DM19: a fixture Review with `reviewer_role_class` `devos_denetim`, a target that names a record at its revision, and (DM19) a basis. Until then `N25-pos` and `DM19-pos` cannot pass, and `N25-a` to `-d` pass for the wrong reason. B-N25-1 needs an Acceptance whose `scope` the table admits.
+   - T-W07-F06's `accept`, `open_review` and `record_verdict` recipes (8.4), and its claim-bearing fixtures (N-285 (1)).
+   - T-W07-N04's `N04-p3` and `N04-p4` arguments; B-N04-3's `verdict.role_class`.
+   - T-W07-N17's W3 under the installation's Mission.
+   - T-W07-ROC's `ROC-x-o-event-unreadable`: the token issued before the revoke.
+2. **For the executor** (reported, not done):
+   - **A criterion that is not a DevOS record** (a document path) is not compared by `accept`, so its staleness rests on the audit environment (EV13 20 (6)). If C03's reviews name their criteria by path, a change of the criterion goes unseen by the database: a record form for criteria (an Artifact at its commit) or a stated residual, before C03's audit work uses `accept`.
+   - **A `sample` Review's verdict cannot be accepted** until W-C02-10 gives the taking a form that sets its reviewer fields (EV13 20 (6); EV-C02-008 2.2).
+   - **No transition order for a Finding's status** (8.2 item 2): B 3.8 gives none; `review_finding` can move `accepted_for_use` back to `reviewed`.
+   - **N-288's fix for `cancel_work`** is due before ROC's first result. ROC now runs, and B-ROC-1 and B-ROC-2 show the fault on every `cancel_work` case (runs 48, 49).
+3. **For the checker of verdict (i):**
+   - EV13 section 20 with its *[C-M07]* marks;
+   - 8.2's departures, chiefly 2, 3, 4 and 6;
+   - the self-check and the break copies, which are the producer's own.
+4. **For the producers of M09-08, M09-12 and W-C02-10:**
+   - `prepare_operation` and `record_attempt` call `check_claim`, then `ready_value` with the caller's own claim, as `register_artifact` does (M09-07:597, :622).
+   - `transfer_review` and `transfer_acceptance` (M09-12) keep the transfer's copies `devos_kurulum`'s, so that `accept` refuses them as no audit verdict (8.1).
+   - W-C02-10 replaces `read_review` with the sample block's state (EV-C02-008 5.2 (d)), and gives the sample's taking its form.
+5. **Residuals:**
+   - The claim token travels as `register_artifact`'s first parameter, as 6.6 item 5 says for `heartbeat` and `release`.
+   - `open_review` and `accept` look a record up in fourteen tables per reference (one `union all`). That is a cost at C02's sizes.
+   - An unreadable table among the fourteen makes every `open_review` and every `accept` `could_not_check` (`OR-targets-unreadable`, `AC-reviews-unreadable`). That fails closed.
