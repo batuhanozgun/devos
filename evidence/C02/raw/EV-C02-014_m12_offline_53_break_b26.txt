@@ -1,0 +1,19 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b26_acceptance_conflict_removed, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k53 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k53:
+summary: M0912_FUNCTIONS FAIL (1 of 119 not as wanted)
+bad (1): TA-conflict
+could_not_check (0): none
+detail: 104 | TA-conflict                         | f  | ok repeat                | conflict                 | {}                                      |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k53:
+summary: W14_FN_TRANSFER_FUNCTIONS PASS (109/109)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k53:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (53_break_b26): claim-format strings replaced 0; environment-format strings replaced 0

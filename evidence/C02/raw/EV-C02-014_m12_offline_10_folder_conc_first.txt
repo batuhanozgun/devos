@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the folder's programs as the job's dbprograms step runs them, the database programs only: w07_conc_claim_and_cycle.py; w07_idc_real_path.py needs devos-test's Data API and is not run offline)
+fixtures: one owner-planted Decision of class batu with its revision, one Mission and 160 work items under scope synthetic.w07.conc.r26ce8ab0 (synthetic, devos-test only; left in place, append-only)
+CONC-claim | ok | 20 runs of 8 connections; exactly one claim each: yes
+CONC-cyc2 | ok | 20 runs; no cycle of 2 formed: yes
+CONC-cyc4 | ok | 20 runs; no cycle of 4 formed: yes
+CONC-err | ok | raised errors by SQLSTATE (deadlock 40P01, serialization 40001, lock timeout 55P03, cancel 57014 among them): none; of which serious none
+CONC-late | ok | 10 runs; no effect of a revoked or blocked claim landed: yes
+CONC-overlap | ok | transactions overlapped in every run
+CONC-pos | ok | one claim succeeded in every run
+CONC-tokens | ok | synthetic tokens of this run left unrevoked: 0
+W07_CONC_CLAIM_AND_CYCLE PASS (8/8)
+[program supabase/migrations/tests/w07_conc_claim_and_cycle.py exit 0]
+m0912 scrub (10_folder_conc_first): claim-format strings replaced 0; environment-format strings replaced 0

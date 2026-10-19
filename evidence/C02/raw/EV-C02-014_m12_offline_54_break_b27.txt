@@ -1,0 +1,19 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b27_acceptance_stale_revision, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k54 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k54:
+summary: M0912_FUNCTIONS FAIL (1 of 119 not as wanted)
+bad (1): TA-trev-stale
+could_not_check (0): none
+detail: 84 | TA-trev-stale                       | f  | ok                       | stale_revision           | {"event": 2, "acceptance": 1}           |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k54:
+summary: W14_FN_TRANSFER_FUNCTIONS PASS (109/109)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k54:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (54_break_b27): claim-format strings replaced 0; environment-format strings replaced 0

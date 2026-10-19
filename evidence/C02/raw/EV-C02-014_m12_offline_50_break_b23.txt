@@ -1,0 +1,37 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b23_acceptance_use_unchecked, a copy of M09-12 outside the repository, applied in place of it on a fresh copy of t24)
+[database k50 from t24 exit 0]
+[apply exit 0]
+-- the self-check on k50:
+summary: M0912_FUNCTIONS FAIL (19 of 119 not as wanted)
+bad (19): TA-review-use, TA-ce-unwritten, TA-ce-event-unwritten, TA-two-missions, TA-target-unwritten, TA-target-finding, TA-target-review, TA-trev-unwritten, TA-trev-stale, TA-work-not-installation, TA-work-mission-no-event, TA-decision-cal, TA-decision-no-event, TA-decision-open, TA-decision-open-exploration, TA-write-failed, TA-write-mark-failed, TA-write-state-failed, TA-write-state-event-failed
+could_not_check (0): none
+detail: 76 | TA-review-use                       | f  | ok                       | invalid_field            | {"event": 2, "acceptance": 1}           |  | wanted delta {"rejected": 1}
+detail: 77 | TA-ce-unwritten                     | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 78 | TA-ce-event-unwritten               | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 79 | TA-two-missions                     | f  | ok repeat                | could_not_check          | {}                                      |  | wanted delta {"rejected": 1}
+detail: 80 | TA-target-unwritten                 | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 81 | TA-target-finding                   | f  | ok repeat                | invalid_field            | {}                                      |  | wanted delta {"rejected": 1}
+detail: 82 | TA-target-review                    | f  | ok repeat                | invalid_field            | {}                                      |  | wanted delta {"rejected": 1}
+detail: 83 | TA-trev-unwritten                   | f  | ok repeat                | reference_missing        | {}                                      |  | wanted delta {"rejected": 1}
+detail: 84 | TA-trev-stale                       | f  | ok repeat                | stale_revision           | {}                                      |  | wanted delta {"rejected": 1}
+detail: 85 | TA-work-not-installation            | f  | ok repeat                | not_owner                | {}                                      |  | wanted delta {"rejected": 1}
+detail: 86 | TA-work-mission-no-event            | f  | ok repeat                | could_not_check          | {}                                      |  | wanted delta {"rejected": 1}
+detail: 87 | TA-decision-cal                     | f  | ok repeat                | not_owner                | {}                                      |  | wanted delta {"rejected": 1}
+detail: 88 | TA-decision-no-event                | f  | ok repeat                | could_not_check          | {}                                      |  | wanted delta {"rejected": 1}
+detail: 89 | TA-decision-open                    | f  | ok repeat                | invalid_field            | {}                                      |  | wanted delta {"rejected": 1}
+detail: 90 | TA-decision-open-exploration        | f  | ok repeat                | open_exploration         | {}                                      |  | wanted delta {"rejected": 1}
+detail: 91 | TA-write-failed                     | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 92 | TA-write-mark-failed                | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 93 | TA-write-state-failed               | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+detail: 94 | TA-write-state-event-failed         | f  | ok repeat                | write_failed             | {}                                      |  | wanted delta {"rejected": 1}
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on k50:
+summary: W14_FN_TRANSFER_FUNCTIONS PASS (109/109)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on k50:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+m0912 scrub (50_break_b23): claim-format strings replaced 0; environment-format strings replaced 0

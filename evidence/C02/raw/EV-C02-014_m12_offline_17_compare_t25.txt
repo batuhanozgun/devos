@@ -1,0 +1,36 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (comparison: the staged files that call M09-12's functions, unpatched, in place, each on a fresh copy of t25)
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on c17_1:
+summary: W14_FN_TRANSFER_FUNCTIONS PASS (109/109)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql on c17_2:
+summary: W07_5B_AUTHORIZATION_MATRIX PASS (324/324)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_f06_state_change_event.sql on c17_3:
+summary: W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (2 of 147 could not be checked)
+bad (0): none
+could_not_check (2): F06-event:transfer_relation, F06-repeat:transfer_relation
+detail: F06-event:transfer_relation              | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "a current relation with the same type, ends, revisions, hard, group and use exists (B 3.4)", "status": "refused", "reason_code": "conflict"}
+detail: F06-repeat:transfer_relation             | could_not_check | no accepted call to repeat
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n02_decision_alternatives.sql on c17_4:
+summary: W07_N02_DECISION_ALTERNATIVES COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N02-pre
+detail: N02-pre | could_not_check | devos_private.sample_stream does not exist
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n04_self_approval.sql on c17_5:
+summary: W07_N04_SELF_APPROVAL PASS (19/19)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- tests/C02/W-C02-07/job/w07_n28_sample_exemption.sql on c17_6:
+summary: W07_N28_SAMPLE_EXEMPTION COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): S-pre
+detail: S-pre   | could_not_check | devos_private.sample_stream does not exist
+red list: exactly as expect-red (0)
+m0912 scrub (17_compare_t25): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch tests/C02/W-C02-14/breaks/B-FN-1_gate_admits_every_class.sql applied in place, w07.throwaway=yes, on a fresh copy of t25; header: -- w07-break: test=tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql; expect-red=FN-G-transfer_review)
+[database b18 from t25 exit 0]
+[patch exit 0]
+-- tests/C02/W-C02-14/job/w14_fn_transfer_functions.sql on b18:
+summary: W14_FN_TRANSFER_FUNCTIONS FAIL (1 bad, 0 could not check, of 109)
+bad (1): FN-G-transfer_review
+could_not_check (0): none
+detail: FN-G-transfer_review             | bad     | devos_calisma: refused [missing_field kind: missing]; devos_denetim: refused [missing_field kind: missing]; devos_sinav: refused [missing_field kind: missing]; devos_ci: refused [missing_field kind: missing]; devos_backup: refused [missing_field kind: mis
+red list: exactly as expect-red (1)
+m0912 scrub (18_merged_B-FN-1): claim-format strings replaced 0; environment-format strings replaced 0
