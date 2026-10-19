@@ -1,0 +1,171 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of the five functions)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |                id                | ok |           got            |          wanted          |             delta             |                                                                                 note                                                                                  
+-----+----------------------------------+----+--------------------------+--------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | RW-cal                           | t  | ok                       | ok                       | {}                            | 
+   2 | RW-cal-lists-ready               | t  | true                     | true                     | {}                            | W_a, W_depT (a true hard dependency) and W_lapsedlist (a lapsed claim counts as none) listed
+   3 | RW-cal-not-listed                | t  | true                     | true                     | {}                            | not listed: the installation's items, a Mission without a creation event, a closed Mission, cancelled, finished, a false and an unknown hard dependency, a live claim
+   4 | RW-row-form                      | t  | true                     | true                     | {}                            | row keys id,impact_class,purpose,revision,scope,work_id
+   5 | RW-kur                           | t  | ok                       | ok                       | {}                            | 
+   6 | RW-kur-only-installation         | t  | true                     | true                     | {}                            | devos_kurulum: 3 listed
+   7 | RW-den                           | t  | ok                       | ok                       | {}                            | 
+   8 | RW-den-as-cal                    | t  | true                     | true                     | {}                            | devos_denetim: 11 listed
+   9 | RW-sin                           | t  | ok                       | ok                       | {}                            | 
+  10 | RW-sin-empty                     | t  | true                     | true                     | {}                            | devos_sinav: []
+  11 | RW-role-ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | ready_works admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  12 | RW-role-backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | ready_works admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  13 | RW-no-token                      | t  | missing                  | missing                  | {"rejected": 1}               | the request carries no environment token
+  14 | RW-relation-unreadable (42P01)   | t  | could_not_check          | could_not_check          | {"rejected": 1}               | readiness: its input could not be read (SQLSTATE 42P01)
+  15 | RW-events-unreadable (42501)     | t  | could_not_check          | could_not_check          | {"rejected": 1}               | readiness: its input could not be read (SQLSTATE 42501)
+  16 | RW-lease-null                    | t  | ok                       | ok                       | {}                            | 
+  17 | RW-marker                        | t  | true                     | true                     | {}                            | comment begins devos:read; VOLATILE
+  18 | CL-pos                           | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  19 | CL-token-form                    | t  | true                     | true                     | {}                            | the claim token is the claim marker and 43 URL-safe characters (shared/token_format.md section 2; checked by shape, never printed)
+  20 | CL-answer-keys                   | t  | true                     | true                     | {}                            | answer keys (the token withheld here): assignment_id,generation,id,lease_expires_at,status
+  21 | CL-row                           | t  | true                     | true                     | {}                            | the Assignment: generation 1, the global epoch, lease now() + 30 minutes, the caller's class, the session as declared
+  22 | CL-hash-only                     | t  | true                     | true                     | {}                            | claim_token_hash is the SHA-256 of the whole token (EV-C02-003 1.7), lower-case hex
+  23 | CL-token-in-no-table             | t  | true                     | true                     | {}                            | tables holding the claim token's value: none
+  24 | CL-tables-not-searched           | t  | true                     | true                     | {}                            | not searched (not readable as owner): auth.users
+  25 | CL-hash-in-no-other-table        | t  | true                     | true                     | {}                            | tables but assignment holding the hash: none
+  26 | CL-event                         | t  | true                     | true                     | {}                            | claimed on the Assignment, the token's class, origin call, in this transaction; no token or hash in the payload
+  27 | CL-again                         | t  | already_claimed          | already_claimed          | {"rejected": 1}               | the work item has an active claim whose lease has not run out
+  28 | CL-again-other-class             | t  | already_claimed          | already_claimed          | {"rejected": 1}               | the work item has an active claim whose lease has not run out
+  29 | CL-again-reason-names-no-class   | t  | true                     | true                     | {}                            | already_claimed's reason does not name the claimant's class (CHK-C02-025 F7)
+  30 | CL-sin                           | t  | exam_subject             | exam_subject             | {"rejected": 1}               | devos_sinav claims no work item in C02 (EV-C02-008 5.1 (c) bound 3)
+  31 | CL-sin-random-id                 | t  | exam_subject             | exam_subject             | {"rejected": 1}               | devos_sinav claims no work item in C02 (EV-C02-008 5.1 (c) bound 3)
+  32 | CL-sin-installation              | t  | exam_subject             | exam_subject             | {"rejected": 1}               | devos_sinav claims no work item in C02 (EV-C02-008 5.1 (c) bound 3)
+  33 | CL-role-ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | claim admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  34 | CL-role-backup                   | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | claim admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  35 | CL-no-token                      | t  | missing                  | missing                  | {"rejected": 1}               | the request carries no environment token
+  36 | CL-null-id                       | t  | missing_field            | missing_field            | {"rejected": 1}               | work_id: missing
+  37 | CL-random-id                     | t  | not_found                | not_found                | {"rejected": 1}               | work_id: names no Work
+  38 | CL-kurulum-outside               | t  | not_owner                | not_owner                | {"rejected": 1}               | claim: devos_kurulum claims only the work items under the installation's Mission
+  39 | CL-calisma-inside                | t  | not_owner                | not_owner                | {"rejected": 1}               | claim: the work items under the installation's Mission are claimed only with devos_kurulum
+  40 | CL-denetim-inside                | t  | not_owner                | not_owner                | {"rejected": 1}               | claim: the work items under the installation's Mission are claimed only with devos_kurulum
+  41 | CL-no-creation-event             | t  | could_not_check          | could_not_check          | {"rejected": 1}               | ownership: whether the work item lies under the installation's Mission is missing or partial
+  42 | CL-cancelled                     | t  | not_ready                | not_ready                | {"rejected": 1}               | the work item is not ready
+  43 | CL-finished                      | t  | not_ready                | not_ready                | {"rejected": 1}               | the work item is not ready
+  44 | CL-mission-closed                | t  | not_ready                | not_ready                | {"rejected": 1}               | the work item is not ready
+  45 | CL-dependency-false              | t  | not_ready                | not_ready                | {"rejected": 1}               | the work item is not ready
+  46 | CL-dependency-unknown            | t  | could_not_check          | could_not_check          | {"rejected": 1}               | readiness: a condition or a hard dependency of the work item is missing or unknown
+  47 | CL-dependency-true               | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  48 | CL-kurulum-inside                | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  49 | CL-denetim-outside               | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  50 | CL-partial-lease                 | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claims: a claim on the work item lacks its status, lease or generation (partial)
+  51 | CL-partial-generation            | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claims: a claim on the work item lacks its status, lease or generation (partial)
+  52 | CL-lease-unreadable (42703)      | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claims: its input could not be read (SQLSTATE 42703)
+  53 | CL-relation-unreadable (42P01)   | t  | could_not_check          | could_not_check          | {"rejected": 1}               | readiness: its input could not be read (SQLSTATE 42P01)
+  54 | CL-assignment-unreadable (42501) | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claims: its input could not be read (SQLSTATE 42501)
+  55 | CL-epoch-missing                 | t  | could_not_check          | could_not_check          | {"rejected": 1}               | epoch: the global authority epoch is missing
+  56 | CL-write-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}               | the write failed (SQLSTATE P0001)
+  57 | CL-write-event-failed            | t  | write_failed             | write_failed             | {"rejected": 1}               | the write failed (SQLSTATE P0001)
+  58 | CL-write-P0D02                   | t  | could_not_check          | could_not_check          | {"rejected": 1}               | synthetic write-path check: its input could not be read
+  59 | CL-lapsed                        | t  | ok                       | ok                       | {"event": 2, "assignment": 1} | 
+  60 | CL-lapsed-marked-expired         | t  | true                     | true                     | {}                            | the lapsed claim expired; the new one generation 2
+  61 | CL-lapsed-event                  | t  | true                     | true                     | {}                            | claim_expired on the lapsed claim: origin rule, class devos_calisma (the caller's, DM-31)
+  62 | HB-pos                           | t  | ok                       | ok                       | {"event": 1}                  | 
+  63 | HB-extended                      | t  | true                     | true                     | {}                            | lease now() + 30 minutes, last_heartbeat_at now(); the answer names the Assignment and holds no token
+  64 | HB-event                         | t  | true                     | true                     | {}                            | heartbeat event, the token's class
+  65 | HB-class-denetim                 | t  | claim_class              | claim_class              | {"rejected": 1}               | the caller's role class is not the claim's
+  66 | HB-class-sinav                   | t  | claim_class              | claim_class              | {"rejected": 1}               | the caller's role class is not the claim's
+  67 | HB-null                          | t  | claim_missing            | claim_missing            | {"rejected": 1}               | the call carries no claim token
+  68 | HB-empty                         | t  | claim_missing            | claim_missing            | {"rejected": 1}               | the call carries no claim token
+  69 | HB-unknown                       | t  | claim_unknown            | claim_unknown            | {"rejected": 1}               | the claim token names no claim of this work item
+  70 | HB-role-ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | heartbeat admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  71 | HB-no-token                      | t  | missing                  | missing                  | {"rejected": 1}               | the request carries no environment token
+  72 | HB-lapsed                        | t  | claim_expired            | claim_expired            | {"rejected": 1}               | the claim's lease has run out
+  73 | HB-cancelled                     | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim's work item is cancelled
+  74 | HB-assignment-unreadable (42501) | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claim: its input could not be read (SQLSTATE 42501)
+  75 | HB-write-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}               | the write failed (SQLSTATE P0001)
+  76 | RL-class-kurulum                 | t  | claim_class              | claim_class              | {"rejected": 1}               | the caller's role class is not the claim's
+  77 | RL-role-ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | release admits only the role classes devos_calisma, devos_denetim, devos_sinav and devos_kurulum
+  78 | RL-lapsed                        | t  | claim_expired            | claim_expired            | {"rejected": 1}               | the claim's lease has run out
+  79 | RL-pos                           | t  | ok                       | ok                       | {"event": 1}                  | 
+  80 | RL-state                         | t  | true                     | true                     | {}                            | status released, released event, the answer names the Assignment and holds no token
+  81 | RL-again                         | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active
+  82 | HB-released                      | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active
+  83 | CL-after-release                 | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  84 | CL-after-release-generation      | t  | true                     | true                     | {}                            | the work item claimed again at once, under generation 2
+  85 | HB-oldgen                        | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active
+  86 | CL-for-revoke                    | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+  87 | RC-role-calisma                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | revoke_claim admits only the role class devos_denetim (DM-29)
+  88 | RC-role-kurulum                  | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | revoke_claim admits only the role class devos_denetim (DM-29)
+  89 | RC-role-sinav                    | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | revoke_claim admits only the role class devos_denetim (DM-29)
+  90 | RC-role-ci                       | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}               | revoke_claim admits only the role class devos_denetim (DM-29)
+  91 | RC-no-token                      | t  | missing                  | missing                  | {"rejected": 1}               | the request carries no environment token
+  92 | RC-null-id                       | t  | missing_field            | missing_field            | {"rejected": 1}               | assignment_id: missing
+  93 | RC-null-reason                   | t  | missing_field            | missing_field            | {"rejected": 1}               | reason: missing (B 3.5: a claim is revoked with its reason)
+  94 | RC-random-id                     | t  | not_found                | not_found                | {"rejected": 1}               | assignment_id: names no claim
+  95 | RC-partial-lease                 | t  | could_not_check          | could_not_check          | {"rejected": 1}               | claim: its lease is missing (partial)
+  96 | RC-lapsed                        | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active (its lease has run out)
+  97 | RC-write-failed                  | t  | write_failed             | write_failed             | {"rejected": 1}               | the write failed (SQLSTATE P0001)
+  98 | RC-pos                           | t  | ok                       | ok                       | {"event": 1}                  | 
+  99 | RC-state                         | t  | true                     | true                     | {}                            | status revoked; claim_revoked with the reason, class devos_denetim
+ 100 | RC-repeat                        | t  | ok repeat                | ok repeat                | {}                            | 
+ 101 | HB-revoked                       | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active
+ 102 | RL-revoked                       | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active
+ 103 | CL-after-revoke                  | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+ 104 | RC-released                      | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active (released or expired)
+ 105 | RC-expired                       | t  | claim_not_active         | claim_not_active         | {"rejected": 1}               | the claim is not active (released or expired)
+ 106 | CL-for-epoch                     | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+ 107 | HB-epoch                         | t  | claim_epoch              | claim_epoch              | {"rejected": 1}               | the claim was made in an earlier authority epoch
+ 108 | RL-epoch                         | t  | claim_epoch              | claim_epoch              | {"rejected": 1}               | the claim was made in an earlier authority epoch
+ 109 | CL-earlier-epoch-still-holds     | t  | already_claimed          | already_claimed          | {"rejected": 1}               | the work item has an active claim whose lease has not run out
+ 110 | RC-earlier-epoch                 | t  | ok                       | ok                       | {"event": 1}                  | 
+ 111 | CL-new-epoch                     | t  | ok                       | ok                       | {"event": 1, "assignment": 1} | 
+ 112 | CL-new-epoch-value               | t  | true                     | true                     | {}                            | the new claim carries the incremented global epoch
+ 113 | TK-values                        | t  | true                     | true                     | {}                            | 10 claim tokens: tables (but assignment's hash), event payloads, refusal rows and answer reasons holding a value or its hash: 0
+ 114 | TX-claim-lock                    | t  | true                     | true                     | {}                            | claim locks the work item for update in its own text (B-CONC-1; EV-C02-014 5.2 item 6)
+ 115 | TX-revoke-literal                | t  | true                     | true                     | {}                            | revoke_claim's role list is the quoted literal B-5B-2 widens
+ 116 | TX-no-exam-table                 | t  | true                     | true                     | {}                            | none of the five names the exam records' table (T-W07-N08's finder; EV-C02-008 5.1)
+(116 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0905_run/fn_check.sql:540: NOTICE:  M0905_FUNCTIONS PASS (116/116)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ assignment_after_rollback 
+---------------------------
+                         0
+(1 row)
+
+[psql exit 0]
+m0905 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0

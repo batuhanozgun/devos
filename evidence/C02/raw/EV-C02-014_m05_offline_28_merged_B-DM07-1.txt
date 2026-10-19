@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-05 with the merged break patch tests/C02/W-C02-07/breaks/B-DM07-1_heartbeat_state_check_removed.sql applied in place, w07.throwaway=yes)
+[M09-05 apply exit 0]
+[patch exit 0]
+w07_dm07_heartbeat.sql:  DM07-lapsed   | bad             | heartbeat on a lapsed claim: accepted, wanted refused
+w07_dm07_heartbeat.sql:  DM07-oldgen   | could_not_check | heartbeat with an earlier generation's claim token: raised 22P02 invalid input value for enum devos_private.assignment_status: "w07_set_aside" (interface: a refusal is returned, EV-C02-002 DM-19)
+w07_dm07_heartbeat.sql:  DM07-released | bad             | heartbeat on a released claim: accepted, wanted refused
+w07_dm07_heartbeat.sql:  DM07-revoked  | bad             | heartbeat on a revoked claim: accepted, wanted refused
+w07_dm07_heartbeat.sql: psql:tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql:429: ERROR:  W07_DM07_HEARTBEAT FAIL (3 bad, 1 could not check, of 8)
+NOTICE:  function devos_api.revoke_claim_w07_orig(uuid,text) does not exist, skipping
+[drop exit 0]
+m0905 scrub (28_merged_B-DM07-1): claim-format strings replaced 0; environment-format strings replaced 0

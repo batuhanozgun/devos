@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (M09-05 with the merged break patch tests/C02/W-C02-07/breaks/B-5B-2_revoke_claim_admits_working.sql applied in place, w07.throwaway=yes)
+[M09-05 apply exit 0]
+[patch exit 0]
+w07_5b_authorization_matrix.sql:  5B-R05-revoke_claim-cal         | bad             | x cell: revoke_claim with the devos_calisma token must be refused for its role class; code not_found; err - ; ra {"revoke_claim|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_5b_authorization_matrix.sql:  5B-row-R06                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R07                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R21                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R22                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R25                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 12 could not check, of 126)
+w07_6tk_token_reasons.sql:  6TK-ka1   | bad     | a verified working token on revoke_claim: a role refusal under devos_calisma, not a token code; code not_found; err - ; ra {"revoke_claim|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: ERROR:  W07_6TK_TOKEN_REASONS FAIL (1 bad, 0 could not check, of 32)
+NOTICE:  function devos_api.heartbeat_w07_orig(text) does not exist, skipping
+NOTICE:  function devos_api.revoke_claim_w07_orig(uuid,text) does not exist, skipping
+[drop exit 0]
+m0905 scrub (29_merged_B-5B-2): claim-format strings replaced 0; environment-format strings replaced 0

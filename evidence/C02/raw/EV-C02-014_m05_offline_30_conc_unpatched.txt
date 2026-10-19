@@ -1,0 +1,29 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (concurrency probe: 20 runs of 8 connections claiming one fresh work item each, M09-05 unpatched)
+[M09-05 apply exit 0]
+ conc_work_items 
+-----------------
+              40
+(1 row)
+
+[fixtures exit 0]
+run 1 (work item 1): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 2 (work item 2): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 3 (work item 3): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 4 (work item 4): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 5 (work item 5): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 6 (work item 6): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 7 (work item 7): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 8 (work item 8): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 9 (work item 9): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 10 (work item 10): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 11 (work item 11): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 12 (work item 12): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 13 (work item 13): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 14 (work item 14): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 15 (work item 15): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 16 (work item 16): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 17 (work item 17): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 18 (work item 18): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 19 (work item 19): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+run 20 (work item 20): 8 connections waiting; answers: 1 ok ;7 refused already_claimed; other lines: 0; 1 assignments, 1 active
+m0905 scrub (30_conc_unpatched): claim-format strings replaced 0; environment-format strings replaced 0

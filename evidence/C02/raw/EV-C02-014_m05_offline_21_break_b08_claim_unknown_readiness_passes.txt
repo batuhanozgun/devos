@@ -1,0 +1,44 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b08_claim_unknown_readiness_passes, a copy of M09-05 outside the repository)
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b08_claim_unknown_readiness_passes.sql  (as postgres)
+[apply exit 0]
+  46 | CL-dependency-unknown            | f  | ok                       | could_not_check          | {"event": 1, "assignment": 1} |  | wanted delta {"rejected": 1}
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0905_run/fn_check.sql:540: NOTICE:  M0905_FUNCTIONS FAIL (1 of 116 not as wanted)
+[self-check done]
+w07_dm07_heartbeat.sql: psql:tests/C02/W-C02-07/job/w07_dm07_heartbeat.sql:429: NOTICE:  W07_DM07_HEARTBEAT PASS (8/8)
+w07_f06_state_change_event.sql:  F06-event:cancel_work              | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:claim                    | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:heartbeat                | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:mark_stale               | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:release                  | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:reopen_for_review        | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revise_work              | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-event:revoke_claim             | could_not_check | no recipe: its fixture could not be made: P0001 the claim its fixture needs was not accepted: returned {"reason": "ownership: whether the work item lies under the installation's Mission is missing o
+w07_f06_state_change_event.sql:  F06-event:set_effort_policy        | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "rule_o: whether the work item lies under the installation's Mission is missing or partial", "status": "refused", "reason_code": "could_not_check"}
+w07_f06_state_change_event.sql:  F06-orphan-a                       | could_not_check | failure planted on the event write: interface: devos_api.relate: 0 definitions; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-orphan-b                       | could_not_check | failure planted on the relation write: interface: devos_api.relate: 0 definitions; tables changed: []; new events 0
+w07_f06_state_change_event.sql:  F06-repeat:cancel_work             | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:claim                   | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:mark_stale              | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:reopen_for_review       | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:revise_work             | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-repeat:set_effort_policy       | could_not_check | no accepted call to repeat
+w07_f06_state_change_event.sql:  F06-role-token                     | could_not_check | interface: devos_api.relate: 0 definitions; new events []
+w07_f06_state_change_event.sql: psql:tests/C02/W-C02-07/job/w07_f06_state_change_event.sql:879: ERROR:  W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (18 of 55 could not be checked)
+w07_5b_authorization_matrix.sql:  5B-row-R06                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R07                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R10r                     | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): reading EvalRun and the exam fact (B 3.15); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R13                      | could_not_check | no function is named for this row yet (w07_fn_cfg; README section 8): fingerprint matches (B 3.23: devos_ci reads); W-C02-09 names it (EV-C02-008 1.4)
+w07_5b_authorization_matrix.sql:  5B-row-R15                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R17                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R19                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R21                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R22                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R25                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql:  5B-row-R26                      | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+w07_5b_authorization_matrix.sql: psql:tests/C02/W-C02-07/job/w07_5b_authorization_matrix.sql:447: ERROR:  W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (12 of 126 could not be checked)
+w07_6tk_token_reasons.sql: psql:tests/C02/W-C02-07/job/w07_6tk_token_reasons.sql:434: NOTICE:  W07_6TK_TOKEN_REASONS PASS (32/32)
+NOTICE:  function devos_api.heartbeat_w07_orig(text) does not exist, skipping
+NOTICE:  function devos_api.revoke_claim_w07_orig(uuid,text) does not exist, skipping
+[drop exit 0]
+m0905 scrub (21_break_b08_claim_unknown_readiness_passes): claim-format strings replaced 0; environment-format strings replaced 0
