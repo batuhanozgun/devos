@@ -4,6 +4,9 @@
 -- names"). record_eval_run is wrapped so that an accepted run also writes an event whose aggregate is the Work it names.
 -- The insert names Event's fields as B 3.13 gives them (README 8.1: devos_private.event); the prober adapts it to the
 -- build's columns before the run.
+-- Revised under ledger rule 3, 2026-10-19 (N-301 (3); EV-C02-014 section 11.4): the insert wrote p->>'work_ref', a text,
+-- into event.aggregate_id, a uuid (W-C02-08's migration 20261014170202), which PostgreSQL refuses (42804), so every
+-- accepted run raised and no break was shown; the value is now cast to uuid. Nothing else changes.
 -- Applied ONLY by the break harness on its throwaway PostgreSQL built from supabase/migrations/ (README 5.2; plan Section 8
 -- item 3 as PC-42 place 3 writes it), never on devos-test or devos; it sits outside supabase/migrations/, so no job applies it.
 -- It removes one rule and holds as little of the build's logic as it can; the names it uses are the interface the
@@ -27,7 +30,7 @@ begin
   r := devos_api.record_eval_run_w07_orig(p);
   if jsonb_typeof(r) = 'object' and r->>'status' = 'ok' then
     insert into devos_private.event (aggregate_type, aggregate_id, event_type, role_class, origin)
-      values ('work', p->>'work_ref', 'w07_break_exam_run_on_work', 'devos_sinav', 'call');
+      values ('work', (p->>'work_ref')::uuid, 'w07_break_exam_run_on_work', 'devos_sinav', 'call');
   end if;
   return r;
 end $f$;
