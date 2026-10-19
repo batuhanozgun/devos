@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-6_open_decision_reads_exam_link.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_fact.sql; expect-red=N08-x-open_decision-cal)
+[database b19 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b19:
+summary: W07_N08_EXAM_FACT FAIL (1 bad, 0 could not check, of 61)
+bad (1): N08-x-open_decision-cal
+could_not_check (0): none
+detail: N08-x-open_decision-cal          | bad     | open_decision with devos_calisma, on the exam task w_e and the ordinary item w_o: a routine decision tied to the item refused/w07_break_exam_task; a high_impact decision tied to the item refused/w07_break_exam_task; a decision tied to the item with no que
+red list: exactly as expect-red (1)
+m0909 scrub (19_merged_B-N08-6): claim-format strings replaced 0; environment-format strings replaced 0

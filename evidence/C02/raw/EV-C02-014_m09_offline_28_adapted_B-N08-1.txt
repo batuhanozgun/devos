@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0909_run/adapted/B-N08-1_adapted_to_the_build.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_records.sql; expect-red=N08-r-read_eval_run-devos_calisma)
+[database b28 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_records.sql on b28:
+summary: W07_N08_EXAM_RECORDS FAIL (2 bad, 0 could not check, of 14)
+bad (2): N08-r-read_eval_run-devos_calisma, N08-rp-read_eval_run
+could_not_check (0): none
+detail: N08-r-read_eval_run-devos_calisma | bad     | read_eval_run (reads the exam records) with the devos_calisma token: code not_found; err - ; ra {"read_eval_run|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: N08-rp-read_eval_run              | bad     | read_eval_run with the exam token is accepted: code not_found; err - ; ra {"read_eval_run|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing none; extra ['N08-rp-read_eval_run']
+m0909 scrub (28_adapted_B-N08-1): claim-format strings replaced 0; environment-format strings replaced 0

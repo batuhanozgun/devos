@@ -1,0 +1,24 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k07_read_eval_run_admits_working, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k35 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k35:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): RV-gate-devos_calisma, TX-literals
+could_not_check (0): none
+detail: 55 | RV-gate-devos_calisma           | f  | ok                       | role_class_not_permitted | {}                                |  | wanted delta {"rejected": 1}
+detail: 148 | TX-literals                     | f  | false                    | true                     | {}                                | each role list a literal of the function's own text (B:48; EV-C02-013 2.8 and EV-C02-008 1.4)
+-- w07_n08_exam_records.sql on k35:
+summary: W07_N08_EXAM_RECORDS FAIL (2 bad, 0 could not check, of 14)
+bad (2): N08-r-read_eval_run-devos_calisma, N08-rp-read_eval_run
+could_not_check (0): none
+detail: N08-r-read_eval_run-devos_calisma | bad     | read_eval_run (reads the exam records) with the devos_calisma token: code not_found; err - ; ra {"read_eval_run|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: N08-rp-read_eval_run              | bad     | read_eval_run with the exam token is accepted: code not_found; err - ; ra {"read_eval_run|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing none; extra ['N08-r-read_eval_run-devos_calisma', 'N08-rp-read_eval_run']
+-- w07_5b_authorization_matrix.sql on k35:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R10r-read_eval_run-cal
+could_not_check (1): 5B-row-R19
+detail: 5B-R10r-read_eval_run-cal         | bad             | x cell: read_eval_run with the devos_calisma token must be refused for its role class; code not_found; err - ; ra {"read_eval_run|not_found|devos_calisma": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: not as expect-red; missing none; extra ['5B-R10r-read_eval_run-cal']
+m0909 scrub (35_break_k07): claim-format strings replaced 0; environment-format strings replaced 0

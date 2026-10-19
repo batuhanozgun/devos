@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k18_fingerprint_source_ref_returned, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k46 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k46:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): FM-pos-matches, FM-no-source-ref
+could_not_check (0): none
+detail: 142 | FM-pos-matches                  | f  | false                    | true                     | {}                                | each distinct matching hash once, with its origin
+detail: 143 | FM-no-source-ref                | f  | false                    | true                     | {}                                | no source_ref and no content (N06)
+m0909 scrub (46_break_k18): claim-format strings replaced 0; environment-format strings replaced 0

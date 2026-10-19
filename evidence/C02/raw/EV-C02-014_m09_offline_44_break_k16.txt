@@ -1,0 +1,10 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k16_since_ignored, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k44 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k44:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): RR-pos-rows, RR-counted-hour-rows
+could_not_check (0): none
+detail: 105 | RR-pos-rows                     | f  | false                    | true                     | {}                                | rows created since, and the counted row of the current hour; not the counted row of an hour that ended before since
+detail: 110 | RR-counted-hour-rows            | f  | false                    | true                     | {}                                | a counted row whose hour began before since and ends after it is returned (it changes during its hour); a per-call row created before since is not
+m0909 scrub (44_break_k16): claim-format strings replaced 0; environment-format strings replaced 0

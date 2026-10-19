@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-4_exam_claim_on_unlinked_item.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_fact.sql; expect-red=EXF-pair-sin-claim,N08-s4-claim-unlinked,N08-s4-claim-working,N08-s4-code)
+[database b17 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b17:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (4 of 61 could not be checked)
+bad (0): none
+could_not_check (4): EXF-pair-sin-claim, N08-s4-claim-unlinked, N08-s4-claim-working, N08-s4-code
+detail: EXF-pair-sin-claim               | could_not_check | claim with the exam token: unknown [null value in column "work_revision" of relation "assignment" violates not-null constraint 23502] as anon session_user postgres
+detail: N08-s4-claim-unlinked            | could_not_check | claim with the exam token: unknown [null value in column "work_revision" of relation "assignment" violates not-null constraint 23502] as anon session_user postgres
+detail: N08-s4-claim-working             | could_not_check | claim with the exam token: unknown [null value in column "work_revision" of relation "assignment" violates not-null constraint 23502] as anon session_user postgres
+detail: N08-s4-code                      | could_not_check | not every claim was observed: exam_subject, none, none
+red list: not as expect-red; missing ['EXF-pair-sin-claim', 'N08-s4-claim-unlinked', 'N08-s4-claim-working', 'N08-s4-code']; extra none
+m0909 scrub (17_merged_B-N08-4): claim-format strings replaced 0; environment-format strings replaced 0

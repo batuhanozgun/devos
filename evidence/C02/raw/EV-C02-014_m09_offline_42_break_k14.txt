@@ -1,0 +1,17 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k14_read_rejected_attempts_admits_working, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k42 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k42:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): RR-gate-devos_calisma, TX-literals
+could_not_check (0): none
+detail: 98 | RR-gate-devos_calisma           | f  | ok                       | role_class_not_permitted | {}                                |  | wanted delta {"rejected": 1}
+detail: 148 | TX-literals                     | f  | false                    | true                     | {}                                | each role list a literal of the function's own text (B:48; EV-C02-013 2.8 and EV-C02-008 1.4)
+-- w07_5b_authorization_matrix.sql on k42:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R15-read_rejected_attempts-cal
+could_not_check (1): 5B-row-R19
+detail: 5B-R15-read_rejected_attempts-cal | bad             | x cell: read_rejected_attempts with the devos_calisma token must be refused for its role class; code -; err - ; ra {}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: not as expect-red; missing none; extra ['5B-R15-read_rejected_attempts-cal']
+m0909 scrub (42_break_k14): claim-format strings replaced 0; environment-format strings replaced 0

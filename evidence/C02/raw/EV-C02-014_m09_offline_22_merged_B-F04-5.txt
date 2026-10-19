@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-F04-5_work_ref_walked_as_edge.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_f04_affected_records.sql,w07_n08_exam_fact.sql; expect-red=F04-e-exam,EXF-pair-reads-affected_entities,EXF-pair-reads-explain_paths,N08-x-affected_entities-cal,N08-x-affected_entities-den,N08-x-affected_entities-kur,N08-x-explain_paths-cal,N08-x-explain_paths-den,N08-x-explain_paths-kur)
+[database b22 from t22 exit 0]
+[patch exit 0]
+-- w07_f04_affected_records.sql on b22:
+summary: W07_F04_AFFECTED_RECORDS FAIL (1 bad, 0 could not check, of 22)
+bad (1): F04-e-exam
+could_not_check (0): none
+detail: F04-e-exam     | bad     | from r: {h,x,y}, complete false; F04-c-pos's: {h,x,y}, complete true; explain_paths(r, h3): {"n": 1, "ok": true, "complete": false}, with h2: {"n": 1, "ok": true, "complete": true}; with h3 as root: {y}, complete false; with h2 as root: {y}, complete true (wanted x, h3 and
+red list: not as expect-red; missing ['EXF-pair-reads-affected_entities', 'EXF-pair-reads-explain_paths', 'N08-x-affected_entities-cal', 'N08-x-affected_entities-den', 'N08-x-affected_entities-kur', 'N08-x-explain_paths-cal', 'N08-x-explain_paths-den', 'N08-x-explain_paths-kur']; extra none
+-- w07_n08_exam_fact.sql on b22:
+summary: W07_N08_EXAM_FACT FAIL (8 bad, 0 could not check, of 61)
+bad (8): EXF-pair-reads-affected_entities, EXF-pair-reads-explain_paths, N08-x-affected_entities-cal, N08-x-affected_entities-den, N08-x-affected_entities-kur, N08-x-explain_paths-cal, N08-x-explain_paths-den, N08-x-explain_paths-kur
+could_not_check (0): none
+detail: EXF-pair-reads-affected_entities | bad     | affected_entities with devos_calisma, on the exam task w_e and the ordinary item w_o: from r: x, the item and y accepted/-; with the item as root accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r: x, the item 
+detail: EXF-pair-reads-explain_paths     | bad     | explain_paths with devos_calisma, on the exam task w_e and the ordinary item w_o: from r to the item accepted/-; from the item to y accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r to the item", "answer": {"p
+detail: N08-x-affected_entities-cal      | bad     | affected_entities with devos_calisma, on the exam task w_e and the ordinary item w_o: from r: x, the item and y accepted/-; with the item as root accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r: x, the item 
+detail: N08-x-affected_entities-den      | bad     | affected_entities with devos_denetim, on the exam task w_e and the ordinary item w_o: from r: x, the item and y accepted/-; with the item as root accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r: x, the item 
+detail: N08-x-affected_entities-kur      | bad     | affected_entities with devos_kurulum, on the exam task w_e and the ordinary item w_o: from r: x, the item and y accepted/-; with the item as root accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r: x, the item 
+detail: N08-x-explain_paths-cal          | bad     | explain_paths with devos_calisma, on the exam task w_e and the ordinary item w_o: from r to the item accepted/-; from the item to y accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r to the item", "answer": {"p
+detail: N08-x-explain_paths-den          | bad     | explain_paths with devos_denetim, on the exam task w_e and the ordinary item w_o: from r to the item accepted/-; from the item to y accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r to the item", "answer": {"p
+detail: N08-x-explain_paths-kur          | bad     | explain_paths with devos_kurulum, on the exam task w_e and the ordinary item w_o: from r to the item accepted/-; from the item to y accepted/-. step 1 differs: on the exam task {"code": null, "kind": "accepted", "step": "from r to the item", "answer": {"p
+red list: not as expect-red; missing ['F04-e-exam']; extra none
+m0909 scrub (22_merged_B-F04-5): claim-format strings replaced 0; environment-format strings replaced 0

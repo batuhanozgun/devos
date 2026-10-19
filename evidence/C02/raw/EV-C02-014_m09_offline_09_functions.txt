@@ -1,0 +1,219 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the producer's self-check of M09-09)
+BEGIN
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+ events_holding_a_token_format_string 
+--------------------------------------
+                                    0
+(1 row)
+
+ rejected_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+ eval_run_rows_holding_a_token_format_string 
+---------------------------------------------
+                                           0
+(1 row)
+
+  n  |               id                | ok |           got            |          wanted          |               delta               |                                                                        note                                                                        
+-----+---------------------------------+----+--------------------------+--------------------------+-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------
+   1 | RE-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+   2 | RE-gate-devos_calisma           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | record_eval_run admits only the role class devos_sinav (B 3.15)
+   3 | RE-gate-devos_denetim           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | record_eval_run admits only the role class devos_sinav (B 3.15)
+   4 | RE-gate-devos_kurulum           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | record_eval_run admits only the role class devos_sinav (B 3.15)
+   5 | RE-gate-devos_ci                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | record_eval_run admits only the role class devos_sinav (B 3.15)
+   6 | RE-gate-devos_backup            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | record_eval_run admits only the role class devos_sinav (B 3.15)
+   7 | RE-p-null                       | t  | missing_field            | missing_field            | {"rejected": 1}                   | p: missing
+   8 | RE-p-array                      | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | p: not a JSON object
+   9 | RE-eval_set_id-missing          | t  | missing_field            | missing_field            | {"rejected": 1}                   | eval_set_id: missing
+  10 | RE-eval_set_version-number      | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | eval_set_version: not a string
+  11 | RE-subject_role-null            | t  | missing_field            | missing_field            | {"rejected": 1}                   | subject_role: missing
+  12 | RE-runner_session-missing       | t  | missing_field            | missing_field            | {"rejected": 1}                   | runner_session: missing
+  13 | RE-work_ref-missing             | t  | missing_field            | missing_field            | {"rejected": 1}                   | work_ref: missing
+  14 | RE-work_ref-not-uuid            | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_ref: not a uuid
+  15 | RE-work_revision-missing        | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | work_revision: missing
+  16 | RE-work_revision-missing-reason | t  | true                     | true                     | {}                                | a reference sent without its revision is partial input (R2-1)
+  17 | RE-work_revision-zero           | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_revision: not an integer of at least 1
+  18 | RE-work_revision-string         | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_revision: not an integer of at least 1
+  19 | RE-results-missing              | t  | missing_field            | missing_field            | {"rejected": 1}                   | results: missing
+  20 | RE-results-array                | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | results: not a JSON object
+  21 | RE-subject_release-number       | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | subject_release: not a string
+  22 | RE-run_at-not-a-time            | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | run_at: not a time
+  23 | RE-run_at-number                | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | run_at: not a string
+  24 | RE-work-names-nothing           | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | work_ref: the record could not be read
+  25 | RE-work-names-nothing-reason    | t  | true                     | true                     | {}                                | a reference that names no Work: could_not_check (item 14 with R1-2)
+  26 | RE-revision-beyond              | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | work_revision: names no revision of the work item
+  27 | RE-pos                          | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  28 | RE-pos-answer                   | t  | true                     | true                     | {}                                | answer {"id": "b1b1bff8-4936-41b6-b6c3-5b080a67347e", "status": "ok"}
+  29 | RE-pos-row                      | t  | true                     | true                     | {}                                | the EvalRun holds the call's fields
+  30 | RE-pos-event                    | t  | true                     | true                     | {}                                | one event on the EvalRun: the token's class, origin call, no EvalRun field in its payload, the declared session as declared
+  31 | RE-earlier-revision             | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  32 | RE-run_at-default               | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  33 | RE-run_at-default-now           | t  | true                     | true                     | {}                                | run_at absent: the transaction's time
+  34 | RE-repeat-is-a-new-run          | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  35 | RE-named-call                   | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  36 | RE-no-work-write                | t  | true                     | true                     | {}                                | the Work row unchanged t, its revisions 2 -> 2, events on it 0
+  37 | RE-sin-claim-active             | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_ref: a claim of the exam environment's class is active on the work item (EV-C02-008 5.1 (c))
+  38 | RE-sin-claim-active-reason      | t  | true                     | true                     | {}                                | the reason names the rule
+  39 | RE-sin-claim-lapsed             | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_ref: a claim of the exam environment's class is active on the work item (EV-C02-008 5.1 (c))
+  40 | RE-sin-claim-lease-now          | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_ref: a claim of the exam environment's class is active on the work item (EV-C02-008 5.1 (c))
+  41 | RE-sin-claim-earlier-epoch      | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | work_ref: a claim of the exam environment's class is active on the work item (EV-C02-008 5.1 (c))
+  42 | RE-sin-claim-released           | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  43 | RE-cal-claim-active             | t  | ok                       | ok                       | {"event": 1, "eval_run": 1}       | 
+  44 | RE-claim-partial                | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | claims: a claim on the work item lacks its status or role class (partial)
+  45 | RE-claim-partial-reason         | t  | true                     | true                     | {}                                | item 7 (ii): a NULL where the check needs a value
+  46 | RE-claims-unreadable            | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | claims: its input could not be read (SQLSTATE 42501)
+  47 | RE-claims-unreadable-reason     | t  | true                     | true                     | {}                                | item 7 (iii): the check's name and the SQLSTATE
+  48 | RE-work-unreadable              | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | work: its input could not be read (SQLSTATE 42501)
+  49 | RE-write-failed                 | t  | write_failed             | write_failed             | {"rejected": 1}                   | the write failed (SQLSTATE P0M77)
+  50 | RE-write-event-failed           | t  | write_failed             | write_failed             | {"rejected": 1}                   | the write failed (SQLSTATE P0M77)
+  51 | RE-write-P0D02                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | m0909 planted failure
+  52 | RE-P0D02-reason                 | t  | true                     | true                     | {}                                | P0D02's fixed reason
+  53 | RE-refusal-rows-name-no-target  | t  | true                     | true                     | {}                                | a creating call's refusal row names no target
+  54 | RV-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+  55 | RV-gate-devos_calisma           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_eval_run admits only the role class devos_sinav (B 3.15)
+  56 | RV-gate-devos_denetim           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_eval_run admits only the role class devos_sinav (B 3.15)
+  57 | RV-gate-devos_kurulum           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_eval_run admits only the role class devos_sinav (B 3.15)
+  58 | RV-gate-devos_ci                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_eval_run admits only the role class devos_sinav (B 3.15)
+  59 | RV-gate-devos_backup            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_eval_run admits only the role class devos_sinav (B 3.15)
+  60 | RV-null                         | t  | missing_field            | missing_field            | {"rejected": 1}                   | eval_run_id: missing
+  61 | RV-not-found                    | t  | not_found                | not_found                | {"rejected": 1}                   | eval_run_id: names no EvalRun
+  62 | RV-not-found-row                | t  | true                     | true                     | {}                                | the refusal row names the id
+  63 | RV-pos                          | t  | ok                       | ok                       | {}                                | 
+  64 | RV-pos-fields                   | t  | true                     | true                     | {}                                | the EvalRun's fields, the exam link among them, to devos_sinav
+  65 | RV-named-call                   | t  | ok                       | ok                       | {}                                | 
+  66 | RV-unreadable                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | eval_run: its input could not be read (SQLSTATE 42501)
+  67 | RV-unreadable-reason            | t  | true                     | true                     | {}                                | item 7 (iii)
+  68 | ME-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+  69 | ME-gate-devos_calisma           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | mark_exported admits only the role class devos_backup (B section 2)
+  70 | ME-gate-devos_denetim           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | mark_exported admits only the role class devos_backup (B section 2)
+  71 | ME-gate-devos_sinav             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | mark_exported admits only the role class devos_backup (B section 2)
+  72 | ME-gate-devos_kurulum           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | mark_exported admits only the role class devos_backup (B section 2)
+  73 | ME-gate-devos_ci                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | mark_exported admits only the role class devos_backup (B section 2)
+  74 | ME-p-null                       | t  | missing_field            | missing_field            | {"rejected": 1}                   | p: missing
+  75 | ME-table-missing                | t  | missing_field            | missing_field            | {"rejected": 1}                   | table: missing
+  76 | ME-table-other                  | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | table: not event or rejected_attempt
+  77 | ME-from-missing                 | t  | missing_field            | missing_field            | {"rejected": 1}                   | from_id: missing
+  78 | ME-to-string                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | to_id: not an integer of at least 1
+  79 | ME-from-zero                    | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | from_id: not an integer of at least 1
+  80 | ME-from-after-to                | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | from_id: greater than to_id
+  81 | ME-from-after-to-reason         | t  | true                     | true                     | {}                                | 2.8's refusal
+  82 | ME-unreadable                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | event: its input could not be read (SQLSTATE 42501)
+  83 | ME-write-failed                 | t  | write_failed             | write_failed             | {"rejected": 1}                   | the write failed (SQLSTATE P0M77)
+  84 | ME-write-P0D02                  | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | m0909 planted failure
+  85 | ME-pos                          | t  | ok                       | ok                       | {"event": 1, "event_exported": 3} | 
+  86 | ME-pos-answer                   | t  | true                     | true                     | {}                                | answer {"id": "4ca85291-9b1f-4524-8b43-487dfc22fdb4", "marked": 3, "status": "ok"}
+  87 | ME-pos-rows                     | t  | true                     | true                     | {}                                | the three rows marked at the transaction's time
+  88 | ME-pos-event                    | t  | true                     | true                     | {}                                | one exported event on aggregate export, payload {table, from_id, to_id, marked}
+  89 | ME-repeat                       | t  | ok repeat                | ok repeat                | {}                                | 
+  90 | ME-keeps-first-time             | t  | ok                       | ok                       | {"event": 1, "event_exported": 1} | 
+  91 | ME-keeps-first-time-row         | t  | true                     | true                     | {}                                | a row already marked keeps its time and is not counted
+  92 | ME-empty-range                  | t  | ok                       | ok                       | {}                                | 
+  93 | ME-ra                           | t  | ok                       | ok                       | {"event": 1, "ra_exported": 2}    | 
+  94 | ME-ra-rows                      | t  | true                     | true                     | {}                                | the per-call row and the counted row of an ended hour marked; the counted row of the current hour not (B:270)
+  95 | ME-ra-only-current-hour         | t  | ok                       | ok                       | {}                                | 
+  96 | ME-named-call                   | t  | ok                       | ok                       | {"event": 1, "event_exported": 1} | 
+  97 | RR-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+  98 | RR-gate-devos_calisma           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_rejected_attempts admits only the role class devos_denetim (B 3.13)
+  99 | RR-gate-devos_sinav             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_rejected_attempts admits only the role class devos_denetim (B 3.13)
+ 100 | RR-gate-devos_kurulum           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_rejected_attempts admits only the role class devos_denetim (B 3.13)
+ 101 | RR-gate-devos_ci                | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_rejected_attempts admits only the role class devos_denetim (B 3.13)
+ 102 | RR-gate-devos_backup            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | read_rejected_attempts admits only the role class devos_denetim (B 3.13)
+ 103 | RR-null                         | t  | missing_field            | missing_field            | {"rejected": 1}                   | since: missing
+ 104 | RR-pos                          | t  | ok                       | ok                       | {}                                | 
+ 105 | RR-pos-rows                     | t  | true                     | true                     | {}                                | rows created since, and the counted row of the current hour; not the counted row of an hour that ended before since
+ 106 | RR-ordered                      | t  | true                     | true                     | {}                                | ordered by id
+ 107 | RR-fields-only                  | t  | true                     | true                     | {}                                | each row holds the record's fields and no other key
+ 108 | RR-row-values                   | t  | true                     | true                     | {}                                | the counted row as stored
+ 109 | RR-counted-hour                 | t  | ok                       | ok                       | {}                                | 
+ 110 | RR-counted-hour-rows            | t  | true                     | true                     | {}                                | a counted row whose hour began before since and ends after it is returned (it changes during its hour); a per-call row created before since is not
+ 111 | RR-unreadable                   | t  | could_not_check          | could_not_check          | {}                                | rejected_attempt: its input could not be read (SQLSTATE 42501)
+ 112 | RR-unreadable-reason            | t  | true                     | true                     | {}                                | item 7 (iii)
+ 113 | AE-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+ 114 | AE-devos_calisma                | t  | ok                       | ok                       | {}                                | 
+ 115 | AE-devos_calisma-epoch          | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 116 | AE-devos_denetim                | t  | ok                       | ok                       | {}                                | 
+ 117 | AE-devos_denetim-epoch          | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 118 | AE-devos_sinav                  | t  | ok                       | ok                       | {}                                | 
+ 119 | AE-devos_sinav-epoch            | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 120 | AE-devos_kurulum                | t  | ok                       | ok                       | {}                                | 
+ 121 | AE-devos_kurulum-epoch          | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 122 | AE-devos_ci                     | t  | ok                       | ok                       | {}                                | 
+ 123 | AE-devos_ci-epoch               | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 124 | AE-devos_backup                 | t  | ok                       | ok                       | {}                                | 
+ 125 | AE-devos_backup-epoch           | t  | true                     | true                     | {}                                | answer {"epoch": 1, "status": "ok"}
+ 126 | AE-moved                        | t  | ok                       | ok                       | {}                                | 
+ 127 | AE-moved-epoch                  | t  | true                     | true                     | {}                                | the epoch as stored
+ 128 | AE-missing                      | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | epoch: the global authority epoch is missing
+ 129 | AE-missing-reason               | t  | true                     | true                     | {}                                | item 7 (ii)
+ 130 | AE-unreadable                   | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | epoch: its input could not be read (SQLSTATE 42501)
+ 131 | FM-no-token                     | t  | missing                  | missing                  | {"rejected": 1}                   | the request carries no environment token
+ 132 | FM-gate-devos_calisma           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | fingerprint_matches admits only the role class devos_ci (B 3.23)
+ 133 | FM-gate-devos_denetim           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | fingerprint_matches admits only the role class devos_ci (B 3.23)
+ 134 | FM-gate-devos_sinav             | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | fingerprint_matches admits only the role class devos_ci (B 3.23)
+ 135 | FM-gate-devos_kurulum           | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | fingerprint_matches admits only the role class devos_ci (B 3.23)
+ 136 | FM-gate-devos_backup            | t  | role_class_not_permitted | role_class_not_permitted | {"rejected": 1}                   | fingerprint_matches admits only the role class devos_ci (B 3.23)
+ 137 | FM-null                         | t  | missing_field            | missing_field            | {"rejected": 1}                   | hashes: missing
+ 138 | FM-empty                        | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | hashes: empty
+ 139 | FM-element-empty                | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | hashes: an element is empty
+ 140 | FM-element-null                 | t  | invalid_field            | invalid_field            | {"rejected": 1}                   | hashes: an element is empty
+ 141 | FM-pos                          | t  | ok                       | ok                       | {}                                | 
+ 142 | FM-pos-matches                  | t  | true                     | true                     | {}                                | each distinct matching hash once, with its origin
+ 143 | FM-no-source-ref                | t  | true                     | true                     | {}                                | no source_ref and no content (N06)
+ 144 | FM-none                         | t  | ok                       | ok                       | {}                                | 
+ 145 | FM-none-matches                 | t  | true                     | true                     | {}                                | no match: an empty list
+ 146 | FM-store-absent                 | t  | could_not_check          | could_not_check          | {"rejected": 1}                   | leak_fingerprint: its input could not be read (SQLSTATE 42P01)
+ 147 | FM-store-absent-reason          | t  | true                     | true                     | {}                                | the store absent: could not check, never clean (N06)
+ 148 | TX-literals                     | t  | true                     | true                     | {}                                | each role list a literal of the function's own text (B:48; EV-C02-013 2.8 and EV-C02-008 1.4)
+ 149 | TX-alias                        | t  | true                     | true                     | {}                                | parameters through ALIAS FOR $n (N-288)
+ 150 | TX-read-marker                  | t  | true                     | true                     | {}                                | the four reads carry devos:read; record_eval_run and mark_exported do not (F06)
+ 151 | TX-exam-table                   | t  | true                     | true                     | {}                                | of the six, only the exam environment's two name EvalRun's table (B 3.15)
+ 152 | TX-no-claim-token               | t  | true                     | true                     | {}                                | none of the six handles a claim token
+ 153 | TX-definer                      | t  | true                     | true                     | {}                                | definer rights, VOLATILE, the fixed search_path, owner postgres, EXECUTE for anon only
+(153 rows)
+
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0909_run/fn_check.sql:488: NOTICE:  M0909_FUNCTIONS PASS (153/153)
+DO
+ROLLBACK
+ rejected_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+ events_after_rollback 
+-----------------------
+                     0
+(1 row)
+
+ eval_run_rows_after_rollback 
+------------------------------
+                            0
+(1 row)
+
+[psql exit 0]
+m0909 scrub (09_functions): claim-format strings replaced 0; environment-format strings replaced 0
