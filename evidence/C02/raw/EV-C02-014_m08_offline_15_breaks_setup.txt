@@ -1,0 +1,78 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break runs: setup)
+start 2026-10-19T02:15:07Z
+[initdb exit 0]
+waiting for server to start.... done
+server started
+[pg_ctl start exit 0]
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+ALTER DATABASE
+CREATE SCHEMA
+CREATE TABLE
+COMMENT
+CREATE SCHEMA
+CREATE TABLE
+ALTER TABLE
+CREATE SCHEMA
+GRANT
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+[setup exit 0]
+postgres|f
+[psql exit 0]
+38
+[template t19 exit 0]
+2
+[template t20 exit 0]
+b01_prepare_unknown_class_admitted.sql: made (1 replacement in devos_api.prepare_operation)
+b02_prepare_unknown_class_old_code.sql: made (1 replacement in devos_api.prepare_operation)
+b03_prepare_partial_class_admitted.sql: made (1 replacement in devos_api.prepare_operation)
+b04_prepare_target_not_compared.sql: made (1 replacement in devos_api.prepare_operation)
+b05_prepare_generation_not_compared.sql: made (1 replacement in devos_api.prepare_operation)
+b06_prepare_epoch_not_compared.sql: made (1 replacement in devos_api.prepare_operation)
+b07_prepare_work_revision_not_compared.sql: made (1 replacement in devos_api.prepare_operation)
+b08_prepare_target_record_not_compared.sql: made (1 replacement in devos_api.prepare_operation)
+b09_prepare_repeat_without_real_state.sql: made (1 replacement in devos_api.prepare_operation)
+b10_prepare_claim_of_any_item.sql: made (1 replacement in devos_api.prepare_operation)
+b11_prepare_absent_revision_read_as_current.sql: made (1 replacement in devos_api.prepare_operation)
+b12_prepare_stale_revision_removed.sql: made (1 replacement in devos_api.prepare_operation)
+b13_prepare_readiness_recheck_removed.sql: made (1 replacement in devos_api.prepare_operation)
+b14_prepare_target_family_unchecked.sql: made (1 replacement in devos_api.prepare_operation)
+b15_prepare_target_stale_admitted.sql: made (1 replacement in devos_api.prepare_operation)
+b16_prepare_target_scope_check_removed.sql: made (1 replacement in devos_api.prepare_operation)
+b17_prepare_entry_reference_check_removed.sql: made (1 replacement in devos_api.prepare_operation)
+b18_prepare_entry_stale_admitted.sql: made (1 replacement in devos_api.prepare_operation)
+b19_prepare_entry_scope_check_removed.sql: made (1 replacement in devos_api.prepare_operation)
+b20_prepare_inputs_may_be_left_out.sql: made (1 replacement in devos_api.prepare_operation)
+b21_prepare_expected_base_may_be_left_out.sql: made (1 replacement in devos_api.prepare_operation)
+b22_prepare_dependencies_not_stored.sql: made (1 replacement in devos_api.prepare_operation)
+b23_prepare_token_in_event.sql: made (1 replacement in devos_api.prepare_operation)
+b24_attempt_claim_of_any_item.sql: made (1 replacement in devos_api.record_attempt)
+b25_attempt_work_revision_recheck_removed.sql: made (1 replacement in devos_api.record_attempt)
+b26_attempt_readiness_recheck_removed.sql: made (1 replacement in devos_api.record_attempt)
+b27_attempt_dependency_comparison_removed.sql: made (1 replacement in devos_api.record_attempt)
+b28_attempt_entries_recheck_removed.sql: made (1 replacement in devos_api.record_attempt)
+b29_attempt_prepared_claim_not_compared.sql: made (2 replacements in devos_api.record_attempt)
+b30_attempt_prepared_epoch_not_compared.sql: made (2 replacements in devos_api.record_attempt)
+b31_attempt_status_not_moved.sql: made (1 replacement in devos_api.record_attempt)
+b32_observation_ownership_removed.sql: made (2 replacements in devos_api.record_observation)
+b33_observation_status_not_moved.sql: made (1 replacement in devos_api.record_observation)
+b34_observation_time_ignored.sql: made (1 replacement in devos_api.record_observation)
+b35_state_ever_applied_from_latest.sql: made (1 replacement in devos_api.operation_state)
+b36_state_tie_answered_by_chance.sql: made (1 replacement in devos_api.operation_state)
+b37_state_partial_observation_admitted.sql: made (1 replacement in devos_api.operation_state)
+m0908 scrub (15_breaks_setup): claim-format strings replaced 0; environment-format strings replaced 0

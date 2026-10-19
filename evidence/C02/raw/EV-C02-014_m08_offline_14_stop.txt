@@ -1,0 +1,7 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[cluster directory deleted: yes]
+end 2026-10-19T02:15:07Z
+m0908 scrub (14_stop): claim-format strings replaced 0; environment-format strings replaced 0

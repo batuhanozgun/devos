@@ -1,0 +1,24 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (all twenty migrations with the merged break patch tests/C02/W-C02-07/breaks/B-6RG-1_could_not_check_as_clean.sql applied in place, w07.throwaway=yes, in database p61 copied from t20)
+[database p61 from t20 exit 0]
+[patch exit 0]
+w07_6rg_rule_gate_could_not_check.sql:  6RG-c1  | bad     | effect class row missing: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-c2  | bad     | effect class table unreadable: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-c3  | bad     | effect class partial (irreversible null): accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-e1  | bad     | epoch row missing, at the effect: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-e2  | bad     | epoch table unreadable, at the effect: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-e3  | bad     | epoch value partial (null), at the effect: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-e4  | bad     | epoch row missing, at the claim: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-g3  | bad     | the group unreadable, at the claim: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-l1  | bad     | lease missing, at the next claim: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-l2  | bad     | lease unreadable, at the next claim: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-l3  | bad     | generation partial (null), at the next claim: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-l4  | bad     | lease missing, at the effect: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-r1  | bad     | referenced record missing: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-r2  | bad     | referenced revision missing: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-r3  | bad     | reference partial (no revision): accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-r4  | bad     | referenced record unreadable: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-s1  | bad     | read-set element missing: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-s2  | bad     | read-set element partial (no revision): accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql:  6RG-s3  | bad     | read-set element unreadable: accepted, wanted could_not_check
+w07_6rg_rule_gate_could_not_check.sql: psql:tests/C02/W-C02-07/job/w07_6rg_rule_gate_could_not_check.sql:545: ERROR:  W07_6RG_RULE_GATE_COULD_NOT_CHECK FAIL (19 bad, 0 could not check, of 27)
+m0908 scrub (61_merged_B-6RG-1): claim-format strings replaced 0; environment-format strings replaced 0

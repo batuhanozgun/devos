@@ -1,0 +1,8 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break b23_prepare_token_in_event, a copy of M09-08 outside the repository, in database k38 copied from t19)
+[database k38 from t19 exit 0]
+$ psql -X -v ON_ERROR_STOP=1 --single-transaction -f b23_prepare_token_in_event.sql  (as postgres)
+[apply exit 0]
+  11 | PO-event                               | f  | false                    | true                     | {}                             | operation_prepared: the token's class (not the declared one), call, this transaction, the declared session, the tie; nev
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/m0908_run/fn_check.sql:725: NOTICE:  M0908_FUNCTIONS FAIL (1 of 252 not as wanted)
+[self-check done]
+m0908 scrub (38_break_b23_prepare_token_in_event): claim-format strings replaced 0; environment-format strings replaced 0
