@@ -41,6 +41,7 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ph
 | `T-W07-F07` | F07's C02 part: (a), (b), and (c) as a synthetic sequence; (c) against real GitHub is C08's | W-C02-09 point 8 |
 | `T-W07-F08` | F08, re-check at the moment of effect: (a) to (d); (c)'s epoch change by revoking a synthetic token (EV-C02-004 X-07); expiry as DM-06 computes it | W-C02-09 points 3, 4 and 8 |
 | `T-W07-CONC` | Concurrency, both claims: one claim of many concurrent connections; no cycle from two opposing hard dependencies. It confirms DM-01 and DM-06. The numbers of connections and runs are fixed in advance (W-C02-13 point 4) | W-C02-09 point 8 |
+| `T-W07-LOCKS` | Added in W-C02-09's test round 2 (parts TC-A and TC-C, 2026-10-19; EV-C02-018 16 decisions 2, 5 and 12): two connections get the answers of a serial order. A second first use of one new key gets the exact repeat (locks 9006 and 9007). A transfer call concurrent with `record_handover` is ordered against it (lock 9005). Of two first transfers of the installation's Mission, one is accepted (lock 9004). The numbers of runs are fixed in advance. It runs only on the break harness's throwaway database, is never copied, and its counted result is the harness's run on PostgreSQL 17 in W-C02-13 (the executor's decision, 2026-10-19; README 5.1 (b)) | The corrective migration's verdict (i) and W-C02-09's verdict (ii) (EV-C02-018 16 decision 12); W-C02-13 point 3 for its breaks. Not W-C02-09 point 8, which asks for `devos-test` |
 | `T-W07-N17` | N17 with PC-43 place 11 and N-136: another session's claim; no claim token; every call that takes a claim token (an effect, `heartbeat`, `release`) with another role class's token; the `devos_kurulum` token's own claims. "A claim without registration" is named as moved to C04 (EV3 §4.4) | W-C02-09 points 4 and 8 |
 | `T-W07-5C` | Point 5 (c): another session's claim, and a fake session ID, on a claim-bearing operation that is not a verdict | W-C02-09 point 8 |
 | `T-W07-DM07` | `heartbeat` refuses a lapsed or revoked claim (EV2 §6) | W-C02-09 point 4 |
@@ -49,10 +50,11 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ph
 | `T-W07-5F` | Point 5 (f): the migration lines. It cites W-C02-03's tests by path, with the item that runs them, and checks each line has a C0 test there; a line without one gets one here | W-C02-03 (cited); none built here |
 
 **Files.**
-- Specifications: `tests/C02/W-C02-07/T-W07-{F01,F05,F07,F08,CONC,N17,5C,DM07,DM34,6RG,5F}_<slug>.md`.
+- Specifications: `tests/C02/W-C02-07/T-W07-{F01,F05,F07,F08,CONC,LOCKS,N17,5C,DM07,DM34,6RG,5F}_<slug>.md`.
 - SQL: `supabase/migrations/tests/w07_{f01,f05,f07,f08,n17,5c,dm07,dm34,6rg}_<slug>.sql`.
 - Concurrency's multi-connection runner: `supabase/migrations/tests/w07_conc_claim_and_cycle.py`, a program the migration job runs (phase C: note N-255; README 5.1 (b)).
-- Breaks: `tests/C02/W-C02-07/breaks/B-{F01,F05,F07,F08,CONC,N17,5C,DM07,DM34,6RG}-<n>_<slug>.sql`.
+- LOCKS's multi-connection program: `tests/C02/W-C02-07/job/w07_locks_key_and_handover_locks.py`, staged only. The harness runs it on its throwaway database; the migration job does not run it, and no item copies it (README 5.1 (b) and (c)). It refuses, writing nothing, on any other database.
+- Breaks: `tests/C02/W-C02-07/breaks/B-{F01,F05,F07,F08,CONC,LOCKS,N17,5C,DM07,DM34,6RG}-<n>_<slug>.sql` (`B-LOCKS-1` to `-5`).
 
 **Sources** (beyond section 1):
 - Appendix C:
@@ -79,6 +81,7 @@ Every test that W-C02-07's acceptance asks for is in exactly one group below. Ph
   - place 28, "Readiness and claim", `PC-42:171-175`.
 - PC-43 place 11, N17, `PC-43:77-81`.
 - The build items' conditions: W-C02-09 points 3, 4, 7 and 8; W-C02-13 point 4.
+- For `T-W07-LOCKS` (2026-10-19, not at `db2ebd9`): EV-C02-018 section 16 (decisions 2, 5 and 12, with its dated line), and EV-C02-013 sections 26 (2) and 28, at `main` `3520a9d`.
 - R2 section 5:
   - (b)'s "fake session ID", `R2:198`;
   - (d) items 2, 5 and 8, `R2:215`, `R2:221` and `R2:224`.
@@ -287,6 +290,7 @@ EV-C02-002 section 6 (`EV2:380-382`) asks W-C02-07 to cover the rules below; "th
 - **EV-C02-008 1.7.1, Rules O and C:** `T-W07-ROC` (Group D; phase C4a).
 - **DM-47 the path table:** `T-W07-DM47` (Group C).
 - **DM-34 the Mission's scope at `admit_work`:** `T-W07-DM34` (Group A).
+- **EV-C02-018 16 decisions 2, 5 and 12, the locks under two connections** (9006 and 9007, the key locks; 9005, the hand-over lock; 9004, the one-Mission lock, N-303's L-403 annotation): `T-W07-LOCKS` (Group A; W-C02-09's test round 2, 2026-10-19). It is not one of EV2 section 6's rules: a later design record adds it, as README section 1 allows.
 
 The rules EV2 section 6 places "inside named tests" go with those tests:
 
