@@ -13,6 +13,9 @@
 -- Runs: in devos-test by the migration job's test step as postgres, calls as anon with a token's header simulated
 -- (sql-set-role); with its breaks on the throwaway database. Interface assumed: the specification's.
 -- Safety: no psql meta-command; stops at its first error.
+-- Revised under ledger rule 3, 2026-10-19 (N-291; EV-C02-013 section 17 (5) and 19 (5)), before any result of this
+-- file: F04-m4-cal's two ordinary work items sit under a Mission opened through open_mission, so that Rule O can read
+-- its creation event; see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -410,6 +413,32 @@ create function pg_temp.w07_rel(p_from text, p_to text) returns jsonb language s
     'scope', 'synthetic.w07fixture', 'hard', false, 'method', 'recorded', 'epistemic_status', 'inference')
 $f$;
 
+-- Revised under ledger rule 3, before any result (N-291; EV-C02-013 section 17 (5) and 19 (5); 2026-10-19). The Mission
+-- F04-m4-cal's ordinary work items sit under, copied from job/w07_f06_state_change_event.sql's
+-- pg_temp.f06_rule_o_mission (N-285 (1)). Rule O reads the work item's revision, the Mission revision it names and that
+-- Mission's creation event (EV-C02-013 2.3, "What Rule O reads"); a Mission w07_plant makes has no event, so Rule O
+-- answers could_not_check and F04-m4-cal's control (an accepted relate between two such items) could not be accepted
+-- on a correct build. This Mission is opened through open_mission with the devos_kurulum token, on an owner-planted
+-- batu Decision answered at revision 1, scope synthetic.w07fixture (w07_rel's scope). Its creation event is
+-- mission_opened, not transferred, so the devos_calisma calls are inside Rule O's cal clause (EV-C02-008 1.7.1).
+-- Returns the Mission revision row; raises when it cannot be made, and the caller turns that into could_not_check.
+create function pg_temp.w07_rule_o_mission(p_kur text) returns jsonb language plpgsql as $f$
+declare dc jsonb; c jsonb; r jsonb;
+begin
+  dc := pg_temp.w07_plant('devos_private.decision', '{"class": "batu", "status": "answered", "answered_revision": 1}');
+  perform pg_temp.w07_plant('devos_private.decision_revision', jsonb_build_object('decision_id', dc->'id', 'revision', 1));
+  c := pg_temp.w07_call('open_mission', jsonb_build_object('purpose', 'w07_fixture SYNTHETIC W-C02-07 Rule O mission; not work',
+         'scope', 'synthetic.w07fixture', 'owner_authority', dc->'id', 'owner_authority_revision', 1,
+         'acceptance', 'w07_fixture SYNTHETIC W-C02-07', 'constraints', '[]'::jsonb), p_kur);
+  if c ? 'interface' or c->>'error' is not null or c->'result'->>'status' is distinct from 'ok' then
+    raise exception 'the Rule O fixture Mission was not opened: %', pg_temp.w07_show(c);
+  end if;
+  execute 'select to_jsonb(x) from devos_private.mission_revision x where x.mission_id::text = $1 order by x.revision desc limit 1'
+     into r using c->'result'->>'id';
+  if r is null then raise exception 'the Rule O fixture Mission has no revision row'; end if;
+  return r;
+end $f$;
+
 -- F04-m4 for one token (EV-C02-008 5.1, CHK-C02-032 condition 3, CHK-C02-037 F4): relate with the exam record p_e as
 -- from_ref and as to_ref, beside p_w (a record Rule O gives this class), refused with nothing written but one
 -- RejectedAttempt row; for devos_calisma and devos_kurulum the answer and the recorded reason code equal those of the
@@ -633,9 +662,13 @@ begin
     e := pg_temp.w07_plant('devos_private.eval_run', jsonb_build_object('work_ref', (pg_temp.w07_plant('devos_private.work_revision',
            jsonb_build_object('purpose', 'w07_fixture_exam_task_m4 SYNTHETIC W-C02-07')))->'work_id',
            'results', jsonb_build_object('w07_fixture', 'SYNTHETIC W-C02-07')));
-    -- devos_calisma: ordinary work items (Rule O: any not under the installation's Mission).
-    wc := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal SYNTHETIC W-C02-07'));
-    wc2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal2 SYNTHETIC W-C02-07'));
+    -- devos_calisma: ordinary work items (Rule O: any not under the installation's Mission). Revised under ledger rule 3
+    -- (N-291, 2026-10-19): under the Rule O Mission, whose creation event Rule O can read.
+    rr := pg_temp.w07_rule_o_mission(tok_kur);
+    wc := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal SYNTHETIC W-C02-07',
+            'mission_revision_id', rr->'id'));
+    wc2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_cal2 SYNTHETIC W-C02-07',
+            'mission_revision_id', rr->'id'));
     -- devos_sinav: exam tasks, work items an EvalRun names (Rule O's reading for devos_sinav, EV-C02-008 1.7.1).
     ws := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_sin SYNTHETIC W-C02-07'));
     ws2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('purpose', 'w07_fixture_m4_sin2 SYNTHETIC W-C02-07'));

@@ -8,6 +8,10 @@
 -- calls the build's function, and restores the Assignment. It holds none of the build's logic. Synthetic (plan
 -- Section 8 item 13): no data. Throwaway database only (README 5.2), never under supabase/migrations/.
 -- No psql meta-command. The whole change runs inside the guard's block.
+-- Revised under ledger rule 3, 2026-10-19 (N-290 (1); CHK-C02-090 finding 12), before any run of this patch: work_ref
+-- is read in the flat form EV-C02-013 2.6 gives it (a uuid, with work_revision beside it), where the first version read
+-- p->'work_ref'->>'id', null on every call, so the wrapper passed every call through. The red list is unchanged.
+-- T-W07-F08's "Revision under ledger rule 3 (N-290, 2026-10-19)".
 do $b$
 declare ept text; epc text;
 begin
@@ -28,9 +32,9 @@ begin
     declare a record; r jsonb;
     begin
       select id, status, lease_expires_at, authority_epoch into a from devos_private.assignment
-       where work_ref = (p->'work_ref'->>'id')::uuid order by generation desc limit 1;
+       where work_ref = (p->>'work_ref')::uuid order by generation desc limit 1;
       if a.id is not null and not exists (select 1 from devos_private.assignment
-             where work_ref = (p->'work_ref'->>'id')::uuid and status = 'active' and id <> a.id) then
+             where work_ref = (p->>'work_ref')::uuid and status = 'active' and id <> a.id) then
         update devos_private.assignment set status = 'active', lease_expires_at = now() + interval '1 minute',
                authority_epoch = (select %2$I from %1$s) where id = a.id;
       end if;

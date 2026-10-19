@@ -6,6 +6,10 @@
 -- B 3.4's from_ref and hard), calls the build's function, and restores them. It holds none of the build's logic.
 -- Synthetic (plan Section 8 item 13): no data. Throwaway database only (README 5.2), never under
 -- supabase/migrations/. No psql meta-command. The whole change runs inside the guard's block.
+-- Revised under ledger rule 3, 2026-10-19 (N-290 (1); CHK-C02-090 finding 12), before any run of this patch: work_ref
+-- is read in the flat form EV-C02-013 2.6 gives it (a uuid, with work_revision beside it), where the first version read
+-- p->'work_ref'->>'id', null on every call, so the wrapper passed every call through. The red list is unchanged.
+-- T-W07-F08's "Revision under ledger rule 3 (N-290, 2026-10-19)".
 do $b$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -22,7 +26,7 @@ begin
     declare hidden uuid[]; r jsonb;
     begin
       select array_agg(id) into hidden from devos_private.relation
-       where from_ref = (p->'work_ref'->>'id')::uuid and hard;
+       where from_ref = (p->>'work_ref')::uuid and hard;
       update devos_private.relation set hard = false where id = any(hidden);
       r := devos_api.register_artifact_w07_orig(p_claim_token, p);
       update devos_private.relation set hard = true where id = any(hidden);

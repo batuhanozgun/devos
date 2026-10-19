@@ -8,6 +8,12 @@
 -- item's scope for the call and restores it. They hold none of the build's logic. Synthetic (plan Section 8 item 13):
 -- no data. Throwaway database only (README 5.2), never under supabase/migrations/. No psql meta-command. The whole
 -- change runs inside the guard's block.
+-- Revised under ledger rule 3, 2026-10-19 (N-290 (1); CHK-C02-090 finding 12), before any run of this patch: work_ref
+-- and target_ref are read in the flat form EV-C02-013 2.6 and 2.7 give them (uuids, with work_revision and
+-- target_revision beside them), where the first version read p->'work_ref'->>'id' and p->'target_ref'->>'id'; and the
+-- work item's scope is read from devos_private.work_current, the work item's current revision (W-C02-08's migration
+-- 20261014170205), where the first version read devos_private.work.scope, a column that does not exist (42703). The
+-- red list is unchanged. T-W07-F05's "Revision under ledger rule 3 (N-290, 2026-10-19)".
 do $b$
 begin
   if coalesce(current_setting('w07.throwaway', true), '') <> 'yes' then
@@ -22,7 +28,7 @@ begin
     security definer set search_path = pg_catalog as $f$
     declare ws text; r jsonb;
     begin
-      select scope into ws from devos_private.work where id = (p->'work_ref'->>'id')::uuid;
+      select w.scope into ws from devos_private.work_current w where w.id = (p->>'work_ref')::uuid;
       r := devos_api.register_artifact_w07_orig(p_claim_token, case when ws is null then p else p || jsonb_build_object('scope', ws) end);
       if r->>'status' = 'ok' and ws is not null then
         update devos_private.artifact set scope = p->>'scope' where id = (r->>'id')::uuid;
@@ -34,9 +40,9 @@ begin
   execute $p$
     create function devos_api.prepare_operation(p_claim_token text, p jsonb) returns jsonb language plpgsql
     security definer set search_path = pg_catalog as $f$
-    declare ws text; old text; tid uuid := (p->'target_ref'->>'id')::uuid; r jsonb;
+    declare ws text; old text; tid uuid := (p->>'target_ref')::uuid; r jsonb;
     begin
-      select scope into ws from devos_private.work where id = (p->'work_ref'->>'id')::uuid;
+      select w.scope into ws from devos_private.work_current w where w.id = (p->>'work_ref')::uuid;
       select scope into old from devos_private.artifact where id = tid;
       if tid is not null and ws is not null then update devos_private.artifact set scope = ws where id = tid; end if;
       r := devos_api.prepare_operation_w07_orig(p_claim_token, p);

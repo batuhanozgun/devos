@@ -18,6 +18,11 @@
 -- Revised under ledger rule 3, 2026-10-18 (N-285 (1); EV-C02-013 section 17 (5)), before any result of this file: the
 -- work items of the five Rule O recipes sit under a Mission opened through open_mission, and revise_work's recipe
 -- changes a field; see the specification's "Revision under ledger rule 3 (N-285, 2026-10-18)".
+-- Revised under ledger rule 3, 2026-10-19 (N-291; N-285 (5); EV-C02-013 sections 17 (5), 18 (5) and 19 (5)), before any
+-- result of this file: the relate, retract_relation and claim-bearing recipes' work items sit under the Rule O Mission,
+-- retract_relation's relation is made through relate, F06-role-token relates two items under the installation's
+-- Mission, the orphan cases first show their call accepted without the planted failure, and set_effort_policy's exact
+-- repeat is a case; see the specification's "Revision under ledger rule 3 (N-291, 2026-10-19)".
 begin;
 set local search_path = pg_catalog, pg_temp;
 set local statement_timeout = '300s';
@@ -382,6 +387,9 @@ end $f$;
 -- revision 1, scope synthetic.w07fixture (the scope w07_plant gives a planted work revision). Its creation event is
 -- mission_opened, not transferred, so the devos_calisma recipes pass Rule O (EV-C02-008 1.7.1). Returns the Mission
 -- revision row; raises when it cannot be made, and the callers turn that into could_not_check with the reason.
+-- Revised under ledger rule 3, before any result (N-291; EV-C02-013 19 (5); 2026-10-19): it is now also the Mission of
+-- the relate, retract_relation and claim-bearing recipes' work items (EV-C02-013 18 (5): claim reads Rule O's
+-- ownership too), made once before them.
 create function pg_temp.f06_rule_o_mission(p_kur text) returns jsonb language plpgsql as $f$
 declare dc jsonb; c jsonb; r jsonb;
 begin
@@ -399,6 +407,14 @@ begin
   return r;
 end $f$;
 
+-- Revised under ledger rule 3, before any result (N-291; EV-C02-013 19 (5); 2026-10-19): the hook installation_mission,
+-- copied verbatim from job/w07_f04_affected_records.sql (the statement EV-C02-013 section 4 names; README 8.1, "Hooks"),
+-- for F06-role-token: Rule O gives devos_kurulum only the work items under the installation's Mission (EV-C02-008
+-- 1.7.1), so the devos_kurulum relation is made between two items planted under the Mission it returns.
+create function pg_temp.w07_hook(p_key text) returns text language sql immutable as $f$
+  select t.v from (values ('installation_mission', 'with x as (select m.id from devos_private.mission m where exists (select 1 from devos_private.event e where e.aggregate_id = m.id and e.event_type = ''transferred'') order by m.created_at limit 1), d as (insert into devos_private.decision (class, status, answered_revision, answered_at, answered_by, answer_original_tr, answer_interpretation_en) select ''batu''::devos_private.decision_class, ''answered''::devos_private.decision_status, 1, now(), ''w07_fixture SYNTHETIC W-C02-07'', ''w07_fixture SYNTHETIC yanit'', ''w07_fixture SYNTHETIC answer'' where not exists (select 1 from x) returning id), dr as (insert into devos_private.decision_revision (decision_id, revision, question) select d.id, 1, ''w07_fixture SYNTHETIC W-C02-07 decision of the installation Mission stand-in'' from d returning decision_id), m as (insert into devos_private.mission (status) select ''active''::devos_private.mission_status where not exists (select 1 from x) returning id), mr as (insert into devos_private.mission_revision (mission_id, revision, purpose, scope, acceptance, owner_authority) select m.id, 1, ''w07_fixture SYNTHETIC W-C02-07 installation Mission stand-in; not work'', ''synthetic.w07_fixture'', ''w07_fixture SYNTHETIC W-C02-07'', dr.decision_id from m, dr returning mission_id), ev as (insert into devos_private.event (aggregate_type, aggregate_id, aggregate_revision, event_type, payload, role_class, origin) select ''mission'', mr.mission_id, 1, ''transferred'', jsonb_build_object(''transfer_source'', jsonb_build_object(''kind'', ''mission'', ''source_id'', ''INSTALL'', ''path'', ''w07_fixture/INSTALL.md'', ''input_commit'', repeat(''a7'', 20), ''last_commit'', repeat(''a7'', 20), ''sha256'', repeat(''5e'', 32)), ''run_id'', null, ''lacks'', ''[]''::jsonb), ''devos_kurulum'', ''call''::devos_private.event_origin from mr returning aggregate_id) select coalesce((select aggregate_id::text from ev), (select id::text from x))')) t(k, v) where t.k = p_key
+$f$;
+
 do $$
 declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 jsonb; a jsonb; b jsonb; d jsonb; rel jsonb;
         recipes jsonb; e0 text[]; v jsonb; fd jsonb; ev jsonb; t_x text; ok boolean; n_listed int;
@@ -408,6 +424,7 @@ declare why text; f record; toks jsonb := '{}'; cls text; tok text; m jsonb; m2 
         fx_fail jsonb := '{}'; unformable jsonb; no_repeat jsonb;
         nm jsonb; wt1 jsonb; wt2 jsonb; tdd text; ev_id text; dl jsonb; dl2 jsonb; event_state text[];  -- G20
         om jsonb; om_fail text;  -- N-285 (1)
+        wv jsonb := '{}'; im text; imr text; i1 jsonb; i2 jsonb; rel_k jsonb; ctl jsonb;  -- N-291
 begin
   why := pg_temp.w07_pre();
   if why is not null then
@@ -416,8 +433,17 @@ begin
   end if;
   begin
     t_cal := pg_temp.w07_token('devos_calisma'); t_kur := pg_temp.w07_token('devos_kurulum');
-    a := pg_temp.w07_plant('devos_private.work_revision', '{}'); b := pg_temp.w07_plant('devos_private.work_revision', '{}');
-    d := pg_temp.w07_plant('devos_private.work_revision', '{}');
+    -- Revised under ledger rule 3, before any result (N-291; EV-C02-013 19 (5); 2026-10-19): the Rule O Mission is made
+    -- first, and relate's work items a, b and d (d is also claim's) are planted under it; one that cannot be made drops
+    -- the recipes that need it (below), whose cases then give could_not_check with the reason.
+    begin
+      om := pg_temp.f06_rule_o_mission(t_kur);
+      wv := jsonb_build_object('mission_revision_id', om->'id');
+    exception when others then
+      om_fail := 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150);
+    end;
+    a := pg_temp.w07_plant('devos_private.work_revision', wv); b := pg_temp.w07_plant('devos_private.work_revision', wv);
+    d := pg_temp.w07_plant('devos_private.work_revision', wv);
     v := pg_temp.w07_plant('devos_private.verdict', jsonb_build_object('result', 'pass', 'review_ref',
       pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', gen_random_uuid(),
         'target_revision', 1, 'use', 'w07_fixture_use_one', 'basis_refs', '[]'::jsonb))->'id'));
@@ -502,14 +528,14 @@ begin
   -- Revised under ledger rule 3, before any result (N-285 (1); EV-C02-013 section 17 (5); 2026-10-18): the five
   -- functions that check Rule O (EV-C02-008 1.7.1; 1.7.4 for set_effort_policy's kind (a)) get work items planted under
   -- the Mission pg_temp.f06_rule_o_mission opens, so that Rule O can read the Mission's creation event. One that cannot
-  -- be made drops the five recipes, whose cases then give could_not_check with the reason.
-  begin
-    om := pg_temp.f06_rule_o_mission(t_kur);
-  exception when others then
-    om_fail := 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150);
+  -- be made drops the five recipes, whose cases then give could_not_check with the reason. (N-291, 2026-10-19: the
+  -- Mission is now made with the first fixtures, above; relate, retract_relation and the claim-bearing recipes are
+  -- dropped the same way.)
+  if om_fail is not null then
     fx_fail := fx_fail || (select jsonb_object_agg(z, om_fail)
-                             from unnest(array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'set_effort_policy']) z);
-  end;
+                             from unnest(array['revise_work', 'mark_stale', 'cancel_work', 'reopen_for_review', 'set_effort_policy',
+                                               'relate', 'retract_relation', 'claim']) z);
+  end if;
   -- revise_work(p): a planted work item under that Mission. Revised under ledger rule 3 (N-285 (1); EV-C02-013 2.3 and
   -- R2-9): the recipe changes a field, a scope narrowed under the planted one, with a reason (Appendix B principle 3);
   -- sent with the scope it already had, the first version was an exact repeat, which writes no revision and no event.
@@ -537,16 +563,26 @@ begin
       fx_fail := fx_fail || jsonb_build_object(fn, 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
     end;
   end loop;
-  begin  -- retract_relation(relation_id, reason): a planted relation between two planted work items of its own
-    wk := pg_temp.w07_plant('devos_private.work_revision', '{}'); op := pg_temp.w07_plant('devos_private.work_revision', '{}');
-    x := pg_temp.w07_plant('devos_private.relation', jsonb_build_object('type', 'about', 'from_ref', wk->'work_id',
-      'from_revision', wk->'revision', 'to_ref', op->'work_id', 'to_revision', op->'revision', 'hard', false,
-      'scope', 'synthetic.w07fixture', 'method', 'recorded', 'epistemic_status', 'inference', 'validity', 'current'));
-    recipes := recipes || jsonb_build_object('retract_relation', jsonb_build_object('class', 'devos_calisma', 'args',
-      jsonb_build_object('relation_id', x->'id', 'reason', 'w07_fixture SYNTHETIC W-C02-07 retracted')));
-  exception when others then
-    fx_fail := fx_fail || jsonb_build_object('retract_relation', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
-  end;
+  -- retract_relation(relation_id, reason): a relation between two work items of its own under the Rule O Mission.
+  -- Revised under ledger rule 3, before any result (N-291; EV-C02-013 19 (2) and (5); 2026-10-19): the relation is made
+  -- through relate with the devos_calisma token, so it has the creation event retract_relation reads (its first event on
+  -- aggregate relation; none is could_not_check); the first version planted the row with no event, and its work items
+  -- under a Mission with none.
+  if om_fail is null then
+    begin
+      wk := pg_temp.w07_plant('devos_private.work_revision', wv); op := pg_temp.w07_plant('devos_private.work_revision', wv);
+      x := pg_temp.w07_call('relate', jsonb_build_object('type', 'about', 'from_ref', wk->'work_id',
+        'from_revision', wk->'revision', 'to_ref', op->'work_id', 'to_revision', op->'revision', 'hard', false,
+        'scope', 'synthetic.w07fixture', 'method', 'recorded', 'epistemic_status', 'inference'), t_cal);
+      if x ? 'interface' or x->>'error' is not null or x->'result'->>'status' is distinct from 'ok' then
+        raise exception 'the relation to retract was not made: %', pg_temp.w07_show(x);
+      end if;
+      recipes := recipes || jsonb_build_object('retract_relation', jsonb_build_object('class', 'devos_calisma', 'args',
+        jsonb_build_object('relation_id', x->'result'->'id', 'reason', 'w07_fixture SYNTHETIC W-C02-07 retracted')));
+    exception when others then
+      fx_fail := fx_fail || jsonb_build_object('retract_relation', 'its fixture could not be made: ' || sqlstate || ' ' || left(sqlerrm, 150));
+    end;
+  end if;
   begin  -- record_verdict, record_eval_run: a planted review and work item
     wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
     x := pg_temp.w07_plant('devos_private.review', jsonb_build_object('kind', 'review', 'target_ref', wk->'work_id',
@@ -582,10 +618,13 @@ begin
   -- in the recipe's arguments, a PL/pgSQL variable, and bound through a setting, never printed or inlined).
   -- operation_state (a read, EV-C02-013 2.7; revised under ledger rule 3, N-283, 2026-10-18) reads an operation prepared
   -- for it the same way.
+  -- Revised under ledger rule 3, before any result (N-291; EV-C02-013 18 (5); 2026-10-19): each work item under the Rule
+  -- O Mission, since claim reads ownership as Rule O does (a Mission with no creation event: could_not_check).
   foreach fn in array array['heartbeat', 'release', 'revoke_claim', 'register_artifact', 'prepare_operation',
                             'record_attempt', 'record_observation', 'operation_state'] loop
     begin
-      wk := pg_temp.w07_plant('devos_private.work_revision', '{}');
+      if om_fail is not null then raise exception 'the Rule O Mission: %', om_fail; end if;
+      wk := pg_temp.w07_plant('devos_private.work_revision', wv);
       cl := pg_temp.w07_call('claim', jsonb_build_object('work_id', wk->'work_id', 'declared_session_id', 'w07_fixture_session_f06'), t_cal);
       if cl ? 'interface' or cl->>'error' is not null or cl->'result'->>'status' is distinct from 'ok' then
         raise exception 'the claim its fixture needs was not accepted: %', pg_temp.w07_show(cl);
@@ -777,7 +816,10 @@ begin
   -- reason (T-W07-F06, "Not covered").
   no_repeat := (select jsonb_object_agg(z, 'a repeat of a creating call with no idempotency key makes a new record, not the same change (B principle 2)')
                   from unnest(array['record_need', 'open_decision', 'record_finding', 'open_review', 'open_mission', 'admit_work',
-                                    'register_artifact', 'record_observation', 'record_eval_run', 'record_verdict', 'set_effort_policy']) z)
+                                    'register_artifact', 'record_observation', 'record_eval_run', 'record_verdict']) z)
+    -- Revised under ledger rule 3, before any result (N-285 (5), the executor's decision; 2026-10-19): set_effort_policy
+    -- is off this list. EV-C02-013 2.3 gives it an exact repeat ("same content as the item's active policy: repeat"), so
+    -- F06-repeat:set_effort_policy is judged as every other function's repeat.
     || jsonb_build_object('heartbeat', 'each heartbeat extends the lease from its own time (B 3.5), a new change by design',
                           'record_attempt', 'each attempt is counted (B 3.12 attempts), a new change by design');
 
@@ -898,18 +940,47 @@ begin
       and not exists (select 1 from jsonb_array_elements(ev) e where e->>'role_class' <> 'owner' or e->>'origin' <> 'owner'),
     'revoke_env_token as the owner: new events ' || ev::text);
 
-  -- role_class from the token, never declared: the same relate with the devos_kurulum token and a declared session.
-  rel := jsonb_set(rel, '{to_ref}', d->'work_id');
-  m := pg_temp.w07_measure('relate', rel || '{"declared_session_id": "w07_fixture_declared_session"}', t_kur);
-  if m->'call' ? 'interface' then
-    m := pg_temp.w07_measure('relate', rel, t_kur);
+  -- role_class from the token, never declared: the same kind of relate with the devos_kurulum token and a declared
+  -- session. Revised under ledger rule 3, before any result (N-291; EV-C02-013 19 (5); 2026-10-19): Rule O gives
+  -- devos_kurulum only the installation's work items (EV-C02-008 1.7.1), so the relation is between two items planted
+  -- under the installation's Mission (the hook above), with relate's other fields as F06-event:relate's. The outcome
+  -- rule is unchanged: a refused call is bad, as before; items that cannot be planted give could_not_check.
+  begin
+    execute pg_temp.w07_hook('installation_mission') into im;
+    execute 'select id::text from devos_private.mission_revision where mission_id::text = $1 order by revision desc limit 1'
+      into imr using im;
+    if imr is null then raise exception 'the installation''s Mission % has no revision', im; end if;
+    i1 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', imr));
+    i2 := pg_temp.w07_plant('devos_private.work_revision', jsonb_build_object('mission_revision_id', imr));
+    rel_k := rel || jsonb_build_object('from_ref', i1->'work_id', 'from_revision', i1->'revision', 'to_ref', i2->'work_id',
+      'to_revision', i2->'revision');
+  exception when others then
+    rel_k := null; why := 'the installation''s work items could not be planted: ' || sqlstate || ' ' || left(sqlerrm, 160);
+  end;
+  if rel_k is null then
+    perform pg_temp.w07_rec('F06-role-token', 'could_not_check', why);
+  else
+    m := pg_temp.w07_measure('relate', rel_k || '{"declared_session_id": "w07_fixture_declared_session"}', t_kur);
+    if m->'call' ? 'interface' then
+      m := pg_temp.w07_measure('relate', rel_k, t_kur);
+    end if;
+    perform pg_temp.w07_check('F06-role-token', case when m->'call' ? 'interface' then null else
+        not pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'events') >= 1
+        and not exists (select 1 from jsonb_array_elements(m->'events') e where e->>'role_class' <> 'devos_kurulum') end,
+      pg_temp.w07_show(m->'call') || '; new events ' || (m->'events')::text);
   end if;
-  perform pg_temp.w07_check('F06-role-token', case when m->'call' ? 'interface' then null else
-      not pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'events') >= 1
-      and not exists (select 1 from jsonb_array_elements(m->'events') e where e->>'role_class' <> 'devos_kurulum') end,
-    pg_temp.w07_show(m->'call') || '; new events ' || (m->'events')::text);
+  rel := jsonb_set(rel, '{to_ref}', d->'work_id');
 
-  -- Orphans: a failure planted on the event write (a), and on the state write (b), mid-transaction.
+  -- Orphans: a failure planted on the event write (a), and on the state write (b), mid-transaction. Revised under ledger
+  -- rule 3, before any result (N-291; EV-C02-013 19 (5); 2026-10-19): the same call without the planted failure is first
+  -- made in an undone subtransaction and must be accepted, so that the refusal the case reads is the planted failure's,
+  -- not a rule's before it (the first version passed when Rule O refused the call before any write); not accepted, the
+  -- case gives could_not_check with the reason.
+  begin
+    ctl := pg_temp.w07_call('relate', jsonb_set(rel, '{from_ref}', b->'work_id'), t_cal);
+    raise exception using errcode = 'P0W07', message = 'w07: undo the control';
+  exception when sqlstate 'P0W07' then null;
+  end;
   foreach cls in array array['event', 'relation'] loop
     begin
       execute format('create trigger w07_planted_failure before insert on devos_private.%I for each row execute function pg_temp.w07_fail_trg()', cls);
@@ -918,9 +989,11 @@ begin
     exception when sqlstate 'P0W07' then null;
     end;
     perform pg_temp.w07_check('F06-orphan-' || case cls when 'event' then 'a' else 'b' end,
-      case when m->'call' ? 'interface' then null else pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'changed') = 0
+      case when m->'call' ? 'interface' or ctl ? 'interface' or pg_temp.w07_refused(ctl) then null
+           else pg_temp.w07_refused(m->'call') and jsonb_array_length(m->'changed') = 0
            and jsonb_array_length(m->'events') = 0 end,
-      'failure planted on the ' || cls || ' write: ' || pg_temp.w07_show(m->'call') || '; tables changed: ' || (m->'changed')::text
+      'control without the planted failure: ' || pg_temp.w07_show(ctl) || '; failure planted on the ' || cls || ' write: '
+        || pg_temp.w07_show(m->'call') || '; tables changed: ' || (m->'changed')::text
         || '; new events ' || jsonb_array_length(m->'events'));
   end loop;
 end $$;
