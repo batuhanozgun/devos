@@ -1,0 +1,155 @@
+# Run 39257765661 (workflow migrate, push, commit 545a9434b9b3e4771f47bda328256a8763f2b1c5), job "devos (compare, decide, apply)", job id 118079289420.
+# Source: the job's GitHub Actions log (1788 lines), read on 2026-10-19 with the GitHub MCP tool get_job_logs (return_content, the whole log).
+# Kept: every line from the start of step "(3) connect" (its "##[group]Run if timeout 60 psql ..." line) to the job's end, verbatim with its runner timestamp, in the log's order.
+# Left out, and only these:
+#   (1) every step's env: block: the "env:" line and every line under it up to the step's "##[endgroup]" (public root certificate, its and the tool's SHA-256, pooler host list, exclusion lists, project settings, PGPASSWORD shown by the runner as ***, and the inputs GO, FM_READS, DRIFT_CALL, DRIFT_RESULT, EXPECTED, HEAD_STATE, PRESENT, CONNECTED, LISTING_COUNT, RESULT, RESULT_JSON, APPLIED, BEFORE_RESULT, AFTER_*, DECIDE_*, EXCEPTION, APPLY that a step receives from earlier steps);
+#   (2) every step's echo of its own script: the lines the runner prints after "##[group]Run ..." with the colour prefix ESC[36;1m (the step's source, the same text as .github/workflows/migrate.yml at the run's commit), and the "shell: ..." line after them.
+# Withheld: one long random-looking string, the temporary directory name in the "Temporarily overriding HOME=..." line, replaced by [withheld]. Kept as they are: the 40-hex commit id (a public git identifier) and the 14-digit migration versions.
+# The runner's JSON escapes are undone (\" as ", \\ as \, and the Unicode escapes of > and & (a backslash, "u" and 003e or 0026) as those characters); spaces at the very end of a line are not kept. Steps "(6) dry run", "(7) apply to devos" and "(8) deployment_drift in devos again after an apply" were skipped in this run (job step list: conclusion skipped), so they print nothing; the log goes from the decide step to the report step.
+2026-10-19T13:13:56.5102821Z ##[group]Run if timeout 60 psql -X -q -A -t -c 'select 1' > /dev/null 2> "$RUNNER_TEMP/w03connect.err"; then
+2026-10-19T13:13:56.5160825Z ##[endgroup]
+2026-10-19T13:13:56.7963384Z connection: succeeded
+2026-10-19T13:13:56.7964042Z server authentication, positive control (sslmode=verify-full with the pinned root, select 1): pass
+2026-10-19T13:13:56.7997343Z ##[group]Run set -uo pipefail
+2026-10-19T13:13:56.8085446Z ##[endgroup]
+2026-10-19T13:13:56.8155969Z listing (W-C02-03 point 10): every schema, table, view, function and role outside Supabase's own
+2026-10-19T13:13:56.8156542Z   exclusion list, kept as data in this workflow:
+2026-10-19T13:13:56.8157154Z   schemas excluded with their contents (Supabase's own): auth extensions graphql graphql_public pgbouncer realtime storage vault supabase_migrations
+2026-10-19T13:13:56.8157964Z   schema entries excluded, their contents still listed: public (the default schema every project is created with)
+2026-10-19T13:13:56.8159426Z   roles excluded (Supabase's own), besides every pg_* role: postgres authenticator service_role anon authenticated dashboard_user pgbouncer pgsodium_keyholder pgsodium_keyiduser pgsodium_keymaker supabase_admin supabase_auth_admin supabase_functions_admin supabase_read_only_user supabase_realtime_admin supabase_replication_admin supabase_storage_admin supabase_etl_admin supabase_privileged_role
+2026-10-19T13:13:56.8160622Z   objects that belong to an extension are listed as that extension
+2026-10-19T13:13:57.5960934Z listing: function devos_api.accept(verdict_ref uuid, accepted_use text)
+2026-10-19T13:13:57.5961565Z listing: function devos_api.admit_work(p jsonb)
+2026-10-19T13:13:57.5962070Z listing: function devos_api.affected_entities(root uuid, limits jsonb)
+2026-10-19T13:13:57.5962515Z listing: function devos_api.authority_epoch()
+2026-10-19T13:13:57.5962912Z listing: function devos_api.begin_transfer_run(p jsonb)
+2026-10-19T13:13:57.5963381Z listing: function devos_api.cancel_work(work_id uuid, reason text)
+2026-10-19T13:13:57.5963898Z listing: function devos_api.claim(work_id uuid, declared_session_id text)
+2026-10-19T13:13:57.5964383Z listing: function devos_api.deployment_drift(expected jsonb)
+2026-10-19T13:13:57.5964847Z listing: function devos_api.end_transfer_run(p jsonb)
+2026-10-19T13:13:57.5965203Z listing: function devos_api.explain_paths(root uuid, target uuid, limits jsonb)
+2026-10-19T13:13:57.5965571Z listing: function devos_api.fingerprint_matches(hashes text[])
+2026-10-19T13:13:57.5965930Z listing: function devos_api.heartbeat(claim_token text)
+2026-10-19T13:13:57.5966271Z listing: function devos_api.link_prior_decisions(p jsonb)
+2026-10-19T13:13:57.5966620Z listing: function devos_api.mark_exported(p jsonb)
+2026-10-19T13:13:57.5966946Z listing: function devos_api.mark_stale(work_id uuid, reason text)
+2026-10-19T13:13:57.5967259Z listing: function devos_api.open_decision(p jsonb)
+2026-10-19T13:13:57.5967576Z listing: function devos_api.open_mission(p jsonb)
+2026-10-19T13:13:57.5967891Z listing: function devos_api.open_review(p jsonb)
+2026-10-19T13:13:57.5968248Z listing: function devos_api.operation_state(operation_id uuid)
+2026-10-19T13:13:57.5968618Z listing: function devos_api.prepare_operation(claim_token text, p jsonb)
+2026-10-19T13:13:57.5968970Z listing: function devos_api.read_decision(decision_id uuid)
+2026-10-19T13:13:57.5969471Z listing: function devos_api.read_eval_run(eval_run_id uuid)
+2026-10-19T13:13:57.5969864Z listing: function devos_api.read_rejected_attempts(since timestamp with time zone)
+2026-10-19T13:13:57.5970236Z listing: function devos_api.read_review(review_id uuid)
+2026-10-19T13:13:57.5970574Z listing: function devos_api.ready_works()
+2026-10-19T13:13:57.5970906Z listing: function devos_api.record_attempt(claim_token text, operation_id uuid)
+2026-10-19T13:13:57.5971289Z listing: function devos_api.record_eval_run(p jsonb)
+2026-10-19T13:13:57.5971605Z listing: function devos_api.record_finding(p jsonb)
+2026-10-19T13:13:57.5972075Z listing: function devos_api.record_handover(p jsonb)
+2026-10-19T13:13:57.5972434Z listing: function devos_api.record_ledger_entry(p jsonb)
+2026-10-19T13:13:57.5972724Z listing: function devos_api.record_need(p jsonb)
+2026-10-19T13:13:57.5973502Z listing: function devos_api.record_observation(p jsonb)
+2026-10-19T13:13:57.5973820Z listing: function devos_api.record_verdict(p jsonb)
+2026-10-19T13:13:57.5974166Z listing: function devos_api.register_artifact(claim_token text, p jsonb)
+2026-10-19T13:13:57.5974546Z listing: function devos_api.relate(p jsonb)
+2026-10-19T13:13:57.5974827Z listing: function devos_api.release(claim_token text)
+2026-10-19T13:13:57.5975206Z listing: function devos_api.reopen_for_review(work_id uuid, reason text)
+2026-10-19T13:13:57.5975582Z listing: function devos_api.resolve_need(need_id uuid, reason text)
+2026-10-19T13:13:57.5975957Z listing: function devos_api.retract_relation(relation_id uuid, reason text)
+2026-10-19T13:13:57.5976396Z listing: function devos_api.review_finding(finding_id uuid, revision integer, status text)
+2026-10-19T13:13:57.5976793Z listing: function devos_api.revise_mission(p jsonb)
+2026-10-19T13:13:57.5977174Z listing: function devos_api.revise_work(p jsonb)
+2026-10-19T13:13:57.5977606Z listing: function devos_api.revoke_claim(assignment_id uuid, reason text)
+2026-10-19T13:13:57.5977959Z listing: function devos_api.set_effort_policy(p jsonb)
+2026-10-19T13:13:57.5978274Z listing: function devos_api.token_role_class()
+2026-10-19T13:13:57.5978601Z listing: function devos_api.transfer_acceptance(p jsonb)
+2026-10-19T13:13:57.5978964Z listing: function devos_api.transfer_artifact(p jsonb)
+2026-10-19T13:13:57.5979500Z listing: function devos_api.transfer_decision(p jsonb)
+2026-10-19T13:13:57.5979874Z listing: function devos_api.transfer_event(p jsonb)
+2026-10-19T13:13:57.5980278Z listing: function devos_api.transfer_finding(p jsonb)
+2026-10-19T13:13:57.5980712Z listing: function devos_api.transfer_mission(p jsonb)
+2026-10-19T13:13:57.5981169Z listing: function devos_api.transfer_need(p jsonb)
+2026-10-19T13:13:57.5981569Z listing: function devos_api.transfer_relation(p jsonb)
+2026-10-19T13:13:57.5981978Z listing: function devos_api.transfer_review(p jsonb)
+2026-10-19T13:13:57.5982393Z listing: function devos_api.transfer_work(p jsonb)
+2026-10-19T13:13:57.5982813Z listing: function devos_private.caller_role_class(function_name text)
+2026-10-19T13:13:57.5983453Z listing: function devos_private.check_claim(p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean)
+2026-10-19T13:13:57.5984123Z listing: function devos_private.claim_live(claim_status devos_private.assignment_status, claim_lease timestamp with time zone, claim_epoch bigint)
+2026-10-19T13:13:57.5984668Z listing: function devos_private.hard_dependency_cycle(p_from uuid, p_to uuid)
+2026-10-19T13:13:57.5985075Z listing: function devos_private.is_installation_mission(p_mission_id uuid)
+2026-10-19T13:13:57.5985501Z listing: function devos_private.issue_env_token(role_class text)
+2026-10-19T13:13:57.5985906Z listing: function devos_private.ready_value(p_work_id uuid, p_own_claim uuid)
+2026-10-19T13:13:57.5986306Z listing: function devos_private.refuse_change()
+2026-10-19T13:13:57.5987079Z listing: function devos_private.reject(p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer)
+2026-10-19T13:13:57.5988026Z listing: function devos_private.reject_counted(p_function_name text, p_reason_code text)
+2026-10-19T13:13:57.5988564Z listing: function devos_private.revoke_env_token(token_id uuid)
+2026-10-19T13:13:57.5989294Z listing: function devos_private.scope_within(p_scope text, p_container text)
+2026-10-19T13:13:57.5989764Z listing: function devos_private.token_hash(token text)
+2026-10-19T13:13:57.5990596Z listing: function devos_private.write_event(p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text)
+2026-10-19T13:13:57.5991363Z listing: schema devos_api
+2026-10-19T13:13:57.5991631Z listing: schema devos_private
+2026-10-19T13:13:57.5991873Z listing: schema w03_fixture
+2026-10-19T13:13:57.5992151Z listing: table devos_private.acceptance
+2026-10-19T13:13:57.5992421Z listing: table devos_private.artifact
+2026-10-19T13:13:57.5992698Z listing: table devos_private.artifact_revision
+2026-10-19T13:13:57.5993038Z listing: table devos_private.assignment
+2026-10-19T13:13:57.5993296Z listing: table devos_private.decision
+2026-10-19T13:13:57.5993590Z listing: table devos_private.decision_revision
+2026-10-19T13:13:57.5993873Z listing: table devos_private.effect_class
+2026-10-19T13:13:57.5994147Z listing: table devos_private.effort_policy
+2026-10-19T13:13:57.5994444Z listing: table devos_private.env_tokens
+2026-10-19T13:13:57.5994716Z listing: table devos_private.eval_run
+2026-10-19T13:13:57.5994997Z listing: table devos_private.event
+2026-10-19T13:13:57.5995256Z listing: table devos_private.finding
+2026-10-19T13:13:57.5995532Z listing: table devos_private.finding_revision
+2026-10-19T13:13:57.5995845Z listing: table devos_private.function_deployment
+2026-10-19T13:13:57.5996224Z listing: table devos_private.global_authority_epoch
+2026-10-19T13:13:57.5996565Z listing: table devos_private.leak_fingerprint
+2026-10-19T13:13:57.5996835Z listing: table devos_private.mission
+2026-10-19T13:13:57.5997119Z listing: table devos_private.mission_revision
+2026-10-19T13:13:57.5997395Z listing: table devos_private.need
+2026-10-19T13:13:57.5997657Z listing: table devos_private.observation
+2026-10-19T13:13:57.5997936Z listing: table devos_private.operation
+2026-10-19T13:13:57.5998236Z listing: table devos_private.rejected_attempt
+2026-10-19T13:13:57.5998525Z listing: table devos_private.relation
+2026-10-19T13:13:57.5998792Z listing: table devos_private.review
+2026-10-19T13:13:57.5999506Z listing: table devos_private.verdict
+2026-10-19T13:13:57.5999787Z listing: table devos_private.work
+2026-10-19T13:13:57.6000066Z listing: table devos_private.work_revision
+2026-10-19T13:13:57.6000409Z listing: table w03_fixture.apply_check
+2026-10-19T13:13:57.6000695Z listing: view devos_private.artifact_current
+2026-10-19T13:13:57.6000975Z listing: view devos_private.decision_current
+2026-10-19T13:13:57.6001261Z listing: view devos_private.finding_current
+2026-10-19T13:13:57.6001541Z listing: view devos_private.mission_current
+2026-10-19T13:13:57.6001855Z listing: view devos_private.work_current
+2026-10-19T13:13:57.6002141Z listing: view w03_fixture.apply_check_view
+2026-10-19T13:13:57.6002412Z listing: 106 objects outside Supabase's own
+2026-10-19T13:13:57.6002811Z listing control: the same query without the exclusion list shows 223 objects; auth.users among them: yes
+2026-10-19T13:13:57.6071943Z ##[group]Run set -uo pipefail
+2026-10-19T13:13:57.6199809Z ##[endgroup]
+2026-10-19T13:13:58.1370144Z reads in devos (one read-only REPEATABLE READ transaction): function_exists=True history_table_exists=True history_rows=26 listing=106 objects complete=True
+2026-10-19T13:13:58.1370911Z comparison in devos: result=no_difference call=ok
+2026-10-19T13:13:58.1428160Z ##[group]Run # The decision of the devos job's apply (EV-C02-001 M07, M16; section 5, "The job's shape" and "The first-migration
+2026-10-19T13:13:58.1676680Z ##[endgroup]
+2026-10-19T13:13:58.1854229Z first-migration exception: not taken (function_exists=true: deployment_drift exists, so step (5) uses its result)
+2026-10-19T13:13:58.1854901Z decide: apply=no result_kind=no_difference exception=not_taken; no difference: nothing to apply
+2026-10-19T13:13:58.1930026Z ##[group]Run import json, os
+2026-10-19T13:13:58.1987890Z ##[endgroup]
+2026-10-19T13:13:58.2151560Z W03REPORT {"project":"devos","event":"push","run_id":"39257765661","commit":"545a9434b9b3e4771f47bda328256a8763f2b1c5","head":"yes","credential_present":"yes","connection":"yes","listing_count":"106","result":"no_difference","differences":[],"applied_versions":["20261012184638","20261012231841","20261012232112","20261012232113","20261014170201","20261014170202","20261014170203","20261014170204","20261014170205","20261014182601","20261014190401","20261014190402","20261017230001","20261018203001","20261018214501","20261018230001","20261018235501","20261019010001","20261019030001","20261019050001","20261019080001","20261019100001","20261019120001","20261019140001","20261019160001","20261019180001"],"apply_step":"skipped","apply":"no","reason":"no difference: nothing to apply","first_migration_exception":"not_taken","result_before_apply":"no_difference"}
+2026-10-19T13:13:58.2269882Z Post job cleanup.
+2026-10-19T13:13:58.2906316Z [command]/usr/bin/git version
+2026-10-19T13:13:58.2933705Z git version 2.55.0
+2026-10-19T13:13:58.2959866Z Temporarily overriding HOME='/home/runner/work/_temp/[withheld]' before making global git config changes
+2026-10-19T13:13:58.2961149Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T13:13:58.2963459Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/devos/devos
+2026-10-19T13:13:58.2986108Z Removing SSH command configuration
+2026-10-19T13:13:58.2991311Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T13:13:58.3015093Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T13:13:58.3169235Z Removing HTTP extra header
+2026-10-19T13:13:58.3174518Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T13:13:58.3196171Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T13:13:58.3357627Z Removing includeIf entries pointing to credentials config files
+2026-10-19T13:13:58.3364818Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T13:13:58.3387466Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T13:13:58.3659707Z Cleaning up orphan processes
