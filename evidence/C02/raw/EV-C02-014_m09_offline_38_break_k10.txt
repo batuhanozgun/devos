@@ -1,0 +1,19 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k10_event_with_no_row_marked, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k38 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k38:
+summary: M0909_FUNCTIONS FAIL (3 of 153 not as wanted)
+bad (3): ME-repeat, ME-empty-range, ME-ra-only-current-hour
+could_not_check (0): none
+detail: 89 | ME-repeat                       | f  | ok                       | ok repeat                | {"event": 1}                      |  | wanted delta {}
+detail: 92 | ME-empty-range                  | f  | ok                       | ok                       | {"event": 1}                      |  | wanted delta {}
+detail: 95 | ME-ra-only-current-hour         | f  | ok                       | ok                       | {"event": 1}                      |  | wanted delta {}
+-- w07_f06_state_change_event.sql on k38:
+summary: W07_F06_STATE_CHANGE_EVENT FAIL (1 bad, 2 could not check, of 105)
+bad (1): F06-repeat:mark_exported
+could_not_check (2): F06-event:revise_mission, F06-repeat:revise_mission
+detail: F06-event:revise_mission                 | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "owner_authority: answered_at missing", "status": "refused", "reason_code": "could_not_check"}
+detail: F06-repeat:mark_exported                 | bad             | exact repeat: returned {"id": "dde05822-2556-4362-98c8-c89be4df3db8", "marked": 0, "status": "ok"}; tables changed: []; new events 1 (wanted status ok, none, 0)
+detail: F06-repeat:revise_mission                | could_not_check | no accepted call to repeat
+red list: not as expect-red; missing none; extra ['F06-repeat:mark_exported']
+m0909 scrub (38_break_k10): claim-format strings replaced 0; environment-format strings replaced 0

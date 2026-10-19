@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k09_counted_row_of_current_hour_marked, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k37 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k37:
+summary: M0909_FUNCTIONS FAIL (3 of 153 not as wanted)
+bad (3): ME-ra, ME-ra-rows, ME-ra-only-current-hour
+could_not_check (0): none
+detail: 93 | ME-ra                           | f  | ok                       | ok                       | {"event": 1, "ra_exported": 3}    |  | wanted delta {"event": 1, "ra_exported": 2}
+detail: 94 | ME-ra-rows                      | f  | false                    | true                     | {}                                | the per-call row and the counted row of an ended hour marked; the counted row of the current hour not (B:270)
+detail: 95 | ME-ra-only-current-hour         | f  | ok repeat                | ok                       | {}                                |
+m0909 scrub (37_break_k09): claim-format strings replaced 0; environment-format strings replaced 0

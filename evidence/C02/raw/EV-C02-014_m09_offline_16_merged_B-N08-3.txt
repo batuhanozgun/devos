@@ -1,0 +1,11 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-3_exam_run_event_on_work.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_fact.sql; expect-red=EXF-pair-state,N08-s3)
+[database b16 from t22 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b16:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (2 of 8 could not be checked)
+bad (0): none
+could_not_check (2): EXF-pair-fixtures, N08-s3
+detail: EXF-pair-fixtures     | could_not_check | record_eval_run with the exam token, naming w_e, was not accepted (its payload is README 8.1's v1 form): unknown [column "aggregate_id" is of type uuid but expression is of type text 42804] as anon session_user postgres
+detail: N08-s3                | could_not_check | record_eval_run with the exam token was not accepted: unknown [column "aggregate_id" is of type uuid but expression is of type text 42804] as anon session_user postgres
+red list: not as expect-red; missing ['EXF-pair-state', 'N08-s3']; extra none
+m0909 scrub (16_merged_B-N08-3): claim-format strings replaced 0; environment-format strings replaced 0

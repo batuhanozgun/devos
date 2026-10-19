@@ -1,0 +1,12 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break patch /tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-1_exam_read_admits_working.sql applied in place, w07.throwaway=yes, on a fresh copy of t22; header: -- w07-break: test=w07_n08_exam_records.sql; expect-red=N08-r-read_eval_runs-devos_calisma)
+[database b14 from t22 exit 0]
+psql:/tmp/claude-0/-home-user-devos/0cb29c90-d12e-56b6-9751-2217078b0a90/scratchpad/prd13/tests/C02/W-C02-07/breaks/B-N08-1_exam_read_admits_working.sql:33: ERROR:  w07 break not applied: no role list naming devos_sinav found in a devos_api function reading the exam records; not a break shown (W-C02
+CONTEXT:  PL/pgSQL function inline_code_block line 12 at RAISE
+[patch exit 3]
+-- w07_n08_exam_records.sql on b14:
+summary: W07_N08_EXAM_RECORDS FAIL (1 bad, 0 could not check, of 14)
+bad (1): N08-rp-read_eval_run
+could_not_check (0): none
+detail: N08-rp-read_eval_run              | bad     | read_eval_run with the exam token is accepted: code not_found; err - ; ra {"read_eval_run|not_found|devos_sinav": 1}; events []; changed []; echo false; as anon (session_user postgres)
+red list: not as expect-red; missing ['N08-r-read_eval_runs-devos_calisma']; extra ['N08-rp-read_eval_run']
+m0909 scrub (14_merged_B-N08-1): claim-format strings replaced 0; environment-format strings replaced 0

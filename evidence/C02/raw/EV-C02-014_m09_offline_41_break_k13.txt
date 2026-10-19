@@ -1,0 +1,22 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k13_mark_exported_admits_audit, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k41 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k41:
+summary: M0909_FUNCTIONS FAIL (7 of 153 not as wanted)
+bad (7): ME-gate-devos_denetim, ME-write-failed, ME-write-P0D02, ME-pos, ME-pos-answer, ME-pos-event, TX-literals
+could_not_check (0): none
+detail: 70 | ME-gate-devos_denetim           | f  | ok                       | role_class_not_permitted | {"event": 1, "event_exported": 3} |  | wanted delta {"rejected": 1}
+detail: 83 | ME-write-failed                 | f  | ok repeat                | write_failed             | {}                                |  | wanted delta {"rejected": 1}
+detail: 84 | ME-write-P0D02                  | f  | ok repeat                | could_not_check          | {}                                |  | wanted delta {"rejected": 1}
+detail: 85 | ME-pos                          | f  | ok repeat                | ok                       | {}                                |  | wanted delta {"event": 1, "event_exported": 3}
+detail: 86 | ME-pos-answer                   | f  | false                    | true                     | {}                                | answer {"id": null, "marked": 0, "repeat": true, "status": "ok"}
+detail: 88 | ME-pos-event                    | f  | false                    | true                     | {}                                | one exported event on aggregate export, payload {table, from_id, to_id, marked}
+detail: 148 | TX-literals                     | f  | false                    | true                     | {}                                | each role list a literal of the function's own text (B:48; EV-C02-013 2.8 and EV-C02-008 1.4)
+-- w07_5b_authorization_matrix.sql on k41:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 1 could not check, of 241)
+bad (1): 5B-R17-mark_exported-den
+could_not_check (1): 5B-row-R19
+detail: 5B-R17-mark_exported-den          | bad             | x cell: mark_exported with the devos_denetim token must be refused for its role class; code missing_field; err - ; ra {"mark_exported|missing_field|devos_denetim": 1}; events []; changed []; echo false; as anon (session_user postgres)
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: not as expect-red; missing none; extra ['5B-R17-mark_exported-den']
+m0909 scrub (41_break_k13): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k02_record_eval_run_event_on_work, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k30 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k30:
+summary: M0909_FUNCTIONS FAIL (8 of 153 not as wanted)
+bad (8): RE-pos, RE-earlier-revision, RE-run_at-default, RE-repeat-is-a-new-run, RE-named-call, RE-no-work-write, RE-sin-claim-released, RE-cal-claim-active
+could_not_check (0): none
+detail: 27 | RE-pos                          | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 31 | RE-earlier-revision             | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 32 | RE-run_at-default               | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 34 | RE-repeat-is-a-new-run          | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 35 | RE-named-call                   | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 36 | RE-no-work-write                | f  | false                    | true                     | {}                                | the Work row unchanged t, its revisions 2 -> 2, events on it 5
+detail: 42 | RE-sin-claim-released           | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+detail: 43 | RE-cal-claim-active             | f  | ok                       | ok                       | {"event": 2, "eval_run": 1}       |  | wanted delta {"event": 1, "eval_run": 1}
+-- w07_n08_exam_fact.sql on k30:
+summary: W07_N08_EXAM_FACT FAIL (2 bad, 0 could not check, of 61)
+bad (2): EXF-pair-state, N08-s3
+could_not_check (0): none
+detail: EXF-pair-state                   | bad     | as owner: the Work row, 1 revision(s), 2 event(s) on the Work, 1 effort polic(ies) of the exam task against the ordinary item: events differ: [{"origin": "call", "payload": {"scope": "synthetic.w07_fixture.c", "purpose": "SYNTHETIC W-C02-07 w07_fixture wo
+detail: N08-s3                           | bad     | record_eval_run, exam token, on a work item: the Work's row, revisions and events changed (wanted unchanged)
+red list: not as expect-red; missing none; extra ['EXF-pair-state', 'N08-s3']
+m0909 scrub (30_break_k02): claim-format strings replaced 0; environment-format strings replaced 0

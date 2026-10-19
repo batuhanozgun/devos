@@ -1,0 +1,21 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k08_read_eval_run_unknown_id_ok, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k36 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k36:
+summary: M0909_FUNCTIONS FAIL (2 of 153 not as wanted)
+bad (2): RV-not-found, RV-not-found-row
+could_not_check (0): none
+detail: 61 | RV-not-found                    | f  | ok                       | not_found                | {}                                |  | wanted delta {"rejected": 1}
+detail: 62 | RV-not-found-row                | f  | false                    | true                     | {}                                | the refusal row names the id
+-- w07_n08_exam_records.sql on k36:
+summary: W07_N08_EXAM_RECORDS PASS (14/14)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_5b_authorization_matrix.sql on k36:
+summary: W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (1 of 241 could not be checked)
+bad (0): none
+could_not_check (1): 5B-row-R19
+detail: 5B-row-R19                        | could_not_check | none of this row's functions exists in devos_api (before the build, or built by a later item)
+red list: exactly as expect-red (0)
+m0909 scrub (36_break_k08): claim-format strings replaced 0; environment-format strings replaced 0

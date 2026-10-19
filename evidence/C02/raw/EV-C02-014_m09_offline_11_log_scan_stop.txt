@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the server log, with the finders of tests/C02/W-C02-07/shared/scan_patterns.json)
+m0909 scan: log: 256 lines; claim-format 0; environment-format 0
+m0909 scan: 1 files; claim-format 0; environment-format 0
+waiting for server to shut down.... done
+server stopped
+[pg_ctl stop exit 0]
+[cluster directory deleted: yes]
+end 2026-10-19T03:48:32Z
+m0909 scrub (11_log_scan_stop): claim-format strings replaced 0; environment-format strings replaced 0

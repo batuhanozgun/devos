@@ -1,0 +1,9 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k05_revision_named_unchecked, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k33 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k33:
+summary: M0909_FUNCTIONS FAIL (1 of 153 not as wanted)
+bad (1): RE-revision-beyond
+could_not_check (0): none
+detail: 26 | RE-revision-beyond              | f  | write_failed             | could_not_check          | {"rejected": 1}                   | the write failed (SQLSTATE 23503)
+m0909 scrub (33_break_k05): claim-format strings replaced 0; environment-format strings replaced 0

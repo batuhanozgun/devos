@@ -1,0 +1,21 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k06_event_payload_holds_the_link, a copy of M09-09 outside the repository, applied in place of it on a fresh copy of t21)
+[database k34 from t21 exit 0]
+[apply exit 0]
+-- the self-check on k34:
+summary: M0909_FUNCTIONS FAIL (1 of 153 not as wanted)
+bad (1): RE-pos-event
+could_not_check (0): none
+detail: 30 | RE-pos-event                    | f  | false                    | true                     | {}                                | one event on the EvalRun: the token's class, origin call, no EvalRun field in its payload, the declared session as declared
+-- w07_n08_exam_fact.sql on k34:
+summary: W07_N08_EXAM_FACT PASS (61/61)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f06_state_change_event.sql on k34:
+summary: W07_F06_STATE_CHANGE_EVENT COULD NOT CHECK (2 of 105 could not be checked)
+bad (0): none
+could_not_check (2): F06-event:revise_mission, F06-repeat:revise_mission
+detail: F06-event:revise_mission                 | could_not_check | the recipe's call was not accepted, so no state change could be observed: returned {"reason": "owner_authority: answered_at missing", "status": "refused", "reason_code": "could_not_check"}
+detail: F06-repeat:revise_mission                | could_not_check | no accepted call to repeat
+red list: exactly as expect-red (0)
+m0909 scrub (34_break_k06): claim-format strings replaced 0; environment-format strings replaced 0
