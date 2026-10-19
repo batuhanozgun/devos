@@ -1,0 +1,26 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-ROC-1_rule_o_reads_exam_link.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_roc_ownership_and_claim_class.sql,w07_n08_exam_fact.sql; expect-red=ROC-o-cancel_work-cal-exam,ROC-leak-cancel_work,EXF-pair-cancel_work,N08-x-cancel_work-cal)
+[database b41_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_roc_ownership_and_claim_class.sql on b41_t21:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (2 bad, 0 could not check, of 84)
+bad (2): ROC-leak-cancel_work, ROC-o-cancel_work-cal-exam
+could_not_check (0): none
+red list: not as expect-red; missing ['EXF-pair-cancel_work', 'N08-x-cancel_work-cal']; extra none
+-- w07_n08_exam_fact.sql on b41_t21:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-cancel_work', 'N08-x-cancel_work-cal', 'ROC-leak-cancel_work', 'ROC-o-cancel_work-cal-exam']; extra none
+[database b41_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_roc_ownership_and_claim_class.sql on b41_t20:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (12 bad, 0 could not check, of 84)
+bad (12): ROC-c-cancel_work, ROC-c-same-class-cancel, ROC-leak-cancel_work, ROC-o-cancel_work-cal-cal, ROC-o-cancel_work-cal-exam, ROC-o-cancel_work-cal-inst, ROC-o-cancel_work-kur-cal, ROC-o-cancel_work-kur-exam, ROC-o-cancel_work-kur-inst, ROC-o-cancel_work-sin-cal, ROC-o-cancel_work-sin-exam, ROC-o-cancel_work-sin-inst
+could_not_check (0): none
+red list: not as expect-red; missing ['EXF-pair-cancel_work', 'N08-x-cancel_work-cal']; extra ['ROC-c-cancel_work', 'ROC-c-same-class-cancel', 'ROC-o-cancel_work-cal-cal', 'ROC-o-cancel_work-cal-inst', 'ROC-o-cancel_work-kur-cal', 'ROC-o-cancel_work-kur-exam', 'ROC-o-cancel_work-kur-inst', 'ROC-o-cancel_work-sin-cal', 'ROC-o-cancel_work-sin-exam', 'ROC-o-cancel_work-sin-inst']
+-- w07_n08_exam_fact.sql on b41_t20:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-cancel_work', 'N08-x-cancel_work-cal', 'ROC-leak-cancel_work', 'ROC-o-cancel_work-cal-exam']; extra none
+mcorr scrub (41_merged_B-ROC-1): claim-format strings replaced 0; environment-format strings replaced 0

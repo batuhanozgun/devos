@@ -1,0 +1,8 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W07-CONC, conc, on a fresh copy of t21; input: the break harness's form, four keys with null values; it commits its synthetic fixtures on this throwaway cluster)
+[database y19 from t21 exit 0]
+-- conc (tests/C02/W-C02-07/job/w07_conc_claim_and_cycle.py, merged) on y19:
+summary: W07_CONC_CLAIM_AND_CYCLE FAIL (1 bad, 0 could not check, of 8)
+bad (1): CONC-claim
+could_not_check (0): none
+red list: not as expect-red; missing none; extra ['CONC-claim']
+mcorr scrub (19_conc_conc_t21): claim-format strings replaced 0; environment-format strings replaced 0

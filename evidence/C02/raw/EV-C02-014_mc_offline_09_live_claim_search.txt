@@ -1,0 +1,23 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the live-claim search at this head, in the catalogue)
+          function           | calls_claim_live | lease_gt_now | lease_le_now | counts_assignment_rows | bool_or_over_assignment 
+-----------------------------+------------------+--------------+--------------+------------------------+-------------------------
+ devos_api.accept            | f                | f            | f            | f                      | f
+ devos_api.admit_work        | f                | f            | f            | f                      | f
+ devos_api.affected_entities | f                | f            | f            | f                      | f
+ devos_api.cancel_work       | t                | f            | f            | t                      | f
+ devos_api.claim             | t                | f            | f            | t                      | f
+ devos_api.explain_paths     | f                | f            | f            | f                      | f
+ devos_api.heartbeat         | f                | f            | f            | f                      | f
+ devos_api.open_review       | f                | f            | f            | f                      | f
+ devos_api.prepare_operation | f                | f            | f            | f                      | f
+ devos_api.relate            | t                | f            | f            | t                      | f
+ devos_api.release           | f                | f            | f            | f                      | f
+ devos_api.retract_relation  | t                | f            | f            | t                      | f
+ devos_api.revise_work       | t                | f            | f            | t                      | f
+ devos_api.revoke_claim      | f                | f            | f            | f                      | f
+ devos_private.check_claim   | f                | f            | f            | f                      | t
+ devos_private.ready_value   | t                | f            | f            | f                      | t
+(16 rows)
+
+[psql exit 0]
+mcorr scrub (09_live_claim_search): claim-format strings replaced 0; environment-format strings replaced 0

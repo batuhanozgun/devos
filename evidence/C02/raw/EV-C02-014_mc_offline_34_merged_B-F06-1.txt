@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-F06-1_relate_without_event.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=supabase/migrations/tests/w07_f06_state_change_event.sql; expect-red=F06-event:relate,F06-role-token)
+[database b34_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_f06_state_change_event.sql on b34_t21:
+summary: W07_F06_STATE_CHANGE_EVENT FAIL (2 bad, 4 could not check, of 92)
+bad (2): F06-event:relate, F06-role-token
+could_not_check (4): F06-event:retract_relation, F06-event:revise_mission, F06-repeat:retract_relation, F06-repeat:revise_mission
+red list: exactly as expect-red (2)
+[database b34_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_f06_state_change_event.sql on b34_t20:
+summary: W07_F06_STATE_CHANGE_EVENT FAIL (2 bad, 2 could not check, of 92)
+bad (2): F06-event:relate, F06-role-token
+could_not_check (2): F06-event:retract_relation, F06-repeat:retract_relation
+red list: exactly as expect-red (2)
+mcorr scrub (34_merged_B-F06-1): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-5B-3_review_finding_admits_working.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_5b_authorization_matrix.sql; expect-red=5B-R25-review_finding-cal)
+[database b21_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_5b_authorization_matrix.sql on b21_t21:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 6 could not check, of 210)
+bad (1): 5B-R25-review_finding-cal
+could_not_check (6): 5B-row-R10, 5B-row-R10r, 5B-row-R13, 5B-row-R15, 5B-row-R17, 5B-row-R19
+red list: exactly as expect-red (1)
+[database b21_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_5b_authorization_matrix.sql on b21_t20:
+summary: W07_5B_AUTHORIZATION_MATRIX FAIL (1 bad, 6 could not check, of 210)
+bad (1): 5B-R25-review_finding-cal
+could_not_check (6): 5B-row-R10, 5B-row-R10r, 5B-row-R13, 5B-row-R15, 5B-row-R17, 5B-row-R19
+red list: exactly as expect-red (1)
+mcorr scrub (21_merged_B-5B-3): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,8 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (T-W07-CONC, conc_rev, on a fresh copy of t20; input: the break harness's form, four keys with null values; it commits its synthetic fixtures on this throwaway cluster)
+[database y18 from t20 exit 0]
+-- conc_rev (w07_conc_claim_and_cycle.py at c45f2fc, pull request #375, from scratchpad/mcorr_run/conc_rev/) on y18:
+summary: W07_CONC_CLAIM_AND_CYCLE PASS (8/8)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+mcorr scrub (18_conc_conc_rev_t20): claim-format strings replaced 0; environment-format strings replaced 0

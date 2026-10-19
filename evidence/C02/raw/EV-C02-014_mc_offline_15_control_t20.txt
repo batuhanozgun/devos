@@ -1,0 +1,167 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (control: every staged SQL file of the list, in place, each on a fresh copy of t20; M09-08's head, without the corrective migration)
+-- w07_5a_no_direct_writes.sql on x15_1:
+summary: W07_5A_NO_DIRECT_WRITES PASS (168/168)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_5a_positive_control.sql on x15_2:
+summary: W07_5A_POSITIVE_CONTROL PASS (1/1)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_5b_authorization_matrix.sql on x15_3:
+summary: W07_5B_AUTHORIZATION_MATRIX COULD NOT CHECK (6 of 210 could not be checked)
+bad (0): none
+could_not_check (6): 5B-row-R10, 5B-row-R10r, 5B-row-R13, 5B-row-R15, 5B-row-R17, 5B-row-R19
+red list: exactly as expect-red (0)
+-- w07_5c_other_session_fake_id.sql on x15_4:
+summary: W07_5C_OTHER_SESSION_FAKE_ID PASS (8/8)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_5d_format_gates_empty.sql on x15_5:
+summary: W07_5D_FORMAT_GATES_EMPTY COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): 5D-pre
+red list: exactly as expect-red (0)
+-- w07_6rg_rule_gate_could_not_check.sql on x15_6:
+summary: W07_6RG_RULE_GATE_COULD_NOT_CHECK PASS (27/27)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_6st_settings_could_not_check.sql on x15_7:
+summary: W07_6ST_SETTINGS_COULD_NOT_CHECK COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): 6ST-pre
+red list: exactly as expect-red (0)
+-- w07_dm07_heartbeat.sql on x15_8:
+summary: W07_DM07_HEARTBEAT PASS (8/8)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_dm11_answer_revision.sql on x15_9:
+summary: W07_DM11_ANSWER_REVISION FAIL (5 bad, 0 could not check, of 8)
+bad (5): DM11-a, DM11-b, DM11-c, DM11-d, DM11-e
+could_not_check (0): none
+red list: not as expect-red; missing none; extra ['DM11-a', 'DM11-b', 'DM11-c', 'DM11-d', 'DM11-e']
+-- w07_dm19_rejected_attempt_survives.sql on x15_10:
+summary: W07_DM19_REJECTED_ATTEMPT_SURVIVES PASS (5/5)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_dm34_mission_scope.sql on x15_11:
+summary: W07_DM34_MISSION_SCOPE PASS (10/10)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_dm47_path_table.sql on x15_12:
+summary: W07_DM47_PATH_TABLE COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): DM47-pre
+red list: exactly as expect-red (0)
+-- w07_f01_whole_intent.sql on x15_13:
+summary: W07_F01_WHOLE_INTENT COULD NOT CHECK (1 of 13 could not be checked)
+bad (0): none
+could_not_check (1): F01-g
+red list: exactly as expect-red (0)
+-- w07_f04_affected_records.sql on x15_14:
+summary: W07_F04_AFFECTED_RECORDS PASS (22/22)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f05_scope_both_sides.sql on x15_15:
+summary: W07_F05_SCOPE_BOTH_SIDES PASS (7/7)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f06_state_change_event.sql on x15_16:
+summary: W07_F06_STATE_CHANGE_EVENT PASS (92/92)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f07_observation_history.sql on x15_17:
+summary: W07_F07_OBSERVATION_HISTORY PASS (7/7)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_f08_recheck_at_effect.sql on x15_18:
+summary: W07_F08_RECHECK_AT_EFFECT PASS (17/17)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_fgfind_finding_gate.sql on x15_19:
+summary: W07_FGFIND_FINDING_GATE COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): FGFIND-pre
+red list: exactly as expect-red (0)
+-- w07_k05_many_paths.sql on x15_20:
+summary: W07_K05_MANY_PATHS PASS (6/6)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n01_need_justification.sql on x15_21:
+summary: W07_N01_NEED_JUSTIFICATION COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N01-pre
+red list: exactly as expect-red (0)
+-- w07_n02_decision_alternatives.sql on x15_22:
+summary: W07_N02_DECISION_ALTERNATIVES COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N02-pre
+red list: exactly as expect-red (0)
+-- w07_n03_effort_policy.sql on x15_23:
+summary: W07_N03_EFFORT_POLICY COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N03-pre
+red list: exactly as expect-red (0)
+-- w07_n04_self_approval.sql on x15_24:
+summary: W07_N04_SELF_APPROVAL COULD NOT CHECK (3 of 19 could not be checked)
+bad (0): none
+could_not_check (3): N04-T1, N04-T2, N04-T2-pos
+red list: exactly as expect-red (0)
+-- w07_n08_exam_fact.sql on x15_25:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: exactly as expect-red (0)
+-- w07_n08_exam_records.sql on x15_26:
+summary: W07_N08_EXAM_RECORDS COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre
+red list: exactly as expect-red (0)
+-- w07_n09_finding_gate.sql on x15_27:
+summary: W07_N09_FINDING_GATE PASS (5/5)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n17_claim_token.sql on x15_28:
+summary: W07_N17_CLAIM_TOKEN PASS (13/13)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n28_sample_exemption.sql on x15_29:
+summary: W07_N28_SAMPLE_EXEMPTION COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): S-pre
+red list: exactly as expect-red (0)
+-- w07_n29_impact_class.sql on x15_30:
+summary: W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N29-pre
+red list: exactly as expect-red (0)
+-- w07_rel_relation_status.sql on x15_31:
+summary: W07_REL_RELATION_STATUS PASS (4/4)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_roc_ownership_and_claim_class.sql on x15_32:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS (84/84)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_t31_planted_rate.sql on x15_33:
+summary: W07_T31_PLANTED_RATE COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): T31-pre
+red list: exactly as expect-red (0)
+mcorr scrub (15_control_t20): claim-format strings replaced 0; environment-format strings replaced 0

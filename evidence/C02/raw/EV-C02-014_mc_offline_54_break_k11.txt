@@ -1,0 +1,18 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k11_widening_order_of_answers_removed, a copy of the corrective migration outside the repository, applied in place of it on a fresh copy of t20)
+[database k54 from t20 exit 0]
+[apply exit 0]
+-- the self-check on k54:
+summary: MCORR_FUNCTIONS FAIL (6 of 117 not as wanted)
+bad (6): RM-widen-answered-before, RM-widen-answered-before-reason, RM-widen-answered-null, RM-widen-answered-null-reason, RM-widen-no-authority, RM-narrow-current-authority
+could_not_check (0): none
+-- w07_f06_state_change_event.sql on k54:
+summary: W07_F06_STATE_CHANGE_EVENT PASS (92/92)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+-- w07_n29_impact_class.sql on k54:
+summary: W07_N29_IMPACT_CLASS COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N29-pre
+red list: exactly as expect-red (0)
+mcorr scrub (54_break_k11): claim-format strings replaced 0; environment-format strings replaced 0

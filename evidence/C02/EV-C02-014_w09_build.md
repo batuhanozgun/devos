@@ -1890,3 +1890,190 @@ The runs:
    - The claim token travels as the first parameter of both effects, as 8.6 item 5 says for `register_artifact`.
    - Two concurrent first calls of one new key: the second is `write_failed` by the table's unique key (`PO-key-taken-in-write`), not the repeat answer. Nothing is let through; its retry gets the record.
    - `prepare_operation` looks a reference up in fourteen tables (one `union all`) per entry; a cost at C02's sizes. An unreadable table among them makes every prepare that names a target or an entry `could_not_check`; that fails closed.
+
+## 10. The rule corrections
+
+The producer's record of `supabase/migrations/20261019080001_w09_rule_corrections.sql` (M09-RC), the corrective migration of EV13 section 22 (7). It was written on branch `claude/c02-w09-m0908b` at `main` `1daa3521e28ba2f811b97888fd41d69472ffde6e`, where M09-01 to M09-08 are merged and applied and EV13 section 22 is merged. It replaces twelve functions of M09-02 to M09-07 and adds one private function; it changes no table and no type. The producer is a fresh-context subagent of the same session; the executor names the agent at filing. It is not a verdict.
+- **Citations.** Lines cited as EV13:n and B:n are at `1daa352`, with EV13's section 23 added. M09-RC:n is a line of the file above at the bytes the envelope names; M09-0n:n a line of that merged migration. `job/` is `tests/C02/W-C02-07/job/`.
+- **EV13 section 23 first.** EV13 gained "23. Correction, 2026-10-19 (the corrective migration)", which states every form section 22 leaves open as M09-RC builds it, with marks *[C-RC]* in 22 (1), 22 (3) twice, 22 (4) and 22 (7). The corrective migration's checker judges it.
+- **What binds this file** (`plan/work/C02.md`; EV-C02-017 section 9):
+  - **N-288** (before ROC's first result): `cancel_work`, `mark_stale` and `reopen_for_review` read their parameters through `ALIAS FOR $n`. **Met** in the file; shown by B-ROC-1 and B-ROC-2, which on M09-08's head turn every `cancel_work` case of ROC red and on this build turn red exactly their ROC entries (10.5, runs 41 and 42).
+  - **N-284 C, N-289 B, N-292 B, N-296 (3) B** (before verdict (ii)): built as EV13 22 (1), (3), (4) and (5) state them, with section 23's forms. N-286 A needs no migration (22 (2)).
+  - **N-299** (CHK-C02-095): (1) CONC's revision is on pull request #375 (not merged at `1daa352`); both CONC programs were run, and 10.4 says which result the build gives under each. (2) The re-runs: every merged test file and break under `tests/C02/W-C02-07/` whose text calls a replaced function, 57 files, with their results on this build and on M09-08's head (10.5), and the live-claim search at this head (10.3). (3) Met by EV13 section 22. The annotation's point, `revoke_claim` as built, is kept (EV13 23 (7); self-check `RK-earlier-epoch`).
+  - **New test cases for these decisions** are the test designer's (EV-C02-017 section 9 item 6), written elsewhere. None is written or run here. The producer's own self-check (run 10) is not one of them.
+
+**Evidence envelope (plan Section 8 item 9).**
+
+| Field | Value |
+|---|---|
+| Source commit | Branch `claude/c02-w09-m0908b` at `1daa352`, clean before this work. The runs were made with M09-RC, EV13's section 23 and the raw files uncommitted (O, `65_git_hashes.txt`). Bytes run: M09-RC `b42002c37b4de47b3df994fb966d145498b1e438c4d29a432aeec0028e921adb`, made by `…/scratchpad/mcorr_run/build.py` (`dd10b4b8…62da9`) from the merged migrations' own text and `…/mcorr_run/parts.sql`; the self-check `…/mcorr_run/fn_check.sql` `7b9a132e…1fb3`; the break maker `…/mcorr_run/brk.py` `47933f3c…9635`; the other drivers' hashes are in file 65. EV13's section 23 was written while the runs were made; the database runs do not read it. A committed file with other bytes is not what was run |
+| Deployment configuration | Offline only, as sections 1 and 3 to 9: one throwaway PostgreSQL 16.15 cluster per script, unix socket only (in `…/scratchpad/mcs`, under the 107-byte limit), in a user namespace (`unshare -U --map-user=1000 --map-group=1000`), deleted after the run (O, files 13 and 62: `[cluster directory deleted: yes]`). Stand-ins: `…/scratchpad/m0903_run/setup.sql`, byte for byte (`m0908_run`'s copy, compared). The comparison and break runs copy each fresh database from one of two templates: `t20`, the twenty migrations of `main` (M09-08's head), and `t21`, `t20` with M09-RC. The projects run PostgreSQL 17 with Supabase's role set; no project was reached, no connector used, no network call made |
+| Criterion version | W9's acceptance block at `1daa352`; EV13 with its sections 1 to 22, and section 23 (for the corrective migration's checker); EV-C02-017 section 9; CHK-C02-095's conditions |
+| Input | The twenty-one migrations (`main`'s twenty and M09-RC); the eight SQL files of `supabase/migrations/tests/`; every staged SQL file of `job/` and T-W14-FN's, run in place; the 57 files of the list (10.5) on both templates; T-W07-CONC's program as merged and as revised on pull request #375 (`c45f2fce9efd1e114c883ca05330c8906d44f1f6`, read with `git show`, copied with the merged `w07_f01_whole_intent.sql` it reads to `…/mcorr_run/conc_rev/`; that copy's F01 file is byte-identical to `main`'s); the producer's self-check; eighteen break copies of M09-RC made outside the repository (`…/scratchpad/mcorr_brk/`, by `brk.py`, deleted after the run) |
+| Raw evidence | `evidence/C02/raw/EV-C02-014_mc_offline_01_init_setup.txt` to `…_66_function_diff.txt`, written directly by `…/mcorr_run/rerun.sh` (01 to 13), `brk.sh` (14 to 62) and `final.sh` (63 to 65); file 66 is `build.py`'s per-function difference. Every file but 65 passed through `scrub.py` (M09-08's filter, reading the two finder patterns of `tests/C02/W-C02-07/shared/scan_patterns.json` at run time) and ends `claim-format strings replaced 0; environment-format strings replaced 0`. File 64 scans every other mc raw file again with the same finders: no string of either format. Files 13 and 62 scan the clusters' server logs: no string of either format. File 65 holds hashes and git output only. Every file's first line is the label below |
+| Labels of every run | **offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one** |
+| Independence level | The producer; not a verdict. The self-check (run 10) and the break copies (44 to 61) are the producer's own; the merged files and break patches (15, 16, 21 to 43) and the CONC programs (17 to 20) are the test designers' |
+
+### 10.1 What was built, object by object
+
+All in M09-RC, in this order: `claim_live`, the twelve replaced functions, the two walks' comments, the grants. Each replaced function is its merged text with only the changes its comment names (file 66 gives each difference; besides `create or replace`, from 5 changed lines in `relate` to 46 in `revise_work`, most of them the `ALIAS` renaming). The form of every function is M09-03's to M09-08's (4.1 to 9.1), unchanged. O (`08_catalog.txt`): each of the thirteen has `definer t`, `search_path=pg_catalog, pg_temp`, VOLATILE, owner `postgres`; `anon` holds EXECUTE on the eleven of `devos_api` only.
+
+| Object | What changes | Follows (EV13 unless named) |
+|---|---|---|
+| `devos_private.claim_live(claim_status, claim_lease, claim_epoch)` (M09-RC:39) | New, owner only. True when active, lease later than `now()` and the claim's epoch equal to the global epoch read with a plain read; false when not active, lease run out or another epoch; NULL when status NULL, an active claim's lease NULL, or the epoch cannot be judged | 22 (3); 23 (2); B:23, B:377, B 3.5; DM-06 |
+| `devos_private.ready_value(uuid, uuid)` (M09-RC:77) | Its live-claim condition through `claim_live` (live: false; NULL: unknown); parameters through aliases | 22 (3); 23 (2), (5); B principle 6 |
+| `devos_api.revise_mission(jsonb)` (M09-RC:201) | N-284 C at the `mission_authority` step (M09-RC:434-466): the Decision named not an owner authority of any revision of this Mission; its `answered_at` not earlier than the current revision's `created_at`, equal passing; NULL `could_not_check`; `p` through an alias | 22 (1); 23 (1), (5); B:106, B:305, B:307 |
+| `devos_api.revise_work(jsonb)` (M09-RC:520) | Rule C's count through `claim_live`; the partial reason names the epoch; `p` through an alias | 22 (3); 23 (2), (5) |
+| `devos_api.mark_stale(uuid, text)`, `reopen_for_review(uuid, text)` (M09-RC:928, :1215) | Parameters through `ALIAS FOR $n` only | N-288; 22 (7) |
+| `devos_api.cancel_work(uuid, text)` (M09-RC:1062) | Parameters through `ALIAS FOR $n`, and Rule C through `claim_live` | N-288; 22 (3), (7) |
+| `devos_api.claim(uuid, text)` (M09-RC:1358) | The epoch `for share` after the claims are locked and before the live count (M09-RC:1462-1474); partial, live and lapsed sets through `claim_live` (M09-RC:1476-1487); every lapsed claim (lease or epoch) marked `expired` by id, `claim_expired` naming `authority_epoch` and `global_authority_epoch` (M09-RC:1525-1534) | 22 (3); 23 (3); DM-01, DM-06, DM-31; B:472 |
+| `devos_api.relate(jsonb)`, `retract_relation(uuid, text)` (M09-RC:1569, :1971) | Rule C's count through `claim_live`; the partial reason names the epoch | 22 (3); 23 (2) |
+| `devos_api.affected_entities(uuid, jsonb)`, `explain_paths(uuid, uuid, jsonb)` (M09-RC:2166, :2364) | The edge per type in every walk query; a NULL-type relation not walked and the result not complete; comments `devos:read` written again | 22 (4); 23 (4); B:149, B:226, C:164 |
+| `devos_api.review_finding(uuid, integer, text)` (M09-RC:2644) | A `withdrawn` Finding refused `invalid_field` after its status is read (M09-RC:2724) | 22 (5); EV-C02-008 section 4 item 2 |
+| Grants (M09-RC:2839-2892) | `revoke all … from public` and from the four API roles on all thirteen; `grant execute … to anon` on the eleven of `devos_api` | 1 item 13; T-W08-PRIV (`W08_PRIV_TYPES_FUNCTIONS PASS (96/96)`, one function more than M09-08's 95) |
+
+O (`08_catalog.txt`): the role literals are the merged ones (also self-check `TX-literal-*`); the unqualified-name scan finds no hit in the thirteen but its four known false hits of section 3.1's form (`check_claim`'s and `is_installation_mission`'s parameters, `ready_value`'s `is distinct from p_own`, `reject_counted`'s `update … set`); no function holds `execute`; the read marker on the same eight functions as after M09-08.
+
+### 10.2 Departures from EV-C02-013, and forms it left open
+
+Each is stated in EV13 section 23; none is silent. No merged test is changed.
+1. **`revise_mission`'s two conditions are judged only on the widening path** (23 (1)); a `created_at` NULL is `could_not_check`.
+2. **The predicate reads the global epoch itself**, plain, only for an active claim whose lease runs; any other epoch is not live; its NULL cases (23 (2)).
+3. **Two answers change on a planted missing epoch** (23 (2)): with an active claim whose lease runs, Rule C answers `could_not_check` where it answered `other_class_claim`, and readiness is unknown where it was false. Rule C's partial reason now names the epoch (four places).
+4. **`claim`'s read block lists the claims to mark; the write block marks them by id**; the payload names both epochs (23 (3)).
+5. **A NULL-type relation counts when either end is in the level walked** (23 (4)); the NULL-validity test runs on the new edges.
+6. **`ALIAS FOR $n` in every function of the file**, `revise_mission`, `revise_work` and `ready_value` included (23 (5)).
+7. **The file's form** (23 (6)); **what is not changed**, `revoke_claim` among it (23 (7)).
+
+### 10.3 The live-claim search at this head (CHK-C02-095 C2)
+
+- **The catalogue** (O, `09_live_claim_search.txt`): every function of `devos_api` and `devos_private` whose current source names `lease_expires_at` or reads `devos_private.assignment`, sixteen. Six call `claim_live` and keep no lease comparison of their own: `ready_value` (`bool_or` over the claims), `claim`, `revise_work`, `cancel_work`, `relate`, `retract_relation` (counts over the claims). None of the sixteen holds `lease_expires_at > now()` or `<= now()`. The other ten are not counts of a live claim:
+  - `check_claim` judges the claim presented (its one `bool_or` is over NULL generations) and refuses an earlier epoch `claim_epoch`; `heartbeat` and `release` reach claims only through it;
+  - `revoke_claim` judges one named claim (as built, EV13 23 (7));
+  - `admit_work`, `accept`, `open_review`, `prepare_operation`, `affected_entities` and `explain_paths` name the table only to look a reference up by id among the families.
+- **The text** (O, `63_text_search.txt`): every line of a top-level migration naming `lease_expires_at`, and the files reading `devos_private.assignment`. Its live counts at `1daa352` are the six of EV13 22 (3) (M09-02:356-361, M09-04:539, :969, M09-05:229, M09-06:363, :606), each replaced here; M09-07 and M09-08 add none (they name the table, never the column); M09-RC names the column only in the calls of `claim_live` and in `claim`'s marked, inserted, logged and returned fields (M09-RC:1528-1561). The other lines of the search are the column's definition, `check_claim`'s and `revoke_claim`'s reads of one claim, `heartbeat`'s extension, M09-05's superseded expiry marking (M09-05:281) and comments.
+- **What follows.** No unconverted count of a live claim remains at this head (self-check `TX-predicate-in-six`). `register_artifact`, `prepare_operation`, `record_attempt` and `ready_works` reach readiness through `ready_value` and follow it unchanged.
+
+### 10.4 How the build serves the decisions, and which CONC result it gives
+
+- **N-284 C** (self-check, run 10): a widening naming the current owner authority, an earlier one, or a purpose change on the current one: `mission_authority` with 22 (1)'s first reason (`RM-widen-current-authority`, `-earlier-authority`, `RM-purpose-current-authority`); answered an hour before the current revision: `mission_authority`, 22 (1)'s second reason; `answered_at` NULL: `could_not_check`, `owner_authority: answered_at missing`; equal times and an answer after: `ok`, a new revision and one event; a narrowing naming the current owner authority and a status-only call: `ok`.
+- **N-289 B**: before the epoch moves, a live claim keeps `already_claimed`, readiness false and `other_class_claim` in all four Rule C functions; after it moves (`update … set epoch = epoch + 1`, a plant): `ready_value` true, `ready_works` lists the items, `claim` answers `ok` with generation 2, the earlier claim is `expired` and its `claim_expired` (origin `rule`) names epochs 1 and 2; the four Rule C calls answer `ok`; a claim of the current epoch still gives `other_class_claim` and `already_claimed`; the old token's `heartbeat` is `claim_epoch`; a lease run out in the current epoch is still marked `expired`; the epoch's row deleted: `claim` `could_not_check` (`epoch: the global authority epoch is missing`) and Rule C `could_not_check` with the new reason; the table renamed: `could_not_check`.
+- **N-292 B**: from a supporting or challenging source the walk lists what it supports or challenges, and not the reverse; `part_of` both ways, siblings included; `derived_from` as built; `explain_paths` gives `[[y, x]]` for `y supports x` and `[]` back; a planted NULL-type relation is not walked and makes `complete` false from either end, and in `explain_paths`.
+- **N-296 (3) B**: a `withdrawn` Finding to each of the three statuses: `invalid_field`, 22 (5)'s reason, one refusal row each, the status unchanged; a `candidate` control `ok`.
+- **N-288**: the three bodies, and `revise_mission` and `revise_work`, answer `ok` when renamed and called under the new name (`AL-*-renamed`); the reason parameter reaches the event.
+- **T-W07-CONC, the two programs** (runs 17 to 20, each on a fresh copy):
+
+| Program | M09-08's head (`t20`) | With M09-RC (`t21`) |
+|---|---|---|
+| merged (workers revoke their tokens as their transactions commit) | `PASS (8/8)` | `FAIL (1 bad, 0 could not check, of 8)`, bad `CONC-claim` |
+| revised, pull request #375 (tokens revoked after every connection of the run has ended) | `PASS (8/8)` | `PASS (8/8)` |
+
+  So the build gives the merged CONC the failure CHK-C02-095 3.3 foresaw: a later loser counts the winner's claim, whose epoch the winner's own revocation has just ended, as lapsed and claims too (EV13 22 (6)). Under the revision the build gives one claim per run. B-CONC-1 stays red on this build under the revised program (`CONC-claim`, exactly its red list), and B-CONC-2 turns exactly `CONC-cyc2` and `CONC-cyc4` red there (run 24).
+
+### 10.5 Every merged file and break that calls a replaced function, on this build and on M09-08's head
+
+**The list** (N-299 (2); CHK-C02-095 C2): a text search of `job/` and `breaks/` at `1daa352` for each replaced function's name as `devos_api.<name>`, `'<name>'` or `"<name>"`: 34 job files and 23 break patches (for `claim` alone 27 job files and 3 patches, CHK-C02-095's 30). A wider search for the bare names adds only files that name them in comments or in other words (checked one by one: B-5C-1, B-6RG-2, B-DM07-1, B-DM34-1, B-F01-2, B-F01-6, B-F08-1 to -4, B-N08-5, B-N17-1, `w07_dm19b_burst_over_http.py`). `ready_value` is private and named by no test.
+
+**The job files** (runs 15 and 16, each file on a fresh copy of each template; run 06 runs every staged file once more on the main cluster, with the same summaries; run 11 F01 at epoch 2):
+
+| File | M09-08's head | With M09-RC |
+|---|---|---|
+| `w07_5a_no_direct_writes.sql` | PASS (168/168) | same |
+| `w07_5a_positive_control.sql` | PASS (1/1) | same |
+| `w07_5b_authorization_matrix.sql` | COULD NOT CHECK (6 of 210; rows of functions not yet built) | same |
+| `w07_5c_other_session_fake_id.sql` | PASS (8/8) | same |
+| `w07_5d_format_gates_empty.sql`, `w07_6st_settings_could_not_check.sql`, `w07_dm47_path_table.sql`, `w07_fgfind_finding_gate.sql`, `w07_n01_need_justification.sql`, `w07_n02_decision_alternatives.sql`, `w07_n03_effort_policy.sql`, `w07_n08_exam_fact.sql`, `w07_n08_exam_records.sql`, `w07_n28_sample_exemption.sql`, `w07_n29_impact_class.sql`, `w07_t31_planted_rate.sql` | COULD NOT CHECK (1 of 1: their `-pre` line, W-C02-10's tables or M09-09's `record_eval_run`) | same |
+| `w07_6rg_rule_gate_could_not_check.sql` | PASS (27/27) | same |
+| `w07_dm07_heartbeat.sql` | PASS (8/8) | same |
+| `w07_dm11_answer_revision.sql` | FAIL (5 bad of 8: DM11-a to -e, W-C02-10's answer gate) | same |
+| `w07_dm19_rejected_attempt_survives.sql` | PASS (5/5) | same |
+| `w07_dm34_mission_scope.sql` | PASS (10/10) | same |
+| `w07_f01_whole_intent.sql` | COULD NOT CHECK (1 of 13: F01-g at epoch 1, N-297 (1)); PASS (13/13) at epoch 2 (run 11) | same |
+| `w07_f04_affected_records.sql` | PASS (22/22) | same |
+| `w07_f05_scope_both_sides.sql` | PASS (7/7) | same |
+| `w07_f06_state_change_event.sql` | PASS (92/92) | **COULD NOT CHECK (2 of 92)**: `F06-event:revise_mission` and `F06-repeat:revise_mission` |
+| `w07_f07_observation_history.sql` | PASS (7/7) | same |
+| `w07_f08_recheck_at_effect.sql` | PASS (17/17) | same |
+| `w07_k05_many_paths.sql` | PASS (6/6) | same |
+| `w07_n04_self_approval.sql` | COULD NOT CHECK (3 of 19: the transfer functions, M09-10 to M09-12) | same |
+| `w07_n09_finding_gate.sql` | PASS (5/5) | same |
+| `w07_n17_claim_token.sql` | PASS (13/13) | same |
+| `w07_rel_relation_status.sql` | PASS (4/4) | same |
+| `w07_roc_ownership_and_claim_class.sql` | PASS (84/84) | same |
+| `w07_conc_claim_and_cycle.py` | PASS (8/8) | **FAIL**, bad `CONC-claim` (10.4) |
+
+**The break patches** (runs 21 to 43, each on a fresh copy of each template; "exact" means the bad set equals its header's expect-red list):
+
+| Patch | With M09-RC | M09-08's head |
+|---|---|---|
+| B-5B-3 | exact (`5B-R25-review_finding-cal`) | exact |
+| B-6RG-1 | exact (19) | exact |
+| B-CONC-1 | merged CONC exact (`CONC-claim`); revised CONC exact | both exact |
+| B-CONC-2 | merged CONC `CONC-claim`, `-cyc2`, `-cyc4` (one extra: `CONC-claim`, the merged program's own epoch change); revised CONC exact (`CONC-cyc2`, `-cyc4`) | both exact |
+| B-F04-1, -2, -3, -6, -7, -8, -9 | exact (2, 3, 4, 2, 3, 1, 1) | exact |
+| B-F04-4, -5 | `F04-e-exam` red; their N08 entries not shown (N08 stops at its `-pre` line) | the same |
+| B-F06-1 | exact (`F06-event:relate`, `F06-role-token`); 4 could not check (the two `revise_mission` cases besides the patch's own two) | exact; 2 could not check |
+| B-K05-1 | exact (`K05-rows`) | exact |
+| B-N08-4, B-N29-3, B-N29-5 | not shown: N08 and N29 stop at their `-pre` lines | the same |
+| B-N09-1 | exact (4) | exact |
+| B-REL-1 | exact (`REL-a`, `REL-b`) | exact |
+| B-ROC-1 | ROC's two entries exact (`ROC-leak-cancel_work`, `ROC-o-cancel_work-cal-exam`); the N08 entries not shown (`-pre`) | **12 bad**: every `cancel_work` case of ROC, N-288's fault |
+| B-ROC-2 | exact (5) | **15 bad**: the five and every `cancel_work` case, N-288's fault |
+| B-ROC-3 | exact (9) | exact |
+
+**Which results change, and why.**
+- **F06's `revise_mission` cases** become `could_not_check`: its Decision `d2` is planted without `answered_at` (`job/w07_f06_state_change_event.sql:495`), and N-284 C makes a NULL `answered_at` on a widening `could_not_check`, as EV13 22 (1) foresaw ("F06's `revise_mission` recipe sets `answered_at` on its Decision `d2`"). Under break k11 (the order-of-answers checks removed) F06 is `PASS (92/92)` again (run 54), which places the cause. The test designer's fixture change (22 (1)) is due; no expected outcome changes.
+- **The merged CONC** fails `CONC-claim`, by its own epoch changes during the race (10.4); its revision on #375 passes. That is N-299 (1)'s condition, which comes before this migration's verdict (i).
+- **B-ROC-1 and B-ROC-2** now show their break, which M09-08's head could not (N-288).
+- **B-CONC-2 under the merged CONC** has one entry beyond its red list, for the reason above; under the revised program it is exact.
+- No other result of the 57 files changes.
+
+### 10.6 The offline runs, with their raw lines
+
+**offline, PostgreSQL 16.x, counts: no: the migration job's run in `devos-test` (17) is the counted one.**
+- **When and where.** On branch `claude/c02-w09-m0908b` at `1daa352`, with M09-RC, EV13's section 23 and the raw files uncommitted. The main run (`…/mcorr_run/rerun.sh`) ran from 2026-10-19T03:16:25Z to 03:16:38Z on one cluster; the comparison and break runs (`brk.sh`) from 03:16:38Z to 03:20:53Z on a second cluster; then `final.sh` wrote files 63 to 65. EV13's bytes in file 65 are its bytes as filed.
+- **The drivers.** `run.sh`, `drive.py`, `scrub.py`, `scan.py`, `catalog.sql` and `setup.sql` are `…/m0908_run/`'s, changed only in their paths (the cluster under `…/mcorr_run/pg`, the socket in `…/scratchpad/mcs`) and their label word. `fn_check.sql` keeps M09-08's harness (`m_call`, `m_case`, `m_rec`, `m_work`, `m_claim`) with this migration's counted tables and cases. `judge.py` reads a test's output and prints its summary, its bad and could-not-check case IDs and, given a red list, whether the bad set equals it. `search.sql` is 10.3's catalogue query. `build.py` makes M09-RC and file 66.
+- **Trial runs.** Before the filed runs, the self-check once (117 of 117 after its first fixture order, which left one work item with a hard dependency before its claim, was fixed), the main run once (`…/mcorr_run/trial1`) and the comparison and break runs once (`…/mcorr_run/trial2`), none filed. After `trial2` began, one comment of `claim` was reworded, since its words "from a" tripped the catalogue's unqualified-name scan; no statement changed, and the filed runs use the reworded bytes. The filed runs give the same summary lines as the trials.
+
+The runs:
+- **01:** `[initdb exit 0]`, `PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) …`, `[setup exit 0]`, `postgres|f`.
+- **02:** the twenty migrations of `main`, each `[exit 0]` with its history row. **03, M09-RC:** `CREATE FUNCTION` ×13, `COMMENT` ×2, `REVOKE` ×13, `DO`, `[exit 0]`; history row `[exit 0]`.
+- **04 and 12:** `deployment_drift` as the migration login: `"status": "no_difference"`, `"migrations_applied": 21, "migrations_expected": 21`, `"complete": true`.
+- **05, the eight SQL copies:** `W03_DRIFT_COULD_NOT_CHECK PASS (13/13)`, `W03_DRIFT_DETECTS PASS (10/10)`, `W03_FIXTURE_APPLY_READ PASS (12/12 …)`, `W07_5A_NO_DIRECT_WRITES PASS (168/168)`, `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W08_PRIV_TYPES_FUNCTIONS PASS (96/96)`, `W14_SCH_TRANSFER_SCHEMA PASS (38/38)`, each `database test …: passed`.
+- **06 and 07, every staged SQL file run in place** (not copies; a self-check, never a result): the summaries of 10.5's "With M09-RC" column, and besides the list `W07_6TK_TOKEN_REASONS PASS (32/32)`, `W07_DM19B_BURST_COUNT PASS (12/12)`, `W07_IDC_IDENTITY_CHAIN PASS (43/43)`, `W07_N25_VERDICT_STALENESS PASS (5/5)`, `W07_N28_VERIFIER_DOES_NOT_REPAIR FAIL (2 bad, 0 could not check, of 3)` (as before M09-RC, 8.4), `W07_DM02_REVISION_APPEND_ONLY PASS (21/21)`; run 07 is T-W14-FN's `FN-pre`.
+- **08, the catalogue:** 10.1's listing. **09, the live-claim search:** 10.3.
+- **10, the producer's self-check** (`fn_check.sql`; synthetic owner-level fixtures and calls as `anon`, labelled SYNTHETIC W-C02-09 mcorr; one transaction rolled back): `MCORR_FUNCTIONS PASS (117/117)`: 14 for `revise_mission`, 8 for `review_finding`, 8 for N-288, 36 for N-289 (`claim`, readiness, the four Rule C functions, the epoch's row, the old token, `revoke_claim` as built), 34 for the walks, 17 for the text (`TX-alias`, the eleven literals, the read marker, `claim_live` owner only, the predicate in the six, `claim`'s order, `revoke_claim` unchanged). Each compares the answer's code and the change of seven tables, and the state cases read rows after. Then `events_holding_a_token_format_string 0`, `rejected_rows_holding_a_token_format_string 0`, and after the rollback 0 rows in `rejected_attempt` and `event`.
+- **11, T-W07-F01 once more** after the global epoch is set to 2: `W07_F01_WHOLE_INTENT PASS (13/13)`.
+- **13:** the server log, no string of either format; `[pg_ctl stop exit 0]`, `[cluster directory deleted: yes]`.
+- **14:** the second cluster's setup, the templates `t20` and `t21` (`[template … exit 0]`), and `brk.py`: 18 `made k…`.
+- **15 and 16:** the 33 SQL files of the list on copies of `t20` and of `t21` (10.5). **17 to 20:** CONC (10.4).
+- **21 to 43, the merged break patches** (10.5), each `[patch exit 0]`.
+- **44 to 61, the break copies of M09-RC**, each on a fresh copy of `t20` with the copy applied in place of M09-RC (`[apply exit 0]`), then the self-check and the staged files named for it. Each turned the self-check red; the cases named are the first ones each break reaches, and later ones are knock-on effects (a call the break wrongly admits writes a record that later cases on the same Mission meet):
+  - **k01**, `claim_live` ignores the epoch: red `RV-ready-after`, `RW-after-lists`, `CL-after` and its three state cases, the four `RC-*-after`.
+  - **k02**, `claim`'s live count without the predicate: red `CL-after` and its state cases, `TX-predicate-in-six`, `TX-claim-epoch-before-count`. **k03**, `claim` marks only a lapsed lease: red `CL-after` and its state cases (the new Assignment meets `assignment_one_active_claim`, `write_failed`). **k04**, the payload without the epochs: red `CL-after-event`.
+  - **k05**, `ready_value` without the predicate: red `RV-ready-after`, `RW-after-lists`, `CL-after` and its state cases, `TX-predicate-in-six`.
+  - **k06 to k09**, one Rule C count each without the predicate: red `RC-revise_work-after`, `RC-cancel_work-after`, `RC-relate-after`, `RC-retract_relation-after` respectively, and `TX-predicate-in-six`.
+  - **k10**, a widening on the Mission's own decision admitted: red `RM-widen-current-authority`, `-earlier-authority`, `RM-purpose-current-authority` and knock-on cases. **k11**, the order of answers removed: red `RM-widen-answered-before`, `-answered-null` and their reasons, and knock-on cases; F06 `PASS (92/92)`. **k12**, an equal time refused: red `RM-widen-answered-equal` only.
+  - **k13**, `supports` as built: red the four supports cases. **k14**, `part_of` one way: red `W-part_of-from-part-lists`, `W-paths-part_of-up-one`. **k15**, a NULL type counted complete: red the three NULL-type cases.
+  - **k16**, a withdrawn Finding admitted: red the six `RF-withdrawn-*` cases and `RF-withdrawn-unchanged`.
+  - **k17**, `mark_stale` naming a parameter through its function's name: red `AL-mark_stale-renamed`, `TX-alias`.
+  - **k18**, an unjudgeable epoch counted live: red `EP-missing-rule-c` and its reason.
+  - So each rule built turns its self-check cases red when removed. The merged files run with them (DM07, F08, 6RG, N17, ROC, F06, N29, F04, K05, N09) stay as without the break: **no merged test reaches any of the five decisions**, which are new rules whose tests the test designer is writing (EV-C02-017 section 9 item 6). Until those merge, the decisions rest on the producer's self-check alone.
+- **62:** the server log, no string of either format; `[cluster directory deleted: yes]`.
+- **63:** the text search (10.3). **64:** every other mc raw file scanned with the finders of `scan_patterns.json`: no string of either format. **65:** the hashes in the envelope; `backslashes in the corrective migration: 0`; no `psql` meta-command line; no string either finder finds; no line holding either marker whole; `git status --porcelain`: EV13 and this record modified, M09-RC and the raw files untracked; `git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/`: empty. **66:** the per-function difference.
+
+### 10.7 Open, and for whom
+
+1. **For the test designer, under ledger rule 3** (reported, not done):
+   - The new cases and breaks of EV-C02-017 section 9 item 6 (N29 and F06's `d2` with `answered_at`; F08 or DM07; F04; N09 or its own specification). No merged case reaches the five decisions yet (10.6, runs 44 to 61).
+   - T-W07-CONC's revision on #375 (N-299 (1)) is due before this migration's verdict (i): the merged program fails `CONC-claim` on this build.
+   - F06's `d2` gets `answered_at` (EV13 22 (1)); until then `F06-event:revise_mission` and `F06-repeat:revise_mission` are `could_not_check` here.
+2. **For the executor** (reported, not done):
+   - EV13 23 (2)'s consequence: with a live-looking claim and the epoch's row missing, Rule C and readiness now refuse or give unknown where they counted the claim live. No merged case plants that; it fails closed.
+   - `revoke_claim` stays as built (N-299's annotation); this migration does not touch it.
+   - The merged migrations' comments above `ready_value`, `claim`, the four Rule C functions and the two walks still describe the rules before this file. A migration file is not edited after it is applied; this file's comments state what each function now does.
+3. **For the checker of verdict (i):** EV13 section 23 with its *[C-RC]* marks; 10.2's departures, chiefly 2, 3 and 5; the self-check and break copies, which are the producer's own; that the six counts and the claim's order are as 10.3 and 23 (3) state.
+4. **Residuals:**
+   - The two clocks of N-284 C (EV13 22 (1)), compared as recorded.
+   - Before C06 no Mission can be widened in the database (EV13 22 (1), accepted consequence).
+   - A claim ended by an epoch change reads as a failure under B 3.26's FrameReview signal until that signal reads the payload's two epochs (EV13 22 (3)).

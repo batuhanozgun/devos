@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-F04-7_relate_accepts_exam_end.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_f04_affected_records.sql; expect-red=F04-m4-cal,F04-m4-kur,F04-m4-sin)
+[database b31_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_f04_affected_records.sql on b31_t21:
+summary: W07_F04_AFFECTED_RECORDS FAIL (3 bad, 0 could not check, of 22)
+bad (3): F04-m4-cal, F04-m4-kur, F04-m4-sin
+could_not_check (0): none
+red list: exactly as expect-red (3)
+[database b31_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_f04_affected_records.sql on b31_t20:
+summary: W07_F04_AFFECTED_RECORDS FAIL (3 bad, 0 could not check, of 22)
+bad (3): F04-m4-cal, F04-m4-kur, F04-m4-sin
+could_not_check (0): none
+red list: exactly as expect-red (3)
+mcorr scrub (31_merged_B-F04-7): claim-format strings replaced 0; environment-format strings replaced 0

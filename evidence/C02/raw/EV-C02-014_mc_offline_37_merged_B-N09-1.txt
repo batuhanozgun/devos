@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-N09-1_undated_accepted.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=supabase/migrations/tests/w07_n09_finding_gate.sql; expect-red=N09-a,N09-b,N09-c,N09-d)
+[database b37_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_n09_finding_gate.sql on b37_t21:
+summary: W07_N09_FINDING_GATE FAIL (4 bad, 0 could not check, of 5)
+bad (4): N09-a, N09-b, N09-c, N09-d
+could_not_check (0): none
+red list: exactly as expect-red (4)
+[database b37_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_n09_finding_gate.sql on b37_t20:
+summary: W07_N09_FINDING_GATE FAIL (4 bad, 0 could not check, of 5)
+bad (4): N09-a, N09-b, N09-c, N09-d
+could_not_check (0): none
+red list: exactly as expect-red (4)
+mcorr scrub (37_merged_B-N09-1): claim-format strings replaced 0; environment-format strings replaced 0

@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-N08-4_exam_claim_on_unlinked_item.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_n08_exam_fact.sql; expect-red=EXF-pair-sin-claim,N08-s4-claim-unlinked,N08-s4-claim-working,N08-s4-code)
+[database b36_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b36_t21:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-sin-claim', 'N08-s4-claim-unlinked', 'N08-s4-claim-working', 'N08-s4-code']; extra none
+[database b36_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_n08_exam_fact.sql on b36_t20:
+summary: W07_N08_EXAM_FACT COULD NOT CHECK (1 of 1 could not be checked)
+bad (0): none
+could_not_check (1): N08-pre-x
+red list: not as expect-red; missing ['EXF-pair-sin-claim', 'N08-s4-claim-unlinked', 'N08-s4-claim-working', 'N08-s4-code']; extra none
+mcorr scrub (36_merged_B-N08-4): claim-format strings replaced 0; environment-format strings replaced 0

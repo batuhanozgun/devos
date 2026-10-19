@@ -1,0 +1,13 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (break k06_rule_c_revise_work_old_count, a copy of the corrective migration outside the repository, applied in place of it on a fresh copy of t20)
+[database k49 from t20 exit 0]
+[apply exit 0]
+-- the self-check on k49:
+summary: MCORR_FUNCTIONS FAIL (2 of 117 not as wanted)
+bad (2): RC-revise_work-after, TX-predicate-in-six
+could_not_check (0): none
+-- w07_roc_ownership_and_claim_class.sql on k49:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS PASS (84/84)
+bad (0): none
+could_not_check (0): none
+red list: exactly as expect-red (0)
+mcorr scrub (49_break_k06): claim-format strings replaced 0; environment-format strings replaced 0

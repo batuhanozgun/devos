@@ -1,0 +1,16 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (the merged break patch tests/C02/W-C02-07/breaks/B-ROC-3_could_not_check_as_clean.sql applied in place, w07.throwaway=yes, on a fresh copy of t21 (with the corrective migration) and of t20 (M09-08's head); header: -- w07-break: test=w07_roc_ownership_and_claim_class.sql; expect-red=ROC-x-o-mission-missing,ROC-x-o-mission-unreadable,ROC-x-o-mission-partial,ROC-x-o-event-missing,ROC-x-o-event-unreadable,ROC-x-o-event-partial,ROC-x-c-claims-missing,ROC-x-c-claims-unreadable,ROC-x-c-claims-partial)
+[database b43_t21 from t21 exit 0]
+[patch exit 0]
+-- w07_roc_ownership_and_claim_class.sql on b43_t21:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (9 bad, 0 could not check, of 84)
+bad (9): ROC-x-c-claims-missing, ROC-x-c-claims-partial, ROC-x-c-claims-unreadable, ROC-x-o-event-missing, ROC-x-o-event-partial, ROC-x-o-event-unreadable, ROC-x-o-mission-missing, ROC-x-o-mission-partial, ROC-x-o-mission-unreadable
+could_not_check (0): none
+red list: exactly as expect-red (9)
+[database b43_t20 from t20 exit 0]
+[patch exit 0]
+-- w07_roc_ownership_and_claim_class.sql on b43_t20:
+summary: W07_ROC_OWNERSHIP_AND_CLAIM_CLASS FAIL (9 bad, 0 could not check, of 84)
+bad (9): ROC-x-c-claims-missing, ROC-x-c-claims-partial, ROC-x-c-claims-unreadable, ROC-x-o-event-missing, ROC-x-o-event-partial, ROC-x-o-event-unreadable, ROC-x-o-mission-missing, ROC-x-o-mission-partial, ROC-x-o-mission-unreadable
+could_not_check (0): none
+red list: exactly as expect-red (9)
+mcorr scrub (43_merged_B-ROC-3): claim-format strings replaced 0; environment-format strings replaced 0
