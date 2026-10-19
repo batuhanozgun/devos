@@ -1,0 +1,103 @@
+EV-C02-014 raw, verdict (ii): devos's record of applied migrations and its catalogue, read by the executor through the read-only connector (project devos), 2026-10-19 about 13:20Z, after run 39257765661 (push of 545a943). Two read-only selects; their text is below; output transcribed from the tool's result. counts: yes (the real project).
+
+Query 1: select version, name from supabase_migrations.schema_migrations order by version
+26 rows:
+20261012184638 deployment_drift
+20261012231841 w03_fixture_apply
+20261012232112 w03_fixture_name_differs
+20261012232113 w03_fixture_restore_name
+20261014170201 w08_role_classes_epoch_tokens
+20261014170202 w08_event_rejected_attempt
+20261014170203 w08_missions_decisions_needs_work
+20261014170204 w08_findings_reviews_effects_exams
+20261014170205 w08_append_only_views_access
+20261014182601 w08_ledger_transfer_schema
+20261014190401 w08_finding_source_fields
+20261014190402 w08_type_privileges
+20261017230001 w09_identity_chain_first_part
+20261018203001 w09_private_helpers
+20261018214501 w09_mission_need_decision
+20261018230001 w09_work_effort
+20261018235501 w09_claims
+20261019010001 w09_relations
+20261019030001 w09_knowledge_product_review
+20261019050001 w09_external_effect
+20261019080001 w09_rule_corrections
+20261019100001 w09_exam_backup_reads
+20261019120001 w09_transfer_runs_events
+20261019140001 w09_transfer_records
+20261019160001 w09_transfer_copies
+20261019180001 w09_transfer_corrections
+
+Query 2: select n.nspname, p.proname, pg_get_function_identity_arguments(p.oid), p.prosecdef, array_to_string(p.proconfig,';'), pg_get_userbyid(p.proowner), array_to_string(p.proacl,','), md5(p.prosrc) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('devos_api','devos_private') order by 1,2,3
+69 rows (55 devos_api, 14 devos_private). Every row: security definer true (except devos_private.refuse_change: false), config search_path=pg_catalog, pg_temp, owner postgres. ACL: every devos_api function postgres=X/postgres,anon=X/postgres; every devos_private function postgres=X/postgres.
+schema|name|identity arguments|md5(prosrc)
+devos_api|accept|verdict_ref uuid, accepted_use text|749b25c76e32534bb716538c6887192a
+devos_api|admit_work|p jsonb|e4849349cea59336c3cdb639503f21ac
+devos_api|affected_entities|root uuid, limits jsonb|00397274e397d411f52e53177944fe4a
+devos_api|authority_epoch||bc1ebaaa7335ef5f2f56a2d2de29088a
+devos_api|begin_transfer_run|p jsonb|b1ff01c203521e60874ebcc007fb3e51
+devos_api|cancel_work|work_id uuid, reason text|78aa2c73144d6bd102d5338038c4808a
+devos_api|claim|work_id uuid, declared_session_id text|3c899cd0eb5e717fc7c140474f9dfb53
+devos_api|deployment_drift|expected jsonb|b35f3bee7d92ffd28439f41a204a0539
+devos_api|end_transfer_run|p jsonb|57d56a8833b359b6ebbc97114dd78aee
+devos_api|explain_paths|root uuid, target uuid, limits jsonb|223bb25b72eef6041b31f50652ba9bf7
+devos_api|fingerprint_matches|hashes text[]|26ceaddc145fef945c6c69fc8c70f7c6
+devos_api|heartbeat|claim_token text|2ab8821ad1f5855aeb76e2aa5ca82f88
+devos_api|link_prior_decisions|p jsonb|b6d598f562fd26bd76633bc9a804c2f9
+devos_api|mark_exported|p jsonb|b504ab57b530bd5c6f1ead8d08f3fc9f
+devos_api|mark_stale|work_id uuid, reason text|70d5715098d99834bb6172d737491bce
+devos_api|open_decision|p jsonb|f43795562d0ee7627076a604d9825d8f
+devos_api|open_mission|p jsonb|fbe5599c2c597d040b824522ea5ad2fb
+devos_api|open_review|p jsonb|34016355e75495166b31e3adb5d915ce
+devos_api|operation_state|operation_id uuid|5661802a71396199f96170019e274991
+devos_api|prepare_operation|claim_token text, p jsonb|58257155aacbdbba4a2ed0db797eb09b
+devos_api|read_decision|decision_id uuid|2e0113f90e3d5bade6746322be5b6799
+devos_api|read_eval_run|eval_run_id uuid|175c2e9d3e9bc8e67a6bde6dcbde4a10
+devos_api|read_rejected_attempts|since timestamp with time zone|da01c7d4487bb76073b79bf9e3331604
+devos_api|read_review|review_id uuid|cb0d165fda89656909adcc32b2b8af75
+devos_api|ready_works||4fa8fd799aae3ac1d76e6c0602541b25
+devos_api|record_attempt|claim_token text, operation_id uuid|e0eeabcc1e0761cf9497f71720908e4d
+devos_api|record_eval_run|p jsonb|08ab9e2e30a5a838285a7ff57e719939
+devos_api|record_finding|p jsonb|4c0a0deaed91d978469ef9e7bf4a0250
+devos_api|record_handover|p jsonb|0acdebcf16528c0380b14a9b8b81b487
+devos_api|record_ledger_entry|p jsonb|538fe44bc8515575849341a770a5bcd5
+devos_api|record_need|p jsonb|76368229c71942541d18a12eceb21c9f
+devos_api|record_observation|p jsonb|432137fbe54910c4a9b9378d43fc3faf
+devos_api|record_verdict|p jsonb|887639f10d405dcb1ce061c6a80c09e9
+devos_api|register_artifact|claim_token text, p jsonb|5196ea64e23f884e67612164f97f4293
+devos_api|relate|p jsonb|a4d31c9a143c331502d0c7256183a7ab
+devos_api|release|claim_token text|afa85578cfb22c617bd97d79306355f5
+devos_api|reopen_for_review|work_id uuid, reason text|c7d68bedecd7c64218ab6343476cb5bf
+devos_api|resolve_need|need_id uuid, reason text|bb962af3ceccd231198269f1c7a6aa8c
+devos_api|retract_relation|relation_id uuid, reason text|65ac1283eb92d4c7c93c064dadb53422
+devos_api|review_finding|finding_id uuid, revision integer, status text|94f0b61a8a1501479153210a718df38f
+devos_api|revise_mission|p jsonb|e078b7810efbb6a8449bbf85b668d49e
+devos_api|revise_work|p jsonb|0570550bea694624ca60811c8036b24b
+devos_api|revoke_claim|assignment_id uuid, reason text|9b191ae642582abfe4e8bf6d66720302
+devos_api|set_effort_policy|p jsonb|00722e1c57be8a94e828dd5e70a28c55
+devos_api|token_role_class||3db4d30700686016eea07cac3ac86721
+devos_api|transfer_acceptance|p jsonb|5ec4a406725f33301e12ffbf237a036a
+devos_api|transfer_artifact|p jsonb|513c6d3c31734cf9a1072be6a8bd3821
+devos_api|transfer_decision|p jsonb|90bc901b4c546c62f756ec108bd60a15
+devos_api|transfer_event|p jsonb|5affa36e160b62e3181bee78ce6e9299
+devos_api|transfer_finding|p jsonb|699cd51be9c6147a9b3251d6fc204d50
+devos_api|transfer_mission|p jsonb|d5f7202599ef8271d7960b23c619e0c1
+devos_api|transfer_need|p jsonb|6f859bfad00e21ea28816a764d25258f
+devos_api|transfer_relation|p jsonb|1f15a9fcc1cef09b23cafd32019c06a0
+devos_api|transfer_review|p jsonb|9010cb3fcc923a02b3a1e0b77ec8ddd6
+devos_api|transfer_work|p jsonb|6c25ce51d91f33cc84ac320ed2850cd5
+devos_private|caller_role_class|function_name text|d23a59b754b5262937d8061d154035db
+devos_private|check_claim|p_claim_token text, p_work_id uuid, p_role_class devos_private.role_class, p_for_update boolean|e57d1dfa44522143720ee5125bd63a66
+devos_private|claim_live|claim_status devos_private.assignment_status, claim_lease timestamp with time zone, claim_epoch bigint|8daba3beae760bf36c5577a5cc2dde8b
+devos_private|hard_dependency_cycle|p_from uuid, p_to uuid|1c06b4f62854f2f7768bc285f2ad44a7
+devos_private|is_installation_mission|p_mission_id uuid|0edcb721e0c30b28badbd75db08d2cdc
+devos_private|issue_env_token|role_class text|21964407f600f8920ec60423fc8ec809
+devos_private|ready_value|p_work_id uuid, p_own_claim uuid|3978b228475156848dd82f10c23797f2
+devos_private|refuse_change||8927f7a1ea9a271de632edda55766688
+devos_private|reject|p_function_name text, p_role_class devos_private.role_class, p_reason_code text, p_reason text, p_declared_session_id text, p_target_ref uuid, p_target_revision integer|9349a4709ccc5c59422891b572c40212
+devos_private|reject_counted|p_function_name text, p_reason_code text|81f3d4fd824bab35f5ce037ddb469377
+devos_private|revoke_env_token|token_id uuid|0c72cc6837a5612e52540904c28f0760
+devos_private|scope_within|p_scope text, p_container text|33956c83402804642af88d40b99297ca
+devos_private|token_hash|token text|14b9b05bf96cdd6ec5f7c9b03331c22c
+devos_private|write_event|p_aggregate_type text, p_aggregate_id uuid, p_aggregate_revision integer, p_event_type text, p_payload jsonb, p_role_class text, p_origin devos_private.event_origin, p_declared_session_id text|f8c2af351f3d17de0b41918d9ef3eead
