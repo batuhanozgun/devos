@@ -1,0 +1,54 @@
+offline, PostgreSQL 16.x, counts: no: the migration job's run in devos-test (17) is the counted one (CHK-C02-104 C1: hashes of the bytes run, text counts of M09-11, the ledger's answered_at values, and the clone's git state; written without the scrub, hashes, counts and git output only)
+1bf9d8148bf4d848db8089570657816c24efe5feb9a5e99b9aa0a747412ada75  supabase/migrations/20261019140001_w09_transfer_records.sql
+db7e939e696bdb5084f9877ede90f4bb3085a6857517515bfee7ac7c952698a6  evidence/C02/EV-C02-013_w09_interface.md
+5226fb15a9e9382ed0093e0b6dabe87a8d45f63f3aabc7e835f63985a5cb693e  evidence/C02/EV-C02-014_w09_build.md
+M09-11 at 7fc7537: 5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55
+5d21dd01976fe2bce4e710a29a0f35a773f79835d3a8f4b20df00dfc27ec6b55  m0911_old.sql
+73c5059ea63c1d153fd80a2ea7fab81682564f8585664e4141978485b3371bdf  fn_check.sql
+c8dec0e0f51af3f7a2bf1764175ab841b1c5f3c319d1b6526f40f095c8a51ef7  fn_head.sql
+1a9290de1751ff47a823f888cba5bc6ed1e761179d877d9e76356873b6cc3d19  fn_cases.sql
+5302a20bd2899207639456eace1415ae4a3609ccf42563e45ef4c5960274a630  rerun.sh
+d46293c6f1da9655457087057d90cb9c9350ddd21e04a797ed616229e8fc0858  cases_new.sh
+4d514fab96f2b189b30a01723bef01fc52aa5b49362a308bbc8d31c713798739  final.sh
+439de050ca4b3a1fcb8b34dd8a32527e6c79c8d953e81d2e422602a5f66115e0  run.sh
+ed2f3c3ad0bf96a3165601388f0fbc7d4dfa1c38494dd35d9059a0f2cf28d1aa  drive.py
+162cc243ebfddd8e304576fd7dfbfc3b26e4da0c7fa4cf8d75fab182d65b5018  judge.py
+acffd5e75c00eebb44f1c7eea6135fe8eab771a88b0b1c7967bc9f33fee96049  scrub.py
+dc781262e2e00b959c4a894947de7742dbb53f8ab5c7ca15d90bf87894bdbad3  scan.py
+fa2a9cfa8e9b1bef07d784dbbb4d909582eb8ae43d2b1b8e141d5487ff129783  setup.sql
+4bd934440e11bc6f156462e001837af95f78fc3633c251a7700f738b679b1cd4  catalog.sql
+backslashes in M09-11: 0
+psql meta-command lines in it: 0
+its strings found by either token finder: m0911 scan: 1 files; claim-format 0; environment-format 0
+its lines holding either marker whole: 0
+its lines naming created_at outside comment lines: 0
+its lines naming answered_at outside comment lines, by function: devos_api.transfer_decision(p 13; 
+the ledger's answered_at values (front matter of plan/decisions/*.md) against M09-11's two expressions, read from the file:
+  expressions read: 2; values: 26; matched: 26; not matched: 0
+$ git rev-parse HEAD; git status --porcelain
+7fc7537f8a3ab8a675bb4811c914027e12d3f08e
+ M evidence/C02/EV-C02-013_w09_interface.md
+ M evidence/C02/EV-C02-014_w09_build.md
+ M supabase/migrations/20261019140001_w09_transfer_records.sql
+?? evidence/C02/raw/EV-C02-014_m11_offline_58_fix_init_setup.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_59_fix_apply_before.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_60_fix_apply_m0911.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_61_fix_drift.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_62_fix_dbtests.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_63_fix_staged_w07.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_64_fix_staged_w14.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_65_fix_catalog.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_66_fix_functions.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_67_fix_drift_after.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_68_fix_log_scan_stop.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_69_fix_old_bytes.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_70_fix_cases_new.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_71_fix_raw_scan.txt
+?? evidence/C02/raw/EV-C02-014_m11_offline_72_fix_git_hashes.txt
+$ git diff --stat HEAD
+ evidence/C02/EV-C02-013_w09_interface.md           |  6 +++++
+ evidence/C02/EV-C02-014_w09_build.md               | 29 ++++++++++++++++++++++
+ .../20261019140001_w09_transfer_records.sql        | 16 +++++++++---
+ 3 files changed, 48 insertions(+), 3 deletions(-)
+$ git diff --stat HEAD -- tests/ supabase/migrations/tests/ .github/ tools/ plan/ .claude/
+[end of diff]
