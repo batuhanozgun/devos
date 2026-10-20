@@ -51,6 +51,8 @@ import bisect
 import fcntl
 import fnmatch
 import hashlib
+import importlib.machinery
+import importlib.util
 import json
 import mmap
 import os
@@ -102,11 +104,12 @@ ALLOWED_PREFIXES = (
     "mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__",   # read-only Supabase connector, opaque ID (inferred: T-H3)
 )
 # Non-MCP tools are an allow list (R-C00-BOM-4 B1). Anything not named is denied, including tools that reach
-# the account's other sessions (SendMessage, ListAgents), publishing surfaces, connector and plugin
+# the account's other sessions (ListAgents), publishing surfaces, connector and plugin
 # suggestion tools, MCP resource readers and worktree switching (which would change the enforced guard).
 ALLOWED_NON_MCP = {
     "Bash", "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit",
     "Agent", "Task",
+    "SendMessage",                 # only to this session's agents, by T6 (W-C02-27); not local, so L4 reads its input
     "Workflow",                    # listed so that TW, not T1, denies it with its own reason (W-C02-24, EV-C02-031)
     "ToolSearch", "Skill", "StructuredOutput",
     "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput",
@@ -455,6 +458,33 @@ RULES.update({rule: ("the gate before work: " + title, T5_WHY, WO + " sections 9
      "launch again."),
     ("T5.19", "an open blocking note on the item", "Close the note by a disposition in the approach (working order "
      "section 4 step 2a), merge, sync, and launch again."),
+)})
+# T6, messages between agents (W-C02-27; SB-COR 3.6b): one entry per refusal, a shared why and where
+T6_WHY = ("SendMessage reaches only agents of this session: an agent ID held in this session's registry (written by "
+          ".claude/hooks/agent_hooks.py), or main, by the caller rules of W-C02-27's approach; producer, test-designer "
+          "and checker IDs take messages only from the executor. T6 is the only layer for sessions on the same machine "
+          "and the main one everywhere. Messages are not records: a request taken or returned is written in the "
+          "hand-overs' Received from / Returned to lines.")
+T6_RETURN = "return it in your hand-over's Received from / Returned to"
+RULES.update({rule: ("messages to this session's agents only: " + title, T6_WHY,
+                     WO + " sections 9 and 10; W-C02-27; SB-COR 3.6b", todo) for rule, title, todo in (
+    ("T6.0", "could not check", "The guard could not check this call (the detail names the error) and refuses this "
+     "call only; " + T6_RETURN + ", and report it to the executor as a guard finding."),
+    ("T6.1", "an input key outside to and message", "Send only the keys to (one agent ID, or main) and message (the "
+     "text); summary, notify_when_idle and the legacy keys are not admitted."),
+    ("T6.2", "to is not one string", "Give to as one string: one agent ID from your task's Teammates: line, or main."),
+    ("T6.3", "to is missing or empty", "Give to as one string: one agent ID from your task's Teammates: line, or main."),
+    ("T6.4", "to is * (broadcast)", "Message one agent by its ID; a broadcast is not admitted."),
+    ("T6.5", "to is a session reference", "Other sessions are not reachable; message an agent of this session by its "
+     "ID, or " + T6_RETURN + "."),
+    ("T6.6", "to is not an agent ID held in this session's registry", "Use the agent ID from your task's Teammates: "
+     "line exactly as written; names and other sessions' IDs are not resolved. Without an ID, " + T6_RETURN + "."),
+    ("T6.7", "the caller is not allowed for that target", "A producer, test-designer or checker ID takes messages only "
+     "from the executor; a researcher or prober ID from the executor or an agent registered in this session; main "
+     "only from an agent registered in this session; any other type none. Send the request to main (the executor), "
+     "or " + T6_RETURN + "."),
+    ("T6.8", "a message to the caller itself", "Do not message your own ID; the executor does not message main."),
+    ("T6.9", "no registry for this session", "No registry for this session; " + T6_RETURN + "."),
 )})
 LEAK_WITHHELD = {"L1", "L2", "L4", "L5"}   # rules whose call text is never repeated (it may hold the matched text)
 
@@ -2370,6 +2400,78 @@ def t5(data, args, t):
     return rule, f"{why}; {meta}"
 
 
+# T6 (W-C02-27; SB-COR 3.6b): SendMessage only to an agent of this session's registry, by the approach's caller rules
+T6_KEYS = ("to", "message")   # W27-3; the schema row (EV-C02-036) also shows summary and notify_when_idle, not admitted
+T6_FROM_MAIN_ONLY = ("producer", "test-designer", "checker")   # W27-1
+T6_FROM_REGISTERED = ("researcher", "prober")
+_AGENT_HOOKS = []
+
+
+def agent_hooks():
+    """W-C02-25's registry functions: .claude/hooks/agent_hooks.py of this guard's own checkout, loaded once."""
+    if not _AGENT_HOOKS:
+        sys.dont_write_bytecode = True   # no __pycache__ in the checkout's .claude/hooks/ (as agent_hooks.py keeps it)
+        ldr = importlib.machinery.SourceFileLoader("devos_agent_hooks_for_guard", os.path.join(HERE, "agent_hooks.py"))
+        mod = importlib.util.module_from_spec(importlib.util.spec_from_loader(ldr.name, ldr))
+        ldr.exec_module(mod)
+        _AGENT_HOOKS.append(mod)
+    return _AGENT_HOOKS[0]
+
+
+def send_message_checks(data, args):
+    """(rule, why) for an allowed SendMessage call; Bad(T6.1 to T6.9) for a refused one. The shape is decided before
+    the registry is read; the registry is read under its shared lock with W-C02-25's bounded wait, under the guard's
+    session_key. decide() refuses any other exception raised here as T6.0, for this call only."""
+    extra = sorted(str(k)[:40] for k in args if k not in T6_KEYS)
+    if extra:
+        raise Bad("T6.1", f"the input keys {', '.join(extra[:8])} are outside {{to, message}}; only to and message are "
+                          "admitted")
+    if "to" not in args:
+        raise Bad("T6.3", "the input has no to")
+    to = args["to"]
+    if not isinstance(to, str):
+        raise Bad("T6.2", f"to is a {type(to).__name__} value, not one string")
+    if to == "":
+        raise Bad("T6.3", "to is the empty string")
+    if to == "*":
+        raise Bad("T6.4", "to is *, a broadcast")
+    if to.startswith(("session_", "cse_")):
+        raise Bad("T6.5", "to is a session reference (session_ or cse_)")
+    hooks = agent_hooks()
+    try:
+        records = hooks.read_registry(hooks.registry_path(session_key(data), LOG_DIR))
+    except hooks.Unreadable as e:
+        raise Bad("T6.9", f"no registry for this session ({e}); {T6_RETURN}")
+    caller = data.get("agent_id")
+    if caller is None and to == "main":
+        raise Bad("T6.8", "main to main")
+    if caller is not None and to == caller:
+        raise Bad("T6.8", "a message to the caller's own ID")
+    registered ={aid: v["agent_type"] for aid, v in hooks.merged_view(records).items()
+                  if isinstance(v.get("agent_type"), str) and v["agent_type"]}
+    if to == "main":
+        target = "main"
+    elif to in registered:
+        target = registered[to]
+    else:
+        raise Bad("T6.6", "to is not an agent ID held in this session's registry (matched exactly; no name is resolved)")
+    ctype = registered.get(caller) if isinstance(caller, str) else None
+    who = "the executor (main)" if caller is None else f"a registered {ctype}" if ctype else \
+        "an agent this session's registry does not hold"
+    if target == "main":
+        ok = ctype is not None
+    elif target in T6_FROM_MAIN_ONLY:
+        ok = caller is None
+    elif target in T6_FROM_REGISTERED:
+        ok = caller is None or ctype is not None
+    else:
+        ok = False
+    what = "main" if target == "main" else f"a registered {target}"
+    if not ok:
+        raise Bad("T6.7", f"a message to {what} from {who}")
+    return "T6", f"a message to {what} from {who}, in this session's registry"
+
+
 def decide(data):
     """(decision, rule, detail): decision is allow, deny or pass (left to the user)."""
     if not isinstance(data, dict):
@@ -2407,6 +2509,14 @@ def decide(data):
             return "pass", "T1", f"{name} is answered by the user"
         if name not in ALLOWED_NON_MCP:
             raise Bad("T1", f"tool '{name}' is not on the allow list")
+        if name == "SendMessage":
+            try:                                         # T6's one catch: removed, T6.0's cases would reach G0
+                rule, why = send_message_checks(data, args)
+            except Bad:
+                raise
+            except Exception as exc:
+                raise Bad("T6.0", f"could not check ({type(exc).__name__}); this call only is refused")
+            return "allow", rule, why
         if name == "Workflow":
             raise Bad("TW", "the Workflow tool, whatever its input; the roles run through the Agent tool")
         if name in SUBAGENT_TOOLS:
