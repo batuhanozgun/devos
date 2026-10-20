@@ -2215,3 +2215,11 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Guard:** since L-464: by the executor #4581 (L2: a push shared its Bash call with `bash tools/stop_check.sh`; repeated alone). By helpers: #4571 (B7, W-C02-27.1's test designer: `claude --version`, not pursued). No denial by any other hook. The last record #4675 before this entry's commit.
 - **Wait:** ends when W-C02-27.1's five round-2 answers arrive (each starts the next turn by itself); sooner: none, a team triage of a guard change is not shortened; whose call: the builder.
 - **Record changes:** plan/ledger/C02-log.md · addition · L-465 (and correction of L-464); evidence/C02/EV-C02-023_platform_capability.md · annotate · section 4, rows R-04 to R-26; DURUM.md, plan/ledger.md · generated
+
+### L-466 · 2026-10-20 · L-464's liveness exemption carried forward (L-465 left it out)
+
+- **Disciplines (D1–D9):** D1: no. D2: no. D3: no. D4: yes: the report's flag is true and stays exempted only by the line the design gives, which must stand in the newest entry; L-465 omitted it, so `tools/stop_check.sh` failed, and this entry carries it rather than changing the check. D5: no. D6: yes: the cause is the executor's own omission when writing L-465, not a defect of the report. D7: yes: the exemption's reason is restated so that it reads on its own. D8: yes: made from `main` `8fa09da`. D9: no.
+- **Liveness:** aa8570fed063c7083: run 1 ended at the platform's 150-turn limit, which fires no SubagentStop; the platform resumed the same agent (start run 2, 18:32:37Z) and run 2 stopped complete with receipt delivered (18:35:53Z); the filed verdict is run 2's (L-464; EV-C02-023 R-07, R-08)
+- **Guard:** since L-465: none by the executor or any helper; no denial by any other hook. The last record #4722 before this entry's commit.
+- **Wait:** ends when W-C02-27.1's five round-2 answers arrive (each starts the next turn by itself); sooner: none, a team triage of a guard change is not shortened; whose call: the builder.
+- **Record changes:** plan/ledger/C02-log.md · addition · L-466; DURUM.md, plan/ledger.md · generated
