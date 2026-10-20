@@ -130,8 +130,8 @@ class Fixture:
     def text(t, kind="text"):
         return {"type": "assistant", "message": {"role": "assistant", "content": [{"type": kind, kind: t}]}}
 
-    def run(self, *args, tool=TOOL):
-        r = subprocess.run([sys.executable, str(tool), *args], capture_output=True,
+    def run(self, *args, tool=None):
+        r = subprocess.run([sys.executable, str(tool or TOOL), *args], capture_output=True,
                            env={**os.environ, "DEVOS_AUDIT_HOME": str(self.home), "DEVOS_GUARD_LOG_DIR": str(self.logs)})
         out = r.stdout.decode("utf-8") + r.stderr.decode("utf-8")
         OUTPUTS.append(out)
@@ -206,7 +206,7 @@ def unfinished(fx, label, agent, why, cmds=("last", "disciplines", "audit")):
                     for rc, out, both in rs), "".join(r[2] for r in rs))
 
 
-def disc_case(fx, label, agent, rc_want, lines_want, tool=TOOL, **kw):
+def disc_case(fx, label, agent, rc_want, lines_want, tool=None, **kw):
     """One disciplines case: the agent gets one call, the task TASK and the report report(ANSWERS) unless kw says
     otherwise; the output of tool (by default this checkout's) must be exactly lines_want."""
     fx.agent(agent, GOOD[:1], **{"prompt": TASK, "final": report(ANSWERS), **kw})
@@ -223,7 +223,76 @@ def void_case(fx, label, agent, calls, expect, guard=None, log="session_fx2.json
          and "AUDIT VALID" not in lines, both)
 
 
+def launch_cases(fx):
+    """Cases (L1) to (L7): W-C02-24 M1b, B8 of its acceptance block, written by M1b's test designer before the build.
+    Form C0 (Appendix C):
+    - Claim: python3 -I tools/subagent_audit.py launch <agent id> (read-only) prints the UTF-8 byte length and SHA-256
+      of the run's first task message, read from its transcript, never its text, and the guard's T5 allow record with
+      the same SHA-256 and rule T5; otherwise "could not confirm" and a non-zero exit.
+    - Failure class: a reader-form launch (T5R) or a denied one taken as a writer launch; a record of another launch
+      taken for this one; a hash of characters, not bytes; the prompt printed; a missing transcript read as a pass.
+    - Interface stated here (B8 leaves it open): the run is linked to its guard record by the meta's toolUseId, equal
+      to the record's tool_use_id (A10's linkage; the docstring's observation that an Agent-tool subagent's meta names
+      its starting call); the record's detail holds prompt_sha256=<64 hex> (item A3's log field). Success prints
+      "bytes=<n>", "sha256=<hex>", the record's "#<n>" and "LAUNCH CONFIRMED", and exits 0. Each failure prints "could
+      not confirm" with its reason ID in brackets and exits non-zero: [LAUNCH-MISMATCH] (the linked T5 record's hash
+      differs), [LAUNCH-T5R] (the linked record is a T5R allow), [LAUNCH-NORECORD] (no linked T5 allow record: none at
+      all, only a T5.n denial, or a record of the same hash with another tool_use_id), [LAUNCH-NOTRANSCRIPT].
+    - Negative control: L2 to L7, each with its own reason ID. Positive control: L1.
+    - Break: hashing str length instead of bytes (L1, the prompt holds non-ASCII); rule matched by prefix (L5, L3);
+      linkage dropped (L2 gives NORECORD, L6 confirms); the prompt printed (case 11).
+    - Not covered: a first task message given as a list of content blocks (observation (12), A10, settles its form);
+      calls' path mapping, which B8 assigns to the checker's procedure, not to a change of calls."""
+    import hashlib
+    prompt = f"Writer or reader: writer\nItem: plan/work/W-C00-01.md\nTask {MARKER} ğüşiöç\n"
+    data = prompt.encode("utf-8")
+    sha, other = hashlib.sha256(data).hexdigest(), hashlib.sha256(b"another prompt").hexdigest()
+    log = fx.logs / "session_fx_launch.jsonl"
+
+    def launched(agent, records):
+        """An Agent-tool subagent whose first task message is prompt, and guard records (rule, decision, sha,
+        linked) for its launch; returns the record numbers."""
+        fx.raw(agent, [user(prompt), say("Working."), say(PLAIN)])
+        ns = []
+        with open(log, "a", encoding="utf-8") as f:
+            for rule, decision, h, linked in records:
+                fx.n += 1
+                ns.append(fx.n)
+                f.write(json.dumps({"n": fx.n, "time": "2026-01-01T00:00:00Z", "event": "PreToolUse",
+                                    "tool_use_id": f"toolu_fx_launch_{agent}" if linked else "toolu_fx_other",
+                                    "agent_id": None, "cwd": "/fx/session-cwd", "tool": "Agent", "decision": decision,
+                                    "rule": rule, "summary": "Agent", "detail": "input_keys=description,prompt,"
+                                    f"subagent_type prompt_bytes={len(data)} prompt_sha256={h}"}) + "\n")
+        return ns
+
+    n1 = launched("a1f0000000000000a", [("T5", "allow", sha, True)])
+    rc, out, both = fx.run("launch", "a1f0000000000000a")
+    case("(L1) launch: a writer-form run whose linked T5 allow record has the same SHA-256: bytes, sha256, the "
+         "record's number, LAUNCH CONFIRMED, exit 0", rc == 0 and f"bytes={len(data)}" in out and f"sha256={sha}" in out
+         and f"#{n1[0]}" in out and "LAUNCH CONFIRMED" in out and len(data) != len(prompt), both)
+    for label, agent, records, token in (
+            ("(L2) the linked T5 record's SHA-256 differs", "a1f0000000000000b", [("T5", "allow", other, True)],
+             "LAUNCH-MISMATCH"),
+            ("(L3) the linked record is a T5R allow (reader form)", "a1f0000000000000c", [("T5R", "allow", sha, True)],
+             "LAUNCH-T5R"),
+            ("(L4) no guard record for the launch", "a1f0000000000000d", [], "LAUNCH-NORECORD"),
+            ("(L5) only a T5.13 denial of the same hash", "a1f0000000000000e", [("T5.13", "deny", sha, True)],
+             "LAUNCH-NORECORD"),
+            ("(L6) a T5 allow of the same hash for another tool_use_id", "a1f0000000000000f",
+             [("T5", "allow", sha, False)], "LAUNCH-NORECORD")):
+        launched(agent, records)
+        rc, out, both = fx.run("launch", agent)
+        case(f"{label}: could not confirm, [{token}], non-zero exit", rc != 0 and "could not confirm" in both and
+             f"[{token}]" in both and "LAUNCH CONFIRMED" not in both, both)
+    rc, out, both = fx.run("launch", "a1f00000000000099")
+    case("(L7) no transcript for the agent: could not confirm, [LAUNCH-NOTRANSCRIPT], non-zero exit", rc != 0 and
+         "could not confirm" in both and "[LAUNCH-NOTRANSCRIPT]" in both, both)
+
+
 def main():
+    global TOOL
+    if len(sys.argv) > 1:      # a checker's break copy or a sketch kept outside the repository
+        TOOL = Path(sys.argv[1]).resolve()
     with tempfile.TemporaryDirectory() as tmp:
         fx = Fixture(tmp)
         fx.agent("afx0valid", GOOD, after=[("TodoWrite", {"todos": [{"content": MARKER}]})],   # a later tool-only event
@@ -513,6 +582,7 @@ def main():
         rc, out, both = fx.run("last", "afxmplain")
         case("(46) a finished agent with no report call: last prints its last text as before", rc == 0
              and out == PLAIN + "\n", both)
+        launch_cases(fx)
         case("(24) disciplines prints three fixed lines and no prompt or report text",
              len(DISC_OUT) == 25 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
