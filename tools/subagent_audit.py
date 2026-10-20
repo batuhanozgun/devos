@@ -73,12 +73,38 @@ journal; the foreground result's form is inferred from the launch's toolUseResul
                                 denial only, or a workflow agent's meta that names no starting call),
                                 [LAUNCH-NOTRANSCRIPT] no single transcript or no task message in it. A finished run
                                 is not required. Self-contained, so that later subcommands do not change it.
+  launch <agent-id> --item <id> W-C02-24.1 Part B: the same, bound to the item <id> (W-C<dd>-<dd>[.<n>], matched
+                                whole; any other argument list is a usage error). It also prints each Item: line of
+                                the first task message (a line that T5's Item: pattern matches at column 0, the lines
+                                split on "\n" as T5 splits them) as "item line: <JSON string>", and an Item: line
+                                names <id> when the first match of T5's path pattern in it equals plan/work/<id>.md
+                                exactly. A producer (a linked T5 allow record of the same SHA-256) ends LAUNCH
+                                CONFIRMED only when exactly one Item: line names <id>, else [LAUNCH-ITEM]. Where no
+                                T5 allow record is linked and a T5R allow record is, the run's type decides, read from
+                                its meta.json agentType only (the platform writes it), never from a record: no
+                                agentType string, or an empty one, is [LAUNCH-NOTYPE] (read first); any type other
+                                than exactly test-designer is [LAUNCH-T5R], as without --item; a test designer whose
+                                T5R records carry another SHA-256 or none is [LAUNCH-T5R-MISMATCH]; without --item it
+                                is [LAUNCH-NOITEM]; with no, two or an unknown T5 form line (T5's Writer or reader:
+                                pattern at column 0, its first word lower-cased) [LAUNCH-FORM]; with the form reader
+                                [LAUNCH-READER]; unless exactly one Item: line names <id>, [LAUNCH-ITEM]; else its
+                                last line is "TEST-DESIGNER CONFIRMED: <id> (test and oracle paths only)" (exit 0),
+                                which shows that the run was launched with that Item: line, not that an approach or
+                                acceptance reached it (T5R reads no item file). Every refusal exits 1. Without
+                                --item, a producer's lines, their order, its last line and its exit code are those
+                                of launch <agent-id> above; a line added for the T5R branch stands before the last.
 
-audit and calls print tool names, path arguments (Read file_path; Glob path and pattern; Grep path and glob) and the
-input key names of any other tool; never file content, tool output or prompt text. Strings are printed JSON-quoted,
-so that no argument can forge an output line. disciplines prints three fixed lines (its reasons name only answer
-numbers and counts), never prompt or report text; launch prints byte lengths, hashes and record numbers and rules,
-never prompt text. calls lists a transcript as it stands, finished or not. Exit codes:
+audit and calls print tool names, path arguments (Read file_path; Glob path and pattern; Grep path and glob; the
+path of each file-writing call, the guard's FILE_WRITE_TOOLS copied here: Write and Edit file_path, NotebookEdit
+notebook_path, or "<key>=none (no string path)" when that key holds no string) and the input key names of any other
+tool; never file content (Write content, Edit old_string and new_string, NotebookEdit new_source), tool output or
+prompt text. A printed write is an attempt: a denied or failed call still shows, and the path says nothing of the
+bytes; a file written through Bash or a script is not traced. Strings are printed JSON-quoted, so that no argument
+can forge an output line (json.dumps leaves U+2028 and U+0085 as they are, so a reader splits lines on "\n" only).
+disciplines prints three fixed lines (its reasons name only answer numbers and counts), never prompt or report text;
+launch prints byte lengths, hashes, record numbers and rules, the meta's agentType and T5's form word on the T5R
+branch, and with --item the Item: lines; never other prompt text. calls lists a transcript as it stands, finished or
+not. Exit codes:
 0 done (audit: valid; disciplines: both present), 1 audit void or disciplines missing, 2 usage or reading error, 3
 not finished. Locations: $DEVOS_AUDIT_HOME (default: the home directory), $DEVOS_GUARD_LOG_DIR (default
 /tmp/devos-guard).
@@ -93,6 +119,15 @@ import sys
 
 ALLOWED = ("Read", "Glob", "Grep", "TodoWrite", "ToolSearch")   # TodoWrite and ToolSearch reach no file (section 7)
 PATH_KEYS = {"Read": ("file_path",), "Glob": ("path", "pattern"), "Grep": ("path", "glob")}
+# W-C02-24.1: the file-writing tools and their path keys, copied from the guard's FILE_WRITE_TOOLS
+# (.claude/hooks/tool_allowlist.py), never imported; tools/test_subagent_audit.py (W-A6) compares the two.
+FILE_WRITE_TOOLS = {"Write": "file_path", "Edit": "file_path", "NotebookEdit": "notebook_path"}
+# W-C02-24.1 (B4, B6): guard rule T5's form and Item: grammars, copied from the guard, never imported (each matched at
+# column 0 of a "\n"-separated line); tools/test_subagent_audit.py (W-B6 patterns) compares the source text.
+T5_FORM = re.compile(r"(?:\*\*)?Writer or reader:(?:\*\*)?[ \t]*([A-Za-z]*)")
+T5_ITEM = re.compile(r"(?:\*\*)?Item:")
+T5_PATH = re.compile(r"plan/work/W-C\d\d-\d\d(?:\.\d+)?\.md")
+ITEM_ID = re.compile(r"W-C[0-9][0-9]-[0-9][0-9](?:\.[0-9]+)?")   # launch's --item value, matched whole
 NEEDED = {"file_path", "path"}       # absent: Read has no file; Glob or Grep searches the session's working directory
 PATTERNS = {"pattern", "glob"}       # relative to the call's path unless they start with /
 WORKING_ORDER = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "plan",
@@ -108,7 +143,7 @@ VERDICT_KEYS = ("id", "target", "item", "reviewed_head", "verdict", "conditions"
                 "take_up", "triage", "floor", "own_breaks", "shared_with_producer", "producer_run", "package", "nonce",
                 "read", "relied_on", "unsure", "for", "received_returned", "guard_denials")
 USAGE ="usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace> | " \
-        "disciplines <agent-id> | launch <agent-id>"
+        "disciplines <agent-id> | launch <agent-id> [--item W-C<dd>-<dd>[.<n>]]"
 
 
 class Error(Exception):
@@ -190,6 +225,10 @@ def tool_calls(events):
 def call_line(i, name, inp):
     if name in PATH_KEYS:
         shown = " ".join(f"{k}={json.dumps(inp[k], ensure_ascii=False)}" for k in PATH_KEYS[name] if k in inp)
+    elif name in FILE_WRITE_TOOLS:          # its path only, never content, old_string, new_string or new_source
+        k = FILE_WRITE_TOOLS[name]
+        v = inp.get(k)
+        shown = f"{k}={json.dumps(v, ensure_ascii=False)}" if isinstance(v, str) else f"{k}=none (no string path)"
     else:
         shown = "keys=" + json.dumps([str(k) for k in inp], ensure_ascii=False)
     return f"{i} {q(name)} {shown}".rstrip()
@@ -504,8 +543,9 @@ def audit(agent, workspace):
 LAUNCH_SHA = re.compile(r"(?:^|[\s;,])prompt_sha256=([0-9a-f]{64})(?![0-9a-f])")
 
 
-def launch(agent):
-    """See launch in the docstring (W-C02-24 M1b, B8; observation (12))."""
+def launch(agent, item=None):
+    """See launch in the docstring (W-C02-24 M1b, B8; observation (12); W-C02-24.1 Part B for item and the T5R
+    branch)."""
     def fail(token, why):
         print(f"LAUNCH: could not confirm [{token}]: {why}")
         return 1
@@ -525,18 +565,32 @@ def launch(agent):
     blocks = [b for b in content if isinstance(b, dict) and b.get("type") == "text"] if isinstance(content, list) else []
     if not isinstance(content, str) and not blocks:
         return fail("LAUNCH-NOTRANSCRIPT", f"no task message in the first user event of {path}")
+    task = content if isinstance(content, str) else texts(msg)
     try:
-        n, sha = digest(content if isinstance(content, str) else texts(msg))
+        n, sha = digest(task)
     except UnicodeEncodeError:
         return fail("LAUNCH-NOTRANSCRIPT", "the first task message cannot be encoded as UTF-8")
     print(f"transcript: {path}")
     print(f"first task message ({'a string' if isinstance(content, str) else f'{len(blocks)} text blocks'}): "
           f"bytes={n} sha256={sha}")
+    lines = task.split("\n")                     # T5's lines: a "\r" stays part of its line
+    items = [x for x in lines if T5_ITEM.match(x)]
+    if item is not None:                         # each Item: line JSON-quoted, so that none can forge an output line
+        for x in items:
+            print(f"item line: {json.dumps(x, ensure_ascii=False)}")
     try:
         with open(path[:-len(".jsonl")] + ".meta.json", "rb") as f:
-            tid = json.loads(f.read()).get("toolUseId")
-    except (OSError, ValueError, AttributeError):
-        tid = None
+            meta = json.loads(f.read())
+    except (OSError, ValueError):
+        meta = None
+    meta = meta if isinstance(meta, dict) else {}
+    tid = meta.get("toolUseId")
+
+    def item_problem():
+        """None when exactly one Item: line names plan/work/<item>.md (its first T5 path match, compared exactly)."""
+        want = f"plan/work/{item}.md"
+        named = sum(1 for x in items for m in [T5_PATH.search(x)] if m and m.group(0) == want)
+        return None if named == 1 else f"{named} Item: lines name {want} ({len(items)} Item: lines); exactly one must"
     if run is not None or not isinstance(tid, str) or not tid:
         return fail("LAUNCH-NORECORD", "its meta names no starting call (toolUseId), so no guard record can be linked"
                     + (" (a workflow agent)" if run is not None else ""))
@@ -565,14 +619,43 @@ def launch(agent):
     t5 = [(r, h) for r, h in found if r.get("rule") == "T5" and r.get("decision") == "allow"]
     same = [r for r, h in t5 if h == sha]
     if same:
+        if item is not None and item_problem():
+            return fail("LAUNCH-ITEM", item_problem())
         print(f"T5 allow record #{q(same[0].get('n'))} carries the first task message's SHA-256")
         print("LAUNCH CONFIRMED")
         return 0
     if t5:
         return fail("LAUNCH-MISMATCH", f"the linked T5 allow record #{q(t5[0][0].get('n'))} carries another SHA-256")
-    if any(r.get("rule") == "T5R" and r.get("decision") == "allow" for r, _ in found):
+    t5r = [(r, h) for r, h in found if r.get("rule") == "T5R" and r.get("decision") == "allow"]
+    if not t5r:
+        return fail("LAUNCH-NORECORD", f"no T5 allow record for {q(tid)} in {log_dir} ({len(linked)} linked records)")
+    # A T5R allow decides (W-C02-24.1 B4): the type comes from the platform-written meta.json only, never a record.
+    kind = meta.get("agentType")
+    if not isinstance(kind, str) or not kind:
+        return fail("LAUNCH-NOTYPE", "the linked record is a T5R allow and the meta names no agentType string, so the "
+                    "run's type is unknown")
+    print(f"agentType (meta.json): {json.dumps(kind, ensure_ascii=False)}")
+    if kind != "test-designer":
         return fail("LAUNCH-T5R", "the linked record is a T5R allow: the run was launched in the reader form")
-    return fail("LAUNCH-NORECORD", f"no T5 allow record for {q(tid)} in {log_dir} ({len(linked)} linked records)")
+    same = [r for r, h in t5r if h == sha]
+    if not same:
+        return fail("LAUNCH-T5R-MISMATCH", f"the linked T5R allow record #{q(t5r[0][0].get('n'))} of this test "
+                    "designer carries another SHA-256 or none")
+    print(f"T5R allow record #{q(same[0].get('n'))} carries the first task message's SHA-256")
+    if item is None:
+        return fail("LAUNCH-NOITEM", "a test designer is confirmed only with --item <the verdict's item>")
+    forms = [m for m in map(T5_FORM.match, lines) if m]
+    word = forms[0].group(1).lower() if len(forms) == 1 else None
+    if word not in ("writer", "reader"):
+        return fail("LAUNCH-FORM", f"{len(forms)} Writer or reader: lines" + (
+            ", whose first word is neither writer nor reader" if len(forms) == 1 else "; exactly one is read"))
+    print(f"form line: {word}")
+    if word == "reader":
+        return fail("LAUNCH-READER", "the test designer was launched in the reader form")
+    if item_problem():
+        return fail("LAUNCH-ITEM", item_problem())
+    print(f"TEST-DESIGNER CONFIRMED: {item} (test and oracle paths only)")
+    return 0
 
 
 def main(argv):
@@ -588,6 +671,8 @@ def main(argv):
             return disciplines(argv[1])
         if len(argv) == 2 and argv[0] == "launch":
             return launch(argv[1])
+        if len(argv) == 4 and argv[0] == "launch" and argv[2] == "--item" and ITEM_ID.fullmatch(argv[3]):
+            return launch(argv[1], argv[3])
         print(USAGE, file=sys.stderr)
     except NotFinished as e:
         print(f"subagent_audit: NOT FINISHED: {e}", file=sys.stderr)

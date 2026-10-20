@@ -20,9 +20,14 @@ a task carrying only the first quoted line does not carry the block. Case 48 pin
 judge N-149 (PC-24): every agent gets its end status
 by default (a completion notification in the fake session transcript .claude/projects/x/y.jsonl, or a result in its
 workflow run's journal.jsonl), and the cases plant transcripts without one, statuses that are not an end, and reports
-handed back through a SubagentHandback or StructuredOutput call. Prints one line per case and SUBAGENT_AUDIT_TEST
-PASS only if every case behaves as written.
+handed back through a SubagentHandback or StructuredOutput call. The cases labelled "(W-...)" judge W-C02-24.1 (its
+acceptance block, Parts A and B; see w241_cases): each carries its group, [new] (an outcome the base's tool does not
+give, red there) or [keep] (an outcome the base's tool already gives, green there), and the cases that compare with the
+base's tool read it with git show from this checkout's history (BASE), never from the working tree. Prints one line per
+case and SUBAGENT_AUDIT_TEST PASS only if every case behaves as written.
 """
+import ast
+import hashlib
 import json
 import os
 import re
@@ -287,6 +292,453 @@ def launch_cases(fx):
     rc, out, both = fx.run("launch", "a1f00000000000099")
     case("(L7) no transcript for the agent: could not confirm, [LAUNCH-NOTRANSCRIPT], non-zero exit", rc != 0 and
          "could not confirm" in both and "[LAUNCH-NOTRANSCRIPT]" in both, both)
+
+
+# W-C02-24.1 (plan/work/W-C02-24.1.md, the acceptance block merged at cec4e20): the base and the tokens its test commit
+# fixes. BASE is the pull request's base on main (W-C02-25's merge, #437); the base's tool is read from it by git show
+# and checked against its SHA-256, so a missing or wrong base fails the cases that compare with it ("could not check"),
+# never passes them.
+BASE = "13d310a3915c7b60605735bf76dcdbd2a32ba27d"
+BASE_TOOL_SHA256 = "2cdcf4506c1df33c0773d57614b3a4c4b816f26ce7523899749b395b9fc6be2b"
+ROOT = Path(__file__).resolve().parent.parent
+GUARD = ROOT / ".claude" / "hooks" / "tool_allowlist.py"
+DISPLAY = {"Write": "file_path", "Edit": "file_path", "NotebookEdit": "notebook_path"}   # A1; A6 compares the guard's
+PATHLESS = "{n} {tool} {key}=none (no string path)"            # [test commit] A4's defined line
+TD_OK = "TEST-DESIGNER CONFIRMED: {} (test and oracle paths only)"   # [test commit] the test designer's last line
+ITEM_LINE = "item line: {}"                                    # [test commit] each Item: line, JSON-quoted (B6)
+REFUSAL = re.compile(r"LAUNCH: could not confirm \[(LAUNCH-[A-Z0-9-]+)\]: \S.*")   # today's form (B4, pinned)
+# [test commit] the refusal tokens of the T5R branch and of --item, besides LAUNCH-MISMATCH, LAUNCH-T5R,
+# LAUNCH-NORECORD and LAUNCH-NOTRANSCRIPT, which keep their meaning:
+NOTYPE, TDMISMATCH, NOITEM, READER, FORM, ITEM = ("LAUNCH-NOTYPE", "LAUNCH-T5R-MISMATCH", "LAUNCH-NOITEM",
+                                                 "LAUNCH-READER", "LAUNCH-FORM", "LAUNCH-ITEM")
+P241, P24, P25 = "plan/work/W-C02-24.1.md", "plan/work/W-C02-24.md", "plan/work/W-C02-25.md"
+ABSENT = object()
+W_GROUPS = {}                                                  # case label -> "new" or "keep" (Part D, D1)
+W_NEW, W_KEEP = 28, 8                                          # the groups' sizes as written (the denominator)
+
+
+def gcase(group, label, ok, detail=""):
+    """A W-C02-24.1 case in exactly one D1 group: new (red on the base's tool) or keep (green there)."""
+    assert group in ("new", "keep") and label not in W_GROUPS, label
+    W_GROUPS[label] = group
+    case(f"[{group}] {label}", ok, detail)
+
+
+def base_tool(tmp):
+    """(path, None): the base's tool, beside the base's guard (audit loads session_key from it); else (None, why)."""
+    d = Path(tmp) / "base"
+    for rel in ("tools/subagent_audit.py", ".claude/hooks/tool_allowlist.py"):
+        r = subprocess.run(["git", "-C", str(ROOT), "show", f"{BASE}:{rel}"], capture_output=True)
+        if r.returncode != 0:
+            return None, f"could not check: git show {BASE}:{rel} failed: {r.stderr.decode(errors='replace')}"
+        (d / rel).parent.mkdir(parents=True, exist_ok=True)
+        (d / rel).write_bytes(r.stdout)
+    tool = d / "tools" / "subagent_audit.py"
+    sha = hashlib.sha256(tool.read_bytes()).hexdigest()
+    return (tool, None) if sha == BASE_TOOL_SHA256 else (None, f"could not check: the base's tool is {sha}")
+
+
+def lines_of(out):
+    return out[:-1].split("\n") if out.endswith("\n") else (out.split("\n") if out else [])
+
+
+def refused(r, token):
+    """rc 1; the last line is today's refusal form with token; no line confirms either way (B4, B7)."""
+    rc, out, _ = r
+    ls = lines_of(out)
+    m = REFUSAL.fullmatch(ls[-1]) if ls else None
+    return rc == 1 and m is not None and m.group(1) == token and "LAUNCH CONFIRMED" not in ls[-1] and \
+        "TEST-DESIGNER CONFIRMED" not in ls[-1] and not any(x == "LAUNCH CONFIRMED" or
+                                                            x.startswith("TEST-DESIGNER CONFIRMED") for x in ls)
+
+
+def td_confirmed(r, item):
+    rc, out, _ = r
+    ls = lines_of(out)
+    return rc == 0 and bool(ls) and ls[-1] == TD_OK.format(item) and "LAUNCH CONFIRMED" not in out.splitlines() and \
+        sum(x.startswith("TEST-DESIGNER CONFIRMED") for x in out.splitlines()) == 1
+
+
+def p_confirmed(r):
+    rc, out, _ = r
+    ls = lines_of(out)
+    return rc == 0 and bool(ls) and ls[-1] == "LAUNCH CONFIRMED" and ls.count("LAUNCH CONFIRMED") == 1 and \
+        out.splitlines().count("LAUNCH CONFIRMED") == 1 and "TEST-DESIGNER CONFIRMED" not in out
+
+
+def usage(r):
+    rc, out, both = r
+    return rc == 2 and out == "" and both.startswith("usage: ")
+
+
+def assigned(path, names):
+    """{name: ast node of its module-level value} for each of names assigned once at the top of the file at path."""
+    tree = ast.parse(Path(path).read_text(encoding="utf-8"))
+    found = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) \
+                and node.targets[0].id in names:
+            found.setdefault(node.targets[0].id, []).append(node.value)
+    return {k: v[0] for k, v in found.items() if len(v) == 1}
+
+
+def task_text(items=(f"Item: {P241}",), forms=("Writer or reader: writer",)):
+    """A first task message: its Item: lines, its form lines, and a body holding the marker (never printed)."""
+    return "\n".join([*items, *forms, f"**Purpose:** fixture task {MARKER} ğüşiöç", "", f"More {MARKER}."])
+
+
+def w_launched(fx, agent, prompt, mtype=ABSENT, records=(("T5R", True, "test-designer"),)):
+    """An Agent-tool subagent whose first task message is prompt, its meta's agentType mtype (ABSENT: no key), and
+    linked guard allow records (rule, same SHA-256 or another, the role type the detail names), in the guard's
+    detail form (tool_allowlist.py t5: "...; prompt_bytes=<n>; prompt_sha256=<hex>")."""
+    fx.put(fx.sub / f"agent-{agent}.jsonl", user(prompt), say("Working."), say(PLAIN))
+    meta = {"description": "fixture", "toolUseId": f"toolu_fx_launch_{agent}"}
+    if mtype is not ABSENT:
+        meta["agentType"] = mtype
+    (fx.sub / f"agent-{agent}.meta.json").write_text(json.dumps(meta))
+    fx.end(agent)
+    data = prompt.encode("utf-8")
+    with open(fx.logs / "session_fx_w241.jsonl", "a", encoding="utf-8") as f:
+        for rule, same, dtype in records:
+            fx.n += 1
+            h = hashlib.sha256(data if same else b"another prompt").hexdigest()
+            f.write(json.dumps({"n": fx.n, "time": "2026-01-01T00:00:00Z", "event": "PreToolUse",
+                                "tool_use_id": f"toolu_fx_launch_{agent}", "agent_id": None, "cwd": "/fx/session-cwd",
+                                "tool": "Agent", "decision": "allow", "rule": rule, "summary": "Agent",
+                                "detail": f"an in-process subagent of the role type '{dtype}' (T2, T4); fixture "
+                                          f"{rule}; input_keys=description,prompt,subagent_type; hook_keys=cwd; "
+                                          f"prompt_bytes={len(data)}; prompt_sha256={h}"}) + "\n")
+
+
+def w241_cases(fx, tmp):
+    """W-C02-24.1's cases (its acceptance block, merged at cec4e20), written before the build (approach, Order (D3)).
+    Form C0 (Appendix C):
+    - Claims: Part A (C1): calls and audit print each Write, Edit and NotebookEdit call as <n> <Tool> <key>=<JSON
+      string> (the guard's FILE_WRITE_TOOLS), never a content key, on one line each, a defined line when no string path
+      exists, every other line byte for byte as the base's. Part B (C2): launch <id> [--item W-C<dd>-<dd>[.<n>]] reads
+      the type from meta.json's agentType only, and only where a linked T5R allow record decides; a test designer with
+      the same SHA-256, --item, exactly one Item: line naming plan/work/<id>.md and exactly one form line reading writer
+      ends with TD_OK; a producer's output keeps the base's lines, order, last line and exit code.
+    - Failure class rule: a write shown without its path, or with content, or forging a line; a type, item or form read
+      from a place or in a way T5 does not use (a record's prose, a prefix, an indented line, a reader-form run); a
+      confirmation of one kind readable as the other; a producer's existing outcome changed.
+    - Examples: at least two per class: Write, Edit and NotebookEdit paths (one non-ASCII); newline-forged LAUNCH
+      CONFIRMED and call lines; pathless inputs of four shapes; type absent, null, number and empty; prefixes in both
+      directions; reader, none, two and an unknown word for the form; a carriage return for a test designer and a
+      producer.
+    - Interface fixed here (the condition's [test commit] points): PATHLESS (A4's line), TD_OK, ITEM_LINE, the tokens
+      NOTYPE to ITEM, rc 1 for every refusal and rc 2 with nothing on stdout and stderr starting "usage: " for a
+      malformed --item; the grammar is exactly launch <id> or launch <id> --item <id>, the item ID matching
+      W-C\\d\\d-\\d\\d(\\.\\d+)? whole; the tool keeps module-level T5_ITEM, T5_PATH and T5_FORM, each assigned
+      once as the guard assigns it (B6's comparison reads both files with ast, never imports the guard). On the T5R
+      branch the type is read first, so a run that also lacks --item ends NOTYPE (the one case here that fails two
+      conditions, (W-B4 notype-noitem)).
+    - Negative controls: every refusal case; positive controls: (W-B1 parse), (W-B4 confirm), (W-B4 bold writer),
+      (W-B4 two items), (W-B6 bold item), (W-B3 meta td).
+    - Breaks (D3's own breaks; each turns its named case red): a display tool removed (W-A1 <tool>, W-A6); every
+      input key printed (W-A2, (11)); JSON quoting dropped (W-A3); Write in ALLOWED (W-A5 void); the type read from the
+      record's detail (W-B3 both); a missing type defaulted (W-B4 notype); any T5R accepted (W-B4 t5r-item); the T5R
+      SHA-256 comparison dropped (W-B4 mismatch); --item ignored (W-B4 other item, W-B5 other item); prefix matching
+      (W-B4 prefix); the form check dropped (W-B4 reader); a copied pattern changed (W-B6 patterns).
+    - Stage and environment: C02; counted environment E1: this container's python3 3.13.16 and git 2.43.0, a fresh
+      non-shallow clone (git show BASE must work).
+    - Independence: written by W-C02-24.1's test designer before any product; run and judged by the test verdict's
+      checker (D1) and the binding checker (D3).
+    - Evidence layer: structural (the tool's output on synthetic transcripts); the real runs are D3's, not here.
+    - Not covered here: the real transcripts (A7, D3: the binding checker runs the head's tool on them); the duty
+      texts (Part C); a test designer under a T5 record; a line separator other than \\n and \\r (json.dumps with
+      ensure_ascii=False leaves U+2028 and U+0085 as they are, as Read's line already does)."""
+    base, why_base = base_tool(tmp)
+    CLONE = "/fx/scratch/w241/devos"
+
+    def both(*args):
+        """(head, base) results of one command; base is (None, why) when it could not be read."""
+        h = fx.run(*args)
+        return h, (fx.run(*args, tool=base) if base else (None, "", why_base))
+
+    # Part A fixtures.
+    writes = [("Read", {"file_path": f"{CLONE}/plan/a.md"}),
+              ("Write", {"file_path": f"{CLONE}/tools/new.py", "content": MARKER}),
+              ("Edit", {"file_path": f"{CLONE}/plan/Türkçe ğ.md", "old_string": MARKER, "new_string": MARKER,
+                        "replace_all": False}),
+              ("NotebookEdit", {"notebook_path": f"{CLONE}/nb/a.ipynb", "new_source": MARKER, "cell_id": "c1"}),
+              ("Glob", {"path": CLONE, "pattern": "*.py"}),
+              ("Grep", {"path": CLONE, "glob": "*.md", "pattern": MARKER}),
+              ("TodoWrite", {"todos": [{"content": MARKER}]}),
+              ("Bash", {"command": f"echo {MARKER} > {CLONE}/x", "description": "x"}),
+              ("MultiEdit", {"file_path": f"{CLONE}/m.py", "edits": [{"old_string": MARKER, "new_string": MARKER}]}),
+              ("FxUnknownTool", {"file_path": f"{CLONE}/u.py", "notebook_path": f"{CLONE}/u.ipynb", "x": MARKER}),
+              ("Write", {"file_path": "/fx/scratch/w241/devos2/tools/x.py", "content": MARKER})]   # outside the root
+    fx.agent("aw241write", writes, prompt=task_text())
+    hc = fx.run("calls", "aw241write")
+    ha = fx.run("audit", "aw241write", CLONE)
+    cl, al = lines_of(hc[1]), lines_of(ha[1])
+
+    def jq(p):
+        return json.dumps(p, ensure_ascii=False)
+
+    for tool, idx in (("Write", (2, 11)), ("Edit", (3,)), ("NotebookEdit", (4,))):
+        want = [f"{i} {tool} {DISPLAY[tool]}={jq(writes[i - 1][1][DISPLAY[tool]])}" for i in idx]
+        gcase("new", f"(W-A1 {tool}) calls prints one line per tool_use (11, asserted first) and each {tool} call as "
+              f"<n> {tool} {DISPLAY[tool]}=<JSON string>; audit shows the same text before its OUTSIDE suffix",
+              hc[0] == 0 and len(cl) == len(writes) and all(cl[i - 1] == w for i, w in zip(idx, want))
+              and all(f"{w}: OUTSIDE (tool {tool} is not allowed)" in al for w in want), ha[2] + hc[2])
+
+    launches = [fx.run("launch", "aw241write"), fx.run("launch", "aw241write", "--item", "W-C02-24.1")]
+    gcase("keep", "(W-A2) no planted marker in Write content, Edit old_string and new_string or NotebookEdit "
+          "new_source reaches stdout or stderr of calls, audit or launch (with and without --item)",
+          all(MARKER not in r[2] for r in [hc, ha] + launches) and len(cl) == len(writes),
+          "\n".join(r[2] for r in [hc, ha] + launches if MARKER in r[2]))
+
+    forge = [("Write", {"file_path": "/fx/a\nLAUNCH CONFIRMED", "content": MARKER}),
+             ("Edit", {"file_path": '/fx/b\n2 Write file_path="x"', "old_string": MARKER, "new_string": MARKER}),
+             ("Read", {"file_path": "/fx/c.md"})]
+    fx.agent("aw241forge", forge)
+    r = fx.run("calls", "aw241forge")
+    gcase("new", "(W-A3) a file_path holding a newline and LAUNCH CONFIRMED, or a newline and a call line, prints on "
+          "one line with the newline escaped; the line count equals the tool_use count",
+          r[0] == 0 and lines_of(r[1]) == ['1 Write file_path="/fx/a\\nLAUNCH CONFIRMED"',
+                                           '2 Edit file_path="/fx/b\\n2 Write file_path=\\"x\\""',
+                                           '3 Read file_path="/fx/c.md"'] and len(r[1].splitlines()) == 3, r[2])
+
+    pathless = [("Write", {"content": MARKER}), ("Write", {"file_path": None, "content": MARKER}),
+                ("Write", {"file_path": 7, "content": MARKER}),
+                ("Write", {"file_path": [f"/fx/list/{MARKER}"], "content": MARKER}),
+                ("NotebookEdit", {"new_source": MARKER}), ("Edit", f"/fx/not-an-object/{MARKER}"),
+                ("Read", {"file_path": f"{CLONE}/ok.md"})]
+    fx.agent("aw241pathless", pathless)
+    r = fx.run("calls", "aw241pathless")
+    want = [PATHLESS.format(n=i, tool=t, key=DISPLAY[t]) for i, (t, _) in enumerate(pathless[:6], 1)] + \
+        [f'7 Read file_path="{CLONE}/ok.md"']
+    gcase("new", "(W-A4) a Write with no file_path, or a null, number or list one, a NotebookEdit with no "
+          "notebook_path and an Edit whose input is not an object each print the defined line (number, tool, key, no "
+          "value); the Read after them is unchanged; exit 0", r[0] == 0 and lines_of(r[1]) == want
+          and "/fx/" not in "".join(lines_of(r[1])[:6]), r[2])
+
+    fx.raw("aw241denied", [user(task_text()), call("toolu_fx_dn_1", "Write", {"file_path": f"{CLONE}/e.py",
+                                                                              "content": MARKER}),
+                           user([{"type": "tool_result", "tool_use_id": "toolu_fx_dn_1", "is_error": True,
+                                  "content": f"error {MARKER}"}]),
+                           call("toolu_fx_dn_2", "Write", {"file_path": f"{CLONE}/d.py", "content": MARKER}),
+                           result("toolu_fx_dn_2"), say(PLAIN)])
+    with open(fx.logs / "session_fx_w241.jsonl", "a", encoding="utf-8") as f:
+        fx.n += 1
+        f.write(json.dumps({"n": fx.n, "time": "2026-01-01T00:00:00Z", "event": "PreToolUse",
+                            "agent_id": "aw241denied", "tool_use_id": "toolu_fx_dn_2", "cwd": "/fx/session-cwd",
+                            "tool": "Write", "decision": "deny", "rule": "F1", "summary": f"{CLONE}/d.py"}) + "\n")
+    r = fx.run("calls", "aw241denied")
+    gcase("new", "(W-A8) a Write whose tool_result is an error, and one the guard log records as a deny, still print "
+          "their paths (a tool_use is an attempt)", r[0] == 0 and lines_of(r[1]) ==
+          [f'1 Write file_path="{CLONE}/e.py"', f'2 Write file_path="{CLONE}/d.py"'], r[2])
+
+    # A5: byte for byte against the base's tool, on these fixtures and on earlier ones.
+    rows, detail = [], []
+    for agent, ws in (("aw241write", CLONE), ("aw241forge", WS), ("aw241pathless", CLONE), ("aw241denied", CLONE),
+                      ("afx0valid", WS), ("afx5bash", WS), ("afxawf", WS)):
+        (h1, b1), (h2, b2) = both("calls", agent), both("audit", agent, ws)
+        if b1[0] is None:
+            rows.append((False, False))
+            detail.append(why_base)
+            continue
+        hcl, bcl, hal, bal = lines_of(h1[1]), lines_of(b1[1]), lines_of(h2[1]), lines_of(b2[1])
+        n = len(bcl)
+        same_shape = h1[0] == b1[0] and h2[0] == b2[0] and len(hcl) == n and len(hal) == len(bal) and n > 0 \
+            and hal[:5] == bal[:5] and hal[5 + n:] == bal[5 + n:]
+        names = [x.split(" ", 2)[1] for x in bcl]
+        other = same_shape and all(hcl[i] == bcl[i] and hal[5 + i] == bal[5 + i]
+                                   for i in range(n) if names[i] not in DISPLAY)
+        disp = same_shape and all(bal[5 + i].startswith(bcl[i]) and hal[5 + i] == hcl[i] + bal[5 + i][len(bcl[i]):]
+                                  for i in range(n) if names[i] in DISPLAY)
+        rows.append((other, disp))
+        detail.append(f"{agent}:\n" + h1[2] + b1[2] + h2[2] + b2[2])
+    gcase("keep", "(W-A5 other tools) for 7 fixtures, every calls and audit line of a tool outside the display set, "
+          "audit's other lines (AUDIT line included) and both exit codes are byte-identical to the base's tool's; "
+          "MultiEdit and an unknown tool still print keys=[...]",
+          len(rows) == 7 and all(o for o, _ in rows) and '9 MultiEdit keys=["file_path", "edits"]' in cl
+          and '10 FxUnknownTool keys=["file_path", "notebook_path", "x"]' in cl, "\n".join(detail))
+    gcase("keep", "(W-A5 display suffix) for the same 7 fixtures, each display-set call's audit line ends with the "
+          "base's suffix (: OUTSIDE (tool <T> is not allowed)) after the head's own call text",
+          len(rows) == 7 and all(d for _, d in rows), "\n".join(detail))
+    gcase("keep", "(W-A5 void) audit of a run holding a Write is AUDIT VOID naming that call, exit 1",
+          ha[0] == 1 and al and al[-1].startswith("AUDIT VOID: ") and "call 2 outside" in al[-1], ha[2])
+
+    # A6 and B6: the display set and the copied patterns against this checkout's guard, read as text.
+    try:
+        fwt = ast.literal_eval(assigned(GUARD, {"FILE_WRITE_TOOLS"})["FILE_WRITE_TOOLS"])
+        ok = isinstance(fwt, dict) and {"Write", "Edit"} <= set(fwt) and all(isinstance(v, str) for v in fwt.values())
+        why = "" if ok else f"could not check: FILE_WRITE_TOOLS in {GUARD} is {fwt!r}"
+    except Exception as e:      # an unreadable guard is "could not check", never a pass
+        fwt, ok, why = {}, False, f"could not check: FILE_WRITE_TOOLS in {GUARD}: {type(e).__name__}: {e}"
+    six = [(t, {k: f"/fx/a6/{t}.txt", "content": MARKER}) for t, k in sorted(fwt.items())] + \
+          [(t, {"file_path": f"/fx/a6/{t}", "notebook_path": f"/fx/a6/{t}.ipynb"})
+           for t in ("MultiEdit", "Bash", "TodoWrite", "FxUnknownTool")]
+    fx.agent("aw241guardset", six)
+    r = fx.run("calls", "aw241guardset")
+    lone = Path(tmp) / "noguard" / "tools"          # a copy with no guard beside it: the display imports no guard
+    lone.mkdir(parents=True)
+    r2 = fx.run("calls", "aw241guardset", tool=Path(copy_file(TOOL, lone / "subagent_audit.py")))
+    want = [f'{i} {t} {k}="/fx/a6/{t}.txt"' for i, (t, k) in enumerate(sorted(fwt.items()), 1)] + \
+        [f'{len(fwt) + i} {t} keys=["file_path", "notebook_path"]'
+         for i, t in enumerate(("MultiEdit", "Bash", "TodoWrite", "FxUnknownTool"), 1)]
+    gcase("new", f"(W-A6) the display set equals the guard's FILE_WRITE_TOOLS ({len(fwt)} tools read as text from "
+          f"{GUARD.name}), tool for tool and key for key, also from a copy of the tool with no guard beside it; tools "
+          "outside it print keys=[...]", ok and r[0] == 0 and lines_of(r[1]) == want and r2[:2] == r[:2],
+          why + r[2] + r2[2])
+    try:
+        g = assigned(GUARD, {"T5_ITEM", "T5_PATH", "T5_FORM"})
+        t = assigned(TOOL, {"T5_ITEM", "T5_PATH", "T5_FORM"})
+        pats = [(k, k in g and k in t and ast.dump(g[k]) == ast.dump(t[k])) for k in ("T5_ITEM", "T5_PATH", "T5_FORM")]
+        why = f"guard has {sorted(g)}, tool has {sorted(t)}; equal: {pats}"
+    except Exception as e:
+        pats, why = [], f"could not check: {type(e).__name__}: {e}"
+    gcase("new", "(W-B6 patterns) the tool's T5_ITEM, T5_PATH and T5_FORM, each assigned once, have the source text "
+          "(ast) of the guard's", len(pats) == 3 and all(p for _, p in pats), why)
+
+    # Part B. B1: the grammar.
+    w_launched(fx, "aw241p241", task_text(), "producer", [("T5", True, "producer")])
+    w_launched(fx, "aw241p24", task_text(items=(f"Item: {P24}",)), "producer", [("T5", True, "producer")])
+    r1, r2 = fx.run("launch", "aw241p241", "--item", "W-C02-24.1"), fx.run("launch", "aw241p24", "--item", "W-C02-24")
+    gcase("new", "(W-B1 parse; W-B5 producer) launch <id> --item parses, dotted and not; a producer whose one Item: "
+          "line names the item prints that line JSON-quoted before the last line and ends LAUNCH CONFIRMED, exit 0",
+          p_confirmed(r1) and p_confirmed(r2) and ITEM_LINE.format(jq(f"Item: {P241}")) in lines_of(r1[1])[:-1]
+          and ITEM_LINE.format(jq(f"Item: {P24}")) in lines_of(r2[1])[:-1], r1[2] + r2[2])
+    bad = [("--item",), ("--item", "w-c02-24.1"), ("--item", P24), ("--item", "W-C02-24.md"),
+           ("--item", "W-C02-24.1", "--item", "W-C02-24.1"), ("extra",), ("--item", "W-C02-24.1", "extra"),
+           ("--item=W-C02-24.1",), ("--item", "W-C2-24")]
+    rs = [fx.run("launch", "aw241p241", *a) for a in bad] + [fx.run("launch", "--item", "W-C02-24.1", "aw241p241")]
+    gcase("keep", f"(W-B1 usage) {len(bad) + 1} malformed launch argument lists (no value, lower case, a path, a file "
+          "name, a repeated --item, an extra argument, --item=, a short ID, --item before the agent ID) are usage "
+          "errors: exit 2, nothing on stdout, stderr starting usage:", len(rs) == 10 and all(usage(x) for x in rs),
+          "".join(x[2] for x in rs))
+
+    # B2: a producer without --item.
+    rows = []
+    for agent in [f"a1f000000000000{c}" for c in "abcdef"] + ["a1f00000000000099"]:
+        h, b = both("launch", agent)
+        hl, bl = lines_of(h[1]), lines_of(b[1])
+        it = iter(hl[:-1])
+        rows.append((b[0] is not None and h[0] == b[0] and bool(bl) and hl[-1:] == bl[-1:]
+                     and all(x in it for x in bl[:-1]), h[2] + (b[2] if b[0] is not None else why_base)))
+    gcase("keep", "(W-B2 L-cases) on the 7 L-case fixtures, launch without --item gives the base's lines in order, "
+          "the same last line and the same exit code; added lines stand before the last",
+          len(rows) == 7 and all(ok for ok, _ in rows), "\n".join(d for ok, d in rows if not ok))
+    for name, mt in (("aw241t5none", ABSENT), ("aw241t5gp", "general-purpose"), ("aw241t5td", "test-designer")):
+        w_launched(fx, name, task_text(), mt, [("T5", True, "producer")])
+    rs = [fx.run("launch", a) for a in ("aw241t5none", "aw241t5gp", "aw241t5td")]
+    gcase("keep", "(W-B2 T5 type) a T5 writer-form record with the same SHA-256 ends LAUNCH CONFIRMED, exit 0, whether "
+          "meta has no agentType, general-purpose or test-designer: the type decides nothing on the T5 branch",
+          all(p_confirmed(x) for x in rs), "".join(x[2] for x in rs))
+
+    # B3: the type comes from meta.json only.
+    w_launched(fx, "aw241mprod", task_text(), "producer", [("T5R", True, "test-designer")])
+    w_launched(fx, "aw241mtd", task_text(), "test-designer", [("T5R", True, "producer")])
+    r = fx.run("launch", "aw241mprod", "--item", "W-C02-24.1")
+    gcase("new", "(W-B3 meta producer) meta producer, the T5R record's detail naming role type 'test-designer', "
+          "everything else a test designer's confirmation: LAUNCH-T5R", refused(r, "LAUNCH-T5R"), r[2])
+    r = fx.run("launch", "aw241mtd", "--item", "W-C02-24.1")
+    gcase("new", "(W-B3 meta td) meta test-designer, the detail naming role type 'producer': the meta decides, "
+          "the test designer's line", td_confirmed(r, "W-C02-24.1"), r[2])
+
+    # B4: the T5R branch.
+    nt = [("aw241ntabsent", ABSENT), ("aw241ntnull", None), ("aw241ntnum", 7), ("aw241ntempty", "")]
+    for name, mt in nt:
+        w_launched(fx, name, task_text(), mt)
+    rs = [fx.run("launch", a, "--item", "W-C02-24.1") for a, _ in nt]
+    gcase("new", "(W-B4 notype) agentType absent, null, a number or empty, with everything else a test designer's "
+          f"confirmation: [{NOTYPE}], exit 1", len(rs) == 4 and all(refused(x, NOTYPE) for x in rs),
+          "".join(x[2] for x in rs))
+    r = fx.run("launch", "aw241ntabsent")
+    gcase("new", f"(W-B4 notype-noitem) agentType absent and no --item: the type is read first, [{NOTYPE}]",
+          refused(r, NOTYPE), r[2])
+    w_launched(fx, "aw241rprod", task_text(forms=("Writer or reader: reader",)), "producer",
+               [("T5R", True, "producer")])
+    r = fx.run("launch", "aw241rprod")
+    gcase("keep", "(W-B4 t5r) a reader-form producer (meta producer, T5R with the same SHA-256), no --item: "
+          "LAUNCH-T5R, exit 1", refused(r, "LAUNCH-T5R"), r[2])
+    ty = [("aw241typrod", "producer"), ("aw241tygp", "general-purpose"), ("aw241tycap", "Test-Designer"),
+          ("aw241tysp", "test-designer ")]
+    for name, mt in ty:
+        w_launched(fx, name, task_text(), mt)
+    rs = [fx.run("launch", a, "--item", "W-C02-24.1") for a, _ in ty]
+    gcase("new", "(W-B4 t5r-item) any agentType other than exactly test-designer (producer, general-purpose, "
+          "Test-Designer, a trailing space), with --item and a writer line naming the item: LAUNCH-T5R",
+          len(rs) == 4 and all(refused(x, "LAUNCH-T5R") for x in rs), "".join(x[2] for x in rs))
+    w_launched(fx, "aw241tdmis", task_text(), "test-designer", [("T5R", False, "test-designer")])
+    r = fx.run("launch", "aw241tdmis", "--item", "W-C02-24.1")
+    gcase("new", f"(W-B4 mismatch) a test designer whose T5R record carries another SHA-256: [{TDMISMATCH}]",
+          refused(r, TDMISMATCH), r[2])
+    w_launched(fx, "aw241td", task_text(), "test-designer")
+    r = fx.run("launch", "aw241td")
+    gcase("new", f"(W-B4 noitem) a test designer with the same SHA-256 and no --item: [{NOITEM}], no confirmation line",
+          refused(r, NOITEM), r[2])
+    r = fx.run("launch", "aw241td", "--item", "W-C02-24.1")
+    gcase("new", "(W-B4 confirm) a test designer, the same SHA-256, --item, one Item: line naming it, one writer line: "
+          "its Item: line JSON-quoted before the last line, the last line TD_OK for the item, exit 0",
+          td_confirmed(r, "W-C02-24.1") and ITEM_LINE.format(jq(f"Item: {P241}")) in lines_of(r[1])[:-1]
+          and TD_OK.format("W-C02-24.1") not in "LAUNCH CONFIRMED" and "LAUNCH CONFIRMED" not in TD_OK, r[2])
+    r = fx.run("launch", "aw241td", "--item", "W-C02-25")
+    gcase("new", f"(W-B4 other item) the same run with --item naming another item: [{ITEM}]", refused(r, ITEM), r[2])
+    w_launched(fx, "aw241rd", task_text(forms=("**Writer or reader:** reader: you write no file in the repository.",)),
+               "test-designer")
+    w_launched(fx, "aw241rdplain", task_text(forms=("Writer or reader: reader",)), "test-designer")
+    rs = [fx.run("launch", a, "--item", "W-C02-24.1") for a in ("aw241rd", "aw241rdplain")]
+    gcase("new", f"(W-B4 reader) a test designer whose one form line reads reader (bold, as a real triage run's, and "
+          f"plain), all else a confirmation: [{READER}]", all(refused(x, READER) for x in rs),
+          "".join(x[2] for x in rs))
+    w_launched(fx, "aw241wbold", task_text(forms=("**Writer or reader:** Writer of one file only",)), "test-designer")
+    r = fx.run("launch", "aw241wbold", "--item", "W-C02-24.1")
+    gcase("new", "(W-B4 bold writer) the form line **Writer or reader:** Writer of one file only confirms (T5 "
+          "lower-cases the first word)", td_confirmed(r, "W-C02-24.1"), r[2])
+    fm = [("aw241fnone", ()), ("aw241ftwo", ("Writer or reader: writer", "Writer or reader: writer")),
+          ("aw241fword", ("Writer or reader: both",)), ("aw241findent", ("  Writer or reader: writer",))]
+    for name, forms in fm:
+        w_launched(fx, name, task_text(forms=forms), "test-designer")
+    rs = [fx.run("launch", a, "--item", "W-C02-24.1") for a, _ in fm]
+    gcase("new", f"(W-B4 form) no form line, two, a first word neither writer nor reader, or only an indented one: "
+          f"[{FORM}], never confirmed", len(rs) == 4 and all(refused(x, FORM) for x in rs), "".join(x[2] for x in rs))
+    it = [("aw241inone", (f"Item: {P25}",)), ("aw241itwo", (f"Item: {P241}", f"**Item:** {P241}"))]
+    for name, items in it:
+        w_launched(fx, name, task_text(items=items), "test-designer")
+    rs = [fx.run("launch", a, "--item", "W-C02-24.1") for a, _ in it]
+    gcase("new", f"(W-B4 items) no Item: line names the item, or two name it: [{ITEM}]",
+          all(refused(x, ITEM) for x in rs), "".join(x[2] for x in rs))
+    w_launched(fx, "aw241idiff", task_text(items=(f"Item: {P25}", f"Item: {P241}")), "test-designer")
+    r = fx.run("launch", "aw241idiff", "--item", "W-C02-24.1")
+    gcase("new", "(W-B4 two items) two Item: lines naming different items, one of them the item: both printed "
+          "JSON-quoted, and it confirms", td_confirmed(r, "W-C02-24.1") and all(
+              ITEM_LINE.format(jq(f"Item: {p}")) in lines_of(r[1])[:-1] for p in (P25, P241)), r[2])
+    w_launched(fx, "aw241pfx24", task_text(items=(f"Item: {P24}",)), "test-designer")
+    rs = [fx.run("launch", "aw241td", "--item", "W-C02-24"), fx.run("launch", "aw241pfx24", "--item", "W-C02-24.1")]
+    gcase("new", f"(W-B4 prefix) --item W-C02-24 against a line naming {P241}, and the reverse: [{ITEM}]",
+          all(refused(x, ITEM) for x in rs), "".join(x[2] for x in rs))
+
+    # B5: --item binds a producer.
+    r = fx.run("launch", "aw241p241", "--item", "W-C02-25")
+    gcase("new", f"(W-B5 other item) a producer's T5 record with the same SHA-256, its Item: line naming another "
+          f"item: [{ITEM}], never LAUNCH CONFIRMED", refused(r, ITEM), r[2])
+
+    # B6: Item: lines as T5 reads them.
+    w_launched(fx, "aw241ibold", task_text(items=(f"**Item:** {P241}",)), "test-designer")
+    w_launched(fx, "aw241iindent", task_text(items=(f"Item: {P25}", f"  Item: {P241}")), "test-designer")
+    r = fx.run("launch", "aw241ibold", "--item", "W-C02-24.1")
+    gcase("new", "(W-B6 bold item) **Item:** in bold counts", td_confirmed(r, "W-C02-24.1"), r[2])
+    r = fx.run("launch", "aw241iindent", "--item", "W-C02-24.1")
+    gcase("new", f"(W-B6 indented item) an indented Item: line naming the item does not count: [{ITEM}]",
+          refused(r, ITEM), r[2])
+    cr = f"Item: {P241}\rLAUNCH CONFIRMED"
+    w_launched(fx, "aw241tdcr", task_text(items=(cr,)), "test-designer")
+    w_launched(fx, "aw241pcr", task_text(items=(cr,)), "producer", [("T5", True, "producer")])
+    r1, r2 = fx.run("launch", "aw241tdcr", "--item", "W-C02-24.1"), fx.run("launch", "aw241pcr", "--item", "W-C02-24.1")
+    printed = ITEM_LINE.format(jq(cr))
+    gcase("new", "(W-B6 carriage return) an Item: line holding a carriage return and LAUNCH CONFIRMED prints with it "
+          "escaped; no line but a producer's last equals LAUNCH CONFIRMED (split on \\n and by splitlines)",
+          td_confirmed(r1, "W-C02-24.1") and p_confirmed(r2) and "\\r" in printed
+          and all(printed in lines_of(x[1]) for x in (r1, r2)), r1[2] + r2[2])
+
+    nn, nk = sum(g == "new" for g in W_GROUPS.values()), sum(g == "keep" for g in W_GROUPS.values())
+    print(f"W-C02-24.1 groups: new-behaviour {nn}, preservation {nk} (written: {W_NEW} and {W_KEEP}); base "
+          + (f"{BASE} read, tool SHA-256 {BASE_TOOL_SHA256}" if base else why_base))
+    assert (nn, nk) == (W_NEW, W_KEEP), "the D1 groups do not hold the cases as written"   # a case lost or added
 
 
 def main():
@@ -583,6 +1035,7 @@ def main():
         case("(46) a finished agent with no report call: last prints its last text as before", rc == 0
              and out == PLAIN + "\n", both)
         launch_cases(fx)
+        w241_cases(fx, tmp)
         case("(24) disciplines prints three fixed lines and no prompt or report text",
              len(DISC_OUT) == 25 and all(len(o.splitlines()) == 3 and all(re.fullmatch(FIXED, x) for x in o.splitlines())
                                          and MARKER not in o and "Thinking disciplines" not in o for o in DISC_OUT),
