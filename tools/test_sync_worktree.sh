@@ -21,14 +21,15 @@
 #              every byte of the working tree (untracked files included) unchanged.
 # - Failure class: a sync that discards, or carries forward, a local change that is not a re-render of the committed
 #   records, or that acts on a tree other than its own. Examples: L-431's live tree (S02 is a real render; R01 to R21
-#   plant the other manifestations); a foreign clone's sync run from the live tree (R22).
-# - Negative control: R01 to R23 (refused). Against main 253260c: S02 to S09, S12, R22b and R22c are BAD, the
+#   plant the other manifestations; R24 to R24c plant whitespace-only changes beside a valid stamp); a foreign
+#   clone's sync run from the live tree (R22).
+# - Negative control: R01 to R24c (refused). Against main 253260c: S02 to S09, S12, R22b and R22c are BAD, the
 #   others ok (today's script refuses every view change; R22a refuses only because the tree is dirty).
 # - Positive control: S01 to S12 (accepted, the over-blocking controls); S13 (a fast-forward git itself refuses).
-# - Break: W-C02-29's condition, point 4, names each guard line's mutation and the cases it turns BAD.
+# - Break: W-C02-29's condition, point 5, names each guard line's mutation and the cases it turns BAD.
 # - Stage and environment: C02; counted: a fresh clone at the pull request's head, the container's bash, git and
 #   python3 with PyYAML. Independence: written by the test designer; run by the producer and by the binding checker,
-#   who judges. Evidence layer: behavioural (exit code, lines, bytes). It does not show the live tree's run (point 6).
+#   who judges. Evidence layer: behavioural (exit code, lines, bytes). It does not show the live tree's run (point 8).
 # - Evidence envelope: the raw output with the head SHA, the blobs of this file and of tools/sync_worktree.sh, the
 #   versions of bash, git and python3, in the item's evidence record.
 set -u
@@ -276,6 +277,29 @@ begin R22c base && fx ln -s "$B/tools/sync_worktree.sh" "$L/tools/foreign_sync.s
   expect_refuse R22c "another clone's sync reached through a symlink inside this tree (the script's path resolved)"; }
 begin R23 base && fx edit "$L/.claude/hooks/owned_ids.txt" $'ID-1\n' $'ID-1\nID-9\n' && { mark; run_sync "$L"
   expect_refuse R23 "owned_ids.txt alone with a local-only ID (the existing rule)"; }
+# R24: a whitespace-only change outside the stamp line, with a valid new stamp (CHK-C02-124 C1). "All else is
+# byte-equal" covers blank lines, whitespace and the final newline: a comparison that ignores blank lines (git diff
+# --ignore-blank-lines, diff -B), ignores whitespace (-w, -b, --ignore-space-at-eol) or strips trailing newlines
+# ($(...)) would discard these bytes. Each planted state is checked with git's own numstat first, so a plant that did
+# not take reads BAD.
+#   R24:  two blank lines appended at the end of plan/ledger.md (numstat: 3 added, 1 removed).
+#   R24b: plan/ledger.md's final newline removed (numstat: 2 added, 2 removed: the stamp line and the last line).
+#   R24c: a trailing space on another line of plan/ledger.md, the summary_tr row (numstat: 2 added, 2 removed).
+# chop FILE: remove the file's final newline (it must end in exactly one).
+chop() { py 'import sys; p=sys.argv[1]; s=open(p,encoding="utf-8").read()
+if not s.endswith("\n") or s.endswith("\n\n"): sys.exit(f"chop: {p}: does not end in exactly one newline")
+open(p,"w",encoding="utf-8").write(s[:-1])' "$@"; }
+numstat_is() { [ "$(git -C "$L" diff --numstat | tr '\t' ' ')" = "$1" ]; }
+begin R24 base && fx setline "$L/plan/ledger.md" "$LPRE" 0 "$(LROW 2026-10-20T06:57Z)" && { printf '\n\n' >> "$L/plan/ledger.md"; true; } \
+  && fx numstat_is "3 1 plan/ledger.md" && { mark; run_sync "$L"
+  expect_refuse R24 "a valid new stamp and two blank lines appended at the end of the ledger (whitespace outside the stamp line)"; }
+begin R24b base && fx setline "$L/plan/ledger.md" "$LPRE" 0 "$(LROW 2026-10-20T06:57Z)" && fx chop "$L/plan/ledger.md" \
+  && fx numstat_is "2 2 plan/ledger.md" && { mark; run_sync "$L"
+  expect_refuse R24b "a valid new stamp and the ledger's final newline removed"; }
+begin R24c base && fx setline "$L/plan/ledger.md" "$LPRE" 0 "$(LROW 2026-10-20T06:57Z)" \
+  && fx edit "$L/plan/ledger.md" $'| Fixture summary. | 2025-12-31T09:00Z |\n' $'| Fixture summary. | 2025-12-31T09:00Z | \n' \
+  && fx numstat_is "2 2 plan/ledger.md" && { mark; run_sync "$L"
+  expect_refuse R24c "a valid new stamp and a trailing space on another ledger line (summary_tr)"; }
 
 echo "SYNC_WORKTREE_TEST $([ "$BADS" -eq 0 ] && echo PASS || echo FAIL) ($OKS/$((OKS+BADS)))"
 [ "$BADS" -eq 0 ]
