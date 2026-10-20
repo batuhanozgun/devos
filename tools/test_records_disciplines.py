@@ -15,11 +15,34 @@ still fail, which kills mutant X6 (a correction naming its own entry counts). D-
 Then the check runs, by import, on this checkout's real log:
 no entry from L-159 on may fail, and every such entry must be counted. Prints one line per case and
 RECORDS_DISCIPLINES_TEST PASS only if every case behaves as written.
+
+N-315 (W-C02-29): records.py refuses a working directory that is not its own checkout. So the fixture holds its own
+copy, tools/records.py, and run() runs that copy from the fixture's root, as stop_check.sh runs the live tree's own.
+Cases (8) to (13), form C0, written before the change by the test designer:
+- Claim: run with a working directory that does not resolve to its own checkout (Path(__file__).resolve().parents[1]),
+  records.py, for every subcommand, exits 2 before any read or write: nothing on stdout, exactly one stderr line,
+  starting "records.py: refused: " and naming both resolved directories; the tree it was run in is byte-identical.
+- Failure class: a script of one checkout reads or writes another tree because it resolves paths from the working
+  directory. Examples: L-431 (a scratch clone's render rewrote the live tree's views), (8) and (9); the same script
+  reached through a symlink placed in the tree (10); a subdirectory of its own checkout (11).
+- Negative control: (8) to (11) against main 253260c fail (it renders into the foreign tree or fails on its records).
+- Positive control: (1) to (6) (the fixture's own copy), (12) (its own checkout through a symlinked path), (13) (this
+  checkout's records.py from its root, as stop_check.sh runs it), (7) (the import path).
+- Break: removing the refusal turns (8) to (11) BAD; placing it after the first read turns (9) BAD; limiting it to
+  `render` turns the --check and durum lines of (8) BAD; comparing without resolve() on the script's side turns (10)
+  and (12) BAD; accepting any directory inside the checkout turns (11) BAD.
+- Stage and environment: C02; counted: a fresh clone at the pull request's head, the container's python3 (3.13) and
+  PyYAML; the fixtures are temporary directories, not git trees. Independence: written by the test designer; run by
+  the producer and by the binding checker, who judges. Evidence layer: behavioural (exit code, output, bytes).
+- Evidence envelope: the run's raw output with the head SHA and this file's blob, in the item's evidence record.
 """
+import hashlib
 import importlib.util
+import os
 import re
-import subprocess
+import shutil
 import sys
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -106,10 +129,96 @@ def case(label, ok, detail=""):
 
 
 def run(cwd, *args):
-    r = subprocess.run([sys.executable, "-I", "-B", str(TOOL), *args], cwd=cwd, capture_output=True)
+    """The fixture's own copy of records.py (copied from this checkout in main()), run from the fixture's root."""
+    return run_script(Path(cwd) / "tools/records.py", cwd, *args)[:3]
+
+
+def run_script(script, cwd, *args, flags=("-I", "-B")):
+    r = subprocess.run([sys.executable, *flags, str(script), *args], cwd=cwd, capture_output=True)
     out = r.stdout.decode("utf-8") + r.stderr.decode("utf-8")
     OUTPUTS.append(out)
-    return r.returncode, r.stdout.decode("utf-8").splitlines(), out
+    return r.returncode, r.stdout.decode("utf-8").splitlines(), out, r.stderr.decode("utf-8").splitlines()[:5]
+
+
+def tree_bytes(root):
+    """Every path under root with the sha256 of its bytes (a symlink: its target), for a before/after comparison."""
+    out = {}
+    for dp, dns, fns in os.walk(root):
+        for n in dns + fns:
+            p = Path(dp) / n
+            rel = str(p.relative_to(root))
+            if p.is_symlink():
+                out[rel] = "link:" + os.readlink(p)
+            elif p.is_file():
+                out[rel] = hashlib.sha256(p.read_bytes()).hexdigest()
+            else:
+                out[rel] = "dir"
+    return out
+
+
+def refused(rc, stdout, stderr, script, cwd):
+    """N-315's interface: exit 2, nothing on stdout, exactly one stderr line, "records.py: refused: " naming the
+    script's checkout and the working directory, both resolved."""
+    ck, wd = str(Path(script).resolve().parents[1]), str(Path(cwd).resolve())
+    return (rc == 2 and stdout == [] and len(stderr) == 1 and stderr[0].startswith("records.py: refused: ")
+            and ck in stderr[0] and wd in stderr[0])
+
+
+def foreign_cases(root):
+    """(8) to (13): N-315. root is the fixture, rendered and clean; nothing here writes to it."""
+    with tempfile.TemporaryDirectory() as tmp2:
+        base = Path(tmp2)
+        f1 = base / "f1"                                  # another tree with rendered records, no tools/
+        shutil.copytree(root / "plan", f1 / "plan")
+        shutil.copy2(root / "DURUM.md", f1 / "DURUM.md")
+        rel = os.path.relpath(TOOL, f1)
+        for sub in (["render"], ["render", "--check"], ["durum"]):
+            for how, script, flags in (("python3 -I -B, absolute path", TOOL, ("-I", "-B")),
+                                       ("python3, absolute path", TOOL, ()),
+                                       ("python3 -B, relative path", rel, ("-B",))):
+                before = tree_bytes(f1)
+                rc, out, txt, err = run_script(script, f1, *sub, flags=flags)
+                case(f"(8) (N-315) this checkout's records.py {' '.join(sub)} ({how}) with another tree as the "
+                     "working directory: refused, exit 2, that tree byte-identical",
+                     refused(rc, out, err, f1 / rel if script is rel else script, f1) and tree_bytes(f1) == before,
+                     f"exit {rc}: " + " | ".join(txt.splitlines()[:3]))
+
+        f2 = base / "f2"                                  # (9) a record the script cannot read
+        shutil.copytree(f1, f2)
+        (f2 / "plan/work/W-X-01.md").write_text("no front matter here\n", encoding="utf-8")
+        before = tree_bytes(f2)
+        rc, out, txt, err = run_script(TOOL, f2, "render")
+        case("(9) (N-315) the refusal comes before any read: a foreign tree holding a record that cannot be read gives "
+             "the refusal line only", refused(rc, out, err, TOOL, f2) and tree_bytes(f2) == before, f"exit {rc}: " + " | ".join(txt.splitlines()[:3]))
+
+        f3 = base / "f3"                                  # (10) reached through a symlink placed in the tree
+        shutil.copytree(f1, f3)
+        (f3 / "tools").mkdir()
+        (f3 / "tools/records.py").symlink_to(TOOL)
+        before = tree_bytes(f3)
+        for sub in (["render"], ["render", "--check"]):
+            rc, out, txt, err = run_script(f3 / "tools/records.py", f3, *sub)
+            case(f"(10) (N-315) this checkout's records.py reached through a symlink at <tree>/tools/records.py, "
+                 f"{' '.join(sub)} from that tree: refused (the script's path is resolved), the tree byte-identical",
+                 refused(rc, out, err, f3 / "tools/records.py", f3) and tree_bytes(f3) == before, f"exit {rc}: " + " | ".join(txt.splitlines()[:3]))
+
+        before = tree_bytes(root)                         # (11) a subdirectory of its own checkout
+        rc, out, txt, err = run_script(root / "tools/records.py", root / "plan", "render")
+        case("(11) (N-315) the fixture's own copy run from a subdirectory of its checkout (plan/): refused, exit 2, "
+             "the fixture byte-identical", refused(rc, out, err, root / "tools/records.py", root / "plan")
+             and tree_bytes(root) == before, f"exit {rc}: " + " | ".join(txt.splitlines()[:3]))
+
+        link = base / "link"                              # (12) its own checkout through a symlinked path
+        link.symlink_to(root)
+        rc, out, txt, err = run_script(link / "tools/records.py", link, "render", "--check")
+        case("(12) (N-315 control) the fixture's own copy, reached and run through a symlink to the fixture: not "
+             "refused; RENDER OK, exit 0", rc == 0 and out[-1:] == ["RENDER OK"] and "refused" not in txt,
+             f"exit {rc}: " + " | ".join(txt.splitlines()[:3]))
+
+    rc, out, txt, err = run_script(TOOL, REPO, "render", "--check", flags=("-B",))
+    case("(13) (N-315 control) this checkout's records.py from its own root, as stop_check.sh runs it: not refused "
+         "(exit 0 or 1, no refusal line)", rc in (0, 1) and "records.py: refused" not in txt
+         and any(l.startswith("DISCIPLINES ") for l in out), f"exit {rc}: " + " | ".join(txt.splitlines()[-3:]))
 
 
 def logs(root, first, second=""):
@@ -122,6 +231,8 @@ def main():
         root = Path(tmp)
         (root / "plan/work").mkdir(parents=True)
         (root / "plan/ledger").mkdir()
+        (root / "tools").mkdir()
+        shutil.copy2(TOOL, root / "tools/records.py")   # its own copy (N-315)
         (root / "plan/ledger.md").write_text(LEDGER, encoding="utf-8")
         logs(root, "# FX log (append-only)\n\n" + entry(159, GOOD) + entry(160, GOOD))
 
@@ -171,6 +282,15 @@ def main():
 
         case("(6) no output contains an entry's text", len(OUTPUTS) >= 6 and not any(MARKER in o for o in OUTPUTS),
              "\n".join(o for o in OUTPUTS if MARKER in o))
+
+        logs(root, "# FX log (append-only)\n\n" + entry(159, GOOD))   # a clean, rendered fixture for (8) to (12)
+        rc, lines, out = run(root, "render")
+        rc2, lines2, out2 = run(root, "render", "--check")
+        if not (rc == 0 and rc2 == 0 and lines2[-1:] == ["RENDER OK"]):
+            case("(8)-(13) fixture: the fixture's own copy renders it clean (the cases below did not run)", False,
+                 out + out2)
+        else:
+            foreign_cases(root)
 
     spec = importlib.util.spec_from_file_location("records_under_test", TOOL)
     records = importlib.util.module_from_spec(spec)
