@@ -2668,3 +2668,8 @@ dispositions: (1) T5's reader form keyed on a pinned `Writer or reader:` grammar
 open: whether `Workflow` leaves `ALLOWED_NON_MCP`, owner the producer, stated before the condition is pinned
 <!-- /approach -->
 ```
+
+
+## Addendum, 2026-10-20 (L-461; W-C02-24.1 A9 and approach (D6); CHK-C02-151 C1)
+
+Lines 811 and 963 above state, as observed, that `tools/subagent_audit.py calls` shows file paths for Write, Edit and NotebookEdit (line 811: "Observed in code"). That premise was false at the time: run on a real writer-form producer transcript, `calls` printed only the input key names for Write and Edit (CHK-C02-143 C1, observed on run `ab2fc183532e831c0`, `calls` lines 28 to 49). The reading of the code at `tools/subagent_audit.py:150-156` was not checked by running the command. The premise was carried into W-C02-24's disposition (7), its approach point (9), the producer_run confirmation duty texts and `.claude/roles/checker.md` line 36. From W-C02-24.1's merge (#443, merge `9fdd9c2f2033f96c6ba5924006965a8853e83017`), `calls` prints each Write, Edit and NotebookEdit call's file path (CHK-C02-151 F2 and F5, run on producer `a9519e914534ff414` and on `ab2fc183532e831c0`), so line 36's statement holds from then; before it, it did not. Files written through Bash or a script stay untraced by design (W-C02-24.1 approach (D4)). Lines 811 and 963 stay as written; this addendum is their correction. The same correction stands in EV-C02-033 part 1.
