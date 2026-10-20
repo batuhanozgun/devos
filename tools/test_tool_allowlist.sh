@@ -138,15 +138,20 @@ t deny '{"tool_name":"mcp__claude-code-remote__some_future_write_tool","tool_inp
 t deny '{"tool_name":"mcp__claude-code-remote__get_session","tool_input":{"session_id":"session_SOMEONE_ELSE"}}'
 t deny '{"tool_name":"ReadMcpResourceTool","tool_input":{"server":"9c01eb9f","uri":"x"}}'
 t deny '{"tool_name":"ListMcpResourcesTool"}'
-lt deny T1 "SendMessage to a name (was t deny; W-C02-25 M3a: T1 is its only layer once the settings deny is gone)" '{"tool_name":"SendMessage","tool_input":{"to":"someone","message":"x"}}'
-# W-C02-25 M3a: SendMessage on both events, from the executor (agent_id null) and from a subagent, to an agent ID, to
-# main and to a name; each is T1's denial (the settings deny no longer stands in front of it).
+# W-C02-27: a name is refused by T6's name-refusal ID T6.6 with this session's registry present (a planted one, keyed
+# by the guard's session_key for a fixed remote session ID; one registered researcher, a made-up ID).
+printf '%s\n' '{"time": "2026-10-20T12:00:00Z", "event": "start", "agent_id": "a0w27sh000000001", "agent_type": "researcher", "name": null, "item": null, "form": null, "tool_use_id": null, "prompt_sha256": null, "run": 1, "outcome": null, "missing": null, "receipt": null, "package": null}' > "$DEVOS_GUARD_LOG_DIR/session_W27SH0001.agents"
+CLAUDE_CODE_REMOTE_SESSION_ID=cse_W27SH0001 lt deny T6.6 "SendMessage to a name, with a registry (was t deny, then lt T1; W-C02-27: T6's name refusal)" '{"tool_name":"SendMessage","tool_input":{"to":"someone","message":"x"}}'
+rm -f "$DEVOS_GUARD_LOG_DIR/session_W27SH0001.agents"   # the decision-log check below reads every file there as the log
+# W-C02-25 M3a's cases, changed by W-C02-27 (its point 9): SendMessage on both events, from the executor (agent_id
+# null) and from a subagent, to an agent ID, to main and to a name, with no registry for the session: each is T6.9's
+# refusal (main to main included: T6 reads the registry before its self check).
 for sm_ev in PreToolUse PermissionRequest; do
   for sm_caller in null '"w25smagent0001"'; do
     for sm_to in a1b2c3d4e5f6a7b8c main researcher; do
       sm_json="{\"hook_event_name\":\"$sm_ev\",\"tool_name\":\"SendMessage\",\"agent_id\":$sm_caller,\"tool_input\":{\"to\":\"$sm_to\",\"message\":\"x\"}}"
-      if [ "$sm_ev" = PermissionRequest ]; then lc="$pcmd" lt deny T1 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"
-      else lt deny T1 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"; fi
+      if [ "$sm_ev" = PermissionRequest ]; then lc="$pcmd" lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"
+      else lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"; fi
     done
   done
 done
@@ -1159,9 +1164,9 @@ w21 Bash deny "B1|B3" ok-bash-b1 "x-cmd-b1's command, denied by B1 (B3 in a clon
 w21 Bash deny B8 ok-bash-b8 "x-cmd-b8's command, denied by B8" "{\"command\":\"env | grep -i token\",$HB}"
 w21 Bash deny G0 ok-bash-unparsed "x-cmd-unparsed's command, denied by G0" "{\"command\":\"echo 'unbalanced\",$HB}"
 # point 2: the list. W21_LIST is ALLOWED_NON_MCP at main 3262699 without Monitor; a later reviewed change to the list
-# updates it in the same change.
+# updates it in the same change (W-C02-27 added SendMessage, decided by T6).
 W21_LIST="Agent Bash Edit EnterPlanMode Glob Grep NotebookEdit PushNotification Read ReadNotifications ReportFindings
-SendUserFile Skill StructuredOutput SubagentHandback Task TaskCreate TaskGet TaskList TaskOutput TaskStop TaskUpdate
+SendMessage SendUserFile Skill StructuredOutput SubagentHandback Task TaskCreate TaskGet TaskList TaskOutput TaskStop TaskUpdate
 TodoWrite ToolSearch WebFetch WebSearch Workflow Write"
 python3 - "$hook" $W21_LIST <<'EOF' || fail=1
 import importlib.util, sys
@@ -1174,7 +1179,7 @@ x = "Monitor" in got or "Monitor" in users or any("Monitor".startswith(p) for p 
 print(("BAD  " if x else "ok   ") + "W21-x-list Monitor is on neither ALLOWED_NON_MCP nor USER_TOOLS, and no allowed MCP "
       "prefix covers it")
 rest = got - {"Monitor"}
-ok = len(want) == 28 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
+ok = len(want) == 29 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
 print(("ok   " if ok else "BAD  ") + "W21-ok-list every other name of ALLOWED_NON_MCP at main 3262699 is still on it, none "
       "is added, and USER_TOOLS is unchanged" + ("" if ok else f" (missing {sorted(want - rest)}, added "
                                                               f"{sorted(rest - want)}, USER_TOOLS {sorted(users)})"))
