@@ -227,8 +227,9 @@ def on_launch(data):
             form = g.t5_form(prompt)
         except g.Bad:
             pass
-        try:
-            item = g.t5_item(role or "", prompt)[1] if aid else None
+        try:                         # the [T] pin: a writer-form producer, the reader form, a test-designer; else null
+            if aid and (role in ("producer", "test-designer") or form == "reader"):
+                item = g.t5_item(role or "", prompt)[1]
         except g.Bad:
             pass
     tid = data.get("tool_use_id")
