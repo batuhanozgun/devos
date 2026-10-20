@@ -12,7 +12,9 @@ in a fixture tree: a copy of the head's `.claude/` and `tools/` (and the working
 packages under `.claude/roles/`, so that sizes and contents can be planted. Guard cases run the head's guard from the
 repository root, as `tools/test_tool_allowlist.sh` does.
 
-Usage: python3 tools/test_agent_hooks.py [--only PREFIX]   (from the root of a full devos clone at the head)
+Usage: python3 tools/test_agent_hooks.py [--only PREFIX] [--hook PATH]   (from the root of a full devos clone at the head)
+--hook (W-C02-27.1) runs the G cases against that guard file, replacing the guard's path in the settings command as
+tools/test_send_message.py and tools/test_tool_allowlist.sh do; by default they run the head's guard.
 Prints one line per case, `ok   <ID> <label>` or `BAD  <ID> <label>: <why>`, then `AGENT_HOOKS_TEST PASS` (exit 0)
 only if every case is ok, else `AGENT_HOOKS_TEST FAIL` (exit 1). A case that cannot run is BAD, never skipped.
 
@@ -51,6 +53,7 @@ DISC = "## Disciplines (D1–D9)"
 
 RESULTS = []
 ONLY = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else ""
+HOOK = os.path.abspath(sys.argv[sys.argv.index("--hook") + 1]) if "--hook" in sys.argv else ""
 
 
 def case(cid, label, ok, why=""):
@@ -1061,6 +1064,11 @@ def h_cases():
 def guard_rule(data, perm=False, logdir=None):
     s = settings()
     cmd = s["hooks"]["PermissionRequest" if perm else "PreToolUse"][0]["hooks"][0]["command"]
+    if HOOK:
+        guard = "$CLAUDE_PROJECT_DIR/.claude/hooks/tool_allowlist.py"
+        if guard not in cmd:
+            return "?", "the settings command does not name the guard"
+        cmd = cmd.replace(guard, HOOK)
     env = dict(os.environ, CLAUDE_PROJECT_DIR=REPO, DEVOS_GUARD_LOG_DIR=logdir or new_dir())
     data = dict(data)
     data.setdefault("hook_event_name", "PermissionRequest" if perm else "PreToolUse")
@@ -1093,6 +1101,16 @@ def g_cases():
                     return got == ("deny", "T6.9"), f"got {got}"
                 guarded(f"G{n}", f"SendMessage {'PermissionRequest' if perm else 'PreToolUse'} from "
                         f"{'a subagent' if caller else 'main'} to {to!r}: deny by T6.9", one)
+
+                # W-C02-27.1 A5: the platform-shape twin; its tool input is the one builder's output
+                # (tools/test_send_message.py, platform_shape; no platform key is written by hand here, WIT-3)
+                def one_p(perm=perm, caller=caller, to=to):
+                    shape = load(os.path.join(REPO, "tools", "test_send_message.py"), "w271_shape_builder")
+                    got = guard_rule({"tool_name": "SendMessage", "tool_input": shape.platform_shape(to, "x"),
+                                      "agent_id": caller}, perm=perm)
+                    return got == ("deny", "T6.9"), f"got {got}"
+                guarded(f"G{n}p", f"SendMessage {'PermissionRequest' if perm else 'PreToolUse'} from "
+                        f"{'a subagent' if caller else 'main'} to {to!r}: deny by T6.9 [platform shape]", one_p)
 
     def g13():
         d = new_dir()
