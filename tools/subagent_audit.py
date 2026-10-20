@@ -60,11 +60,25 @@ journal; the foreground result's form is inferred from the launch's toolUseResul
                                 marker "- " or "* " allowed before it; then DISCIPLINES OK, or DISCIPLINES MISSING
                                 when either fails. Whether an answer is right is not judged here; that is the
                                 checkers' to sample (D-016 item 3).
+  launch <agent-id>             W-C02-24 M1b (B8): whether the run was launched in guard rule T5's writer form. It
+                                prints the UTF-8 byte length and SHA-256 of the run's first task message (the first
+                                user event of its transcript: a string, or its text blocks joined by newlines), the
+                                same of the prompt the session's own Agent call sent (the tool_use in the session's
+                                transcript whose ID is the meta's toolUseId; W-C02-24's observation (12)), and the
+                                guard records whose tool_use_id is that toolUseId. LAUNCH CONFIRMED (exit 0) when one
+                                of them has rule T5 (exactly), decision allow and a prompt_sha256 in its detail equal
+                                to the first task message's; else "could not confirm" with its reason ID (exit 1):
+                                [LAUNCH-MISMATCH] a linked T5 allow record with another SHA-256, [LAUNCH-T5R] a linked
+                                T5R allow (the reader form), [LAUNCH-NORECORD] no linked T5 allow record (none, a
+                                denial only, or a workflow agent's meta that names no starting call),
+                                [LAUNCH-NOTRANSCRIPT] no single transcript or no task message in it. A finished run
+                                is not required. Self-contained, so that later subcommands do not change it.
 
 audit and calls print tool names, path arguments (Read file_path; Glob path and pattern; Grep path and glob) and the
 input key names of any other tool; never file content, tool output or prompt text. Strings are printed JSON-quoted,
 so that no argument can forge an output line. disciplines prints three fixed lines (its reasons name only answer
-numbers and counts), never prompt or report text. calls lists a transcript as it stands, finished or not. Exit codes:
+numbers and counts), never prompt or report text; launch prints byte lengths, hashes and record numbers and rules,
+never prompt text. calls lists a transcript as it stands, finished or not. Exit codes:
 0 done (audit: valid; disciplines: both present), 1 audit void or disciplines missing, 2 usage or reading error, 3
 not finished. Locations: $DEVOS_AUDIT_HOME (default: the home directory), $DEVOS_GUARD_LOG_DIR (default
 /tmp/devos-guard).
@@ -85,7 +99,7 @@ WORKING_ORDER = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__
                              "Installation_Working_Order.md")   # section 9 holds the block every task carries
 DISC_HEAD = "## Disciplines (D1–D9)"
 USAGE = "usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace> | " \
-        "disciplines <agent-id>"
+        "disciplines <agent-id> | launch <agent-id>"
 
 
 class Error(Exception):
@@ -460,6 +474,80 @@ def audit(agent, workspace):
     return 1 if void else 0
 
 
+LAUNCH_SHA = re.compile(r"(?:^|[\s;,])prompt_sha256=([0-9a-f]{64})(?![0-9a-f])")
+
+
+def launch(agent):
+    """See launch in the docstring (W-C02-24 M1b, B8; observation (12))."""
+    def fail(token, why):
+        print(f"LAUNCH: could not confirm [{token}]: {why}")
+        return 1
+
+    def digest(text):
+        data = text.encode("utf-8")              # strict, as guard rule T5 encodes the prompt
+        return len(data), hashlib.sha256(data).hexdigest()
+
+    try:
+        path, run = transcript(agent)
+        _, events = jsonl(path)
+    except Error as e:
+        return fail("LAUNCH-NOTRANSCRIPT", str(e))
+    first = next((e for e in events if e.get("type") == "user"), None)
+    msg = first.get("message") if first else None
+    content = msg.get("content") if isinstance(msg, dict) else None
+    blocks = [b for b in content if isinstance(b, dict) and b.get("type") == "text"] if isinstance(content, list) else []
+    if not isinstance(content, str) and not blocks:
+        return fail("LAUNCH-NOTRANSCRIPT", f"no task message in the first user event of {path}")
+    try:
+        n, sha = digest(content if isinstance(content, str) else texts(msg))
+    except UnicodeEncodeError:
+        return fail("LAUNCH-NOTRANSCRIPT", "the first task message cannot be encoded as UTF-8")
+    print(f"transcript: {path}")
+    print(f"first task message ({'a string' if isinstance(content, str) else f'{len(blocks)} text blocks'}): "
+          f"bytes={n} sha256={sha}")
+    try:
+        with open(path[:-len(".jsonl")] + ".meta.json", "rb") as f:
+            tid = json.loads(f.read()).get("toolUseId")
+    except (OSError, ValueError, AttributeError):
+        tid = None
+    if run is not None or not isinstance(tid, str) or not tid:
+        return fail("LAUNCH-NORECORD", "its meta names no starting call (toolUseId), so no guard record can be linked"
+                    + (" (a workflow agent)" if run is not None else ""))
+    print(f"toolUseId: {q(tid)}")
+    session = os.path.dirname(os.path.dirname(path)) + ".jsonl"
+    sent = [b["input"]["prompt"] for e in (tolerant(session, [tid.encode()]) or []) if e.get("type") == "assistant"
+            and isinstance(e.get("message"), dict) and isinstance(e["message"].get("content"), list)
+            for b in e["message"]["content"] if isinstance(b, dict) and b.get("type") == "tool_use"
+            and b.get("id") == tid and isinstance(b.get("input"), dict) and isinstance(b["input"].get("prompt"), str)]
+    try:
+        s = digest(sent[0]) if len(sent) == 1 else None
+    except UnicodeEncodeError:
+        s = None
+    print(f"sent prompt (the session's Agent call {q(tid)}): " + (
+        f"bytes={s[0]} sha256={s[1]} ({'equal to' if s[1] == sha else 'differs from'} the first task message)" if s
+        else f"not read ({len(sent)} such calls with a prompt string in {session})"))
+    log_dir = os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard"
+    linked = [r for name in sorted(glob.glob(os.path.join(glob.escape(log_dir), "*.jsonl")))
+              for r in (tolerant(name, [tid.encode()]) or []) if r.get("tool_use_id") == tid]
+    found = []
+    for r in linked:
+        m = LAUNCH_SHA.search(r.get("detail") if isinstance(r.get("detail"), str) else "")
+        found.append((r, m.group(1) if m else None))
+        print(f"guard record #{q(r.get('n'))} {q(r.get('event'))} {q(r.get('tool'))} {q(r.get('decision'))} rule "
+              f"{q(r.get('rule'))}" + (f" prompt_sha256={m.group(1)}" if m else " (no prompt_sha256)"))
+    t5 = [(r, h) for r, h in found if r.get("rule") == "T5" and r.get("decision") == "allow"]
+    same = [r for r, h in t5 if h == sha]
+    if same:
+        print(f"T5 allow record #{q(same[0].get('n'))} carries the first task message's SHA-256")
+        print("LAUNCH CONFIRMED")
+        return 0
+    if t5:
+        return fail("LAUNCH-MISMATCH", f"the linked T5 allow record #{q(t5[0][0].get('n'))} carries another SHA-256")
+    if any(r.get("rule") == "T5R" and r.get("decision") == "allow" for r, _ in found):
+        return fail("LAUNCH-T5R", "the linked record is a T5R allow: the run was launched in the reader form")
+    return fail("LAUNCH-NORECORD", f"no T5 allow record for {q(tid)} in {log_dir} ({len(linked)} linked records)")
+
+
 def main(argv):
     sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
     try:
@@ -471,6 +559,8 @@ def main(argv):
             return audit(argv[1], argv[2])
         if len(argv) == 2 and argv[0] == "disciplines":
             return disciplines(argv[1])
+        if len(argv) == 2 and argv[0] == "launch":
+            return launch(argv[1])
         print(USAGE, file=sys.stderr)
     except NotFinished as e:
         print(f"subagent_audit: NOT FINISHED: {e}", file=sys.stderr)

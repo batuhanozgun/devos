@@ -62,12 +62,13 @@ Before your main work, read `plan/Ek_D_Dusunme_Protokolleri.md` section 2, item 
 
 Your final message has one of two forms; your task says which, and a task that asks for a binding verdict from an instance this file excludes is `WRONGLY_FRAMED`.
 
-**Binding verdict:** exactly the verdict file, with nothing before or after it. The executor writes it verbatim to `evidence/<stage>/checks/CHK-<stage>-<nnn>.md`. The disciplines block comes right after the front matter; a verdict without it is not accepted (D-016). Take `id` and `checker_run` from your task; `date` is today (UTC). Your hand-over goes into the front matter: each key once, its value on one line (`tools/merge_gate.py` reads top-level `key: value` lines and refuses a repeated key). `take_up` is always `PROCEED`, with its reason; any other return is a non-binding contribution. `conditions` is `none`, or `see markers` when typed conditions stand, one line each, between the `<!-- conditions -->` and `<!-- /conditions -->` lines, which are authoritative. The keys `item`, `shared_with_producer` and `producer_run`, and the merge gate's reading of `floor`, `own_breaks` and the condition lines, come with W-C02-24; they are not in force before it is merged and synced. The same keys and condition lines stand in working order section 9.
+**Binding verdict:** exactly the verdict file, with nothing before or after it. The executor writes it verbatim to `evidence/<stage>/checks/CHK-<stage>-<nnn>.md`. The disciplines block comes right after the front matter; a verdict without it is not accepted (D-016). Take `id` and `checker_run` from your task; `date` is today (UTC). Your hand-over goes into the front matter: each key once, its value on one line (`tools/merge_gate.py` reads top-level `key: value` lines and refuses a repeated key). `take_up` is always `PROCEED`, with its reason; any other return is a non-binding contribution. `conditions` is `none`, or `see markers` when typed conditions stand, one line each, between the `<!-- conditions -->` and `<!-- /conditions -->` lines, which are authoritative. The keys `item`, `shared_with_producer` and `producer_run`, and the merge gate's reading of the keys and the condition lines, come with W-C02-24's M1b: the gate reads them from the first merge after its sync, and refuses a verdict in the old form from then, so a verdict pending at that sync is given again in this form. Each value is one line in its grammar: `item` is `W-C<dd>-<dd>[.<n>]` (its file on `main`), `stage C<dd>`, `branch SB-<NAME>`, or `revert <sha>` for a revert of a merge commit on `main`, which the gate judges by its resulting tree; `triage` is an `evidence/C<dd>/<name>.md` path (then text), or `none` and a reason after `:`, `,` or a space; `floor` is `none` and a reason, or classes from the floor list of step 3, each optionally followed by one parenthesis that holds its paths and any other part (`test oracle (tools/a.sh, public text); guard`); `own_breaks` is not `none` when the change touches `.claude/hooks/`, `.claude/settings.json`, `.github/workflows/`, `supabase/migrations/` or `tools/`; `shared_with_producer` is `none`, or names each record you shared with the producer by its path or its `EV-`, `CHK-`, `N-` or `L-` ID; `producer_run` is the producer's agent ID (`a` and 16 hex digits), or `none` only for a revert, a stage or branch verdict or a records-only change. Confirming `producer_run`: run `python3 -I tools/subagent_audit.py launch <agent id>`, which must end `LAUNCH CONFIRMED` (the run started in T5's writer form), and `python3 -I tools/subagent_audit.py calls <agent id>`, mapping each Write and Edit path from the producer's scratch clone to a repository path by the suffix after the clone's root and listing every other path the diff changes as untraced; record both in `relied_on`. If the transcript or the guard log is gone, write "could not confirm" as a `missing evidence` condition that blocks the merge, closure `scoped re-review`, closed only by a fresh writer-form producer run of the same task that reproduces the diff, confirmed by `launch` and `calls` (working order section 10). The same keys and condition lines stand in working order section 9.
 
 ```
 ---
 id: CHK-<stage>-<nnn>
 target: <what was checked>
+item: <the item whose change you judged: W-C<dd>-<dd>[.<n>] | stage C<dd> | branch SB-<NAME> | revert <full 40-character SHA of the merge commit reverted>>
 reviewed_head: <full 40-character SHA of the commit you judged>
 verdict: <PASS | PASS-WITH-CONDITIONS | FAIL>
 conditions: <none | see markers>
@@ -75,9 +76,11 @@ independence: "same session, fresh-context subagent (declared, Ek A 5.3)"
 checker_run: <run reference from your task>
 date: <YYYY-MM-DD>
 take_up: PROCEED: <its reason>
-triage: <path of the item's triage, read after your own pass | none, and why>
-floor: <class | none>
-own_breaks: <commands and results | none>
+triage: <evidence/C<dd>/<name>.md path of the item's triage, read after your own pass | none, and why>
+floor: <none, and why | one or more of guard, merge gate, leak check, CI gate, migration, schema rules, test oracle, hook, separated by ";", each optionally followed by one parenthesis that holds its paths and any other part>
+own_breaks: <commands and results | none (only when the change touches no floor path)>
+shared_with_producer: <none | each record shared with the producer, by its path or its EV-, CHK-, N- or L- ID>
+producer_run: <the producer's agent ID, confirmed by launch and calls | none (a revert, a stage or branch verdict, a records-only change)>
 package: <checker@hash | none delivered | none delivered (file absent)>
 nonce: <the last line of your start header | none delivered>
 read: <what you read, and what each changed>
