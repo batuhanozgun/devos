@@ -274,6 +274,7 @@ Criteria are cited by number (plan:155-197), principles as "0.3 item n" (plan:39
 - **L08 — keep plan.** Agreement; use the CD's merge test as a retirement input in C10.
 - **L09 — keep plan.** Activation by evidence is the same rule in both; inactive contracts cost text only.
 - **L10 — open: C05.** After C01 #4, decide whether launches of role subagents are checked by a stamp in a hook.
+  **Annotation, 2026-10-20 (L-460; SB-COR 4.1; drafted in EV-C02-038).** L10: taken up for the installation's helpers by SB-COR (2026-10-20). The package is delivered at every role start by the SubagentStart hook with its hash and a nonce, and the SubagentStop hook checks the receipt (W-C02-25, #437, liveness fix #441). The counter-design's launch-denying stamp was not built; it stays only as SB-COR 3.7's last fallback. Open: C05 for DevOS's own roles (`plan/work/C05.md` N-067).
 - **L11 — keep plan.** Same substance, fuller and sourced.
 
 ### 5.2 Items of section 4
