@@ -26,6 +26,7 @@ Output: reason lines, then GATE PASS (exit 0) or GATE FAIL (exit 1); GATE ERROR 
 """
 import argparse
 import difflib
+import os
 import re
 import subprocess
 import sys
@@ -46,6 +47,8 @@ RECORDER_LINE = re.compile(r"(session|trig)_[A-Za-z0-9]+")
 VERDICT_PATH = re.compile(r"evidence/([^/]+)/checks/CHK-\1-\d{3,}\.md")
 SHA40 = re.compile(r"[0-9a-f]{40}")
 COVERING = {"PASS", "PASS-WITH-CONDITIONS"}
+# W-C02-23 (SB-COR 2.3): every input of tools/check_role_packages.py; a prefix ends with "/". W-C02-25 adds its hook.
+ROLE_PACKAGE_TRIGGER = (".claude/roles/", ".claude/hooks/reread_after_compact.py", "tools/check_role_packages.py")
 
 
 class GateError(Exception):
@@ -146,6 +149,20 @@ def cover(head, base, in_pr):
     return None, None, why
 
 
+def role_packages(base, head):
+    """When base..head touches ROLE_PACKAGE_TRIGGER, run this tree's check_role_packages.py (never the head's copy)
+    with --rev head, print its lines, and return the reason to refuse on any nonzero exit; otherwise None."""
+    if not any(p == t or (t.endswith("/") and p.startswith(t))
+               for p in changed(base, head) for t in ROLE_PACKAGE_TRIGGER):
+        return None
+    tool = os.path.join(os.path.dirname(os.path.abspath(__file__)), "check_role_packages.py")
+    r = subprocess.run([sys.executable, "-I", tool, "--rev", head], capture_output=True, text=True, errors="replace")
+    for line in (r.stdout + r.stderr).splitlines():
+        print(f"  {line}")
+    return f"the role-package check refused the head (exit {r.returncode}; tools/check_role_packages.py)" \
+        if r.returncode else None
+
+
 def gate(pr, head):
     """(ok, lines)."""
     if not SHA40.fullmatch(head):
@@ -163,6 +180,9 @@ def gate(pr, head):
     base = (git("merge-base", "origin/main", head, ok=True) or "").strip()
     if not base:
         return False, [f"{head[:12]} has no merge base with origin/main"]
+    refused = role_packages(base, head)
+    if refused:
+        return False, [refused]
     high = high_paths(base, head)
     if not high:
         return True, [f"class normal: {base[:12]}..{head[:12]}"]
