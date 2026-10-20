@@ -19,8 +19,11 @@ lines) or that it could not check; (29) near misses stay class normal; (30) a na
 Cases (N270*) (note N-270 on plan/work/C02.md; tests/C02/N-269_N-270/README.md): tests/C02/W-C02-07/shared/, whose
 two files guard rule L4 reads at every call, is class high in every form a change touches it, and the rest of
 tests/C02/W-C02-07/ stays class normal. Their pull requests are 700 up and their verdicts CHK-C00-070 up.
+Cases (RP*) (W-C02-23, PR-A2): the gate runs its own tree's tools/check_role_packages.py --rev <head> for a head
+that touches the role packages' trigger set, in a fixture of their own (role_package_gate).
 Prints one line per case and MERGE_GATE_TEST PASS only if every case behaves as written.
 """
+import importlib.util
 import json
 import os
 import re
@@ -528,6 +531,133 @@ def shared_token_files(s):
            ("write", "docs/tests/C02/W-C02-07/shared/token_format.md", "a fixture near miss\n"))
 
 
+def role_package_gate(tmp):
+    """Cases (RP1) to (RP8): W-C02-23 (PR-A2; SB-COR 2.3; EV-C02-028 part 10.1, agreed (5)), written by its test
+    designer before the change. A fixture of its own (tmp), whose main holds the six fixture packages, the records
+    they cite and the compaction hook, all built by tools/test_check_role_packages.py's build_tree (their one source),
+    and a copy of this working tree's tools/check_role_packages.py. Every head carries a covering PASS verdict (except
+    RP7), so a refusal can come only from the role-package check. The gate is always run from the fixture's main
+    checkout, as M7 runs it from the live tree at main; so the working tree's copy of the check is main's.
+    Form C0 (Appendix C):
+    - Claim: the gate runs its own tree's tools/check_role_packages.py --rev <head> whenever the head's diff from main
+      touches .claude/roles/, .claude/hooks/reread_after_compact.py or tools/check_role_packages.py, and refuses the
+      merge on FAIL or COULD NOT CHECK with the check's lines; it does not run it for a head outside that set.
+    - Failure class: the call missing; a trigger set that misses an input the check reads (a head that only grows
+      MESSAGE; a head that only changes the check); the head's own copy of the check run, so a head can raise LIMIT
+      in it; a could-not-check result read as a pass; the check run on every head (a lock-out surface, RP7).
+    - Examples: RP2 (size), RP3 (MESSAGE only), RP4 (LIMIT raised in the head's copy), RP5 (could not check), RP6 (a
+      package deleted), RP8 (only the check changed).
+    - Negative control: each of those: GATE FAIL, exit 1, the check's FAIL line or COULD NOT CHECK in the output.
+    - Positive control: RP1 (a sound change to a package: GATE PASS with ROLE_PACKAGES PASS); RP7 (a head outside the
+      set passes while main's own packages fail the check, and no ROLE_PACKAGE line is printed).
+    - Break: in a copy of the gate: the call removed (RP1 to RP3, RP4b, RP5, RP6, RP8b BAD); the hook path dropped
+      from the trigger set (RP3, RP5); the check's path dropped (RP8b); the head's copy run (git show <head>:...)
+      (RP4b); the check run on every head (RP7, and every older case, whose fixture holds no check); a could-not-check
+      exit read as a pass (RP5). Stage and environment: C02; the container's python3 and git, a scratch fixture with a
+      local bare origin, the gate run as M7 runs it. Evidence envelope: W-C02-23's record.
+    """
+    tool, hook = "tools/check_role_packages.py", ".claude/hooks/reread_after_compact.py"
+    if not (REPO / tool).is_file():
+        case("(RP0) the role-package gate cases need tools/check_role_packages.py beside this file", False,
+             f"{tool} absent")
+        return
+    spec = importlib.util.spec_from_file_location("test_check_role_packages", REPO / "tools/test_check_role_packages.py")
+    tcr = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tcr)
+    tmp.mkdir()
+    s = Fixture(tmp)
+    tool_bytes = (REPO / tool).read_bytes()
+    tcr.build_tree(s.d, packages={"executor.md": tcr.pad(tcr.PACKAGE.format(role="executor"), 9000)},
+                   extra={tool: tool_bytes})
+    s.commit("role packages, their check and the records they cite")
+    s.git("push", "-q", "origin", "main")
+    prs, ns = iter(range(1, 100)), iter(range(1, 100))
+
+    def head_with(files=None, remove=(), verdict=True):
+        pr = next(prs)
+        s.branch(f"pr{pr}")
+        for p, b in (files or {}).items():
+            (s.d / p).parent.mkdir(parents=True, exist_ok=True)
+            (s.d / p).write_bytes(b)
+        for p in remove:
+            s.remove(p)
+        x = s.commit(f"fixture pull request {pr}")
+        if verdict:
+            s.verdict(next(ns), x)
+        return pr, s.push(pr)
+
+    def gate_main(pr, head):
+        s.git("checkout", "-q", "main")
+        return s.gate(pr, head)
+
+    def fail_line(out, name, token):
+        for line in out.splitlines():
+            m = re.fullmatch(rf"ROLE_PACKAGE {re.escape(name)} bytes=\S+ limit=\S+ FAIL (.*)", line.strip())
+            if m and token in tcr.tokens(m.group(1)):
+                return True
+        return False
+
+    def refused(label, pr, head, name, token):
+        rc, out = gate_main(pr, head)
+        case(label, rc == 1 and "GATE FAIL" in out and "GATE PASS" not in out and fail_line(out, name, token) and
+             "ROLE_PACKAGES FAIL" in out, out)
+
+    sound = tcr.PACKAGE.format(role="producer") + "One more sound line.\n"
+    pr, head = head_with({".claude/roles/producer.md": sound.encode("utf-8")})
+    rc, out = gate_main(pr, head)
+    case("(RP1) a sound change to producer.md with a covering verdict: GATE PASS, and the output carries "
+         "ROLE_PACKAGES PASS", rc == 0 and "GATE PASS" in out and "ROLE_PACKAGES PASS" in out, out)
+    pr, head = head_with({".claude/roles/producer.md": tcr.pad(tcr.PACKAGE.format(role="producer"), 9301)})
+    refused("(RP2) producer.md at 9,301 bytes with a covering verdict: GATE FAIL with producer.md's FAIL size line",
+            pr, head, "producer.md", "size")
+    msg = tcr.real_hook().split('MESSAGE = """', 1)[-1].split('"""', 1)[0]
+    grown = tcr.planted_hook('MESSAGE = """' + msg + "x" * 300 + '"""') or ""
+    pr, head = head_with({hook: grown.encode("utf-8")})
+    only = s.git("diff", "--name-only", "main", head).splitlines()   # the hook and the verdict file, nothing else
+    rc, out = gate_main(pr, head)
+    case("(RP3) a head that only grows MESSAGE by 300 bytes (executor.md at 9,000 on main): GATE FAIL with "
+         "executor.md's FAIL size line", [p for p in only if not p.startswith("evidence/")] == [hook] and rc == 1 and
+         "GATE FAIL" in out and
+         fail_line(out, "executor.md", "size") and "ROLE_PACKAGES FAIL" in out, f"diff: {only!r}\n{out}")
+    src = tool_bytes.decode("utf-8")
+    raised = src.replace("LIMIT = 9500 - RESERVE", "LIMIT = 99999", 1)
+    pr, head = head_with({tool: raised.encode("utf-8"),
+                          ".claude/roles/producer.md": tcr.pad(tcr.PACKAGE.format(role="producer"), 9400)})
+    (tmp / "head_copy.py").write_text(raised, encoding="utf-8")
+    r = subprocess.run([sys.executable, "-I", str(tmp / "head_copy.py"), "--rev", head], cwd=s.d,
+                       capture_output=True, text=True)
+    case("(RP4a) the head raises LIMIT in its own copy of the check, and that copy passes its own head",
+         raised != src and r.returncode == 0 and "ROLE_PACKAGES PASS" in r.stdout,
+         ("the line 'LIMIT = 9500 - RESERVE' is not in the tool\n" if raised == src else "") + r.stdout + r.stderr)
+    refused("(RP4b) ... and the gate, running its own tree's copy, refuses it with producer.md's FAIL size line",
+            pr, head, "producer.md", "size")
+    pr, head = head_with({hook: (tcr.planted_hook('MESSAGE = "a" + "b"') or "").encode("utf-8")})
+    rc, out = gate_main(pr, head)
+    case("(RP5) a head whose MESSAGE is not a literal: GATE FAIL, and the output carries ROLE_PACKAGES COULD NOT "
+         "CHECK", rc == 1 and "GATE FAIL" in out and "GATE PASS" not in out and "ROLE_PACKAGES COULD NOT CHECK" in out,
+         out)
+    pr, head = head_with(remove=(".claude/roles/checker.md",))
+    refused("(RP6) a head that deletes checker.md: GATE FAIL with checker.md's FAIL missing line", pr, head,
+            "checker.md", "missing")
+    # main now loses a record every package cites (a class-normal records change), so main's packages fail.
+    s.git("checkout", "-q", "main")
+    s.remove("evidence/C99/EV-C99-001_fixture.md")
+    s.commit("a cited record removed on main")
+    s.git("push", "-q", "origin", "main")
+    r = subprocess.run([sys.executable, "-I", tool, "--rev", "main"], cwd=s.d, capture_output=True, text=True)
+    pr, head = head_with({"plan/notes.md": b"notes\na class-normal change\n"}, verdict=False)
+    rc, out = gate_main(pr, head)
+    case("(RP7) main's packages now fail the check, and a head outside the trigger set still gets GATE PASS with no "
+         "ROLE_PACKAGE line", r.returncode == 1 and rc == 0 and "GATE PASS" in out and "ROLE_PACKAGE" not in out,
+         f"check at main: exit {r.returncode}\n{r.stdout}\ngate:\n{out}")
+    pr, head = head_with({tool: tool_bytes + b"# a comment line added by the fixture\n"})
+    only = s.git("diff", "--name-only", "main", head).splitlines()
+    case("(RP8a) the RP8 head touches tools/check_role_packages.py and, besides its verdict, nothing else",
+         [p for p in only if not p.startswith("evidence/")] == [tool], repr(only))
+    refused("(RP8b) ... and the gate refuses that head: GATE FAIL with the packages' FAIL "
+            "unresolved lines (EV-C99-001)", pr, head, "producer.md", "unresolved")
+
+
 def main():
     with tempfile.TemporaryDirectory() as tmp:
         s = Fixture(Path(tmp))
@@ -676,6 +806,7 @@ def main():
              "is an ancestor of the merge base" in out, out)
         listed_paths(s)
         shared_token_files(s)
+        role_package_gate(Path(tmp) / "role_packages")
     ok = bool(RESULTS) and all(RESULTS)
     print(f"MERGE_GATE_TEST {'PASS' if ok else 'FAIL'} ({sum(RESULTS)}/{len(RESULTS)})")
     return 0 if ok else 1
