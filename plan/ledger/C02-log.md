@@ -1879,3 +1879,37 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Guard:** since L-451: #1747 (G0, CHK-C02-136's checker), #1750 (B4, the executor: a commit after `cd` into a variable path; redone with `git -C` and literal paths), #1776 (L2, the executor: a push with the stop check in one call; redone alone), #1782 (B4, CHK-C02-138's checker), #1830 (B5, W-C02-27's fix designer). No denial by any other hook. The last record #1888.
 - **Wait:** ends when M1a's product and the two condition fixes arrive (each starts the next turn by itself); sooner: none; whose call: the builder.
 - **Record changes:** plan/work/W-C02-23.md · annotate · `execution: finished`, `acceptance: accepted`, `accepted_by: evidence/C02/checks/CHK-C02-133.md`; plan/ledger/C02-log.md · addition · L-452; plan/ledger.md · annotate · `summary_tr`; DURUM.md, plan/ledger.md · generated
+
+### L-453 · 2026-10-20 · W-C02-25's (#426) and W-C02-27's (#427) conditions merged after their scoped re-reviews (CHK-C02-140 PASS; CHK-C02-139 PASS-WITH-CONDITIONS, rerun after a malformed discipline block); M1a built and under binding check (CHK-C02-141); M1b's tests started
+
+- **Disciplines (D1–D9):** D1: yes: for CHK-C02-139's one preference (point 7 against point 9 on the G1 to G12 extent), the alternatives were a new test-designer round or a reading disposition; the binding checker can read point 7 with point 9 and W27-7, so a disposition, with what reopens it. D2: yes: a re-review that passed with a malformed D9 line was not filed, by working order section 4 step 4, although it agreed with the merge I wanted; a fresh checker was given the task. D3: yes: W-C02-25's producer is held until M1a merges, because both write the guard (PC-24), and M1b's tests run meanwhile on files neither writes. D4: yes: each re-review built its own sound sketch and its own breaks before reading the earlier verdict or the designer's report. D5: yes: each verdict was taken with `tools/subagent_audit.py last` after its end status; the discipline audit caught the malformed one. D6: no. D7: yes: this entry carries both merges, the unfiled verdict and the rerun. D8: yes: made from `main` `faa9232`. D9: no.
+- **CHK-C02-139, first run, not filed** (checker `a511fc509e57f7b92`): `tools/subagent_audit.py disciplines` gave DISCIPLINES MISSING, because line 9 of its block read "D9: no: …", which is not a D9 answer in the required form. By working order section 4 step 4 it was not filed or used, and a fresh checker got the same task, told only that an earlier re-review was not filed. That run is kept as a hint only (N-110). **CHK-C02-139** (the rerun, checker `ab50053ed16c6a551`, DISCIPLINES OK) gave PASS-WITH-CONDITIONS at `29341b953c4a360e1cef134b6294811b3fcca640`:
+  - C1 of CHK-C02-136 is met: its own B16 sketch turns exactly N-C12 and N-C13 red, and the base test with B16 passes 158.
+  - Point 7, point 9 and W27-7 stay within C2's words.
+  - Its one condition, also numbered C1, is a preference that blocks nothing: point 7 says "only in the G1 to G12 assertions", while point 9 allows planting a registry in a G case. **Disposition:** not taken now. W-C02-27's binding checker reads point 7 with point 9 and W27-7 ("cases G1 to G12"), so fixture code inside a G case's own call is within the extent. Reopens if that checker finds a build refused or passed because of the wording.
+- **CHK-C02-140** (checker `a38fc45e28014ad7f`, DISCIPLINES OK): PASS at `3724b0c7ec490a6adcf90d88d26afb0a1d14df60`, no conditions. C1 and C2 of CHK-C02-134 are met by their words (its own sound sketch and five breaks, run from the clone root). C3 to C6 are taken, and K6's narrowing was made before any product result.
+- **Merges:**
+  - W-C02-25: #426, head `145db31`, merge `caef3e3`, with CHK-C02-134 and CHK-C02-140.
+  - W-C02-27: #427, head `b9ad01b`, merge `faa9232`, with CHK-C02-136 and CHK-C02-139.
+
+  Neither branch merged `main` after its reviewed head: the gate reads "X..head" as a plain diff, and `main` carries W-C02-24's class-high tests. Each branch's generated views were restored to its base and rendered by this entry. Synced at 12:17:39Z.
+- **M1a's product** (producer `a2f8c2c275156b6ab`, DISCIPLINES OK): T5, the agent-type narrowing (`ROLE_TYPES` and the agent file check) and the whole-tool Workflow deny (TW, raised after T1, with `Workflow` kept in `ALLOWED_NON_MCP` and commented), in `.claude/hooks/tool_allowlist.py`; the working order's sections 2, 4 step 3, 9 and 10; and PC-53's addendum part a.
+  - Results: base 98 BAD before the build; at the head `ALLOWLIST_TEST PASS` (1,583 ok, 0 BAD) and `TOKEN_STOP_TEST PASS`; the test files unchanged.
+  - C3's interface stated: a marker line that is not exactly the whole line gives T5.12, and two whole-line opens or closes give T5.11 first.
+  - C2 (a)'s timing: median 0.084 s for a writer-form producer call, 0.079 s for a checker call.
+  - Noted by the producer: W-C02-29's older approach block would get T5.12 in the writer form. W-C02-29 is accepted and finished, so no writer task for it is due.
+
+  Committed at `d1780ffe84e6c08027f4697cf2f5b19e8df02469` (branch `claude/c02-w24-m1a`). **CHK-C02-141** (checker `affd3d111f37eb182`) judges it.
+- **M1b's tests** (test designer `ae6341b380e039202`): Part B's cases in `tools/test_merge_gate.py` and `tools/test_subagent_audit.py`, before any M1b product, with CHK-C02-131's C2 (the `floor:` grammar). PR-A2 has merged, so the order of Part B allows it now.
+- **Interfaces for W-C02-25's producer, carried to its task:**
+  - W-C02-27's designer returned what makes an agent ID "registered", the 150 s ceiling of the read wait, a malformed line making the registry unreadable, and an empty `agent_id`.
+  - W-C02-25's fix designer noted that after C1 a natural run whose `last_assistant_message` differs from `last` turns row (ii) red for that run: part 9.1's intended comparison, to be expected at the first natural row.
+- **W-C02-22 point 10, runs in the window** (from #1857), for the acceptance checker to read, not counted here. They are the first runs of their roles in the window:
+  - the first CHK-C02-139 checker `a511fc509e57f7b92` (its report says it read `.claude/roles/checker.md`);
+  - W-C02-25's fix designer `a23cb6ab0f24313d4` (its report names the test designer's package file and gives `Package: none delivered`);
+  - CHK-C02-139's rerun `ab50053ed16c6a551` and CHK-C02-140's `a38fc45e28014ad7f`.
+
+  Whether a malformed discipline block bears on a run's H is that checker's reading.
+- **Guard:** since L-452: #1976 (B5, the first CHK-C02-139 checker), #2024 (B5, W-C02-25's fix designer), #2042 (B4, CHK-C02-139's rerun), #2055 (B5, CHK-C02-140's checker), #2143 (G0, M1b's test designer). Each was redone with literal paths or without the backtick, as its own report states. No denial by any other hook. The last record #2178.
+- **Wait:** ends when CHK-C02-141 and M1b's tests arrive (each starts the next turn by itself); sooner: none; whose call: the builder.
+- **Record changes:** plan/ledger/C02-log.md · addition · L-453; DURUM.md, plan/ledger.md · generated (including the views the two branches left at their base)
