@@ -12,7 +12,6 @@
     "defaultMode": "acceptEdits",
     "deny": [
       "RemoteTrigger",
-      "SendMessage",
       "ListAgents",
       "mcp__claude-code-remote__archive_session",
       "mcp__claude-code-remote__check_repo_access",
@@ -90,6 +89,7 @@
     ]
   },
   "crossSessionInbound": "refuse",
+  "isolatePeerMachines": true,
   "hooks": {
     "PreToolUse": [
       {
@@ -126,6 +126,16 @@
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/record_owned_id.py\" || true"
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent_hooks.py\" PostToolUse || true",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "SessionStart": [
@@ -135,6 +145,39 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/reread_after_compact.py\" || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent_hooks.py\" SessionStart || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "^(producer|researcher|prober|checker|test-designer)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent_hooks.py\" SubagentStart || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "^(producer|researcher|prober|checker|test-designer)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent_hooks.py\" SubagentStop || true",
+            "timeout": 15
           }
         ]
       }

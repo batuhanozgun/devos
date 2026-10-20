@@ -138,7 +138,18 @@ t deny '{"tool_name":"mcp__claude-code-remote__some_future_write_tool","tool_inp
 t deny '{"tool_name":"mcp__claude-code-remote__get_session","tool_input":{"session_id":"session_SOMEONE_ELSE"}}'
 t deny '{"tool_name":"ReadMcpResourceTool","tool_input":{"server":"9c01eb9f","uri":"x"}}'
 t deny '{"tool_name":"ListMcpResourcesTool"}'
-t deny '{"tool_name":"SendMessage","tool_input":{"to":"someone","message":"x"}}'
+lt deny T1 "SendMessage to a name (was t deny; W-C02-25 M3a: T1 is its only layer once the settings deny is gone)" '{"tool_name":"SendMessage","tool_input":{"to":"someone","message":"x"}}'
+# W-C02-25 M3a: SendMessage on both events, from the executor (agent_id null) and from a subagent, to an agent ID, to
+# main and to a name; each is T1's denial (the settings deny no longer stands in front of it).
+for sm_ev in PreToolUse PermissionRequest; do
+  for sm_caller in null '"w25smagent0001"'; do
+    for sm_to in a1b2c3d4e5f6a7b8c main researcher; do
+      sm_json="{\"hook_event_name\":\"$sm_ev\",\"tool_name\":\"SendMessage\",\"agent_id\":$sm_caller,\"tool_input\":{\"to\":\"$sm_to\",\"message\":\"x\"}}"
+      if [ "$sm_ev" = PermissionRequest ]; then lc="$pcmd" lt deny T1 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"
+      else lt deny T1 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"; fi
+    done
+  done
+done
 t deny '{"tool_name":"ListAgents"}'
 t deny '{"tool_name":"EnterWorktree"}'
 t deny '{"tool_name":"SuggestPluginInstall"}'

@@ -349,6 +349,11 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
     "F5": ("the fingerprint store", "The leak check's store decides what counts as library text; only "
            "tools/leak_fingerprints.py writes it, from the library clone.", WO + "; W-C00-14",
            "Rebuild it with python3 tools/leak_fingerprints.py build."),
+    "F6": ("the nonce key file is not for subagents", "The start hook keys each role run's nonce from the session's "
+           "<session>.nonce-key file in the guard's log directory; a receipt that any role could compute from that "
+           "file would show nothing about delivery (W-C02-25 disposition W25-4).", WO + " section 10; W-C02-25",
+           "Echo the Nonce: line your start header gave you, or write \"Nonce: none delivered\"; never read, "
+           "search or name the key file."),
     "L1": ("leak check before a public write", "devos is public: what is pushed or written there is visible at "
            "once. Text taken verbatim from the private research library (a run of " + str(SHINGLE_WORDS) +
            " words matching the fingerprints built from the library clone) and the names of the account's "
@@ -857,6 +862,18 @@ def guarded_roots():
             ("/etc/gitconfig", "git's system configuration"),
             (LOG_DIR, "the guard's decision log"),
             (LEAK_STORE, "the leak check's fingerprint store (only tools/leak_fingerprints.py writes it)")]
+
+
+NONCE_KEY_SUFFIX = ".nonce-key"   # <LOG_DIR>/<session key>.nonce-key, written by .claude/hooks/agent_hooks.py
+
+
+def names_nonce_key(name, args):
+    """F6 (W-C02-25, W25-4): the call's path or command text names a nonce key file. Read, Grep and Glob paths, the
+    file tools' paths and the shell command are read; a file's content (Write, Edit) and a Grep pattern are not, so a
+    scratch copy of the hook can still be written and searched. A read inside an interpreter that builds the name, or
+    a glob that does not spell it, is not caught (working order section 10, "Not protected")."""
+    keys = ("file_path", "notebook_path", "path", "glob", "command") + (("pattern",) if name == "Glob" else ())
+    return any(isinstance(args.get(k), str) and NONCE_KEY_SUFFIX[1:] in args[k] for k in keys)
 
 
 def guarded_zone(p, remove=False):
@@ -2240,10 +2257,9 @@ def marked(lines, marks):
     return opens, closes, near
 
 
-def t5_check(t, prompt):
-    """T5's checks in the pinned order (W-C02-24 A3): (rule, detail) for an allowed call; Bad for a refusal."""
-    lines = prompt.split("\n")
-    forms = [m for m in map(T5_FORM.match, lines) if m]
+def t5_form(prompt):
+    """T5's form line (W-C02-24 A3): "writer" or "reader"; Bad (T5.1 to T5.3) when it does not parse."""
+    forms = [m for m in map(T5_FORM.match, prompt.split("\n")) if m]
     if not forms:
         raise Bad("T5.1", "no line at column 0 starts with Writer or reader: (optionally in **)")
     if len(forms) > 1:
@@ -2251,21 +2267,36 @@ def t5_check(t, prompt):
     form = forms[0].group(1).lower()
     if form not in ("writer", "reader"):
         raise Bad("T5.3", "the Writer or reader: line's first word is neither writer nor reader")
-    items = [l for l in lines if T5_ITEM.match(l)]
+    return form
+
+
+def t5_item(t, prompt):
+    """T5's grammar, read without the item file (W-C02-24 A3): (form, item path) for agent type t; Bad (T5.1 to
+    T5.7) when it does not parse. The one parser of a task's form and item: t5_check and agent_hooks.py's launch
+    record both use it (W-C02-25)."""
+    form = t5_form(prompt)
+    items = [l for l in prompt.split("\n") if T5_ITEM.match(l)]
     if not items:
         raise Bad("T5.5", "no line at column 0 starts with Item: (optionally in **)")
     if t == "test-designer" or form == "reader":
         named = [m.group(0) for m in map(T5_PATH.search, items) if m]
         if not named:
             raise Bad("T5.7", "no Item: line names a path plan/work/W-C<dd>-<dd>[.<n>].md")
-        return "T5R", (f"the reader form ({t}, {form} line): an Item: line names {named[0]}; the item file is not "
-                       "read, on main or not")
+        return form, named[0]
     if len(items) > 1:
         raise Bad("T5.6", f"{len(items)} Item: lines in the writer form; exactly one is read")
     m = T5_WHOLE.fullmatch(items[0])
     if not m:
         raise Bad("T5.7", "the writer form's Item: line is not exactly Item: plan/work/W-C<dd>-<dd>[.<n>].md")
-    path = m.group(1)
+    return form, m.group(1)
+
+
+def t5_check(t, prompt):
+    """T5's checks in the pinned order (W-C02-24 A3): (rule, detail) for an allowed call; Bad for a refusal."""
+    form, path = t5_item(t, prompt)
+    if t == "test-designer" or form == "reader":
+        return "T5R", (f"the reader form ({t}, {form} line): an Item: line names {path}; the item file is not "
+                       "read, on main or not")
     obj = head_object("HEAD", path)
     if obj is None:
         if head_object("refs/remotes/origin/main", path) is not None:
@@ -2360,6 +2391,8 @@ def decide(data):
             token_stop(input_strings(args))   # L4 before every other rule of an outbound call (W-C02-20 point 2)
         if any(isinstance(v, str) and "\x00" in v for v in args.values()):
             raise Bad("G0", "the tool input contains a NUL byte, which no real path or command needs")
+        if data.get("agent_id") is not None and names_nonce_key(name, args):
+            raise Bad("F6", f"a subagent's {name} call names the nonce key file (*{NONCE_KEY_SUFFIX})")
         if name.startswith("mcp__"):
             if not name.startswith(ALLOWED_PREFIXES):
                 raise Bad("M1", f"'{name}' is not an allowed MCP server for DevOS sessions")
@@ -2414,11 +2447,26 @@ def decide(data):
 
 # ---------------------------------------------------------------- output and log
 
+def key_of(session):
+    """The file-name key of a session ID: cse_ read as session_, every character outside [A-Za-z0-9_-] as _, at
+    most 80 characters."""
+    return re.sub(r"[^A-Za-z0-9_-]", "_", norm(session) or "unknown")[:80]
+
+
+def session_key(data):
+    """The one session key (W-C02-25): the guard log's file name without .jsonl, and the name of the session's agent
+    registry and nonce key file. The cloud session's ID ($CLAUDE_CODE_REMOTE_SESSION_ID) when set, else the hook
+    input's session_id. Imported by .claude/hooks/agent_hooks.py, tools/guard_report.py and tools/subagent_audit.py."""
+    remote = norm(os.environ.get("CLAUDE_CODE_REMOTE_SESSION_ID") or "")   # the cloud session's ID
+    local = data.get("session_id") if isinstance(data, dict) else None
+    return re.sub(r"[^A-Za-z0-9_-]", "_", remote or str(local or "unknown"))[:80]
+
+
 def log_decision(data, decision, rule, detail, text):
     try:
         os.makedirs(LOG_DIR, exist_ok=True)
         remote = norm(os.environ.get("CLAUDE_CODE_REMOTE_SESSION_ID") or "")   # the cloud session's ID
-        sid = re.sub(r"[^A-Za-z0-9_-]", "_", remote or str(data.get("session_id") or "unknown"))[:80]
+        sid = session_key(data)
         path = os.path.join(LOG_DIR, f"{sid}.jsonl")
         f = open(path, "a+b")
         fcntl.flock(f, fcntl.LOCK_EX)           # parallel calls get distinct numbers (R-D008-1 m-6)

@@ -76,8 +76,10 @@ RECORDER_LINE = re.compile(r"(session|trig)_[A-Za-z0-9]+")
 VERDICT_PATH = re.compile(r"evidence/([^/]+)/checks/CHK-\1-\d{3,}\.md")
 SHA40 = re.compile(r"[0-9a-f]{40}")
 COVERING = {"PASS", "PASS-WITH-CONDITIONS"}
-# W-C02-23 (SB-COR 2.3): every input of tools/check_role_packages.py; a prefix ends with "/". W-C02-25 adds its hook.
-ROLE_PACKAGE_TRIGGER = (".claude/roles/", ".claude/hooks/reread_after_compact.py", "tools/check_role_packages.py")
+# W-C02-23 (SB-COR 2.3): every input of tools/check_role_packages.py; a prefix ends with "/". W-C02-25 adds its agent
+# hooks, whose start hook delivers the packages.
+ROLE_PACKAGE_TRIGGER = (".claude/roles/", ".claude/hooks/reread_after_compact.py", "tools/check_role_packages.py",
+                        ".claude/hooks/agent_hooks.py")
 
 # W-C02-24 M1b. The binding template's front-matter keys, in order: one list with .claude/agents/checker.md and the
 # working order's section 9 (tools/test_merge_gate.py compares the three).
