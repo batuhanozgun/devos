@@ -219,12 +219,27 @@ def guard_log_agents(path):
 
 
 def end_time(sa, path, run, agent):
-    """The latest timestamp of the records that hold the agent's ID where its end status is recorded, or None."""
-    where = os.path.join(os.path.dirname(path), "journal.jsonl") if run is not None else \
-        os.path.dirname(os.path.dirname(path)) + ".jsonl"
-    stamps = [str(e.get("timestamp") or e.get("time") or "") for e in (sa.tolerant(where, [agent.encode()]) or [])]
-    stamps = [s for s in stamps if s]
-    return max(stamps) if stamps else None
+    """The timestamp of the record that ends a finished run as sa.end_problem reads it, or None. Of the records
+    end_problem reads, it is the last that by itself reads as a completed end: there the last end status decides, and
+    the run has finished. A later record that only names the agent's ID is no end status and does not move it (L-458).
+    end_problem is run on one record at a time through sa.tolerant, swapped in this private copy of the module only."""
+    read, seen, end = sa.tolerant, [], None
+
+    def capture(p, needles):
+        got = read(p, needles)
+        seen.extend(got or [])
+        return got
+    try:
+        sa.tolerant = capture
+        sa.end_problem(path, run, agent)
+        for e in list(seen):
+            sa.tolerant = lambda p, needles, e=e: [e]
+            end = e if sa.end_problem(path, run, agent) is None else end
+    except sa.Error:
+        return None
+    finally:
+        sa.tolerant = read
+    return (str(end.get("timestamp") or end.get("time") or "") or None) if end else None
 
 
 def runs_of(recs, aid):
