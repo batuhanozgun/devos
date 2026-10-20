@@ -9,9 +9,10 @@ It never asks. Every decision is appended to a per-session decision log (LOG_DIR
 or denied, and why, can be audited afterwards; tools/guard_report.py prints a session's denials.
 
 Rule families (the IDs are the keys of RULES):
-  T  tools: non-MCP tools are an allow list; subagents run in-process only; Workflow only without an
-     isolation option; AskUserQuestion and ExitPlanMode are passed to the user, who answers them by design; the
-     Skill tool, the Agent tool and a workflow's agentType only for what the repository provides (T4, PC-35).
+  T  tools: non-MCP tools are an allow list; subagents run in-process only; AskUserQuestion and ExitPlanMode are
+     passed to the user, who answers them by design; the Skill tool only for the repository's skills, and the
+     Agent tool only for the five role types whose files the checkout holds (T4, PC-35, W-C02-24); the Workflow
+     tool is denied as a whole (TW); a producer or test-designer task passes the gate before work (T5, W-C02-24).
   M  MCP: only the listed servers; GitHub writes only to batuhanozgun/devos and never onto main; no
      auto-merge; no approving reviews; a merge names the full head SHA and, for a class-high head, needs a
      covering checker verdict (the merge gate, `tools/merge_gate.py`).
@@ -105,7 +106,9 @@ ALLOWED_PREFIXES = (
 # suggestion tools, MCP resource readers and worktree switching (which would change the enforced guard).
 ALLOWED_NON_MCP = {
     "Bash", "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit",
-    "Agent", "Task", "Workflow", "ToolSearch", "Skill", "StructuredOutput",
+    "Agent", "Task",
+    "Workflow",                    # listed so that TW, not T1, denies it with its own reason (W-C02-24, EV-C02-031)
+    "ToolSearch", "Skill", "StructuredOutput",
     "TaskCreate", "TaskGet", "TaskList", "TaskUpdate", "TaskStop", "TaskOutput",
     "TodoWrite", "WebFetch", "WebSearch", "EnterPlanMode", "SendUserFile",
     "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
@@ -116,8 +119,8 @@ ALLOWED_NON_MCP = {
 # a WebSocket to any address, and no shell rule (B1 to B11, G0, L1, L2) reads it; listed, L4 would check only the
 # token formats. Nothing in the installation needs it: to wait, use Bash with run_in_background, or send_later.
 # L4 (W-C02-20 point 1; tests/C02/W-C02-20/README.md section 2): the listed tools whose input stays in the session's
-# container (files, in-process subagents and workflows, whose own calls pass this guard, the checkout's skills, the
-# session's task list, mode and notification queue, and results handed to the calling conversation). Every other listed
+# container (files, in-process subagents, whose own calls pass this guard, Workflow, which TW denies, the checkout's
+# skills, the session's task list, mode and notification queue, and results handed to the calling conversation). Every other listed
 # tool and every allowed MCP server carries text out of the session, and L4 reads its whole input.
 LOCAL_TOOLS = {
     "Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit", "Agent", "Task", "Workflow", "ToolSearch", "Skill",
@@ -130,13 +133,25 @@ USER_TOOLS = {"AskUserQuestion", "ExitPlanMode"}   # answered by the user; an "a
 # plain text "isn't a failure"; the settings wrappers match it exactly, so it must not start with "{" or hold "'".
 PASS_MARKER = "DevOS guard: pass, no decision: the user answers this tool (N-185)"
 SUBAGENT_TOOLS = {"Agent", "Task"}
-# T4 (PC-35 "Routing" item 1; W-C01-45): besides the repository's own (.claude/agents/), the built-in subagent types
-# the subagents page names (code.claude.com/docs/en/sub-agents, "Built-in subagents", read 2026-10-11; not
-# independently tested) that load CLAUDE.md. Explore and Plan are left out: by that page they skip CLAUDE.md, which
-# binds every subagent here. By the same page, an Agent call that names no type gets general-purpose.
-BUILTIN_AGENT_TYPES = ("general-purpose", "claude", "claude-code-guide", "statusline-setup")
-AGENT_TYPE_WORD = re.compile(r"agent_?type", re.I)   # every mention in a workflow script must be readable (T4)
-AGENT_TYPE_LITERAL = re.compile(r"agentType[\"'`]?\s*:\s*([\"'`])([\w.:@/-]+)\1(?=\s*[,}])")
+# T4 (PC-35 "Routing" item 1; W-C02-24 A1): an Agent or Task call names one of the five role types, exactly, and the
+# guard's checkout holds its file .claude/agents/<type>.md. Every built-in type (general-purpose, claude,
+# claude-code-guide, statusline-setup, Explore, Plan, fork), counter-designer (until C05), a plugin's type and a call
+# with no type are denied: a helper without a role package (Ek A 3.3; W-C02-24 disposition 3).
+ROLE_TYPES = ("producer", "researcher", "prober", "checker", "test-designer")
+# T5, the gate before work (W-C02-24 A3; SB-COR 3.1): the grammars as the acceptance block pins them. A prompt's lines
+# are its "\n"-separated parts; a "\r" stays part of its line. Every pattern is matched at column 0.
+T5_TYPES = ("producer", "test-designer")
+T5_FORM = re.compile(r"(?:\*\*)?Writer or reader:(?:\*\*)?[ \t]*([A-Za-z]*)")
+T5_ITEM = re.compile(r"(?:\*\*)?Item:")
+T5_WHOLE = re.compile(r"(?:\*\*)?Item:(?:\*\*)?[ \t]+(plan/work/W-C\d\d-\d\d(?:\.\d+)?\.md)[ \t]*")   # fullmatch
+T5_PATH = re.compile(r"plan/work/W-C\d\d-\d\d(?:\.\d+)?\.md")
+T5_KEYS = ("base", "asked", "not_asked", "library", "agreed", "writes", "consumer", "dispositions", "open")
+T5_KEY = re.compile(r"(" + "|".join(T5_KEYS) + r"):(?: |$)")
+T5_EV = re.compile(r"evidence/C\d\d/[A-Za-z0-9_.-]+\.md")
+APPROACH = ("<!-- approach -->", "<!-- /approach -->")
+ACCEPTANCE = ("<!-- acceptance -->", "<!-- /acceptance -->")
+# tools/records.py's NOTE_RE, held here because the guard reads only its own checkout's git objects (W-C02-24 A3)
+NOTE_RE = re.compile(r"<!-- note (N-\d+)((?: [a-z_]+=[^ >]+)*) -->\n(.*?)\n<!-- /note -->", re.S)
 FILE_WRITE_TOOLS = {"Write": "file_path", "Edit": "file_path", "NotebookEdit": "notebook_path"}
 FILE_READ_TOOLS = {"Read": "file_path", "Glob": "path", "Grep": "path"}
 
@@ -224,19 +239,21 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
     "T2": ("subagents in-process only", "A subagent with an isolation mode runs in another worktree or as a new "
            "cloud session, outside the session-tool rules.", WO + "; R-C00-BOM-5 N-B1",
            "Call Agent or Task without an isolation field."),
-    "T3": ("workflows in-process only", "A workflow agent with an isolation option runs in another worktree or "
-           "environment, outside this guard's view.", WO + "; D-008",
-           "Write the workflow without any isolation option."),
     "T4": ("skills and agent types the repository provides", "A skill or a subagent type brings its own text into the "
-           "session as instructions. Only the repository's own (a directory under .claude/skills/, an agent defined "
-           "in .claude/agents/) and the built-in agent types named here are admitted; a plugin's skill or agent type, "
-           "one enabled at account level included, is not reviewed for DevOS and is kept out of its sessions.",
-           WO + "; PC-35; W-C01-45",
-           "Use a skill under .claude/skills/ by its exact directory name, or an agent type defined in "
-           ".claude/agents/ (by file or declared name) or one of the built-in types " + ", ".join(BUILTIN_AGENT_TYPES) +
-           "; in a workflow script write agentType only as a key with one quoted name of those (agentType: "
-           "'checker'), or leave it out, and do not write the word elsewhere in the script. A new skill or agent "
-           "type is added only by a reviewed change to the repository."),
+           "session as instructions. Only the repository's own skills (a directory under .claude/skills/) and the five "
+           "role types, each with its file in .claude/agents/, are admitted: a built-in type, counter-designer (until "
+           "C05) or a plugin's skill or agent type is a helper without a role package, not reviewed for DevOS.",
+           WO + " section 10; PC-35; W-C01-45; W-C02-24",
+           "Use a skill under .claude/skills/ by its exact directory name; launch an Agent or Task call with "
+           "subagent_type set to exactly one of " + ", ".join(ROLE_TYPES) + ". A new skill or agent type is added "
+           "only by a reviewed change to the repository and to this file."),
+    "TW": ("the Workflow tool is denied as a whole", "A workflow's agents run their own calls, and its script chooses "
+           "agent types and options this guard cannot read before they run; the roles run through the Agent tool, "
+           "where the guard decides each launch (W-C02-24 disposition 2).",
+           WO + " sections 2, 4 step 3 and 10; W-C02-24",
+           "Run each part through the Agent tool, one call per role, with subagent_type one of " +
+           ", ".join(ROLE_TYPES) + " and no isolation field; independent calls can be made together in one message, and long work can run "
+           "in the background. Re-admitting workflows needs a checked guard change."),
     "M1": ("MCP server allow list", "Only the GitHub tools, the session tools and the read-only database "
            "connector are allowed. Account connectors (mail, calendar, files and others, some under opaque IDs) "
            "are never used by DevOS.", "CLAUDE.md; " + WO + "; D-003",
@@ -384,6 +401,56 @@ RULES = {  # id: (title, why the rule exists, where it is written, what to do in
            "Run the client call alone, in exactly that form. If the script was changed on purpose, the exception "
            "follows it only through a guard change of its own; report it to the executor."),
 }
+# T5's refusals, one entry each (W-C02-24 A3): a shared why and where, and per check a title and what to do instead
+T5_WHY = ("A producer starts writing only with its item's agreed approach (SB-COR 3.1; D-039): its task carries the "
+          "Item: line and that item's approach block byte for byte as the guard's checkout holds it at HEAD, and the "
+          "item has an acceptance condition and no open blocking note. A producer's reader task and a test designer's "
+          "task name their item. The guard reads only its own checkout, never the call's cwd or the network.")
+T5_TASK = "Write the task by working order section 9's template: "
+RULES.update({rule: ("the gate before work: " + title, T5_WHY, WO + " sections 9 and 10; W-C02-24", todo)
+              for rule, title, todo in (
+    ("T5.0", "could not check", "The guard could not check this call (the detail names the error) and refuses this "
+     "call only. Launch again; if it repeats, report it to the executor as a guard finding (working order section 10, "
+     "the lock-out route)."),
+    ("T5.1", "no Writer or reader: line", T5_TASK + "one line at column 0, with no bullet, reading **Writer or "
+     "reader:** writer ... or **Writer or reader:** reader ...."),
+    ("T5.2", "more than one Writer or reader: line", "Keep exactly one Writer or reader: line at column 0; indent any "
+     "quoted one."),
+    ("T5.3", "the first word is neither writer nor reader", "Begin the Writer or reader: line's text with the word "
+     "writer or reader."),
+    ("T5.4", "no prompt in the tool input", "Launch the role with its task in the Agent call's prompt."),
+    ("T5.5", "no Item: line", T5_TASK + "a line Item: plan/work/W-C<dd>-<dd>.md at column 0, with no bullet."),
+    ("T5.6", "more than one Item: line in the writer form", "A writer task names one item: keep one Item: line at "
+     "column 0; a triage of several items is a reader task."),
+    ("T5.7", "the Item: line is not well formed", "In the writer form the line is exactly Item: plan/work/"
+     "W-C<dd>-<dd>[.<n>].md, with nothing after the path; in the reader form, and for a test designer, an Item: line "
+     "names such a path."),
+    ("T5.8", "the item file is absent at HEAD", "Check the Item: path. A new item's file is merged into main first "
+     "(its acceptance and approach pull request), then this checkout is brought forward with tools/sync_worktree.sh; "
+     "an uncommitted file does not count."),
+    ("T5.9", "the item file is on origin/main but not at HEAD: sync first", "Sync first: run tools/sync_worktree.sh, "
+     "then launch again."),
+    ("T5.10", "no approach block in the item file", "Agree the approach (working order section 4 step 1a; \"no team "
+     "round needed, because ...\" is a valid result), merge it into the item file, sync, and paste it by tool."),
+    ("T5.11", "more than one approach block in the item file", "Keep one approach block in the item file, through a "
+     "checked change."),
+    ("T5.12", "a malformed approach block", "Correct the item's block through a checked change: its two markers as "
+     "whole lines, in order, and the keys " + ", ".join(T5_KEYS) + " at column 0, once each, in that order."),
+    ("T5.13", "the approach block is not in the task byte for byte", "Paste the block by tool from git show "
+     "HEAD:<item file>, its markers included, with LF line ends and no edit, under the Item: line of the same item."),
+    ("T5.14", "library: is empty", "Fill the block's library: line (what the library changed, limited or justified, or "
+     "\"none bore, because ...\") through a checked change of the item."),
+    ("T5.15", "asked: names no evidence record", "Name in asked: the record under evidence/C<dd>/ that holds the "
+     "roles' notes, through a checked change of the item."),
+    ("T5.16", "an asked: record is absent at HEAD", "Merge the record that asked: names, sync, and launch again; or "
+     "correct its path in the item."),
+    ("T5.17", "no acceptance block in the item file", "Merge the item's acceptance condition before its product "
+     "(working order section 4 step 2), sync, and launch again."),
+    ("T5.18", "an empty acceptance block", "Write the item's acceptance condition into its block, merge it, sync, and "
+     "launch again."),
+    ("T5.19", "an open blocking note on the item", "Close the note by a disposition in the approach (working order "
+     "section 4 step 2a), merge, sync, and launch again."),
+)})
 LEAK_WITHHELD = {"L1", "L2", "L4", "L5"}   # rules whose call text is never repeated (it may hold the matched text)
 
 
@@ -2135,26 +2202,141 @@ def repo_skills():
         return set()
 
 
-def agent_type_check(where, t):
-    """T4: t is an agent type defined in the checkout's .claude/agents/ (file name or declared name) or built in."""
-    d, names = os.path.join(ROOT, ".claude", "agents"), set(BUILTIN_AGENT_TYPES)
-    try:
-        files = [f for f in os.listdir(d) if f.endswith(".md")]
-    except OSError:
-        files = []
-    for f in files:
-        names.add(f[:-3])
-        try:
-            with open(os.path.join(d, f), errors="replace") as fh:
-                m = re.match(r"---\n(.*?)\n---", fh.read(), re.S)
-        except OSError:
-            continue
-        n = m and re.search(r"^name:\s*[\"']?([^\"'\n#]+?)[\"']?\s*$", m.group(1), re.M)
-        if n:
-            names.add(n.group(1))
-    if t not in names:
-        raise Bad("T4", f"{where} names the agent type '{t}', which .claude/agents/ does not define and the guard does "
-                        "not name as built in (a plugin's agent type, for example)")
+def agent_type_check(name, args):
+    """T4: the call names exactly one of ROLE_TYPES, and the guard's checkout holds its file (W-C02-24 A1)."""
+    if "subagent_type" not in args:
+        raise Bad("T4", f"{name} names no subagent_type (the platform's default is a built-in type)")
+    t = args["subagent_type"]
+    if not isinstance(t, str):
+        raise Bad("T4", f"{name} with a subagent_type that is not one name")
+    if t not in ROLE_TYPES:
+        raise Bad("T4", f"{name} names the agent type {t!r}, which is not one of the role types "
+                        f"{', '.join(ROLE_TYPES)} (a built-in, a plugin's or counter-designer, for example)")
+    if not os.path.isfile(os.path.join(ROOT, ".claude", "agents", t + ".md")):
+        raise Bad("T4", f"{name} names the role type '{t}', whose file .claude/agents/{t}.md the guard's checkout does "
+                        "not hold")
+    return t
+
+
+def head_object(rev, path):
+    """T5: the object rev:path in the guard's own checkout, as (type, raw bytes), or None when it is absent there.
+    One git call, its output read raw; a git failure raises (T5.0)."""
+    r = git("cat-file", "--batch", raw=True, input=f"{rev}:{path}\n".encode())
+    head, _, rest = r.stdout.partition(b"\n")
+    parts = head.split()
+    if r.returncode == 0 and parts[-1:] == [b"missing"]:
+        return None
+    if r.returncode != 0 or len(parts) != 3 or len(rest) < int(parts[2]):
+        raise RuntimeError(f"git cat-file did not read {rev}:{path}")
+    return parts[1].decode("ascii"), rest[:int(parts[2])]
+
+
+def marked(lines, marks):
+    """The (open, close) line numbers of whole-line marker pairs, and the lines that start like a marker but are not
+    one whole (indented, or with text after it)."""
+    opens = [n for n, l in enumerate(lines) if l == marks[0]]
+    closes = [n for n, l in enumerate(lines) if l == marks[1]]
+    near = [n for n, l in enumerate(lines) if l not in marks and l.strip().startswith(marks)]
+    return opens, closes, near
+
+
+def t5_check(t, prompt):
+    """T5's checks in the pinned order (W-C02-24 A3): (rule, detail) for an allowed call; Bad for a refusal."""
+    lines = prompt.split("\n")
+    forms = [m for m in map(T5_FORM.match, lines) if m]
+    if not forms:
+        raise Bad("T5.1", "no line at column 0 starts with Writer or reader: (optionally in **)")
+    if len(forms) > 1:
+        raise Bad("T5.2", f"{len(forms)} lines start with Writer or reader:; exactly one is read")
+    form = forms[0].group(1).lower()
+    if form not in ("writer", "reader"):
+        raise Bad("T5.3", "the Writer or reader: line's first word is neither writer nor reader")
+    items = [l for l in lines if T5_ITEM.match(l)]
+    if not items:
+        raise Bad("T5.5", "no line at column 0 starts with Item: (optionally in **)")
+    if t == "test-designer" or form == "reader":
+        named = [m.group(0) for m in map(T5_PATH.search, items) if m]
+        if not named:
+            raise Bad("T5.7", "no Item: line names a path plan/work/W-C<dd>-<dd>[.<n>].md")
+        return "T5R", (f"the reader form ({t}, {form} line): an Item: line names {named[0]}; the item file is not "
+                       "read, on main or not")
+    if len(items) > 1:
+        raise Bad("T5.6", f"{len(items)} Item: lines in the writer form; exactly one is read")
+    m = T5_WHOLE.fullmatch(items[0])
+    if not m:
+        raise Bad("T5.7", "the writer form's Item: line is not exactly Item: plan/work/W-C<dd>-<dd>[.<n>].md")
+    path = m.group(1)
+    obj = head_object("HEAD", path)
+    if obj is None:
+        if head_object("refs/remotes/origin/main", path) is not None:
+            raise Bad("T5.9", f"{path} is at the local origin/main but not at HEAD: sync first")
+        raise Bad("T5.8", f"{path} is absent at HEAD of the guard's checkout")
+    if obj[0] != "blob":
+        raise RuntimeError(f"{path} is a {obj[0]} at HEAD, not a file")
+    text = obj[1].decode("utf-8")                       # strict: an item that is not UTF-8 is T5.0
+    L = text.split("\n")
+    opens, closes, near = marked(L, APPROACH)
+    if not (opens or closes or near):
+        raise Bad("T5.10", f"{path} at HEAD holds no approach block")
+    if len(opens) > 1 or len(closes) > 1:
+        raise Bad("T5.11", f"{path} at HEAD holds {max(len(opens), len(closes))} approach blocks")
+    if near or len(opens) != 1 or len(closes) != 1 or closes[0] < opens[0]:
+        raise Bad("T5.12", f"{path} at HEAD: an approach marker is not a whole line, is missing or is out of order")
+    body, vals, key = L[opens[0] + 1:closes[0]], {}, None
+    for l in body:
+        k = T5_KEY.match(l)
+        if k:
+            key = k.group(1)
+            vals[key] = [l[k.end():]]
+        elif key:
+            vals[key].append(l)
+    if tuple(T5_KEY.match(l).group(1) for l in body if T5_KEY.match(l)) != T5_KEYS:
+        raise Bad("T5.12", f"{path} at HEAD: the block's key lines are not " + ", ".join(T5_KEYS) +
+                  ", once each, in that order")
+    if "\n".join(L[opens[0]:closes[0] + 1]) not in prompt:
+        raise Bad("T5.13", f"the approach block of {path} at HEAD, markers included, is not in the task byte for byte")
+    if not "\n".join(vals["library"]).strip():
+        raise Bad("T5.14", f"the approach block of {path} has an empty library: line")
+    asked = list(dict.fromkeys(T5_EV.findall("\n".join(vals["asked"]))))
+    if not asked:
+        raise Bad("T5.15", f"the approach block of {path}: asked: names no path evidence/C<dd>/<name>.md")
+    for a in asked:
+        if git("cat-file", "-e", f"HEAD:{a}", raw=True).returncode != 0:
+            raise Bad("T5.16", f"the approach block of {path}: asked: names {a}, which is absent at HEAD")
+    opens, closes, _ = marked(L, ACCEPTANCE)
+    end = next((c for c in closes if opens and c > opens[0]), None)
+    if end is None:
+        raise Bad("T5.17", f"{path} at HEAD holds no acceptance block")
+    if not "\n".join(L[opens[0] + 1:end]).strip():
+        raise Bad("T5.18", f"{path} at HEAD holds an empty acceptance block")
+    if text.count("<!-- note ") != len(NOTE_RE.findall(text)):
+        raise Bad("T5.0", f"could not check: a note marker in {path} does not match tools/records.py's note format")
+    for nm in NOTE_RE.finditer(text):
+        attrs = dict(a.split("=", 1) for a in nm.group(2).split())
+        if attrs.get("status", "open") == "open" and attrs.get("blocks") == "true":
+            raise Bad("T5.19", f"{path} holds the open blocking note {nm.group(1)} (a note with no status is open)")
+    return "T5", (f"the writer form: {path} at HEAD, its approach block in the task byte for byte, its asked: records "
+                  "present, its acceptance block present, no open blocking note")
+
+
+def t5(data, args, t):
+    """T5, the gate before work, for a producer or test-designer call (W-C02-24 A3). The record's detail carries the
+    input's key names and the prompt's UTF-8 byte length and SHA-256, never its text. Any error inside T5 refuses this
+    call only, as T5.0 (containment; never G0)."""
+    meta = (f"input_keys={','.join(sorted(map(str, args)))}; "
+            f"hook_keys={','.join(sorted(map(str, data)))}")
+    try:                                                 # T5's one catch: removed, T5.0's cases would reach G0
+        prompt = args.get("prompt")
+        if not isinstance(prompt, str):
+            raise Bad("T5.4", "the tool input holds no prompt string")
+        b = prompt.encode("utf-8")                       # a prompt that cannot be encoded raises: T5.0
+        meta += f"; prompt_bytes={len(b)}; prompt_sha256={hashlib.sha256(b).hexdigest()}"
+        rule, why = t5_check(t, prompt)
+    except Bad as e:
+        raise Bad(e.rule, f"{e.detail}; {meta}")
+    except Exception as exc:
+        raise Bad("T5.0", f"could not check ({type(exc).__name__}); this call only is refused; {meta}")
+    return rule, f"{why}; {meta}"
 
 
 def decide(data):
@@ -2192,44 +2374,22 @@ def decide(data):
             return "pass", "T1", f"{name} is answered by the user"
         if name not in ALLOWED_NON_MCP:
             raise Bad("T1", f"tool '{name}' is not on the allow list")
+        if name == "Workflow":
+            raise Bad("TW", "the Workflow tool, whatever its input; the roles run through the Agent tool")
         if name in SUBAGENT_TOOLS:
             if args.get("isolation") is not None:
                 raise Bad("T2", f"{name} with isolation '{args.get('isolation')}'")
-            t = args.get("subagent_type", "general-purpose")   # no type: general-purpose (BUILTIN_AGENT_TYPES)
-            if not isinstance(t, str):
-                raise Bad("T4", f"{name} with a subagent_type that is not one name")
-            agent_type_check(name, t)
-            return "allow", "T2", f"an in-process subagent of the type '{t}' (T4)"
+            t = agent_type_check(name, args)
+            if t in T5_TYPES:
+                rule, why = t5(data, args, t)
+                return "allow", rule, f"an in-process subagent of the role type '{t}' (T2, T4); {why}"
+            return "allow", "T2", f"an in-process subagent of the role type '{t}' (T4)"
         if name == "Skill":
             s = args.get("skill")
             if not isinstance(s, str) or s not in repo_skills():
                 raise Bad("T4", f"the skill '{s}' is not a directory under .claude/skills/ of the guard's checkout (a "
                                 "plugin's or a built-in skill, for example)")
             return "allow", "T4", f"the repository's skill '{s}'"
-        if name == "Workflow":
-            text = str(args.get("script") or "")
-            sp = str(args.get("scriptPath") or "")
-            if sp:
-                sp = sp if os.path.isabs(sp) else os.path.join(cwd, sp)
-                if not os.path.isfile(sp):
-                    raise Bad("T3", f"the workflow script {sp} cannot be read, so it cannot be inspected")
-                with open(sp, errors="replace") as f:
-                    text += f.read()
-            if not text.strip():
-                raise Bad("T3", "a workflow without its script text (a saved or built-in name) cannot be inspected")
-            if re.search(r"isolation", text, re.I) or re.search(r"[\"'`](worktree|remote)[\"'`]", text):
-                raise Bad("T3", "the workflow script names isolation, or a quoted 'worktree' or 'remote' value")
-            if re.search(r"\[\s*[\"'`][^\]]*\]\s*:", text):
-                raise Bad("T3", "the workflow script builds an object key at run time, which the guard cannot read")
-            types = []
-            for k in AGENT_TYPE_WORD.finditer(text):
-                m = AGENT_TYPE_LITERAL.match(text, k.start())
-                if not m:
-                    raise Bad("T4", f"the workflow script writes {text[k.start():k.start() + 40]!r}, not agentType "
-                                    "with one quoted name, so the guard cannot read which agent type it runs")
-                agent_type_check("the workflow script", m.group(2))
-                types.append(m.group(2))
-            return "allow", "T3", "an in-process workflow" + (f" (T4: {', '.join(sorted(set(types)))})" if types else "")
         if name == "Bash":
             if args.get("dangerouslyDisableSandbox"):
                 raise Bad("B10", "dangerouslyDisableSandbox is set")
