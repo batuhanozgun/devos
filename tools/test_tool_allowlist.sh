@@ -142,6 +142,10 @@ t deny '{"tool_name":"ListMcpResourcesTool"}'
 # by the guard's session_key for a fixed remote session ID; one registered researcher, a made-up ID).
 printf '%s\n' '{"time": "2026-10-20T12:00:00Z", "event": "start", "agent_id": "a0w27sh000000001", "agent_type": "researcher", "name": null, "item": null, "form": null, "tool_use_id": null, "prompt_sha256": null, "run": 1, "outcome": null, "missing": null, "receipt": null, "package": null}' > "$DEVOS_GUARD_LOG_DIR/session_W27SH0001.agents"
 CLAUDE_CODE_REMOTE_SESSION_ID=cse_W27SH0001 lt deny T6.6 "SendMessage to a name, with a registry (was t deny, then lt T1; W-C02-27: T6's name refusal)" '{"tool_name":"SendMessage","tool_input":{"to":"someone","message":"x"}}'
+# W-C02-27.1 A5: the platform-shape twin, its tool input made by the one builder (tools/test_send_message.py --shape;
+# no platform key is written by hand here, WIT-3), same expected rule.
+sm_shape=$(python3 tools/test_send_message.py --shape someone x)
+CLAUDE_CODE_REMOTE_SESSION_ID=cse_W27SH0001 lt deny T6.6 "SendMessage to a name, with a registry (was t deny, then lt T1; W-C02-27: T6's name refusal) [platform shape]" "{\"tool_name\":\"SendMessage\",\"tool_input\":$sm_shape}"
 rm -f "$DEVOS_GUARD_LOG_DIR/session_W27SH0001.agents"   # the decision-log check below reads every file there as the log
 # W-C02-25 M3a's cases, changed by W-C02-27 (its point 9): SendMessage on both events, from the executor (agent_id
 # null) and from a subagent, to an agent ID, to main and to a name, with no registry for the session: each is T6.9's
@@ -152,6 +156,11 @@ for sm_ev in PreToolUse PermissionRequest; do
       sm_json="{\"hook_event_name\":\"$sm_ev\",\"tool_name\":\"SendMessage\",\"agent_id\":$sm_caller,\"tool_input\":{\"to\":\"$sm_to\",\"message\":\"x\"}}"
       if [ "$sm_ev" = PermissionRequest ]; then lc="$pcmd" lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"
       else lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to" "$sm_json"; fi
+      # W-C02-27.1 A5: the platform-shape twin (the builder's tool input), same expected rule
+      sm_shape=$(python3 tools/test_send_message.py --shape "$sm_to" x)
+      sm_json="{\"hook_event_name\":\"$sm_ev\",\"tool_name\":\"SendMessage\",\"agent_id\":$sm_caller,\"tool_input\":$sm_shape}"
+      if [ "$sm_ev" = PermissionRequest ]; then lc="$pcmd" lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to [platform shape]" "$sm_json"
+      else lt deny T6.9 "SendMessage $sm_ev from $sm_caller to $sm_to [platform shape]" "$sm_json"; fi
     done
   done
 done
