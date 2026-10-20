@@ -121,3 +121,113 @@ The raw markdown of the official pages and the changelog, fetched today. No obse
 ## Guard denials
 - B7 (decision log #478): a `curl` piped with `gh api` to read the changelog's commit dates; not pursued another way.
 - Not a denial: an earlier malformed read-only `curl` hung and went to the background as `baelxisz3` (stopped by the executor at about 07:30Z).
+
+## 4. Rows of session `session_01JDJ8fJQmrKpXfiRh1yEoxv` (CHK-C02-152 C1; drafted by prober `a8f9de3ef606333a7`, 2026-10-20)
+
+Parity for every row below, unless the row says otherwise:
+- Session `session_01JDJ8fJQmrKpXfiRh1yEoxv`, a Claude cloud session opened 2026-10-20T09:13Z (L-439).
+- Claude Code 2.1.304 (the executor's `get_session`, 18:35Z; `buildVersion` 2.1.304 in every prefix record read). Model `claude-opus-5-5`.
+- Mode `default` and effort `high`, as the guard records them. cwd `/home/user/devos`. Two sources.
+- The repository's settings hooks have been in force from W-C02-25's sync (`13d310a`, live tree 15:35:45Z).
+
+R-01 to R-03 were made in session `session_01JPgLGMqfEiAks5dTpBsCdB` and count here only where a row below re-observes them:
+- R-01's first half (system prompt = role body) is re-observed by R-25's constant offset.
+- R-03's "`last` returns a later short message" recurred here (L-455).
+- Sources under `/tmp/devos-guard/` and `/root/.claude/projects/` do not outlive the container.
+
+Package-step cases:
+- **R-04. SubagentStart fires for a background role, and its context reaches the model.** [O] The registry `/tmp/devos-guard/session_01JDJ8fJQmrKpXfiRh1yEoxv.agents` holds a `start` record with `outcome: emitted` and a package hash for every role launch since 15:37:39Z (line 1 on). The first counted Stop shows the nonce echoed: W-C02-25 row (i) on test designer `a8839a4c77d1f5235`, line 5, `receipt: delivered`, no block before it (L-459). Every counted run since has `stop complete receipt delivered` (`tools/guard_report.py --liveness`, LIVENESS PASS, L-460; re-run 18:44Z). Each run's transcript shows `hook_success` then `hook_additional_context` at lines 2–3 (re-observed for `aa8570fed063c7083` and for this prober run, which received its start header and nonce). Stale when: the version changes, `.claude/settings.json` or `.claude/hooks/agent_hooks.py` changes, or the session changes. State: observed.
+- **R-05. Settings hooks are picked up mid-session, without a restart.** [O] W-C02-25's sync at 15:35:45Z (reflog). `SendMessage` appeared among the main session's deferred tools by 15:36:13Z (EV-C02-036, transcript line 5458). The first Agent call after the sync (guard #3373, 15:37:39Z) produced the registry's first `start` and `launch` records (lines 1–2), and every later launch has both (L-458 row (iii) and (iv)). There is no lag at the first opportunity, unlike R-25. Stale when: a further settings change (each needs its own first-use reading); the version changes; a worker restart or source attachment; another session (this one has two sources, although SET:754 documents a multi-repository exception, EV-C02-035 part 2). State: observed.
+- **R-06. SubagentStop fires at a run's normal end.** [O] A `stop` record for every finished run since 15:37:39Z, except R-07's case (registry; liveness 18:44Z: 16 counted runs, `stop complete receipt delivered`). Stale when: the version changes, or the settings or hook change. State: observed.
+- **R-07. A stop at the platform's turn limit fires no SubagentStop.** [O]/[R]
+  - The closing checker `aa8570fed063c7083`: `launch` and `start` run 1 at 17:38:26Z (registry lines 35–36), with no `stop` for run 1 (registry; liveness flags it).
+  - The turn-limit cause is the platform notification as L-464 reports it [R]. The transcript has 149 `tool_use` stops up to line 740 [O], which fits a 150-turn limit [I].
+  - Consequence: a run that ends at its turn limit leaves a start without a stop, and the liveness check needs an exemption line (L-464).
+  - Stale when: the version changes, or a role's `maxTurns` changes. State: observed (one case).
+- **R-08. SubagentStart fires again for the same agent ID when the agent's own background-task notification resumes it. The hook emits the package again, but the platform does not inject it again.** [O]
+  - Registry line 37: `start` run 2 at 18:32:37Z, 22 s before the executor's denied message (#4295, 18:32:59Z), so no message caused it.
+  - Transcript line 741 (18:32:37.609Z): a `<task-notification>` for its background command `binwf1nef` (`status completed`). Line 742: `hook_success`, `SubagentStart:checker`, with the package in stdout.
+  - No `hook_additional_context` follows; the only one in the transcript is at line 3, and there is no compaction. This fits H:2569 [V] (injected again only when the earlier copy is gone).
+  - Run 2 then stopped `complete receipt delivered` (line 42), the receipt resting on the copy from run 1.
+  - L-464's "(b) … with the package delivered again" is not shown: the hook emitted, the platform did not inject.
+  - Stale when: the version changes, or the hook changes. State: observed (one case).
+- **R-09. A SubagentStop block is honoured.** [V] H:2604, H:2732 (EV-C02-023 section 3 item 2.7; EV-C02-035 part 2): `decision: "block"` keeps the subagent running, with the reason as its next instruction. No `block` record among the registry's 55 lines: no role report has lacked its parts since the hook came into force. Stale when: the version changes, or the hook changes. State: not yet observed. Rows at first natural occurrence (W-C02-25 point 13; L-463).
+- **R-10. `last_assistant_message` equals the report received.** [O] W-C02-25 row (ii) (L-459): `a8839a4c77d1f5235`'s stop record (registry line 5) has `prompt_sha256` `17e03557ec8ee538ebd6f04b58761388a715cbcf3808fc4b0de51754c2db339e`. Re-observed 18:4xZ: the SHA-256 of `tools/subagent_audit.py last a8839a4c77d1f5235` without its final newline is the same. Also re-observed on a resumed run: `aa8570fed063c7083` run 2 (line 42), `c83e68a2914ed1fcb28d217269dc39324a297f706ba0bfb5dced1828281b198c`, equal to its `last` (21,765 bytes, the report filed as CHK-C02-152). Stale when: the version changes, the hook or `subagent_audit.py` changes, or under `SubagentHandback` (auto mode), where it is not the report [V] H:2583. State: observed.
+- **R-11. A SubagentStop block reason's size limit and delivery.** [V] No limit is documented: the 10,000-character cap lists `additionalContext`, `systemMessage`, `initialUserMessage` and stdout, not `reason` (EV-C02-023 section 3 item 2.8; EV-C02-035 part 2). No block has occurred (R-09). Stale when: the version changes, or the documentation changes. State: not yet observed. The 3.7 fallback (path only, hash asked) stays named.
+- **R-12. The hook's `session_id` against the guard's log key.** [O]
+  - The key is `CLAUDE_CODE_REMOTE_SESSION_ID` normalised, else the hook input's `session_id` (`.claude/hooks/tool_allowlist.py` `session_key`, line 2566).
+  - Every guard record carries `session: session_01JDJ8fJQmrKpXfiRh1yEoxv` and `local_session: e177dd92-42b7-5480-8039-2655653745ba`; `local_session` is the hook input's `session_id` (line 2590), and the same value is the transcripts' `sessionId`.
+  - So the hook's `session_id` is not the key; the key is the cloud ID. The registry, guard log and nonce-key files share it, and `a533282bfce7fb08e` is the same string in its start, launch and 22 guard records (W-C02-25 row (iii), L-458).
+  - Stale when: a session without `CLAUDE_CODE_REMOTE_SESSION_ID` (the key falls back to `session_id`); the version changes; `session_key` changes. State: observed.
+- **R-13. `SendMessage`'s input schema and target field.** [O]
+  - Main session: the executor's `ToolSearch select:SendMessage`, 15:36Z, no call (EV-C02-036, transcript line 5458). `to` is a required string (one line, up to 300 characters); `message` is a required string (default `""`); `summary` and `notify_when_idle` are optional; `additionalProperties: false`; `defer_loading: true` (deferred in main).
+  - In a role subagent: the same four properties and `required: [to, message]` are in this prober run's own tool list, not deferred (self-observation, `a8f9de3ef606333a7`).
+  - The schema is not the hook-side shape (R-26).
+  - Stale when: the version changes, or the settings deny changes. State: observed.
+- **R-14. Whether a role subagent can call `SendMessage` without `ToolSearch`.** [O]
+  - The platform's tool list for role runs started after W-C02-27's role files loaded includes `SendMessage`, and none includes `ToolSearch`. Prefix `toolNames`:
+    - researcher `a738e84458e67d309`: Read, Grep, Glob, Bash, WebFetch, WebSearch, SendMessage;
+    - checkers `ae6f06283aba18948`, `aa8570fed063c7083`, `ad97f09223020d9da`: Read, Grep, Glob, Bash, SendMessage;
+    - prober `a0af1624f9cd84007`: the same;
+    - this prober run: `SendMessage` with its full schema in its tool list.
+  - So no load is needed. No guard record holds a `SendMessage` call by any `agent_id` other than null (grep; only #4295, by main). Under T6 as merged, every call is denied (R-26).
+  - Stale when: the version changes, a role's `tools:` line changes, or T6 changes (W-C02-27.1). State: tool present without `ToolSearch`, observed. A role's call: not yet observed.
+- **R-15. Whether a resumed role reports back to the agent that resumed it.** [V] Documented only for interactive sessions (SA:1134/1145; EV-C02-035 part 1 item 4). No role has been resumed by another agent: the executor's resume message was denied (#4295), and R-08's resume was the agent's own notification. Stale when: T6 changes (W-C02-27.1) or the version changes. State: not yet observed (W-C02-27 point 10's "recorded when they occur" rows).
+- **R-16. The sibling roster's form.** [V] Names, listing `main` and every other named agent, shown only if the subagent has `SendMessage` and at least one other agent has a name (SA:1107; EV-C02-023 section 3 item 2.20). [O] No roster is in this prober run's context, and all 55 registry records have `name: null`: the executor launches unnamed agents, so the documented condition is not met. Stale when: an agent is launched with a name, or the version changes. State: not yet observed (absence observed while no agent is named). The 3.7 fallback (IDs in `Teammates:`) is in use.
+- **R-17. SubagentStart and SubagentStop for workflow agents.** Not applicable: guard rule TW has denied the Workflow tool as a whole since M1a's sync (`23bc1d2`, L-454), and the liveness report lists workflow agents as excluded. Stale when: TW changes. State: not applicable (SB-COR 3.1 keeps roles out of workflows until this row is observed).
+- **R-18. A workflow `agent()` call's default type.** Not applicable, for R-17's reason. [V] Not read: the workflows page was not read (EV-C02-023 section 3, Unsure). Stale when: TW changes. State: not applicable.
+- **R-19. What the built-in type `claude` may write.** [V] "A catch-all with every tool available to subagents" (SA:77; EV-C02-023 section 3 item 2.15): not read-only. Not applicable for observation: since M1a's sync only the five role types are allowed (L-454), and SB-COR 3.1 excludes `claude` unless shown read-only. Stale when: the guard's role types change, or the version changes. State: not applicable; the [V] reading keeps 3.1's exclusion.
+- **R-20. SessionStart at `startup`, `resume`, `clear`, `compact`.** [O]
+  - `compact`: registry line 33, `session_start` at 17:19:37Z, `outcome: compact`, package `executor@839747541aa6` (liveness line `session_start … source compact`).
+  - `startup`: not applicable in this session, which opened at 09:13Z, before the hook was in force (15:35:45Z).
+  - `resume` and `clear`: not yet observed.
+  - Per 1.2, this working-session reading does not count for C06's routine sessions.
+  - Stale when: the version changes, the settings or hook change, or the session changes. State: `compact` observed; `startup` not applicable here; `resume` and `clear` not yet observed.
+- **R-21. The first PostToolUse-on-Agent record's shape.** [O] Registry line 2 (15:37:39Z, after guard #3373): `event: launch` with `agent_id a533282bfce7fb08e`, `agent_type producer`, `item plan/work/W-C02-27.md`, `form writer`, `tool_use_id toolu_01EyMycYf8xUXvDru9bjNeov`, `prompt_sha256 0a2f78f1…ce0d` (W-C02-25 row (iv), L-458). The `agent_id` in it shows that the launch result carried the agent's ID [I]. The raw hook input's key set is not recorded anywhere. [V] H:1913/1925: `status: "async_launched"` with `agentId`, `description`, `prompt`, `outputFile`, `resolvedModel` (EV-C02-023 section 3 item 2.11). Stale when: the version changes, or the hook changes. State: observed as the registry records it; raw key set not yet observed.
+
+Package-step cases (W-C02-22 point 10 version 2.1, red path; EV-C02-034 section 2):
+- **R-22. Producer row: red on the package step; P met by start delivery.** [R]+[O] The counted run `a14a3efb001ccc75d` read `.claude/roles/producer.md` whole through Bash `cat` (transcript line 19), not by a Read (EV-C02-034; L-457). By the red path, P is met by W-C02-25's live delivery for the producer: `a533282bfce7fb08e`, `start emitted producer@d379362747dd` (registry line 1), `stop complete receipt delivered` (L-458, L-459). The row claims delivery plus H only. The platform fact it rests on is R-04; the shell read is model behaviour, not a platform fact. Whether P's "a Read" excludes a whole shell read is W-C02-22's condition owner's question (EV-C02-034 section 3). Stale when: R-04 is stale, or point 10 changes. State: observed (delivery); the red P stands as recorded.
+- **R-23. Researcher row: the same.** [R]+[O] `a396ce35152701fcc` read its package whole by Bash `cat` (line 18) (EV-C02-034; L-457). P is met by `a738e84458e67d309`: `start emitted researcher@bfb9d1e8e5e9` (line 27), `stop complete receipt delivered` (line 30) (L-460). The row claims delivery plus H only. Stale when: as R-22. State: observed (delivery).
+- **R-24. Checker row: the same.** [R]+[O] `a511fc509e57f7b92` read `checker.md` with a Read of `limit: 15` (line 23) and the rest with `sed -n 15,80p` (line 31): the Reads do not cover every line (EV-C02-034; L-457). P is met by `a19bdbc73cfcc8f78`: `start emitted checker@951789897e85` (line 7), `stop complete receipt delivered` (line 8) (L-459). The row claims delivery plus H only. Stale when: as R-22. State: observed (delivery).
+- (The test-designer row, `a072ae4c6fedbb95b`, and the prober row, `a7dceb91bd085dc8c`, were recorded on P's letter (EV-C02-034) and need no capability row.)
+
+The reload lag:
+- **R-25. Role-file (agent definition) text, front matter included, reaches new runs only after a lag following a sync. Settings hooks, the start hook's packages and the guard do not lag.** [O]
+  - Method:
+    - A run's `systemCharCount` (its prefix record `/root/.claude/projects/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/subagents/agent-<id>.prefix.json`, written at the run's stop) equals the body of its role file, plus 1,378 characters.
+    - The offset is constant in all 14 runs read, across five types: the control.
+    - Bodies are from `git show <sha>:.claude/agents/<role>.md` with the front matter cut, counted with `wc -m`:
+      - producer 8,101 → 8,346;
+      - researcher 9,436 → 9,681;
+      - prober 9,942 → 10,187;
+      - test-designer 12,157 → 12,402;
+      - checker 18,273 → 18,518 → 20,618 at W-C02-24.1's merge.
+  - W-C02-27's sync (`6a6585c`, live tree 17:03:12Z, reflog):
+    - producer `a9519e914534ff414`, launched 17:04:56Z (+1 min 44 s): 9,479 = the old body, and `toolNames` without `SendMessage`, so the old text;
+    - researcher `a738e84458e67d309`, 17:11:20Z (+8 min 08 s): 11,059 with `SendMessage`, so the new text;
+    - checker `ae6f06283aba18948`, 17:18:28Z (+15 min 16 s): 19,896, so the new text.
+  - W-C02-24.1's sync (`9fdd9c2`, 17:34:24Z):
+    - checker `aa8570fed063c7083`, 17:38:26Z (+4 min 02 s): 19,896 = the pre-W-C02-24.1 body, so old;
+    - checker `ad97f09223020d9da`, 18:36:31Z (+62 min 07 s): 21,996 = the new body.
+  - Bounds: at least 4 min 02 s. At most 8 min 08 s for W-C02-27's change, and at most 62 min 07 s for W-C02-24.1's (no checker run in between). Cause not settled.
+  - Controls that did not lag:
+    - settings hooks (R-05, at the first opportunity);
+    - the delivered package hash equals `.claude/roles/<role>.md` at the head (CHK-C02-152 relied_on 6);
+    - the guard and hook scripts are read on each call.
+  - Sources: CHK-C02-152 relied_on 4, P3 and unsure (a), re-observed and extended here (the 1,378 offset; `ad97f09223020d9da`'s upper bound).
+  - What the lag makes stale:
+    - (a) Any statement that role-file text, or a `tools:` line, is "in force from its sync": it is in force from the first run whose prefix shows it. The guard's T6 was in force from #439's sync, but W-C02-27's role-file lines were not (L-459). W-C02-24.1's checker duty texts (the `producer_run` line and the confirmation paragraph) were not in CHK-C02-152's own run (CHK-C02-152 P3).
+    - (b) Any row or reading that depends on role-file text and was taken on a run launched within the lag window of a sync (observed up to 62 min), unless that run's prefix shows the new text. This covers W-C02-27 point 10 (i)'s "first role run after the sync" (CHK-C02-152 C3) and any W-C02-22 point 10 reading of a run launched shortly after a role-file sync.
+    - (c) R-01's "Not shown: whether a changed role file is loaded mid-session": it is loaded mid-session, after a lag.
+    - (d) A prefix check is possible only after the run stops: the prefix file is written at stop (file times 17:15:58Z and 18:35:53Z equal those runs' stop records).
+  - Stale when: the version changes; the prefix record's format changes; each new role-file sync (its own reading). State: observed.
+
+`SendMessage` as the hook receives it:
+- **R-26. The platform rewrites `SendMessage`'s input before PreToolUse, so the hook sees keys outside the schema's `{to, message}`. With T6 as merged, every call is denied by T6.1. This is W-C02-27 point 10 (ii): red.** [O]
+  - The executor's call at 2026-10-20T18:32:59Z to `aa8570fed063c7083`, guard record #4295 in `/tmp/devos-guard/session_01JDJ8fJQmrKpXfiRh1yEoxv.jsonl`: `deny`, rule `T6.1`, detail "the input keys content, recipient, recipient_kind, summary, type are outside {to, message}" (L-463).
+  - Re-observed in the main transcript `/root/.claude/projects/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba.jsonl`, tool use `toolu_01Tii7PmwDMAu5gR9YkSfPGU`: the stored input is already `{to, message, type: "message", recipient, recipient_kind: "agent", content}`, with `content` the message's first line, truncated.
+  - `summary` appears at the hook only; its value is the message's first line, which fits a platform default (TR:49, EV-C02-035 part 1).
+  - So the legacy-key rewrite runs before the transcript write, and `summary` is added before the hook.
+  - Not shown by any record read: the keys the model emitted [I: `to`, `message`], and whether `message` reached the hook (the guard summary drops it).
+  - Not retried (D-020, D-017). The fix is W-C02-27.1's (in triage).
+  - Stale when: the version changes, or T6 changes. State: observed (one call, main session).
