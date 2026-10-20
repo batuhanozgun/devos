@@ -1734,3 +1734,33 @@ Log entries of stage C02 (`plan/Installation_Working_Order.md` section 9). Entri
 - **Guard:** since L-445: #1122 (G0, the executor: a here-document whose f-string braces read as a command word; redone without them). No denial by any other hook. The last record #1133.
 - **Wait:** ends when CHK-C02-131 arrives (it starts the next turn by itself); sooner: none; whose call: the builder.
 - **Record changes:** evidence/C02/checks/CHK-C02-130.md · addition · verbatim; plan/ledger/C02-log.md · addition · L-446; DURUM.md, plan/ledger.md · generated
+
+### L-447 · 2026-10-20 · W-C02-23 merged (#418); PR-A2's producer and W-C02-22's acceptance check started; M2 and M3 triage filed (EV-C02-030) and integrated: M3a joins W-C02-25, approaches version 1 agreed in one round
+
+- **Disciplines (D1–D9):** D1: yes: M3a's place was weighed four ways (alone now, alone first, joined to M3b, joined to M2); the probe removed one, the writers of the working order and `settings.json` removed two, so it joins M2, with what reopens it. D2: yes: "today" pulled toward a lighter W-C02-27 acceptance; its done line stays as SB-COR 3.6 writes it (W27-6), and the rows that can only come from natural events are named as not holding W-C02-25's acceptance by the precedent of W-C02-23's disposition (5), not to fit the day. D3: yes: each block names the acceptance rows, the fallbacks and the order against PR-A2, M1a and M1b, so the chain from merge to live use is traced. D4: yes: the binding checks' floors are the triage checker's lists (part 5), and the claim at merge is program logic only. D5: yes: the notes were taken by tool and filed whole but for library paths; the probe's raw result is filed. D6: no. D7: yes: EV-C02-030, this entry and the coming item files carry the decisions. D8: yes: made from `main` `7ed9dc7`; PR-A2's build and W-C02-22's check run in the background. D9: yes: the roles' library reading is in each block's `library:` line; it changed the cutoff (U04 F30), the narrowed liveness claim (gstack F4), the PC-45 annotation's ground (gstack F3), the per-run pairing (gastown), and the executor-only route to checker runs (the multi-agent assessment's R4).
+- **W-C02-23 merged:** #418 at `7ed9dc7f728504cf74bf0bcdb955861d8fa2d2c8` (head `a2c3f05`), with CHK-C02-130 and L-446; synced.
+- **PR-A2's producer** `a213e56dd62d70fcb` started: the approach block verbatim, the acceptance at `7ed9dc7`, in its own clone, no commit. It merges only once W-C02-22 point 10's rows are recorded or its red path applies (approach (6)).
+- **W-C02-22's acceptance check** started: checker `abd4a1c4825e250e3` (CHK-C02-132), which took part in no round, draft or verdict of W-C02-22 to W-C02-24, nor in CHK-C02-128 to CHK-C02-131. It judges point 10's rows, including whether a listing of an absent file's folder meets the test-designer row's "access", which is its reading, not the executor's.
+- **EV-C02-030** files the M2 and M3 triage: the shared task and the five asks (part 1), the five notes (parts 2 to 6, each DISCIPLINES OK, verbatim but for six library paths written as library IDs), the probe (part 8) and the integration (part 9). **Integration, version 1:** W-C02-25 covers M2 and M3a (W25-1), W-C02-26 is not created (a correction to SB-COR 1.0's item list, recorded here; no claim changes), and W-C02-27 depends on W-C02-25. Every defect and missing-evidence point is taken or disposed (dispositions W25-1 to W25-11 and W27-1 to W27-6), so no second round runs (working order section 4 step 1a).
+- **Dispositions** (in the blocks of EV-C02-030 part 9, to be pasted into the item files):
+  - W25-1: M3a joins M2.
+  - W25-2: one pull request.
+  - W25-3: the session key in the guard.
+  - W25-4: the nonce key denied to subagents.
+  - W25-5: the `SubagentHandback` deny dropped, replaced by a window rule.
+  - W25-6: a short block reason.
+  - W25-7: a late receipt is not a blocker; this departs from SB-COR 3.4's and 3.5's wording, with its reason.
+  - W25-8: rows (i) to (iv) hold the acceptance.
+  - W25-9: `HEADER` and `RESERVE` imported.
+  - W25-10: EV-C02-023's rows from another session not counted.
+  - W25-11: M1b not reopened for the trigger-set line.
+  - W27-1: producer, test-designer and checker IDs only from the executor.
+  - W27-2: `main` only from a registered caller.
+  - W27-3: keys `to` and `message`.
+  - W27-4: the name hint dropped, against SB-COR 3.6b's text.
+  - W27-5: W-C02-22's B19 is not a standing check.
+  - W27-6: the done line holds W-C02-27's acceptance.
+- **Next:** the test designers write W-C02-25's and W-C02-27's conditions in parallel, each in its own clone, from part 9. Then each item's acceptance and approach merge, the binding checks run, and the producers start in the order the blocks give.
+- **Guard:** since L-446: #1171 (B5, the W-C02-22 acceptance checker: a `cat >` into a path the guard reads as guarded; its own report will say what it did instead). No denial by any other hook. The last record #1197.
+- **Wait:** ends when CHK-C02-131, CHK-C02-132, PR-A2's product and the two conditions arrive (each starts the next turn by itself); sooner: none, all run in parallel; whose call: the builder.
+- **Record changes:** evidence/C02/EV-C02-030_m2_m3_triage.md · addition · the triage and the integration; plan/ledger/C02-log.md · addition · L-447; DURUM.md, plan/ledger.md · generated
