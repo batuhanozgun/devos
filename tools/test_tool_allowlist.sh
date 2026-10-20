@@ -86,6 +86,18 @@ else:
 }
 t() { r=$(decide "$2"); if [ "$r" = "$1" ]; then echo "ok   exp=$1 $2"; else echo "BAD  exp=$1 got=$r $2"; fail=1; fi; }
 p() { r=$(decide "$2" perm); if [ "$r" = "$1" ]; then echo "ok   perm exp=$1 $2"; else echo "BAD  perm exp=$1 got=$r $2"; fail=1; fi; }
+# lt <decision> <rule> <label> <json>: the decision and the rule of one call; the label is printed, not the call.
+# The rule ID may carry a dot (W-C02-24: T5's refusals T5.0, T5.1, ...); "DENIED by rule <id> (" and
+# "allowed by rule <id>: " end it, so the dot never swallows punctuation after the ID.
+lt() { local out r; out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" sh -c "${lc:-$cmd}" 2>/dev/null); printf '%s\n' "$out" >> "$OUTS"
+  r=$(printf '%s' "$out" | python3 -c 'import json,re,sys
+d=json.load(sys.stdin)["hookSpecificOutput"]; t=d.get("permissionDecisionReason") or (d.get("decision") or {}).get("message") or ""
+m=re.search(r"DENIED by rule ([\w.]+) \(|allowed by rule ([\w.]+):", t)
+print(d.get("permissionDecision") or (d.get("decision") or {}).get("behavior") or "?", (m.group(1) or m.group(2)) if m else "-")' 2>/dev/null || echo "? -")
+  if [ "$r" = "$1 $2" ]; then echo "ok   exp=$1 $2 $3"; else echo "BAD  exp=$1 $2 got=$r $3"; fail=1; fi; }
+js() { python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$1"; }
+# has <text> <label>: the last guard output holds text (a count or a place, never the planted text)
+has() { if tail -n 1 "$OUTS" | grep -qF -- "$1"; then echo "ok   $2"; else echo "BAD  $2: '$1' not in the output"; fail=1; fi; }
 D='"owner":"batuhanozgun","repo":"devos"'
 W="$PWD"
 S='"source_url":"https://github.com/batuhanozgun/devos","model":"claude-opus-5-5","permission_mode":"acceptEdits"'
@@ -138,10 +150,13 @@ t deny '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"owner":
 t deny '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"source_url":"https://github.com/batuhanozgun/devos\n","model":"claude-opus-5-5","permission_mode":"acceptEdits"}}'
 t deny "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{\"source_url\":\"https://github.com/batuhanozgun/devos\",\"source_revision\":\"$(git rev-parse --abbrev-ref HEAD)\",\"model\":\"claude-opus-5-5\",\"permission_mode\":\"bypassPermissions\"}}"
 t deny "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"extra_allowed_tools\":[\"Bash\"]}}"
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
-t deny '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"worktree"}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"some_future_value"}}'
+# W-C02-24 M1a (4): the isolation denials are T2's (T2 is checked before the type), asserted with their rule ID;
+# T2's positive control is an Agent call of the type checker with no isolation.
+lt deny T2 "Agent, isolation remote" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
+lt deny T2 "Task, isolation remote" '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","isolation":"remote"}}'
+lt deny T2 "Agent, isolation worktree" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"worktree"}}'
+lt deny T2 "Agent, isolation some_future_value" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","isolation":"some_future_value"}}'
+lt allow T2 "T2's positive control: Agent, type checker, no isolation" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"checker"}}'
 t deny '{"tool_name":"mcp__github__resolve_review_thread","tool_input":{"owner":"batuhanozgun","threadId":"x"}}'
 t deny '[]'
 t deny '"x"'
@@ -155,16 +170,22 @@ t deny '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"so
 t deny '{"tool_name":"mcp__claude-code-remote__create_session","tool_input":{"source_url":"https://github.com/batuhanozgun/devos","model":"claude-opus-5-5","permission_mode":"auto"}}'
 t deny '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative","create_new_session_on_fire":true}}'
 t deny '{"tool_name":"mcp__claude-code-remote__update_trigger","tool_input":{"trigger_id":"trig_SOMEONE_ELSE","model":"claude-sonnet-5"}}'
-# --- D-008: Workflow in-process only (T3)
-t allow '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"read\", {label:\"a\"})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"x\", {isolation: \"worktree\"})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"name":"some-saved-workflow"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"scriptPath":"does/not/exist.js"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"const o = {[\"iso\"+\"lation\"]: \"x\"}; await agent(\"x\", o)"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {mode: \"remote\"})"}}'
-t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Create a scratch git worktree under /tmp and run the tests there\", {label:\"t\"})"}}'
+# --- W-C02-24 M1a (2): the Workflow tool is denied as a whole, by its own rule TW (the whole-tool deny; its reason
+# names the Agent route). Workflow stays in both hook matchers (the matcher control above) and in ALLOWED_NON_MCP
+# (W21_LIST below is unchanged), so the call is seen and denied by TW, never unseen and never by T1. Every case that
+# exercised the old script parser (T3, T4) is now a TW denial; no positive Workflow control is claimed. Break: with
+# the whole-tool deny removed, at least the six former allows (the "was allow" labels) turn red.
+lt deny TW "Workflow (was allow): a plain agent() script" '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"read\", {label:\"a\"})"}}'
+lt deny TW "Workflow: isolation worktree" '{"tool_name":"Workflow","tool_input":{"script":"export const meta = {name:\"x\",description:\"x\"}\nawait agent(\"x\", {isolation: \"worktree\"})"}}'
+lt deny TW "Workflow: a saved workflow name" '{"tool_name":"Workflow","tool_input":{"name":"some-saved-workflow"}}'
+lt deny TW "Workflow: a script path that does not exist" '{"tool_name":"Workflow","tool_input":{"scriptPath":"does/not/exist.js"}}'
+lt deny TW "Workflow: a run-time object key" '{"tool_name":"Workflow","tool_input":{"script":"const o = {[\"iso\"+\"lation\"]: \"x\"}; await agent(\"x\", o)"}}'
+lt deny TW "Workflow: a quoted remote value" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {mode: \"remote\"})"}}'
+lt deny TW "Workflow (was allow): worktree only in the prompt text" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Create a scratch git worktree under /tmp and run the tests there\", {label:\"t\"})"}}'
 wf=$(mktemp -d); printf 'export const meta = {name:"x",description:"x"}\nawait agent("read", {label:"a"})\n' > "$wf/ok.js"
-t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"ok.js\"},\"cwd\":\"$wf\"}"
+lt deny TW "Workflow (was allow): a readable script path" "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"ok.js\"},\"cwd\":\"$wf\"}"
+lt deny TW "Workflow: an empty input" '{"tool_name":"Workflow","tool_input":{}}'
+lc="$pcmd" lt deny TW "Workflow on PermissionRequest (was allow): a plain agent() script" '{"hook_event_name":"PermissionRequest","tool_name":"Workflow","tool_input":{"script":"await agent(\"read\", {label:\"a\"})"}}'
 # --- W-C01-45 (PC-35 "Routing" item 1): skills and agent types only from the repository (T4). The planted
 # negatives use a made-up plugin namespace; where one has a counterpart, it stays allowed: an agent type the
 # executor uses, or the fixture's skill below.
@@ -204,30 +225,305 @@ t deny '{"tool_name":"Skill","tool_input":{"skill":"example-plugin:tally"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"init"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"../agents"}}'
 t deny '{"tool_name":"Skill","tool_input":{}}'
-for a in producer checker researcher prober counter-designer test-designer general-purpose; do
-  t allow "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
+# W-C02-24 M1a (1): ROLE_TYPES = producer, researcher, prober, checker, test-designer; a type is allowed only when it
+# is in ROLE_TYPES and its file exists in .claude/agents/ of the guard's checkout. Every other type, and a call with
+# no type, is denied by T4, one case per type. The three types outside T5 stay allowed by T2; producer and
+# test-designer with the prompt "x" (no form line, no Item: line) now meet T5 and are refused by T5.1.
+for a in checker researcher prober; do
+  lt allow T2 "type $a, outside T5" "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
 done
-t allow '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x"}}'
-t allow '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"checker"}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:reviewer"}}'
-t deny '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:checker"}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"Explore"}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":""}}'
-t deny '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":["checker"]}}'
-t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Judge the head\", {label: \"c\", phase: \"Judge\", agentType: '"'checker'"'})"}}'
-t allow '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Write it\", {label: \"p\", agentType: '"'producer'"' })\nawait agent(\"Judge\", {\"agentType\": \"checker\",\n label: \"c\"})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {label: \"a\", agentType: '"'example-plugin:reviewer'"'})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: '"'checker'"'})\nawait agent(\"y\", {agentType: '"'example-plugin:reviewer'"'})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"const t = \"checker\"\nawait agent(\"x\", {agentType: t})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: `${t}`})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: \"check\" + \"er\"})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"const agentType = \"x\"\nawait agent(\"y\", {agentType})"}}'
-t deny '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {subagent_type: \"checker\"})"}}'
+for a in producer test-designer; do
+  lt deny T5.1 "type $a (was allow), prompt x: no Writer or reader: line" "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
+done
+for a in counter-designer general-purpose claude claude-code-guide statusline-setup Explore Plan fork example-plugin:reviewer Producer "producer " " checker" TEST-DESIGNER; do
+  lt deny T4 "type '$a': not in ROLE_TYPES" "{\"tool_name\":\"Agent\",\"tool_input\":{\"description\":\"x\",\"prompt\":\"x\",\"subagent_type\":\"$a\"}}"
+done
+lt deny T4 "Agent with no subagent_type (was allow: the general-purpose default)" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x"}}'
+lt deny T4 "Task with no subagent_type" '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x"}}'
+lt deny T4 "Task, type general-purpose" '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
+lc="$pcmd" lt deny T4 "PermissionRequest, Agent, type general-purpose" '{"hook_event_name":"PermissionRequest","tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
+lt allow T2 "Task, type checker" '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"checker"}}'
+lt deny T4 "Agent, a plugin's type" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:reviewer"}}'
+lt deny T4 "Task, a plugin's type" '{"tool_name":"Task","tool_input":{"description":"x","prompt":"x","subagent_type":"example-plugin:checker"}}'
+lt deny T4 "Agent, an empty type" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":""}}'
+lt deny T4 "Agent, a type that is a list" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":["checker"]}}'
+lt deny T4 "Agent, a type that is null" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":null}}'
+# W-C02-24 M1a (2): the former agentType cases, each a TW denial
+lt deny TW "Workflow (was allow): agentType checker" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Judge the head\", {label: \"c\", phase: \"Judge\", agentType: '"'checker'"'})"}}'
+lt deny TW "Workflow (was allow): agentType producer then checker" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"Write it\", {label: \"p\", agentType: '"'producer'"' })\nawait agent(\"Judge\", {\"agentType\": \"checker\",\n label: \"c\"})"}}'
+lt deny TW "Workflow: a plugin's agentType" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {label: \"a\", agentType: '"'example-plugin:reviewer'"'})"}}'
+lt deny TW "Workflow: checker then a plugin's agentType" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: '"'checker'"'})\nawait agent(\"y\", {agentType: '"'example-plugin:reviewer'"'})"}}'
+lt deny TW "Workflow: agentType from a variable" '{"tool_name":"Workflow","tool_input":{"script":"const t = \"checker\"\nawait agent(\"x\", {agentType: t})"}}'
+lt deny TW "Workflow: agentType from a template" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: `${t}`})"}}'
+lt deny TW "Workflow: agentType concatenated" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {agentType: \"check\" + \"er\"})"}}'
+lt deny TW "Workflow: agentType shorthand" '{"tool_name":"Workflow","tool_input":{"script":"const agentType = \"x\"\nawait agent(\"y\", {agentType})"}}'
+lt deny TW "Workflow: subagent_type spelling" '{"tool_name":"Workflow","tool_input":{"script":"await agent(\"x\", {subagent_type: \"checker\"})"}}'
 printf 'await agent("x", {label: "a", agentType: '"'"'example-plugin:reviewer'"'"'})\n' > "$wf/plugin.js"
 printf 'await agent("x", {label: "a", agentType: '"'"'checker'"'"'})\n' > "$wf/checker.js"
-t deny  "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"plugin.js\"},\"cwd\":\"$wf\"}"
-t allow "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"checker.js\"},\"cwd\":\"$wf\"}"
+lt deny TW "Workflow: a script file with a plugin's agentType" "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"plugin.js\"},\"cwd\":\"$wf\"}"
+lt deny TW "Workflow (was allow): a script file with agentType checker" "{\"tool_name\":\"Workflow\",\"tool_input\":{\"scriptPath\":\"checker.js\"},\"cwd\":\"$wf\"}"
 rm -rf "$wf"
+# --- W-C02-24 M1a (3), (4): guard rule T5 for the types producer and test-designer (Agent and Task alike, any
+# agent_id, PreToolUse and PermissionRequest alike). T5 reads only the guard's own checkout (ROOT) at HEAD, never the
+# hook input's cwd or the network. Every case runs in a fixture checkout that holds a copy of the guard under test, a
+# git repository with synthetic item files and a local origin/main ref; each negative fails exactly one check and
+# asserts its own rule ID (lt). The pinned interface (plan/work/W-C02-24.md, acceptance block, point A3):
+#   T5.0 could not check; T5.1 no form line; T5.2 more than one form line; T5.3 a form line whose first word is
+#   neither writer nor reader; T5.4 no prompt (a string) in the tool input; T5.5 no Item: line; T5.6 more than one
+#   Item: line (writer form); T5.7 an Item: path outside the pattern; T5.8 the item file absent at HEAD; T5.9 the
+#   same, but present at the local origin/main ("sync first"); T5.10 no approach block; T5.11 more than one; T5.12
+#   a malformed block; T5.13 the block not found byte for byte in the prompt; T5.14 library: empty; T5.15 no
+#   asked: evidence path; T5.16 an asked: path absent at HEAD; T5.17 no acceptance block; T5.18 an empty acceptance
+#   block; T5.19 an open blocking note. Allow: T5 (writer form), T5R (reader form; a test designer in either form).
+# The over-blocking controls copy real text by tool, never by hand: W-C02-22's approach block from this checkout's
+# HEAD into a fixture item whose notes are closed, and round 2's producer and test-designer tasks as filed in
+# EV-C02-028 at HEAD. No copied text is printed; only the labels are.
+fx5=$(mktemp -d); fx5b=$(mktemp -d); fx6=$(mktemp -d); cases5=$(mktemp)
+python3 - "$hook" "$fx5" "$fx5b" "$fx6" "$cases5" <<'EOF' || { echo "BAD  T5 fixture: the case generator failed"; fail=1; }
+import hashlib, json, os, re, shutil, subprocess, sys
+hook, fx, fxb, fx6, out = sys.argv[1:6]
+cases, logs = [], []
+def git(d, *a, inp=None):
+    return subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@example.invalid", "-C", d, *a],
+                          input=inp, capture_output=True, check=True).stdout
+def put(d, rel, data):
+    p = os.path.join(d, rel); os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "wb") as f:
+        f.write(data if isinstance(data, bytes) else data.encode())
+def checkout(d, agents):
+    os.makedirs(os.path.join(d, ".claude", "hooks"))
+    shutil.copy(hook, os.path.join(d, ".claude", "hooks", "tool_allowlist.py"))
+    for a in agents:
+        put(d, f".claude/agents/{a}.md", f"---\nname: {a}\ndescription: SYNTHETIC fixture agent.\n---\nNever loaded.\n")
+    git(d, "init", "-q"); git(d, "checkout", "-q", "-B", "fxmain")
+KEYS = ["base", "asked", "not_asked", "library", "agreed", "writes", "consumer", "dispositions", "open"]
+EVP = "evidence/C99/EV-C99-001_fixture.md"
+def block(vals=None, order=KEYS, extra=""):
+    v = {"base": "0" * 40, "asked": f"test designer (no team round needed, because the fixture is synthetic): {EVP}",
+         **{k: "none" for k in KEYS[2:]}, **(vals or {})}
+    return "<!-- approach -->\n" + "".join(f"{k}:{(' ' + v[k]) if v[k] else ''}\n" for k in order) + extra + "<!-- /approach -->"
+GOOD = block()
+NOTE_CLOSED = "<!-- note N-9001 status=closed blocks=true -->\nA synthetic closed note.\n<!-- /note -->\n"
+def item(i, blk=GOOD, acc="A synthetic condition.", notes=NOTE_CLOSED):
+    fm = (f"---\nid: {i}\nkind: item\nparent: C99\ntitle: \"fixture\"\nadmission: admitted\nexecution: planned\n"
+          f"acceptance: proposed\ndepends_on: []\n---\n\n# {i} · fixture\n\n")
+    a = "" if acc is None else f"## Acceptance\n\n<!-- acceptance -->\n{acc}\n<!-- /acceptance -->\n\n"
+    b = "" if blk is None else f"## Approach\n\n{blk}\n\n"
+    return fm + a + b + notes
+def blk_of(text):
+    lines = text.split("\n")
+    o = [n for n, l in enumerate(lines) if l == "<!-- approach -->"]
+    c = [n for n, l in enumerate(lines) if l == "<!-- /approach -->"]
+    if len(o) != 1 or len(c) != 1 or c[0] < o[0]:
+        return None
+    return "\n".join(lines[o[0]:c[0] + 1])
+# W-C02-22's approach block, by tool from this checkout's HEAD; never printed
+w22 = None
+try:
+    w22 = blk_of(subprocess.run(["git", "show", "HEAD:plan/work/W-C02-22.md"], capture_output=True, check=True).stdout.decode("utf-8"))
+except Exception:
+    pass
+def ev28():
+    t = subprocess.run(["git", "show", "HEAD:evidence/C02/EV-C02-028_pra2_m1_triage.md"], capture_output=True,
+                       check=True).stdout.decode("utf-8")
+    shared = t.split("### 9.1 Round 2 task, shared text\n\n", 1)[1].split("\n\n### 9.2", 1)[0]
+    asks = t.split("### 9.2 Round 2 role-specific asks", 1)[1].split("### 9.3", 1)[0]
+    ask = lambda r: next(l for l in asks.split("\n") if l.startswith(f"**{r}.** "))
+    return ask("Producer") + "\n\n" + shared, ask("Test designer") + "\n\n" + shared
+try:
+    r2p, r2t = ev28()
+except Exception:
+    r2p = r2t = None
+# the fixture checkout (fx): the items at HEAD; W-C99-40 only at the local origin/main; W-C99-42 only in the tree
+checkout(fx, ["producer", "test-designer", "checker", "researcher", "prober"])
+put(fx, EVP, "Synthetic evidence.\n")
+put(fx, "plan/work/W-C99-01.md", item("W-C99-01"))
+if w22:
+    for p in sorted(set(re.findall(r"evidence/C\d\d/[A-Za-z0-9_.-]+\.md", w22))):
+        put(fx, p, "Synthetic stand-in for an asked record.\n")
+    put(fx, "plan/work/W-C99-02.md", item("W-C99-02", blk=w22))
+put(fx, "plan/work/W-C99-10.md", item("W-C99-10", blk=None))
+put(fx, "plan/work/W-C99-11.md", item("W-C99-11", blk=GOOD + "\n\n" + GOOD))
+ORDER = KEYS[:]; ORDER[3], ORDER[4] = ORDER[4], ORDER[3]
+put(fx, "plan/work/W-C99-12.md", item("W-C99-12", blk=block(order=ORDER)))
+put(fx, "plan/work/W-C99-13.md", item("W-C99-13", blk="<!-- approach -->\n<!-- /approach -->"))
+put(fx, "plan/work/W-C99-14.md", item("W-C99-14", blk=block({"library": ""})))
+put(fx, "plan/work/W-C99-15.md", item("W-C99-15", blk=block({"asked": "test designer (no team round needed, because the fixture is synthetic)"})))
+put(fx, "plan/work/W-C99-16.md", item("W-C99-16", blk=block({"asked": "test designer: evidence/C99/EV-C99-999_absent.md"})))
+put(fx, "plan/work/W-C99-17.md", item("W-C99-17", acc=None))
+put(fx, "plan/work/W-C99-18.md", item("W-C99-18", acc="   "))
+put(fx, "plan/work/W-C99-19.md", item("W-C99-19", notes="<!-- note N-9002 status=open blocks=true -->\nAn open blocking note.\n<!-- /note -->\n"))
+put(fx, "plan/work/W-C99-20.md", item("W-C99-20", notes="<!-- note N-9003 blocks=true -->\nA blocking note with no status.\n<!-- /note -->\n"))
+put(fx, "plan/work/W-C99-21.md", item("W-C99-21", notes="<!-- note N-9004 status=open blocks=false -->\nAn open note that does not block.\n<!-- /note -->\n"))
+put(fx, "plan/work/W-C99-30.md", item("W-C99-30").encode() + b"\xff\xfe not UTF-8\n")
+put(fx, "plan/work/W-C99-31.md/inner.md", "A directory where the item file should be.\n")
+git(fx, "add", "-A"); git(fx, "commit", "-qm", "fixture HEAD")
+git(fx, "checkout", "-q", "-b", "fxnext")
+put(fx, "plan/work/W-C99-40.md", item("W-C99-40")); git(fx, "add", "-A"); git(fx, "commit", "-qm", "merged, not synced")
+git(fx, "update-ref", "refs/remotes/origin/main", "HEAD"); git(fx, "checkout", "-q", "fxmain")
+put(fx, "plan/work/W-C99-42.md", item("W-C99-42"))   # an uncommitted tree file: HEAD does not hold it
+# a second checkout whose tree holds W-C99-41 with a sound block: a hook input cwd pointing here must change nothing
+git(fxb, "init", "-q"); put(fxb, EVP, "Synthetic evidence.\n"); put(fxb, "plan/work/W-C99-41.md", item("W-C99-41"))
+git(fxb, "add", "-A"); git(fxb, "commit", "-qm", "a forged checkout")
+# the type fixture (fx6): ROLE_TYPES less prober's file, plus a file whose type is not in ROLE_TYPES
+checkout(fx6, ["producer", "test-designer", "checker", "researcher", "extra"])
+def W(i, blk=GOOD, form="**Writer or reader:** writer of tools/x.py in a scratch clone.", itemline=None, tail=""):
+    il = f"Item: plan/work/{i}.md" if itemline is None else itemline
+    parts = [il, "", "**Purpose:** a synthetic task.", "", "**Inputs:** the item's approach block, pasted by tool:", ""]
+    if blk is not None:
+        parts += [blk, ""]
+    if form is not None:
+        parts += [form, ""]
+    return "\n".join(parts) + "**Limits:** about 10 tool calls." + tail
+def call(t, prompt, tool="Agent", **extra):
+    ti = {"description": "x", "subagent_type": t}
+    if prompt is not None:
+        ti["prompt"] = prompt
+    d = {"tool_name": tool, "tool_input": ti, **extra}
+    return json.dumps(d, ensure_ascii=True)
+def case(exp, rule, label, js, mode="fx", post=""):
+    cases.append("\t".join([exp, rule, mode, label, js, post]))
+P = "producer"
+# over-blocking controls (sound cases that must pass)
+case("allow", "T5", "control: writer, the minimal approach (no team round needed; one role, one EV path)", call(P, W("W-C99-01")))
+if w22:
+    case("allow", "T5", "control: writer carrying W-C02-22's approach-block bytes, notes closed", call(P, W("W-C99-02", blk=w22)))
+else:
+    case("allow", "T5", "control: W-C02-22's approach block could not be copied from HEAD (exactly one block)", "{}")
+case("allow", "T5", "control: writer, the block among other text, at the prompt's end with no newline", call(P, W("W-C99-01", blk=None, tail="\n\n" + GOOD)))
+case("allow", "T5", "control: writer, **Item:** bold and the first word WRITER in capitals", call(P, W("W-C99-01", itemline="**Item:** plan/work/W-C99-01.md", form="**Writer or reader:** WRITER, in a scratch clone.")))
+case("allow", "T5", "control: writer, plain Writer or reader: label without bold", call(P, W("W-C99-01", form="Writer or reader: writer of tools/x.py.")))
+case("allow", "T5", "control: writer, an open note that does not block", call(P, W("W-C99-21")))
+case("allow", "T5", "route: Task alias, writer", call(P, W("W-C99-01"), tool="Task"))
+case("allow", "T5", "route: a call from a subagent (agent_id set), writer", call(P, W("W-C99-01"), agent_id="a0000000000000001"))
+case("allow", "-", "route: PermissionRequest, writer (the allow form carries no rule)", call(P, W("W-C99-01"), hook_event_name="PermissionRequest"), "fxperm")
+if r2p:
+    case("allow", "T5R", "control: round 2's producer task as filed in EV-C02-028 (reader form)", call(P, r2p))
+    case("deny", "T5.7", "break of the reader branch: round 2's producer task with its line saying writer", call(P, r2p.replace("**Writer or reader:** reader.", "**Writer or reader:** writer.")))
+    case("allow", "T5R", "control: round 2's test-designer task as filed in EV-C02-028", call("test-designer", r2t))
+else:
+    case("allow", "T5R", "control: round 2's tasks could not be read from EV-C02-028 at HEAD", "{}")
+case("allow", "T5R", "control: this condition's own test-designer task lines (writer; item not at HEAD)", call("test-designer",
+     "Item: plan/work/W-C02-24.md\n\n**Writer or reader:** writer of the files named under Limits only, in a fresh clone you make under your own scratch directory with literal paths."))
+case("allow", "T5R", "control: test designer, writer form, an item at HEAD, no approach block", call("test-designer", W("W-C99-10", blk=None)))
+case("allow", "T5R", "control: producer, reader form, an item not on main", call(P, "Item: plan/work/W-C99-77.md (its triage, round 1)\n\n**Writer or reader:** reader. Write no file."))
+for t in ("checker", "researcher", "prober"):
+    case("allow", "T2", f"control: {t} task with no Item: line, outside T5", call(t, "**Purpose:** a review.\n\n**Writer or reader:** reader."))
+# the form line
+case("deny", "T5.4", "producer, no prompt in the tool input", call(P, None))
+case("deny", "T5.4", "test designer, no prompt in the tool input", call("test-designer", None))
+case("deny", "T5.1", "producer, no Writer or reader: line", call(P, W("W-C99-01", form=None)))
+case("deny", "T5.1", "test designer, an Item: line but no Writer or reader: line", call("test-designer", "Item: plan/work/W-C99-01.md\n\nPurpose: x."))
+case("deny", "T5.2", "producer, two Writer or reader: lines", call(P, W("W-C99-01", form="**Writer or reader:** writer.\n**Writer or reader:** reader.")))
+case("deny", "T5.3", "producer, the first word is both", call(P, W("W-C99-01", form="**Writer or reader:** both, as needed.")))
+case("deny", "T5.3", "producer, the first word is writes (not writer)", call(P, W("W-C99-01", form="**Writer or reader:** writes tools/x.py.")))
+# the Item: line
+case("deny", "T5.5", "writer, no Item: line", call(P, W("W-C99-01", itemline="Purpose first.")))
+case("deny", "T5.5", "reader, no Item: line", call(P, "**Writer or reader:** reader. Write no file."))
+case("deny", "T5.5", "test designer, no Item: line", call("test-designer", "**Writer or reader:** writer of the condition."))
+case("deny", "T5.6", "writer, two Item: lines", call(P, W("W-C99-01", itemline="Item: plan/work/W-C99-01.md\nItem: plan/work/W-C99-21.md")))
+case("deny", "T5.7", "writer, an Item: line with text after the path", call(P, W("W-C99-01", itemline="Item: plan/work/W-C99-01.md and more")))
+case("deny", "T5.7", "writer, an Item: path outside the pattern", call(P, W("W-C99-01", itemline="Item: plan/work/W-C9-1.md")))
+case("deny", "T5.7", "writer, an Item: path with a parent step", call(P, W("W-C99-01", itemline="Item: plan/work/../work/W-C99-01.md")))
+case("deny", "T5.7", "reader, an Item: line naming no well-formed path", call(P, "Item: the triage of PR-A9\n\n**Writer or reader:** reader."))
+# the item file at HEAD
+case("deny", "T5.8", "writer, the item file absent at HEAD and at origin/main", call(P, W("W-C99-41")), post="hasnt:sync first")
+case("deny", "T5.9", "writer, the item file at the local origin/main, not at HEAD: sync first", call(P, W("W-C99-40")), post="has:sync first")
+case("deny", "T5.8", "writer, the item file only uncommitted in the tree, not at HEAD", call(P, W("W-C99-42")))
+case("deny", "T5.8", "break (T5 reading cwd): the hook input's cwd is a checkout that holds the item", call(P, W("W-C99-41"), cwd=fxb))
+# the approach block
+case("deny", "T5.10", "writer, no approach block in the item file", call(P, W("W-C99-10")))
+case("deny", "T5.11", "writer, two approach blocks in the item file", call(P, W("W-C99-11")))
+case("deny", "T5.12", "writer, the block's keys out of order", call(P, W("W-C99-12", blk=block(order=ORDER))))
+case("deny", "T5.12", "writer, an empty block (markers only)", call(P, W("W-C99-13", blk="<!-- approach -->\n<!-- /approach -->")))
+case("deny", "T5.13", "writer, the block with one byte changed", call(P, W("W-C99-01", blk=GOOD.replace("agreed: none", "agreed: nonE"))))
+case("deny", "T5.13", "writer, another item's block under this item's Item: line", call(P, W("W-C99-01", blk=block({"agreed": "another item's agreement"}))))
+case("deny", "T5.13", "writer, the block with CRLF line ends", call(P, W("W-C99-01", blk=GOOD.replace("\n", "\r\n"))))
+case("deny", "T5.13", "writer, the block's lines without its markers", call(P, W("W-C99-01", blk="\n".join(GOOD.split("\n")[1:-1]))))
+case("deny", "T5.14", "writer, library: empty", call(P, W("W-C99-14", blk=block({"library": ""}))))
+case("deny", "T5.15", "writer, asked: names no evidence path", call(P, W("W-C99-15", blk=block({"asked": "test designer (no team round needed, because the fixture is synthetic)"}))))
+case("deny", "T5.16", "writer, an asked: evidence path absent at HEAD", call(P, W("W-C99-16", blk=block({"asked": "test designer: evidence/C99/EV-C99-999_absent.md"}))))
+case("deny", "T5.17", "break (acceptance check removed): no acceptance block", call(P, W("W-C99-17")))
+case("deny", "T5.18", "break (acceptance check removed): an empty acceptance block", call(P, W("W-C99-18")))
+case("deny", "T5.19", "writer, an open blocking note", call(P, W("W-C99-19")))
+case("deny", "T5.19", "break (a missing status read as closed): a blocking note with no status", call(P, W("W-C99-20")))
+case("deny", "T5.10", "route: Task alias, no approach block", call(P, W("W-C99-10"), tool="Task"))
+case("deny", "T5.10", "route: agent_id set, no approach block", call(P, W("W-C99-10"), agent_id="a0000000000000001"))
+case("deny", "T5.10", "route: PermissionRequest, no approach block", call(P, W("W-C99-10"), hook_event_name="PermissionRequest"), "fxperm")
+# containment: T5.0 refuses that one call; a checker call in the same fixture is decided as before
+case("deny", "T5.0", "containment: the item file is not UTF-8 at HEAD", call(P, W("W-C99-30")), post="has:could not check")
+case("allow", "T2", "containment control: checker, same prompt, same fixture", call("checker", W("W-C99-30")))
+case("deny", "T5.0", "containment: the item path is a directory at HEAD", call(P, W("W-C99-31")), post="has:could not check")
+case("allow", "T2", "containment control: checker, same prompt, same fixture", call("checker", W("W-C99-31")))
+case("deny", "T5.0", "containment: a prompt holding a lone surrogate (not encodable)", call(P, W("W-C99-01", tail="\ud800")), post="has:could not check")
+case("allow", "T2", "containment control: checker, the same unencodable prompt", call("checker", W("W-C99-01", tail="\ud800")))
+case("deny", "T5.0", "containment: the call's time budget spent (DEVOS_CALL_BUDGET=0)", call(P, W("W-C99-01")), "fxbudget", "has:could not check")
+case("allow", "T2", "containment control: checker under the same spent budget", call("checker", W("W-C99-01")), "fxbudget")
+# the type narrowing by file (fx6)
+case("deny", "T4", "type prober, in ROLE_TYPES but its file absent", call("prober", "x"), "fx6")
+case("deny", "T4", "type extra, its file present but not in ROLE_TYPES", call("extra", "x"), "fx6")
+case("allow", "T2", "type checker, in ROLE_TYPES and its file present", call("checker", "x"), "fx6")
+# the log: key names, UTF-8 byte length and SHA-256 of the prompt; never its text
+for tid, i in (("toolu_w24_log_allow", "W-C99-01"), ("toolu_w24_log_deny", "W-C99-10")):
+    pr = W(i, tail="\nW24-LOG-MARKER-q7v ünïcode")
+    b = pr.encode("utf-8")
+    case("allow" if i == "W-C99-01" else "deny", "T5" if i == "W-C99-01" else "T5.10", f"log record of {tid}",
+         call(P, pr, tool_use_id=tid))
+    logs.append("\t".join([tid, str(len(b)), hashlib.sha256(b).hexdigest(), "description,prompt,subagent_type"]))
+with open(out, "w") as f:
+    f.write("\n".join(cases) + "\n")
+with open(out + ".log", "w") as f:
+    f.write("\n".join(logs) + "\n")
+EOF
+fset=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])')
+fpset=$(python3 -c 'import json;print(json.load(open(".claude/settings.json"))["hooks"]["PermissionRequest"][0]["hooks"][0]["command"])')
+while IFS=$'\t' read -r exp rule mode label json post <&3; do
+  case "$mode" in
+    fx) lc="CLAUDE_PROJECT_DIR='$fx5'; $fset" ;;
+    fxperm) lc="CLAUDE_PROJECT_DIR='$fx5'; $fpset" ;;
+    fxbudget) lc="export DEVOS_CALL_BUDGET=0; CLAUDE_PROJECT_DIR='$fx5'; $fset" ;;
+    fx6) lc="CLAUDE_PROJECT_DIR='$fx6'; $fset" ;;
+  esac
+  lt "$exp" "$rule" "T5 $label" "$json"
+  if [ "$exp" = deny ] && tail -n 1 "$OUTS" | grep -qF "DENIED by rule $rule (readable call)"; then
+    echo "BAD  T5 $label: rule $rule has no entry of its own in RULES (G0's title shown)"; fail=1; fi
+  case "$post" in
+    has:*) has "${post#has:}" "T5 $label: the denial says '${post#has:}'" ;;
+    hasnt:*) if tail -n 1 "$OUTS" | grep -qF -- "${post#hasnt:}"; then echo "BAD  T5 $label: the denial says '${post#hasnt:}'"; fail=1
+             else echo "ok   T5 $label: the denial does not say '${post#hasnt:}'"; fi ;;
+  esac
+done 3< "$cases5"
+lc=
+python3 - "$DEVOS_GUARD_LOG_DIR" "$cases5.log" <<'EOF' || fail=1
+import glob, json, os, sys
+d, want = sys.argv[1], [l.split("\t") for l in open(sys.argv[2]).read().split("\n") if l]
+recs, text = {}, ""
+for p in glob.glob(os.path.join(d, "*.jsonl")):
+    raw = open(p, encoding="utf-8", errors="replace").read()
+    text += raw
+    for line in raw.splitlines():
+        try:
+            r = json.loads(line)
+        except ValueError:
+            continue
+        if r.get("tool_use_id"):
+            recs[r["tool_use_id"]] = r
+bad = 0
+for tid, n, sha, keys in want:
+    det = str((recs.get(tid) or {}).get("detail", ""))
+    ok = f"prompt_bytes={n}" in det and f"prompt_sha256={sha}" in det and f"input_keys={keys}" in det
+    bad += not ok
+    print(("ok   " if ok else "BAD  ") + f"T5 log: the record of {tid} carries input_keys={keys}, prompt_bytes={n} and "
+          f"prompt_sha256={sha[:12]}... in its detail")
+# the prompt's text from its start (its Purpose line), its middle (its Limits line) and its end (the marker)
+leak = [m for m in ("a synthetic task", "about 10 tool calls", "W24-LOG-MARKER-q7v") if m in text]
+ok = not leak
+bad += not ok
+print(("ok   " if ok else "BAD  ") + "T5 log: no record holds the prompt's text (none of three probes, from its start, "
+      f"middle and end, is in any log file{'; found: ' + str(len(leak)) if leak else ''})")
+raise SystemExit(1 if bad else 0)
+EOF
+rm -rf "$fx5" "$fx5b" "$fx6" "$cases5" "$cases5.log"
 # --- D-008: GitHub (M3 to M7)
 t deny "{\"tool_name\":\"mcp__github__create_or_update_file\",\"tool_input\":{$D,\"path\":\"x\",\"branch\":\"main\"}}"
 t deny "{\"tool_name\":\"mcp__github__push_files\",\"tool_input\":{$D,\"branch\":\"refs/heads/main\"}}"
@@ -755,7 +1051,7 @@ t pass '{"tool_name":"ExitPlanMode","tool_input":{}}'
 t allow '{"tool_name":"mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__execute_sql"}'
 t allow '{"tool_name":"mcp__claude-code-remote__get_session"}'
 t allow '{"tool_name":"mcp__claude-code-remote__send_later","tool_input":{"delay_minutes":5,"message":"x"}}'
-t allow '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
+lt deny T4 "type general-purpose (was a positive control; W-C02-24 M1a (1))" '{"tool_name":"Agent","tool_input":{"description":"x","prompt":"x","subagent_type":"general-purpose"}}'
 t allow '{"tool_name":"mcp__claude-code-remote__add_repo","tool_input":{"owner":"batuhanozgun","repo":"agentic-os-search","access":"read"}}'
 t allow '{"tool_name":"mcp__claude-code-remote__send_message","tool_input":{"session_id":"session_016Hi3ZYgAf2amYNGc43a3tr","message":"x"}}'
 t allow '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative"}}'
@@ -1119,16 +1415,6 @@ cm() { git -C "$dv" checkout -q -B "$1" refs/remotes/origin/main; mkdir -p "$(di
 export DEVOS_LIBRARY_DIR="$lib" DEVOS_LEAK_STORE="$store" DEVOS_SERVICE_NAMES_EXTRA="$lk/svc.json"
 bo=$(python3 tools/leak_fingerprints.py build --devos "$dv"); n=$(printf '%s' "$bo" | sed -n 's/.*; \([0-9]*\) excluded.*/\1/p')
 [ "${n:-0}" -gt 0 ] && echo "ok   store built; ${n} fingerprints excluded as already on the fixture's origin/main" || { echo "BAD  store build: $bo"; fail=1; }
-# lt <decision> <rule> <label> <json>: the decision and the rule of one call; the label is printed, not the call
-lt() { local out r; out=$(printf '%s' "$4" | CLAUDE_PROJECT_DIR="$PWD" sh -c "${lc:-$cmd}" 2>/dev/null); printf '%s\n' "$out" >> "$OUTS"
-  r=$(printf '%s' "$out" | python3 -c 'import json,re,sys
-d=json.load(sys.stdin)["hookSpecificOutput"]; t=d.get("permissionDecisionReason") or (d.get("decision") or {}).get("message") or ""
-m=re.search(r"DENIED by rule (\w+)|allowed by rule (\w+)", t)
-print(d.get("permissionDecision") or (d.get("decision") or {}).get("behavior") or "?", (m.group(1) or m.group(2)) if m else "-")' 2>/dev/null || echo "? -")
-  if [ "$r" = "$1 $2" ]; then echo "ok   exp=$1 $2 $3"; else echo "BAD  exp=$1 $2 got=$r $3"; fail=1; fi; }
-js() { python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$1"; }
-# has <text> <label>: the last guard output holds text (a count or a place, never the planted text)
-has() { if tail -n 1 "$OUTS" | grep -qF -- "$1"; then echo "ok   $2"; else echo "BAD  $2: '$1' not in the output"; fail=1; fi; }
 lb() { lt "$1" "$2" "$3" "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":$(js "$4")},\"cwd\":\"$W\"}"; }
 ghw() { echo "{\"tool_name\":\"mcp__github__$1\",\"tool_input\":{$D,$2}}"; }
 # routes: PR body, comment, issue (title and body), merge message, file write, review

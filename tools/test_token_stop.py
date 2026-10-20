@@ -1172,7 +1172,7 @@ def run(root, hook, tmp, out):
                                                                 "content": f"{p}\n"})),
             ("grep-pattern", "Grep", lambda p: tool("Grep", {"pattern": p, "path": "/tmp/w20"})),
             ("agent-prompt", "Agent", lambda p: tool("Agent", {"description": "x", "prompt": f"Look up {p}.",
-                                                               "subagent_type": "general-purpose"})),
+                                                               "subagent_type": "checker"})),   # W-C02-24: a role type outside T5, so the case records its channel, not T4's or T5's refusal
             ("todo", "TodoWrite", lambda p: tool("TodoWrite", {"todos": [{"content": p, "status": "pending"}]}))):
         p, _ = payload(K, "env", "whole", redact_rx)
         cases.append({"id": "P1N-" + cid, "channel": ch, "fmt": "env", "kind": "info", "inp_p": build(p),
