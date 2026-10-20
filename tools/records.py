@@ -614,6 +614,13 @@ def durum(text, items, decisions, changes):
 # ---------------------------------------------------------------- main
 
 def main(argv=None):
+    # N-315: ROOT is the working directory, so a run from another tree would read and write that tree. Refuse,
+    # before any read or write, unless the working directory is this script's own checkout.
+    own, cwd = Path(__file__).resolve().parents[1], Path.cwd().resolve()
+    if cwd != own:
+        print(f"records.py: refused: this script's checkout is {own}, but the working directory is {cwd}; "
+              "run it from its own checkout's root", file=sys.stderr)
+        return 2
     ap = argparse.ArgumentParser(prog="records.py")
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("render")
