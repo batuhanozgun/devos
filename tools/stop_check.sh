@@ -23,6 +23,12 @@ gr=$(python3 tools/guard_report.py 2>&1); grc=$?
 printf '%s\n' "$gr" | sed -n '1,5p' | sed 's/^/      /'
 [ $grc -eq 0 ] && ok "guard_report: decision log read" || bad "guard_report: no decision log for this session"
 
+# W-C02-25 (SB-COR 3.5): the agent hooks' liveness for this session; its claim is only "scripts present and working;
+# hooks live as of the last finished run's records" (re-read after a worker restart).
+lv=$(python3 tools/guard_report.py --liveness 2>&1); lvc=$?
+printf '%s\n' "$lv" | sed 's/^/      /'
+[ $lvc -eq 0 ] && ok "guard_report.py --liveness: LIVENESS PASS" || bad "guard_report.py --liveness: exit $lvc (2 is could not check; its lines above say why)"
+
 today=$(date -u +%Y-%m-%d)
 d=$(TZ=UTC git log -1 --format=%cd --date=format-local:%Y-%m-%d origin/main -- DURUM.md 2>/dev/null)
 [ "$d" = "$today" ] && ok "DURUM.md updated today ($today, UTC) on main" || bad "DURUM.md last changed on main ${d:-never}, not today ($today, UTC)"

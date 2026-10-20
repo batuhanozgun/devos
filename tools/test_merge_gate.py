@@ -572,7 +572,7 @@ def shared_token_files(s):
 
 def role_package_gate(tmp):
     """Cases (RP1) to (RP8): W-C02-23 (PR-A2; SB-COR 2.3; EV-C02-028 part 10.1, agreed (5)), written by its test
-    designer before the change. A fixture of its own (tmp), whose main holds the six fixture packages, the records
+    designer before the change. (RP9), at the end: W-C02-25's agent hooks in the trigger set, its own form there. A fixture of its own (tmp), whose main holds the six fixture packages, the records
     they cite and the compaction hook, all built by tools/test_check_role_packages.py's build_tree (their one source),
     and a copy of this working tree's tools/check_role_packages.py. Every head carries a covering PASS verdict (except
     RP7), so a refusal can come only from the role-package check. The gate is always run from the fixture's main
@@ -709,6 +709,17 @@ def role_package_gate(tmp):
          [p for p in only if not p.startswith("evidence/")] == [tool], repr(only))
     refused("(RP8b) ... and the gate refuses that head: GATE FAIL with the packages' FAIL "
             "unresolved lines (EV-C99-001)", pr, head, "producer.md", "unresolved")
+    # W-C02-25 (approach "Trigger set"; its condition's point 10 and "Not covered" (h)), added by its producer: the
+    # agent hooks deliver the packages, so a head touching only .claude/hooks/agent_hooks.py runs the check. main's
+    # packages still fail it here (RP7's removed record), so only the trigger can refuse this head; RP7 is the control
+    # (a head outside the set passes). Break: the hook's path dropped from ROLE_PACKAGE_TRIGGER (RP9b turns BAD).
+    agent_hooks = ".claude/hooks/agent_hooks.py"
+    pr, head = head_with({agent_hooks: b"# a fixture stand-in for the agent hooks (W-C02-25)\n"})
+    only = s.git("diff", "--name-only", "main", head).splitlines()
+    case("(RP9a) the RP9 head touches .claude/hooks/agent_hooks.py and, besides its verdict, nothing else",
+         [p for p in only if not p.startswith("evidence/")] == [agent_hooks], repr(only))
+    refused("(RP9b) ... and the gate runs the check for that head: GATE FAIL with the packages' FAIL unresolved lines "
+            "(EV-C99-001)", pr, head, "producer.md", "unresolved")
 
 
 # ------------------------------------------------------------------------------------------------------------------

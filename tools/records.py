@@ -219,6 +219,46 @@ def discipline_problems(root=ROOT):
     return out, len(entries)
 
 
+# ---------------------------------------------------------------- role files (W-C02-25; SB-COR 3.5)
+
+# The front-matter keys a role file under .claude/agents/ may carry. Any other key is refused, and these three by
+# name: omitClaudeMd (the role would run without CLAUDE.md), hooks (hooks the guard and settings.json do not hold),
+# memory (a store that outlives the run). A file in a subfolder is refused (the role must be one file, by its name).
+AGENT_KEYS = {"name", "description", "tools", "disallowedTools", "model", "maxTurns", "effort", "color", "skills"}
+AGENT_REFUSED = ("omitClaudeMd", "hooks", "memory")
+
+
+def agent_file_problems(root=ROOT):
+    """One string per refused file under <root>/.claude/agents/, naming its path relative to that folder and the
+    refused key, `subfolder`, or why its front matter cannot be read."""
+    base = Path(root) / ".claude" / "agents"
+    out = []
+    for p in sorted(base.rglob("*")) if base.is_dir() else []:
+        rel = p.relative_to(base).as_posix()
+        if p.is_dir():
+            if not any(p.iterdir()):
+                out.append(f"{rel}/: subfolder (a role file sits directly in .claude/agents/)")
+            continue
+        if "/" in rel:
+            out.append(f"{rel}: subfolder (a role file sits directly in .claude/agents/)")
+            continue
+        if p.suffix != ".md":
+            continue
+        try:
+            meta, _ = split_front(p.read_text(encoding="utf-8"), rel)
+        except (RecordError, OSError, ValueError, yaml.YAMLError) as e:
+            out.append(f"{rel}: front matter not readable ({type(e).__name__})")
+            continue
+        if not isinstance(meta, dict):
+            out.append(f"{rel}: front matter is not a mapping")
+            continue
+        bad = [k for k in AGENT_REFUSED if k in meta] + sorted(str(k) for k in meta
+                                                                if k not in AGENT_KEYS and k not in AGENT_REFUSED)
+        if bad:
+            out.append(f"{rel}: refused key {', '.join(bad)}")
+    return out
+
+
 # ---------------------------------------------------------------- readiness (03 section 3)
 
 ROOT_FOR_ACCEPT = [ROOT]
@@ -637,9 +677,15 @@ def main(argv=None):
             probs, checked = discipline_problems()
             for num, why in probs:
                 print(f"DISCIPLINES: L-{num:03d}: {why}")
+            agents = agent_file_problems()
+            for why in agents:
+                print(f"AGENT FILE: .claude/agents/{why}")
             if a.check:
                 print(f"DISCIPLINES {'FAIL' if probs else 'OK'}: {checked - len(probs)} of {checked} log entries "
                       f"from L-{DISC_FROM} on carry the nine answers")
+                if agents:
+                    print(f"AGENT FILES FAIL: {len(agents)} role files refused (W-C02-25)")
+                    return 1
                 bad = []
                 if new != text:
                     bad.append("plan/ledger.md")

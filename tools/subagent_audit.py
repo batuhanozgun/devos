@@ -98,7 +98,16 @@ PATTERNS = {"pattern", "glob"}       # relative to the call's path unless they s
 WORKING_ORDER = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "plan",
                              "Installation_Working_Order.md")   # section 9 holds the block every task carries
 DISC_HEAD = "## Disciplines (D1–D9)"
-USAGE = "usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace> | " \
+# W-C02-25: the hand-over headings of every role file's Output list, in order, Take-up: included and the disciplines
+# heading apart; and the binding verdict's front-matter keys, in .claude/agents/checker.md's template order (the same
+# list as tools/merge_gate.py's VERDICT_KEYS; tools/test_agent_hooks.py H1 and H2 and tools/test_merge_gate.py B9.keys
+# compare them with the role files). The stop hook (.claude/hooks/agent_hooks.py) reads both.
+HANDOVER_HEADINGS = ("Package:", "Nonce:", "Take-up:", "Read, and what each changed:", "Relied on:", "Unsure:",
+                     "For:", "Received from / Returned to:", "Product:", "Guard denials:")
+VERDICT_KEYS = ("id", "target", "item", "reviewed_head", "verdict", "conditions", "independence", "checker_run", "date",
+                "take_up", "triage", "floor", "own_breaks", "shared_with_producer", "producer_run", "package", "nonce",
+                "read", "relied_on", "unsure", "for", "received_returned", "guard_denials")
+USAGE ="usage: subagent_audit.py last <agent-id> | calls <agent-id> | audit <agent-id> <workspace> | " \
         "disciplines <agent-id> | launch <agent-id>"
 
 
@@ -108,6 +117,23 @@ class Error(Exception):
 
 class NotFinished(Exception):
     pass
+
+
+def session_log(log_dir):
+    """This session's guard decision log, named by the guard's session_key (one key; W-C02-25), loaded from this
+    checkout's guard file."""
+    import importlib.machinery
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), ".claude", "hooks",
+                        "tool_allowlist.py")
+    try:
+        ldr = importlib.machinery.SourceFileLoader("devos_guard_for_subagent_audit", path)
+        g = importlib.util.module_from_spec(importlib.util.spec_from_loader(ldr.name, ldr))
+        ldr.exec_module(g)
+        key = g.session_key({})
+    except Exception as e:   # a guard that cannot be loaded is a reading error, never an empty log set
+        raise Error(f"cannot take session_key from {path}: {type(e).__name__}") from e
+    return os.path.join(log_dir, key + ".jsonl")
 
 
 def q(s):
@@ -441,7 +467,8 @@ def audit(agent, workspace):
         raise Error(f"no readable {'meta' if run else 'toolUseId'} in {meta_path}")
     finished(path, run, agent)
     log_dir = os.environ.get("DEVOS_GUARD_LOG_DIR") or "/tmp/devos-guard"
-    logs = sorted(glob.glob(os.path.join(glob.escape(log_dir), "*.jsonl")))
+    own = session_log(log_dir)   # this session's log when it exists; else every log, as before W-C02-25
+    logs = [own] if os.path.isfile(own) else sorted(glob.glob(os.path.join(glob.escape(log_dir), "*.jsonl")))
     if not logs:
         raise Error(f"no guard decision log (*.jsonl) in {log_dir}")
     records = [r for name in logs for r in jsonl(name)[1] if r.get("agent_id") == agent]
