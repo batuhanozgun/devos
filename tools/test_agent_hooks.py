@@ -1085,13 +1085,14 @@ def g_cases():
         for caller in (None, "g0agent00001"):
             for to in ("a1b2c3d4e5f6a7b8c", "main", "researcher"):
                 n += 1
+                # W-C02-27 point 9: no registry is planted, so T6.9 (T6 reads the registry before its self check)
 
                 def one(perm=perm, caller=caller, to=to):
                     got = guard_rule({"tool_name": "SendMessage", "tool_input": {"to": to, "message": "x"},
                                       "agent_id": caller}, perm=perm)
-                    return got == ("deny", "T1"), f"got {got}"
+                    return got == ("deny", "T6.9"), f"got {got}"
                 guarded(f"G{n}", f"SendMessage {'PermissionRequest' if perm else 'PreToolUse'} from "
-                        f"{'a subagent' if caller else 'main'} to {to!r}: deny by T1", one)
+                        f"{'a subagent' if caller else 'main'} to {to!r}: deny by T6.9", one)
 
     def g13():
         d = new_dir()
