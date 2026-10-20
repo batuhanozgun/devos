@@ -462,16 +462,21 @@ RULES.update({rule: ("the gate before work: " + title, T5_WHY, WO + " sections 9
 # T6, messages between agents (W-C02-27; SB-COR 3.6b): one entry per refusal, a shared why and where
 T6_WHY = ("SendMessage reaches only agents of this session: an agent ID held in this session's registry (written by "
           ".claude/hooks/agent_hooks.py), or main, by the caller rules of W-C02-27's approach; producer, test-designer "
-          "and checker IDs take messages only from the executor. T6 is the only layer for sessions on the same machine "
-          "and the main one everywhere. Messages are not records: a request taken or returned is written in the "
-          "hand-overs' Received from / Returned to lines.")
+          "and checker IDs take messages only from the executor. to alone names the target; the keys the platform "
+          "adds (type, recipient, recipient_kind and content) are admitted only all together and only when they agree "
+          "with to and message, and message is one string (W-C02-27.1). T6 is the only layer for sessions on the same "
+          "machine and the main one everywhere. Messages are not records: a request taken or returned is written in "
+          "the hand-overs' Received from / Returned to lines.")
 T6_RETURN = "return it in your hand-over's Received from / Returned to"
+T6_FINDING = ("If you sent only to and message, report this denial to the executor as a guard finding, and "
+              + T6_RETURN)
 RULES.update({rule: ("messages to this session's agents only: " + title, T6_WHY,
-                     WO + " sections 9 and 10; W-C02-27; SB-COR 3.6b", todo) for rule, title, todo in (
+                     WO + " sections 9 and 10; W-C02-27; W-C02-27.1; SB-COR 3.6b", todo) for rule, title, todo in (
     ("T6.0", "could not check", "The guard could not check this call (the detail names the error) and refuses this "
      "call only; " + T6_RETURN + ", and report it to the executor as a guard finding."),
-    ("T6.1", "an input key outside to and message", "Send only the keys to (one agent ID, or main) and message (the "
-     "text); summary, notify_when_idle and the legacy keys are not admitted."),
+    ("T6.1", "an input key not admitted", "Give to (one agent ID, or main) and message (one string), and a summary "
+     "only as one string; the platform itself adds type, recipient, recipient_kind and content, all four together. "
+     "Any other key, or only some of those four, is refused. " + T6_FINDING + "."),
     ("T6.2", "to is not one string", "Give to as one string: one agent ID from your task's Teammates: line, or main."),
     ("T6.3", "to is missing or empty", "Give to as one string: one agent ID from your task's Teammates: line, or main."),
     ("T6.4", "to is * (broadcast)", "Message one agent by its ID; a broadcast is not admitted."),
@@ -485,6 +490,9 @@ RULES.update({rule: ("messages to this session's agents only: " + title, T6_WHY,
      "or " + T6_RETURN + "."),
     ("T6.8", "a message to the caller itself", "Do not message your own ID; the executor does not message main."),
     ("T6.9", "no registry for this session", "No registry for this session; " + T6_RETURN + "."),
+    ("T6.10", "a platform key disagrees with to and message, or message is not one string", "Give message as one "
+     "string, never a structured message, and do not set type, recipient, recipient_kind or content yourself. "
+     + T6_FINDING + "."),
 )})
 LEAK_WITHHELD = {"L1", "L2", "L4", "L5"}   # rules whose call text is never repeated (it may hold the matched text)
 
@@ -583,6 +591,11 @@ def summary(name, args, rule=None):
             s = str(args.get("command", ""))
         elif name in FILE_WRITE_TOOLS or name in FILE_READ_TOOLS:
             s = str(args.get(FILE_WRITE_TOOLS.get(name) or FILE_READ_TOOLS.get(name)) or "")
+        elif name == "SendMessage":   # no message text (W-C02-27.1, W271-5); to, recipient, recipient_kind, type shown
+            shown = dict(args)
+            for text_key in ("message", "content", "summary"):
+                shown.pop(text_key, None)
+            s = json.dumps(shown, ensure_ascii=False, sort_keys=True)
         else:
             keep = {k: v for k, v in args.items() if k not in ("content", "files", "prompt", "message", "body",
                                                                  "new_string", "old_string", "script")}
@@ -2401,7 +2414,9 @@ def t5(data, args, t):
 
 
 # T6 (W-C02-27; SB-COR 3.6b): SendMessage only to an agent of this session's registry, by the approach's caller rules
-T6_KEYS = ("to", "message")   # W27-3; the schema row (EV-C02-036) also shows summary and notify_when_idle, not admitted
+T6_KEYS = ("to", "message", "summary", "type", "recipient", "recipient_kind", "content")   # W-C02-27.1 (W271-1)
+T6_PLATFORM = ("content", "recipient", "recipient_kind", "type")   # added by the platform all together (2.1.304)
+T6_TIES = ("message", "type", "recipient", "recipient_kind", "content", "summary")   # the record's order (B1)
 T6_FROM_MAIN_ONLY = ("producer", "test-designer", "checker")   # W27-1
 T6_FROM_REGISTERED = ("researcher", "prober")
 _AGENT_HOOKS = []
@@ -2419,57 +2434,101 @@ def agent_hooks():
 
 
 def send_message_checks(data, args):
-    """(rule, why) for an allowed SendMessage call; Bad(T6.1 to T6.9) for a refused one. The shape is decided before
-    the registry is read; the registry is read under its shared lock with W-C02-25's bounded wait, under the guard's
-    session_key. decide() refuses any other exception raised here as T6.0, for this call only."""
-    extra = sorted(str(k)[:40] for k in args if k not in T6_KEYS)
-    if extra:
-        raise Bad("T6.1", f"the input keys {', '.join(extra[:8])} are outside {{to, message}}; only to and message are "
-                          "admitted")
-    if "to" not in args:
-        raise Bad("T6.3", "the input has no to")
-    to = args["to"]
-    if not isinstance(to, str):
-        raise Bad("T6.2", f"to is a {type(to).__name__} value, not one string")
-    if to == "":
-        raise Bad("T6.3", "to is the empty string")
-    if to == "*":
-        raise Bad("T6.4", "to is *, a broadcast")
-    if to.startswith(("session_", "cse_")):
-        raise Bad("T6.5", "to is a session reference (session_ or cse_)")
-    hooks = agent_hooks()
+    """(rule, why) for an allowed SendMessage call; Bad(T6.1 to T6.10) for a refused one. to alone names the target
+    (W-C02-27's rules); every other key is admitted only when the platform adds it and it agrees with to and message
+    (W-C02-27.1). The keys are decided before the registry is read, the ties (T6.10) last, after T6.6 and T6.7; a
+    disagreement is refused, never resolved by picking a field, and the input is never rewritten. The registry is read
+    under its shared lock with W-C02-25's bounded wait, under the guard's session_key. Every detail ends with the
+    sorted key names (cut as T6.1 cuts them) and each tie's result, never a value of message, content or summary.
+    decide() refuses any other exception raised here as T6.0, for this call only."""
+    to = args.get("to")
+    kind = "main" if to == "main" else "agent"   # the platform's kind for a to that passes T6.6 (premise, inferred)
+    want = {"message": lambda v: isinstance(v, str), "type": lambda v: v == "message",
+            "recipient": lambda v: isinstance(v, str) and v == to, "recipient_kind": lambda v: v == kind,
+            "content": lambda v: isinstance(v, str), "summary": lambda v: isinstance(v, str)}
+    ties, fails = {}, []                  # fails: in T6_TIES's fixed order, every failed tie, each named once
+    for k in T6_TIES:
+        if k not in args:
+            ties[k] = "absent"
+        elif want[k](args[k]):
+            ties[k] = "agrees"
+        elif not isinstance(args[k], str):
+            ties[k] = "not one string"
+            fails.append(f"the key {k} is not one string")
+        elif k in ("type", "recipient_kind"):    # an enumeration: the observed value, as JSON, at most 40 characters
+            seen = json.dumps(args[k])
+            seen = seen if len(seen) <= 40 else seen[:37] + "..."
+            ties[k] = f"differs (observed {seen})"
+            fails.append(f"the key {k} disagrees (observed {seen})")
+        else:                                    # recipient, a string other than to
+            ties[k] = "differs"
+            fails.append(f"the key {k} disagrees with to")
+
+    def cut(keys):   # key names as T6.1 cuts them: each to 40 characters, sorted, the first 8, then the count left
+        names = sorted(str(k)[:40] for k in keys)
+        return ", ".join(names[:8]), f" (+{len(names) - 8} more)" if len(names) > 8 else ""
+    shown, more = cut(args)
+    tail = f"; keys [{shown}]{more}; ties " + ", ".join(f"{k} {ties[k]}" for k in T6_TIES)
     try:
-        records = hooks.read_registry(hooks.registry_path(session_key(data), LOG_DIR))
-    except hooks.Unreadable as e:
-        raise Bad("T6.9", f"no registry for this session ({e}); {T6_RETURN}")
-    caller = data.get("agent_id")
-    if caller is None and to == "main":
-        raise Bad("T6.8", "main to main")
-    if caller is not None and to == caller:
-        raise Bad("T6.8", "a message to the caller's own ID")
-    registered ={aid: v["agent_type"] for aid, v in hooks.merged_view(records).items()
-                  if isinstance(v.get("agent_type"), str) and v["agent_type"]}
-    if to == "main":
-        target = "main"
-    elif to in registered:
-        target = registered[to]
-    else:
-        raise Bad("T6.6", "to is not an agent ID held in this session's registry (matched exactly; no name is resolved)")
-    ctype = registered.get(caller) if isinstance(caller, str) else None
-    who = "the executor (main)" if caller is None else f"a registered {ctype}" if ctype else \
-        "an agent this session's registry does not hold"
-    if target == "main":
-        ok = ctype is not None
-    elif target in T6_FROM_MAIN_ONLY:
-        ok = caller is None
-    elif target in T6_FROM_REGISTERED:
-        ok = caller is None or ctype is not None
-    else:
-        ok = False
-    what = "main" if target == "main" else f"a registered {target}"
-    if not ok:
-        raise Bad("T6.7", f"a message to {what} from {who}")
-    return "T6", f"a message to {what} from {who}, in this session's registry"
+        extra = [k for k in args if k not in T6_KEYS]
+        present = [k for k in T6_PLATFORM if k in args]
+        keys_bad = []
+        if extra:
+            keys_bad.append("the input keys not admitted: " + "".join(cut(extra)))
+        if present and len(present) < len(T6_PLATFORM):
+            keys_bad.append(f"a partial set of the platform's keys (present: {', '.join(present)}; missing: "
+                            f"{', '.join(k for k in T6_PLATFORM if k not in args)})")
+        if keys_bad:
+            raise Bad("T6.1", "; ".join(keys_bad))
+        if "to" not in args:
+            raise Bad("T6.3", "the input has no to")
+        if not isinstance(to, str):
+            raise Bad("T6.2", f"to is a {type(to).__name__} value, not one string")
+        if to == "":
+            raise Bad("T6.3", "to is the empty string")
+        if to == "*":
+            raise Bad("T6.4", "to is *, a broadcast")
+        if to.startswith(("session_", "cse_")):
+            raise Bad("T6.5", "to is a session reference (session_ or cse_)")
+        hooks = agent_hooks()
+        try:
+            records = hooks.read_registry(hooks.registry_path(session_key(data), LOG_DIR))
+        except hooks.Unreadable as e:
+            raise Bad("T6.9", f"no registry for this session ({e}); {T6_RETURN}")
+        caller = data.get("agent_id")
+        if caller is None and to == "main":
+            raise Bad("T6.8", "main to main")
+        if caller is not None and to == caller:
+            raise Bad("T6.8", "a message to the caller's own ID")
+        registered ={aid: v["agent_type"] for aid, v in hooks.merged_view(records).items()
+                      if isinstance(v.get("agent_type"), str) and v["agent_type"]}
+        if to == "main":
+            target = "main"
+        elif to in registered:
+            target = registered[to]
+        else:
+            raise Bad("T6.6", "to is not an agent ID held in this session's registry (matched exactly; no name is "
+                              "resolved)")
+        ctype = registered.get(caller) if isinstance(caller, str) else None
+        who = "the executor (main)" if caller is None else f"a registered {ctype}" if ctype else \
+            "an agent this session's registry does not hold"
+        if target == "main":
+            ok = ctype is not None
+        elif target in T6_FROM_MAIN_ONLY:
+            ok = caller is None
+        elif target in T6_FROM_REGISTERED:
+            ok = caller is None or ctype is not None
+        else:
+            ok = False
+        what = "main" if target == "main" else f"a registered {target}"
+        if not ok:
+            raise Bad("T6.7", f"a message to {what} from {who}")
+        if fails:
+            raise Bad("T6.10", "; ".join(fails))
+    except Bad as b:
+        b.detail += tail
+        raise
+    return "T6", f"a message to {what} from {who}, in this session's registry" + tail
 
 
 def decide(data):
