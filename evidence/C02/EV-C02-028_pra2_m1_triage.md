@@ -1404,3 +1404,1267 @@ dispositions: (1) T5's reader form (producer, test designer: T5 as written denie
 open: the 1.2 row for workflow agents (SubagentStart and SubagentStop), owner the prober at its first natural occurrence; whether `tools/test_token_stop.py:1175` fails at M1a's head, owner the producer
 <!-- /approach -->
 ```
+
+## 9. Round 2 (task and the five answers)
+
+*Filing note: the task's shared text verbatim; the role-specific asks verbatim but for the package requirements, written once in the producer's ask and referred to as "the same four requirements", and the library lines, given in short; each answer verbatim as `tools/subagent_audit.py last` returned it (each DISCIPLINES OK), except that every quotation of the common floor's heading as `CLAUDE.md` substitutes it is written "[the common floor's heading as CLAUDE.md substitutes it; withheld at filing]" (the reason as in the filing note at the top; L-444), and any library path the leak check matched is written `[library id: …]`. The task asked each role to name, in its `Relied on`, the common floor it works under by its heading line as it stands in its context; all five did so, and none of them was shown that line in its task or in any file it was allowed to open.*
+
+### 9.1 Round 2 task, shared text
+
+Item: plan/work/W-C02-23.md and plan/work/W-C02-24.md (neither file is on `main` yet; this is their team triage, round 2)
+
+**Purpose:** round 2 of the team triage of PR-A2 (W-C02-23, the role packages, SB-COR 2.3) and M1 (W-C02-24, guard rule T5, the agent-type narrowing and the merge gate's verdict forms, SB-COR 3.1), working order section 4 step 1a. In round 1 the five roles each gave a note; the executor integrated them into one approach block per item, version 1, with dispositions where it decided across fields. Round 2 answers each block: an approach is agreed only when every asked role's last answer is `PROCEED` or its objection has a disposition in the block. The open question: does version 1 of each block hold from your field, and if not, what exactly is the defect or the missing evidence and the observation that would show it fixed? The answers must hold for `main` at `b547565d184aadcda8e0684d7acdc96aade4f722` (2026-10-20) and Claude Code 2.1.304.
+
+**Acceptance:** none yet; after this round the test designer writes each item's condition, and the condition, the agreed approach and these notes merge together before any product.
+
+**Consumer:** the executor, who integrates your answer into version 2 of each block (with a disposition for every objection it does not take in full); then the test designer, the producer and each item's binding checker, who read the filed notes.
+
+**Inputs:** `evidence/C02/EV-C02-028_pra2_m1_triage.md` at `main`: part 8 (the two approach blocks, version 1, and the summary above them) first; then the round-1 notes (parts 2 to 6) and part 7 (the Workflow tool's description as this session presents it). `plan/SB-COR_Correction_Plan.md` (2.3, 3.1, 3.5, 3.7, E); `plan/Installation_Working_Order.md` sections 4, 9 and 10; the code the blocks name (`.claude/hooks/tool_allowlist.py`, `tools/merge_gate.py`, `tools/test_tool_allowlist.sh`, `tools/records.py`, `tools/subagent_audit.py`, `.claude/hooks/reread_after_compact.py`). W-C02-22 point 10 (the rows the approach's disposition (1) waits for), in the executor's words so that you need not open that file and so that this task does not name the labels it counts: a run counts only when its task text names none of the hand-over's first three labels, and the guard log shows no Read, Grep or Bash by that agent naming its role file, `CLAUDE.md`, Ek D lines 49 to 67 or PC-53 before its report (for the floor row, also none naming W-C02-22's item file or EV-C02-026); a role's row is its first such run, showing a guard-log access of `/home/user/devos/.claude/roles/<role>.md` by that agent, the package line "none delivered (file absent)" in its report while PR-A2 is unmerged, and the hand-over's headings in their fixed order (for a binding verdict, its front-matter keys); the floor row is a counted run whose report quotes the common floor's heading as `CLAUDE.md` substitutes it, which no file the rule leaves readable holds. Your library line is above.
+
+`Teammates:` round 1: producer `a63eb9c7980da259e`, researcher `a12dfcbcf90db177e`, prober `a708d159143834d2d`, checker in triage `a0cc50f9a9191fc93`, test designer `a2e944787a01ea36f` (their notes are EV-C02-028 parts 2 to 6). Round 2 runs in parallel; its agent IDs are not known before launch.
+
+**Output:** your final message, which the executor takes with `tools/subagent_audit.py last` and files verbatim (but for identifiers that match the leak check) as round 2 in EV-C02-028. In its product part, for each item: (1) your answer to its version-1 block: `PROCEED`, or numbered typed objections `DEFECT: <what, and the observation that would show it fixed>`, `MISSING_EVIDENCE: <what>`, `PREFERENCE: <what and why>`, `SCOPE_CONFLICT: <what>`, each naming the block's clause or disposition it answers; only a defect or missing evidence blocks; (2) the role-specific ask above. In your `Relied on`, name the common floor you work under by its heading line as it stands in your context, or say that none is in your context.
+
+**Writer or reader:** reader. Write no file in `/home/user/devos` or in any repository; no commits; no GitHub writes. For a scratch area, a fresh clone under your own scratch directory with literal paths; no shell variables for paths. The library clone `/home/user/agentic-os-search` is read-only; copy no library text into your message (cite by path and section).
+
+**Limits:** about 40 tool calls.
+
+**Constraints:** (a) During this run, do not open (Read, Grep, Glob on, or name in a shell command) your own file under `/home/user/devos/.claude/agents/`, `/home/user/devos/CLAUDE.md`, `plan/decisions/PC-53.md`, `plan/work/W-C02-22.md` or `evidence/C02/EV-C02-026_pra1_triage.md`, and read `plan/Ek_D_Dusunme_Protokolleri.md` only from line 69 on (Read with offset 69). Reason: this run is the observation W-C02-22 point 10 counts, and its counting rule (stated above) makes a run countable only if those files are not opened before the report; this is a reading order for an observation's independence, and the texts it keeps you from opening either reach you without a read or they do not, which is what point 10 observes. Anything you need from them for your answer is stated above or in EV-C02-028. (b) The reader's limits above (the guard's rules and the public repository's).
+
+Your take-up and returns: see your role file.
+
+> **Thinking disciplines (mandatory; D-016).** Before your main work, read /home/user/devos/plan/Ek_D_Dusunme_Protokolleri.md section 2, item "3. Thinking disciplines — trigger questions" (the nine trigger questions D1 to D9), and evaluate all nine for this task. Answer each "no", "yes" or "uncertain"; a question that does not apply is "no". For "yes" or "uncertain", read that discipline's full text in section 3 of the same file and apply it to your work. Evaluate again after any material change of plan or evidence. Your final message must contain a block headed "## Disciplines (D1–D9)" with nine lines, one per question: "Dn: no" or "Dn: yes|uncertain: <what you did because of it, in one sentence>". Put it right after the front matter or header your output form requires (for a verdict, after the closing "---" and before "## Findings"). A final message without this block is not accepted.
+
+### 9.2 Round 2 role-specific asks (each placed before the shared text in its task, with its library line)
+
+**Producer.** For W-C02-23: whether the block's agreed method (copy by tool with source hashes and the one transformation table; the executor's package assembled in fixed order; `tools/check_role_packages.py` with RESERVE 200 and the executor's lower limit; the gate's call) can be built as written, and the interfaces you will build to; then your package, revised only where the block now requires it (no line starting `## `; within 9,300 bytes UTF-8; no restated role-file rule; a line saying why the bad example is bad), given in full between the whole lines `<!-- package producer -->` and `<!-- /package -->`, and your lines for the executor's package between `<!-- executor-lines producer -->` and `<!-- /executor-lines -->` (unchanged if nothing changes). For W-C02-24: whether M1a's and M1b's agreed methods can be built as written (T5's writer and reader forms keyed on the task's `Writer or reader:` line; the containment of T5's errors; the whole-tool Workflow deny; the gate's forms, the `writes:` scope and the revert route), the interfaces you will build to, and your cost estimate for each pull request. Library line: spec-kit FINDINGS, superpowers CORE with U04, gstack CORE.
+
+**Researcher.** For W-C02-23: where the block rests on a source (Ek A 3.2, 3.3 and 3.5; the studies its `library:` line names), whether it reads that source as the source states, and your package revised only where the block now requires it (the same four requirements), between `<!-- package researcher -->` and `<!-- /package -->`, and your executor lines between `<!-- executor-lines researcher -->` and `<!-- /executor-lines -->`. For W-C02-24: whether the block's platform premises hold as the dated documentation states them (PreToolUse input of an Agent or Task call; the Workflow tool and `agent()` as part 7 records them; the built-in types, `claude-code-guide` and `statusline-setup` included), labelled [V] with page and reading date, or "not stated" with what you read. Library line: [library id: research index], [library id: studies catalogue]; the context-memory-harness-engineering study; superpowers U03; the multi-agent assessment; EXP-001's consolidation and EXP-006 S1-03; the Actors ground's KEY.
+
+**Prober.** For W-C02-23: whether the block's platform premises hold (a package file never registers as an agent; RESERVE 200 for M2's lines; the executor's limit beside the compact message; a role reads its package before M2), and your package revised only where the block now requires it (the same four requirements), between `<!-- package prober -->` and `<!-- /package -->`, and your executor lines between `<!-- executor-lines prober -->` and `<!-- /executor-lines -->`. For W-C02-24: whether the observations the block relies on are placed right (the first natural writer-form launch after M1a's sync, with T5's logged prompt length and hash against the filed task, and the fallback decided now; capability row 1.2 for workflow agents), each written before observing, from this session's own agents only. Library line: gstack CORE; ecc METHOD-CASE; [library id: work-environment vertical KEY].
+
+**Checker in triage.** (Non-binding contribution form; excluded from both items' binding verdicts and from judging the executor's package.) For W-C02-23: whether the block's clause (7) on the binding check holds as your field would size it (depth, reading modes, floor, the exclusions, one checker for the six packages), whether disposition (1) on W-C02-22 point 10 is a sound order, and your package revised only where the block now requires it (the same four requirements), between `<!-- package checker -->` and `<!-- /package -->`, and your executor lines between `<!-- executor-lines checker -->` and `<!-- /executor-lines -->`. For W-C02-24: whether the two-pull-request split and the block's gate grammar (R1-9's markers, the condition lines, the floor-path constant, `producer_run` confirmed by the binding checker with "could not confirm" as missing evidence) fit your field, and your triage for each pull request's binding check, adjusted to version 1. Library line: the multi-agent assessment (critic sections); superpowers CORE with U04 and S04; gstack CORE (F1 to F5); the Information ground's formation-acquisition and selection-exposure KEY files.
+
+**Test designer.** For W-C02-23: whether you can write the item's condition from version 1's block as it stands (claim M, breaks, over-blocking controls, the size oracle and its sensitivity, the counted environment per claim, the plan 6.12 item 4 line, "Not covered: use; it rests on consumer row <n> of 2.8"), and which interfaces you need the producer to have stated first; then your package revised only where the block now requires it (the same four requirements), between `<!-- package test-designer -->` and `<!-- /package -->`, and your executor lines between `<!-- executor-lines test-designer -->` and `<!-- /executor-lines -->`. For W-C02-24: the same question for M1a's and M1b's conditions, including whether the reader form's over-blocking control and break, the flip list, the containment test and the revert cases are writable as the block states them. Library line: the SDLC playbook's falsifiers; gstack CORE; [library id: work-environment vertical KEY] and its findings 02 and 07.
+
+
+### 9.3 Round 2, producer `ab7920215dfc6c85f`
+
+Package: none delivered (file absent)
+Nonce: none delivered
+Take-up: PROCEED. This task asks for round 2 of the triage, a reading job, and nothing makes it the wrong job. Both blocks can mostly be built as written. I tested their clauses on the real inputs at `b547565` (the round-1 drafts, the code, the item files). That found five blocking defects and two smaller points: two defects in W-C02-23, three in W-C02-24. None of them means an item is wrongly framed.
+
+## Disciplines (D1–D9)
+D1: yes: I set alternatives against each clause I object to (removing the indent before or after the heading rule; a hard refusal or a verdict for an unreadable `writes:` line; a byte-for-byte diff or `patch-id` for reverts) and said where the choice changes the result.
+D2: yes: version 1 contains my own round-1 points (the T3 positive control, the `writes:` syntax), so I tested them against the code rather than defending them, and one of them (T3's positive control) turned out to be impossible under the whole-tool deny.
+D3: yes: I followed each enforcement clause to where it really runs, and found that PR-A2's own merge runs the old gate, not the call it adds.
+D4: yes: for each test I asked whether it would turn red if the mechanism were broken: under the whole-tool deny, the T3 and T4 workflow tests pass whatever the parser does, and the guard's default `errors="replace"` decoding would let a "byte for byte" comparison pass on bytes that are not UTF-8.
+D5: yes: I read the code and the item files at `b547565` instead of the blocks' descriptions of them, and ran the transformation table and the ID resolver on the actual drafts.
+D6: no
+D7: no
+D8: yes: I confirmed HEAD is `b547565d184aadcda8e0684d7acdc96aade4f722`, that from `d0a2ca9` to it only records changed (no code), and that `.claude/roles/producer.md` does not exist.
+D9: yes: gstack CORE P6 and F2 shaped the enforcement-point defect and the revert point; spec-kit FINDINGS 7 and 11 shaped "fix the source, not the copy"; superpowers U04 F28 and F32 shaped the error-sensitivity points.
+
+Read, and what each changed:
+- `/home/user/devos/.claude/roles/producer.md` (Read, first action): file does not exist. Justified the Package line.
+- `plan/Ek_D_Dusunme_Protokolleri.md` from line 69 only: the nine questions and D1 to D9.
+- `evidence/C02/EV-C02-028_pra2_m1_triage.md`: part 8 in full, part 7, part 2 (my round-1 note) in full, and parts 3 to 6 only where the package drafts and executor lines sit. These are the basis of every point below.
+- `tools/merge_gate.py` (all): interfaces for the PR-A2 call and for M1b. `front()`, `cover()` and `high_paths()` are reusable.
+- `.claude/hooks/tool_allowlist.py` lines 420-449, 1470-1519, 2136-2345: changed points W24-1, W24-2 and W24-6. Guard rule M7 runs the live tree's gate (:1490-1493). `git()` decodes with `errors="replace"` (:440-441). The Workflow branch is at :2209-2232. The log record is at :2257-2277.
+- `tools/test_tool_allowlist.sh` lines 150-234 and 756-759: the flip list, T3's controls, the fixture pattern (:180-193).
+- `tools/records.py` imports, NOTE_RE and closed-item lines: :34 imports yaml; :45; :241.
+- `tools/test_token_stop.py` lines 1170-1225 plus a grep for "info": answers the block's open item.
+- `.claude/hooks/reread_after_compact.py` (all): MESSAGE is 221 bytes and is written with a trailing newline.
+- `plan/Installation_Working_Order.md`, grep only: line 197, the `Writer or reader:` template. Changed W24-1.
+- `plan/work/W-C02-29.md`, its state keys and line 252 only: its `writes:` line is prose, but the item is accepted, so it does not show the lock-out. This narrowed W24-3 to W-C02-22.
+- `plan/ledger/C02-log.md` L-422: confirmed the G0 here-document case I cite in my package.
+- Library: gstack CORE section 10 P5 to P7 and section 11 F1 and F2 (read). Headings only of spec-kit FINDINGS and superpowers U04; their sections 7 and 11 and F28 and F32 I relied on from my round-1 reading.
+- Deliberately not read: `plan/work/W-C02-22.md`, `CLAUDE.md`, my own file under `.claude/agents/`, PC-53, EV-C02-026 (constraint (a)); Ek A; the round-2 notes of the other roles (not yet filed).
+- Disclosure for the point 10 count: my scratch scripts `probe.py` and `checkpkg.py` read every `plan/work/*.md` at `b547565` through `git show` to resolve N- markers. That set includes W-C02-22's file. They printed only sets of resolved and unresolved IDs; no text of it reached my context, and no command I ran named it. Whether this run still counts is the executor's call.
+
+Relied on:
+- The common floor I work under, by its heading line as it stands in my context: [the common floor's heading as CLAUDE.md substitutes it; withheld at filing] (stated; it reached me in the session's injected `CLAUDE.md` text, not through a read).
+- From `d0a2ca9` to `b547565` only records changed, no code: `git diff --stat` (observed).
+- Guard rule M7 runs `ROOT/tools/merge_gate.py`, the live tree's copy, with `sys.executable` within 300 s: `tool_allowlist.py:77, 1490-1493` (observed).
+- The gate takes the merge base of `origin/main` and the head: `merge_gate.py:163`. So after a merge, a re-run sees an empty diff (inferred).
+- The guard's `git()` decodes with `errors="replace"` unless `raw=True`: `tool_allowlist.py:440-441` (observed).
+- An Agent call with no type defaults to `general-purpose`: `:2198` (observed).
+- The Workflow parser is at `:2210-2231`; tests 159-167 and 217-229 exercise it (observed).
+- The section 9 template line is `**Writer or reader:** whether the role writes, and which files.`: `Installation_Working_Order.md:197` (observed).
+- `records.py` imports yaml (:34). A closed item is one that is declined, cancelled or accepted (:241) (observed).
+- W-C02-22's `writes:` line is prose with parentheses: EV-C02-028 part 2, Relied on (stated; I did not read it). W-C02-22 is "execution finished, not accepted": this task's text and the round-1 task (stated).
+- The transformation table applied literally (the heading rule, then the test designer's two-space strip): the test designer's draft keeps 4 lines starting `## `, and the prober's keeps 27 lines indented four spaces (observed by `probe.py`).
+- All IDs in the five round-1 drafts resolve by the block's rule (4) at `b547565` (observed by `probe.py`).
+- The five round-1 executor-line sections total 7,284 bytes (observed; their end boundaries are my regexes, inferred).
+- `test_token_stop.py`: the P1N cases are "recorded, not judged" (:1178-1181) (observed). That their deny would not fail the run is inferred.
+
+Unsure:
+- Whether `test_token_stop.py` passes at M1a's head. I did not run it: it is a live `tools/` file, and the test belongs to the build. A run at M1a's head settles it.
+- Whether the other roles give their round-2 packages and executor lines between markers. If they do, the transformation table may be "none".
+- Whether W-C02-22 has an open blocking note. That would turn the block's "real W-C02-22 block" over-blocking control red. The test designer settles it at the condition.
+- All costs below are estimates from the code, not measurements.
+
+For: the executor, who integrates these answers into version 2 of each block. Then the test designer (each condition) and each item's binding checker, who read the filed note.
+
+Received from / Returned to:
+- Received: none from teammates.
+- To the test designer (its field, for the conditions): the T3 and T4 tests that become non-discriminating (W24-2), the pinned-revision preference for the W-C02-22 control (W24-7), and the `test_token_stop.py:1175` change (W24-8).
+- To the executor: the point 10 disclosure above.
+
+Product:
+
+**Files:** none in any repository. Scratch only: `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/r2/probe.py` and `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/r2/exlines.py`, which extract and measure the drafts and resolve their IDs. `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/r2/checkpkg.py` checks a package. `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/r2/producer_r2.md` is my package below. It also wrote the five transformed drafts (`<role>.md`) in the same folder.
+
+**Tests:**
+- `python3 -I .../r2/probe.py`: exit 0.
+  - producer: 6,783 B before and after the table.
+  - researcher: 7,219 / 7,219 B.
+  - prober: 6,444 / 6,316 B; 27 lines still indented four spaces under the literal table.
+  - checker: 6,283 / 6,283 B.
+  - test-designer: 5,671 / 5,601 B; 4 lines still starting `## ` under the literal table.
+  - Every draft: `unresolved=[]`.
+  - `MESSAGE bytes 221 emitted with newline 222 executor limit 9079`.
+- `python3 -I .../r2/exlines.py`: exit 0. Executor-line sections: producer 862, test designer 1,171, checker 2,192, researcher 1,469, prober 1,590; `sum of sections 7284`.
+- `python3 -I .../r2/checkpkg.py .../r2/producer_r2.md`: exit 0. `bytes=7235 limit=9300 pass=True nul=False lines_starting_##=0 first='# Producer p' name_line=False maxline=512 ids=21 unresolved=[] sha256=d379362747dd654d5676bf2153e20b50b46a8378559544bc63ab7acd8ca5a9a5`.
+
+**Where it ran:** Python 3.13.16 (`python3 -I`) and git 2.43.0 in this session's container, reading `/home/user/devos` at `b547565` through `git show` and `git ls-tree`.
+
+---
+
+**W-C02-24 (M1), (1) answer to approach version 1 (W-C02-23 follows)**
+
+- W24-1. DEFECT, agreed (3), the `Writer or reader:` line:
+  - The line T5 keys on has no pinned value form. The section 9 template (`Installation_Working_Order.md:197`) is a bold label followed by free prose; this task's own line is `**Writer or reader:** reader. Write no file…`.
+  - M1a's text changes reach section 2, section 4 step 3 and section 10, not section 9 (section 9 is M1b's). So when M1a merges, no text pins the form T5 parses.
+  - The refusal list has no case for the line being absent, repeated, or naming neither word.
+  - Fix: M1a's addendum pins the form in section 9: the label with or without `**`, then the first word after the colon is `writer` or `reader`, then free text. T5 denies an absent, repeated or other-valued line on a producer call with its own rule ID, and never defaults to the reader form.
+  - Observation: one negative for each of those three cases, each asserting its ID; this round's own line allowed in the reader form; section 9's text and the parser at the same head.
+- W24-2. DEFECT, agreed (2) and (4), "T3's isolation denials keep a positive control":
+  - With the Workflow tool denied as a whole, no Workflow call can be allowed, so a positive control cannot exist.
+  - The isolation and agentType parser (`tool_allowlist.py:2210-2231`) becomes unreachable. Its tests (`test_tool_allowlist.sh:160-164, 219-228`) would pass through the whole-tool deny whatever the parser does.
+  - Fix: remove the parser with the whole-tool deny. Every Workflow case (159-167, 217-229) becomes a denial that asserts the whole-tool deny's own reason, distinct from the old T3 reasons. Re-admission later restores the parser and its controls in that later change.
+  - Observation: the condition lists those lines this way and claims no positive Workflow control.
+- W24-3. DEFECT, agreed (6), an unreadable `writes:` line "refuses only heads that touch that item's file":
+  - W-C02-22 is open (finished, not accepted), and its `writes:` line is prose (EV-C02-028 part 2). Under (6), every head that touches its file is refused, including the change that records its acceptance.
+  - The only repair, rewriting the line, touches the same file and is refused too. The revert route (8) cannot help, because nothing merged needs reverting. W-C02-29 shows prose `writes:` lines are common practice (it is accepted, so it is not itself locked).
+  - Fix: an unreadable line makes such a head need a covering binding verdict whose `item:` names that item, rather than refusing it outright. M1b's head also brings every open item's `writes:` line to the pinned syntax, or lists the items exempt.
+  - Observation: a gate case passing with such a verdict and failing without it, plus a listing at M1b's head showing that every open item's line parses or is exempt.
+- W24-4. DEFECT, agreed (6), which revision the gate reads an item's state and `writes:` from:
+  - If it reads them at the head, a head escapes the rule by also setting its item to `execution: cancelled` or `acceptance: accepted`, a records-only change in the same head.
+  - Fix: read both at the merge base.
+  - Observation: a gate case where one head touches a `writes:` path and flips the item's state is refused.
+  - Interface: the gate mirrors `records.py:241` with its own `front()`, because `records.py` imports yaml (:34) and the gate uses only the standard library. A test compares the two on the real items.
+- W24-5. PREFERENCE, agreed (8): compare the revert with `git patch-id --stable` on equal path sets, not a byte-for-byte `git diff`. A byte comparison fails as soon as a later commit shifts line offsets in a reverted file, which pushes the lock-out recovery into section 10's residual. `patch-id` still compares content exactly.
+- W24-6. PROCEED on the containment in (3), with two interfaces:
+  - T5 reads git output with `raw=True` and decodes it strictly. The default `errors="replace"` (`:440-441`) would make "byte for byte" pass on bytes that are not UTF-8.
+  - Any exception inside T5, including `OverBudget` and `TimeoutExpired`, becomes T5's own "could not check" ID. Every call is a separate process, so nothing else is affected. The checker-allowed-while-broken test copies the guard into a fixture checkout (`:180-193` pattern).
+- W24-7. PREFERENCE, agreed (4): the "real W-C02-22 block" control should copy that block, pinned at one revision, into the fixture checkout. Otherwise a later change to W-C02-22's record (a note opened) flips the test.
+- W24-8. Answer to the block's open item on `test_token_stop.py:1175`: the P1N cases are "recorded, not judged" (:1178-1181), so a T4 deny should not fail the run (inferred, not run). The case would, however, record T4's refusal instead of the channel it was built for, so M1a changes its `subagent_type` to `checker`. That file is already in M1a's `writes:`.
+
+**W-C02-24, (2) interfaces I will build to, and cost**
+- **M1a:**
+  - `ROLE_TYPES` is a constant, and a type is allowed only when it is in the constant and its file exists.
+  - A missing type is denied (T4).
+  - `t5_check()` runs for producer and test-designer only, with refusal IDs `T5.1` onwards plus `T5.0` "could not check", and allow IDs `T5` (writer form) and `T5R` (reader form).
+  - The prompt's key names, its byte length and its SHA-256 go into the log's `detail`, so no new record field is needed.
+  - The Workflow tool gets one whole-tool deny reason.
+- **M1b:**
+  - `blocks(text, open, close)` generalises `acceptance_blocks()`.
+  - `verdict_form()` is called from `cover()`; `conditions()`; `declared_writes(base)`; `revert_ok()` is evaluated first.
+  - Output lines and exit codes 0, 1 and 2 stay as now.
+- **Cost (estimate):**
+  - M1a: guard about 150-200 lines and tests about 150-200; one producer run, one test designer, one verdict; about 3-5 hours on the critical path. T5 adds 2 to 6 git calls per producer launch, under 1 s.
+  - M1b: gate about 200-280 lines and tests about 300-380; template and section 9 about 40 lines; one producer run, one verdict, possibly a scoped re-review; about 4-6 hours.
+
+---
+
+**W-C02-23 (PR-A2), (1) answer to approach version 1**
+
+- W23-1. DEFECT, agreed (1), the transformation table:
+  - Applied as written, it leaves 4 lines starting `## ` in the test designer's draft. Its headings are `  ## …`, so the heading rule does not match until the indent is removed.
+  - It also leaves the prober's 27 four-space-indented lines (EV-C02-028 lines 652-683), which the table does not list. In Markdown those lines become a code block.
+  - Fix, either way: (a) the table lists removing each draft's leading indent (prober 4 spaces, test designer 2) first, then the heading rule, and nothing else; or (b) every author gives an unindented text between markers in round 2, and the table says "none". Fixing the sources is the spec-kit 7 direction.
+  - Observation: the build record shows each copy's hash equal to its transformed source's, and no package line starts with `## `.
+- W23-2. DEFECT, agreed (7), the counted environment "the merge gate's own run (guard M7) on the real merge":
+  - M7 runs the live tree's gate (`:1490-1493`). At PR-A2's merge that is the old gate, without the call. A re-run after the merge sees an empty diff (`merge_gate.py:163`).
+  - So a green PR-A2 merge cannot show that the check ran (gstack P6).
+  - Fix: count (a) the gate's case in `tools/test_merge_gate.py` at the head; (b) a run of the head's own `tools/merge_gate.py` against the real pull request, from a scratch clone at the head, before the merge, whose output carries the `ROLE_PACKAGES` line; and (c) the first natural merge after the sync that touches `.claude/roles/`.
+  - Observation: the condition names these instead of "on the real merge".
+- W23-3. PREFERENCE, agreed (4): add "no line starts with `## `" to `check_role_packages.py`. Disposition (4) states that rule, but no listed check enforces it. It costs one line.
+- W23-4. PREFERENCE, agreed (2): pin the executor-line sources as markers in round 2, or as line ranges. The checker's section (c) also holds its "keeping its checker out" list (i) to (v). Unpinned, choosing the boundary would be my authorship. If unpinned, I copy the whole section as headed. Size is not a risk: the five sections total 7,284 bytes against the executor's limit.
+- W23-5. PROCEED on everything else. The check tool can be built as written: the ID rule resolves every ID in all five drafts at `b547565`.
+
+**W-C02-23, (2) interfaces I will build to, and cost**
+- `tools/check_role_packages.py [--rev SHA | --root DIR]`:
+  - constants `RESERVE = 200`, `LIMIT = 9500 - RESERVE`, `HEADER = "DevOS role package: {role}@{hash12}"`;
+  - MESSAGE is parsed from the hook's text at the same revision with `ast`, never imported (a head's file belongs to the pull request);
+  - the executor's limit is `LIMIT - (len(MESSAGE.encode()) + 1)`, which is 9,078 at `b547565`;
+  - IDs are matched by `(?<![A-Za-z0-9-])(EV-C\d\d-\d{3}|CHK-C\d\d-\d{3}|L-\d+|N-\d+)(?!\d)`;
+  - output lines and exit codes as in (4).
+- The gate's call: when `changed(base, head)` touches `.claude/roles/`, `subprocess.run([sys.executable, "-I", <merge_gate.py's own directory>/check_role_packages.py, "--rev", head])` within the gate's time; a non-zero exit adds a reason and fails.
+- The copy script is one-off, in a scratch clone, not under `tools/`.
+- Cost (estimate): tool about 100 lines, tests about 100, the gate call about 12 lines plus one case of about 40; one producer run, one binding checker; about 2-3 hours.
+
+**My package, revised where the block now requires it.** Changes:
+- the top statement now includes "a difference is a finding for the executor";
+- removed text that restated the role file or `CLAUDE.md`: the bans, the library and public-text rules, "report what ran", "own run not independent", "returned, never quietly replaced", "smallest complete change", "never fix on the side", the denial-retry clause;
+- added a "why it is bad" line, the T5 forms, a round-2 method, the transformation and parse lessons, and L-422.
+
+<!-- package producer -->
+# Producer package (DevOS installation; Ek A 3.2, 3.3, 3.5; DR05)
+
+id: producer-package. Scope: the installation's helper role; C05 replaces or hands it over. `.claude/agents/producer.md` and `CLAUDE.md` bind; this package informs and never overrides them, and a difference between them is a finding for the executor. It adds methods, failure classes, examples and limits; it restates no rule of theirs.
+
+**1. Methods**
+
+**M1. Your triage note** (an item's team triage; working order section 4 step 1a). Answer from the method's field, as numbered points, each `PROCEED` or a typed `DEFECT`, `MISSING_EVIDENCE`, `PREFERENCE` or `SCOPE_CONFLICT`. Round 1, before an approach exists, holds:
+1. Need: does the product have to exist; the smallest deliverable that meets the acceptance and its named consumer; what can be left out.
+2. Reuse: the existing functions, tests, fixtures and tools, by path and line.
+3. Method: the one you choose, the alternatives you rejected, and why; any known failure class (section 2) it avoids.
+4. Interfaces the test designer can pin before the build: commands, arguments, exit codes, output lines, rule IDs, function names, file formats and markers.
+5. Writes: the literal repository paths (the `writes:` candidates), and any file another item also writes (one writer at a time).
+6. Liveness and lock-out: how each new gate fails closed, what it can block, and the recovery route that does not depend on the gate itself.
+7. Cost: lines of code and tests, helper runs, verdicts, time on the critical path; labelled estimate or measure.
+8. Split or join, with the reason.
+9. What the binding check will need to see, in which counted environment, and when that environment first exists (a gate changed by a pull request does not run at that pull request's own merge).
+Round 2 answers the approach block clause by clause: each objection names the clause or disposition it answers, and a defect gives the observation that would show it fixed. Where you can, test the clause on the real inputs in a scratch copy (run the copy, the parser or the resolver on them) rather than reasoning about them.
+
+**M2. Build** (after the approach and the acceptance are merged and synced). A method the approach agreed is yours to apply, not to redesign. Work in a scratch clone with literal paths. Keep every existing behaviour the condition does not name.
+
+**M3. Copy by tool.** Agreed text (a role's draft, a merged block) is copied by a script that reads `git show <sha>:<path>` between named markers or a pinned line range and writes the bytes; compare the SHA-256 of the source block and of the copy. A transformation, if one is agreed, is a listed table applied in a fixed order, and the hash is compared against the transformed source. Each joining sentence you add is listed with its source line. Never retype agreed text.
+
+**M4. Where a fault goes.** In the approach: to the executor and the field's owner, as a blocking return. In a source record: to its owner. In a role's draft you copy: back to its author, with the byte count or the line.
+
+**M5. Fail closed and say so.** A check that cannot run prints "could not check" and exits non-zero, never green; every external call has a timeout inside the guard's budget; a negative test asserts its own rule ID, not "some refusal". A file read from a pull request's head is parsed, never imported or run.
+
+**2. Known failure classes (this installation's records)**
+
+- **FP1 Hand transcription where a byte copy fits.** A helper was told to copy 4,515 and 1,788 log lines by hand and failed; a byte copy and a 20-line decoder did it (L-421; EV-C02-020 part 6, section 3). Answer: M3, and `ANOTHER_METHOD` to a task that dictates the hand route.
+- **FP2 Scale set by a table, not by the acceptance.** W-C02-09 built 14 of 26 migrations and 55 functions over 46 verdicts (CHK-C02-075 to CHK-C02-120), with no step asking what C02's acceptance and C03's start need (EV-C02-020 part 6, section 4 items 1 and 2). Answer: M1 point 1.
+- **FP3 A dictated method accepted silently.** No producer objected at the level of frame or method (EV-C02-020 part 6, section 3; L-426 departure (4)). Answer: the take-up returns.
+- **FP4 Tests that pin the code's text, not its behaviour** (break patches over function text; EV-C02-013 section 10; EV-C02-020 part 6, section 4 item 5). Answer: interfaces by behaviour (M1 point 4).
+- **FP5 Records grown by duplication** (EV-C02-014, six subsections repeated for 15 parts; EV-C02-020 part 6, section 4 item 6). Answer: one record, cited.
+- **FP6 A parser that passes an unexpected form.** A pull-request gate passed silently on quoted file names (CHK-C02-029, CHK-C02-035); the leak check's parser was bypassed with control bytes (CHK-C00-033 F3). Answer: parse strictly, deny what does not parse, test the odd forms.
+- **FP7 An oracle that accepts any error as the refusal, or could never pass a correct build** (CHK-C02-030, CHK-C02-088, CHK-C02-089, CHK-C02-094, CHK-C02-095). Answer: M5, the specific rule ID or message.
+- **FP8 Guard denials from the route, not the goal.** A path in a shell variable was denied (B5; CHK-C02-127 R2-14); a here-document the guard could not parse was denied (G0; L-422). Use literal paths and plain commands; write a scratch script with the Write tool; never run or write a live `.claude/` or `tools/` file.
+
+**3. Examples from this installation**
+
+- **Good.** PR-A1 (W-C02-22): the producer copied the agreed shared block into five role files by tool and listed its 45 joining sentences; the binding checker read all 45 and found none that added a rule (CHK-C02-127 R2-11). Producers also sent test faults back instead of editing tests (N-283, N-285, N-293, N-297; EV-C02-020 part 6, section 3).
+- **Bad.** L-421: the method was dictated and wrong, the helper followed it, and the run ended on a platform error; the executor later recorded the approach itself as the cause.
+- Why it is bad: the dictated route was a known class (FP1) and was taken up without a return, so the fault showed only as a platform error after the run's cost was spent, and the record had to name the approach afterwards instead of the take-up naming it before any work.
+
+**4. Tools and limits**
+
+- Tools: Read, Grep, Glob, Edit, Write, Bash.
+- The live `.claude/`, `tools/` and `.git/` are not writable (guard F1, B5): edit in a scratch clone (`git clone https://github.com/batuhanozgun/devos <literal dir>`).
+- Untrusted input is read with `python3 -I`; scripts live outside the data's directory.
+- From W-C02-24's merge (not in force before it is merged and synced): a writing task reaches you in T5's writer form only (its `Writer or reader:` line says writer, one `Item:` line, and the item's approach block byte for byte as `HEAD` holds it); a triage task is in the reader form and carries only its `Item:` line. Your agent ID in a writer-form task becomes the verdict's `producer_run`, and the merge gate refuses a change to an open item's `writes:` paths without a covering verdict that names that item.
+- Returns, by class: `WRONGLY_FRAMED` when the acceptance tests only the form of the claim; `ANOTHER_METHOD` when the given method falls in a class above; `NOT_NEEDED` when existing code already meets the need.
+<!-- /package -->
+
+(The SHA-256 above is that of the scratch file. Since the copy tool reads the filed record, it should hash the block as filed.)
+
+**My lines for the executor's package.** Changed only where the block now requires it: the T5 forms and the "in force from" qualifiers.
+
+<!-- executor-lines producer -->
+- A producer writing task is in T5's writer form (from W-C02-24's merge and sync): its `Writer or reader:` line says writer, it has one `Item:` line, and it carries the item's approach block pasted by tool, byte for byte from `git show HEAD:<item file>`; a triage task is in the reader form, with its `Item:` line. It has no method field: the method is the producer's, within the purpose and the acceptance.
+- Ask the producer in triage for need, reuse, method, interfaces, writes, lock-out, cost and split; the test designer pins the interfaces the producer stated.
+- Never write a product path yourself, and never retype agreed text: copy it by tool (L-421).
+- A producer return (`ANOTHER_METHOD`, `WRONGLY_FRAMED`, `NOT_NEEDED`) gets a recorded disposition before the task goes out again.
+- Two items that write the same file are sequenced in their approaches (one writer at a time, PC-24).
+- An over-blocking guard or gate is recovered by a revert by you, with a checker's verdict `item: revert <sha>` (from W-C02-24's merge and sync); never patched in the live tree.
+<!-- /executor-lines -->
+
+Guard denials:
+- Decision log #577, rule G0: my first Bash call, which wrote the probe script through a here-document holding backticks, could not be parsed. I wrote the script with the Write tool instead and ran it as a plain `python3 -I` command, as the denial's "What to do instead" says. The executor records it with `tools/guard_report.py`.
+
+### 9.4 Round 2, researcher `ab24c84d8f77dbbb1`
+
+Package: none delivered (file absent)
+Nonce: none delivered
+Take-up: PROCEED. Both version-1 blocks can be answered as framed. The task names the decision (version 2 of each approach block) and its consumers. Depth chosen: a primary-source check of the sources the blocks cite (Ek A, the library sections in their `library:` lines) and the dated platform pages. I chose it because round 2 asks whether the block reads its sources as they state, and only re-reading them answers that. Constraint (a) is a reading order given for an observation's independence, with its reason, so it binds and I followed it. I read Ek D only from line 69 on; that range holds a copy of the nine trigger questions (lines 81 to 96) and the full texts, so the disciplines did not need lines 49 to 67. My Read of `/home/user/devos/.claude/roles/researcher.md` failed because the file does not exist, so I worked from the role file and CLAUDE.md as they reached my context.
+
+## Disciplines (D1–D9)
+D1: yes: I tested two other ways of framing the problem and they changed two answers: a settings-level deny next to the guard, and what M1's whole-tool Workflow deny does to the repository's `ultracode` setting.
+D2: yes: I treated the block's attributions to sources as claims, my own round-1 notes included, and re-read each source; this found one misattribution.
+D3: yes: I traced each mechanism to what it is meant to secure: the ID check against a package's failure classes being correct, and the Workflow deny against ultracode sessions. Each trace found a missing link.
+D4: yes: I asked of the ID-resolution check "would it turn red if the cited case were wrong?"; it would not, and the block's own `open:` item is such a case.
+D5: yes: I name every WebFetch window I read. "Not stated" covers only those windows, and I give the unread ranges.
+D6: no
+D7: no
+D8: yes: I confirmed HEAD is `b547565d184aadcda8e0684d7acdc96aade4f722` and that `.claude/roles/` is absent. The diff from the blocks' base `d0a2ca9` touches only records (EV-C02-028, CHK-C02-129, ledger, C02 and W-C02-29 files, DURUM.md), none of the code the blocks name.
+D9: yes: I re-read the library sections the blocks cite. One reading changed my answer (the selection-exposure KEY); the others justified the block's use, as listed below.
+
+Read, and what each changed:
+- `/home/user/devos/evidence/C02/EV-C02-028_pra2_m1_triage.md` lines 1–60, 333–551 and 1355–1406 (the task, my round-1 note, part 7, part 8): the object of this answer.
+- `/home/user/devos/plan/Ek_D_Dusunme_Protokolleri.md` from line 69 to the end: the disciplines. I did not read lines 1–68, per constraint (a).
+- `/home/user/devos/plan/Ek_A_Rol_Sozlesmeleri.md` lines 55–93 (3.1–3.5): confirmed the block's "why bad" citation and its use of 3.3. It limited the answer: the departures from 3.2 and 3.3 are still unnamed.
+- `/home/user/devos/.claude/hooks/reread_after_compact.py` (the MESSAGE literal, measured: 221 characters, 221 bytes, written with a trailing newline): led to a preference on the byte measure.
+- `/home/user/devos/.claude/hooks/tool_allowlist.py` lines 137 and 222–236 (grep): T2 denies any isolation field, so `isolation: "remote"` is already covered. Justified the block.
+- `/home/user/devos/.claude/settings.json` lines 3–4 (grep: `effortLevel` xhigh, `ultracode` true): changed the M1 answer (objection 1).
+- `/home/user/devos/plan/decisions/D-035.md` (grep for ultracode and workflow): changed the M1 answer (objection 1).
+- `git log` and `git diff --stat d0a2ca9..b547565`: justified answering against the blocks' base.
+- Library, read-only, HEAD `941f027`:
+  - Selection-exposure KEY under the Information ground, lines 18 and 20: changed W-C02-23 (objection 1).
+  - gstack CORE P5–P7 and F1–F5 (lines 412–476): justified P6/F4 for the enforcement point and F2 for the revert read-back.
+  - spec-kit FINDINGS sections 7 and 11: justified "the draft goes back to its author". The hash is the block's own extension of section 11.
+  - Context study file 01, section 4.1: justified "restates no role-file text".
+  - superpowers CORE sections 3–5: justified the claim limit.
+  - Harness study file 03, section 10: justified the whole-tool deny. "Aliasing" is the block's own example; the source's question about a built-in tool running in a different pipeline fits more directly.
+  - SDLC playbook falsifiers F7, F8 and F12: justified; F7 also adds a nuance (objection 3 of M1).
+  - multi-agent assessment C4 and C5: justified.
+  - EXP-006 S1-03 K4, K5, A4 and A5: justified. K4 is historical and does not re-test current behaviour.
+  - Actors ground KEY lines 45–47 and 55–56: justified claim M's limit.
+  - superpowers U04 F28 and F32: justified the template test and the `producer_run` confirmation.
+- Web, all read 2026-10-20; the pages carry no version, and the latest changelog version per EV-C02-023 is 2.1.304:
+  - https://code.claude.com/docs/en/sub-agents.md, characters 0–100,000 of 109,506.
+  - https://code.claude.com/docs/en/workflows.md, the whole page.
+  - https://code.claude.com/docs/en/hooks.md, characters 0–200,000 of 273,449.
+  - https://code.claude.com/docs/en/agent-sdk/typescript.md, characters 100,000–200,000 this round (0–200,000 in round 1).
+- Deliberately not read:
+  - The files constraint (a) names, and Ek D before line 69.
+  - superpowers U03 and EXP-001 14.3 (read in round 1).
+  - The spec-kit, superpowers and gstack sections the block cites beyond those above.
+  - The ecc and work-environment files and the playbook's F5, F6 and F13.
+  - The unread page ranges above.
+  - The ledger records the packages cite (not re-opened this round).
+
+Relied on:
+- The common floor I work under, by its heading line as it stands in my context: [the common floor's heading as CLAUDE.md substitutes it; withheld at filing] (CLAUDE.md as delivered into my context, not read by me). Observed.
+- Ek A 3.2 item 5 asks for bad examples together with why they are bad (`Ek_A_Rol_Sozlesmeleri.md:69`). Stated.
+- Ek A 3.2 item 1 puts the knowledge map in the package, and its consultation mechanism (a) selects library content automatically (lines 65 and 71). Stated.
+- Ek A 3.3 carries the dead ends and the competence profile (line 77). It also says that asking a role for a contribution is not asking a helper that has no context (line 79). Stated.
+- Selection-exposure KEY line 20: chosen IDs are not content in the required invocation. Line 18: an address is not the representation's identity. Stated; that the resolution check does not answer this is my interpretation.
+- The block's `open:` records `researcher.md:31` citing L-285 for L-286's case (EV-C02-028:1388, part 3:397). Stated.
+- `.claude/settings.json:4` sets `"ultracode": true`. Observed.
+- With ultracode on, Claude plans a workflow for each substantive task. `disableWorkflows` also makes ultracode unavailable. Source: workflows.md, "Let Claude decide with ultracode" and "Turn workflows off". Stated [V].
+- Hook strings are capped at 10,000 characters, each string measured on its own even when several hooks run for one event, and plain stdout measured whole (hooks.md, characters 0–100,000, JSON output cap). Stated [V].
+- PreToolUse `tool_input` for Agent: `prompt`, `description`, `subagent_type`, `model`. The matcher list names `Agent` and `Workflow`; `Task` is not named (hooks.md, PreToolUse). Stated [V].
+- SubagentStart fires on an Agent-tool spawn, on a resume, and for in-process teammates; workflow agents are not named (hooks.md). Stated [V].
+- AgentInput has `isolation?: "worktree" | "remote"`, and `Task` is an accepted alias (typescript.md, "Agent tool"). Stated [V].
+- Built-ins in sub-agents.md, "Built-in subagents":
+  - `claude` is a catch-all with every tool available to subagents. `statusline-setup` (Sonnet) and `claude-code-guide` (Haiku) are listed with their models; their tools are not stated.
+  - Only Explore and Plan start without CLAUDE.md; the other built-ins load it.
+  - An untyped call fails with "subagent_type is required" when no general-purpose agent is available to fall back on.
+  - `permissions.deny` with `Agent(<name>)` works for built-in and custom subagents.
+  - All stated [V].
+- An `agentType` option, a workflow agent's default type, and whether workflow agents pass PreToolUse or SubagentStart are not stated in the windows read. Part 7 records `agentType` as [V-tool-text].
+- My revised package measures 6,687 bytes UTF-8, 30 lines, no non-ASCII character, no line starting `## `, longest line 646 characters. Measured with `python3 -I`; observed.
+
+Unsure:
+- Whether hooks.md characters 200,000–273,449, typescript.md beyond 200,000 or sub-agents.md beyond 100,000 say anything about workflow agents and hooks. Reading those ranges would settle it.
+- Whether the working session itself runs with ultracode on. Batu set high effort, and ultracode is a separate setting. The session's own `/effort` display, or the opening check's record, would settle it.
+- I did not re-open L-439, L-434, L-422, L-298 or N-310 this round to compare them with my package's statements of them. Under my own F7 they should be compared, by the binding checker or by me in a later run.
+- Whether this run counts for point 10. My task text contains "take-up" and "package" in lower case, so it depends on how the counting rule matches the labels. That is the executor's reading.
+
+For: the executor, who integrates this into version 2 of each block. Then the test designer: W-C02-23 objection 1 for the condition; M1 objection 2 for the premises' labels. Then the producer, for the package copy, and each item's binding checker.
+
+Received from / Returned to: none. Noticed outside my scope, reported here and not done:
+- The ultracode side effect of M1's Workflow deny: it touches a decision of Batu's (D-035), so the executor owns it; see M1 objection 1.
+- The counting-rule case question: the executor owns it.
+
+Product:
+
+**Question and the decision it serves.** Does version 1 of the W-C02-23 and W-C02-24 approach blocks (EV-C02-028 part 8) read its sources as they state? Do M1's platform premises hold as the documentation read on 2026-10-20 states them? This serves the executor's version 2 of each block, at `main` `b547565` and Claude Code 2.1.304. Also my package, revised where the block now requires it.
+
+**W-C02-23 (PR-A2), (1) answer to version 1**
+
+1. DEFECT, against `library:` ("the case-ID resolution check (an ID alone is not its content: the Information ground's selection-exposure KEY)") and agreed (4) and (7).
+   - The KEY states that chosen IDs are not content in the required invocation (line 20), and that an address is not the representation's identity (line 18).
+   - Agreed (4)'s check shows only that each cited EV, L, N or CHK ID exists at the revision. That answers a dangling ID, not the KEY's distinction. A wrong ID that exists passes it.
+   - The block's own `open:` item is such a case: `researcher.md:31` cites L-285, which exists, for L-286's case.
+   - Agreed (7) gives no check that a package's stated case matches its cited record, although the failure classes are the packages' main content.
+   - The observation that would show it fixed:
+     - Version 2 words the tool's claim as "every cited ID resolves".
+     - It cites that check to its real purpose rather than to the KEY.
+     - Agreed (7) has the binding checker open each cited case record, or a stated sample with its reason, compare it with the package's statement of it, and list the mismatches.
+     - The condition does not count the tool as catching a wrong-but-existing ID.
+2. PREFERENCE, against agreed (3) and (7) (design-knowing reading "against Ek A 3.2, 3.3 and 3.5"). Repeats my round-1 W23-9, which has no disposition in version 1. The departures from Ek A are still unnamed:
+   - The knowledge map stays in the role file (3.2 item 1).
+   - The executor's library line replaces 3.2 (a)'s automatic selection.
+   - 3.3's dead ends and competence profile are not carried.
+   A checker reading against Ek A will find these as omissions at verdict time. Naming them as adaptations, with reasons, in the block or the PC addendum avoids a late finding.
+3. PREFERENCE, against agreed (4) (`LIMIT - len(MESSAGE)`). In Python, `len()` on a string counts characters, not bytes, and the hook writes MESSAGE plus a newline. Today both are 221 because the text is ASCII. Write the measure as UTF-8 bytes plus one, so that a later non-ASCII character in MESSAGE cannot make the limit loose.
+4. PROCEED on disposition (2).
+   - hooks.md [V, 2026-10-20] measures each hook string on its own even when several hooks run for one event, and a hook's plain stdout as a whole.
+   - So the subtraction is needed only if M2 emits the package and the compact message in one string, and harmless otherwise, as the block says.
+5. PROCEED on the other attributions. Each reads its source as the source states; where the block's use is its own extension, I say so:
+   - Ek A 3.2 item 5 for "why bad".
+   - gstack P6 and F4 for the enforcement point: P6 asks whether verification really ran; F4 says a test existing is not the oracle being executed.
+   - spec-kit 7 for returning a draft to its author. spec-kit 11 gives traceability back to source intent; the SHA-256 pin is the block's own extension, an interpretation.
+   - The context study's 4.1 for no restatement: too much context brings authority ambiguity and stale contamination.
+   - EXP-001 14.3 for keeping work state out.
+   - superpowers CORE 5 for "present, not delivered or used".
+6. PROCEED on disposition (1). It answers my round-1 W23-3.
+
+**W-C02-23, (2) my package, revised where the block requires it.** Changes from my round-1 draft:
+- The top states the binding order as agreed (3) words it.
+- The restated role-file steps are removed (round-1 M1 Question, M2's library order, M5 Disputes, M8 Stop, the bans in Tools, and F2's and F3's restated rules); each remaining method names the role-file section it adds to.
+- F6's placeholder "EV-C02-0nn" becomes EV-C02-028, so that agreed (4)'s resolution check passes.
+- A new F7 and M5 come from this round's finding.
+- The why-good and why-bad lines are kept. 6,687 bytes UTF-8, within 9,300; no line starts with `## `, the first line is not `---`, and no line starts with `name:`.
+
+<!-- package researcher -->
+Researcher package, installation (SB-COR 2.3; drafted 2026-10-20 by the researcher at main d0a2ca9, revised in round 2 at main b547565; teammates answer)
+Status: .claude/agents/researcher.md and CLAUDE.md bind. This package informs and never overrides them; a difference between them and this file is a finding for the executor, reported under "Received from / Returned to". It restates none of the role file: a step that is the role file is named by its section, and only what the role file does not say is written here.
+
+[1] Methods (each adds to the role-file section it names)
+M1 Depth (role file, take-up questions). The four depths are a ladder: go one rung deeper only when the shallower one cannot settle the question or test a cited premise, and say on the Take-up line which rung and why. A task or plan that rests on a library finding as a premise gets at least the library route, to check the finding says what is claimed.
+M2 Route (Procedure step 2). When a study looks relevant but the catalogue does not list it for your term, search the study folders by need with Grep before concluding. A term search that finds nothing is reported as a search result, with its terms and folders, not as absence.
+M3 Labels (Procedure step 3). A platform fact from a page is [V] with page, heading, reading date and the latest version the changelog shows; [O] only from this installation observation records; [V-tool-text] for a tool description as a session presents it. A page states; it does not show behaviour here. Where a block or plan states a platform premise the pages do not state, say "not stated", name the windows read, and say whether the conclusion depends on it.
+M4 Counter-evidence (Procedure step 3). Look in a study falsifier, limits or closure-audit file, its OBSERVATION and INFERENCE labels, and our own records (ledger, EV, CHK). Name where you looked when none turned up.
+M5 Citation fidelity. When a decision record cites a source for a design choice, check two things apart: that the source says it, and that the choice answers what the source says. A source cited for a check that does not answer its distinction is a finding (EV-C02-028, round 2: an ID-resolution check cited to a distinction that a resolving but wrong ID still breaks).
+M6 Long pages. WebFetch answers in 100,000-character windows through a small model. Read on with offset until the section is covered; for a load-bearing fact ask for verbatim quotes with headings. "Not stated" covers only the windows read; name them.
+M7 Source bans and fixed routes (CHK-C02-127 R1-7; the role-file take-up rule binds, this is how to apply it). "Answered at the top" means on the Take-up line, before any other product text. A ban given without a reason: read the source if the question needs it, and say so there. A reading order given for an independence reason: follow it; if the question cannot be answered under it, return NEEDS_CONTEXT (the source and its owner) or WRONGLY_FRAMED. A limit resting on a guard rule, or on the purpose, accounts, data or money of Batu: state the limit it puts on the answer. A route fixed without a reason: choose your own and give the reason.
+M8 Public safety (role file, Bans). The leak check catches verbatim runs of 8 or more words and misses paraphrase (working order section 10): write the point, not the sentence.
+
+[2] Known failure classes, each with a recorded case
+F1 The run ends at the turn limit with no hand-over; the work is redone. L-286: researcher a511494bc2dc0e4f3 (W-C02-03) stopped at 150 turns with 112 saved page copies and no report; two fresh researchers split its questions. Holds while: the 150-turn default stands and a stopped run cannot be resumed (SendMessage denied).
+F2 The hand-over form is broken; the report is not taken and the task reruns. L-434: researcher abf84192f0fb234e8 put a sentence between the disciplines heading and D1 and was rerun as a49c44214b5abb3f3; in the same entry a checker quoted the heading before its own block. Holds while: tools/subagent_audit.py reads the first such heading.
+F3 The library is not consulted; D9 is answered "no" without a reason; decisions rest on training knowledge. N-310 (origin L-418): about 240 log entries; Batu found it, not a check. L-439 records an opening with the library unreadable, answered as uncertain.
+F4 A plan states a documented fact more strongly than the page. EV-C02-023 section 3 items 6, 15, 20 (the internal-agent matcher; the built-in type claude documented with every tool; the sibling roster given as names). Against it: re-read the page, cite its heading and reading date, name the deviation.
+F5 Platform facts carried across versions unchecked. SB-COR [V] rows were read at 2.1.303 for a session last recorded at 2.1.296; EV-C02-023 section 3 tied them to 2.1.304. Against it: version and reading date on every [V].
+F6 A window of a page taken for the page. EV-C02-028 part 3: the first WebFetch of the hooks page covered 100,000 of 273,449 characters and missed the Agent input table, which the next window held. Against it: M6.
+F7 A cited ID resolves but names the wrong case. EV-C02-028 part 3: a role-file line cites L-285 for the turn-limit case, which is L-286; an existence check passes it. Against it: open the cited record and compare its content with the claim (M5).
+
+[3] Examples from this installation
+Good: EV-C02-023 section 3 (researcher ad701657327acc475, 2026-10-20). It read the changelog for 2.1.296 to 2.1.304 from two sources, checked each plan [V] row against page lines, named three deviations, defined "unchanged" narrowly (the text today matches, not a diff against the old text) and listed what it did not read. Why good: the consumer could rest each row on a line and knew where the evidence stopped.
+Bad: L-286, researcher a511494bc2dc0e4f3. Why bad: it made no interruption hand-over, so the scope read, the candidates and the return point were lost with the run; the cost was two fresh runs and a re-fetch of the pages.
+
+[4] Tools and limits
+Tools: Read, Grep, Glob, Bash for reading, WebFetch, WebSearch (the role-file front matter decides; this list informs). SendMessage is denied by guard rule T1 until W-C02-27. Library clone: /home/user/agentic-os-search, HEAD 941f027 when last read.
+Guard denials on record: paths through shell variables (B4; L-285 #14452): use literal paths. Here-documents (G0; L-422 #41493): use plain commands or the Read tool. gh api (B7; L-298 #20040, researcher a2f1dc82e3c9be9ca): use WebFetch or the clone. Record each under Guard denials.
+WebFetch: a small model answers over the window; its answer is a derived view (D5). Platform pages carry no date except the changelog: date your reading.
+<!-- /package -->
+
+**W-C02-23, my lines for the executor's package (unchanged from round 1)**
+
+<!-- executor-lines researcher -->
+- E1. Knowledge first (D-039): before a technical decision in a role's map area, ask the researcher, naming the decision and its consumer. The task's library line gives map paths. Never ban a source except as a reading order for independence, with its reason (SB-COR 2.4).
+- E2. When roles read a source differently, the researcher settles what it states by re-reading it with path and line (SB-COR 2.5 (c)). Do not settle it by majority or by your own reading.
+- E3. Every [V] fact carries page, heading or line, reading date and version. A changed version at opening triggers a version tie before rows are relied on (SB-COR 1.2; EV-C02-023 section 3).
+- E4. "Could not consult the library" is a state of its own, with the held steps named (working order section 3). Your own cases: N-310 (the library unused from C01 on, about 240 entries) and L-427 line 1494 (L-285's refused `add_repo` was not taken to Batu).
+- E5. A researcher's "not stated" covers only what it read. Never turn it into "the platform does not do X".
+- E6. Library text never goes into records. Cite path and section; reports filed verbatim pass the leak check, which misses paraphrase.
+- E7. A returned task is not sent again unchanged; record a disposition first (superpowers U03 F22: a blocked or context-short return calls for a changed response).
+- E8. A researcher stopped at its turn limit cannot be resumed. Give a fresh one its saved scope as a hint, never as evidence (L-286 precedent).
+<!-- /executor-lines -->
+
+**W-C02-24 (M1), (1) answer to version 1**
+
+1. SCOPE_CONFLICT, against agreed (2) and disposition (2) ("given up: workflows as a helper of the working session").
+   - `.claude/settings.json:4` sets `"ultracode": true` for every session on this repository that makes no explicit choice. Batu's rule in D-008 and D-035 names ultracode for the sessions the builder opens.
+   - workflows.md [V, 2026-10-20] states that with ultracode on, Claude plans a workflow for each substantive task.
+   - After M1a, each such plan meets a T3 denial. That is a liveness cost (gstack P7), and it empties the workflow part of the setting Batu's rule names. The disposition names neither.
+   - The page also states that `disableWorkflows` would remove ultracode as well, so the settings route is no alternative without the same question.
+   - The observation that would show it settled:
+     - Disposition (2) names the effect on the `ultracode` setting and on D-035.
+     - It records whose call it is: the executor's reading that his rule is about effort and quality and workflows are a means, told to him in one line as a departure from a means (D-033 proposal); or the question brought to him in the Appendix E form.
+     - T3's denial reason, for an ultracode session's Workflow call, names the Agent route.
+2. PREFERENCE, against agreed (2)'s reason "a workflow agent starts with no Agent PreToolUse that T5 could read".
+   - Not stated in workflows.md (whole), hooks.md (characters 0–200,000) or typescript.md (characters 100,000–200,000). Part 7 also records it as not stated.
+   - Label it as an unobserved premise. The conclusion holds either way: without a prompt T5 can read, a role type cannot pass T5. So it does not block.
+3. PREFERENCE, an alternative weighed. sub-agents.md [V] states that `permissions.deny` with `Agent(<name>)` works for built-in and custom subagents, and workflows.md [V] states that deny rules apply to the Workflow launch.
+   - A settings-level deny of `Workflow` and of the four built-in names would be a second boundary that does not depend on the hook running. This is playbook F7's question whether every path to the effect crosses a control boundary.
+   - Cost: `.claude/settings.json` is a floor path and is not in `writes:`. Optional, for the executor and the producer.
+4. PROCEED on agreed (1) and disposition (3).
+   - Built-in types (sub-agents.md, "Built-in subagents", [V] 2026-10-20):
+     - `claude`: a catch-all with every tool available to subagents.
+     - `statusline-setup` (Sonnet, used for `/statusline`) and `claude-code-guide` (Haiku, used for questions about Claude Code): built-ins; their tools are not stated.
+     - Only Explore and Plan start without CLAUDE.md; the other built-ins load it. So the reason for excluding the last two is Ek A 3.3's (a helper with no role package; the block's reason, correctly read), not "does not load CLAUDE.md". The PC addendum should not state the latter.
+   - An untyped call fails with "subagent_type is required" when there is no general-purpose agent to fall back on; the fallback itself is not described. T4's deny of an untyped call holds regardless.
+   - AgentInput now has `isolation: "worktree" | "remote"` [V]. T2 denies any isolation field (`tool_allowlist.py:224–226`), so "remote" is covered.
+5. PROCEED on agreed (3), T5's input.
+   - hooks.md, PreToolUse, Agent [V]: `tool_input` holds `prompt`, `description`, `subagent_type`, `model`. T5's reliance on `prompt` and `subagent_type` holds.
+   - typescript.md, "Agent tool" [V]: `Task` is an accepted alias. hooks.md does not name Task, and the guard handles both names (round 1, observed).
+6. PROCEED on the library attributions.
+   - Playbook F7: the source's test asks whether every equivalent path crosses a boundary the constrained actor cannot write. The block's "same decision" is a fair reading; the guard sits under rule F1.
+   - Playbook F8: transitive authority; SendMessage is denied under T1 now.
+   - Playbook F12 (rollback is not always an inverse) and gstack F2 (a revert is not a proven restoration): justify agreed (8)'s exact inverse plus read-back.
+   - Harness study 10: justifies the whole-tool deny.
+   - multi-agent C4, S1-03 K4 and A5, the Actors KEY (lines 45–47, 55–56), and superpowers U04 F28 and F32: each as stated.
+   - Disposition (7) answers my round-1 W24-6.
+
+**W-C02-24, (2) the platform premises, as the dated documentation states them** (all read 2026-10-20; latest version 2.1.304 per EV-C02-023)
+- [V] hooks.md, PreToolUse, Agent: `prompt`, `description`, `subagent_type`, `model`.
+- [V] hooks.md, PreToolUse matcher: covers any tool name except EndConversation, and names `Agent` and `Workflow`; `Task` is not named.
+- [V] hooks.md, "Hook locations": settings hooks run inside subagents, and tool events carry `agent_id` and `agent_type`.
+- [V] hooks.md, SubagentStart: fires on an Agent-tool spawn, a resume, and in-process teammates; for custom agents the matcher is the front-matter `name`. Workflow agents: not stated.
+- [V] typescript.md, "Agent tool": `Task` alias; `effort`, `run_in_background`, `name`, `isolation: "worktree" | "remote"`.
+- [V] typescript.md, "Workflow tool": `script`, `name`, `scriptPath`, `args`, `resumeFromRunId`, `title` (ignored), `description` (ignored). `agent()` is named only, with no signature.
+- `agentType` and the default type of a workflow agent: not stated in workflows.md (whole), typescript.md (characters 100,000–200,000) or sub-agents.md (characters 0–100,000). workflows.md implies that workflow agents have a type, since "agent type" is one of the attributes for prompt-cache sharing (interpretation). Part 7's `agentType` stays [V-tool-text].
+- [V] workflows.md: workflow agents' tool calls receive the same permission checks and sandboxing as other tool calls in the session. Whether PreToolUse hooks fire for them: not stated.
+- [V] sub-agents.md, built-ins: as in objection 4 above.
+- [V] workflows.md, "Turn workflows off": `disableWorkflows` or `CLAUDE_CODE_DISABLE_WORKFLOWS=1` also makes ultracode unavailable.
+
+**Counter-evidence and alternatives.**
+- For W-C02-23 objection 1, the strongest counter: the binding checker might sample cited IDs anyway. Agreed (7) does not say so, and the block's library line claims the KEY as the reason for the existence check.
+- For M1 objection 1: Batu's words may concern effort alone, which is D-035's own reading of them (its premises). The objection only asks that this reading be recorded with the departure, not that workflows stay.
+
+**For the decision.**
+- W-C02-23 can be agreed once objection 1 is answered in version 2, by a reworded claim plus the binding checker's content comparison, or a disposition. Objections 2 and 3 are non-blocking.
+- W-C02-24 has no defect or missing evidence from my field.
+  - Objection 1 is a scope conflict touching D-035, for the executor to dispose of or bring to Batu.
+  - Objections 2 and 3 are preferences.
+
+Guard denials: none
+
+### 9.5 Round 2, prober `ae4d875f0b3826b32`
+
+Package: none delivered (file absent)
+Nonce: none delivered
+Take-up: PROCEED. The task asks whether the platform facts the two blocks rest on hold, and whether the observations they rely on are placed right. I could settle this by reading this repository, this session's guard records and my own context. The one live fact I needed came up naturally during the run: my own first Read of the package path, before any other step. I made no probe and planted no negative case.
+
+## Disciplines (D1–D9)
+D1: yes: I tested whether W-C02-24's decided fallback covers every outcome of the prompt observation (absent, changed inside, cut short, wrapped), and found that the "absent" branch has no fallback.
+D2: uncertain: version 1 adopts several of my own round-1 points (the hash fallback, workflow producers staying denied), so I re-tested them instead of accepting them as mine, and found two gaps in them.
+D3: yes: I followed the T5 observation from end to end (sent prompt, hook input, T5's log, the comparison) and found that the comparison has no source it can trust and no tool to produce it.
+D4: yes: for each observation I asked whether it can turn red when the claim is false and whether its trigger can happen at all; the row-1.2 trigger cannot happen under the block's own deny.
+D5: yes: "the task as filed" is a redacted copy of the prompt that was sent, so I checked `subagent_audit.py` (it has no prompt-hash output) and named the transcript's tool_use input as the comparator.
+D6: no
+D7: uncertain: the `open:` line for row 1.2 would tell a new session that an observation is pending which cannot occur, so I asked for it to be rewritten.
+D8: yes: I checked HEAD `b547565d184a…` with a clean tree, no `.claude/roles/` directory, and no SubagentStart or SubagentStop hook in `.claude/settings.json`.
+D9: yes: I read gstack CORE (P5–P7, F2–F4) and ecc METHOD-CASE (cases A and B); they supported the comparator defect (check against what was actually sent, and preserve the original bytes) and the unreachable-trigger defect (a check that is registered is not a check that runs, F4).
+
+Read, and what each changed:
+- `/home/user/devos/evidence/C02/EV-C02-028_pra2_m1_triage.md` lines 1359–1406 (parts 7 and 8, the two blocks): these set every answer. Lines 552–770 (my round-1 note): the base for the package revision. I deliberately did not read parts 2, 3, 5 and 6 (the other roles' notes): the blocks state what they decided, and those notes are the other roles' fields.
+- `/home/user/devos/plan/Ek_D_Dusunme_Protokolleri.md` from line 69 only (lines 69–128 and 151–339): method.
+- `/home/user/devos/.claude/hooks/reread_after_compact.py` (whole): MESSAGE is a plain ASCII constant, 222 bytes as written with its trailing newline. This shaped W-C02-23 preference P1.
+- `/home/user/devos/.claude/settings.json` (grep of hook events): only PreToolUse, PermissionRequest, PostToolUse and SessionStart (matcher `compact`) are registered. This shaped W-C02-24 D3.
+- `/home/user/devos/.claude/hooks/tool_allowlist.py` lines 2160–2239, plus a grep for `prompt`: tools are checked against an allow list (T1); Agent and Task are treated alike; no rule reads `prompt`; the log summary drops it (line 485). This justified W-C02-24 item 1 and limited D1.
+- `/home/user/devos/plan/SB-COR_Correction_Plan.md` (grep hits at lines 21, 85, 136, 145–146, 153, 155, 166): what M2 adds (3.3), the 3.7 fallbacks, and the 1.2 rule.
+- `/home/user/devos/evidence/C02/EV-C02-023_platform_capability.md` lines 75 and 79 (by grep): the cap applies to the `additionalContext` string.
+- `/home/user/devos/tools/subagent_audit.py` lines 1–40, plus a grep: no subcommand prints a hash of a prompt. This shaped D1.
+- `/home/user/devos/tools/guard_report.py` lines 1–30: it is a reader.
+- `plan/ledger/*-log.md` (heading grep): L-118, L-313, L-322, L-323, L-430, L-434 and L-439 resolve. `evidence/C02/checks/CHK-C02-127.md` exists.
+- This session's guard log, records #497 and #578 only (grep).
+- Library at `941f027` (read-only): `research/studies/gstack/CORE.md` sections 10 (P5–P7) and 11 (F2–F4); `research/studies/ecc/METHOD-CASE.md` sections 3–4; the work-environment vertical's file list only (its KEY was read in full in round 1 and not re-read; nothing in this round turned on environment parity beyond what round 1 settled).
+- Not read: the files constraint (a) names, working order sections 4, 9 and 10, `tools/merge_gate.py`, `tools/records.py`, `tools/test_tool_allowlist.sh` (the forms and flip lists are not my field this round). The W-C02-23 and W-C02-24 item files are not on `main`.
+
+Relied on:
+- The common floor I work under, by its heading line as it stands in my context: [the common floor's heading as CLAUDE.md substitutes it; withheld at filing].
+- A Read of the absent `/home/user/devos/.claude/roles/prober.md` passes PreToolUse and is logged with the caller's `agent_id` (`ae4d875f0b3826b32`), decision allow, rule T1. The tool returns "File does not exist". Observed: guard #497, 09:52:30Z.
+- No SubagentStart or SubagentStop hook is registered at `b547565`. Observed: `.claude/settings.json` lines 94, 107, 120, 131.
+- The guard treats tools not on its list as denied (T1); Agent and Task share one branch; a call with no `subagent_type` defaults to `general-purpose`. Observed: `tool_allowlist.py:2193-2202`.
+- No guard rule reads `prompt`, and the log summary drops it. Observed: `tool_allowlist.py:485`, plus a grep with no other hit. So whether PreToolUse receives `prompt` is still only documented (EV-C02-023 2.12).
+- The 10,000-character cap counts the `additionalContext`, `systemMessage`, `initialUserMessage` or plain stdout string. Stated [V]: EV-C02-023 lines 75 and 79.
+- M2 adds a header, the agent-ID line and the nonce as the last line. Stated: SB-COR 3.3, line 153.
+- The compact message is 222 bytes as emitted, all ASCII. Observed: `reread_after_compact.py:11-12`, measured with `wc -c` and a non-ASCII grep.
+- `subagent_audit.py` has the subcommands `last`, `calls`, `audit` and `disciplines`, and none of them prints a prompt hash. Observed: lines 463–473.
+- My revised package is 5,661 bytes in UTF-8. Measured: 5,489 bytes with a 12-byte placeholder line, plus the binding line at 184 bytes, measured with same-length stand-ins for its two file names (constraint (a)). No `## ` line; no line of 2,000 characters or more (the longest is about 650); valid UTF-8. Observed, `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/pkg/r2.md`.
+- Claude Code 2.1.304 as the task states it (not observed by me); model `claude-opus-5-5` (my system context).
+
+Unsure:
+- Whether `prompt` reaches PreToolUse whole. This is still only documented; it is settled at the first T5-scoped call (W-C02-24 D1).
+- Whether Claude Code 2.1.304 auto-loads `.claude/rules/*.md` as memory. This is my unverified recollection [I]; the researcher can settle it from the memory documentation page (see "Received from").
+- What length M2's nonce line will have. W-C02-25's interface fixes it; RESERVE 200 holds if that line is at most about 100 bytes (W-C02-23 item 2).
+
+For: the executor, who integrates this into version 2 of both blocks; then the test designer (the outcome tables and the comparator in each condition), the producers, and each item's binding checker.
+
+Received from / Returned to: none received or returned. Things I noticed outside my scope, reported here and not acted on:
+- (1) To the executor, owner of role-file wording through a PC-53 addendum: role-file step 2 ("the versions you can observe (Claude Code, model)") drew the B7 denial a third time. It is my guard #498 this run, in a task that stated the version. The package's M2 and its bad example answer it once a package is delivered. Whether step 2 should read "as stated by its source" is the executor's call.
+- (2) To the researcher, through the executor: check whether `.claude/rules/` is auto-loaded in 2.1.304. If it is, a package misplaced there (one letter from `.claude/roles/`) would reach every agent as instructions, and `check_role_packages.py` could assert that the folder is absent.
+- (3) To the executor: on point 10, this run's first tool call was the package Read (#497). The counting is the executor's to do, not mine.
+
+Product:
+
+**Test and claim, environment.** This is a team-triage answer, not a test run. Its observations are passive: my own context, this session's guard records, and repository files. Time 2026-10-20, 09:52–10:05 UTC. `main` is `b547565d184aadcda8e0684d7acdc96aade4f722`, with a clean tree. Claude Code 2.1.304 as stated by the task. Model `claude-opus-5-5`. Guard `mode: default`, `effort: high` (#497). My `agent_id` is `ae4d875f0b3826b32`.
+
+**Steps.**
+- Read `/home/user/devos/.claude/roles/prober.md`: error "File does not exist"; guard #497 allow T1. This matches the role file's state before the merge.
+- Bash, a compound command that included the version flag of the CLI: denied, B7, #498 (see Guard denials).
+- Bash `git rev-parse HEAD; git status --short; date -u; …`: exit 0; output `b547565d…`, nothing for status, `Tue Oct 20 09:52:36 UTC 2026`.
+- `grep -n "roles/prober" /tmp/devos-guard/session_01JDJ8fJQmrKpXfiRh1yEoxv.jsonl | cut -c1-600`: exit 0; records #497 and #578.
+- The settings hook-event grep and the MESSAGE measurement: exit 1, which comes only from the last `grep -c` finding 0 non-ASCII lines. Output: the four events, and `222`.
+- Package build and measurement in scratch (sed on lines 652–683 of EV-C02-028): exit 0; `5489 r2.md`, `184`, 0 lines starting `## `, 0 long lines, `utf8ok`.
+
+### W-C02-23 (PR-A2): answer to approach version 1
+
+Answer: PROCEED. From my field there is no defect and no missing evidence. These points do not block:
+
+1. PROCEED, "a package file never registers as an agent" (agreed (4), the front-matter and `name:` checks). Agent files are found by a recursive scan of `.claude/agents/` only ([V] SA:178). The guard's T4 lists only `.claude/agents/*.md`, not recursively ([O] code). The static check makes the platform's scan behaviour moot even in the worst case. No live observation is needed.
+2. PROCEED, RESERVE 200 (agreed (4)). The arithmetic: the longest header, `DevOS role package: test-designer@<12 hex>` plus a newline, is 47 bytes. `your agent ID: <17 chars>` plus a newline is 33. That leaves about 120 bytes for the nonce line and separators. The cap counts the `additionalContext` string, not the escaped JSON ([V] EV-C02-023 lines 75 and 79). UTF-8 bytes are never fewer than UTF-16 units. So 200 holds if W-C02-25 fixes the nonce line at about 100 bytes or less and adds no other text. The block already puts that in W-C02-25's condition.
+3. PREFERENCE, the executor's limit beside the compact message (agreed (4), disposition (2)). The check should subtract `len(MESSAGE.encode("utf-8")) + 1`, because the hook writes `MESSAGE + "\n"`. It should read MESSAGE without executing the hook (an `ast` literal, given `--rev` reads through `git show`). Today MESSAGE is ASCII and 222 bytes as emitted, so the limit is 9,300 − 222 = 9,078. This changes nothing at this head; it guards a future non-ASCII edit, where `len()` would count short.
+4. PREFERENCE, case-ID resolution (agreed (4), "EV and CHK as files under `evidence/`"). This must search recursively. CHK files live in `evidence/C02/checks/`, so a check that looks only directly under `evidence/` would fail every package. A fixture citing `CHK-C02-127` shows it.
+5. PROCEED, "a role reads its package before M2". Observed this run: the role file's instruction is in my system prompt. The Read of the absent file returns "File does not exist" and is logged with my `agent_id` (#497), which is the access point 10 counts. After the merge, a role reads the file only once the executor has synced. The gap point 10 has after the merge (header absent, file present, line `none delivered`) is handled by disposition (1).
+
+Role-specific ask: my package, revised only where the block now requires it, and measured at 5,661 bytes. The changes:
+- The binding line is added.
+- No `## ` lines; headings are bold lines.
+- Restated role-file text is removed: in M3 the "keep apart" sentence; in M4 the D-017 and D-020 text; in M6 the environment-failure sentence; in Tools the writes and guard rules.
+- M10, the hash on the Package line, is removed: the block deliberately does not build it, and a package that changes a role-file output form would be a second authority.
+- The dangling "cite its L entry once filed" now cites EV-C02-028.
+- The session IDs are removed, because the leak check applies to public text.
+- The bad example now records the third recurrence, and its "Bad because" line is kept.
+
+<!-- package prober -->
+# Prober package (Sınayıcı)
+ID: prober package · draft round 2 of W-C02-23 · base main b547565 · cites only this installation's records
+Binding: `.claude/agents/prober.md` and `CLAUDE.md` bind; this package informs and never overrides them. A difference between them is a finding for the executor, not a choice for you.
+
+**Methods**
+M1. Steps 0 and 1 read together (CHK-C02-127 R1-8). For a test someone designed, a missing advance criterion goes back as NEEDS_CONTEXT to the owner of the task. For a question you settle yourself, your step-0 text is the criterion "written in advance" that step 1 asks for: put it in your hand-over above the observation output, and never edit it after.
+M2. Parity before any row: date (UTC), HEAD SHA, the session ID (the `session` field of this session's guard records), the guard's `mode` and `effort` fields, the cwd, the sources attached, and the Claude Code version as the executor's `get_session` reading or the newest parity header gives it (EV-C02-023 section 1; L-439), labelled as stated by that source. Never run the `claude` command line for a version (B7). A row made in another session, mode or version does not count until re-observed (EV-C02-023 section 1).
+M3. Label every fact: [V] page and read date (pages are the researcher's; you hold no WebFetch); [O] your own command output, file or guard record number; [R] a record ID; [I] inference.
+M4. A synthetic negative case is JSON piped into the hook script with the `python3` of the container and `DEVOS_GUARD_LOG_DIR` set to a scratch directory, never the live log. A red observation selects the fallback written before it; no retry loop.
+M5. Pick the observation that covers most: for a size limit, the largest real case; for a filter, one case on each side of it; for "it is not loaded", a control that is loaded.
+M6. A run that never reached its step is "could not check", not a fail, and a green job is not a run of the check (L-313).
+M7. Liveness: every command gets a timeout; no background read is left running at your hand-over (EV-C02-023 section 3, filing note).
+M8. Guarded locations (the guard's log, `~/.claude`, the live `.claude/` and `.git/`): name them only with a reader (`grep`, `sed -n`, `cat`) or a `tools/` script (`tools/subagent_audit.py calls|last|disciplines <id>`), never an interpreter one-liner (B5). The guard's log summary drops `prompt`, `message`, `script` and `content`: a key missing there is not missing from the hook input.
+M9. Scratch work in a fresh clone under your scratch directory, literal paths, no shell variables for paths (B4); compare with `diff -u`; never copy into the live tree (B5).
+
+**Known failure classes**
+F1. A version read through the `claude` command line, denied by B7: L-322 (guard #27950, the T-W03-10 prober); again in EV-C02-028, round 1 (guard #158) and round 2 (guard #498, a run whose task stated the version). Use M2.
+F2. A shell copy or interpreter naming a guarded location, denied by B5: L-434 (guard #574, a round-1 prober's `cp` of a role file from a scratch clone); EV-C02-028 round 1 (guard #224, a python one-liner reading the guard log). Use M8, M9.
+F3. Malformed shell in one's own check, denied by G0: L-323 (guard #28032, an unbalanced backtick). Short, quoted commands.
+F4. A documented behaviour carried as observed: SB-COR premises P-2 and P-3 stay unobserved until their first use; EV-C02-023 R-01 "Not shown" (W-C02-02 item 4: a role file added mid-session was not offered at once). It stays [V] until you saw it.
+F5. A row from another session or mode counted as current: EV-C02-023's header names another session than the one L-439 opened; the mode the platform reports for one choice is not stable (EV-C02-023 section 1; L-118 CR-1).
+F6. An environment change read as a result: L-430 (after a worker restart the guard was not live); L-439's detection rule (the last record number moves past the caller's calls, the newest `cwd` is the checkout). Check the guard is live before a row that rests on hooks.
+F7. The report filed is not the report given: EV-C02-023 R-03 (`subagent_audit.py last` returned a later short message, not the report). Say which source of another run's report you read.
+
+**Good example**
+L-313 (prober aec4059aa1d8434f3, T-W03-05 and T-W03-08): it read only the saved raw outputs and the tests; it labelled attempt (a) observed and (b) to (d) inferred; it called the unread protection message and the break "could not check", not pass or fail; it named twelve gaps, five answered afterwards from GitHub and the connection. Good because each claim stood at the level its evidence reached, and each gap went to whoever could close it.
+
+**Bad example**
+L-322 (guard #27950) and EV-C02-028 (guard #158, round 1; #498, round 2): "record the versions you can observe" was met by running the `claude` command line's version flag, which B7 denies; the same denial recurred three times, the third in a run whose task stated the version, because no package was delivered. Bad because a known denial was repeated while the version was on record in the executor's `get_session` reading. The fix is not to drop the version: write it "as stated by <source>", not as observed.
+
+**Tools and limits**
+Tools: Read, Grep, Glob, Bash (the role file's `tools:` line). Not held: WebFetch and WebSearch (the researcher's), ToolSearch (a schema load is the executor's), Agent, SendMessage (inert until M3b). Never: the `claude`, `gh`, `gcloud`, `gsutil` or `bq` command lines (B7); `ListAgents`. Not observable, not to be tried (SB-COR 1.2; D-017; D-020): the `isolatePeerMachines` prompt, Remote Control, delivery to other sessions, internal agents' Stop events.
+<!-- /package -->
+
+My lines for the executor's package. These are the round-1 lines, changed in one place only: the bad example now carries the "Bad because" line that agreed (3) requires.
+
+<!-- executor-lines prober -->
+- Methods:
+  - At every opening, and after a worker restart or a source attach, read the version with `get_session` and check the guard is live with `tools/guard_report.py` (the last record number moves, the newest `cwd` is the checkout; L-439). A new session makes earlier rows "does not count" until they are re-observed (EV-C02-023 section 1).
+  - Ask the prober before a condition rests on a platform fact. Give it the claim and the environment whose result counts, not the method.
+  - Schema reads that need a tool only you hold are yours, filed raw with no call: `SendMessage` via `ToolSearch`, and your Workflow tool's own description for `agent()`'s options.
+  - Observations happen once, at the first natural occurrence. A red result selects the fallback decided in advance.
+- Failure classes:
+  - Rows from another session counted as current (EV-C02-023 against L-439).
+  - `last` returning a later short message instead of the report (EV-C02-023 R-03): file from the notification and say so.
+  - A guard silent after a restart (L-430).
+  - A here-document read by the guard as a command (L-439 #103: write records with Edit).
+  - An unstable mode value (EV-C02-023 section 1; L-118 CR-1).
+- Good example: L-439's opening check. It read the version from the tool, checked the guard with `guard_report.py`, fixed the shallow checkout, stated "could not consult the library", and did not retry the held call.
+- Bad example (as a pattern, caught in time): EV-C02-023 section 3. Relying on `subagent_audit.py last` would have filed the researcher's later short message as its report. Bad because the report that counts is the one the platform delivered; a later message from the same agent is not it, and nothing in the filed text would have shown the swap.
+<!-- /executor-lines -->
+
+### W-C02-24 (M1): answer to approach version 1
+
+1. PROCEED, the agent-type narrowing (agreed (1)) and T5's hook point (agreed (3), "Agent and Task alike, PreToolUse and PermissionRequest alike"). The guard already denies tools not on its list, treats Agent and Task in one branch, and defaults an untyped call to `general-purpose` ([O] `tool_allowlist.py:2193-2202`). Emptying the built-in list rests on no unobserved fact. T5's "could not check" containment matters because the hook wrapper denies every call when the guard crashes (`settings.json` line 100). The block's test, a checker call allowed while T5's fixture is broken, is the right break.
+2. DEFECT, the comparator for the platform-delivery observation (agreed, "Counted environment … T5's allow record with the prompt's length and hash, compared with the task as filed"; disposition (5)). The filed task is a derived copy: it is filed "verbatim but for identifiers that match the leak check", and it passes through the filing path. A mismatch could then come from the filing rather than the platform, and would trigger the fallback wrongly; a match does not prove the platform delivered the prompt unchanged. No `tools/` script produces the other side of the comparison (`subagent_audit.py` prints no prompt hash), and B5 bars an interpreter on the transcripts.
+   - Shown fixed when the condition names three things. First, the comparator: the SHA-256 and UTF-8 byte length of `input.prompt` in the executor's own Agent tool_use whose id equals the `tool_use_id` in T5's record (and, optionally, the subagent transcript's first user event, which is the prompt as delivered). Second, a read-only `tools/` subcommand that prints those two numbers and never the text; `writes:` then adds `tools/subagent_audit.py` and its test. Third, one hashing convention for T5 and the tool: the JSON-decoded string, UTF-8, nothing appended. A fixture computes both from one known prompt.
+3. DEFECT, the fallback decided now (disposition (5)). It covers "changed" but not "absent": the `Approach-sha256:` line rides inside the prompt, so with no `prompt` in the hook input it never reaches T5. It also does not place the line, so a delivery cut short at the end could drop it.
+   - Shown fixed when the condition writes all four outcomes before observing:
+     - (i) The prompt is present and equal to the sent prompt: T5 as designed.
+     - (ii) The prompt is present but differs, and the block is still found byte for byte (for example, a wrapper was added): record the difference, change nothing.
+     - (iii) The prompt is present but the block is not found while the sent prompt held it: the `Approach-sha256:` fallback, with that line placed directly after `Item:`, and T5 recording whether it found the line.
+     - (iv) No `prompt`: T5's own "no prompt in the hook input" denial, then the revert by route (8), with the narrowing kept, and a carrier decided now for T5's next version. One candidate is the `description` key, which is present in the hook input ([O] round 1, guard #140), carrying `Item:` and `Approach-sha256:`; its length limit is unobserved. Branch (iv) also stops SB-COR 3.7's last fallback, which rests on the same input, and the condition should say so.
+4. PREFERENCE, placement in time (same clause). Every T5-scoped call logs the key names, length and hash, so the first T5-scoped call of either form answers the same platform fact sooner and at the same quality. That would usually be a reader-form producer or a test designer in a triage, which comes before the first writer-form launch. The observation should also read "T5's record (allow or deny)", not "allow record", because branch (iv) arrives as a denial.
+5. DEFECT, row 1.2 for workflow agents (agreed (2), disposition (2), and `open:` "owner the prober at its first natural occurrence"). The trigger cannot occur. The block denies the Workflow tool whole, so no natural workflow-agent run will happen. No SubagentStart or SubagentStop hook is registered at `b547565` ([O] settings.json), so even a run would leave no such record before M2. Under D-017 and D-020, a deliberate run just to observe is not mine to make. As written, the `open:` line records a pending observation that never comes, and the deny becomes permanent without anyone recording it (gstack F4).
+   - Shown fixed when `open:` and disposition (2) either name a trigger that can actually occur, or close it. A reachable trigger would be: after M2's Start and Stop hooks are live, a checked guard change for one named workflow run with a `checker` or `prober` agent doing real read-only work. The observation is written before that run: Start and Stop records with that `agent_id`, and whether any Agent PreToolUse appears for it (my round-1 Q3). Or close it: "workflows stay out; reopens only by such a change; no observation pending".
+
+Role-specific ask, the observations written before observing, from this session's own agents only:
+- O1 (T5 delivery). Placed at the first T5-scoped call after M1a's sync, by item 4. The question, comparator and outcomes are as in items 2 and 3. Negative control: synthetic hook inputs without `prompt`, and with the block altered by one byte, each denied with its own rule ID.
+- O2 (row 1.2). Not observable as placed (item 5). If a named run is chosen, its pre-written observation is as in item 5. The negative control is the same run's own tool calls carrying its `agent_id` in PreToolUse, which shows the guard was live.
+
+**Not run:** any live observation beyond my own package Read. O1 waits for M1a's merge and sync. O2 cannot occur as placed. No probe was needed for this round.
+
+Guard denials:
+- #498, rule B7. My second call, a compound Bash command, included the version flag of the Claude Code CLI. This repeats the very failure my own package's bad example describes. I reran the command's other parts without it and took the version as the task states it (2.1.304). I tried no other route to the version. The executor records this in its log entry with `tools/guard_report.py`.
+
+### 9.6 Round 2, checker_in_triage `a1d0941b5e8c59178`
+
+Non-binding contribution: this instance does not give W-C02-23's or W-C02-24's binding verdict.
+
+Package: none delivered (file absent)
+Nonce: none delivered
+Take-up: PROCEED. Both version-1 blocks can be answered from my field (how deep the check goes, the reading modes, the verdict form) at `b547565d184aadcda8e0684d7acdc96aade4f722`. Nothing makes either block wrongly framed or not needed. I am excluded from both binding verdicts: this task names me as a triage participant, and I revise my role's package below.
+
+## Disciplines (D1–D9)
+D1: yes: I set alternative frames against each other: for the `writes:` rule, the path-to-item direction against the diff-within-item direction, and for disposition (1), waiting against a new version of point 10. Only the overlap case changes the outcome, so that is the one I raise as a defect.
+D2: yes: my round-1 role's preferences (the split, the narrowed `calls` claim) were adopted, and I am revising my own role's package, so I judged the adopted text as if it were new, and I did not let the round's pull toward PROCEED soften the defects.
+D3: yes: I traced each chain to its live end (package, check, gate trigger, the gate that actually runs on the merge). Two links do not reach it, and I typed both as defects.
+D4: yes: for each check the blocks name, I asked which defect turns it red. I ran `subagent_audit.py calls` myself rather than take the round-1 doubt about it as settled, and I kept every claim at the level "same model, second look".
+D5: yes: for W-C02-22's `writes:` line I rely on the round-1 checker's filed reading (EV-C02-028:814), labelled stated, because constraint (a) bars the source. I went back to source for the gate, guard M7, the compact message and CHK-C02-127.
+D6: no
+D7: no
+D8: yes: the worktree HEAD is `b547565d184aadcda8e0684d7acdc96aade4f722` and clean. The blocks' base `d0a2ca99…` differs from it only in records, no code. The local `main` ref is stale (62d2be8), so I read HEAD.
+D9: yes: I read gstack CORE sections 10 and 11 (P5 to P7, F1 to F4) and superpowers CORE sections 4 and 5. F3 framed the defect about what triggers the check, and F2 together with superpowers' integration distinction framed the counted-environment defect. The other map entries I did not re-read (see Read).
+
+Read, and what each changed:
+- `/home/user/devos/.claude/roles/checker.md`: a Read as my first call, which returned "File does not exist". This set my Package line.
+- `plan/Ek_D_Dusunme_Protokolleri.md` from line 69 (the triggers, and D1 to D9 in full): set the method.
+- `evidence/C02/EV-C02-028_pra2_m1_triage.md`, parts 7 and 8 in full and part 5 (the round-1 checker): these are the target and my role's round-1 baseline. They changed every point below.
+- `plan/SB-COR_Correction_Plan.md`, lines 117, 123, 147, 148 and 204 (the floor list, the approach record, the plan's `writes:` and `producer_run` rule, the lock-out text): justified O2 and O3 on W-C02-24.
+- `tools/merge_gate.py`, lines 30 to 54 and 106 to 120, plus a function outline: HIGH_PREFIXES, `front()` refusing a repeated key, COVERING. These bore on the grammar points.
+- `.claude/hooks/tool_allowlist.py:1490-1500`: M7 runs `tools/merge_gate.py` from ROOT, the live tree. This changed W-C02-23 O2.
+- `.claude/hooks/reread_after_compact.py`: a Grep for MESSAGE and a count of non-ASCII characters (0). The hook writes `MESSAGE + "\n"` (line 15). This changed W-C02-23 P1.
+- `tools/subagent_audit.py`: a function outline, then one run of `calls` (see Relied on). This closed a round-1 unknown.
+- `evidence/C02/checks/CHK-C02-127.md:27,72-75` and `evidence/C02/EV-C02-021_team_role_package_rounds.md:270,1119,1140`: FC8 and FC9 as the records number them. This changed my package's numbering.
+- `plan/Installation_Working_Order.md:51-56` (step 4, step 5, "where a result ran"): showed that most of my role's round-1 executor lines restate step 4, so I cut them.
+- An ID-resolution pass on the IDs my package cites: all resolve at HEAD.
+- Library: `research/studies/gstack/CORE.md` lines 412 to 461 (changed W-C02-23 O1 and O2, and W-C02-24 O1), and `research/studies/superpowers/CORE.md` lines 49 to 73 (limited the enforcement claim to fixtures until a live run).
+- Deliberately not read: the multi-agent-patterns assessment, U04, S04 and the Information ground's KEY files (round 1 read them and their use is filed in part 5; my budget went to the code), `plan/decisions/PC-53.md` and the files constraint (a) names, and parts 2 to 4 and 6 of EV-C02-028 beyond the summary.
+
+Relied on:
+- The common floor I work under, by its heading as it stands in my context (the `CLAUDE.md` text delivered to this session): [the common floor's heading as CLAUDE.md substitutes it; withheld at filing]. Observed in context, not read from a file.
+- The guard's M7 runs the merge gate from the live tree: `os.path.join(ROOT, "tools", "merge_gate.py")` (`.claude/hooks/tool_allowlist.py:1490`). Observed. So PR-A2's own merge is judged by a gate without PR-A2's call (inferred).
+- `.claude/` and `tools/` are class high (`tools/merge_gate.py:35`). Observed.
+- MESSAGE is ASCII today and is written with a trailing newline (`reread_after_compact.py:11,15`). Observed.
+- A checker subagent can run `python3 -I tools/subagent_audit.py calls a63eb9c7980da259e` under the guard: exit 0, listing Read paths and the input keys of Bash calls (my own run, 2026-10-20, this container). Observed.
+- FC8 means "anchoring on the rationale" (EV-C02-021:270) and FC9 means "judging under the package being judged" (EV-C02-021:1119; CHK-C02-127:27). Observed. My role's round-1 draft had renumbered them (EV-C02-028:892-893). Observed.
+- W-C02-22's `writes:` lists `CLAUDE.md`, the role files, the working order and its own item file (EV-C02-028:814, the round-1 checker reading `plan/work/W-C02-22.md:128`). Stated, not re-read, per constraint (a).
+- The `writes:` lines of W-C02-23 and W-C02-24 both list `tools/merge_gate.py` and `tools/test_merge_gate.py`, and W-C02-24's lists the working order, `.claude/agents/checker.md` and `plan/decisions/PC-53.md` (EV-C02-028:1385,1401). Observed.
+- SB-COR's rule binds a path to an item ("a pull request touching an item's declared `writes:` paths … needs that item's … verdict", SB-COR line 147). Stated.
+- Every ID in my package resolves at HEAD (my resolution pass). Observed.
+
+Unsure:
+- Whether this run counts as one of W-C02-22 point 10's rows. Facts for the executor and the test designer:
+  - Role row: my first call was a Read of `/home/user/devos/.claude/roles/checker.md` (file absent), and I opened none of the files in constraint (a).
+  - Floor row: this run cannot count. My resolution pass ran a Bash `git ls-files "evidence/*EV-C02-026*"`, which names that ID and lists the file without opening it.
+  - The task text contained the value "none delivered (file absent)" and a description of the expected heading order. Whether that disqualifies the run is the test designer's call.
+- Whether `calls` still works after the container is reclaimed: by the researcher's finding it cannot, which is W-C02-24 O5.
+- My package's size counts only my text (6,423 UTF-8 bytes, 40 lines, longest line 298 characters, no `## ` line). The producer's tool-copied file, measured by `tools/check_role_packages.py`, is what settles it.
+
+For: the executor, who integrates this into version 2 of both blocks, with a disposition for each objection it does not take. Then the test designer, the producer and each binding checker, who read it as filed in EV-C02-028.
+
+Received from / Returned to: I took this round's task from the executor in full and returned nothing. Outside my scope, for the executor: the local `main` ref in this worktree resolves to 62d2be8 (PR #401), behind HEAD b547565. A tool that reads `main` rather than `origin/main` or HEAD would read stale state here.
+
+Product:
+
+**W-C02-23 (PR-A2), answer to the version-1 block**
+
+PROCEED on clauses (1) to (4) and (6) as frames, with these objections:
+
+1. DEFECT (clause 5, what triggers the check): the gate calls the check only when the diff touches `.claude/roles/`. The check's result also depends on `tools/check_role_packages.py` (LIMIT, RESERVE) and on `.claude/hooks/reread_after_compact.py` (MESSAGE), and later on W-C02-25's hook. A head that only lengthens MESSAGE pushes `executor.md` over its limit, and no check runs (gstack F3: the enforcement point's scope is narrower than the goal). The block also does not say which tree's copy of the script runs.
+   - Shown fixed when (5) lists those input paths as triggers, says the gate runs the check from its own tree with `--rev <head>`, and `tools/test_merge_gate.py` refuses two fixtures:
+     - (a) a head changing only MESSAGE so that `executor.md` exceeds its limit;
+     - (b) a head raising LIMIT in its own copy of the check and carrying a 9,400-byte package.
+   - Blocks the approach.
+2. DEFECT (clause 7, counted environment for the enforcement point): "the merge gate's own run (guard M7) on the real merge" cannot show the enforcement for PR-A2. M7 runs the live tree's `merge_gate.py` (`tool_allowlist.py:1490`), which does not yet hold PR-A2's call at PR-A2's own merge. This is gstack F2, and superpowers CORE section 4: branch success is not merged-state success.
+   - Shown fixed when (7) limits the enforcement claim at the verdict to fixtures, and `open:` names the live row with an owner: the first M7 run on a head touching `.claude/roles/` after PR-A2's sync.
+   - Blocks the approach.
+3. DEFECT (clause 1, provenance): "round 2's corrections from its own author only". Round 2's instances are fresh agents, not round 1's authors; this checker is not `a0cc50f9a9191fc93`. Read by agent ID, every corrected package fails its provenance check.
+   - Shown fixed when (1) says "from its role's round-2 instance (agent ID in the `asked:` line)".
+   - Blocks the producer task.
+4. PREFERENCE (clause 4; owner: the producer and the test designer): count the compact message in UTF-8 bytes, plus the newline the hook writes, and read it by parsing the head's source, never by importing or executing head code inside the gate. Not a present defect: MESSAGE is ASCII today.
+5. PREFERENCE (clause 7; owner: the executor): two points.
+   - The verdict should also declare FC9 for the checker lines in `executor.md`, which govern how checkers are dispatched. The words "runs under its own role file" do not apply, because PR-A2 does not change `checker.md`.
+   - Size the one checker's budget to the triage below. If it does not fit, give the executor's package its own verdict.
+6. PREFERENCE (disposition 1; owner: the test designer, with the executor): a task meant to yield a point-10 row should not state the Package line's value, and this round's task did. A tightening would be a new version, never applied to a result already seen (Appendix G G8 item 3).
+
+**Ask 1: clause (7) from my field.** The depth sits in the triage, not the block, which is correct, because the binding checker reads the triage after its own pass and never goes below its floor.
+- The reading modes are right.
+- The floor is right: the test oracle, the merge gate with own breaks, and public text.
+- The exclusions are right: a fresh agent ID, in no round, no draft and no verdict.
+- One checker for six packages is sound (round 1 (v)), subject to objection 5.
+
+**Ask 2: disposition (1).** The order is sound.
+- The wait is bounded: it reopens when PR-A2's verdict passes.
+- It is cheap, because PR-A2's own producer, test-designer and checker runs are natural rows.
+- It avoids a tightening.
+- It holds because the rows are recorded in the log while the container lives. The guard log is container-local.
+- Objection 6 limits how strong those rows are as evidence.
+
+**Ask 3: my revised package.** The changes are only what the block requires:
+- the precedence line;
+- the restated role-file rules cut;
+- a why-bad line added;
+- FC numbering aligned with EV-C02-021 and CHK-C02-127, so that clause (7)'s "FC9" means the same class here;
+- no `## ` line;
+- the GitHub command line's short name kept out (B7).
+
+Measured at 6,423 bytes.
+
+<!-- package checker -->
+Checker package (installation helper; W-C02-23)
+Precedence: `.claude/agents/checker.md` and `CLAUDE.md` bind; this package informs and never overrides them. Where the two differ, the role file holds, and the difference goes to the executor as a finding. It adds methods and recorded cases only; the role file's rules are not repeated here.
+
+**[1] Methods (how, beyond what the role file requires)**
+- M1 Size before reading. Before any deep read, decide which failure classes in [2] are live for this target. If none is, a short check is the right depth; say which classes you ruled out and why.
+- M2 Which error turns it red? Ask it of every check you plan. A check that no plausible defect would turn red is not evidence: drop it, or state what it does show.
+- M3 Pin the run. Next to each run write the interpreter and git versions, and confirm `git rev-parse --is-shallow-repository` says false: a shallow clone hides the ancestry that a gate or a revert check reads.
+- M4 Own breaks. One local commit per break in the scratch clone, reset after each; each break names the defect it models and the rule ID or test that must turn red. A red shows sensitivity to that one defect only; say so.
+- M5 Over-blocking. For every gate or deny rule, run the sound case that must pass: a correct task, a minimal route, a records-only change, the revert route. A rule that blocks needed work is a defect of the same weight as a hole.
+- M6 Product-only question. Can a reader holding only this target and its binding texts act correctly at its first step? Write those findings before you open the design texts.
+- M7 Re-read the ground. For each cited ID, check that it resolves at the target revision and that the cited place shows what it is cited for; an ID that resolves to something else is a finding, not a pass.
+- M8 Anchoring. Write your own pass down before you read a triage, the producer's rationale or an earlier verdict, and give in `read:` when you read each, so the order can be checked. EV-C02-021 names this class FC8; no case is recorded yet.
+- M9 Conditions. Write the observation that would show a condition met, never the fix's wording; check each line against the condition grammar before you hand over. Write the conditions markers even with `conditions: none`, and leave them empty (CHK-C02-127 R1-9 found the template silent on this).
+- M10 Claim scope. Name what the evidence does not show: loaded, read or used; another environment; a later head.
+
+**[2] Known failure classes, each with its recorded case**
+Numbering follows EV-C02-021 and CHK-C02-127, so that "FC9" in a task means the same class here; FC8 is method M8.
+- FC1 D9 "no" by default; Ek A 3.2 (c) not asked. Case: CHK-C02-075 answered "D9: no" with no library clone; 235 of 242 D9 lines said "no" (EV-C02-020 section 4 (3)). Ask: did the work touch an area of my map?
+- FC2 Full depth everywhere; record nits made blocking. Case: CHK-C02-079 K1, a filing condition on the verdict's own filing; L-426 (5). Ask: what real step does this condition block?
+- FC3 A weak proxy made binding without naming its weakness. Case: CHK-C02-115 C4, a passive 24-hour window; N-314; L-426 (6). Ask: does it discriminate, and is a stronger check available now?
+- FC4 An offline green taken for the counted environment. Case: CHK-C02-113 ran "all offline" with the interpreter unnamed; the job's Python 3.12 then failed (L-415). Ask: which environment counts, and did I run there?
+- FC5 Multiplicity taken for independence. Case: CHK-C02-045 and CHK-C01-112 aggregated same-model lens splits. Ask: what does the second view not share with the first?
+- FC6 Causal depth stops at the artefact. Case: a test-to-build mismatch recurred about eight times while the loop limit counted only FAILs (EV-C02-020 section 4). Ask: has this class recurred? Name it.
+- FC7 Writing the product by proxy. Case: CHK-C02-115 C5 and CHK-C02-117 Q2 dictated wording. Ask: does my condition name an observation or a text?
+- FC9 Judging under the text being judged: your own role's package, or a role file the target changes. Case: EV-C02-021, the round that named FC9; CHK-C02-127 declares it. Ask: does the target change my own file or package? Declare it in the verdict.
+- FC10 A format gate's green taken for fitness. Case: CHK-C02-127 R2-2: the condition limited its script to form, so the meaning had to be carried by a reading. Ask: which part of the claim does only a reading carry?
+
+**[3] Examples from this installation**
+- Good: CHK-C00-033 F3. The checker's own planted commits (control bytes in a commit message, a binary before a secret file) showed the leak check's parser dropping files; it named the cause and the negative tests and left the fix to the producer.
+- Good: CHK-C02-127. Four own breaks on the real head, each red with its own check ID; two readings kept apart; the claim limited to "present and fit as text"; a guard denial recorded, not worked around (R2-14).
+- Bad: CHK-C02-115 C4. Exact and careful, but it made a passive window binding, and the wait that followed added little (N-314; L-421 to L-425, corrected by L-426 (6)).
+- Why it is bad: it never asked whether the window could tell a working mechanism from a broken one, or whether a stronger check was available at once, so a long wait became a blocking condition with no evidence that it would discriminate.
+
+**[4] Tools and limits**
+- Bash for reads and test runs: `python3 -I` scripts, `bash tools/test_tool_allowlist.sh`, `python3 tools/test_merge_gate.py`, `python3 tools/leak_fingerprints.py scan <file>` (line numbers only, never the text).
+- `python3 -I tools/subagent_audit.py calls <agent id>` runs from a checker subagent (observed 2026-10-20). It prints paths for Read, Write and Edit calls and only the input keys for Bash, so a file written by a script is not traced: list such paths as untraced.
+- The guard matches some command-line tool names inside command text: a read-only heredoc that held the GitHub command line's short name was denied (B7). Keep such names out of text you pass to Bash.
+- Scratch clone: a full clone under your scratch directory, literal paths, no shell variables (a variable in a path was denied: CHK-C02-127 R2-14, B5).
+- When the task's budget cannot cover the floor, name the floor item left unmet in `unsure:`; never thin it silently.
+- What you write in `own_breaks:` is the only record that the breaks ran: give each command and its result.
+<!-- /package -->
+
+My lines for the executor's package. These are revised under clause (3): my role's round-1 lines restated working order section 4 step 4 (verbatim filing, `disciplines`, never retyping, the diff-confirmed record, inputs by path with product-only questions first, the round count) and the gate's form-only limit (section 10), so those are cut, and the bad example gains its why-bad line.
+
+<!-- executor-lines checker -->
+**Checker**
+- Before launching a binding check, compare the checker's agent ID with every `asked:` line, every triage record and every draft of the item, and with earlier verdicts on it; write the result in the log entry and in the task, so that the verdict's independence line can cite it. Case: EV-C02-028 part 5, where the round-1 checker drafted its own package and is therefore out of PR-A2's verdict.
+- Size a binding task's budget to the floor: own breaks for each floor path, every cited ID resolved, the counted environment. A floor that does not fit comes back with the unmet floor item named, and the check is given again. Good example: CHK-C02-127's task, which gave its breaks as a constraint with the reason.
+- Give a method in a binding task only as a constraint with its reason; without the reason the checker treats it as steering and returns the task. Case: EV-C02-026:1502, where breaks under the old checker file needed a constraint with its reason.
+- When a condition creates a wait, ask whether a stronger check exists now, and who decides a replacement. Bad example: L-421 to L-425 ("sooner: none"), corrected by L-426 (6).
+- Why it is bad: each entry carried the wait forward without asking whether a discriminating check was available, so the item waited on a proxy that could not tell a working mechanism from a broken one.
+<!-- /executor-lines -->
+
+**W-C02-23: my triage for PR-A2's binding check, adjusted to version 1**
+- Claim (text and mechanism):
+  - the six files, each within its limit (9,300 bytes; for the executor, minus the compact message);
+  - the precedence line in each;
+  - no restated binding rule;
+  - each failure class cites a case ID that resolves, and each bad example carries its why-bad line;
+  - copied by tool, with the source hashes in the build record;
+  - the check run by the gate on the trigger paths of objection 1, shown in fixtures.
+  - Not claimed: delivered, read or used; live enforcement before the row in objection 2.
+- Failure classes:
+  - size counted in characters, or the newline missed;
+  - a trigger that misses an input (objection 1);
+  - the head's copy of the script judging itself;
+  - a copy that differs from its source hash;
+  - an ID that resolves to the wrong content (FC10: the resolver shows form only);
+  - a restated or contradicting role-file or working-order sentence (disposition 3's reopen);
+  - library text or service names;
+  - FC9 (the checker package, and the checker lines in `executor.md`);
+  - a seventh file or a subfolder.
+- Cheapest discriminating evidence:
+  - the check at the head;
+  - the source-hash comparison from the build record;
+  - `tools/leak_fingerprints.py scan` on each file;
+  - cases opened: at least two per package, and every case in the checker and executor packages.
+  - Own breaks (scratch clone only):
+    - a 9,301-byte file;
+    - a file that passes on characters but fails on bytes;
+    - MESSAGE lengthened alone (objection 1 (a));
+    - LIMIT raised in the head's copy (objection 1 (b));
+    - one of the six removed;
+    - a seventh added;
+    - an unresolvable `L-` ID;
+    - the gate's call removed, which must turn `tools/test_merge_gate.py` red.
+- Counted environment: `python3 -I` 3.13.16 and git 2.43.0 in a full clone at the head, for program logic. The live enforcement row is objection 2's.
+- Depth: deep on text; the mechanical part in full.
+- Reading modes: product-only first, per package: can the role act at take-up from its role file, `CLAUDE.md` and this package, and does the package contradict them? Then design-knowing against Ek A 3.2, 3.3 and 3.5, plan K-7 item 2, W-C00-12 (j) and SB-COR 2.3, under separate headings.
+- Ek A 3.2 (c) asked: yes.
+- floor: test oracle and merge gate; `own_breaks` required; public text.
+
+**W-C02-24 (M1), answer to the version-1 block**
+
+PROCEED on dispositions (1) to (4) and (7): the reader form, the whole-tool Workflow deny, every built-in type out, and the two pull requests. PROCEED on (8)'s exact-inverse route with its read-back. One round-1 unknown is closed: `calls` runs from a checker subagent (Relied on). Objections:
+
+1. DEFECT (clause 5, coverage with a `diff-confirmed` blocking condition): "covers nothing unless its closure is `diff-confirmed` and every commit after its `reviewed_head` is class normal" also passes when no commit follows `reviewed_head`. A verdict whose `blocks: merge` defect was never fixed then covers its own head.
+   - Shown fixed when a fixture verdict with `blocks: merge · closure: diff-confirmed` is refused at `reviewed_head` equal to the head, and is accepted with one class-normal commit after it.
+   - Blocks the approach.
+2. DEFECT (clause 5, the floor-path constant): "the guard, the merge gate, the leak check, `tools/` tests and oracles" are categories, not paths.
+   - The leak check spans `tools/leak_fingerprints.py`, `tools/credential_value_scan.py`, `tools/credential_class.py` and `tools/check_service_names.sh`.
+   - W-C02-23's oracle `tools/check_role_packages.py` is unnamed.
+   - "Schema rules", which SB-COR's floor list names, has no path.
+   - Shown fixed when the block gives the constant as literal paths and prefixes (the whole `tools/` prefix is acceptable; its cost is an `own_breaks` line), and fixtures with `own_breaks: none` are refused on heads touching `tools/check_role_packages.py`, `tools/credential_value_scan.py` and a file under `supabase/migrations/`.
+   - Blocks the approach.
+3. DEFECT (clause 6, overlapping open items; over-blocking): a verdict has one `item:`, so a path in two open items' `writes:` can never be covered.
+   - W-C02-22 stays open until point 10's rows come in, and lists the working order, the role files and `CLAUDE.md` (stated, EV-C02-028:814).
+   - W-C02-24 writes the working order and `.claude/agents/checker.md`. W-C02-23 and W-C02-24 both write `tools/merge_gate.py`.
+   - Which wins is also undefined when a records-only head touches a records path that an open item's `writes:` lists. W-C02-24 lists `plan/decisions/PC-53.md`, and W-C02-23's `open:` gives the executor a PC-53 addendum.
+   - Shown fixed when (6) states the rule for a path shared by open items (for example, the verdict's item must be one of them) and the records-only precedence, with fixtures:
+     - (a) two open items share a path, and a verdict names one: accepted;
+     - (b) it names neither: refused;
+     - (c) a records-only head on a listed records path: decided as stated.
+   - Blocks the approach.
+4. DEFECT (clause 9 against disposition 1): disposition (1) makes the binding checker confirm that `producer_run` was a writer-form launch "from that run's task". Clause (9) names only matching Write and Edit paths, and gives no route to the launch form. T5 logs a launch's key names, prompt length and SHA-256, not the agent ID it spawns, which is unknown at PreToolUse.
+   - Shown fixed when (9) names how the writer form is confirmed (for example, a named read-only tool hashes the run's first task message and finds a T5 writer-allow record with the same SHA-256), and "could not confirm" covers this part too.
+   - Blocks the approach.
+5. DEFECT (clause 9, closing "could not confirm"): the closure "scoped re-review" cannot close it once the transcript is gone, because a fresh reviewer meets the same absence. The head stays blocked, a lock-out by lost evidence.
+   - Shown fixed when (9) and section 10 name the observation that closes it, for example a fresh writer-form producer run that reproduces the diff and is confirmed by `calls`.
+   - Blocks the approach.
+6. PREFERENCE (clause 5; owner: the producer and the test designer): define "condition-shaped" as a line starting at column 0 with `C<n> · type:`, so that a scoped re-review can quote the condition it judges, indented. Also refuse PASS with a blocking line and PASS-WITH-CONDITIONS with `conditions: none`. Coverage keys on the lines, so this is clarity, not a hole.
+7. PREFERENCE (clauses 8 and 11; owner: the executor): state four things.
+   - Whether the revert route needs `floor:` and `own_breaks:`.
+   - That M1a's revert before M1b merges is judged by the old gate with an ordinary verdict.
+   - That an exact inverse works only for the latest change to those files.
+   - How "the same addendum" is split across the two pull requests.
+8. PREFERENCE (clause 9; owner: the test designer): the rule that maps the scratch clone's absolute paths in `calls` to repository paths (the suffix after the clone root).
+
+**Ask 1: the gate grammar from my field.** It fits, once objections 1 and 2 are met:
+- R1-9's markers (tolerant gate, writing template);
+- the condition-line grammar, with "blocks something" or "blocks none" by type;
+- the floor-path constant;
+- `producer_run` checked by form in the gate and confirmed by the checker, with "could not confirm" as missing evidence, once objections 4 and 5 are met.
+
+The split fits: separate lock-out surfaces, and one writer of `tools/merge_gate.py` after PR-A2.
+
+**W-C02-24: my triage for M1a's binding check (the guard)**
+- Claim (program logic): clauses (1) to (4).
+  - Not claimed: that PreToolUse delivers the whole prompt (the first natural writer launch after sync, disposition 5); that a reader-form producer does not write.
+- Failure classes:
+  - bypass routes: Task against Agent; PermissionRequest against PreToolUse; a hook input `cwd` in a scratch clone holding a forged block; `Item:` naming one item while carrying another's block; a type's case or whitespace variants; untyped calls; Workflow under any input;
+  - vacuous pass: an empty block, zero `asked:` paths;
+  - over-blocking: the controls in clause (4);
+  - containment: a T5 error must deny only that call;
+  - the "sync first" path;
+  - exact-match fragility: CRLF, a trailing newline, the block at the prompt's end;
+  - the log holding prompt text;
+  - the flip list given by content.
+- Own breaks (floor):
+  - T5 made to read `cwd`;
+  - the acceptance check removed;
+  - the open-note check removed, or a missing status read as closed;
+  - the writer-or-reader line ignored;
+  - the Workflow deny removed;
+  - an exception raised inside T5, after which the next checker call must still be allowed;
+  - prompt text written to the log.
+- Counted environment: `python3` 3.13.16 as the hook command in `.claude/settings.json` calls it, and git 2.43.0 in fixture checkouts. The platform row is the first natural producer launch after sync.
+- Depth: deep.
+- Reading mode: product-only, briefly: does each denial's "what to do instead" let the executor fix its task, and does the section 2, 4 and 10 text say what is now denied?
+- Ek A 3.2 (c) asked: yes (the playbook's F7 and F8, the harness study's section 10, S1-03 A5).
+- floor: guard, hooks, test oracles; `own_breaks` required.
+
+**W-C02-24: my triage for M1b's binding check (the merge gate)**
+- Claim (program logic): clauses (5) to (11), and the template change.
+  - Not claimed: origin, that the breaks ran, that a diff-confirmed closure was done (section 10's limit).
+- Failure classes:
+  - grammar holes: a line outside the markers, a type that does not match its `blocks:`, `see markers` with no line, a repeated key;
+  - objection 1;
+  - `writes:` over-blocking (objection 3);
+  - the revert route: inverse plus one line, a non-merge commit, a commit not on `origin/main`, a shallow clone;
+  - an incomplete floor constant (objection 2);
+  - the template drifting from the gate;
+  - approach-block changes not class high;
+  - an unreadable `writes:` line refusing too much;
+  - the gate refusing its own revert.
+- FC9 is live: M1b changes `.claude/agents/checker.md`, the binding checker's own role file. It runs under the old file and must declare this.
+- Own breaks (floor):
+  - the inverse check removed;
+  - the floor-key check removed;
+  - the `writes:` rule made to ignore `item:`;
+  - condition lines outside the markers allowed;
+  - the type-to-`blocks` check removed;
+  - the revert route moved after the `producer_run` check;
+  - the template fixture filled with one key dropped.
+  - As a trial of (9): confirm M1a's and M1b's producer runs with `calls` while their transcripts are present.
+- Counted environment: fixtures under the container's `python3` and git 2.43.0. Live: the first natural merge after sync, a records-only head first and then a class-high one.
+- Depth: deep, with every over-blocking control run and the lock-out route shown, not read.
+- Reading mode: product-only: can a checker fill the new template and pass, and does section 10 say what the gate does not close?
+- Ek A 3.2 (c) asked: yes (gstack F2, P7; SB-COR's lock-out text).
+- floor: merge gate, test oracles, the role file's template; `own_breaks` required.
+
+Guard denials: none
+
+### 9.7 Round 2, test_designer `a01d7b83cc35aa15c`
+
+Package: none delivered (file absent)
+Nonce: none delivered
+Take-up: PROCEED, for both items. Both version-1 blocks hold as framed, and I can write most of each condition from them. The objections below are fixes inside the agreed approach. None of them reframes either item, so no `WRONGLY_FRAMED` or `ANOTHER_METHOD` return is needed. My role file says to read `/home/user/devos/.claude/roles/test-designer.md` when no header arrives; `.claude/roles/` does not exist at `b547565` (observed with `ls`), so I worked from my role file and the floor in my context.
+
+## Disciplines (D1–D9)
+D1: yes: I tested the load-bearing assumptions against the code instead of the block's wording: which copy of the gate runs at a merge, what the trigger set leaves out, and whether diff text is a sound revert oracle. Each changed a point below.
+D2: uncertain: I wrote one of the round-1 notes this block integrates, so I re-derived each point from the code at `b547565`. I also gave up my own round-1 delivery observation (A2-9), because the block limits the claim to presence.
+D3: yes: for PR-A2 I checked the whole chain (check written, run at every change that can break it, merge refused) and found two broken links: the trigger set and the counted live run.
+D4: yes: for each oracle I named the break that turns it red. I found existing cases that would stay green for the wrong reason, because `t` asserts only the decision.
+D5: yes: I read part 8 and my own round-1 note as views, and went back to `tools/merge_gate.py`, `.claude/hooks/tool_allowlist.py`, `tools/test_tool_allowlist.sh` and `tools/subagent_audit.py` for every fact I rely on. W-C02-22's note states stay unknown (constraint a), and I designed around that.
+D6: yes: I traced the revert refusal to its cause (the index line and hunk headers change once `main` moves), so the fix compares the resulting tree, not a reworded diff.
+D7: yes: the package text is given in full below, because my scratch copy is container-local and the record is this message as filed.
+D8: yes: I confirmed `HEAD` = `b547565d184aadcda8e0684d7acdc96aade4f722`, a clean tree, no `tools/` or `.claude/` change since `d0a2ca9` (so the block's line numbers hold), and no `.claude/roles/`.
+D9: yes: I re-read playbook 04 F7 and F8, gstack CORE P6, P7, F2 and F4, and work-environment finding 02 §2 to §5. F2 and finding 02 §4 shaped the revert point; P6, F4 and finding 02 §2 shaped "which copy runs"; F7 confirmed the route lists.
+
+Read, and what each changed:
+- `evidence/C02/EV-C02-028_pra2_m1_triage.md`: part 8 (both blocks, version 1) and part 7, read in full; part 6 (my round-1 note) read in full; the outline of parts 1 to 5 only. Part 8 is what I answer. Part 6 is the base of my package revision.
+- `plan/Ek_D_Dusunme_Protokolleri.md` from line 69 on (the trigger questions as quoted there, and D1 to D9 in full). That was my method.
+- `plan/SB-COR_Correction_Plan.md` lines 125 to 149 (2.8, 2.3, the verdicts note, 3.1) and lines 165 to 196 (3.7, phase 4, E). These justified the claims, and they led to PR-A2 point 4: no 2.8 row carries the packages.
+- `plan/Installation_Working_Order.md`, the outline and section 4's table (rows 1 to 7, lines 60 to 68), plus lines 190 and 197 of the section 9 task form. They changed things: no table row covers the packages (PR-A2 point 4), and the `Writer or reader:` line is bold free text (M1 point 1).
+- `.claude/hooks/tool_allowlist.py` lines 66, 224 to 229, 1490, 2186 to 2212 and 2299 to 2342 (by grep). Changed: M7 runs the gate from `ROOT`, the live tree (PR-A2 point 2); T2 is checked before the type (M1 point 3); the guard fails closed overall.
+- `.claude/settings.json` hook commands, read by a parser. They justified that tests drive the hook command as written.
+- `.claude/hooks/reread_after_compact.py`: `MESSAGE` is a plain literal of 221 bytes, written with a newline at line 15. Changed: PR-A2 point 5.
+- `tools/merge_gate.py` lines 1 to 60 and 118 to 197. Changed: it runs as `python3 tools/merge_gate.py` from the working tree, and adding an acceptance block is class normal (my reading of M1 (7)).
+- `tools/test_tool_allowlist.sh` lines 25 to 32, 141 to 144, 150 to 232, 750 to 765 and 850 to 862. Changed: M1 point 3 (wrong-reason passes, `W21_LIST`, the matcher control).
+- `tools/test_token_stop.py` lines 1168 to 1180. Justified the open item the block already carries.
+- `tools/subagent_audit.py` function list, `transcript()`, `task_block()`, `calls()`. Changed: M1 point 6 (no tool shows a run's launch prompt).
+- `tools/records.py` `NOTE_RE`, and the `### L-` heading form in `plan/ledger/C02-log.md`. Used for my ID-resolution script.
+- Scratch git experiment on the revert comparison (observed; M1 point 4).
+- Library: `[library id: SDLC playbook, file 04 (falsifiers)]` §8 (F7) and the start of §9 (F8); `research/studies/gstack/CORE.md` P6, P7, F2, F4; [library id: work-environment vertical, finding 02] §2 to §5. They bore as in D9.
+- Not read on purpose: the files constraint (a) names; the work-environment `KEY.md` and finding 07 (read in round 1, and nothing new turned on them); the other roles' round-1 notes beyond what part 8 integrates (their fields); `tools/test_merge_gate.py` (its harness was read in round 1).
+
+Relied on:
+- The common floor I work under, whose heading line as it stands in my context reads [the common floor's heading as CLAUDE.md substitutes it; withheld at filing], reached through the project instructions injected at start. I opened no file to get it. Stated.
+- M7 runs `os.path.join(ROOT, "tools", "merge_gate.py")` (`.claude/hooks/tool_allowlist.py:1490`), and `ROOT` is the live working tree (`:66`). Observed in code. Inferred: a change to the gate is first enforced at the merge after its own sync.
+- The gate's usage is `python3 tools/merge_gate.py --pr N --head SHA` from the repository root (`tools/merge_gate.py:5`). Adding an acceptance block where none existed is class normal (`:20`). Observed.
+- `MESSAGE` is an `ast` literal of 221 UTF-8 bytes, written as `MESSAGE + "\n"` (`.claude/hooks/reread_after_compact.py:11`, `:15`). Observed. So the executor limit at `b547565` is 9,500 − 200 − 222 = 9,078 bytes (inferred from block (4)).
+- The section 4 table has rows 1 to 7, and none has a package as its output (`plan/Installation_Working_Order.md:62-68`). Observed.
+- The task form's line is `- **Writer or reader:** whether the role writes, and which files.` (`plan/Installation_Working_Order.md:197`), and this round's task line reads "**Writer or reader:** reader. Write no file in …". Observed.
+- `t` asserts only the decision. The Workflow denies at `tools/test_tool_allowlist.sh:160-164`, `:219-224` and `:228` use `t`. The Agent isolation cases `:141-144` carry no type. T2's isolation check (`tool_allowlist.py:2196`) runs before the type check (`:2198-2201`). Observed.
+- `W21_LIST` (`tools/test_tool_allowlist.sh:856-858`) is `ALLOWED_NON_MCP` and includes `Workflow`. `:28-32` asserts that both matchers cover `Workflow`. Observed.
+- The allow-to-deny flips at `:159`, `:165`, `:167`, `:207-209` (the loop), `:210`, `:217`, `:218`, `:229` and `:758`. Observed in the file; their flip is inferred from the block.
+- The revert comparison: in a scratch repository, merge commit S changes line 15 of a 30-line file, a later commit adds three lines at the top, and `git revert -m 1 S` follows. Then `git diff main rv` and `git diff S S^1` differ on their `index` line and their hunk header (`@@ -15,7 +15,7 @@` against `@@ -12,7 +12,7 @@`). Observed with git 2.43.0.
+- `main`'s merges are merge commits: 538 merges, 9 non-merge first-parent commits at `b547565`. Observed.
+- A subagent's transcript is `subagents/agent-<id>.jsonl`, and `calls` prints only its tool calls (`tools/subagent_audit.py:122-134`, `:407-411`). Observed.
+- My revised package: 6,254 bytes and SHA-256 `9f8557260d35d1a514b86893be2ebcf8823deb4292aadade6507ff103d0dad87`; no line starts with `## `; the longest line has 394 characters; the first line is not `---`; all 21 EV, CHK, L and N IDs resolve at `b547565` by block (4)'s rules (my scratch script); `tools/leak_fingerprints.py scan` matched 0 lines. Observed.
+- Container `python3` 3.13.16 and git 2.43.0: observed. Claude Code 2.1.304: stated by the task (the command that would show it is denied, B7).
+
+Unsure:
+- Whether W-C02-22 has an open blocking note at `b547565`. If it does, block M1 (4)'s control "the real W-C02-22 approach block" is refused for a correct reason. I could not look (constraint a). My condition makes that control a fixture item file carrying W-C02-22's approach-block bytes, copied by tool from `HEAD`, with its notes closed. That needs no answer, but the producer should know.
+- Whether the leak store was fresh against the clone (`leak_fingerprints.py status` was not run). The binding checker settles it.
+- Whether `tools/test_token_stop.py:1175` fails at M1a's head. The block already assigns this to the producer.
+- How long PR-A2's wait under disposition (1) adds to the critical path. The block states no estimate (PR-A2 point 6).
+
+For: the executor, who integrates this into version 2 of both blocks. Then me or the next test designer, who writes the conditions from the agreed blocks; each item's producer, who must state the interfaces listed below before the condition is pinned; and each binding checker, who reads the breaks.
+
+Received from / Returned to: none received; none returned. Noticed outside my scope and reported here to the executor, not done:
+- (a) The two guard denials below should be recorded with `tools/guard_report.py`. I am a reader and wrote nothing.
+- (b) Block M1 (2)'s whole-tool deny must keep `Workflow` in both hook matchers (`tools/test_tool_allowlist.sh:28-32` is that control). Dropping it from the matcher would make the call unseen, not denied. This is in the producer's field.
+
+Product:
+- **Files:** none written in any repository. Scratch only: `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/td_r2/test-designer.md` (the package below, exact bytes) and `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/td_r2/chk.py` (my form and ID check).
+- **Coverage:** W-C02-23 answers SB-COR 2.3, the "PR-A1 and PR-A2's verdicts" note and E.3 to E.4. W-C02-24 answers SB-COR 3.1, 2.7's class-high rule, 2.8 rows 1 to 5 (working order section 4 rows 1 to 6), 3.5's `Plan` case and section 10's lock-out. Each draft's limits are stated under its item below.
+- **Open:** the defects and missing evidence below. The two-items-one-path conflict (M1 point 5) also touches W-C02-23, because both list `tools/merge_gate.py`.
+
+W-C02-23 (PR-A2): (1) answer to version 1
+
+1. DEFECT, on agreed (5), the trigger set. The gate runs the check only for heads that touch `.claude/roles/`. The check also reads `MESSAGE` in `.claude/hooks/reread_after_compact.py` (for the executor's limit) and its own constants in `tools/check_role_packages.py`. A head that lengthens `MESSAGE` by 300 bytes and touches nothing under `.claude/roles/` makes `executor.md` oversize and passes the gate unchecked. What would show it fixed:
+   - The trigger set is one constant: `.claude/roles/`, `.claude/hooks/reread_after_compact.py` and `tools/check_role_packages.py`, plus M2's start hook when W-C02-25 adds it.
+   - The condition holds the case "a head that only grows `MESSAGE` past the executor's limit gives GATE FAIL naming `executor.md`", with its break: that path dropped from the constant turns the case red.
+   - A record cited by a package and later removed stays not covered, because records are append-only. Running the check on every head would add a lock-out surface before M1b's revert route exists.
+2. DEFECT, on agreed (7), the counted environment "for the enforcement point, the merge gate's own run (guard M7) on the real merge". M7 runs the working tree's `tools/merge_gate.py` (`tool_allowlist.py:1490`, `ROOT` at `main`), so PR-A2's own merge runs the old gate, without the call. That merge cannot show enforcement. What would show it fixed:
+   - Program logic is counted by `tools/test_merge_gate.py`'s cases on the head's gate in a scratch clone.
+   - The live observation is the first natural merge after PR-A2's sync of a head in the trigger set, whose gate output shows the `ROLE_PACKAGES` line.
+   - Until that observation, the item stays "execution finished, not accepted" for that point.
+3. DEFECT, on agreed (4) against (3) and disposition (4). "No package line starts with `## `" is mechanically checkable, and its reason (the hand-over parser) recurs at every later edit, but (4) does not check it. What would show it fixed: (4) lists it, and says whether `=== … ===` is included, with its own FAIL reason. The condition holds one fixture with a `## ` line that fails, and the break "rule removed, case red". The other parts of (3) (the top statement, an ID per failure class, a "why bad" line) depend on per-role forms. They are named as the binding checker's reading unless the producer states a form (PREFERENCE).
+4. DEFECT, on the "Not covered: use; it rests on consumer row <n> of 2.8" line. No row of working order section 4's table (rows 1 to 7 at `b547565`) has the packages as output; row 7 is the hand-over. What would show it fixed: the block names where the row comes from. Either PR-A2 adds a row 8 by a one-row addendum (which adds `plan/Installation_Working_Order.md` and the PC to `writes:`), or W-C02-25 adds it. In the second case I write "Not covered: use; no consumer row of 2.8 carries the packages before W-C02-25 adds it (rows 1 to 7 at `b547565`)". I prefer the second, because it adds no writes.
+5. DEFECT, on agreed (4), the measure `len(MESSAGE)`. Python's `len` counts characters, and the hook writes `MESSAGE + "\n"`. A non-ASCII character added later would make the limit understate the bytes. What would show it fixed:
+   - The measure is `len((MESSAGE + "\n").encode("utf-8"))`, with `MESSAGE` read by `ast.literal_eval` from the `git show` text, never by import.
+   - A `MESSAGE` that is not a literal gives exit 2.
+   - Cases: a multibyte `MESSAGE` fixture that fits by characters but not by bytes fails; a concatenated `MESSAGE` gives exit 2.
+6. PREFERENCE, on disposition (1). The wait it sets is a hand-off parameter, so the block should carry its added critical-path time: zero if point 10's rows arrive before the verdict, otherwise one test-designer task plus its check. It should also carry its source and date (this disposition, 2026-10-20) and the check against Batu's later decisions (D-039, D-041), the line my condition asks for.
+7. PREFERENCE, on `RESERVE`. State the per-line maxima as constants whose sum a test compares with `RESERVE`: the header for the longest role, "DevOS role package: test-designer@" plus 12 hex, is 47 bytes with its newline; then the agent-ID line and the nonce line. W-C02-25's condition then compares each line, not a total.
+8. PROCEED on (1) copy by tool with source and copy hashes, (2) the executor package's assembly, (6) and disposition (1) (the sequencing keeps point 10's marker observable, and this run is a candidate counted run), and the six-file denominator in (4).
+
+W-C02-23 (PR-A2): (2) role-specific ask
+
+Can I write the condition from version 1 as it stands? Yes for most parts, once points 1, 2, 4 and 5 are fixed. Point 3 needs only a choice.
+- **Claim M:** at the merged head, `.claude/roles/` holds exactly the six named files; each passes `tools/check_role_packages.py` (form, UTF-8 bytes within its limit, cited IDs resolving); and the merge gate refuses a later head in the trigger set that fails it. This is presence, not delivery or use. Writable.
+- **Breaks and size-oracle sensitivity:**
+  - At `LIMIT` the file passes, at `LIMIT + 1` it fails.
+  - A multibyte fixture under the limit by characters but over by bytes fails. This catches a character-count oracle.
+  - A 9,350-byte role file fails. This catches an oracle that ignores `RESERVE`.
+  - `executor.md` at 9,078 bytes passes and at 9,079 fails against `b547565`'s `MESSAGE`. This catches an oracle that ignores `MESSAGE` or its newline.
+  - A head that grows `MESSAGE` fails (point 1).
+  - Five files, an empty directory, an extra file and a file in a subfolder each fail.
+  - One unresolvable ID per form fails.
+  - Each break comes with its mutation: `RESERVE` set to 0, the `MESSAGE` term removed, the call removed from the gate, each turning its case red.
+- **Over-blocking controls:** the six real packages pass. A package with legitimate non-ASCII text under the byte limit passes (the en dash in "D1–D9" is three bytes). An ID written as "N-283 (6)" resolves.
+- **Counted environment per claim:**
+  - The form, size and ID claims: the container's `python3 -I` 3.13.16 and git 2.43.0 in a full clone at the head, with `--root` and `--rev` agreeing.
+  - Enforcement: as in point 2.
+  - Public text: the leak scan with the store's freshness shown.
+  - A run on another interpreter is exploratory for the size and ID claims.
+- **Plan 6.12 item 4 line:** writable as in my round-1 draft (it compensates for each instance rediscovering known classes; its premise is that the role reads its package; the removal condition and its trace are checked at the C02 close).
+- **Not covered:** writable after point 4. Also not covered: content fitness beyond ID resolution (the checker's reading), delivery (M2), the re-read after compaction, and whether `RESERVE` holds M2's lines (W-C02-25).
+
+Interfaces the producer must state first:
+- each FAIL reason token;
+- the ID regex, and the resolution rule per form (EV and CHK by file-name prefix up to a delimiter, so that `EV-C02-02` never prefix-matches; L by a `^#+ L-n\b` heading; N by `NOTE_RE`'s marker);
+- whether IDs inside code spans count as cited;
+- how `MESSAGE` is read and measured;
+- that the gate runs the working tree's check with `--rev <head>`, and its reason line;
+- the trigger-path constant;
+- `RESERVE`'s breakdown.
+
+My package, revised only where the block now requires it. The changes: no `## ` lines; restated role-file rules removed (the oracle, one-source, window, timing and bans lines); a "Why it is bad" line; FC13 to FC15 and methods 4, 5, 7, 8 and 10 added from this triage. It is 6,254 bytes, within 9,300.
+
+<!-- package test-designer -->
+# Test designer: package (installation helper; SB-COR 2.3)
+
+`.claude/agents/test-designer.md` and `CLAUDE.md` bind; this package informs them and never overrides them. A difference between them is a finding for the executor, not a choice for you. The role file's procedure and bans are not repeated here. Every case ID below is a record on `main`; open it when its class bears on your item.
+
+**Methods (what the role file does not spell out)**
+
+1. **Size to the claim.** Size the cases to each claim's triage paragraph, never to the length of the specification or the build's rule list. The cheapest discriminating observation first; another case only where another failure class needs it.
+2. **Count the denominator.** A check over a set (files, IDs, paths, `asked:` entries, keys) first asserts the set's expected size, so an empty set or a missing member cannot pass.
+3. **Every route to the same effect.** List the routes to the protected effect (tool aliases such as `Agent` and `Task`, workflow scripts, a subagent's own calls, the PermissionRequest event, resumes by message, another interpreter, a revert) and give each a case, or name it under "not covered".
+4. **Pin the rule, not only the outcome.** A case that asserts only allow or deny passes for the wrong reason once a broader rule lands in front of it. When a rule is added, re-read the neighbouring cases and pin each one's rule ID.
+5. **Where it runs.** Name the point that executes each test at every change it guards (a merge-gate step, a hook) and its trigger set, which includes every input the check reads (a constant in another file, a message it subtracts). Name which copy runs: the merge gate and the guard run the working tree's copy, so a change to either is first enforced at the merge after its own sync.
+6. **Over-blocking is a failure.** Every deny rule gets a sound case that must pass, taken from real work where one exists (a task form actually used, a record actually merged, a true revert after `main` moved on).
+7. **Measure the property, not a representation.** Compare bytes, not characters; the resulting tree, not the text of a diff (its index line and hunk headers change when `main` moves).
+8. **A marker must be able to occur.** Before pinning an observation, check that no merge planned before it removes the state it looks for.
+9. **Interface first.** Bind a fixture to what the producer stated: rule IDs, grammars, which copy runs, how a fixture checkout is built. An interface not stated goes back to the producer before you write recipes.
+10. **Containment.** A check that can fail inside itself (a timeout, a decode error, a missing file) gets two cases: that call refused as "could not check", and an unrelated call decided exactly as before.
+11. **Claims, not mechanics.** Write the claim and the evidence that would refute it; leave copy, order and deadline mechanics to the working order unless the mechanic is the claim.
+12. **Synthetic negatives only** (D-020; D-017): planted cases go to the hook or script as input; a live observation is the first natural occurrence.
+
+**Known failure classes, each with its recorded case**
+
+- FC1 Any denial or error accepted as the refusal: N-283 (6).
+- FC2 A case passing for the wrong reason: N-279 (1), from L-394.
+- FC3 One fault repeated across hand-edited fixture copies: N-283 (sixteen copies).
+- FC4 Recipes written against an assumed interface, broken when the build added a rule: N-291; N-302 and N-303's annotations; CHK-C02-090 findings 7 and 12.
+- FC5 The counted environment declared for one attribute only: the job's tokens step (N-304 (4)); the interpreter version (L-415, L-422; N-309 (2), (5)).
+- FC6 A passive window as an acceptance gate, with almost no power to fail: CHK-C02-085 K2; CHK-C02-115 C4; N-314.
+- FC7 Methods bound as conditions, so every detour became a loosening: EV-C02-020 section 5, gap 4; L-404.
+- FC8 Test size driven by coverage, not risk: T-W14-FN's 290 cases (L-415); EV-C02-020 section 5, gap 1.
+- FC9 Ledger rule 3 read as forbidding a stronger replacement before its result: L-426 departure (6); L-425.
+- FC10 A false record copied into a test: CHK-C02-086 C2.
+- FC11 Revision loops without a cap: EV-C02-020 section 5, gap 5.
+- FC12 No continuity between instances, the same classes found again: EV-C02-020 section 5, gap 6. Add a class here when a check finds a new one.
+- FC13 A check stated with no point that runs it at the change, or with a trigger set that misses an input it reads: EV-C02-028 part 8 (PR-A2's size test, found by all five roles) and its round 2.
+- FC14 An observation whose marker a planned merge makes impossible: EV-C02-028 part 8 (PR-A2's merge against W-C02-22 point 10's "file absent" marker; answered by sequencing).
+- FC15 An exact comparison that a sound case cannot pass: EV-C02-028 round 2 (a revert compared as diff text fails once `main` has moved).
+
+**Examples from this installation**
+
+- **Good:** W-C02-22's point 10. Why it is good: its counted environment is fixed before any run counts; a counting rule drops contaminated runs; a negative control sits on file (A-C7NEG); the red path is decided in advance; and its binding checker broke the real head once per check family, each break turning its own check ID red (CHK-C02-127).
+- **Bad:** W-C02-09's 24-hour log count (CHK-C02-085 K2, then CHK-C02-115 C4).
+- Why it is bad: a zero showed only that nothing was logged, so the test could hardly fail; its 24 hours came from a tool's reach, not from any consumer's need; and the paths that bore the risk had already been exercised actively (EV-C02-020 section 5, gap 3). An active probe of each path, decided with a checker before its result, was the stronger replacement that ledger rule 3 allows (FC9).
+
+**Tools and limits (beyond the role file)**
+
+- Tests of the mechanisms live under `tools/` or `tests/`, class high in the merge gate; pin a test file's SHA-256 in the acceptance block when its content is the oracle.
+- In `tools/test_tool_allowlist.sh`, `t` asserts only the decision and `lt` also the rule ID. A fixture checkout gets a copy of the guard under test, because the guard reads the checkout its own file is in.
+- Scratch git work: listed subcommands only, each with `-C <literal path>` (guard rule B11).
+<!-- /package -->
+
+<!-- executor-lines test-designer -->
+- Ask the test designer at an item's start (triage) and again after the approach is agreed. Give it the checker's triage path and the producer's stated interfaces (rule IDs, grammars, which copy runs); never the cases or the breaks.
+- Never write or edit an acceptance block or a test. A condition that looks wrong after a result is reported, never edited; a loosening voids the result; replacing a check by a stronger one before its result is your call with a checker (L-425; L-426 departure (6)).
+- A green script is not acceptance: live rows hold it, and the item stays "execution finished, not accepted" until they are recorded (CHK-C02-127 C1).
+- A live observation of a merge-gate or guard change counts only from the first natural occurrence after its sync: both run the working tree's copy, so the change's own merge runs the old one.
+- Negative cases are synthetic only; a live denial is never planted (D-020, D-017).
+- Your failure classes in this field: methods dictated in tasks (L-426 departure (4); L-421); the library banned (L-426 departure (3)); every checker condition treated as an order (L-426 departure (5)); a passive window kept after it was judged weak (N-314).
+- Good example: W-C02-22's triage, approach and condition (EV-C02-026). Bad example: L-421's dictated transcription. Why it is bad: the work went to a helper with no role file under a task that fixed its method, so no role could return it or show the method wrong.
+<!-- /executor-lines -->
+
+W-C02-24 (M1): (1) answer to version 1
+
+1. DEFECT, on agreed (3), the line that decides the form. "The task's fixed line `Writer or reader:` decides … a producer whose line says it writes" has no grammar. Section 9 writes the line bold with free text (`plan/Installation_Working_Order.md:197`), and this round's line, "**Writer or reader:** reader. Write no file in …", contains "Write". No refusal covers the line absent, repeated or neither value. What would show it fixed:
+   - Section 9, through the addendum, and T5 pin one grammar: optional `**`, `Writer or reader:`, then a first word `writer` or `reader` that decides; exactly one such line.
+   - Absent, repeated and other values each get their own refusal ID, or a stated default (the writer form).
+   - Cases: this round's exact line gives the reader form; "writer, plan/…" gives the writer form; absent, two lines and "both" are refused with their own IDs.
+2. DEFECT, on agreed (3)'s refusal list. The writer form performs checks that have no refusal listed: the approach block absent at `HEAD`; the block malformed (a key missing or out of order); two blocks in the file; the acceptance block absent (only "empty" is listed). Two grammars are also unstated: the `Item:` line's exact form in the writer form (the whole line, or a prefix; whether `**Item:**` counts), and where an `asked:` evidence path ends (`;`, `,`, `)`). What would show it fixed: a check-to-rule-ID table that covers every check in (3), so each negative asserts its own ID.
+3. DEFECT, on agreed (2) and (4), "T3's isolation denials keep a positive control", and cases that stay green for the wrong reason. Once Workflow is denied whole, no Workflow call is allowed, so T3's isolation denials cannot have a positive control. The existing Workflow denies at `tools/test_tool_allowlist.sh:160-164`, `:219-224` and `:228` use `t`, so they stay green under the whole-tool rule whatever happens to the sub-rules (FC2). The Agent cases `:141-144` carry no type, and deny by T2 only because T2 is checked first (`tool_allowlist.py:2196`). What would show it fixed:
+   - The flip list gives each Workflow case its new expectation, asserted with `lt` and the whole-tool rule ID, or names it removed together with the dead sub-rule code.
+   - "T3's" is corrected to T2's. The positive control is `Agent` with `subagent_type: checker` and no isolation. `:141-144` are asserted with `lt` as T2.
+   - The flip list says whether `Workflow` leaves `ALLOWED_NON_MCP`. If it does, `W21_LIST` (`:856-858`) also flips, and the denial's rule ID changes.
+   - Break: with the whole-tool deny removed, `:159`, `:165`, `:167`, `:217`, `:218` and `:229` turn red.
+4. DEFECT, on agreed (8) and (11), the revert comparison. "The head's diff from main is exactly the inverse of <sha> … (git diff compared byte for byte)" refuses a true revert once any later commit has touched a file the merge touched. The `index` line and the hunk headers differ; I observed this (see Relied on). M1a writes `plan/Installation_Working_Order.md` and `plan/decisions/PC-53.md`, which later records pull requests touch freely (they are class normal, so they still merge during a T5 lock-out). The lock-out route therefore over-blocks exactly where it is needed. What would show it fixed:
+   - The gate compares content: it applies the inverse of `<sha>` (first parent) to `origin/main` itself and compares the resulting tree with the head's tree.
+   - A conflict refuses with its own reason, and that is named as the route's limit (section 10's residual).
+   - Cases R1 to R7:
+     - R1: a true revert with `main` unmoved passes.
+     - R2: my scratch scenario passes.
+     - R3: R2 plus one byte fails, by the revert rule.
+     - R4: a partial revert (one of two files) fails.
+     - R5: a SHA that is not a merge commit fails.
+     - R6: a SHA not on `origin/main` fails.
+     - R7: a revert that conflicts with a later edit of the same lines is refused with the conflict reason.
+   - Merge commits hold on `main` today (538 of them).
+5. DEFECT, on agreed (6), the quantifier when two open items list the same path. A head touching such a path "needs a covering verdict whose `item:` names that item". A verdict has one `item:`. W-C02-23 and W-C02-24 both list `tools/merge_gate.py` and `tools/test_merge_gate.py`, so M1b could not be covered while W-C02-23 is merged but not yet accepted. The same holds for any two parallel items that share a path. What would show it fixed:
+   - The rule states its quantifier, for example: each touched path that an open item's `writes:` lists must be in the `writes:` of the verdict's item.
+   - The block states where the gate reads "accepted or cancelled".
+   - Cases, with two open items listing path P: item A's verdict passes; a verdict for an item C that does not list P fails; no verdict fails.
+6. DEFECT, on disposition (1)'s "what still holds". The only control on a reader-form producer that writes is "the binding checker confirms the `producer_run` was a writer-form launch from that run's task". None of (5) to (10) writes that duty into `checker.md`'s template or section 9, and no tool shows a run's launch prompt: `calls` prints tool calls; the task is the first user message of `agent-<id>.jsonl`. What would show it fixed: (9) or (10) names the confirmation and its evidence (that first message, re-decided by T5's writer-form function, or T5's allow record for that launch), and the template carries the line, which the condition then checks. Without this, the condition can only list the reader-form hole as not covered.
+7. PREFERENCE, on (10). One key list, compared by a test across `tools/merge_gate.py`, `checker.md`'s template and section 9's template, not `checker.md` alone. Also state the fill map that turns the template's placeholders into valid values for the "fills the template verbatim" test.
+8. PREFERENCE, ordering. State the order of M1a and M1b, and that a verdict written in the old form before M1b's sync is refused after it. I will write that as my reading of (5) unless the block says otherwise.
+9. PROCEED on:
+   - (1) the types, with one case per type and an unknown type denied;
+   - (2) the whole-tool deny, with point 3;
+   - the reader form as a concept (disposition 1);
+   - (5) the condition grammar, which closes my round-1 point 5 and R1-9;
+   - (7), read as: adding a block where none existed is class normal, like an acceptance block (`tools/merge_gate.py:20`). Please confirm;
+   - disposition (5)'s hash fallback decided now, which closes my round-1 point 8.
+
+W-C02-24 (M1): (2) role-specific ask
+
+- **The reader form's over-blocking control and break:** not writable until point 1 is fixed. After it: the control is this round's producer task as filed in EV-C02-028, allowed under the reader-form allow ID. Break 1: the reader branch removed, and that task is refused as "file absent at `HEAD`". Break 2: the same task with "writer" on the line, refused by the writer form.
+- **The flip list:** the allow-to-deny flips the block lists are right at `b547565`. It is writable after point 3 adds the wrong-reason cases, `:141-144`, the `W21_LIST` choice and the matcher control (`:28-32`, which stays).
+- **The containment test:** writable once the producer states the "could not check" rule ID, which must differ from the guard's internal-error path (`tool_allowlist.py:2317`, which the tests assert never occurs). The fixture route is a fixture checkout holding a copy of the guard, since `ROOT` is the hook file's checkout (as `:175-191` do for skills). The broken fixtures need no injection hooks:
+  - an item file that is not UTF-8 at `HEAD`;
+  - an item path that is a directory at `HEAD`;
+  - the fixture's `.git` removed;
+  - a prompt carrying a lone surrogate escape (`\ud800`), which parses as JSON but cannot be encoded for T5's SHA-256 log.
+
+  Each of these refuses only the producer call with "could not check", while a checker call in the same fixture stays allowed. Break: T5's own catch removed, and those calls hit the guard-wide failure path instead.
+- **The revert cases:** not writable as the block states them. Under byte-for-byte diff text, R2 would have to expect FAIL, against the route's purpose (point 4).
+
+Interfaces the M1 producer must state first:
+- each allow and refusal rule ID;
+- the grammars of points 1 and 2;
+- how a T5 fixture checkout is built (a copy of the guard, a git repository, a local `origin/main` ref for "sync first");
+- whether `Workflow` stays in `ALLOWED_NON_MCP`;
+- the value grammars of `triage:`, `floor:` and `shared_with_producer`;
+- the floor-path constant as exact paths and prefixes ("tools/ tests and oracles" is prose);
+- where the gate reads "accepted or cancelled";
+- the revert comparison method.
+
+Not covered by M1's condition, as drafted:
+- use (2.8 rows 1 to 5: T5 and the gate show presence and form only);
+- whether the approach was agreed;
+- whether a `diff-confirmed` closure was really made (the gate reads form);
+- whether the checker ran `calls`;
+- products written to undeclared class-normal paths;
+- resumes by message (T6);
+- workflow agents until row 1.2.
+
+Guard denials:
+- B7 (a command line that runs `claude` acts with the account's credentials). I had added `claude --version` to a version check. I dropped it and used the version the task states (2.1.304).
+- B11 (git only through its allow lists; `git patch-id` is not listed, and the attempt also chained `cd` with git). I re-ran the scratch revert experiment with listed subcommands, each as `git -C <literal path>`, and compared the two diffs with `diff`. That is the observation in M1 point 4.
+
+Both should be recorded with `tools/guard_report.py` by the executor. I wrote no records.
+
+## 10. The executor's integration, version 2 (agreed)
+
+*Filing note: the executor's own text. Every round-2 defect and missing-evidence point is taken below, each named by its author and number; every preference is taken or given a disposition. Version 2 is the items' approach block as merged; with it every asked role's last answer (round 2, part 9) is `PROCEED` or has a disposition here (working order section 4 step 1a).*
+
+**Round 2 in brief.** Producer `ab7920215dfc6c85f`: W-C02-23 W23-1 (the transformation table leaves indents and `## ` lines), W23-2 (PR-A2's own merge runs the old gate); W-C02-24 W24-1 (`Writer or reader:` has no grammar), W24-2 (no positive Workflow control can exist; the dead parser), W24-3 (an unreadable `writes:` line locks an open item), W24-4 (read the item's state at the merge base); preferences W23-3, W23-4, W24-5, W24-7, W24-8. Researcher `ab24c84d8f77dbbb1`: W-C02-23 DEFECT 1 (ID resolution shows existence, not content); preferences 2 (name Ek A's departures), 3 (bytes, not characters); W-C02-24 SCOPE_CONFLICT 1 (the whole-tool Workflow deny against the repository's `ultracode` setting and D-035), preferences 2 and 3. Prober `ae4d875f0b3826b32`: W-C02-23 PROCEED (preferences 3, 4); W-C02-24 DEFECT 2 (the comparator for the prompt observation is a derived copy), DEFECT 3 (the fallback does not cover an absent prompt), DEFECT 5 (row 1.2's trigger cannot occur), preference 4. Checker in triage `a1d0941b5e8c59178`: W-C02-23 DEFECT 1 (the trigger set misses the check's inputs), DEFECT 2 (counted environment of the enforcement), DEFECT 3 (round 2's instances are not round 1's authors); preferences 4, 5, 6; W-C02-24 DEFECT 1 (a `diff-confirmed` blocking condition covers its own head), DEFECT 2 (the floor list is categories, not paths), DEFECT 3 (a path shared by two open items), DEFECT 4 (no route to confirm the writer form), DEFECT 5 ("could not confirm" cannot be closed once the transcript is gone); preferences 6, 7, 8. Test designer `a01d7b83cc35aa15c`: W-C02-23 DEFECT 1 (trigger set), 2 (counted environment), 3 (no `## ` check), 4 (no 2.8 row carries the packages), 5 (`len` counts characters); preferences 6, 7; W-C02-24 DEFECT 1 (`Writer or reader:` grammar), 2 (refusal table and grammars), 3 (wrong-reason passes; T2 not T3), 4 (a revert compared as diff text fails once `main` moves), 5 (shared paths), 6 (no tool shows a run's launch prompt); preferences 7, 8.
+
+### 10.1 W-C02-23 (PR-A2), approach version 2
+
+```
+<!-- approach -->
+base: b547565d184aadcda8e0684d7acdc96aade4f722 (code and role files byte-identical to d0a2ca9, the round-1 base)
+asked: producer: round 1 a63eb9c7980da259e (PROCEED; 7 points), round 2 ab7920215dfc6c85f (DEFECT W23-1, W23-2; PREFERENCE W23-3, W23-4; all taken); researcher: round 1 a12dfcbcf90db177e (PROCEED; 9 points), round 2 ab24c84d8f77dbbb1 (DEFECT 1, taken; PREFERENCE 2, 3, taken); prober: round 1 a708d159143834d2d (PROCEED; 9 points), round 2 ae4d875f0b3826b32 (PROCEED; PREFERENCE 3, 4, taken); checker in triage (excluded from the binding verdict): round 1 a0cc50f9a9191fc93 (PROCEED; 8 points), round 2 a1d0941b5e8c59178 (DEFECT 1 to 3, taken; PREFERENCE 4, 5 taken, 6 to the test designer); test designer: round 1 a2e944787a01ea36f (PROCEED; 8 points), round 2 a01d7b83cc35aa15c (DEFECT 1 to 5, taken; PREFERENCE 6 taken, 7 to W-C02-25). All notes verbatim in evidence/C02/EV-C02-028_pra2_m1_triage.md parts 2 to 6 (round 1) and 9 (round 2); the integrations in parts 8 and 10.
+not_asked: none (all five roles were asked)
+library: the roles read spec-kit FINDINGS (6, 7, 11), superpowers CORE (3 to 5) with U03 (F20 to F22) and U04 (F28, F32), gstack CORE (P5 to P7, F1 to F5), the multi-agent assessment (7, C3 to C5, R4, R7), EXP-001's consolidation (14.1 to 14.4), EXP-006 S1-03 (K4, K5, A1 to A5), the Actors and Information grounds' KEY files, the context and harness studies, ecc METHOD-CASE, the work-environment vertical (KEY, findings 02 and 07) and the SDLC playbook's falsifiers (F5 to F8, F12, F13). They changed: the enforcement point and its trigger set (gstack P6, F3, F4: a check that does not run at every change of its inputs is not a check), the counted environment of the enforcement (gstack F2, superpowers CORE 4: branch success is not merged-state success), the copy method's source hashes (spec-kit 7, 11), the binding checker's opening of cited cases (the selection-exposure KEY: a resolving ID is not its content; an existing but wrong ID passes a resolver), "why bad" (Ek A 3.2 item 5), no restated role-file rule (the context study 4.1); they justified keeping work state out (EXP-001 14.3) and the claim's limit (superpowers CORE 5).
+agreed: (1) Six files under `.claude/roles/`: `producer.md`, `researcher.md`, `prober.md`, `checker.md`, `test-designer.md`, `executor.md`. Each role's package is the text its role's round-2 instance gave between the whole lines `<!-- package <role> -->` and `<!-- /package -->` in EV-C02-028 part 9 (agent IDs in `asked:`), copied by tool with no transformation: the producer pins in its build record each source block (EV path, markers, SHA-256 of the block as filed) and the copy's SHA-256, which must be equal. A draft that fails `tools/check_role_packages.py` goes back to its role with the tool's reason; the producer changes no byte. (2) The executor's package is assembled by tool from the five blocks between `<!-- executor-lines <role> -->` and `<!-- /executor-lines -->` in part 9, in the order producer, test designer, checker, researcher, prober, each under one bold line naming the role, after one header line and one precedence line (`.claude/agents/` and `CLAUDE.md` do not bind the executor; its rules are the working order and `CLAUDE.md`, which bind; this package informs and never overrides them); the producer lists the header, the precedence line and the role lines as its only joining text. (3) Each package states at its top that its rules files bind and that it informs and never overrides them, cites at least one case ID per failure class, and gives a "why bad" line for its bad example; the binding checker reads each against its role file for a restated or contradicting rule (disposition 3). (4) The check: `tools/check_role_packages.py` (standard library; `python3 -I`; `--rev <sha>` reading with `git show`, or `--root <tree>`; exit 0 pass, 1 fail, 2 could not check). It checks: exactly the six files, no subfolder, no other file; strict UTF-8, no NUL; first line not `---`, no line starting `name:`; no line starting `## `; no line of 2,000 or more characters; UTF-8 bytes at most `LIMIT = 9500 - RESERVE` with `RESERVE = 200` for the five roles, and for `executor.md` at most `LIMIT - len((MESSAGE + "\n").encode("utf-8"))`, `MESSAGE` read from `.claude/hooks/reread_after_compact.py` at the same revision by `ast.literal_eval` of its assignment, never imported, a non-literal `MESSAGE` giving exit 2 (9,078 bytes at `b547565`); every cited ID resolves at that revision, by these rules: IDs matched by `(?<![A-Za-z0-9-])(EV-C\d\d-\d{3}|CHK-C\d\d-\d{3}|L-\d+|N-\d+)(?!\d)`, inside code spans too; EV and CHK as a file under `evidence/` (recursively) whose name starts with the ID followed by `_`, `.` or `-`; L as a heading `### L-<n> ` in `plan/ledger/*-log.md`; N as a note marker `<!-- note N-<n> ` in `plan/work/*.md`. Its claim is "every cited ID resolves", nothing about content. One-line reason tokens per failure; output one line per file `ROLE_PACKAGE <name> bytes=<n> limit=<m> PASS|FAIL <reason>`, then `ROLE_PACKAGES PASS|FAIL|COULD NOT CHECK`. `RESERVE` and the header form `DevOS role package: <role>@<first 12 hex of the file's SHA-256>` are constants of this tool (one source; W-C02-25's hook imports or a test compares them). (5) Enforcement: `tools/merge_gate.py` runs its own tree's `tools/check_role_packages.py --rev <head>` (the working tree's copy, never the head's) whenever the head's diff from `main` touches any path in one constant trigger set: `.claude/roles/`, `.claude/hooks/reread_after_compact.py`, `tools/check_role_packages.py` (W-C02-25 adds its start hook to it); a fail or could-not-check refuses the merge with the tool's reason. One call of about a dozen lines, with its cases in `tools/test_merge_gate.py`; `tools/merge_gate.py` has one writer at a time: PR-A2 adds this call first, and M1b starts from it. (6) PR-A2 does not merge until W-C02-22 point 10's rows are recorded or its red path applies (disposition 1). (7) The binding check: one fresh checker that took part in no round of W-C02-23 or W-C02-24, drafted no package, gave no verdict on either item, and whose agent ID the executor checks against every `asked:` line, triage record and draft before launch (stated in the task and the verdict's independence line); it judges the whole head, the executor's package included, in both reading modes (product only first: can a role act at its take-up from its role file, `CLAUDE.md` and its package, and does the package contradict them; then design-knowing against Ek A 3.2, 3.3 and 3.5, plan K-7 item 2, W-C00-12 (j) and SB-COR 2.3), no single score; it declares FC9 for the checker package and for the checker lines in `executor.md`; it opens each cited case in the checker and executor packages and at least two per other package, compares each with the package's statement of it and lists mismatches; floor: the test oracle (`tools/check_role_packages.py` and its test), the merge gate (own breaks), and public text (the leak check, with the store's freshness shown, and service names on every file). If its budget cannot hold this, the executor's package gets its own verdict. Named adaptations of Ek A, for the design-knowing reading: the knowledge map stays in the role file (3.2 item 1); the executor's library line in each task stands for 3.2 (a)'s automatic selection; 3.3's dead ends and competence profile are not carried (no exams before C05, plan 7.3); `.claude/roles/` stands for the database's package (PC-53's notes; D-010 summary 23). Counted environment: program logic, the container's `python3 -I` 3.13.16 and git 2.43.0 in a full clone at the head, `--root` and `--rev` agreeing; the enforcement, `tools/test_merge_gate.py`'s cases on the head's gate and a run of the head's own `tools/merge_gate.py` against the real pull request from a scratch clone at the head before the merge, whose output carries the `ROLE_PACKAGES` line (PR-A2's own merge runs the old gate, guard M7 reading the working tree); the live row, the first natural merge after PR-A2's sync whose head touches the trigger set, recorded when it occurs. Deliberately not built: the start hook (W-C02-25), the hash on a role's package line (W-C02-25's receipt), validity lines per entry, a consumer row for the packages in the working order's table (W-C02-25 adds it; until then "Not covered: use; no consumer row of 2.8 carries the packages before W-C02-25 adds it (rows 1 to 7 at b547565)").
+writes: .claude/roles/producer.md; .claude/roles/researcher.md; .claude/roles/prober.md; .claude/roles/checker.md; .claude/roles/test-designer.md; .claude/roles/executor.md; tools/check_role_packages.py; tools/test_check_role_packages.py; tools/merge_gate.py; tools/test_merge_gate.py
+consumer: each role, which reads its package by its role file's procedure until W-C02-25's start hook delivers it; the executor (its package, re-read at opening and after a compaction, working order section 3); W-C02-25's hook (RESERVE and the header form); M1b of W-C02-24 (the call it starts from)
+dispositions: (1) PR-A2 waits for W-C02-22 point 10's rows (all five roles, round 1), rather than a new version of point 10's marker or merging first. Given up: PR-A2's merge as soon as its verdict passes. Time it adds on the critical path: none if the rows are recorded before PR-A2's verdict passes (the rows come from natural runs of this triage and of PR-A2's own condition, build and check); otherwise at most one test-designer task and its check; source: this disposition and EV-C02-028 parts 2 to 6, 2026-10-20; checked against D-039 (2026-10-19: too long because of constant checking; the wait adds no check) and D-041 (2026-10-20: ends the wait for Batu's reading; no bearing). What still holds: rows from natural runs only; round 2's task paraphrased the package line's value and the counting rule (checker round 2 preference 6); whether that weakens a row is the test designer's and the binding checker's reading, never applied as a new version to a row already seen (Ek G G8 item 3). Reopens if the rows are not recorded when PR-A2's verdict passes. (2) The executor's limit subtracts the compact message measured in UTF-8 bytes with its newline (producer, prober, checker, test designer, researcher), not a separate SessionStart hook (prober round 1's alternative): M2 decides the hook layout and the subtraction is safe either way. (3) R1-7 and R1-8 (CHK-C02-127) answered as methods in the researcher's and prober's packages, against the test designer's preference for role-file corrections: CHK-C02-127 routed them to the packages and each package states that its role file binds; still holds: a package that contradicts a binding sentence is a second authority, so the binding checker reads both against their role files; reopens if it finds a contradiction, which then goes to a PC-53 addendum. (4) No package line starts with `## ` (producer), enforced by the check (test designer round 2 DEFECT 3); round 2's packages give the copy no transformation to make (producer W23-1). (5) The live enforcement row does not hold the acceptance (checker round 2 DEFECT 2, against the test designer's DEFECT 2 option "until that observation, not accepted"): a merge touching the trigger set may not come for weeks; the pre-merge run of the head's own gate against the real pull request runs the exact code that will run after the sync, and is counted; still holds: a live run is the only proof that the synced gate calls the check; recorded when it occurs, a red one reopening the item. (6) RESERVE's per-line maxima (test designer preference 7) go to W-C02-25's condition, with this record's arithmetic (prober round 2 item 2: header 47 bytes for the longest role name, agent-ID line about 33).
+open: the citation researcher.md:31 (L-285 for the turn-limit case, which is L-286): a note for PC-53's next addendum, owner the executor; EV-C02-023's rows from R-03 on, made in another session, re-observed at their first use, owner the executor; the live enforcement row (5), owner the executor
+<!-- /approach -->
+```
+
+### 10.2 W-C02-24 (M1), approach version 2
+
+```
+<!-- approach -->
+base: b547565d184aadcda8e0684d7acdc96aade4f722 (code byte-identical to d0a2ca9, the round-1 base)
+asked: producer: round 1 a63eb9c7980da259e, round 2 ab7920215dfc6c85f (DEFECT W24-1 to W24-4, taken; PREFERENCE W24-5, W24-7, W24-8, taken); researcher: round 1 a12dfcbcf90db177e, round 2 ab24c84d8f77dbbb1 (SCOPE_CONFLICT 1, disposition 2; PREFERENCE 2 taken, 3 disposition 8); prober: round 1 a708d159143834d2d, round 2 ae4d875f0b3826b32 (DEFECT 2, 3, 5, taken; PREFERENCE 4, taken); checker in triage (excluded from both binding verdicts): round 1 a0cc50f9a9191fc93, round 2 a1d0941b5e8c59178 (DEFECT 1 to 5, taken; PREFERENCE 6 to 8, taken); test designer: round 1 a2e944787a01ea36f, round 2 a01d7b83cc35aa15c (DEFECT 1 to 6, taken; PREFERENCE 7, 8, taken). All notes verbatim in evidence/C02/EV-C02-028_pra2_m1_triage.md parts 2 to 6 and 9; the integrations in parts 8 and 10.
+not_asked: none (all five roles were asked)
+library: the roles read the SDLC playbook's falsifiers (F7, F8, F12), gstack CORE (P6, P7, F2 to F4), the multi-agent assessment (C4, section 7), EXP-006 S1-03 (K4, A5), the harness study (sections 10, 16, 17), superpowers U03 (F20 to F22) and U04 (F28, F32), the Actors ground's KEY and the work-environment vertical's finding 02. They changed: the whole-tool Workflow deny (F7; harness 10), the route list each with its own case (F7, F8), the revert compared by its resulting tree (F12 and gstack F2: rollback is not always an inverse; finding 02 section 4), the containment of T5's errors and the reader form (gstack P7; S1-03 A5), the outcome table for the prompt observation (gstack F4: a check that is registered is not a check that runs), claim M limited to presence and a byte match (the Actors KEY); a term search for lock-out and break-glass found nothing in the library.
+agreed: Two pull requests in one item, each with its own binding verdict; the item is accepted after both. **M1a, the guard** (`.claude/hooks/tool_allowlist.py`, `tools/test_tool_allowlist.sh`, `tools/test_token_stop.py`, and the working order's sections 2, 4 step 3, 9 (the `Writer or reader:` grammar only) and 10 through a PC-53 addendum, part a): (1) Agent types: `ROLE_TYPES = producer, researcher, prober, checker, test-designer`; a type is allowed only when it is in `ROLE_TYPES` and its file exists in `.claude/agents/`; an Agent or Task call with no `subagent_type` is denied (T4); `general-purpose`, `claude`, `claude-code-guide`, `statusline-setup`, `counter-designer` (until C05), Explore, Plan, fork and any unknown type are denied, each case pinned with its rule ID. (2) The Workflow tool is denied as a whole with one reason of its own, which names the Agent route; `Workflow` stays in both hook matchers (`tools/test_tool_allowlist.sh:28-32` stays) so the call is seen and denied, not unseen; the workflow parser (`tool_allowlist.py:2210-2231`) is removed with its sub-rules; every existing Workflow case (`tools/test_tool_allowlist.sh` 159 to 167, 217 to 229) becomes a denial asserted with `lt` and the whole-tool rule ID; no positive Workflow control is claimed; whether `Workflow` leaves `ALLOWED_NON_MCP` is the producer's to state, with `W21_LIST` (856 to 858) flipped if it does. Re-admission needs a checked guard change (disposition 2). (3) T5, for `producer` and `test-designer` calls only (Agent and Task alike, any `agent_id`, PreToolUse and PermissionRequest alike), reading only the guard's own checkout (`ROOT`) and never the hook input's `cwd` or the network, git output read raw and decoded strictly. The form: exactly one line matching, after optional `**`, `Writer or reader:` and optional `**`, a first word `writer` or `reader` (case-insensitive), then free text; absent, repeated or another first word: refused, each with its own rule ID (no default). The working order's section 9 task-template line pins the same grammar in M1a's addendum. Writer form (a producer task whose line says `writer`): allowed only when the prompt has exactly one whole line `Item: plan/work/W-C<dd>-<dd>[.<n>].md` (optional `**` around `Item:`), the file exists at `HEAD`, it holds exactly one approach block with whole-line markers and the keys `base asked not_asked library agreed writes consumer dispositions open` once each in that order, that block (markers included) is a byte-for-byte substring of the prompt, `library:` is present, `asked:` names at least one path matching `evidence/C\d\d/[A-Za-z0-9_.-]+\.md` and each exists at `HEAD` (`git cat-file -e`), the file holds an acceptance block that is present and non-empty, and no note in it is open with `blocks=true` (a missing status counts as open, as `tools/records.py` reads it). Reader form (a producer whose line says `reader`, a triage task): allowed when the prompt has at least one `Item:` line naming a well-formed `plan/work/W-…md` path, on `main` or not. A test designer's task: allowed in either form when it has such an `Item:` line. A table maps every check to its own refusal rule ID (no `Item:` line; more than one in the writer form; path outside the pattern; file absent at `HEAD`, with "sync first" when present at the local `origin/main` but not at `HEAD`; no approach block; more than one; malformed block; block not found byte for byte; `library:` absent; no `asked:` path; an `asked:` path absent; acceptance block absent; acceptance block empty; open blocking note; the form line absent, repeated or other; no `prompt` in the hook input), plus `T5.0` "could not check" for any error inside T5 (git timeout, `OverBudget`, decode error, a directory where a file should be, an unencodable prompt), which refuses that one call and no other; allow IDs `T5` (writer) and `T5R` (reader). T5 logs per call, in the record's `detail`, the hook input's key names, the prompt's UTF-8 byte length and SHA-256 (the JSON-decoded string, nothing appended), never its text. (4) Tests: every negative a synthetic hook input through the hook command as `.claude/settings.json` holds it, asserting its own rule ID (`lt`), in a fixture checkout that holds a copy of the guard under test, a git repository and a local `origin/main` ref; over-blocking controls allowed with their allow IDs: a writer task carrying W-C02-22's approach-block bytes, copied by tool from `HEAD` into a fixture item file whose notes are closed; a minimal approach ("no team round needed, because …", one role, one EV path, the other keys `none`); this round's own producer task as filed in EV-C02-028 (reader form); this round's test-designer `Item:` line; checker, researcher and prober tasks with no `Item:` line; a prompt holding the right block among other text; containment: each `T5.0` fixture refuses only the producer call while a checker call in the same fixture is allowed. Breaks: T5 reading `cwd`; the acceptance check removed; a missing note status read as closed; the form line ignored; the whole-tool deny removed (159, 165, 167, 217, 218 and 229 turn red); T5's own catch removed (the calls reach the guard-wide failure path). The existing controls that flip, by content at the base: 207 and 208 (the loop's `producer`, `test-designer` with prompt "x" and no `Item:`, `counter-designer`, `general-purpose`; `checker`, `researcher`, `prober` stay allowed), 210 (no type), 758 (`general-purpose`), the Workflow cases above; 141 to 144 asserted with `lt` as T2 (their reason is T2's, not T3's), with `Agent` type `checker` and no isolation as T2's positive control; the `Plan` case added; `tools/test_token_stop.py:1175` changed to `subagent_type: checker` (producer W24-8). **M1b, the merge gate** (`tools/merge_gate.py`, `tools/test_merge_gate.py`, `.claude/agents/checker.md`'s binding template, the working order's sections 9 and 10 through PC-53's addendum part b, and `tools/subagent_audit.py` with its test for one read-only subcommand), after PR-A2's merge (one writer of `tools/merge_gate.py` at a time): (5) a verdict that covers a head carries one-line keys `item:` (`W-C<dd>-<dd>[.<n>]` whose file exists at the merge base, `stage C<dd>`, `branch SB-<NAME>`, or `revert <40-hex sha>`), `triage:`, `floor:`, `own_breaks:` (not `none` when the head touches a floor path), `shared_with_producer`, `producer_run` (an agent ID, or `none` for a revert, a records-only head, or a stage or branch verdict); the value grammars of `triage:`, `floor:` and `shared_with_producer` are stated by the producer and pinned by the test designer. The floor paths are one constant of literal paths and prefixes: `.claude/hooks/`, `.claude/settings.json`, `.github/workflows/`, `supabase/migrations/`, `tools/` (the whole prefix: the guard's tests, the leak check's scripts, the merge gate, every oracle). Condition lines between whole-line markers `<!-- conditions -->` and `<!-- /conditions -->` parse as `C<n> · type: <defect | missing evidence | preference | scope conflict> · blocks: <producer task | merge | acceptance | none> · closure: <diff-confirmed | scoped re-review | full fresh check> · <text>`; a defect or missing evidence blocks something, a preference or scope conflict blocks `none`; with `conditions: none` the markers may be absent or empty; with `see markers` at least one well-formed line; a line starting at column 0 with `C<n> · type:` outside the markers refuses (an indented quotation does not); `PASS` with a blocking line, and `PASS-WITH-CONDITIONS` with `conditions: none`, refuse; a verdict with an open `blocks: merge` condition covers nothing unless its closure is `diff-confirmed` and at least one commit follows its `reviewed_head` and every commit after it is class normal. (6) The `writes:` rule: the gate reads each item's state and `writes:` line at the merge base (not the head, so a head cannot escape by flipping its item's state), mirroring `tools/records.py`'s closed states (declined, cancelled, accepted) with its own standard-library `front()` and a test comparing the two on the real items. For every path a head touches that an open item's `writes:` lists, that path must be in the `writes:` of the covering verdict's `item:`, and that verdict's `producer_run` is not `none`; two open items listing the same path are covered by a verdict for either. An item's `writes:` line that does not parse (`; `-separated repository paths or `dir/` prefixes, no prose; the item's own file never in it) makes a head that touches that item's file need a covering binding verdict whose `item:` names that item, not a refusal. A records-only head (only class-normal record paths) needs no verdict, as now, also when a records path is in an open item's `writes:`. M1b's head brings every open item's `writes:` line to the pinned syntax or lists it as exempt, and a listing at its head shows that each parses or is exempt. (7) An existing approach block changed or removed is class high, like an acceptance block; adding one where none existed is class normal (`tools/merge_gate.py:20`'s rule for acceptance blocks). (8) The revert route is evaluated first: `item: revert <sha>` covers a head when `<sha>` is a merge commit on `origin/main` and applying the inverse of `<sha>` against its first parent to `origin/main` gives exactly the head's tree (a conflict refuses with its own reason, named as the route's limit); it needs no `producer_run`, `floor:` or `own_breaks:`; M1a's revert before M1b's merge is judged by the old gate with an ordinary verdict; after the merge, the executor syncs, runs `tools/test_tool_allowlist.sh` and `tools/test_merge_gate.py` and records the read-back. (9) `producer_run`: the gate checks its form only. The binding checker confirms two things and records both: that the run was launched in the writer form, by the new read-only subcommand `python3 -I tools/subagent_audit.py launch <agent id>`, which prints the UTF-8 byte length and SHA-256 of the run's first task message (from its transcript, never the text) and the T5 allow record of the same SHA-256 and rule `T5` in the guard log; and that the run's Write and Edit paths match the diff, by `calls`, mapping the scratch clone's absolute paths to repository paths by the suffix after the clone's root and listing every other changed path as untraced. If the transcript or the guard log is gone with the container, the checker writes "could not confirm", a missing-evidence condition blocking the merge whose closure is a fresh writer-form producer run of the same task that reproduces the diff, confirmed by `launch` and `calls` (section 10 names it). (10) `.claude/agents/checker.md`'s binding template and section 9's template gain `item`, `shared_with_producer` and `producer_run`, and the confirmation duty of (9) as a line; one key list is compared by a test across `tools/merge_gate.py`, `checker.md` and section 9; a test fills the template by a stated fill map and passes the new gate, and fails it with any required key dropped. (11) The lock-out route, stated in section 10: a T5 or gate bug that over-blocks is recovered by the executor's revert in a scratch clone with a checker's verdict by (8); if that too is refused, section 10's residual stands (a revert through GitHub's interface by the account owner). (12) The platform-delivery observation, written now: at the first T5-scoped call after M1a's sync (reader or writer form), T5's record (allow or deny) is compared with the prompt the executor sent, read by `tools/subagent_audit.py launch` from the executor's own Agent tool-use input whose ID equals the record's `tool_use_id` (not from a filed copy). Outcomes: (i) present and equal: T5 as designed; (ii) present but different, the block still found byte for byte (a wrapper added): recorded, nothing changes; (iii) present but the block not found while the sent prompt held it: the fallback, a line `Approach-sha256: <hex>` placed directly after `Item:`, produced by a `tools/` script, which T5 then compares, by a checked revision; (iv) no `prompt`: T5's own refusal, then a revert of M1a by route (8) with the type narrowing kept, and T5's next version carried on the `description` key (present in the hook input, round 1, guard #140; its length limit unobserved), a choice that also stops SB-COR 3.7's last fallback, which rests on the same input. Deliberately not built: the registry, the start and stop hooks and the liveness report (M2, W-C02-25); `SendMessage` and T6 (M3); a `producer_run` check inside the gate; workflow agents (disposition 2). Counted environment: program logic, the container's `python3` 3.13.16 as the hook command calls it and git 2.43.0, in fixture checkouts; platform delivery, observation (12); the gate's live run, the first natural merge after M1b's sync, a records-only head first and then a class-high one.
+writes: .claude/hooks/tool_allowlist.py; tools/test_tool_allowlist.sh; tools/test_token_stop.py; tools/merge_gate.py; tools/test_merge_gate.py; tools/subagent_audit.py; tools/test_subagent_audit.py; .claude/agents/checker.md; plan/Installation_Working_Order.md; plan/decisions/PC-53.md
+consumer: the executor's producer and test-designer tasks (T5 decides them); every binding checker and the executor's verdict filing (the new forms and the confirmation of (9)); the merge gate's later runs; W-C02-25 to W-C02-27 (their producers pass T5 with their item files)
+dispositions: (1) T5's reader form keyed on a pinned `Writer or reader:` grammar (producer, test designer: T5 as written denies the producer's own triage tasks; neither line form had a grammar); alternatives: a registry-based distinction (needs M2), a separate triage tool; given up: checking every producer launch fully; still holds: a reader-form producer could write if it ignores its task; the gate's `producer_run` must be a writer-form launch, confirmed by (9)'s `launch`; reopens if M2's registry can bind writes to the launch form. (2) The Workflow tool denied as a whole (producer, researcher, prober, test designer; against the checker's per-call pairing), and the researcher's scope conflict: the repository's `.claude/settings.json` sets `ultracode` for sessions without an explicit choice, and with ultracode on Claude plans a workflow for substantive tasks (workflows page, read 2026-10-20), so after M1a those plans meet the denial, whose reason names the Agent route. The executor's reading (D-033's rule: a user's words about how a thing is built are not a technical specification): Batu's D-035 sets the effort and quality of sessions, and workflows are a means; the roles run through the Agent tool, as the working order already directs; Batu is told this in one line as information, a departure from a means with its reason (Appendix E section 3, "one line instead of a question"). Given up: workflows as a helper of the working session (working order sections 2 and 4 step 3 change in the addendum). Still holds: a liveness cost per denied plan, small since the denial names the route. Reopens: a checked guard change for one named workflow run with a `checker` or `prober` agent doing real read-only work, made only after M2's Start and Stop hooks are live, with its observation written before the run (Start and Stop records with that agent ID; whether any Agent PreToolUse appears for it); no observation is pending until then (prober round 2 DEFECT 5; the earlier `open:` item is closed). (3) Every built-in type out, `claude-code-guide` and `statusline-setup` included (test designer, checker round 1: no stated decision; Ek A 3.3's reason, a helper with no role package; the PC addendum does not give "does not load `CLAUDE.md`" as the reason, since only Explore and Plan skip it, researcher round 2 item 4); `claude` out without a row. (4) Two pull requests (producer, checker): separate lock-out surfaces revertible one at a time, and one writer of `tools/merge_gate.py` after PR-A2; one item, accepted after both; order: M1a in parallel with PR-A2, M1b after PR-A2's merge; a verdict written in the old form before M1b's sync is refused after it, so verdicts pending at M1b's sync are given again in the new form. (5) The byte-for-byte block stays the primary check (the plan; the executor pastes by tool) against the prober's round-1 hash-line preference, with the outcome table of (12) decided now. (6) The `writes:` rule scoped to open items read at the merge base and to the verdict's item, with a shared path covered by either item and an unreadable line needing a verdict, not refused (producer, checker, test designer: as written it would refuse records changes, later items, shared files and reverts, and lock W-C02-22, whose `writes:` line is prose). (7) `producer_run` checked by form in the gate and confirmed by the binding checker with `launch` and `calls`, not by the gate reading the guard log (researcher round 1: the log is container-local; checker: `calls` traces only Write and Edit); "could not confirm" closed by a reproducing fresh run, not by a re-review (checker round 2 DEFECT 5). (8) A settings-level deny of `Workflow` and the built-in names beside the guard (researcher round 2 preference 3): not taken now; `.claude/settings.json` is a floor path outside these `writes:`, and the guard's deny is the planned layer; reopens at M3a (W-C02-26), which changes `.claude/settings.json` anyway.
+open: whether `Workflow` leaves `ALLOWED_NON_MCP`, owner the producer, stated before the condition is pinned
+<!-- /approach -->
+```
