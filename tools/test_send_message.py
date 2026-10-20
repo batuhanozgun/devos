@@ -294,7 +294,10 @@ def guard_tests(hook):
             ("N-C8", "an unregistered non-null caller to a researcher", A["researcher"], A["internal"]),
             ("N-C9", "a caller registered only in another session, to a prober", A["prober"], A["other-session"]),
             ("N-C10", "a researcher to a registered general-purpose agent", A["general"], A["researcher"]),
-            ("N-C11", "a researcher to a registered counter-designer", A["counter"], A["researcher"])]:
+            ("N-C11", "a researcher to a registered counter-designer", A["counter"], A["researcher"]),
+            ("N-C12", "the executor to a registered general-purpose agent (any other type takes none)", A["general"],
+             MAIN),
+            ("N-C13", "the executor to a registered counter-designer (any other type takes none)", A["counter"], MAIN)]:
         both(fx, cid, label, msg(to), caller, "deny", R["caller"])
     # T6.8: self
     both(fx, "N-M1", "a researcher to its own ID", msg(A["researcher"]), A["researcher"], "deny", R["self"])
