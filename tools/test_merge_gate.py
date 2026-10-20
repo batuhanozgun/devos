@@ -21,6 +21,10 @@ two files guard rule L4 reads at every call, is class high in every form a chang
 tests/C02/W-C02-07/ stays class normal. Their pull requests are 700 up and their verdicts CHK-C00-070 up.
 Cases (RP*) (W-C02-23, PR-A2): the gate runs its own tree's tools/check_role_packages.py --rev <head> for a head
 that touches the role packages' trigger set, in a fixture of their own (role_package_gate).
+Cases (B1*) to (B9*) and (R1) to (R7) (W-C02-24 M1b, Part B of its acceptance block): the verdict keys and grammars,
+the floor paths, the condition lines, the diff-confirmed closure, the writes: rule, approach blocks, the revert route
+and the template, in a fixture of their own (m1b); the Form C0 block and the interface they state stand above m1b.
+Every fixture verdict is written in the new form (verdict_text). An optional first argument names the gate to test.
 Prints one line per case and MERGE_GATE_TEST PASS only if every case behaves as written.
 """
 import importlib.util
@@ -34,20 +38,52 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parent.parent
+# The gate under test: this tree's tools/merge_gate.py, or the path given as the first argument (a checker's break
+# copy or a sketch kept outside the repository: python3 tools/test_merge_gate.py /path/to/merge_gate.py).
+GATE = [REPO / "tools/merge_gate.py"]
 RESULTS = []
-VERDICT = """---
-id: CHK-C00-{n:03d}
-target: the fixture change
-reviewed_head: {sha}
-verdict: {verdict}
-conditions: []
-{independence}checker_run: fixture run
-date: 2026-10-05
+INDEPENDENCE = 'independence: "same session, fresh-context subagent (declared, Ek A 373)"\n'
+# W-C02-24 M1b (B1, B9): every fixture verdict is written in the new form, so that the older cases keep testing what
+# they tested once the gate refuses the old form (B9, disposition 4). One source: verdict_text() below.
+AGENT = "a0123456789abcdef"
+NEW_KEYS = {"item": "W-C00-01", "triage": "none: a fixture verdict has no triage", "floor": "merge gate (fixture)",
+            "own_breaks": "fixture break run: one rule removed, its case red", "shared_with_producer": "none",
+            "producer_run": AGENT}
+ITEM_C00 = """---
+id: W-C00-01
+kind: item
+parent: C00
+title: "a fixture item with no approach block"
+admission: admitted
+execution: running
+acceptance: proposed
 ---
 
-Findings: none (fixture).
+# W-C00-01
+
+<!-- acceptance -->
+A fixture condition.
+<!-- /acceptance -->
 """
-INDEPENDENCE = 'independence: "same session, fresh-context subagent (declared, Ek A 373)"\n'
+
+
+def verdict_text(n, sha, verdict="PASS", independence=INDEPENDENCE, body="Findings: none (fixture).\n", **over):
+    """A fixture verdict file. over: a key's value (written as given, quotes included), None to drop the key, or a
+    list to write the key once per element (a repeated key)."""
+    keys = {"id": f"CHK-C00-{n:03d}", "target": "the fixture change", "reviewed_head": sha, "verdict": verdict,
+            "conditions": "none", "independence": None, "checker_run": "fixture run", "date": "2026-10-05",
+            **NEW_KEYS}
+    keys.update(over)
+    lines = []
+    for k, v in keys.items():
+        if k == "independence" and "independence" not in over:
+            if independence:
+                lines.append(independence.rstrip("\n"))
+        elif isinstance(v, list):
+            lines += [f"{k}: {x}" for x in v]
+        elif v is not None:
+            lines.append(f"{k}: {v}")
+    return "---\n" + "\n".join(lines) + "\n---\n\n" + body
 ITEM = """---
 id: W-T-01
 ---
@@ -93,8 +129,9 @@ class Fixture:
         for k, v in (("user.name", "Fixture"), ("user.email", "fixture@example.invalid"), ("commit.gpgsign", "false")):
             self.git("config", k, v)
         self.git("remote", "add", "origin", str(tmp / "origin.git"))
-        for f in ("tools/merge_gate.py", ".claude/hooks/tool_allowlist.py"):
-            self.write(f, (REPO / f).read_text())
+        for f, src in (("tools/merge_gate.py", GATE[0]),
+                       (".claude/hooks/tool_allowlist.py", REPO / ".claude/hooks/tool_allowlist.py")):
+            self.write(f, src.read_text())
         # W-C02-20, rule L4: the guard reads the token formats from these files at every call; copied byte for byte
         for f in ("tests/C02/W-C02-07/shared/scan_patterns.json", "tests/C02/W-C02-07/shared/token_format.md"):
             (self.d / f).parent.mkdir(parents=True, exist_ok=True)
@@ -104,6 +141,8 @@ class Fixture:
         self.write("plan/notes.md", "notes\n")
         self.write("plan/work/W-T-01.md", ITEM)
         self.write("plan/work/T01.md", "# T01 (a stage file without an acceptance block)\n")
+        self.write("plan/work/W-C00-01.md", ITEM_C00)                     # NEW_KEYS' item: (B1)
+        self.write("evidence/C00/EV-C00-001_fixture.md", "# a fixture triage record\n")   # a triage: path (B1)
         self.commit("base")
         self.git("push", "-q", "origin", "main")
 
@@ -156,9 +195,9 @@ class Fixture:
         self.git("merge", "-q", "--no-ff", "-m", f"Merge {name}", name)
         self.git("push", "-q", "origin", "main")
 
-    def verdict(self, n, sha, verdict="PASS", independence=INDEPENDENCE):
+    def verdict(self, n, sha, verdict="PASS", independence=INDEPENDENCE, **over):
         self.write(f"evidence/C00/checks/CHK-C00-{n:03d}.md",
-                   VERDICT.format(n=n, sha=sha, verdict=verdict, independence=independence))
+                   verdict_text(n, sha, verdict=verdict, independence=independence, **over))
         return self.commit(f"checker verdict CHK-C00-{n:03d}")
 
     def gate(self, pr, head):
@@ -607,6 +646,20 @@ def role_package_gate(tmp):
     rc, out = gate_main(pr, head)
     case("(RP1) a sound change to producer.md with a covering verdict: GATE PASS, and the output carries "
          "ROLE_PACKAGES PASS", rc == 0 and "GATE PASS" in out and "ROLE_PACKAGES PASS" in out, out)
+    # W-C02-24 M1b, B2: tools/check_role_packages.py is a floor path. Run here, where the check exists and main's
+    # packages pass it, so that the role-package call passes and only the floor rule can refuse.
+    for label, over, token in (("floor: none", {"floor": "none: no floor path"}, "F-NONE"),
+                               ("own_breaks: none", {"own_breaks": "none"}, "F-BREAKS"), ("a floor and own breaks",
+                                                                                        {}, None)):
+        pr = next(prs)
+        s.branch(f"pr{pr}")
+        (s.d / tool).write_bytes(tool_bytes + b"# a fixture comment line (B2)\n")
+        s.verdict(next(ns), s.commit(f"fixture pull request {pr}"), **over)
+        rc, out = gate_main(pr, s.push(pr))
+        case(f"(B2.rp) a head touching only tools/check_role_packages.py, {label}: " +
+             (f"GATE FAIL with [{token}]" if token else "GATE PASS"),
+             (rc == 1 and "GATE FAIL" in out and f"[{token}]" in out) if token else (rc == 0 and "GATE PASS" in out),
+             out)
     pr, head = head_with({".claude/roles/producer.md": tcr.pad(tcr.PACKAGE.format(role="producer"), 9301)})
     refused("(RP2) producer.md at 9,301 bytes with a covering verdict: GATE FAIL with producer.md's FAIL size line",
             pr, head, "producer.md", "size")
@@ -658,7 +711,646 @@ def role_package_gate(tmp):
             "unresolved lines (EV-C99-001)", pr, head, "producer.md", "unresolved")
 
 
+# ------------------------------------------------------------------------------------------------------------------
+# W-C02-24 M1b, Part B of plan/work/W-C02-24.md's acceptance block (B1 to B9; B10 through R1). Written by M1b's test
+# designer after PR-A2's merge (#421) and before any M1b product, at main 8d90be3. Form C0 (Appendix C), per group:
+# - Claim: the merge gate reads the verdict keys and their grammars (B1), the floor-path constant (B2), the condition
+#   lines (B3) and the diff-confirmed closure (B4); applies the writes: rule read at the merge base (B5); classes a
+#   changed or removed approach block high (B6); evaluates the revert route first, by resulting tree (B7); its key
+#   list, checker.md's binding template and working order section 9 are one list, and the filled template passes (B9).
+# - Failure class: a verdict whose form the gate cannot read covers a head (a key absent, repeated, outside its grammar,
+#   or filled but meaningless); a floor path without own breaks; a blocking condition that still covers; a product path
+#   an open item declares, merged under another item's verdict or none; a head escaping by flipping its item's state;
+#   an approach block edited without a verdict; a revert route that accepts what is not the inverse, or refuses a true
+#   revert; the template drifting from the gate; and over-blocking (a sound verdict, a records-only head, a shared path,
+#   a true revert after main moved, a real verdict refused).
+# - Examples: at least two per failure class, below; real verdicts CHK-C02-128, 129, 131, 133 and 137 are read from
+#   evidence/C02/checks/ beside this file at run time (one source; never copied).
+# - Negative control: each refusal asserts GATE FAIL, exit 1 and its own reason ID in brackets (REASONS below); never
+#   "any failure".
+# - Positive control: each sound case asserts GATE PASS and exit 0; the default verdict (B1.0) passes on each head kind.
+# - Break: each case is built so that removing its rule turns it red (the breaks the binding checker applies are listed
+#   in the item's B points and in the hand-over of this test designer).
+# - Stage and environment: C02; the container's python3 3.13.16 and git 2.43.0 (item C1), a scratch fixture with a
+#   local bare origin, the gate run as M7 runs it, from the fixture's checkout of main.
+# - Independence: written before the build by a test designer that is not M1b's producer or checker.
+# - Evidence layer: structural (the gate's reading of verdict text and git trees). Envelope: the item's record.
+#
+# The interface these tests state where Part B leaves it open (the producer builds to it; a pin that cannot be built
+# goes back to the executor before the build):
+# - Reason IDs. Each refusal prints its ID in square brackets on a reason line, e.g. "[K-ABSENT-floor]":
+REASONS = {
+    "K-ABSENT-<key>": "a required key is absent", "K-REPEAT-<key>": "a key repeats",
+    "K-FORM-<key>": "a value outside its grammar (B1); K-FORM-floor's line names the eight floor classes",
+    "K-ITEMFILE": "item: names a plan/work/<id>.md absent at the merge base",
+    "K-TRIAGEPATH": "triage: names a path absent at the head",
+    "P-NONE": "producer_run: none for a verdict that is not a revert, stage or branch verdict",
+    "F-NONE": "floor: none on a head touching a floor path", "F-BREAKS": "own_breaks: none (or none...) there",
+    "C-FORM": "a line between the markers that does not parse (unknown type, blocks or closure, or malformed)",
+    "C-CONTRA": "a type whose blocks: contradicts it", "C-EMPTY": "see markers with no well-formed line",
+    "C-OUTSIDE": "a column-0 C<n> · type: line outside the markers", "C-PASSBLOCK": "PASS with a blocking line",
+    "C-PWCNONE": "PASS-WITH-CONDITIONS with conditions: none",
+    "D-CLOSURE": "a blocks: merge line whose closure is not diff-confirmed",
+    "D-NOLATER": "a blocks: merge verdict with nothing but verdict files after reviewed_head",
+    "D-HIGHLATER": "a blocks: merge verdict followed by a class-high commit",
+    "W-ITEM": "a touched writes: path of an open item is not in the covering verdict's item's writes:",
+    "W-NOVERDICT": "a head that is not records-only touches such a path with no covering verdict",
+    "W-UNPARSED": "a head touches the file of an item whose writes: does not parse, and no verdict names that item",
+    "R-NOTMERGE": "revert <sha>: not a merge commit", "R-NOTMAIN": "revert <sha>: not on origin/main",
+    "R-TREE": "revert <sha>: the inverse does not give the head's tree", "R-CONFLICT": "revert <sha>: the inverse "
+    "conflicts with origin/main (the route's limit)"}
+# - B6's class-high note is "(an existing approach block changed or removed)", as the acceptance block's is.
+# - Grammars B1 leaves open, settled here (CHK-C02-131 C2):
+#   floor: the list splits at ";" and "," outside parentheses only; a separator inside a parenthesis does not split.
+#     Each item is, after trimming, one class (case-insensitive, an optional plural "s"), optionally followed by one
+#     balanced parenthesis, and nothing else: no text outside a parenthesis ("guard rail", "public text" refused), no
+#     empty item. A merge-gate class value ("class high (...)", CHK-C02-129, CHK-C02-133) is not a floor class and is
+#     refused with K-FORM-floor, whose reason line names the eight classes so the checker can rewrite it.
+#   B4: "a commit follows reviewed_head" means reviewed_head..head changes a path other than the pull request's verdict
+#     files; every blocks: merge line in the markers counts as open (the gate cannot read a closure).
+#   B5: the writes: line is the writes: key of the item's approach block (A3's key grammar); it parses when its value
+#     is "; "-separated parts, each a repository path or a dir/ prefix with no space and no ".." component, and none
+#     the item's own file. A head is records-only when every path it touches is class normal and a record path; these
+#     cases pin plan/decisions/*.md and plan/work/*.md as record paths and docs/ as not one. "That item's file" (B5)
+#     is read as the item's own plan/work file.
+#   B7: the tree compared is the head's tree without the verdict files the pull request adds or changes.
+# - Interfaces: python3 -I tools/merge_gate.py --items <rev> prints one line per plan/work/*.md at <rev>,
+#   "ITEM <path> <open|closed> writes=<none|ok|unparsed|exempt>[ <text>]", and exits 0 (B5's listing and mirror).
+#   tools/merge_gate.py holds VERDICT_KEYS (the template's front-matter keys, in order), REQUIRED_KEYS (a subset that
+#   holds at least MIN_REQUIRED) and FLOOR_PATHS (B2's constant).
+CLASSES = ("guard", "merge gate", "leak check", "CI gate", "migration", "schema rules", "test oracle", "hook")
+FLOOR_PATHS = (".claude/hooks/", ".claude/settings.json", ".github/workflows/", "supabase/migrations/", "tools/")
+B1_KEYS = ("item", "triage", "floor", "own_breaks", "shared_with_producer", "producer_run")
+MIN_REQUIRED = ("reviewed_head", "verdict", "independence", "checker_run") + B1_KEYS
+BLOCK_KEYS = ("base", "asked", "not_asked", "library", "agreed", "writes", "consumer", "dispositions", "open")
+COND = "C{n} · type: {t} · blocks: {b} · closure: {c} · {text}"
+
+
+def item_text(iid, writes=None, admission="admitted", execution="running", acceptance="proposed", accepted_by=None):
+    """A fixture work item; writes: the approach block's writes: value (None: no approach block)."""
+    head = (f"---\nid: {iid}\nkind: item\nparent: C00\ntitle: \"a fixture item\"\nadmission: {admission}\n"
+            f"execution: {execution}\nacceptance: {acceptance}\n" + (f"accepted_by: {accepted_by}\n" if accepted_by
+                                                                      else "") + "---\n\n")
+    body = f"# {iid}\n\n<!-- acceptance -->\nA fixture condition.\n<!-- /acceptance -->\n"
+    if writes is not None:
+        vals = {"base": "0" * 40, "asked": "producer: a fixture role (evidence/C00/EV-C00-001_fixture.md)",
+                "not_asked": "none", "library": "none", "agreed": "a fixture approach", "writes": writes,
+                "consumer": "the fixture", "dispositions": "none", "open": "none"}
+        body += "\n## Approach\n\n<!-- approach -->\n" + "".join(f"{k}: {vals[k]}\n" for k in BLOCK_KEYS) + \
+            "<!-- /approach -->\n"
+    return head + body
+
+
+# The fixture's items (B5, B6, the mirror): id -> (writes, admission, execution, acceptance, accepted_by), and what
+# the gate's listing must print for each at main: (state, writes form or None when not asserted).
+M1B_ITEMS = {
+    "W-C00-02": (("tools/w02_tool.py; docs/w02/",), ("open", "ok")),
+    "W-C00-03": (("tools/shared_tool.py",), ("open", "ok")),
+    "W-C00-04": (("tools/shared_tool.py; plan/decisions/PC-99.md",), ("open", "ok")),
+    "W-C00-05": (("the item's records and a new test under tools/ (its name the test designer's)",),
+                 ("open", "unparsed")),                                                          # prose
+    "W-C00-06": (("tools/w06_tool.py",), ("open", "ok")),
+    "W-C00-07": (("tools/closed_tool.py", "admitted", "cancelled"), ("closed", None)),
+    "W-C00-08": (("tools/w08_tool.py",), ("open", "ok")),
+    "W-C00-09": (("tools/w09_tool.py; plan/work/W-C00-09.md",), ("open", "unparsed")),         # its own file
+    "W-C00-10": (("tools/w10_a.py, tools/w10_b.py",), ("open", "unparsed")),                   # comma list
+    "W-C00-12.3": ((None,), ("open", "none")),                                                 # a dotted ID
+    "W-C00-13": ((None, "declined"), ("closed", None)),
+    "W-C00-14": ((None, "admitted", "finished", "accepted", "evidence/C00/EV-C00-001_fixture.md"), ("closed", None)),
+    "W-C00-15": ((None, "admitted", "finished", "accepted", "evidence/C00/EV-C00-404_absent.md"), ("open", None)),
+    "W-C00-16": ((None, "admitted", "finished", "accepted", "plan/notes.md"), ("open", None)),  # not under evidence/
+    "W-C00-17": ((None, "admitted", '"cancelled"'), ("closed", None)),                         # a quoted value
+}
+
+
+def real_verdict(n):
+    """(keys, body) of evidence/C02/checks/CHK-C02-<n>.md beside this file, values as written; (None, why) if not
+    readable."""
+    p = REPO / f"evidence/C02/checks/CHK-C02-{n}.md"
+    try:
+        t = p.read_text(encoding="utf-8")
+        fm, body = t[4:].split("\n---\n", 1)
+    except (OSError, UnicodeDecodeError, ValueError) as e:
+        return None, f"{p} unreadable ({type(e).__name__})"
+    keys = {}
+    for line in fm.splitlines():
+        m = re.match(r"([a-z_]+): ?(.*)", line)
+        if m:
+            keys[m.group(1)] = m.group(2)
+    return keys, body
+
+
+def load_module(name, path):
+    import importlib.machinery
+    src = importlib.machinery.SourceFileLoader(name, os.fspath(path))
+    mod = importlib.util.module_from_spec(importlib.util.spec_from_loader(name, src))
+    src.exec_module(mod)
+    return mod
+
+
+def template(path, lead):
+    """The fenced block after the line holding lead in path: (front-matter lines, body) or (None, why)."""
+    try:
+        t = path.read_text(encoding="utf-8")
+        block = t[t.index(lead):].split("```\n", 2)[1]
+        fm, body = block[4:].split("\n---\n", 1)
+    except (OSError, ValueError, IndexError) as e:
+        return None, f"no template after {lead!r} in {path} ({type(e).__name__})"
+    return fm.splitlines(), body
+
+
+def m1b(tmp):
+    """W-C02-24 M1b, Part B (see the Form C0 block above). A fixture of its own, pull requests 1000 up."""
+    tmp.mkdir()
+    s = Fixture(tmp)
+    s.branch("seed-m1b")
+    for iid, ((writes, *state), _) in M1B_ITEMS.items():
+        keys = dict(zip(("admission", "execution", "acceptance", "accepted_by"), state))
+        s.write(f"plan/work/{iid}.md", item_text(iid, writes, **keys))
+    s.write("plan/decisions/PC-99.md", "# a fixture decision record\n")
+    s.write("tools/fx_tool.py", "print('a fixture tool')\n")
+    s.commit("M1b fixture items and files")
+    s.merge("seed-m1b")
+    prs, ns = iter(range(1000, 2000)), iter(range(100, 999))
+    tag = lambda t: f"[{t}]"   # noqa: E731
+
+    def make(files=None, appends=None, v=None, body=None, verdict="PASS", after=None, reviewed=None):
+        """A pull request from main: files written (path: text), lines appended (path: line); then, unless v is
+        None, a verdict with the overrides v naming the change commit X (or reviewed); then after (path: line)
+        appended in one more commit. Returns (pr, head)."""
+        pr = next(prs)
+        s.branch(f"m{pr}")
+        for p, t in (files or {}).items():
+            s.write(p, t)
+        for p, t in (appends or {}).items():
+            s.append(p, t)
+        x = s.commit(f"fixture pull request {pr}")
+        if v is not None:
+            s.verdict(next(ns), reviewed or x, verdict=verdict,
+                      **({"body": body} if body is not None else {}), **v)
+        if after:
+            for p, t in after.items():
+                s.append(p, t)
+            s.commit(f"a commit after the verdict, pull request {pr}")
+        return pr, s.push(pr)
+
+    def gate(pr, head):
+        s.git("checkout", "-q", "main")
+        return s.gate(pr, head)
+
+    def refused(label, token, pr_head, also=None):
+        rc, out = gate(*pr_head)
+        case(f"{label}: GATE FAIL with {tag(token)}", rc == 1 and "GATE FAIL" in out and tag(token) in out and
+             (also is None or also(out)), out)
+
+    def passed(label, pr_head):
+        rc, out = gate(*pr_head)
+        case(f"{label}: GATE PASS", rc == 0 and "GATE PASS" in out, out)
+
+    hi = {"CLAUDE.md": "a class-high change that is not a floor path"}
+
+    # ---- B1, the verdict keys
+    passed("(B1.0) the default new-form verdict on a class-high head", make(appends=hi, v={}))
+    for k in B1_KEYS:
+        refused(f"(B1.{k}.absent) {k}: absent", f"K-ABSENT-{k}", make(appends=hi, v={k: None}))
+        refused(f"(B1.{k}.repeated) {k}: given twice with the same value", f"K-REPEAT-{k}",
+                make(appends=hi, v={k: [NEW_KEYS[k], NEW_KEYS[k]]}))
+    for val in ("W-T-01", "stage C0", "branch SB-cor", "revert abc123", "yes"):
+        refused(f"(B1.item.form) item: {val}", "K-FORM-item", make(appends=hi, v={"item": val}))
+    refused("(B1.item.file) item: W-C00-99, whose file is absent at the merge base", "K-ITEMFILE",
+            make(appends=hi, v={"item": "W-C00-99"}))
+    refused("(B1.item.head) item: W-C00-98, whose file only the head adds", "K-ITEMFILE",
+            make(appends=hi, files={"plan/work/W-C00-98.md": item_text("W-C00-98")}, v={"item": "W-C00-98"}))
+    passed("(B1.item.dotted) item: W-C00-12.3", make(appends=hi, v={"item": "W-C00-12.3"}))
+    passed('(B1.item.quoted) item: "W-C00-01" (double quotes are read without them)',
+           make(appends=hi, v={"item": '"W-C00-01"'}))
+    passed("(B1.item.stage) item: stage C00 with producer_run: none",
+           make(appends=hi, v={"item": "stage C00", "producer_run": "none"}))
+    passed("(B1.item.branch) item: branch SB-COR-2 with producer_run: none",
+           make(appends=hi, v={"item": "branch SB-COR-2", "producer_run": "none"}))
+    r128, r129, r131, r133, r137 = (real_verdict(n) for n in (128, 129, 131, 133, 137))
+    reals = {n: r for n, r in zip((128, 129, 131, 133, 137), (r128, r129, r131, r133, r137))}
+    for n, (keys, why) in reals.items():
+        if keys is None:
+            case(f"(B1.real{n}) the real verdict CHK-C02-{n} is readable beside this file", False, why)
+    rv = lambda n, k: (reals[n][0] or {}).get(k, "<unreadable>")   # noqa: E731
+    for val in ("none", "none:", "nonesuch triage", "plan/notes.md", rv(133, "triage")):
+        refused(f"(B1.triage.form) triage: {val[:60]}", "K-FORM-triage", make(appends=hi, v={"triage": val}))
+    refused("(B1.triage.path) triage: a well-formed path absent at the head", "K-TRIAGEPATH",
+            make(appends=hi, v={"triage": "evidence/C00/EV-C00-002_absent.md"}))
+    for label, val, files in (
+            ("a path at the head", "evidence/C00/EV-C00-001_fixture.md", None),
+            ("a path, then text", "evidence/C00/EV-C00-001_fixture.md part 2, read after my pass", None),
+            ("a path the head adds", "evidence/C00/EV-C00-003_new.md", {"evidence/C00/EV-C00-003_new.md": "x\n"}),
+            ("none, then a reason", "none, a scoped re-review has no triage", None),
+            ("CHK-C02-128's value (quoted none:)", rv(128, "triage"), None),
+            ("CHK-C02-129's value (none, a space, a reason)", rv(129, "triage"), None),
+            ("CHK-C02-137's value", rv(137, "triage"), None)):
+        passed(f"(B1.triage.ok) triage: {label}", make(appends=hi, files=files, v={"triage": val}))
+    # floor: CHK-C02-131 C2. The class-high case's reason line names the eight classes.
+    names_classes = lambda out: any(tag("K-FORM-floor") in ln and all(c.lower() in ln.lower() for c in CLASSES)  # noqa
+                                    for ln in out.splitlines())
+    refused("(B1.floor.C2) floor: class high (…), the merge gate's class, not a floor class; its reason line names "
+            "the eight classes", "K-FORM-floor", make(appends=hi, v={"floor": "class high (…)"}), also=names_classes)
+    for label, val in (("yes (filled but meaningless)", "yes"), ("CHK-C02-129's value", rv(129, "floor")),
+                       ("CHK-C02-133's value", rv(133, "floor")),
+                       ("CHK-C02-137's value (public text is not a class)", rv(137, "floor")),
+                       ("text after a class outside a parenthesis", "guard rail"),
+                       ("an unbalanced parenthesis", "test oracle (tools/a.sh"), ("none with no reason", "none"),
+                       ("an empty item", "guard;; hook"), ("nonesense", "nonesense")):
+        refused(f"(B1.floor.form) floor: {label}", "K-FORM-floor", make(appends=hi, v={"floor": val}))
+    for label, val in (("C2's case: test oracle (tools/a.sh, tools/b.py); guard",
+                        "test oracle (tools/a.sh, tools/b.py); guard"),
+                       ("CHK-C02-131's value", rv(131, "floor")), ("Test Oracles, hooks (case, plural)",
+                                                                  "Test Oracles, hooks"),
+                       ("every other class", "CI gates; migrations; schema rules, leak check"),
+                       ("none: a reason", "none: no floor path is touched"), ("none, a reason", "none, records"),
+                       ("CHK-C02-128's value (quoted none:)", rv(128, "floor")), ('"merge gate" quoted',
+                                                                                 '"merge gate"')):
+        passed(f"(B1.floor.ok) floor: {label}", make(appends=hi, v={"floor": val}))
+    for val in ("yes", "the producer's notes", "N-"):
+        refused(f"(B1.shared.form) shared_with_producer: {val}", "K-FORM-shared_with_producer",
+                make(appends=hi, v={"shared_with_producer": val}))
+    for val in ("L-450", "EV-C02-028 part 9", "evidence/C02/EV-C02-028_pra2_m1_triage.md part 9.2", "CHK-C02-131 C2",
+                "N-315 and its triage"):
+        passed(f"(B1.shared.ok) shared_with_producer: {val}", make(appends=hi, v={"shared_with_producer": val}))
+    for val in ("a0123456789abcde", "A0123456789ABCDEF", "agent a0123456789abcdef", "yes", "a0123456789abcdef0"):
+        refused(f"(B1.run.form) producer_run: {val}", "K-FORM-producer_run", make(appends=hi, v={"producer_run": val}))
+    refused("(B1.run.none) producer_run: none with item: W-C00-01", "P-NONE", make(appends=hi, v={"producer_run": "none"}))
+    passed('(B1.run.ok) producer_run: "ae8b7fdebcfbd9f53" (a real agent ID, quoted)',
+           make(appends=hi, v={"producer_run": '"ae8b7fdebcfbd9f53"'}))
+
+    # ---- B2, the floor-path constant
+    try:
+        fp = load_module("merge_gate_under_test", GATE[0]).FLOOR_PATHS
+        case("(B2.0) tools/merge_gate.py's FLOOR_PATHS is exactly B2's five literal paths and prefixes",
+             tuple(sorted(fp)) == tuple(sorted(FLOOR_PATHS)), repr(fp))
+    except Exception as e:   # noqa: BLE001  (a missing constant is this case's failure, never a crash of the test)
+        case("(B2.0) tools/merge_gate.py's FLOOR_PATHS is exactly B2's five literal paths and prefixes", False,
+             f"{type(e).__name__}: {e}")
+    for path, how in (("tools/credential_value_scan.py", {"files": {"tools/credential_value_scan.py": "x = 1\n"}}),
+                      ("supabase/migrations/0002_fx.sql", {"files": {"supabase/migrations/0002_fx.sql": SQL}}),
+                      (".claude/hooks/tool_allowlist.py", {"appends": {".claude/hooks/tool_allowlist.py": "# fx"}}),
+                      (".claude/settings.json", {"files": {".claude/settings.json": "{}\n"}}),
+                      (".github/workflows/fx.yml", {"files": {".github/workflows/fx.yml": YML}}),
+                      ("tools/new_fx_helper.py (the whole tools/ prefix)", {"files": {"tools/new_fx_helper.py": PY}})):
+        refused(f"(B2.none) {path}: floor: none", "F-NONE", make(v={"floor": "none: no floor path"}, **how))
+        refused(f"(B2.breaks) {path}: own_breaks: none", "F-BREAKS", make(v={"own_breaks": "none"}, **how))
+        passed(f"(B2.ok) {path}: a floor and own breaks", make(v={}, **how))
+    refused("(B2.breaks2) tools/fx_tool.py: own_breaks: none: nothing to break (starts with none)", "F-BREAKS",
+            make(appends={"tools/fx_tool.py": "# fx"}, v={"own_breaks": "none: nothing to break"}))
+    for label, how in (("CLAUDE.md", {"appends": hi}),
+                       (".claude/agents/checker.md (class high, not a floor path)",
+                        {"files": {".claude/agents/checker.md": "a fixture role file\n"}}),
+                       (".claude/settings.json.bak (near miss of a literal path)",
+                        {"files": {".claude/settings.json.bak": "{}\n"}})):
+        passed(f"(B2.nofloor) {label}: floor: none and own_breaks: none",
+               make(v={"floor": "none: no floor path", "own_breaks": "none"}, **how))
+    rc, out = gate(*make(appends={"plan/notes.md": "a records change"}))
+    case("(B2.records) a head touching only plan/ records needs no verdict and no floor: GATE PASS, class normal",
+         rc == 0 and "class normal" in out, out)
+
+    # ---- B3, the condition lines
+    def cond(t="preference", b="none", c="diff-confirmed", n=1, text="a fixture condition"):
+        return COND.format(n=n, t=t, b=b, c=c, text=text)
+
+    def marked(*lines, before="", after=""):
+        return before + "Findings: none (fixture).\n\n<!-- conditions -->\n" + "".join(f"{x}\n" for x in lines) + \
+            "<!-- /conditions -->\n" + after
+
+    see = {"conditions": "see markers"}
+    passed("(B3.ok1) PASS-WITH-CONDITIONS, see markers, a preference blocking none",
+           make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS", body=marked(cond())))
+    passed("(B3.ok2) PASS-WITH-CONDITIONS, a defect blocking the producer task and missing evidence blocking acceptance",
+           make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS",
+                body=marked(cond("defect", "producer task"), cond("missing evidence", "acceptance", n=2))))
+    passed("(B3.ok3) PASS, conditions: none, empty markers", make(appends=hi, v={}, body=marked()))
+    passed("(B3.ok4) PASS, conditions: none, a condition line quoted indented outside the markers",
+           make(appends=hi, v={}, body="A scoped re-review quotes:\n\n    " + cond("defect", "merge") + "\n"))
+    for label, line in (("defect blocking none", cond("defect", "none")),
+                        ("missing evidence blocking none", cond("missing evidence", "none")),
+                        ("preference blocking merge", cond("preference", "merge")),
+                        ("scope conflict blocking acceptance", cond("scope conflict", "acceptance"))):
+        refused(f"(B3.contra) {label}", "C-CONTRA",
+                make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS", body=marked(line)))
+    for label, line in (("an unknown type", cond("bug")), ("an unknown blocks value", cond(b="everything")),
+                        ("an unknown closure", cond(c="trust me")),
+                        ("no text after the closure", "C1 · type: preference · blocks: none · closure: diff-confirmed")):
+        refused(f"(B3.form) {label}", "C-FORM",
+                make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS", body=marked(line)))
+    refused("(B3.empty1) see markers with no markers", "C-EMPTY",
+            make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS"))
+    refused("(B3.empty2) see markers with empty markers", "C-EMPTY",
+            make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS", body=marked()))
+    refused("(B3.outside1) conditions: none and a column-0 condition line after the markers", "C-OUTSIDE",
+            make(appends=hi, v={}, body=marked(after=cond() + "\n")))
+    refused("(B3.outside2) see markers, one line inside and one at column 0 before the markers", "C-OUTSIDE",
+            make(appends=hi, v=see, verdict="PASS-WITH-CONDITIONS", body=marked(cond(), before=cond(n=2) + "\n\n")))
+    refused("(B3.passblock1) PASS with a defect blocking acceptance", "C-PASSBLOCK",
+            make(appends=hi, v=see, body=marked(cond("defect", "acceptance"))))
+    refused("(B3.passblock2) PASS with missing evidence blocking the producer task", "C-PASSBLOCK",
+            make(appends=hi, v=see, body=marked(cond("missing evidence", "producer task"))))
+    refused("(B3.pwcnone) PASS-WITH-CONDITIONS with conditions: none", "C-PWCNONE",
+            make(appends=hi, v={}, verdict="PASS-WITH-CONDITIONS"))
+    for n in (128, 129, 133, 137):
+        keys, body = reals[n]
+        if keys is None:
+            continue
+        passed(f"(B3.real{n}) CHK-C02-{n}'s body and its verdict and conditions values, under a fixture front matter "
+               "(its condition lines parse line by line)",
+               make(appends=hi, v={"conditions": keys["conditions"]}, verdict=keys["verdict"], body=body))
+    if r131[0] is not None:
+        refused("(B3.real131) CHK-C02-131's body (C1 blocks merge, closure scoped re-review), a class-normal commit "
+                "after it", "D-CLOSURE", make(appends=hi, v={"conditions": r131[0]["conditions"]},
+                                              verdict=r131[0]["verdict"], body=r131[1],
+                                              after={"plan/notes.md": "a fix"}))
+
+    # ---- B4, the diff-confirmed closure
+    def merge_block(c="diff-confirmed"):
+        return marked(cond("defect", "merge", c))
+
+    pwc = dict(v=see, verdict="PASS-WITH-CONDITIONS")
+    refused("(B4.nolater) blocks: merge, diff-confirmed, nothing but the verdict after reviewed_head (round 2 "
+            "DEFECT 1)", "D-NOLATER", make(appends=hi, body=merge_block(), **pwc))
+    passed("(B4.ok) blocks: merge, diff-confirmed, one class-normal commit after it",
+           make(appends=hi, body=merge_block(), after={"plan/notes.md": "the fix"}, **pwc))
+    refused("(B4.high) blocks: merge, diff-confirmed, a class-high commit after it", "D-HIGHLATER",
+            make(appends=hi, body=merge_block(), after={"CLAUDE.md": "a class-high fix"}, **pwc))
+    for c in ("scoped re-review", "full fresh check"):
+        refused(f"(B4.closure) blocks: merge, closure {c}, a class-normal commit after it", "D-CLOSURE",
+                make(appends=hi, body=merge_block(c), after={"plan/notes.md": "the fix"}, **pwc))
+
+    # ---- B5, the writes: rule (state and writes: read at the merge base)
+    refused("(B5.item1) tools/w02_tool.py (W-C00-02's writes:) under a verdict for W-C00-08", "W-ITEM",
+            make(files={"tools/w02_tool.py": PY}, v={"item": "W-C00-08"}))
+    refused("(B5.item2) docs/w02/guide.md (under W-C00-02's docs/w02/ prefix) under a verdict for W-C00-08", "W-ITEM",
+            make(files={"docs/w02/guide.md": "a guide\n"}, v={"item": "W-C00-08"}))
+    refused("(B5.item3) tools/w02_tool.py under a verdict for W-C00-08, whose writes: the head extends to it (read at "
+            "the base)", "W-ITEM", make(files={"tools/w02_tool.py": PY, "plan/work/W-C00-08.md": item_text(
+                "W-C00-08", "tools/w08_tool.py; tools/w02_tool.py")}, v={"item": "W-C00-08"}))
+    passed("(B5.ok1) tools/w02_tool.py under a verdict for W-C00-02", make(files={"tools/w02_tool.py": PY}, v={"item": "W-C00-02"}))
+    passed("(B5.ok2) docs/w02/guide.md under a verdict for W-C00-02",
+           make(files={"docs/w02/guide.md": "a guide\n"}, v={"item": "W-C00-02"}))
+    refused("(B5.noverdict) docs/w02/guide.md (class normal, not a record path) with no verdict", "W-NOVERDICT",
+            make(files={"docs/w02/guide.md": "a guide\n"}))
+    refused("(B5.run) tools/w02_tool.py under a verdict for W-C00-02 with producer_run: none", "P-NONE",
+            make(files={"tools/w02_tool.py": PY}, v={"item": "W-C00-02", "producer_run": "none"}))
+    for iid in ("W-C00-03", "W-C00-04"):
+        passed(f"(B5.shared) tools/shared_tool.py (in W-C00-03's and W-C00-04's writes:) under a verdict for {iid}",
+               make(files={"tools/shared_tool.py": PY}, v={"item": iid}))
+    refused("(B5.shared.neither) tools/shared_tool.py under a verdict for W-C00-02", "W-ITEM",
+            make(files={"tools/shared_tool.py": PY}, v={"item": "W-C00-02"}))
+    rc, out = gate(*make(appends={"plan/decisions/PC-99.md": "an addendum"}))
+    case("(B5.records1) a records-only head on plan/decisions/PC-99.md (in W-C00-04's writes:), no verdict: GATE PASS",
+         rc == 0 and "GATE PASS" in out, out)
+    rc, out = gate(*make(appends={"plan/work/W-C00-05.md": "A log line."}))
+    case("(B5.records2) a records-only head on W-C00-05's own file (its writes: does not parse), no verdict: GATE PASS",
+         rc == 0 and "GATE PASS" in out, out)
+    refused("(B5.state1) tools/w06_tool.py with W-C00-06 set to cancelled in the same head, verdict for W-C00-08",
+            "W-ITEM", make(files={"tools/w06_tool.py": PY, "plan/work/W-C00-06.md": item_text(
+                "W-C00-06", "tools/w06_tool.py", execution="cancelled")}, v={"item": "W-C00-08"}))
+    refused("(B5.state2) tools/w06_tool.py with W-C00-06 set to accepted in the same head, verdict for W-C00-08",
+            "W-ITEM", make(files={"tools/w06_tool.py": PY, "plan/work/W-C00-06.md": item_text(
+                "W-C00-06", "tools/w06_tool.py", execution="finished", acceptance="accepted",
+                accepted_by="evidence/C00/EV-C00-001_fixture.md")}, v={"item": "W-C00-08"}))
+    passed("(B5.closed) tools/closed_tool.py (W-C00-07 is cancelled at the base) under a verdict for W-C00-01",
+           make(files={"tools/closed_tool.py": PY}, v={}))
+    for iid in ("W-C00-05", "W-C00-09"):
+        refused(f"(B5.unparsed) a class-high head touching {iid}'s file (writes: does not parse), verdict for W-C00-01",
+                "W-UNPARSED", make(appends={**hi, f"plan/work/{iid}.md": "A log line."}, v={}))
+        passed(f"(B5.unparsed.ok) the same with a verdict for {iid}",
+               make(appends={**hi, f"plan/work/{iid}.md": "A log line."}, v={"item": iid}))
+    s.git("checkout", "-q", "main")
+    r = subprocess.run([sys.executable, "-I", "tools/merge_gate.py", "--items", "main"], cwd=s.d, capture_output=True,
+                       text=True)
+    line_re = re.compile(r"ITEM (\S+) (open|closed) writes=(none|ok|unparsed|exempt)(?: .*)?")
+    got = {m.group(1): (m.group(2), m.group(3)) for m in map(line_re.fullmatch, r.stdout.splitlines()) if m}
+    files = [p for p in s.git("ls-tree", "--name-only", "main", "plan/work/").splitlines() if p.endswith(".md")]
+    want = {f"plan/work/{i}.md": w for i, (_, w) in M1B_ITEMS.items()}
+    bad = [p for p, (st, wf) in want.items() if p not in got or got[p][0] != st or (wf and got[p][1] != wf)]
+    case(f"(B5.list) --items main in the fixture: one ITEM line per plan/work file ({len(files)}), each state and "
+         "writes form as M1B_ITEMS states (prose, a comma list and the item's own file do not parse)",
+         r.returncode == 0 and len(files) == len(M1B_ITEMS) + 3 and sorted(got) == sorted(files) and not bad,
+         f"exit {r.returncode}; wrong: {bad}\n{r.stdout[-1500:]}{r.stderr[-500:]}")
+    try:
+        rec = load_module("records_under_test", REPO / "tools/records.py")
+        rec.ROOT_FOR_ACCEPT[0] = s.d
+        diff = []
+        for p in files:
+            text = (s.d / p).read_text(encoding="utf-8")
+            if not text.startswith("---\n"):
+                continue              # T01.md has no front matter; records.py cannot read it either
+            meta, _ = rec.split_front(text, p)
+            if got.get(p, ("?",))[0] != ("closed" if rec.is_closed(meta) else "open"):
+                diff.append(p)
+        case("(B5.mirror) the gate's state of every fixture item equals tools/records.py's is_closed (declined, "
+             "cancelled, accepted with and without its evidence file, a quoted value)", bool(got) and not diff,
+             f"differ: {diff}; listing exit {r.returncode}")
+    except Exception as e:   # noqa: BLE001
+        case("(B5.mirror) the gate's state of every fixture item equals tools/records.py's is_closed", False,
+             f"{type(e).__name__}: {e}")
+    real_items()
+
+    # ---- B6, approach blocks are class high
+    changed_block = item_text("W-C00-02", "tools/w02_tool.py; docs/w02/").replace("a fixture approach",
+                                                                                   "a fixture approach.")
+    for label, text in (("changed by one byte", changed_block),
+                        ("removed", item_text("W-C00-02").replace("\n## Approach", ""))):
+        rc, out = gate(*make(files={"plan/work/W-C00-02.md": text}))
+        case(f"(B6.{label.split()[0]}) W-C00-02's approach block {label}, no verdict: GATE FAIL, class high naming it "
+             "with the approach-block note", rc == 1 and high_named(out, "plan/work/W-C00-02.md") and
+             "plan/work/W-C00-02.md (an existing approach block changed or removed)" in out, out)
+    rc, out = gate(*make(files={"plan/work/W-C00-12.3.md": item_text("W-C00-12.3", "tools/w12_tool.py")}))
+    case("(B6.added) an approach block added to W-C00-12.3, which had none, no verdict: GATE PASS, class normal",
+         rc == 0 and "class normal" in out, out)
+
+    # ---- B7, the revert route by resulting tree (and B10: R1 reverts a guard change)
+    revert_route(s, prs, ns, gate)
+
+    # ---- B9, the template and the key list
+    template_cases(s, make, gate, refused, passed)
+
+
+def real_items():
+    """B5 at this checkout: the gate's listing of every real plan/work/*.md at HEAD, against tools/records.py, and no
+    open item whose writes: line neither parses nor is listed exempt. The records are read only once the listing
+    works, so a gate without --items reads none of them."""
+    r = subprocess.run([sys.executable, "-I", str(GATE[0]), "--items", "HEAD"], cwd=REPO, capture_output=True,
+                       text=True)
+    line_re = re.compile(r"ITEM (\S+) (open|closed) writes=(none|ok|unparsed|exempt)(?: .*)?")
+    got = {m.group(1): (m.group(2), m.group(3)) for m in map(line_re.fullmatch, r.stdout.splitlines()) if m}
+    ls = subprocess.run(["git", "ls-tree", "--name-only", "HEAD", "plan/work/"], cwd=REPO, capture_output=True,
+                        text=True)
+    files = sorted(p for p in ls.stdout.splitlines() if p.endswith(".md"))
+    ok = r.returncode == 0 and ls.returncode == 0 and len(files) > 90 and sorted(got) == files
+    case(f"(B5.real.list) --items HEAD lists every real plan/work/*.md once ({len(files)} at HEAD)", ok,
+         f"exit {r.returncode}; listed {len(got)}\n{r.stdout[-800:]}{r.stderr[-800:]}")
+    if not ok:
+        case("(B5.real.mirror) the gate's state of every real item equals tools/records.py's is_closed", False,
+             "not checked: the listing above failed")
+        case("(B5.real.writes) every open real item's writes: parses or is listed exempt", False,
+             "not checked: the listing above failed")
+        return
+    try:
+        rec = load_module("records_real", REPO / "tools/records.py")
+        items, _ = rec.load_records(REPO)
+        diff = [i for i, m in items.items()
+                if got.get(m["_path"], ("?",))[0] != ("closed" if rec.is_closed(m) else "open")]
+        case(f"(B5.real.mirror) the gate's state of every real item ({len(items)}) equals tools/records.py's is_closed",
+             len(items) == len(files) and not diff, f"differ: {diff}")
+    except Exception as e:   # noqa: BLE001
+        case("(B5.real.mirror) the gate's state of every real item equals tools/records.py's is_closed", False,
+             f"{type(e).__name__}: {e}")
+    unparsed = [p for p, (st, wf) in got.items() if st == "open" and wf == "unparsed"]
+    case("(B5.real.writes) every open real item's writes: parses or is listed exempt", not unparsed,
+         f"unparsed: {unparsed}")
+
+
+def revert_route(s, prs, ns, gate):
+    """R1 to R7 (B7). M changes the guard file and tools/rev_b.py in one merge commit on main."""
+    rev = {"triage": "none: a revert", "producer_run": None, "floor": None, "own_breaks": None}
+    rev_b = "".join(f"line {i}\n" for i in range(1, 11))
+    s.branch("rev-seed")
+    s.write("tools/rev_b.py", rev_b)
+    s.commit("a file the revert cases change")
+    s.merge("rev-seed")
+    s.branch("rev-m")
+    s.append(".claude/hooks/tool_allowlist.py", "# a fixture guard change, reverted below")
+    s.write("tools/rev_b.py", rev_b.replace("line 5\n", "line 5 changed by M\n"))
+    m_plain = s.commit("the change M merges")
+    s.merge("rev-m")
+    m = s.git("rev-parse", "main")
+
+    def revert_pr(label, target, token=None, edit=None, manual=None):
+        """A pull request from main whose change is git revert -m 1 of target (or, with manual, the files given),
+        then edit (path: text) applied in the same commit, and a revert verdict naming that commit."""
+        pr = next(prs)
+        s.branch(f"r{pr}")
+        if manual is None:
+            parents = s.git("rev-list", "--parents", "-n", "1", target).split()
+            s.git("revert", "--no-edit", "--no-commit", *(["-m", "1"] if len(parents) > 2 else []), target)
+        else:
+            for p, t in manual.items():
+                s.write(p, t)
+        for p, t in (edit or {}).items():
+            s.write(p, t)
+        x = s.commit(f"revert pull request {pr}")
+        s.verdict(next(ns), x, item=f"revert {target}", **rev)
+        head = s.push(pr)
+        rc, out = gate(pr, head)
+        if token:
+            case(f"{label}: GATE FAIL with [{token}]", rc == 1 and "GATE FAIL" in out and f"[{token}]" in out, out)
+        else:
+            case(f"{label}: GATE PASS", rc == 0 and "GATE PASS" in out, out)
+
+    guard_at_m = (s.d / ".claude/hooks/tool_allowlist.py").read_text()
+    guard_before = guard_at_m.removesuffix("# a fixture guard change, reverted below\n")
+    revert_pr("(R1) a true revert of M (a guard change) with main unmoved, no producer_run, floor or own_breaks "
+              "(B10's route)", m)
+    revert_pr("(R4) a partial revert: tools/rev_b.py restored, the guard change kept", m, "R-TREE",
+              manual={"tools/rev_b.py": rev_b})
+    revert_pr("(R5) item: revert <a commit on main that is not a merge commit>", m_plain, "R-NOTMERGE")
+    s.branch("side")
+    s.append("plan/notes.md", "a side change")
+    s.commit("a side change")
+    s.branch("side2")
+    s.git("checkout", "-q", "-B", "side2", "side")
+    s.append("plan/side.md", "another side change")
+    s.commit("another side change")
+    s.git("checkout", "-q", "side")
+    s.git("merge", "-q", "--no-ff", "-m", "Merge side2 into side", "side2")
+    off_main = s.git("rev-parse", "side")
+    revert_pr("(R6) item: revert <a merge commit that is not on origin/main>, on a class-high head", off_main,
+              "R-NOTMAIN", manual={"tools/rev_side.py": PY})
+    s.branch("rev-shift")
+    s.write("tools/rev_b.py", "header 1\nheader 2\nheader 3\n" + (s.d / "tools/rev_b.py").read_text())
+    s.commit("a later change that shifts the lines M changed")
+    s.merge("rev-shift")
+    revert_pr("(R2) a true revert of M after a later commit shifted its lines", m)
+    shifted = "header 1\nheader 2\nheader 3\n" + rev_b
+    revert_pr("(R3) R2 plus one byte in a reverted file", m, "R-TREE", edit={"tools/rev_b.py": shifted + "x"})
+    s.branch("rev-same")
+    s.write("tools/rev_b.py", (s.d / "tools/rev_b.py").read_text().replace("line 5 changed by M\n",
+                                                                           "line 5 changed again\n"))
+    s.commit("a later edit of the same line M changed")
+    s.merge("rev-same")
+    revert_pr("(R7) a revert that conflicts with a later edit of the same line, resolved by hand", m, "R-CONFLICT",
+              manual={"tools/rev_b.py": shifted, ".claude/hooks/tool_allowlist.py": guard_before})
+
+
+def template_cases(s, make, gate, refused, passed):
+    """B9 and CHK-C02-131 C2's template line: one key list across tools/merge_gate.py, checker.md and section 9; the
+    template filled by FILL_MAP passes; one required key dropped refuses, one case per key."""
+    lead_c, lead_w = "**Binding verdict:**", "**Checker verdict**"
+    cm, wo = REPO / ".claude/agents/checker.md", REPO / "plan/Installation_Working_Order.md"
+    tc, tw = template(cm, lead_c), template(wo, lead_w)
+    keys_of = lambda t: [re.match(r"([a-z_]+):", ln).group(1) for ln in t[0] if re.match(r"([a-z_]+):", ln)]  # noqa
+    try:
+        mg = load_module("merge_gate_keys", GATE[0])
+        vk, rk = tuple(mg.VERDICT_KEYS), tuple(mg.REQUIRED_KEYS)
+    except Exception as e:   # noqa: BLE001
+        vk, rk = None, None
+        case("(B9.keys0) tools/merge_gate.py holds VERDICT_KEYS and REQUIRED_KEYS", False, f"{type(e).__name__}: {e}")
+    if tc[0] is None or tw[0] is None:
+        case("(B9.tpl0) checker.md's and section 9's verdict templates are readable", False, f"{tc[1]}; {tw[1]}")
+        return
+    kc, kw = keys_of(tc), keys_of(tw)
+    case("(B9.keys) one key list: checker.md's template, section 9's template and the gate's VERDICT_KEYS are equal, in "
+         "order, and hold B1's six keys", vk is not None and kc == kw == list(vk) and set(B1_KEYS) <= set(kc),
+         f"checker.md {kc}\nsection 9 {kw}\ngate {vk}")
+    case("(B9.required) REQUIRED_KEYS is inside VERDICT_KEYS and holds at least " + ", ".join(MIN_REQUIRED),
+         rk is not None and set(MIN_REQUIRED) <= set(rk) <= set(vk or ()), f"{rk}")
+    for name, t, path in (("checker.md", tc, cm), ("section 9", tw, wo)):
+        fl = [ln for ln in t[0] if ln.startswith("floor:")]
+        case(f"(B9.floorline) {name}'s template floor: line names the eight floor classes (CHK-C02-131 C2)",
+             len(fl) == 1 and all(c.lower() in fl[0].lower() for c in CLASSES), repr(fl))
+        text = path.read_text(encoding="utf-8")
+        case(f"(B9.duty) {name} states the binding checker's confirmation duty with tools/subagent_audit.py launch "
+             "and calls (B8)", "subagent_audit.py launch" in text and "calls" in text, path.name)
+    fill = {"id": None, "target": "the fixture change", "reviewed_head": None, "verdict": "PASS", "conditions": "none",
+            "independence": '"same session, fresh-context subagent (declared, Ek A 5.3)"',
+            "checker_run": f"subagent {AGENT} (checker), fixture", "date": "2026-10-20",
+            "take_up": "PROCEED: a fixture task", "triage": "evidence/C00/EV-C00-001_fixture.md (read after my pass)",
+            "floor": "test oracle (tools/fx_tool.py); merge gate", "own_breaks": "fixture break: a rule removed, red",
+            "package": "none delivered", "nonce": "none delivered", "read": "the fixture", "relied_on": "the fixture",
+            "unsure": "none", "for": "the merge", "received_returned": "none", "guard_denials": "none",
+            "item": "W-C00-01", "shared_with_producer": "none", "producer_run": AGENT}
+    missing = [k for k in kc if k not in fill]
+    case("(B9.fillmap) the fill map gives a value inside B1's grammar for every key of the template", not missing,
+         f"no value for {missing}")
+    body = "\n".join("" if re.match(r"C<n> · type:", ln) else ("fixture text" if re.fullmatch(r"<.*>", ln) else ln)
+                     for ln in tc[1].splitlines()) + "\n"
+
+    pr_iter, n_iter = iter(range(1900, 2000)), iter(range(900, 999))
+
+    def head_with(drop=None):
+        pr = next(pr_iter)
+        s.branch(f"t{pr}")
+        s.append("tools/fx_tool.py", f"# template case {pr}")
+        x = s.commit(f"template pull request {pr}")
+        n = next(n_iter)
+        lines = []
+        for k in kc:
+            if k == drop:
+                continue
+            v = {"id": f"CHK-C00-{n:03d}", "reviewed_head": x}.get(k) or fill.get(k, "fixture")
+            lines.append(f"{k}: {v}")
+        s.write(f"evidence/C00/checks/CHK-C00-{n:03d}.md", "---\n" + "\n".join(lines) + "\n---\n" + body)
+        s.commit(f"filled template verdict {n}")
+        return pr, s.push(pr)
+
+    passed("(B9.filled) checker.md's template filled by the fill map, on a head touching a floor path (tools/)",
+           head_with())
+    for k in sorted(set(MIN_REQUIRED) | set(rk or ())):
+        if k not in kc:
+            case(f"(B9.drop.{k}) {k} is a template key, so its drop case can run", False, f"{k} not in {kc}")
+            continue
+        refused(f"(B9.drop.{k}) the filled template with {k} dropped", f"K-ABSENT-{k}", head_with(drop=k))
+
+
 def main():
+    if len(sys.argv) > 1:
+        GATE[0] = Path(sys.argv[1]).resolve()
     with tempfile.TemporaryDirectory() as tmp:
         s = Fixture(Path(tmp))
         # (1) class normal
@@ -807,6 +1499,7 @@ def main():
         listed_paths(s)
         shared_token_files(s)
         role_package_gate(Path(tmp) / "role_packages")
+        m1b(Path(tmp) / "m1b")
     ok = bool(RESULTS) and all(RESULTS)
     print(f"MERGE_GATE_TEST {'PASS' if ok else 'FAIL'} ({sum(RESULTS)}/{len(RESULTS)})")
     return 0 if ok else 1
