@@ -508,15 +508,16 @@ def k_cases():
             t = open(os.path.join(REPO, p), encoding="utf-8").read()
             if "session_key" not in t:
                 bad.append(f"{p} does not use session_key")
-            if "cse_" in t:
-                bad.append(f"{p} keeps its own cse_ derivation")
+        # No text check for a derivation (CHK-C02-134 C5): a literal "cse_" fails a sound consumer that only names it in
+        # a comment and passes a derivation written without it. A consumer's own derivation is judged by behaviour in
+        # K4 and K5 (where it diverges from the guard's); an identical copy is a named limit (condition point 3).
         g = open(os.path.join(REPO, ".claude", "hooks", "tool_allowlist.py"), encoding="utf-8").read()
         fn = g[g.index("def log_decision"):]
         fn = fn[:fn.index("\ndef ", 10)]
         if "session_key(" not in fn:
             bad.append("log_decision does not call session_key")
         return not bad, "; ".join(bad)
-    guarded("K6", "no consumer keeps its own derivation; log_decision uses session_key", k6)
+    guarded("K6", "every consumer uses session_key; log_decision calls it", k6)
 
 
 # ---------------------------------------------------------------- R: the registry (approach "Registry")
@@ -553,10 +554,10 @@ def r_cases():
         r = Run()
         r.launch("producer", W_PROMPT, agent_id=None)
         recs = r.records()
-        ok = len(recs) == 1 and recs[0]["agent_id"] is None and not any(
+        ok = len(recs) == 1 and recs[0]["agent_id"] is None and recs[0]["item"] is None and not any(
             x.get("agent_id") and x.get("item") for x in recs)
         return ok, f"{recs}"
-    guarded("R3", "no tool_response.agentId: the record binds no item to any agent", r3)
+    guarded("R3", "no tool_response.agentId: agent_id and item null; no item bound to any agent", r3)
 
     def r4():
         """One parser: the recorder's item and form agree with T5's parse on every grammar case."""
@@ -649,7 +650,7 @@ def r_cases():
             t.join()
         recs = r.records()
         return len(recs) == 12 and len({x["agent_id"] for x in recs}) == 12, f"{len(recs)} records"
-    guarded("R8", "exploratory: 12 parallel launches give 12 whole records (flock judged by reading)", r8)
+    guarded("R8", "12 parallel launches give 12 whole records (counted; flock itself is judged by reading)", r8)
 
 
 # ---------------------------------------------------------------- S: the start hook (approach "Nonce", "SubagentStart")
@@ -1014,9 +1015,14 @@ def c_cases():
             f.write(json.dumps({"type": "assistant", "message": {"content": [
                 {"type": "tool_use", "id": "toolu_h", "name": "SubagentHandback", "input": {"message": full}}]}}) + "\n")
             f.write(json.dumps({"type": "assistant", "message": {"content": [{"type": "text", "text": "Done."}]}}) + "\n")
-        out = stopped(r, "c27agent001", "producer", "Done.", transcript=tp)[1]
-        return out == "", f"blocked although last's logic gives the whole report: {out[:120]!r}"
-    guarded("C27", "last_assistant_message differs from the report: the transcript's last logic decides", c27)
+        _, out, rec = stopped(r, "c27agent001", "producer", "Done.", transcript=tp)
+        # The stop record hashes last_assistant_message as received, never the judged transcript text (CHK-C02-134 C1):
+        # otherwise acceptance row (ii) compares last with itself and passes by construction.
+        want = sha("Done.".encode())
+        return out == "" and rec.get("prompt_sha256") == want, \
+            f"out {out[:120]!r}; stop record prompt_sha256 {rec.get('prompt_sha256')!r}, want sha256('Done.') {want}"
+    guarded("C27", "last_assistant_message differs: the transcript's last logic decides; the record hashes the message",
+            c27)
 
     def c28():
         r = Run()
@@ -1166,7 +1172,10 @@ def l_world(exempt=None, bad_runs=True):
     old, now = "2026-01-01T00:00:00Z", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 120))
     plant_guard_log(r, [("l6agent0001", old)] + ([("l2agent0001", now)] if bad_runs else []) + [("l3agent0001", now)])
     plant_transcript(r.home, "l6agent0001", "sess", ts=old)            # finished before the cutoff, no Start
-    plant_transcript(r.home, "l3agent0001", "sess", ts=None, meta=False)  # internal: no meta file
+    # internal: no meta file, yet in the guard log, finished after the cutoff and with no Start, so that only the
+    # meta-file exclusion keeps it from NO_START (CHK-C02-134 C2)
+    plant_transcript(r.home, "l3agent0001", "sess", ts=now, meta=False)
+    r.launch("producer", W_PROMPT, agent_id="l1agent0001")             # its item, shown on its run's line (L3)
     r.start("l1agent0001", "producer")
     stopped(r, "l1agent0001", "producer", handover(r, "l1agent0001", "producer"))
     plant_transcript(r.home, "l1agent0001", "sess", ts=now)
@@ -1175,8 +1184,16 @@ def l_world(exempt=None, bad_runs=True):
     stopped(r, "l9agent0001", "producer", drop_lines(full, "Nonce:"))
     stopped(r, "l9agent0001", "producer", full)
     plant_transcript(r.home, "l9agent0001", "sess", ts=now)
-    r.start("l7agent0001", "prober")                                    # still running: no end status
+    # still running: no end status, but blocked with no later Stop, and named in the session's transcript after the
+    # cutoff (its launch's async result), so that only the running-run exclusion keeps it from BLOCK_NO_STOP (C2)
+    r.start("l7agent0001", "prober")
+    stopped(r, "l7agent0001", "prober", "incomplete")
     plant_transcript(r.home, "l7agent0001", "sess", ts=None)
+    with open(os.path.join(r.home, ".claude", "projects", "proj", "sess.jsonl"), "a") as f:
+        f.write(json.dumps({"type": "user", "timestamp": now,
+                            "toolUseResult": {"status": "async_launched", "agentId": "l7agent0001"},
+                            "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_l7agent0001",
+                                                     "content": "Async agent launched: l7agent0001"}]}}) + "\n")
     if bad_runs:
         plant_transcript(r.home, "l2agent0001", "sess", ts=now)         # NO_START
         r.start("l4agent0001", "checker")                               # BLOCK_NO_STOP
@@ -1208,8 +1225,8 @@ def l_cases():
         last = out.strip().split("\n")[-1] if out.strip() else ""
         return rc == 1 and not miss and not extra and last == "LIVENESS FAIL", \
             f"rc {rc}; missing {miss}; wrongly flagged {extra}; last {last!r}"
-    guarded("L1", "per finished run: NO_START, BLOCK_NO_STOP, NOT_DELIVERED; cutoff, internal, running, late excluded",
-            l1)
+    guarded("L1", "per finished run: NO_START, BLOCK_NO_STOP, NOT_DELIVERED; cutoff, internal (finished), running "
+            "(blocked), late excluded", l1)
 
     def l2():
         r = l_world(exempt="l8agent0001", bad_runs=False)
@@ -1223,10 +1240,12 @@ def l_cases():
         r = l_world(bad_runs=False)
         r.session_start("startup")
         rc, out = liveness(r)
+        item = any("l1agent0001" in ln and "plan/work/W-C02-25.md" in ln for ln in out.split("\n"))
         ok = rc == 0 and out.strip().split("\n")[-1] == "LIVENESS PASS" and "session_start" in out.lower().replace(
-            "sessionstart", "session_start") and "SELFTEST PASS" in out
-        return ok, f"rc {rc}: {out[-400:]!r}"
-    guarded("L3", "control: only sound runs gives LIVENESS PASS, shows SessionStart records and SELFTEST PASS", l3)
+            "sessionstart", "session_start") and "SELFTEST PASS" in out and item
+        return ok, f"rc {rc}; run line with its item {item}: {out[-400:]!r}"
+    guarded("L3", "control: only sound runs gives LIVENESS PASS, shows a run's item, SessionStart records, SELFTEST PASS",
+            l3)
 
     def l4():
         r = Run()
