@@ -1168,10 +1168,11 @@ def flagged(out, flag, aid):
     return any(flag in ln and aid in ln for ln in out.split("\n"))
 
 
-def l_world(exempt=None, bad_runs=True):
+def l_world(exempt=None, bad_runs=True, extra_log=()):
     r = Run()
     old, now = "2026-01-01T00:00:00Z", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 120))
-    plant_guard_log(r, [("l6agent0001", old)] + ([("l2agent0001", now)] if bad_runs else []) + [("l3agent0001", now)])
+    plant_guard_log(r, [("l6agent0001", old)] + ([("l2agent0001", now)] if bad_runs else []) + [("l3agent0001", now)]
+                    + list(extra_log))
     plant_transcript(r.home, "l6agent0001", "sess", ts=old)            # finished before the cutoff, no Start
     # internal: no meta file, yet in the guard log, finished after the cutoff and with no Start, so that only the
     # meta-file exclusion keeps it from NO_START (CHK-C02-134 C2)
@@ -1212,6 +1213,72 @@ def l_world(exempt=None, bad_runs=True):
             f.write(f"# C99 log\n\n### L-99999 · 2026-10-20 · synthetic: exemption\n\n- **Liveness:** {exempt}: "
                     f"TaskStop by the executor\n")
     return r
+
+
+# L7 and L8 (a new version of the suite, after L-458's "A liveness defect"): a run's end time is that of its end-status
+# record as `end_problem` reads it (approach: "A finished run is one with the platform's end status as
+# `subagent_audit.py`'s `end_problem` reads it"; "a run that finished before it is not counted"), never the latest
+# record that merely names the agent's ID. The defect's two observed mention kinds (an executor's Agent call pasting an
+# approach block, liveness output) and two that defeat a fix matching any notification holding the ID (another agent's
+# completion, as a user event and as a queued_command, whose text names the ID) come after the end status, in the
+# session's transcript. Each end-status form `end_problem` reads stands once: a background completion as a user event
+# (observed), as a queued_command attachment (observed), and a foreground result (inferred, subagent_audit.py "The end").
+LM_OLD = "2026-01-02T00:00:00Z"                                             # before any cutoff a hook writes
+LM_DONE = (("m1agent0001", "user"), ("m2agent0001", "queued"), ("m3agent0001", "foreground"))
+LM_LATE = "m4agent0001"                     # control: finished before the cutoff, resumed, finished again after it
+LM_FLAGS = ("NO_START", "BLOCK_NO_STOP", "NOT_DELIVERED")
+
+
+def end_record(aid, ts, form):
+    """The platform's end-status record, status completed, of an Agent-tool subagent, in one of end_problem's forms."""
+    if form == "user":
+        return note(aid, ts)
+    if form == "queued":
+        return {"type": "attachment", "timestamp": ts, "attachment": {
+            "type": "queued_command", "commandMode": "task-notification", "origin": {"kind": "task-notification"},
+            "prompt": note(aid, ts)["message"]["content"]}}
+    return {"type": "user", "timestamp": ts, "toolUseResult": {"status": "completed", "agentId": aid},
+            "message": {"content": [{"type": "tool_result", "tool_use_id": f"toolu_{aid}", "content": "r"}]}}
+
+
+def mentions(ids, ts):
+    """Records at ts that only name ids; none is an end status of any of them (end_problem reads none as one)."""
+    names = ", ".join(ids)
+    other = (f"<task-notification><task-id>mxother0001</task-id><status>completed</status><summary>s</summary>"
+             f"<result>asked: {names}</result></task-notification>")
+    return [{"type": "assistant", "timestamp": ts, "message": {"content": [
+                {"type": "tool_use", "id": "toolu_mxagent", "name": "Agent",
+                 "input": {"subagent_type": "checker", "prompt": f"## Approach\nasked: {names}\n"}}]}},
+            {"type": "user", "timestamp": ts, "toolUseResult": {"stdout": names, "stderr": "", "interrupted": False},
+             "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_mxbash",
+                                      "content": "\n".join(f"NO_START {i}" for i in ids)}]}},
+            {"type": "user", "timestamp": ts, "origin": {"kind": "task-notification"}, "message": {"content": other}},
+            {"type": "attachment", "timestamp": ts, "attachment": {
+                "type": "queued_command", "commandMode": "task-notification", "prompt": other}}]
+
+
+def lm_world(control=False):
+    """The sound L world, plus either LM_DONE (each in the guard log, with a meta file and no Start, finished before
+    the cutoff, then named later; L7) or, with control, LM_LATE (the same, but its last end status comes after the
+    cutoff; L8), so that L8 is green at the defective product and turns only on a fix that over-corrects."""
+    ids = [LM_LATE] if control else [a for a, _ in LM_DONE]
+    r = l_world(bad_runs=False, extra_log=[(a, LM_OLD) for a in ids])
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 120))
+    sess = os.path.join(r.home, ".claude", "projects", "proj", "sess.jsonl")
+    rows = []
+    for aid, form in () if control else LM_DONE:
+        plant_transcript(r.home, aid, "sess")                    # its transcript and meta file; no end status yet
+        rows.append(end_record(aid, LM_OLD, form))
+    if control:
+        plant_transcript(r.home, LM_LATE, "sess", ts=LM_OLD)     # its first end status, before the cutoff
+        rows.append(end_record(LM_LATE, now, "user"))            # the last one decides (subagent_audit.py "The end")
+    with open(sess, "a") as f:
+        f.write("".join(json.dumps(e) + "\n" for e in rows + mentions(ids, now)))
+    return r
+
+
+def lm_flag_lines(out):
+    return [ln for ln in out.split("\n") if any(fl in ln for fl in LM_FLAGS)]
 
 
 def l_cases():
@@ -1273,6 +1340,32 @@ def l_cases():
         return "guard_report.py --liveness" in t and re.search(r"--liveness[^\n]*\n(?:[^\n]*\n){0,4}[^\n]*bad ", t), \
             "stop_check.sh does not run --liveness with a FAIL path"
     guarded("L6", "stop_check.sh runs guard_report.py --liveness and fails on it", l6)
+
+    def l7():
+        r = lm_world()
+        rc, out = liveness(r)
+        lines = out.split("\n")
+        flags = lm_flag_lines(out)
+        # each of the three runs is left out by the cutoff rule itself, on its own line, not by another exclusion
+        by_cutoff = [a for a, _ in LM_DONE if any(a in ln and "cutoff" in ln for ln in lines)]
+        last = out.strip().split("\n")[-1] if out.strip() else ""
+        return rc == 0 and not flags and len(by_cutoff) == len(LM_DONE) == 3 and last == "LIVENESS PASS", \
+            f"rc {rc}; flag lines {flags}; left out by the cutoff {by_cutoff} of {[a for a, _ in LM_DONE]}; last {last!r}"
+    guarded("L7", "a run whose end status (user event, queued_command, foreground result) is before the cutoff stays "
+            "not counted when later records only name its ID (an Agent call, liveness output, another agent's "
+            "notifications): no flag, LIVENESS PASS", l7)
+
+    def l8():
+        r = lm_world(control=True)
+        rc, out = liveness(r)
+        flags = lm_flag_lines(out)
+        ok_flags = len(flags) == 1 and "NO_START" in flags[0] and LM_LATE in flags[0]
+        late_cut = [ln for ln in out.split("\n") if LM_LATE in ln and "cutoff" in ln]
+        last = out.strip().split("\n")[-1] if out.strip() else ""
+        return rc == 1 and ok_flags and not late_cut and last == "LIVENESS FAIL", \
+            f"rc {rc}; flag lines {flags} (want exactly NO_START {LM_LATE}); cutoff lines for it {late_cut}; last {last!r}"
+    guarded("L8", "control for L7: a run whose last end status is after the cutoff (an earlier one before it), named "
+            "by the same later records, is counted: exactly one flag, NO_START for it, LIVENESS FAIL", l8)
 
 
 # ---------------------------------------------------------------- RF: records.py role-file refusals
