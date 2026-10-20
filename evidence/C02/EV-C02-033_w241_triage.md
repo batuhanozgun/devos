@@ -1058,3 +1058,115 @@ Product:
   - Appendix C's C0 fields (independence level, evidence envelope and so on) are not written here. They belong to the test commit.
 
 Guard denials: none.
+
+## 9. CHK-C02-144's conditions: the test designer's change
+
+CHK-C02-144 (checker `a4fa2557312934f3d`, PASS-WITH-CONDITIONS at `a1803ed14618c09a26a69b8d952a430278a77303`) left two blocking defects (C1, C2; closure diff-confirmed) and three preferences (C3 to C5) for the condition's owner. The block in `plan/work/W-C02-24.1.md` is the changed version (SHA-256 `04d88b9f72940d68c2cbf6370fb4f98ce95ec539d7d84b42ab2781a9530efb2f`); the executor's own diff check against the judged version (`724c05a7b231f8fe778330c3e35d6ff6d9e17911081774ef4e6551cb8ca532e3`) found eight hunks, each the one the hand-over lists, and no other change: C1 by D1's two groups, C2 by B4's form check, its break, `T5_FORM` copied and compared in B6, and D3's real run on `a7f9429e1c0c07f6c`; C3 to C5 taken. Not independent: the next verdict's task names this check.
+
+### Task
+
+Item: plan/work/W-C02-24.1.md
+
+**Purpose:** W-C02-24.1's acceptance condition (yours, written by test designer `a3a03bc5d74e7707b`, now at `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/w241td/acceptance.md`, SHA-256 `724c05a7…32e3`, and byte-identical in branch `claude/c02-w241-condition` at `a1803ed14618c09a26a69b8d952a430278a77303`) was judged before any test or product by CHK-C02-144: PASS-WITH-CONDITIONS. Two defects block its merge, and they are the condition owner's:
+- **C1** (closure: diff-confirmed): D1 asks every new case to be red on the base's tool, but A5's first two ✔ bullets and B2's ✔ bullets are preservation cases that are green there by construction. Met when D1 names two groups: new-behaviour cases, red on the base's tool for their own reason, and preservation cases, green there (at least A5's ✔ byte-identity bullets, B2's ✔ bullets and any case that compares with the base's tool). The test verdict must then list each new case in one of the two groups.
+- **C2** (closure: diff-confirmed): the test designer's confirmation (B4, B8) does not read the task's `Writer or reader:` line, so a reader-form test designer naming the item confirms; `a7f9429e1c0c07f6c`'s task names `plan/work/W-C02-24.1.md` with a reader line. Met when B4 pins four things: (1) a case: a test designer with the same SHA-256, `--item` naming the item and a first task message whose one T5_FORM line reads reader is refused with its own reason, while writer confirms; (2) a break: dropping the form check turns that case red; (3) T5_FORM is copied and its source text compared as in B6; (4) D3 expects `launch a7f9429e1c0c07f6c --item W-C02-24.1` to be refused while its transcript exists. If you would rather state the limit than build the check, say so with your reason instead of making the change: that is a frame choice against W-C02-24's B8 and its disposition (1), and it then goes to a fresh checker's scoped re-review.
+Three preferences are routed to you as owner, each yours to take or decline with a reason: C3 (A7(i) followed literally lists your test and oracle paths as merge-blocking missing evidence, while D3 accounts for them through D1; seen when A7(i) says they fall into D3's D1 group), C4 (D3 should ask `python3 -I tools/test_merge_gate.py` to print its PASS line at the head whenever the head changes checker.md's template or section 9), C5 (D4 records whether a W-C02-27 producer wrote checker.md or the working order between the test commit and the head, but gives no consequence; seen when D4 says what follows). The open question: make the changes that meet C1 and C2 (or return C2 as above), decide C3 to C5, and change nothing else; no point may be loosened. Must hold for `main` `9c33473e2083a54127365e1d742b93e223b9e67e`, 2026-10-20.
+
+**Acceptance:** CHK-C02-144's conditions, at `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/chk144.md` (its findings F1, F2, F9 to F12 give the evidence); the approach block version 1.1 in the branch's item file.
+
+**Consumer:** the executor, who confirms by its own diff check that the change meets C1 and C2 and touches nothing else, copies your block by tool into the item file, and merges; then your test task.
+
+**Inputs:** your current block (path above); CHK-C02-144 (path above); the approach block in `plan/work/W-C02-24.1.md` at `a1803ed` (read with `git -C /home/user/devos show a1803ed14618c09a26a69b8d952a430278a77303:plan/work/W-C02-24.1.md` after `git -C /home/user/devos fetch origin claude/c02-w241-condition`, or from `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/W-C02-24.1.md`, the same bytes); `.claude/hooks/tool_allowlist.py` (T5_FORM, T5_ITEM, T5_PATH); `tools/subagent_audit.py`.
+
+Library line (from your map): `research/studies/gstack/CORE.md` (F1: a qualifier lost downstream). Start there; search further by need.
+
+`Teammates:` none reachable by message. The block's author was `a3a03bc5d74e7707b`; CHK-C02-144's checker was `a4fa2557312934f3d`.
+
+**Output:** the revised block's text (without the two marker lines) in `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/w241td/acceptance_v2.md`, leaving the first file as it is; and your final message (the hand-over your role file gives), listing each change against the condition it meets.
+
+**Writer or reader:** writer of that one new file only, outside every repository; no clone, commit, push or GitHub write; nothing in `/home/user/devos`.
+
+**Limits:** about 25 tool calls.
+
+**Constraints:** none.
+
+Your take-up and returns: see your role file.
+
+### Hand-over
+
+Package: none delivered (the role package `/home/user/devos/.claude/roles/test-designer.md` exists and I read all of it)
+Nonce: none delivered
+Take-up: PROCEED. The task names the two blocking conditions with their "met when" lines and the three preferences. CHK-C02-144's evidence (F1, F2, F9 to F12) holds up when checked against the block, the guard and the real runs. I build C2's check rather than return it: a7f9429e1c0c07f6c shows that without it, a reader-form test designer naming this item would confirm. That goes against W-C02-24's B8 and its disposition (1).
+
+## Disciplines (D1–D9)
+D1: yes: I weighed returning C2 (stating the limit) against building the check, and two ways of setting up C1's groups (a list by section, or by whether the base gives the outcome); I chose to build the check, and to group by "outcome the base gives" with a minimum list, because a list by section would be wrong (B3's first ✘ and A2's marker case are already green on the base).
+D2: no
+D3: yes: I checked each change against C1's and C2's met-when lines word by word, and made sure the new grouping cannot loosen D1, so a weak case cannot be filed as preservation.
+D4: yes: I made the new oracle discriminating: a7f9429e1c0c07f6c has an equal SHA-256 (observed with the current `launch`), so only the form check can refuse it, and the D1 groups refuse a new-behaviour case that is green on the base.
+D5: yes: I did not take CHK-C02-144's "stated" claim about a7f9429e1c0c07f6c on trust; I observed its meta, form line, Item line and T5R record #2851 with its SHA-256 myself, and checked that a5b339bbbefae9987's form line reads writer, so D3's existing expectation still holds under the new check.
+D6: no
+D7: yes: the block is never loosened once merged, so every added point is concrete and checkable, and I left the first file unchanged (SHA-256 still 724c05a7…32e3).
+D8: yes: I confirmed `main` is 9c33473 and that the scratch block is byte-identical to the item file's acceptance region (cmp), which settles CHK-C02-144's own "unsure".
+D9: yes: gstack CORE F1 (qualification-loss seam) supported C2: the guard writes the same T5R record for both forms, so `launch` must carry the reader/writer qualifier. It also supported C1's two groups, which keep "new" from losing its qualifier.
+
+Read, and what each changed:
+- `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/w241td/acceptance.md`: the base of every change.
+- `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/chk144.md`: set C1 to C5.
+- `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/W-C02-24.1.md` (approach v1.1; acceptance region confirmed identical): bounded the changes and justified the build choice for C2.
+- `.claude/hooks/tool_allowlist.py` lines 144-147 and 2243-2262 (T5_FORM, T5_ITEM, T5_PATH, t5_check): defined how the form is read (split on `\n`, match at column 0, exactly one line, `.lower()`). This changed the design: a capitalised ✔ case, and fail-closed cases mapped to T5.1 to T5.3.
+- `tools/subagent_audit.py` lines 480-548 (`launch`): the first task message the SHA-256 is taken over is the same text the form is read from.
+- `tools/test_merge_gate.py` and `tools/test_subagent_audit.py` (PASS lines only): bounded C4.
+- `.claude/roles/test-designer.md` (package): methods 4 and 6 (pin the reason; guard against over-blocking) shaped the form cases.
+- Ek D section 2 item 3: the nine questions.
+- The meta, first event and guard record of a7f9429e1c0c07f6c, plus the first event of a5b339bbbefae9987 and a3a03bc5d74e7707b: these gave D3's expectation.
+- gstack CORE.md F1 to F3: supported the work, as under D9.
+- Not read: EV-C02-033 in full, and W-C02-24.md at 58652fd. For B8 and disposition (1) I relied on CHK-C02-144 F9 and the task.
+
+Relied on:
+- T5_FORM is `(?:\*\*)?Writer or reader:(?:\*\*)?[ \t]*([A-Za-z]*)`, matched at column 0 on `prompt.split("\n")`. Exactly one such line is required (T5.1, T5.2), the word is lower-cased, and only writer or reader passes (T5.3). Source: tool_allowlist.py:144, 2245-2253 (observed).
+- A test designer is given T5R in either form. Source: tool_allowlist.py:2257 (observed).
+- Today's `launch` ends LAUNCH-T5R on any T5R allow. Source: subagent_audit.py:546-547 (observed).
+- a7f9429e1c0c07f6c:
+  - its meta has `agentType: test-designer`;
+  - its first line is `Item: plan/work/W-C02-24.1.md`;
+  - its form line is `**Writer or reader:** reader: …`;
+  - its T5R allow record #2851 carries a SHA-256 equal to the first task message's (67ec2146…538b);
+  - the current tool ends LAUNCH-T5R, exit 1.
+
+  All observed on 2026-10-20.
+- a5b339bbbefae9987 has a writer form line naming W-C02-24 (observed).
+- The current `test_merge_gate.py` prints `MERGE_GATE_TEST PASS (…)` (observed in code, line 1504).
+
+Unsure:
+- Which B-section cases end up in each D1 group depends on the base's CLI behaviour with `--item`, which I did not run. Example: whether the base rejects the extra argument or crashes. The test verdict settles this by running the base's tool.
+- Whether C5's consequence ("where that run's change is on `main`, read Part C on a head that contains it") is the executor's preferred handling. That is the executor's disposition, and the point only asks that one be recorded.
+
+For: the executor. It confirms by diff that the changes meet C1 and C2 and touch nothing else, copies the block into `plan/work/W-C02-24.1.md` by tool, and merges. After that, it is the input to my test task and to the test verdict's checker.
+
+Received from / Returned to: none returned. Outside my scope, noted for the executor and not acted on: a writer-form test designer whose only writes fall outside the repository (for example a3a03bc5d74e7707b, this block's author, which names W-C02-24.1 with a writer line) will confirm under `launch --item W-C02-24.1`. That is sound, because Part C and D1 trace the head's test paths through `calls`. But the binding checker should not read that confirmation as authorship of the test commit.
+
+Product:
+- **Files:** `/tmp/claude-0/-home-user-devos/e177dd92-42b7-5480-8039-2655653745ba/scratchpad/w241td/acceptance_v2.md` (SHA-256 04d88b9f72940d68c2cbf6370fb4f98ce95ec539d7d84b42ab2781a9530efb2f). It is the revised block without the marker lines. The first file is unchanged. There are eight diff hunks:
+  1. **C1:** D1's single "each new case is red" bullet becomes two groups. The test verdict asserts first that every new case is in exactly one group.
+     - New-behaviour cases (✘): red on the base for their own reason. At minimum: A1's Write, Edit and NotebookEdit path lines, and B4's NOTYPE, mismatch, no-`--item`, confirmation and reader cases.
+     - Preservation cases (✔): green on the base, each stating the outcome it preserves. At minimum: A5's two ✔ byte-identity bullets, B2's ✔ bullets, and any case that compares with the base's tool.
+     - A case whose outcome the base does not give is never a preservation case. A new-behaviour case that is green on the base, or a preservation case that is red there, refuses the test commit. These two rules keep the split from loosening D1.
+     - "Every existing case is green" is kept.
+  2. **C2 (1) and (2):** a new form-check point in B4.
+     - The form is read as T5 reads it; only exactly one line whose word is `writer` confirms.
+     - ✘ The reader case is refused with a reason of its own, distinct from LAUNCH-T5R and from the mismatch, no-`--item` and other-item reasons.
+     - ✔ writer confirms, including a bold, capitalised `Writer`.
+     - ✘ No form line, two form lines, or another word: refused, as synthetic containment cases.
+     - ✘ Break: drop the form check, and the reader case turns red.
+  3. **C2 (3):** B6 copies T5_FORM, and the test compares its source text with the head guard's T5_ITEM, T5_PATH and T5_FORM. A break (one character changed in the copy) turns that comparison red.
+  4. **C2 (2), carried:** D3's list of own breaks adds "the form check dropped".
+  5. **C2 (4):** D3's real runs add `launch a7f9429e1c0c07f6c --item W-C02-24.1`, refused with B4's reader reason while its transcript exists. The observed facts are given, and any other result is a finding.
+  6. **C2 (3), carried:** the "Drift after this head" line under Not covered adds T5_FORM, so its silence is not read as a pass.
+  7. **C3, taken:** A7(i) says the test and oracle paths the test verdict recorded, at their recorded SHA-256, fall into D3's D1 group, not missing evidence. Anything else follows the head's text.
+  8. **C4 and C5, taken:**
+     - C4: D3 adds a ✔ point. When the head changes checker.md's binding template or working order section 9, `python3 -I tools/test_merge_gate.py` prints its PASS line in the same clone.
+     - C5: D4 now says what follows from an overlap: a finding for the executor, and no `PASS` until the record holds the executor's disposition and, if that run's change is on `main`, Part C has been read on a head that contains it.
+- **Coverage:** the block answers CHK-C02-144 C1 and C2 in full, plus C3 to C5, alongside its earlier coverage of CHK-C02-143 C1 and C2 and approach v1.1. No point was loosened; every change adds or clarifies. It does not cover whether a writer-form test designer actually wrote the head's test files; Part C and D1 carry that through `calls`.
+- **Open:** the minimum new-behaviour list assumes those cases are red on the base. If W-C02-25's merge makes the base give one of those outcomes, the Terms rule applies: the test designer reports it to the executor before the test commit.
+
+Guard denials: #3175, G0 (readable call). A Bash heredoc meant to write a helper script held `**`, which the guard could not parse. I did not retry that route. A helper script would also have been a second file outside my one-file write scope. I wrote the block directly with the Write tool instead. The executor should record this with `tools/guard_report.py`.
