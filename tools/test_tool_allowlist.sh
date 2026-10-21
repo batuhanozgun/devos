@@ -122,6 +122,11 @@ t deny '{"tool_name":"mcp__claude-code-remote__update_trigger","tool_input":{"tr
 t deny '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative","connectors":["SomeConnector"]}}'
 t deny '{"tool_name":"mcp__claude-code-remote__set_session_tags","tool_input":{"session_ids":["session_SOMEONE_ELSE"]}}'
 t allow '{"tool_name":"Artifact","tool_input":{"action":"publish"}}'
+t allow '{"tool_name":"ArtifactComments","tool_input":{"action":"read","url":"https://claude.ai/artifact/x"}}'
+t allow '{"tool_name":"ArtifactData","tool_input":{"action":"list","url":"https://claude.ai/artifact/x","collection":"c"}}'
+t allow '{"tool_name":"ArtifactCheck","tool_input":{}}'
+t allow '{"tool_name":"mcp__Claude_Docs__read","tool_input":{}}'
+t deny '{"tool_name":"mcp__Claude_Docsx__read","tool_input":{}}'
 t deny '{"tool_name":"DesignSync"}'
 t deny '{"tool_name":"mcp__github__fork_repository","tool_input":{"owner":"batuhanozgun","repo":"devos"}}'
 t deny "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"source_revision\":\"9ae67ef\"}}"
@@ -250,6 +255,10 @@ t deny '{"tool_name":"Skill","tool_input":{"skill":"example-plugin:tally"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"init"}}'
 t deny '{"tool_name":"Skill","tool_input":{"skill":"../agents"}}'
 t deny '{"tool_name":"Skill","tool_input":{}}'
+for sk in artifact-design artifact-capabilities artifact-diagramming dataviz; do
+  t allow "{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"$sk\"}}"
+done
+t deny '{"tool_name":"Skill","tool_input":{"skill":"artifact-design-x"}}'
 # W-C02-24 M1a (1): ROLE_TYPES = producer, researcher, prober, checker, test-designer; a type is allowed only when it
 # is in ROLE_TYPES and its file exists in .claude/agents/ of the guard's checkout. Every other type, and a call with
 # no type, is denied by T4, one case per type. The three types outside T5 stay allowed by T2; producer and
@@ -1173,8 +1182,9 @@ w21 Bash deny "B1|B3" ok-bash-b1 "x-cmd-b1's command, denied by B1 (B3 in a clon
 w21 Bash deny B8 ok-bash-b8 "x-cmd-b8's command, denied by B8" "{\"command\":\"env | grep -i token\",$HB}"
 w21 Bash deny G0 ok-bash-unparsed "x-cmd-unparsed's command, denied by G0" "{\"command\":\"echo 'unbalanced\",$HB}"
 # point 2: the list. W21_LIST is ALLOWED_NON_MCP at main 3262699 without Monitor; a later reviewed change to the list
-# updates it in the same change (W-C02-27 added SendMessage, decided by T6; Batu's word of 2026-10-21 added Artifact).
-W21_LIST="Agent Artifact Bash Edit EnterPlanMode Glob Grep NotebookEdit PushNotification Read ReadNotifications ReportFindings
+# updates it in the same change (W-C02-27 added SendMessage, decided by T6; Batu's word of 2026-10-21 added Artifact, then
+# ArtifactComments, ArtifactData and ArtifactCheck).
+W21_LIST="Agent Artifact ArtifactCheck ArtifactComments ArtifactData Bash Edit EnterPlanMode Glob Grep NotebookEdit PushNotification Read ReadNotifications ReportFindings
 SendMessage SendUserFile Skill StructuredOutput SubagentHandback Task TaskCreate TaskGet TaskList TaskOutput TaskStop TaskUpdate
 TodoWrite ToolSearch WebFetch WebSearch Workflow Write"
 python3 - "$hook" $W21_LIST <<'EOF' || fail=1
@@ -1188,7 +1198,7 @@ x = "Monitor" in got or "Monitor" in users or any("Monitor".startswith(p) for p 
 print(("BAD  " if x else "ok   ") + "W21-x-list Monitor is on neither ALLOWED_NON_MCP nor USER_TOOLS, and no allowed MCP "
       "prefix covers it")
 rest = got - {"Monitor"}
-ok = len(want) == 30 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
+ok = len(want) == 33 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
 print(("ok   " if ok else "BAD  ") + "W21-ok-list every other name of ALLOWED_NON_MCP at main 3262699 is still on it, none "
       "is added, and USER_TOOLS is unchanged" + ("" if ok else f" (missing {sorted(want - rest)}, added "
                                                               f"{sorted(rest - want)}, USER_TOOLS {sorted(users)})"))

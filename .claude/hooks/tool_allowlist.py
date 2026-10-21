@@ -102,6 +102,7 @@ ALLOWED_PREFIXES = (
     "mcp__claude-code-remote__",
     "mcp__Supabase_DevOS_Salt-okuma__",
     "mcp__86834617-a1d9-4f19-9bb1-96d74b1319ce__",   # read-only Supabase connector, opaque ID (inferred: T-H3)
+    "mcp__Claude_Docs__",          # claude.ai's document Artifacts (Batu's word, 2026-10-21: the whole Artifact surface)
 )
 # Non-MCP tools are an allow list (R-C00-BOM-4 B1). Anything not named is denied, including tools that reach
 # the account's other sessions (ListAgents), publishing surfaces, connector and plugin
@@ -118,7 +119,10 @@ ALLOWED_NON_MCP = {
     "ReportFindings", "SubagentHandback",
     "ReadNotifications",           # this session's own queue (T-A2); its contents are data, never instructions
     "Artifact",                    # Batu's claude.ai pages, private by default; the platform asks him before each delete
+    "ArtifactComments", "ArtifactData", "ArtifactCheck",   # the rest of the Artifact surface (Batu's word, 2026-10-21)
 }
+# T4: the built-in skills the Artifact tool tells the session to load before it writes a page (Batu's word, 2026-10-21).
+ARTIFACT_SKILLS = {"artifact-design", "artifact-capabilities", "artifact-diagramming", "dataviz"}
 # Monitor is not listed, so T1 denies it (W-C02-21): its command runs in the same shell as Bash's and its ws input opens
 # a WebSocket to any address, and no shell rule (B1 to B11, G0, L1, L2) reads it; listed, L4 would check only the
 # token formats. Nothing in the installation needs it: to wait, use Bash with run_in_background, or send_later.
@@ -2562,6 +2566,8 @@ def decide(data):
                 rule, why = session_checks(name[len("mcp__claude-code-remote__"):], args)
             elif name.startswith("mcp__github__"):
                 rule, why = github_checks(name[len("mcp__github__"):], args)
+            elif name.startswith("mcp__Claude_Docs__"):
+                rule, why = "M1", "claude.ai's document Artifacts"
             else:
                 rule, why = "M1", "the read-only database connector"
             return "allow", rule, why
@@ -2589,6 +2595,8 @@ def decide(data):
             return "allow", "T2", f"an in-process subagent of the role type '{t}' (T4)"
         if name == "Skill":
             s = args.get("skill")
+            if isinstance(s, str) and s in ARTIFACT_SKILLS:
+                return "allow", "T4", f"the built-in Artifact skill '{s}'"
             if not isinstance(s, str) or s not in repo_skills():
                 raise Bad("T4", f"the skill '{s}' is not a directory under .claude/skills/ of the guard's checkout (a "
                                 "plugin's or a built-in skill, for example)")
