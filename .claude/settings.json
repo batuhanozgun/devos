@@ -10,6 +10,9 @@
   },
   "permissions": {
     "defaultMode": "acceptEdits",
+    "allow": [
+      "mcp__claude-code-remote__add_repo"
+    ],
     "deny": [
       "RemoteTrigger",
       "ListAgents",
