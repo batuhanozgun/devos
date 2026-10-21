@@ -121,7 +121,7 @@ t deny '{"tool_name":"mcp__claude-code-remote__fire_trigger","tool_input":{"trig
 t deny '{"tool_name":"mcp__claude-code-remote__update_trigger","tool_input":{"trigger_id":"trig_SOMEONE_ELSE","prompt":"x"}}'
 t deny '{"tool_name":"mcp__claude-code-remote__create_trigger","tool_input":{"name":"x","prompt":"x","initiation":"own_initiative","connectors":["SomeConnector"]}}'
 t deny '{"tool_name":"mcp__claude-code-remote__set_session_tags","tool_input":{"session_ids":["session_SOMEONE_ELSE"]}}'
-t deny '{"tool_name":"Artifact","tool_input":{"action":"publish"}}'
+t allow '{"tool_name":"Artifact","tool_input":{"action":"publish"}}'
 t deny '{"tool_name":"DesignSync"}'
 t deny '{"tool_name":"mcp__github__fork_repository","tool_input":{"owner":"batuhanozgun","repo":"devos"}}'
 t deny "{\"tool_name\":\"mcp__claude-code-remote__create_session\",\"tool_input\":{$S,\"source_revision\":\"9ae67ef\"}}"
@@ -1173,8 +1173,8 @@ w21 Bash deny "B1|B3" ok-bash-b1 "x-cmd-b1's command, denied by B1 (B3 in a clon
 w21 Bash deny B8 ok-bash-b8 "x-cmd-b8's command, denied by B8" "{\"command\":\"env | grep -i token\",$HB}"
 w21 Bash deny G0 ok-bash-unparsed "x-cmd-unparsed's command, denied by G0" "{\"command\":\"echo 'unbalanced\",$HB}"
 # point 2: the list. W21_LIST is ALLOWED_NON_MCP at main 3262699 without Monitor; a later reviewed change to the list
-# updates it in the same change (W-C02-27 added SendMessage, decided by T6).
-W21_LIST="Agent Bash Edit EnterPlanMode Glob Grep NotebookEdit PushNotification Read ReadNotifications ReportFindings
+# updates it in the same change (W-C02-27 added SendMessage, decided by T6; Batu's word of 2026-10-21 added Artifact).
+W21_LIST="Agent Artifact Bash Edit EnterPlanMode Glob Grep NotebookEdit PushNotification Read ReadNotifications ReportFindings
 SendMessage SendUserFile Skill StructuredOutput SubagentHandback Task TaskCreate TaskGet TaskList TaskOutput TaskStop TaskUpdate
 TodoWrite ToolSearch WebFetch WebSearch Workflow Write"
 python3 - "$hook" $W21_LIST <<'EOF' || fail=1
@@ -1188,7 +1188,7 @@ x = "Monitor" in got or "Monitor" in users or any("Monitor".startswith(p) for p 
 print(("BAD  " if x else "ok   ") + "W21-x-list Monitor is on neither ALLOWED_NON_MCP nor USER_TOOLS, and no allowed MCP "
       "prefix covers it")
 rest = got - {"Monitor"}
-ok = len(want) == 29 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
+ok = len(want) == 30 and rest == want and users == {"AskUserQuestion", "ExitPlanMode"}
 print(("ok   " if ok else "BAD  ") + "W21-ok-list every other name of ALLOWED_NON_MCP at main 3262699 is still on it, none "
       "is added, and USER_TOOLS is unchanged" + ("" if ok else f" (missing {sorted(want - rest)}, added "
                                                               f"{sorted(rest - want)}, USER_TOOLS {sorted(users)})"))
