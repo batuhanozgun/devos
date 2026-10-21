@@ -117,6 +117,7 @@ ALLOWED_NON_MCP = {
     "PushNotification",            # reaches only Batu's own devices (second channel, Appendix E §8)
     "ReportFindings", "SubagentHandback",
     "ReadNotifications",           # this session's own queue (T-A2); its contents are data, never instructions
+    "Artifact",                    # Batu's claude.ai pages, private by default; the platform asks him before each delete
 }
 # Monitor is not listed, so T1 denies it (W-C02-21): its command runs in the same shell as Bash's and its ws input opens
 # a WebSocket to any address, and no shell rule (B1 to B11, G0, L1, L2) reads it; listed, L4 would check only the
