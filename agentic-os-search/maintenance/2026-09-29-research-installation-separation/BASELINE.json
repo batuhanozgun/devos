@@ -1,0 +1,43 @@
+{
+  "work_id": "REPO-SEPARATION-20260929",
+  "repository": "batuhanozgun/agentic-os-search",
+  "base_commit": "8cd01e4afdcd0d37960b05930c91e1244678be6e",
+  "base_tree": "c9624996f3910d20f9e6d41da9fbb9b2143931ce",
+  "base_message": "Add autoresearch to studies catalog",
+  "root_entries": {
+    "AGENT.md": "aea3dd845e0f0bbcfb34465edb23782e99f95c80",
+    "README.md": "0c57766713d2b5a8535b36cd009f5d4e817e78c4",
+    "agent": "24fb60959380ca072a2ade392be23931886e0dfe",
+    "concepts": "b9579b6dc8282ee7d9f88f3c726f59e607fbf1a4",
+    "development-os": "f202e2ac6247606102a358e5e5796715cab824de",
+    "explorations": "32242dc1de0db63968c1f42c94edadd1a222677a",
+    "publications": "643adf03268a1dba84296ae46a17dd6450246cf0",
+    "research": "d0df0b1ac0a73a5c50fcdd2829078b016094dc20"
+  },
+  "request": {
+    "original_filename": "Yapıştırılan markdown.md",
+    "repository_copy": "REQUEST.md",
+    "bytes": 11331,
+    "lines": 108,
+    "sha256": "ddf3ec346f805c0d94778023af477f147e40f588bc3989154040986761a4e3f6",
+    "git_blob_sha": "38b793069d1e381d2b1e7f2635efd58566daf34b"
+  },
+  "external_plan_observation": {
+    "repository": "batuhanozgun/devos",
+    "path": "plan/DevOS_Kurulum_Plani.md",
+    "version_in_header": "2.1",
+    "observed_blob": "e0dfb3cb313c9a787c2d69a30daa3516ad827b89",
+    "read_range": "1-90",
+    "scope": "version, repository authority and ownership only; not a new plan review",
+    "copied_to_research_repository": false
+  },
+  "machine_account_check": {
+    "login": "batuhanozgun-devos",
+    "ref": "main at base_commit",
+    "author_filter_results": 0,
+    "committer_filter_results": 0,
+    "scope": "GitHub commit listing on main; not all refs or proof against unattributed commits"
+  },
+  "repository_wide_content_scan": "NOT_STARTED",
+  "archive_payload_verification": "NOT_STARTED"
+}

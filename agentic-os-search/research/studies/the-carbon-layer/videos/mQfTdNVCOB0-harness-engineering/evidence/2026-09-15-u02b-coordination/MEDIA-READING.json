@@ -1,0 +1,59 @@
+{
+  "schema": "study-local-media-reading-v1",
+  "unit": "U02-B",
+  "observed_on": "2026-09-15",
+  "video_id": "mQfTdNVCOB0",
+  "source_url": "https://www.youtube.com/watch?v=mQfTdNVCOB0",
+  "original_media_committed_to_repository": false,
+  "extracted_images_committed_to_repository": false,
+  "full_audio_listened": false,
+  "continuous_video_viewing": false,
+  "full_audio_transcript_alignment_performed": false,
+  "native_caption_provenance_verified": false,
+  "files": [
+    {
+      "source_id": "V03",
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].mp4",
+      "role": "user-uploaded muxed audiovisual file",
+      "bytes": 338112717,
+      "sha256": "edc60507f6144b32ff9888a4a046e08cd9a0230d98c11f49a36107b95dcbd087",
+      "container_duration_seconds": 1685.774,
+      "video": {"codec": "av1", "width": 3840, "height": 2160, "fps": 24, "duration_seconds": 1685.750},
+      "audio": {"codec": "opus", "duration_seconds": 1685.774},
+      "old_V01_byte_identity": false,
+      "old_elementary_stream_equivalence_tested": false
+    },
+    {
+      "source_id": "V04",
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].en.srt",
+      "role": "user-supplied subtitle representation; track provenance unverified",
+      "bytes": 51258,
+      "sha256": "30fe50be927fba0ebd8e4843739756a186eccf8dcb01cf92308b1b1dbc18db3c",
+      "cue_count": 714,
+      "full_text_read": true,
+      "first_cue_start_seconds": 0,
+      "final_cue_end_seconds": 1682.114,
+      "coverage_note": "Initial elided output was recovered with overlapping range reads; cue overlaps are preserved. No full comparison against old V02 or audio oracle."
+    }
+  ],
+  "frame_width": 1440,
+  "frames": [
+    {"seconds": 920, "sha256": "96fe7b17ebfb3f8a50b65a1489e274e444bc164fa2c97de6c8806a640f15e494"},
+    {"seconds": 990, "sha256": "30790523223413cc82bb4162171459bdc3d43b9e1f0a569189bb31be45534a2b"},
+    {"seconds": 1060, "sha256": "3a935def56280920b0dca99fdfd69adf27709477c356dd08cf9b6c22078d7806"},
+    {"seconds": 1120, "sha256": "7b1e319585980abdf39972ba1ae99b4d17c25a16ada29f30492e15e3aad668f3"},
+    {"seconds": 1190, "sha256": "38ba056c0b26304218442a24745306eff8e09b8f865b2b1c9b5a423055b1e051"},
+    {"seconds": 1250, "sha256": "22c16c8f6b359868c8042b743dac3de120911d2ad38abd87ab9fd85443c1e13c"},
+    {"seconds": 1310, "sha256": "a1a9dbcb3da31f7fd37da2d7bc234bc527ddc36de25b2423e4f7aa1a6b1278d4"},
+    {"seconds": 1370, "sha256": "bb47ab0028bd47054573181cbbec274ae333dd2ddca92bdcce9b6d1c72e7ae8d"},
+    {"seconds": 1445, "sha256": "76f4540f8a2166d94404995ba05a084913ff387883b05384ac469e679da17bf8"},
+    {"seconds": 1500, "sha256": "4b18148989f5e49c7dd1a99cc5647db4bcdcfe93d01ae4332da73439ea7b4a1a"},
+    {"seconds": 1560, "sha256": "57350819ec1ab4f37297dcc444b84e03175ebee9fc6285f2d4bcaad7b2bb7485"},
+    {"seconds": 1605, "sha256": "1206d018cc206d26b4fa366de34501e2a5cfdbe512d5996e9d41c87b5975f246"},
+    {"seconds": 1640, "sha256": "5930001674c06766465bc682d3379bf86905e03031ceba98c38f7e0b72fa87c3"}
+  ],
+  "visual_review": "All 13 selected frames inspected on four contact sheets; 1640 reopened individually. Some timestamps overlap earlier units and are not independent confirmations.",
+  "operations_actually_performed": ["streaming SHA-256 and byte counts", "ffprobe streams/durations", "SRT parse and full-text reading", "ffmpeg selected-frame extraction", "selected visual inspection"],
+  "application_or_agent_execution": false,
+  "recovery": "Repository contains identity/coverage records, not original media. Recover by video ID or actual user-supplied files when an exact audiovisual claim is material; a prior session path is not durable availability."
+}

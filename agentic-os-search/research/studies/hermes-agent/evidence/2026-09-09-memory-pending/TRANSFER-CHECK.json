@@ -1,0 +1,25 @@
+{
+  "kind": "PUBLICATION_TRANSFER_INTEGRITY_NOT_BEHAVIOR_VALIDATION",
+  "checked_at_utc": "2026-09-09T20:03:43.043974+00:00",
+  "research_base": "9a95b2cf1f8a0460ac6128e1409bf54aa3191022",
+  "publication_preparation_base": "c0ef2374a34cbb30f5f58a28333f89254931b00f",
+  "zip_name": "hermes-memory-pending-2026-09-09.zip",
+  "zip_bytes": 58383,
+  "zip_sha256": "d7d79d0d77099e1f2401174aa34837de4529093b88d1489cc5568fffcfd5fcfd",
+  "zip_crc_valid": true,
+  "delivery_manifest_entries_checked": 20,
+  "original_files_including_delivery_manifest": 21,
+  "all_original_byte_lengths_sha256_git_blob_match": true,
+  "original_evidence_files": 18,
+  "local_computed_original_evidence_tree": "8fd2e95ccbdecf60f00b6342464a042952a346c6",
+  "github_original_evidence_tree_readback": "8fd2e95ccbdecf60f00b6342464a042952a346c6",
+  "exact_original_evidence_tree_match": true,
+  "relocated_delivery_files_expected_blobs": {
+    "delivery/DELIVERY-MANIFEST.json": "549ac657cd1a63970fd1f6023b8f3b5589be408e",
+    "delivery/PUBLICATION-HANDOFF.md": "d1a8c79d6b1bf52b441502ca58453baa169e5cf5",
+    "delivery/10-MEMORY-STATE-AND-PENDING-LIFECYCLE.md": "b1ef04cba54ea921ab47857d4aed5d84465dc876"
+  },
+  "experiments_rerun": false,
+  "full_original_excerpt_verifier_run": false,
+  "scope": "Original artifact transfer. Not full CLI/gateway/worker, actual scanner, upstream freshness or product validation. Publication additions are outside the original manifests."
+}

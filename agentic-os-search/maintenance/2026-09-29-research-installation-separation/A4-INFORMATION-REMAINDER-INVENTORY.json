@@ -1,0 +1,582 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "03a02cf7cff2eb6078eb65a8d80a3138d24c9ab4",
+  "snapshot_root_tree": "373aff9da4b1e0cf2097d90e47b28cc78a67ca35",
+  "scope": "PARTIAL repository inventory: 1154 explicit paths by pinned composition. Information complete with 238 files; 81 new paths in this slice. Foundation has 646 explicit files and 6 opaque subtrees; studies remains opaque. Metadata only.",
+  "preparation_status": "Prepared in conversation on 2026-10-01; publication is established only by the remote ref and file readback.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-INFORMATION-INVENTORY.json",
+    "ref": "03a02cf7cff2eb6078eb65a8d80a3138d24c9ab4",
+    "git_blob": "5cf56029f4102165c7183666a879b28a1507db44",
+    "bytes": 22858,
+    "composed_explicit_leaves": 1071,
+    "describes_commit": "d45441970fbec9b022fea59253f6ef85e8e183b3"
+  },
+  "composition": [
+    "Recover the pinned base and its dependency chain; preserve prior read/disposition limits.",
+    "Apply the already-published 03a02cf maintenance delta before adding this slice.",
+    "Replace exactly the two matching Information frontier entries by these 81 leaves; retain the prior 157 Information leaves and the six remaining Foundation frontiers plus studies.",
+    "Information has 157+62+19=238 explicit leaves; Foundation 565+81=646; composed repository coverage is 1071+2+81=1154 explicit paths.",
+    "This is metadata coverage, not whole-repository file count or research-body review."
+  ],
+  "defaults": {
+    "mode": "100644",
+    "type": "blob",
+    "body_read": "NOT_READ_IN_THIS_SLICE",
+    "disposition": "PENDING_CONTENT_AND_LINK_REVIEW; preserve previous A2 decisions"
+  },
+  "columns": [
+    "direct_filename",
+    "git_blob",
+    "api_bytes"
+  ],
+  "blocks": [
+    {
+      "prefix": "research/soul-foundations/03_ground-deepening/grounds/information/informational-dynamics/selection-exposure",
+      "git_tree": "a253de09ad290d2a965c826d57ad943d72378abc",
+      "recursive_inventory_complete": true,
+      "source_url": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/a253de09ad290d2a965c826d57ad943d72378abc?recursive=1",
+      "source_truncated": false,
+      "files": 62,
+      "api_bytes": 340875,
+      "directory_groups": [
+        {
+          "directory": "",
+          "leaves": [
+            [
+              "CURRENT-SURFACES.md",
+              "0d158c494e245ea8e1f71352b878946e74f8aa74",
+              2396
+            ],
+            [
+              "FINDINGS-MAP.md",
+              "2a991a4768bb529058ac082b06b71a012c775dd3",
+              3447
+            ],
+            [
+              "INDEX.md",
+              "973d987dfde6e421cfe9b2e4bb1b0a4f187a5356",
+              2895
+            ],
+            [
+              "KEY.md",
+              "59aaee2bde2df137e65145f8861844ad5cd78faf",
+              2289
+            ],
+            [
+              "NEXT-RESEARCH-HANDOFF.md",
+              "b4cd80f06d79f04d03b9ba1292f0786600be060a",
+              2286
+            ],
+            [
+              "OPEN-QUESTIONS.md",
+              "a6e8f07e9bb337f8e74574c6a99dd746aa685fb5",
+              3081
+            ],
+            [
+              "PLAN.md",
+              "fa9ef5a6c14bcf1d3949ab03be69df0704775511",
+              4714
+            ],
+            [
+              "PUBLICATION.md",
+              "2cd6070b41b44140e6fa8610fa30e48f2384cff6",
+              6575
+            ],
+            [
+              "S1-OBJECT-BOUNDARIES-AND-RIVALS.md",
+              "72f356185bfc9af8d8c5bc911bd279e1b3777f50",
+              7611
+            ],
+            [
+              "S2-SOURCE-PRESSURE-AND-BOUNDARY-RESULTS.md",
+              "ada5a3487a5961cf146697fda36db1c19876efe2",
+              6287
+            ],
+            [
+              "S3-EXECUTION-AND-VERIFICATION-LIMITS.md",
+              "24dc9984d1bee960c44b0c41e4806f9d437272d0",
+              3698
+            ],
+            [
+              "S4-RIVAL-AND-OMISSION-REVIEW.md",
+              "51f03d65a468c62e8f2fe2f161241522a400ca1b",
+              9840
+            ],
+            [
+              "S5-SYNTHESIS-AND-PARENT-DELTA.md",
+              "e2a41aa20aeaf80c51175e9b0035d86af15e39c4",
+              8873
+            ],
+            [
+              "S6-CLOSURE.md",
+              "88bdf9fb22cdc8ca4ccddc7ef5173684209b8e96",
+              3897
+            ],
+            [
+              "SOURCE-LEDGER.md",
+              "60a0978f291b6579ec98837e15d9ab9876062fe0",
+              6125
+            ],
+            [
+              "STATE.md",
+              "346186120dbd41c7975f0be6694992f0d94c513e",
+              3222
+            ]
+          ]
+        },
+        {
+          "directory": "checks",
+          "leaves": [
+            [
+              "RESULT.json",
+              "a2c6e4c5611417aee24c9a5b93b8c12e8d4d201d",
+              3605
+            ],
+            [
+              "selection_checks.py",
+              "c38ecb1c76afdec3bd065fe5f48ae0bd91312ae6",
+              8029
+            ],
+            [
+              "SPEC.md",
+              "a55145b89d8a29040fde68858470461f5c92bd46",
+              4280
+            ]
+          ]
+        },
+        {
+          "directory": "consumer-relative-exposure-availability",
+          "leaves": [
+            [
+              "CURRENT-SURFACES.md",
+              "7d0af2691acee30fb54405a860a2c196a101bb05",
+              2552
+            ],
+            [
+              "E1-AVAILABILITY-OBJECT-AND-INDEPENDENT-QUESTIONS.md",
+              "15c8f57e1be811f525834e41ec0bdc9a60aa0ad1",
+              8300
+            ],
+            [
+              "E2-TEMPORAL-ACCESS-AND-CONSUMER-VIEWS.md",
+              "b5aa427a674d706412b8b2abb98bd714ca00e35b",
+              11765
+            ],
+            [
+              "E3-EXECUTION-AND-VERIFICATION-LIMITS.md",
+              "f81a8bd901c26bad633664b367f5847e8c5b9c8a",
+              5187
+            ],
+            [
+              "E4-RIVAL-REVIEW-AND-COMMUNICATION-ADDENDUM.md",
+              "1976bd9b8513f819cc46715cab47baa8e159253d",
+              13251
+            ],
+            [
+              "E5-SYNTHESIS-AND-PARENT-DELTA.md",
+              "a19cb640afb698e3a3c3ff301d0d7db52e396e84",
+              10967
+            ],
+            [
+              "E6-CLOSURE.md",
+              "872d96e1309784896500ff8d24a3c2f10445c1d7",
+              4199
+            ],
+            [
+              "FINDINGS-MAP.md",
+              "40081a0b8bbd809b3aa306db9f0d2d6e240d8f88",
+              4114
+            ],
+            [
+              "INDEX.md",
+              "7d4c2e76bc3b08a5a393eedab3b32afd1cde2c14",
+              2250
+            ],
+            [
+              "KEY.md",
+              "ee7d30c02f5a7e6fbd671c8df9ea58b3c3245e43",
+              2336
+            ],
+            [
+              "NEXT-RESEARCH-HANDOFF.md",
+              "1ec92a5c57dd64e40e828d5ee366470720c3189a",
+              1905
+            ],
+            [
+              "OPEN-QUESTIONS.md",
+              "e5d2c3adf95af8228b4b1f1113faaefff9df07be",
+              2763
+            ],
+            [
+              "PLAN.md",
+              "c9c4cd1d29e052b894a85a7cd610098b0ad1c79b",
+              5431
+            ],
+            [
+              "PUBLICATION.md",
+              "4a4b26e6e15a2d61dd125a0f5f25ce709683a314",
+              9543
+            ],
+            [
+              "SOURCE-LEDGER.md",
+              "fcd7d4d2cffca500a72788ed80be265270fd5f1b",
+              5508
+            ],
+            [
+              "STATE.md",
+              "2da0cda47806ead8c472e88ee638ffe47cf7aaab",
+              3412
+            ]
+          ]
+        },
+        {
+          "directory": "consumer-relative-exposure-availability/checks",
+          "leaves": [
+            [
+              "exposure_checks.py",
+              "cf136b9186d7c42218b5a82097013beb5af39a2a",
+              12158
+            ],
+            [
+              "RESULT.json",
+              "b2a09162bf461010605f7f6926b42a81d43a281b",
+              3139
+            ],
+            [
+              "SPEC.md",
+              "343d023c71f358eacb69c5f161c93b9bc097a18b",
+              5598
+            ]
+          ]
+        },
+        {
+          "directory": "use-conditioned-selection-set-adequacy",
+          "leaves": [
+            [
+              "CURRENT-SURFACES.md",
+              "f842b7f89193411cad16a5a0ea374da4f05c9a8a",
+              3005
+            ],
+            [
+              "FINDINGS-MAP.md",
+              "36e8fcd3be3d73a44846edb131eff676e7772eec",
+              5437
+            ],
+            [
+              "INDEX.md",
+              "2cf060612a09f86e8be99c1121b1f8180244ed6a",
+              2572
+            ],
+            [
+              "KEY.md",
+              "c89110125ef10080c720a555e33d16e6895439f5",
+              2489
+            ],
+            [
+              "NEXT-RESEARCH-HANDOFF.md",
+              "fc8a1aa1577c1975db7475d769c3d1824f5cc269",
+              2652
+            ],
+            [
+              "OPEN-QUESTIONS.md",
+              "0ace0362d41dd6d5e60b2ed015beccd7be8837fa",
+              3653
+            ],
+            [
+              "PLAN.md",
+              "1a166109a99f014bc2e9bddd03910d980d36fb9a",
+              5524
+            ],
+            [
+              "PUBLICATION.md",
+              "c8f98255dbb24d94eac42eab53c927687d3da134",
+              7644
+            ],
+            [
+              "SOURCE-LEDGER.md",
+              "1f09b1afd32c005f45accd08b21f2162c63c8711",
+              5253
+            ],
+            [
+              "STATE.md",
+              "c1fcb187f5e0a6d9cd23683c25497bc592d45900",
+              3368
+            ],
+            [
+              "U1-USE-CONTRACT-AND-INDEPENDENT-QUESTIONS.md",
+              "04c09ea1a027ed608e648df84b67768621ea35fd",
+              7628
+            ],
+            [
+              "U2-DECISION-SUFFICIENCY-AND-ADAPTIVE-SELECTION.md",
+              "7f2d964ea4e353b9c221eb1d912a56f7bc585765",
+              9338
+            ],
+            [
+              "U3-EXECUTION-AND-CHECKPOINT-LIMITS.md",
+              "2e0ed5c04f5fdd61dc9cbffdd4ed47d46134b4f4",
+              4554
+            ],
+            [
+              "U4-NONDECISION-USES-AND-RIVAL-REVIEW.md",
+              "8ddca13f28613558731b74dbb6ca4c787a622f4f",
+              12294
+            ],
+            [
+              "U4-RESUMPTION.md",
+              "e9b4b839d0bd2f0dc888396dfba0560e927a99a0",
+              2440
+            ],
+            [
+              "U4-SOURCE-AND-EXECUTION-ADDENDUM.md",
+              "f6f63b7d6da97f706a4ca81a7953edffa692f833",
+              7370
+            ],
+            [
+              "U5-SYNTHESIS-AND-PARENT-DELTA.md",
+              "907118eaa1da52675bbcdf2c23a2695f6dcb45de",
+              10331
+            ],
+            [
+              "U6-CLOSURE.md",
+              "54eaa24243e72ed83e489bec86a37aa1dbb6f7be",
+              4780
+            ]
+          ]
+        },
+        {
+          "directory": "use-conditioned-selection-set-adequacy/checks",
+          "leaves": [
+            [
+              "adequacy_checks.py",
+              "c238f5182a9ac8f04a356b40e8f69d61a9d1e5bc",
+              9375
+            ],
+            [
+              "RESULT.json",
+              "2ad19e0075ad34d11c37b62d06941e0bbdf44ad3",
+              4630
+            ],
+            [
+              "SPEC.md",
+              "9f820d188f528d4da1942b69299f2b8e00322656",
+              5794
+            ]
+          ]
+        },
+        {
+          "directory": "use-conditioned-selection-set-adequacy/checks/u4",
+          "leaves": [
+            [
+              "nondecision_checks.py",
+              "fb5fe590add52bb34164e83d1970cb9e5ed1f6a4",
+              7295
+            ],
+            [
+              "RESULT.json",
+              "e9dad3759d982e1873f6831ca2b1eaad054cf731",
+              1826
+            ],
+            [
+              "SPEC.md",
+              "1ced7f1a8e3b785ecd4b29986f3be1bb360fec0b",
+              4095
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "prefix": "research/soul-foundations/03_ground-deepening/grounds/information/informational-state",
+      "git_tree": "765f5e3de1f259911b7763742170a5ee925d1f1a",
+      "recursive_inventory_complete": true,
+      "source_url": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/765f5e3de1f259911b7763742170a5ee925d1f1a?recursive=1",
+      "source_truncated": false,
+      "files": 19,
+      "api_bytes": 149378,
+      "directory_groups": [
+        {
+          "directory": "",
+          "leaves": [
+            [
+              "CURRENT-SURFACES.md",
+              "18557fec3dac27d4409d83615336f672c1eade9c",
+              2477
+            ],
+            [
+              "DEFERRED-RELATIONS.md",
+              "4156a0d36260f0b293d95d0c8e2e3a32ddf8ff3c",
+              3471
+            ],
+            [
+              "EVIDENCE-INVENTORY.md",
+              "76b74434eeafc19920d378b626c2668cb58cd454",
+              7873
+            ],
+            [
+              "EXTERNAL-SOURCE-LEDGER.md",
+              "01ada4bf0d2cde6412c841e1177dfe4d64f193bd",
+              6886
+            ],
+            [
+              "FINDINGS-MAP.md",
+              "d27b6cc9934ddf54f159c2a42ad048523c1d9f51",
+              9162
+            ],
+            [
+              "INDEX.md",
+              "892aea794ab1747d22171c1afd81c20784cceefc",
+              2517
+            ],
+            [
+              "KEY.md",
+              "22289f45c6cca5c3aa5c980978973e4d1d870008",
+              3917
+            ],
+            [
+              "N0-CANONICAL-RECOVERY.md",
+              "3ec40e5b0dc84bba3d66a5e238355706cae0a865",
+              4796
+            ],
+            [
+              "N1-NODE-COHERENCE-ATTACK.md",
+              "85ece81f39ae275b1abee51d6a6fee15e43ba92f",
+              7889
+            ],
+            [
+              "N2-FIRST-PRINCIPLES-PROBLEM-INVENTORY.md",
+              "7c72192d2a8b1a28a7d2773fea548f52c16d80c0",
+              11744
+            ],
+            [
+              "N3-IMMEDIATE-CHILD-DISCOVERY.md",
+              "3559964a1bd986abc52d755114073463d5302b86",
+              10179
+            ],
+            [
+              "N4-BOUNDARY-ANTI-COLLAPSE.md",
+              "b0084a1958d8d834641eb901b704a42ceb7abe72",
+              9056
+            ],
+            [
+              "N5-EXTERNAL-CROSS-DOMAIN-FALSIFIERS.md",
+              "8bbb2286bb59596f7a0a16625e5147b10ffc3ec8",
+              12659
+            ],
+            [
+              "N6-OMISSION-REDUCTION-RIVAL-AUDIT.md",
+              "e46b235c11ad3601cc8fc283e573dfa1685e13dd",
+              17281
+            ],
+            [
+              "N7-NODE-CLOSURE.md",
+              "cef2acd9b376da2d270f67c3d48886b054d60e56",
+              9328
+            ],
+            [
+              "OPEN-QUESTIONS.md",
+              "664b0ed0af55980fd5d7b894b0aeaf858d900a22",
+              2805
+            ],
+            [
+              "RESEARCH-PLAN.md",
+              "ee3c9db6ef504d75a349ca6a34a14f6d0db32c65",
+              6322
+            ],
+            [
+              "STATE.md",
+              "85aebba28de55126e2660dd59aa22122bbd69457",
+              4460
+            ]
+          ]
+        },
+        {
+          "directory": "synthesis",
+          "leaves": [
+            [
+              "INFORMATIONAL-STATE-SYNTHESIS.md",
+              "8d53f5a7520e68c220888ec036714a10e8d9895b",
+              16556
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "remaining_foundation_frontier": [
+    [
+      "04_top-level-adequacy-rerun",
+      "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a"
+    ],
+    [
+      "05_relation-control-composition",
+      "81e9db36f1b14d2248e99660350734c30d501d8d"
+    ],
+    [
+      "06_integration-frontier-review",
+      "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"
+    ],
+    [
+      "07_selection-dynamics-integration-review",
+      "c88b8399a330f56533c1ef1f452712e0cc2c72f2"
+    ],
+    [
+      "08_foundation-sufficiency-reuse-review",
+      "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"
+    ],
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "selection": {
+      "files": 62,
+      "api_bytes": 340875,
+      "root": "a253de09ad290d2a965c826d57ad943d72378abc",
+      "directories": 7
+    },
+    "state": {
+      "files": 19,
+      "api_bytes": 149378,
+      "root": "765f5e3de1f259911b7763742170a5ee925d1f1a",
+      "directories": 2
+    },
+    "new_files": 81,
+    "new_api_bytes": 490253,
+    "new_file_types": {
+      ".md": 73,
+      ".json": 4,
+      ".py": 4
+    },
+    "information_composed_files": 238,
+    "information_composed_api_bytes": 1360178,
+    "information_root": "57e5859ade346c254e49172028909434af87a460",
+    "prepared_package_negative_controls": {
+      "new_leaf_omissions_detected": 81,
+      "path_blob_mode_mutations_detected": 3,
+      "git_cli_hash_object_agreement": true
+    },
+    "foundation_paths_by_composition": 646,
+    "repository_paths_by_composition": 1154,
+    "foundation_root_recomputed": false,
+    "repository_root_recomputed": false,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "verification_limits": [
+    "Same-author deterministic metadata check. Git tree identities bind path/mode/blob identities, not API sizes or source correctness.",
+    "Prepared-package checks are retained as same-author evidence; this publication does not convert them into independent verification.",
+    "No research-body, status-semantics, link-target, archive-internal, independent-reader or historical-script execution check was performed."
+  ],
+  "next": "After publication/readback, continue the authorised A4 inventory at research/soul-foundations/04_top-level-adequacy-rerun. A4 content/link/archive-internal work, A5 and two A3 source gaps remain open."
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "exp-visible-dialogue-manifest-v1",
+  "exploration": "EXP-004",
+  "source_date": "2026-09-20/2026-09-21",
+  "source_kind": "model-visible-substantive-conversation-transcription-not-platform-export",
+  "source_cut": "U001-S001 through U013-S013, ending at U014",
+  "user_messages": 14,
+  "assistant_messages": 13,
+  "total_messages": 27,
+  "source_files": 14,
+  "source_total_chars": 74544,
+  "hash_scope": "archival-file-identity-not-dialogue-or-claim-validation",
+  "files": [
+    {
+      "path": "sources/conversation/USER-MESSAGES.md",
+      "messages": "U001-U014",
+      "git_blob_sha": "202b4476b1c6b86a6a12e15e86588b9aacb8e174",
+      "chars": 4239
+    },
+    {
+      "path": "sources/conversation/assistant/S001.md",
+      "messages": "S001",
+      "git_blob_sha": "7b6ebf5a30124e9357dc8d13aa0b75a981ca89da",
+      "chars": 12125
+    },
+    {
+      "path": "sources/conversation/assistant/S002.md",
+      "messages": "S002",
+      "git_blob_sha": "2719d8e9db9f0596ab2acbaedd5ac271a0e88468",
+      "chars": 5907
+    },
+    {
+      "path": "sources/conversation/assistant/S003.md",
+      "messages": "S003",
+      "git_blob_sha": "3c66d0a7b5811880af0ff9b6081ef8e77465794f",
+      "chars": 6562
+    },
+    {
+      "path": "sources/conversation/assistant/S004.md",
+      "messages": "S004",
+      "git_blob_sha": "e892fac7106f41bbcedabb5ea6ad12de66b0ef60",
+      "chars": 3799
+    },
+    {
+      "path": "sources/conversation/assistant/S005.md",
+      "messages": "S005",
+      "git_blob_sha": "4650106d63683f6f06a47d0e89431be58cdcb3aa",
+      "chars": 1918
+    },
+    {
+      "path": "sources/conversation/assistant/S006.md",
+      "messages": "S006",
+      "git_blob_sha": "77d90013681d8f9fd88ecd20011b25544735d4d2",
+      "chars": 5230
+    },
+    {
+      "path": "sources/conversation/assistant/S007.md",
+      "messages": "S007",
+      "git_blob_sha": "6e4efd87c41c901d586ae8283976c6e6982e715d",
+      "chars": 1345
+    },
+    {
+      "path": "sources/conversation/assistant/S008.md",
+      "messages": "S008",
+      "git_blob_sha": "da31a3806b100c0ee265e13e11e50ad78dc6d045",
+      "chars": 5084
+    },
+    {
+      "path": "sources/conversation/assistant/S009.md",
+      "messages": "S009",
+      "git_blob_sha": "f639a49c5d73acdbbd1a985e88c7765ef9abaca6",
+      "chars": 5521
+    },
+    {
+      "path": "sources/conversation/assistant/S010.md",
+      "messages": "S010",
+      "git_blob_sha": "fb1d44e482bd37cdd2da1cc1b6b83324f359a806",
+      "chars": 5474
+    },
+    {
+      "path": "sources/conversation/assistant/S011.md",
+      "messages": "S011",
+      "git_blob_sha": "63e2fe85ad21667e11ad4ac2e82379d3f90083bf",
+      "chars": 5093
+    },
+    {
+      "path": "sources/conversation/assistant/S012.md",
+      "messages": "S012",
+      "git_blob_sha": "6c0580f085dbcd93cf2531b4f073209ff68f97ac",
+      "chars": 5719
+    },
+    {
+      "path": "sources/conversation/assistant/S013.md",
+      "messages": "S013",
+      "git_blob_sha": "0160921f0fb5999165d0ad6543675e01581c331f",
+      "chars": 6528
+    }
+  ],
+  "excluded": [
+    "system-developer-messages",
+    "hidden-reasoning",
+    "raw-tool-responses-and-temporary-tokens",
+    "progress-tool-commentary-as-separate-source-messages",
+    "unrelated-profile-content",
+    "post-U014-publication-dialogue"
+  ],
+  "limitations": [
+    "not-independent-transcription-verification",
+    "not-byte-perfect-export",
+    "assistant-source-files-are-substantive-final-responses",
+    "external-research-claims-not-revalidated-by-manifest"
+  ]
+}

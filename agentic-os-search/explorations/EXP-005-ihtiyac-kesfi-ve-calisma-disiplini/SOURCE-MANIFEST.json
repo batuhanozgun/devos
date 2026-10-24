@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "exploration_id": "EXP-005",
+  "repository": "batuhanozgun/agentic-os-search",
+  "package_path": "explorations/EXP-005-ihtiyac-kesfi-ve-calisma-disiplini",
+  "source_kind": "model-visible-normalized-conversation-transfer",
+  "source_date": "2026-09-22",
+  "source_cut": {
+    "first_message": "U001",
+    "last_message": "U048",
+    "user_messages": 48,
+    "assistant_final_messages": 47,
+    "total_messages": 95,
+    "tool_transcript_complete": false,
+    "platform_export": false,
+    "independently_transcription_verified": false,
+    "archive_execution_included": false
+  },
+  "identity_observation_ref": "0727ddfd671bb7042bc7f90c5e587210911c35c1",
+  "identity_note": "Git blob SHA/byte sizes were read from the exact repository tree. These identify the normalized archive bytes, not original platform-message bytes or truth of the historical claims.",
+  "conversation_files": [
+    {
+      "path": "sources/conversation/01-KAPSAM-VE-ILK-TESHIS.md",
+      "users": ["U001", "U002"],
+      "assistants": ["A001", "A002"],
+      "message_count": 4,
+      "bytes": 35208,
+      "git_blob_sha": "0eb7437af4b7326c87aa7d0e4e919120dc1c9923"
+    },
+    {
+      "path": "sources/conversation/02-BILGIDEN-IHTIYAC-KESFINE.md",
+      "users": ["U003", "U004"],
+      "assistants": ["A003", "A004"],
+      "message_count": 4,
+      "bytes": 25613,
+      "git_blob_sha": "6e1e202fe304ea050124a2018ba0fa7530d35445"
+    },
+    {
+      "path": "sources/conversation/03-DEVOS-VE-GOREV-DEVRi.md",
+      "users": ["U005", "U006", "U007", "U008"],
+      "assistants": ["A005", "A006", "A007", "A008"],
+      "message_count": 8,
+      "bytes": 17062,
+      "git_blob_sha": "930c28bb86739293e917b7d8ddc5cac5a9400b52"
+    },
+    {
+      "path": "sources/conversation/04-ILK-CLOUD-SONUCU-VE-PR-INCELEMESI.md",
+      "users": ["U009", "U010"],
+      "assistants": ["A009", "A010"],
+      "message_count": 4,
+      "bytes": 20886,
+      "git_blob_sha": "f0a2e688cad2938283be311cd9cebcb4bdc489f0"
+    },
+    {
+      "path": "sources/conversation/05-DARLIK-TESTLER-VE-ERISIM-ITIRAZI.md",
+      "users": ["U011", "U012", "U013", "U014", "U015", "U016", "U017", "U018", "U019", "U020", "U021", "U022", "U023", "U024"],
+      "assistants": ["A011", "A012", "A013", "A014", "A015", "A016", "A017", "A018", "A019", "A020", "A021", "A022", "A023", "A024"],
+      "message_count": 28,
+      "bytes": 24593,
+      "git_blob_sha": "7d565cc1358cd39ce6b2e6faf464fe5e7622bd57"
+    },
+    {
+      "path": "sources/conversation/06-PLUGIN-MCP-CLONE-SAVRULMASI.md",
+      "users": ["U025", "U026", "U027", "U028", "U029", "U030", "U031", "U032"],
+      "assistants": ["A025", "A026", "A027", "A028", "A029", "A030", "A031", "A032"],
+      "message_count": 16,
+      "bytes": 16288,
+      "git_blob_sha": "a195acf77df32ad4315b1118c4aad80660ffe8d2"
+    },
+    {
+      "path": "sources/conversation/07-V2-SONUCU-YAYIN-VE-LOCAL-ONERISI.md",
+      "users": ["U033", "U034", "U035", "U036", "U037", "U038"],
+      "assistants": ["A033", "A034", "A035", "A036", "A037", "A038"],
+      "message_count": 12,
+      "bytes": 16714,
+      "git_blob_sha": "75385996f14729814cd63a27776521ecf5fbe84f"
+    },
+    {
+      "path": "sources/conversation/08-LOCAL-KURULUM-VE-EKSIK-DEVIR.md",
+      "users": ["U039", "U040", "U041", "U042", "U043", "U044"],
+      "assistants": ["A039", "A040", "A041", "A042", "A043", "A044"],
+      "message_count": 12,
+      "bytes": 8062,
+      "git_blob_sha": "aa34126f7398fa679ab787a36d8e0bd068bc2c58"
+    },
+    {
+      "path": "sources/conversation/09-IPTAL-VE-KONU-OZETI.md",
+      "users": ["U045", "U046"],
+      "assistants": ["A045", "A046"],
+      "message_count": 4,
+      "bytes": 6961,
+      "git_blob_sha": "065d4e418e2302a482cece8e0c89bec3710e3246"
+    },
+    {
+      "path": "sources/conversation/10-PROTOKOL-DEGERLENDIRMESI-VE-ARSIV-TALEBI.md",
+      "users": ["U047", "U048"],
+      "assistants": ["A047"],
+      "message_count": 3,
+      "bytes": 13753,
+      "git_blob_sha": "67ecb007719e311539bf65f8dfb8c2c74024f248"
+    }
+  ],
+  "original_artifacts": [
+    {
+      "path": "artifacts/DEVOS02-NEED-DISCOVERY-20260922.md",
+      "original_filename": "DEVOS02-NEED-DISCOVERY-20260922.md",
+      "bytes": 20369,
+      "sha256": "1053219053176484e79633c16322cabb9c89a46a4cef0f3f8322a10615d964e6",
+      "git_blob_sha": "e66bd561bd48219a6de5141c21fa08b3b9f2fda4",
+      "preservation": "unchanged original attachment; locally computed blob matches remote blob",
+      "authority": "historical cancelled task proposal/adopted dispatch; not current instruction"
+    }
+  ],
+  "images": [
+    {
+      "id": "IMG01",
+      "original_filename": "a7022655-9437-45fc-95fb-6e2145e854b1.png",
+      "bytes": 306565,
+      "dimensions": [876, 1058],
+      "sha256": "c781ecda84887046de1a47ec22a3eac944713e1e4077310348b15387e4be9cad",
+      "git_original_bytes_present": false,
+      "git_text_representation": "sources/ORIGIN-AND-ATTACHMENTS.md",
+      "conversation_delivery_bundle": "EXP-005-original-attachments.zip"
+    },
+    {
+      "id": "IMG02",
+      "original_filename": "3729796c-bde7-40d3-90e3-7c257e785f39.png",
+      "bytes": 1458394,
+      "dimensions": [876, 1058],
+      "sha256": "b5eecb6d35df257ba03d6a35d9851b1c88b564451b7cb598ffc6859b567810ac",
+      "git_original_bytes_present": false,
+      "git_text_representation": "sources/ORIGIN-AND-ATTACHMENTS.md",
+      "conversation_delivery_bundle": "EXP-005-original-attachments.zip"
+    }
+  ],
+  "material_decisions": {
+    "implementation_cancellation_source": "sources/conversation/09-IPTAL-VE-KONU-OZETI.md#U045",
+    "archive_authorization_source": "sources/conversation/10-PROTOKOL-DEGERLENDIRMESI-VE-ARSIV-TALEBI.md#U048",
+    "technical_problem_resolved": false,
+    "new_implementation_authorized": false
+  },
+  "normalization_and_limits": "sources/ORIGIN-AND-ATTACHMENTS.md",
+  "checks": "checks/ARCHIVE-REVIEW.md"
+}

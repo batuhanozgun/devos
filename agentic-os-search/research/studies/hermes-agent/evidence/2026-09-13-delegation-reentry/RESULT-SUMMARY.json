@@ -1,0 +1,23 @@
+{
+  "kind": "DERIVED_VIEW_NOT_RAW_RESULT",
+  "raw": "diagnostic-evidence.tar.xz:checks/RESULT.json",
+  "raw_sha256": "20e39d3c07c6d61a2e5e3dea7344baf62af52b6ffd6d9f59911ab1cce93e93f1",
+  "started_at_utc": "2026-09-13T04:01:40.644076+00:00",
+  "finished_at_utc": "2026-09-13T04:01:40.658275+00:00",
+  "rows": [
+    {"id":"D01","scheduled":1,"ack_requested":1,"released":0,"running":true,"submit_returns":[true]},
+    {"id":"D02","scheduled":0,"ack_requested":1,"released":0,"running":false,"submit_returns":[false],"violation":"ACK_WITHOUT_SCHEDULE"},
+    {"id":"D03","scheduled":0,"ack_requested":1,"released":0,"running":false,"submit_returns":[false],"violation":"ACK_WITHOUT_SCHEDULE"},
+    {"id":"D04","scheduled":0,"ack_requested":1,"released":0,"running":false,"submit_returns":[false],"violation":"ACK_WITHOUT_SCHEDULE"},
+    {"id":"D05","scheduled":0,"ack_requested":0,"released":0,"running":true,"submit_returns":[],"violation":"LOCAL_SLOT_REMAINS_AFTER_CLAIM_REFUSAL"},
+    {"id":"D06","scheduled":0,"ack_requested":0,"released":1,"running":false,"submit_returns":[]},
+    {"id":"D07","scheduled":0,"ack_requested":1,"released":0,"running":false,"submit_returns":[false],"on_done":1,"on_error":0,"violation":"ACK_WITHOUT_SCHEDULE"},
+    {"id":"D08","scheduled":1,"ack_requested":0,"released":0,"running":true,"submit_returns":[true],"complete_wrapper_calls":1}
+  ],
+  "mutant_sensitivity": {"N01":true,"N02":true},
+  "expected_trace_matched": true,
+  "product_validation": false,
+  "full_parent_fidelity": false,
+  "model_worker_executions": 0,
+  "sql_executions": 0
+}

@@ -1,0 +1,39 @@
+{
+  "observed_date": "2026-09-16",
+  "video_id": "PxuMqeIqCEo",
+  "research_order": 3,
+  "publication_date_verified": false,
+  "input_repository_commit": "0e797706ec68b9c7e687b2c671c4524c028c89e1",
+  "video": {
+    "filename": "AI Agent Memory Masterclass ｜ How Agents Remember and Forget [PxuMqeIqCEo].mp4",
+    "bytes": 57554310,
+    "sha256": "d900521274c1ba78d59f485befdb16b96dd77dff6bdda68d58ec24b649fd8177",
+    "format_duration_seconds": "1637.814000",
+    "video_stream_duration_seconds": "1637.791667",
+    "width": 1920,
+    "height": 1080,
+    "continuous_viewing": false,
+    "full_audio_alignment": false
+  },
+  "subtitles": {
+    "filename": "AI Agent Memory Masterclass ｜ How Agents Remember and Forget [PxuMqeIqCEo].en.srt",
+    "bytes": 46295,
+    "sha256": "0870a3a0fd164924b56af11f51536d3f41c84ebff6d19f3152ec9b53a26fb16c",
+    "cue_count": 636,
+    "full_text_read": true,
+    "read_ranges": [[1, 220], [221, 440], [441, 636]],
+    "first_cue_start": "00:00:01,964",
+    "last_cue_end": "00:27:18,228",
+    "native_caption_provenance_verified": false,
+    "last_label_exceeds_container_duration_seconds": "0.414",
+    "overlapping_cues_are_not_independent_claims": true
+  },
+  "selected_frames_seconds": [35, 90, 155, 245, 290, 375, 455, 535, 610, 675, 720, 810, 875, 950, 1040, 1155, 1210, 1280, 1350, 1410, 1460, 1555],
+  "distinct_frame_count": 22,
+  "contact_sheets_read": 3,
+  "additional_full_resolution_rechecks_seconds": [245, 1350],
+  "repository_persists_original_media": false,
+  "repository_persists_extracted_frames": false,
+  "execution_scope": ["file measurement and sha256", "ffprobe metadata", "SRT parsing and reading", "ffmpeg frame extraction", "local contact sheets"],
+  "not_executed": ["memory runtime", "retrieval benchmark", "model API", "database", "agent workflow", "installation", "security test", "external transcription", "external media upload"]
+}

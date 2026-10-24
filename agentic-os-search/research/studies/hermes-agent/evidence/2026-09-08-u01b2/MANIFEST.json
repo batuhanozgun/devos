@@ -1,0 +1,76 @@
+{
+  "role": "standalone delivery integrity, excludes MANIFEST.json itself",
+  "repository_publication": "NOT_PUBLISHED",
+  "files": [
+    {
+      "path": "06-APPROVAL-ROUNDTRIP-AND-ROLLBACK-BOUNDARIES.md",
+      "bytes": 14781,
+      "sha256": "f57d867d863c8ee42663264708e613971ce8e99a3f3ef56a0d7ac5474e2c7015"
+    },
+    {
+      "path": "ACCESS-LOG.json",
+      "bytes": 1278,
+      "sha256": "74b7e1b7f3c80d5233b56113faa046f7f9181e0f93f0498f3f91774ba7ad6aa3"
+    },
+    {
+      "path": "HARNESS-CHECK.json",
+      "bytes": 392,
+      "sha256": "cfba4dc0e9770e3ae24238299ee51f85207046925926e147480c08084b261443"
+    },
+    {
+      "path": "PUBLICATION-HANDOFF.md",
+      "bytes": 5223,
+      "sha256": "b587095a0d0bbd4ea700fa675f962745c6a971811e415aef571b62d8159a5289"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2884,
+      "sha256": "71da915715ec51002cc73c4bfaceb1ebded3fa6b672595a11c795b40eb464de0"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 18018,
+      "sha256": "5f74b177e1d561394840e9f2e3b73733611e994a17ecaf40b20d70c2a7c3eaef"
+    },
+    {
+      "path": "SOURCES.json",
+      "bytes": 2692,
+      "sha256": "3de2cc17611f9a4ccdb3a7d9d6666eef79f906b568d019d9fcbd90dc8de95399"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 3063,
+      "sha256": "488b0acb870fe7bae52497842bfdd283763445cca22fdb1d503283fb9d20c812"
+    },
+    {
+      "path": "STDERR.txt",
+      "bytes": 65,
+      "sha256": "191a1378c1b2273c60bebdc5146f5f3ec9ae42d4c978671f4545376e3bd6ede6"
+    },
+    {
+      "path": "STDOUT.txt",
+      "bytes": 125,
+      "sha256": "611218063f97f01fba811b293b68e41d9d3a4a9f55a3757fa2510f48351db8d3"
+    },
+    {
+      "path": "probe.py",
+      "bytes": 21936,
+      "sha256": "80f19ce22ddd971cdf77f47e49052936e1993f8a3504507d43bd11ef8ee99f74"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    },
+    {
+      "path": "upstream/skill_manager_batch.py",
+      "bytes": 9964,
+      "sha256": "2cefa015de4db1122ea59834f9a38debb2643c0b035592e941f853aab995bd52"
+    },
+    {
+      "path": "upstream/write_approval.py",
+      "bytes": 12431,
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232"
+    }
+  ]
+}

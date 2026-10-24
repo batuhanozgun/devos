@@ -1,0 +1,119 @@
+{
+  "kind": "artifact identity/parse/read-only database integrity; NOT a new HERMES behavioral run",
+  "baseline_blob_matches": {
+    "research/studies/CATALOG.md": "8483cbd792542561eef926a83fc66349dcc06a17",
+    "research/studies/hermes-agent/INDEX.md": "3ff878e2be432699214c96f17598d1574472d860",
+    "research/studies/hermes-agent/META.md": "e2fe629ffce309363461d7aa5156f68732563f20",
+    "research/studies/hermes-agent/OPEN-QUESTIONS.md": "8e5d1493d4c72efa15bfc3a2075fe190261fd13b",
+    "research/studies/hermes-agent/RESEARCH-PLAN.md": "a9ebef80dad5c2b9d057a1d6a0591de3fefdb746",
+    "research/studies/hermes-agent/SOURCE-LEDGER.md": "5fea790c37a49272a484f6c76dade89348447d5f"
+  },
+  "result_sha256": "c53f850cceaad5e84eb800ce88b02c9a4eb227a00d82ee1714aecaefe7b51719",
+  "original_source_blob": "689fd620d6193003bbd168a0e62770a0d0306ac6",
+  "databases": [
+    {
+      "file": "D01.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e1",
+          "pending"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "D02.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e2",
+          "delivered"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "D03.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e3",
+          "unknown"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "D04.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [],
+      "tombstones": [
+        [
+          "e4",
+          "delivered"
+        ]
+      ]
+    },
+    {
+      "file": "D05.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e5",
+          "failed"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "D06.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e6",
+          "unknown"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "N01.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e1",
+          "pending"
+        ]
+      ],
+      "tombstones": []
+    },
+    {
+      "file": "N02.db",
+      "integrity_check": [
+        "ok"
+      ],
+      "rows": [
+        [
+          "e3",
+          "delivered"
+        ]
+      ],
+      "tombstones": []
+    }
+  ]
+}

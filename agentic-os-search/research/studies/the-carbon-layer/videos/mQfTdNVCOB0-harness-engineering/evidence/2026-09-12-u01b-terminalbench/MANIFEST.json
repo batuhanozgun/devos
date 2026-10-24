@@ -1,0 +1,99 @@
+{
+  "study": "harness-engineering-and-evolution",
+  "unit": "U01-B",
+  "input_commit": "916fc5807bf7437c78ccb71133af516d0a2c2c6e",
+  "path_root": "research/studies/harness-engineering-and-evolution/",
+  "identity_only": true,
+  "files": [
+    {
+      "path": "INDEX.md",
+      "bytes": 2345,
+      "git_blob": "6332bde4cc64432ce9c3681385b7058eb1eaa2ae",
+      "sha256": "0c2622ff2b791e5e7336fc4dce9f40a831d8a0864840ad324bffe01537d0fb15"
+    },
+    {
+      "path": "META.md",
+      "bytes": 5085,
+      "git_blob": "520567c572814d71561127edf07f39d19e21fcac",
+      "sha256": "e5ece4920ab8376e3be32c53c83cdae0910a123993c6cf67844df44f0c39fbad"
+    },
+    {
+      "path": "RESEARCH-PLAN.md",
+      "bytes": 8891,
+      "git_blob": "3835c69840aee42829c10779658ffc4be7241dc0",
+      "sha256": "2037fec7546d466026653f98ede3a039d5ffa9fd44519e14c0b32beab0b52c09"
+    },
+    {
+      "path": "STATE.md",
+      "bytes": 8617,
+      "git_blob": "133823ceaa8912a6697af1019c563ab8778d6635",
+      "sha256": "1365aa5957e88cb0ea131059831db5d8fc5b4a64744b213ceab9bd5a3bfead25"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/CHECKS.md",
+      "bytes": 7277,
+      "git_blob": "9f44b3386fa175735815c1dd33c989f4dd003f3b",
+      "sha256": "673e67e4e69b7fb15c583c2e9523808fb60d9dbe71bf437d16a914a83463114f"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/SOURCES.md",
+      "bytes": 9176,
+      "git_blob": "199fa242bbfbfae7c2aa1570cdf5540ae4d9fe06",
+      "sha256": "511c62a2ed4e4d923b8b64d384f6608244fcd29bf678ae83ea5462024937c99d"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/checks/EXCERPT-IDENTITIES.json",
+      "bytes": 950,
+      "git_blob": "a28252ab2f51c64f4c593d2c651aa9f84d6dbcf9",
+      "sha256": "1b603b66a5168aa4e40e005293ca3cb8fc6271d0a5e3216a4f97d1bd6c0bfc2d"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/checks/RESULT.json",
+      "bytes": 6360,
+      "git_blob": "429ea3bfeaa721ada2f842ed71e395f695e7ea96",
+      "sha256": "7020914bd0e6fd95b5eeccff1116f03ef2a033586fd8ef2f9cacd41653d960ac"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/checks/SPEC.md",
+      "bytes": 4380,
+      "git_blob": "ef219378c55b970c5bcae5e80b2ea4a087736aee",
+      "sha256": "19b895062323b8f8cec5869ee2528768c168a83c05ae6c68b1c9d57071707cf7"
+    },
+    {
+      "path": "evidence/2026-09-12-u01b-terminalbench/checks/probes.py",
+      "bytes": 15924,
+      "git_blob": "d8b4efbfcf914d0aabe3d7b1d21a8605baffb598",
+      "sha256": "cc3f747968ae56fc0eac20190bd4240d2f7c277fac4c84feba58a5a9d76fcf3a"
+    },
+    {
+      "path": "notes/05-TERMINALBENCH-OPTIMIZER-LIFECYCLE.md",
+      "bytes": 11172,
+      "git_blob": "f5b3972af09f1ad339888b7fe845b16ed6f78c09",
+      "sha256": "4cc4cc3812a8d85d14b6162e9b2c3f89f9fbb81921b70d7bc05a478748d0bc78"
+    },
+    {
+      "path": "notes/06-TERMINALBENCH-EVIDENCE-BOUNDARIES.md",
+      "bytes": 9873,
+      "git_blob": "6f98789f7e6508a25d1da8ad8686e8d7b5ed5e81",
+      "sha256": "5c575680d2a26b0afd5f354cb98790ee084c61c8ce0eae97f583393eebced701"
+    },
+    {
+      "path": "notes/07-SELECTED-HARNESS-ENVIRONMENT-BOOTSTRAP.md",
+      "bytes": 9011,
+      "git_blob": "24aee69c9cb76c3dfac153561a259dd8bae6a70c",
+      "sha256": "766fb9b7d8eae0efc6464c6ad4427d8bb72f3275d1bb94cb49c9f7e81e7fa962"
+    }
+  ],
+  "execution": {
+    "groups": 8,
+    "negative_controls": 5,
+    "stable_repeat_sha256": "7020914bd0e6fd95b5eeccff1116f03ef2a033586fd8ef2f9cacd41653d960ac",
+    "python": "3.13.5",
+    "platform": "Linux",
+    "python_sources": "copied excerpts; parent full-file identity not locally verified",
+    "shell_source_git_blob": "54b511590818b4cc703288ccbca0f78036792d5f",
+    "limits": "No live model, Harbor/remote host, first-party suite, historical replication or independent verification."
+  },
+  "pre_manifest_package_tree": "69464bb11376e55812faba530e3e7c64e644c6ed",
+  "identity_check": "All 13 listed local blobs matched the fetched staged package tree. This is identity/link verification, not semantic or live-system verification."
+}

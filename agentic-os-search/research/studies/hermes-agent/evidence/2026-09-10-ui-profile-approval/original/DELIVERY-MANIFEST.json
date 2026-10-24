@@ -1,0 +1,92 @@
+{
+  "kind": "UNPUBLISHED_U01_M3_DELIVERY_MANIFEST",
+  "publication_status": "NOT_PUBLISHED",
+  "research_base": "91af4415c22e05b80484b935383ceeb04a3c5b7b",
+  "created_at_utc": "2026-09-10T05:52:46.943717+00:00",
+  "files": [
+    {
+      "path": "12-APPROVAL-ENTRYPOINTS-PROFILES-AND-STORE-BINDING.md",
+      "bytes": 2085,
+      "sha256": "6cc0810a3aa843ebbd6d032ff49f0e21452eaf20f2e80e3a2455fcf40b9fd279",
+      "git_blob": "93b6a3c3e0a249e2a16a7033391ee1b9434e8ba2"
+    },
+    {
+      "path": "ACCESS-LOG.json",
+      "bytes": 1227,
+      "sha256": "beb170dc5ff2a51939998a28c82b83ee3e930cd87695a932ceacc74cdd94526e",
+      "git_blob": "27cfbe4a49d561b1126a96976303b972ee42360e"
+    },
+    {
+      "path": "PUBLICATION-HANDOFF.md",
+      "bytes": 5409,
+      "sha256": "1c4c382dd7d977db02180a43d0d0acf80698760663facc20f0f87084286a58f5",
+      "git_blob": "f5c0a3a2e5e925831e380c6889b23b7715063fca"
+    },
+    {
+      "path": "evidence/ACCESS-RESULT.json",
+      "bytes": 2531,
+      "sha256": "30d2fef3d147ff2473c8f4f49ac5b3d0a150a018d575eb6b32f6cc709404ebd8",
+      "git_blob": "45b0c836ff19d3bc73df5bbfd4bbde27f114e97f"
+    },
+    {
+      "path": "evidence/MANIFEST.json",
+      "bytes": 2154,
+      "sha256": "b10345301a40d628d595b18eeed092bbdbc8aafabf8ae6dd5e357ab8b8793520",
+      "git_blob": "c879dfeb604a5555c6d54dc9c4290a3cd88d5700"
+    },
+    {
+      "path": "evidence/README.md",
+      "bytes": 1227,
+      "sha256": "417028fc1e3d5439b0f20977dda3e5f2b4ffd6f03b7908ca2295d76d30283f5c",
+      "git_blob": "f3fe3fb9264d4070beca2ccddbd650b522c5d945"
+    },
+    {
+      "path": "evidence/RESEARCH.md",
+      "bytes": 13013,
+      "sha256": "ac20be598c4ec4ede351d8482d34234398a3fc327ef2349c6dcfd32baa22313c",
+      "git_blob": "954c140119420e84dc0c0693b0ea731b8fa0ef50"
+    },
+    {
+      "path": "evidence/SOURCES.md",
+      "bytes": 5208,
+      "sha256": "a07c3d12468cf7538dd7f77d24c93533a07eb451d3ea803282cc9ddc1809a7f9",
+      "git_blob": "5d222f747a157159fc4b5d65d0e5d25fd984b2cc"
+    },
+    {
+      "path": "evidence/SPEC.md",
+      "bytes": 1891,
+      "sha256": "484441a8577eb08582b8b871791e1a945cbe2f6a098107915b08379e53173700",
+      "git_blob": "1f94aceb1c3f8361b5110f29ce4f1f7cb9a6b0a7"
+    },
+    {
+      "path": "evidence/access_probe.py",
+      "bytes": 5001,
+      "sha256": "97a7d3e770be419df392f089ed776ce6e61d93bc395a508e5916c7c9a7123a84",
+      "git_blob": "fff66c4327758bbdbc4a163ade89a9710a0ad71f"
+    },
+    {
+      "path": "evidence/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "evidence/stdout.txt",
+      "bytes": 77,
+      "sha256": "8845d018aa09700080077ad413ac98cf53ac832b23524236d1ba6333133c74a4",
+      "git_blob": "78b9c820cc3dbb54963a650ae8f6e6d8dd7855ab"
+    },
+    {
+      "path": "evidence/upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "evidence/upstream/slash_access.py",
+      "bytes": 5666,
+      "sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1",
+      "git_blob": "07204201e411f29f912bb9bba6beec0566acab9d"
+    }
+  ]
+}

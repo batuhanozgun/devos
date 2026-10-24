@@ -1,0 +1,23 @@
+{
+  "kind": "PUBLICATION_PACKAGE_CHECK_NOT_HERMES_EXECUTION",
+  "checks": {
+    "payload_hashes_match": true,
+    "python_files_parse": true,
+    "recorded_probe_matches": true,
+    "recorded_spec_matches": true,
+    "recorded_sources_match": true,
+    "full_heartbeat_upstream_blob_matches": true,
+    "cases_recorded": 21,
+    "case_expectations_recorded_matched": true,
+    "negative_controls_recorded_detected": true,
+    "synthetic_preparation_target_count": 28,
+    "synthetic_applied_files_match": true,
+    "synthetic_unrelated_file_preserved": true,
+    "synthetic_only_catalog_row_changed": true,
+    "changed_existing_target_rejected": true,
+    "existing_new_target_rejected": true
+  },
+  "actual_repository_mutated": false,
+  "git_commit_or_push_performed": false,
+  "limitation": "prepare_repository mechanics checked using synthetic clone-shaped data; current GitHub application/readback not performed"
+}

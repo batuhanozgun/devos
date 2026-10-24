@@ -1,0 +1,50 @@
+{
+  "check_kind": "publication-artifact integrity maintenance; not an ECC behavior experiment",
+  "date": "2026-09-18",
+  "object1": {
+    "expected_git_blob": "9c36feb87bdedbbbd51a2a7126f81b51ce6b3e8c",
+    "actual_git_blob": "9c36feb87bdedbbbd51a2a7126f81b51ce6b3e8c",
+    "bytes": 8758,
+    "sha256": "e7d668e2af5a1418d1ed567f61000299ad938676b80d2edbf93713f65c312c49",
+    "gzip_decompression": "FAIL",
+    "python_error": "Error -3 while decompressing data: invalid distance too far back",
+    "gzip_cli_exit_code": 1,
+    "gzip_cli_stdout": "",
+    "gzip_cli_stderr": "\ngzip: /mnt/data/ecc_u08a_recovery/object1.gz: invalid compressed data--format violated\n",
+    "partial_forensic_decode": {
+      "compressed_offset_of_error": 1941,
+      "decoded_prefix_bytes": 5083,
+      "complete_member_before_failure": "PROBE-PLAN.json",
+      "complete_member_bytes": 2613,
+      "tar_header_checksum_ok": true,
+      "member_json_parseable": true,
+      "reported_experiment_id": "E06",
+      "reported_unit": "U08-A",
+      "planned_case_ids": ["C00", "C01", "C02", "C03", "C04", "C05", "C06", "C07"],
+      "next_partial_member": "run-probe.js",
+      "next_member_declared_size": 10384,
+      "standing": "PARTIAL FORENSIC RECOVERY; not authenticated complete archive, prospective-criterion proof, or execution results"
+    }
+  },
+  "object2": {
+    "git_blob": "4b6af43bcce99fceb6be677f4239c14cb6d7b660",
+    "github_metadata_bytes": 136188,
+    "standing": "PRESERVED; full content integrity NOT VERIFIED; not replacement evidence"
+  },
+  "bounded_forensic_hypotheses": {
+    "byte_deletion_candidates": 426,
+    "base64_text_deletion_candidates": 984,
+    "full_crc_valid_candidates": 0,
+    "original_objects_modified": false,
+    "exhaustive_recovery_claim": false
+  },
+  "local_originals_present_at_entry": false,
+  "target_experiment_rerun": false,
+  "prior_E06_outcomes_certified": false,
+  "limits": [
+    "Exact original local artifact bytes and a complete original run receipt were unavailable.",
+    "The source of archive corruption is not established.",
+    "Python and gzip are two observed checks, not independent scientific replication.",
+    "Other ECC research and historical E05 identities remain unchanged."
+  ]
+}

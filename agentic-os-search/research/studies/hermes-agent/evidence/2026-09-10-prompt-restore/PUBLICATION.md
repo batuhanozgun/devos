@@ -1,0 +1,11 @@
+# M4 publication and verification boundary
+
+2026-09-10. Research and publication preparation base: `a14c8152a918a3379b4a0d6d67af9f7aece2f70e`, the earlier same-turn AP/scope checkpoint. This package contains NEW M4 research and execution, unlike that recovery checkpoint.
+
+Eleven core files were created locally. Their paths, sizes and Git blobs in MANIFEST match the recursively read-back GitHub core tree `8dd2cfd73516926b5bc7d1adf0737556c2d6bf61` (`truncated:false`). The tree was independently calculated from local bytes with standard Git object encoding. The same core contains recorded RESULT blob `a98e98de3c6859dee651b131d0d76958b1a576e9` and probe blob `0363461ff1e1f49028118716c3e2638c18cee4f9`. MANIFEST and this publication record are additional metadata, not part of the core-tree comparison.
+
+This is transfer integrity, not verification of the two full upstream parents. Five reused M2 modules retain exact archived upstream identities; six manually selected new definitions have local artifact identities only. The experiment is source-informed and same-investigator, with synthetic DB/agent/reduced builder and other explicit substitutes. V04 is not an actual compression caller sequence. V01–V08 plus separate identity/comparator controls do not establish an actual final request or whole product behavior. See SOURCES/SPEC/RESULT rather than treating a tree hash or green expectation as a security verdict.
+
+The canonical M2 sibling dependencies are part of the repository and are verified before import by probe.py and the reused setup. No previous N/A/SA/AP suite was rerun. Original AP/A/SA/M2 and other evidence files remain untouched. New entry is notes/15; the first provisional native subsystem synthesis is under synthesis/. Current state and plan distinguish the bounded selector result from the open request/compression integration and broader next work.
+
+Only HERMES study files and its CATALOG row may change. Final publication requires the containing commit, non-force main update and returned ref plus content readback. This file does not assert that blob/tree creation alone completed main publication. No configuration, permission, upstream, Foundation or control file was modified.

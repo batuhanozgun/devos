@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "da49df7f09f84b01e9dddf4d04bcc5c03779a732",
+  "snapshot_root_tree": "f658edbab2308e150253250d8e99d0b3f2389e76",
+  "scope": "PARTIAL repository inventory: 1392 explicit paths by pinned composition. 06_integration-frontier-review complete with 18 files. Foundation has 878 explicit files and 3 opaque subtrees; studies remains opaque. Metadata only.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-RELATION-CONTROL-COMPOSITION-INVENTORY.json",
+    "ref": "da49df7f09f84b01e9dddf4d04bcc5c03779a732",
+    "git_blob": "8da6f481541cfc25f869d2602d017b457b9fd8ae",
+    "composed_explicit_leaves": 1372
+  },
+  "composition": [
+    "Recover the pinned prior inventory and published da49df7 maintenance delta.",
+    "Replace the 06_integration-frontier-review frontier by its 18 leaves.",
+    "Retain the three remaining Foundation frontiers and studies.",
+    "Repository composition is 1372 + 2 prior-publication maintenance files + 18 = 1392 explicit paths; Foundation is 860 + 18 = 878.",
+    "This is metadata coverage, not research-body review or whole-repository file count."
+  ],
+  "block": {
+    "prefix": "research/soul-foundations/06_integration-frontier-review",
+    "git_tree": "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d",
+    "source_url": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/f34589cde45cd8d7fb8d93cdd4ec81d62a52781d?recursive=1",
+    "source_truncated": false,
+    "recursive_inventory_complete": true,
+    "files": 18,
+    "api_bytes": 58726,
+    "file_types": {
+      ".md": 15,
+      ".json": 2,
+      ".py": 1
+    },
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          [
+            "B0-RECOVERY-AND-ACCEPTANCE.md",
+            "d3f97b17cfd77ae43927b98e44c7a68480ed0d92",
+            3295
+          ],
+          [
+            "B1-PARENT-INTEGRATION.md",
+            "42bc6b604a73187c42013c6f571e1d92e1e0c110",
+            7619
+          ],
+          [
+            "B2-COVERAGE-AND-FRONTIER.md",
+            "21a3da666c6159d19ce1d1a7246ec0d6a64d17c9",
+            6680
+          ],
+          [
+            "B3-ADVERSARIAL-REVIEW.md",
+            "f6a795ade3575f0817e6012672c2baec02a92d77",
+            5107
+          ],
+          [
+            "B4-RESIDUALS-AND-NEXT-WORK.md",
+            "e1c570205cd3c1f1064f09b37ce7e15c99fa3ce0",
+            4027
+          ],
+          [
+            "B5-CLOSURE.md",
+            "d67c4bee09f66a2751f29bf9cb9da12f9b80487a",
+            2114
+          ],
+          [
+            "CURRENT-SURFACES.md",
+            "a6cd6571e2e2d508fc213a3312fbb6d9f1d39dfa",
+            2781
+          ],
+          [
+            "FRONTIER.json",
+            "e3b60c05cc247c438056a3057aad42f017b29229",
+            1078
+          ],
+          [
+            "INDEX.md",
+            "067d14e3ed1e089927afed3ea04bf2f4006be509",
+            1150
+          ],
+          [
+            "KEY.md",
+            "3e62bcd251561482071f212e51528f824454f945",
+            1158
+          ],
+          [
+            "NEXT-RESEARCH-HANDOFF.md",
+            "7eb88659849d969df132978694aaa97306862035",
+            1019
+          ],
+          [
+            "PLAN.md",
+            "4020feb8722f383cb126422f900ed9d01c406ae6",
+            3278
+          ],
+          [
+            "SOURCE-LEDGER.md",
+            "5856e84e4e0dc68ff69336f542929433fbedcebd",
+            6786
+          ],
+          [
+            "STATE.md",
+            "1d3a22dc985ca9b652158dd4b707c24fcd24989a",
+            1247
+          ],
+          [
+            "SYNTHESIS.md",
+            "2d8df8529926d8e046098f7a6521e86efb611f34",
+            4046
+          ]
+        ]
+      },
+      {
+        "directory": "checks",
+        "leaves": [
+          [
+            "frontier_audit.py",
+            "7789bb4a0f6339bd4c05393f3ba2a4e0dd793b62",
+            3422
+          ],
+          [
+            "RESULT.json",
+            "fed6089400a7e5b209e38ff1efdf00fdad4f4a73",
+            843
+          ]
+        ]
+      },
+      {
+        "directory": "evidence",
+        "leaves": [
+          [
+            "INPUT-DYNAMICS-STATE.md",
+            "df5e44427d3c07eb8fdd312a3fa3594c3a239b2e",
+            3076
+          ]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [
+    [
+      "07_selection-dynamics-integration-review",
+      "c88b8399a330f56533c1ef1f452712e0cc2c72f2"
+    ],
+    [
+      "08_foundation-sufficiency-reuse-review",
+      "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"
+    ],
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "source_root": "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d",
+    "reconstructed_root": "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d",
+    "root_direct_entries": 17,
+    "root_omission_control_detected": true,
+    "root_blob_mutation_detected": true,
+    "recursive_source_truncated": false,
+    "new_files": 18,
+    "new_api_bytes": 58726,
+    "file_types": {
+      ".md": 15,
+      ".json": 2,
+      ".py": 1
+    },
+    "foundation_paths_by_composition": 878,
+    "repository_paths_by_composition": 1392,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "verification_limits": [
+    "Git tree reconstruction and root-level negative controls are same-author deterministic metadata checks, not independent content verification.",
+    "Research-body truth, status semantics, links, archive contents, historical scripts and reader behavior were not reviewed in this inventory slice."
+  ],
+  "next": "Continue A4 path inventory at research/soul-foundations/07_selection-dynamics-integration-review, then 08, history and studies. Content/link/archive-internal review, A5 and two A3 access gaps remain open."
+}

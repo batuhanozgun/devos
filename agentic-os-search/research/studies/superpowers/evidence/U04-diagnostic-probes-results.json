@@ -1,0 +1,162 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "sources": {
+    "skills/systematic-debugging/find-polluter.sh": {
+      "blob": "985f5d08ccf8a3f2d40739cfcaf4413bb24bf1cb",
+      "bytes": 1986,
+      "verified": true
+    },
+    "tests/systematic-debugging/test-find-polluter.sh": {
+      "blob": "0902e7d9d606a94916a098f92312977397a7860b",
+      "bytes": 2609,
+      "verified": true
+    }
+  },
+  "environment": {
+    "os": "Linux",
+    "python": "3.13.5",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "scope": "Exact diagnostic helper and one exact first-party fixture file; controlled npm stubs only. No live agent, real project test, credentials, install or network.",
+  "criteria_status": "Source-informed exploratory. Three claim-scope criteria are study-defined; exit-zero alone is not judged a defect. Full output also exposes zero/skipped counts.",
+  "first_party_fixture_test": {
+    "command": "bash tests/systematic-debugging/test-find-polluter.sh",
+    "exit_code": 0,
+    "passed_assertion_lines": 5,
+    "stdout": "Test: documented pattern finds nested test files (issue #2008)\n  [PASS] documented pattern runs tests and detects pollution\nTest: documented pattern also finds top-level test files\n  [PASS] src/**/*.test.ts matches src/top.test.ts and src/feature/nested.test.ts\nTest: ./-prefixed pattern matches the same files\n  [PASS] leading ./ on the pattern is accepted\nTest: non-matching pattern reports an honest zero\n  [PASS] empty result counts as 0, not 1\n  [PASS] empty result exits via the clean path\n\nAll tests passed\n",
+    "stderr": "",
+    "scope": "One exact first-party fixture file; it substitutes npm. Not the repository-wide suite or real project tests."
+  },
+  "cases": [
+    {
+      "id": "bad_arguments",
+      "kind": "mechanism",
+      "criterion": "Reject missing arguments without invoking the test launcher",
+      "result": "PASS",
+      "observed": {
+        "exit_code": 1,
+        "stub_invocations": [],
+        "invocation_count": 0,
+        "pollution_exists": false,
+        "blanket_clean_claim": false,
+        "polluter_reported": false,
+        "stdout": "Usage: /tmp/superpowers-u04-ytr8l6ag/source/skills/systematic-debugging/find-polluter.sh <file_to_check> <test_pattern>\nExample: /tmp/superpowers-u04-ytr8l6ag/source/skills/systematic-debugging/find-polluter.sh '.git' 'src/**/*.test.ts'\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "clean_matching_files",
+      "kind": "mechanism",
+      "criterion": "Discover both fixture levels, invoke both, and report no observed target pollution",
+      "result": "PASS",
+      "observed": {
+        "exit_code": 0,
+        "stub_invocations": [
+          "test ./src/nested/child.test.ts",
+          "test ./src/top.test.ts"
+        ],
+        "invocation_count": 2,
+        "pollution_exists": false,
+        "blanket_clean_claim": true,
+        "polluter_reported": false,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: src/**/*.test.ts\n\nFound 2 test files\n\n[1/2] Testing: ./src/nested/child.test.ts\n[2/2] Testing: ./src/top.test.ts\n\n✅ No polluter found - all tests clean!\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "polluter_detected",
+      "kind": "mechanism",
+      "criterion": "Detect controlled target creation and stop after the first invoked fixture",
+      "result": "PASS",
+      "observed": {
+        "exit_code": 1,
+        "stub_invocations": [
+          "test ./src/nested/child.test.ts"
+        ],
+        "invocation_count": 1,
+        "pollution_exists": true,
+        "blanket_clean_claim": false,
+        "polluter_reported": true,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: src/**/*.test.ts\n\nFound 2 test files\n\n[1/2] Testing: ./src/nested/child.test.ts\n\n🎯 FOUND POLLUTER!\n   Test: ./src/nested/child.test.ts\n   Created: pollution.marker\n\nPollution details:\n-rw-r--r-- 1 root root 0 Sep 17 12:44 pollution.marker\n\nTo investigate:\n  npm test ./src/nested/child.test.ts    # Run just this test\n  cat ./src/nested/child.test.ts         # Review test code\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "no_matching_files",
+      "kind": "claim-scope-challenge",
+      "criterion": "Without any candidate test execution, do not issue an unqualified all-tests-clean conclusion",
+      "result": "FAIL",
+      "observed": {
+        "exit_code": 0,
+        "stub_invocations": [],
+        "invocation_count": 0,
+        "pollution_exists": false,
+        "blanket_clean_claim": true,
+        "polluter_reported": false,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: nomatch/**/*.test.ts\n\nFound 0 test files\n\n\n✅ No polluter found - all tests clean!\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "preexisting_pollution",
+      "kind": "claim-scope-challenge",
+      "criterion": "Preexisting target pollution causing all tests to be skipped must not end with all-tests-clean",
+      "result": "FAIL",
+      "observed": {
+        "exit_code": 0,
+        "stub_invocations": [],
+        "invocation_count": 0,
+        "pollution_exists": true,
+        "blanket_clean_claim": true,
+        "polluter_reported": false,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: src/**/*.test.ts\n\nFound 2 test files\n\n⚠️  Pollution already exists before test 1/2\n   Skipping: ./src/nested/child.test.ts\n⚠️  Pollution already exists before test 2/2\n   Skipping: ./src/top.test.ts\n\n✅ No polluter found - all tests clean!\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "launcher_failed",
+      "kind": "claim-scope-challenge",
+      "criterion": "A launcher returning 127 without running tests must not support an unqualified all-tests-clean conclusion",
+      "result": "FAIL",
+      "observed": {
+        "exit_code": 0,
+        "stub_invocations": [
+          "test ./src/nested/child.test.ts",
+          "test ./src/top.test.ts"
+        ],
+        "invocation_count": 2,
+        "pollution_exists": false,
+        "blanket_clean_claim": true,
+        "polluter_reported": false,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: src/**/*.test.ts\n\nFound 2 test files\n\n[1/2] Testing: ./src/nested/child.test.ts\n[2/2] Testing: ./src/top.test.ts\n\n✅ No polluter found - all tests clean!\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "test_failure_without_pollution",
+      "kind": "scope-observation",
+      "criterion": "Record intentional suppression of test failure when no target artifact appears; this is not a passing-test verdict",
+      "result": "PASS",
+      "observed": {
+        "exit_code": 0,
+        "stub_invocations": [
+          "test ./src/nested/child.test.ts",
+          "test ./src/top.test.ts"
+        ],
+        "invocation_count": 2,
+        "pollution_exists": false,
+        "blanket_clean_claim": true,
+        "polluter_reported": false,
+        "stdout": "🔍 Searching for test that creates: pollution.marker\nTest pattern: src/**/*.test.ts\n\nFound 2 test files\n\n[1/2] Testing: ./src/nested/child.test.ts\n[2/2] Testing: ./src/top.test.ts\n\n✅ No polluter found - all tests clean!\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "summary": {
+    "local_cases": 7,
+    "expected_observations": 4,
+    "failed_claim_scope_criteria": 3,
+    "upstream_fixture_exit": 0
+  }
+}

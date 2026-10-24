@@ -1,0 +1,13 @@
+{
+  "kind": "ARCHIVE_RECOVERY_CHECK_NOT_TARGET_RERUN",
+  "repo_bad_blob": "3b92e3eb9111b10416de99fd88591607e6dea582",
+  "recovery_script_blob": "1fd66733c7c1a0e0c3feb5ee243f28e5232cbdac",
+  "exact_original_zip": true,
+  "zip_sha256": "d16d24c6b04a17f98d8a62513342170921e05930b883470f123e6d3d4e16888d",
+  "zip_bytes": 8821,
+  "zip_crc_ok": true,
+  "changed_input_rejected": true,
+  "original_campaigns_recorded": 1,
+  "original_cases_recorded": 7,
+  "new_target_campaigns": 0
+}

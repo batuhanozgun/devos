@@ -1,0 +1,19 @@
+{
+  "kind": "AP_ORIGINAL_DELIVERY_TRANSFER_NOT_BEHAVIOR_VALIDATION",
+  "date": "2026-09-10",
+  "base_commit": "634ab66f195130d551d58dfc062639e0feec23fa",
+  "zip_bytes": 25054,
+  "zip_sha256": "fccfac09b4b104ee46e43eb750fc3d02e62ae7e1ab1a84fe964dd3f361d5dfb2",
+  "zip_crc_valid": true,
+  "delivery_manifest_entries_checked": 14,
+  "original_files_including_manifest": 15,
+  "all_entry_sizes_sha256_git_blob_matched": true,
+  "original_layout_retained_under": "original/",
+  "local_original_tree": "afbe1e767ddaf7e570b72197c7300d20d91f21d4",
+  "github_original_tree_readback": "afbe1e767ddaf7e570b72197c7300d20d91f21d4",
+  "github_recursive_tree_truncated": false,
+  "local_and_remote_evidence_tree": "aff95fa6b5970134c005812a7c0ae396124eb7d5",
+  "AP_rerun": false,
+  "UI_A_or_SA_rerun": false,
+  "product_conformance": "NOT_ASSESSED"
+}

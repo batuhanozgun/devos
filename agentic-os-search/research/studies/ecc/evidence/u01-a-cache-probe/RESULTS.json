@@ -1,0 +1,86 @@
+{
+  "probe_id": "ECC-U01A-CACHE-01",
+  "source_ref": "8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "source_git_blobs": {
+    "checker": "6839b413cc78d6755cc56f61be0d57f4754b5fa6",
+    "manifest": "7ad227cac60a8ce5d97e6d152e449812857d13eb"
+  },
+  "plan_sha256": "2373912e3fde04adec43fd00724737c462333f028118c698fb123dbb66e00067",
+  "runner_sha256": "f8b97f5666a0d1a75238bd03b9d963ecc1e16d2f84d7ee72aaa977fe468cc271",
+  "environment": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "node_executable": "/opt/nvm/versions/node/v22.16.0/bin/node",
+    "node_version": "v22.16.0"
+  },
+  "fixture_notes": [
+    "Root package.json is synthetic and contains only version=2.2.1.",
+    "Checker and cached plugin manifest bytes match upstream Git blob SHA-1 identities.",
+    "Referenced file contents are dummy values; only existence/type is at issue.",
+    "Explicit temporary --plugin-dir, --codex-home and HOME isolate real user state.",
+    "Neither Codex nor ECC install/lifecycle scripts are invoked."
+  ],
+  "cases": [
+    {
+      "id": "C0",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/source/scripts/codex/check-plugin-cache.js",
+        "--plugin-dir",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache",
+        "--codex-home",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex"
+      ],
+      "hooks_file_exists": true,
+      "mcp_file_exists": true,
+      "exit_code": 0,
+      "expected_exit_from_source": 0,
+      "stdout": "[ecc-codex] Codex plugin cache check\n[ecc-codex] Codex home: /tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex\n[ecc-codex] Plugin cache: /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache\n[ecc-codex] Manifest: /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache/.codex-plugin/plugin.json\n[ecc-codex] [OK] skills -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache/skills\n[ecc-codex] [OK] mcpServers -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache/.mcp.json\n[ecc-codex] [OK] interface.composerIcon -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache/assets/ecc-icon.svg\n[ecc-codex] [OK] interface.logo -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C0/cache/assets/hero.png\n[ecc-codex] All cached manifest references resolve.\n",
+      "stderr": "",
+      "matches_source_prediction": true
+    },
+    {
+      "id": "C1",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/source/scripts/codex/check-plugin-cache.js",
+        "--plugin-dir",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache",
+        "--codex-home",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex"
+      ],
+      "hooks_file_exists": false,
+      "mcp_file_exists": true,
+      "exit_code": 0,
+      "expected_exit_from_source": 0,
+      "stdout": "[ecc-codex] Codex plugin cache check\n[ecc-codex] Codex home: /tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex\n[ecc-codex] Plugin cache: /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache\n[ecc-codex] Manifest: /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache/.codex-plugin/plugin.json\n[ecc-codex] [OK] skills -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache/skills\n[ecc-codex] [OK] mcpServers -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache/.mcp.json\n[ecc-codex] [OK] interface.composerIcon -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache/assets/ecc-icon.svg\n[ecc-codex] [OK] interface.logo -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C1/cache/assets/hero.png\n[ecc-codex] All cached manifest references resolve.\n",
+      "stderr": "",
+      "matches_source_prediction": true
+    },
+    {
+      "id": "C2",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/source/scripts/codex/check-plugin-cache.js",
+        "--plugin-dir",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache",
+        "--codex-home",
+        "/tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex"
+      ],
+      "hooks_file_exists": true,
+      "mcp_file_exists": false,
+      "exit_code": 1,
+      "expected_exit_from_source": 1,
+      "stdout": "[ecc-codex] Codex plugin cache check\n[ecc-codex] Codex home: /tmp/ecc-u01a-cache-probe-xm_7oi74/fake-home/.codex\n[ecc-codex] Plugin cache: /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache\n[ecc-codex] Manifest: /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache/.codex-plugin/plugin.json\n[ecc-codex] [OK] skills -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache/skills\n[ecc-codex] [FAIL] mcpServers missing -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache/.mcp.json\n[ecc-codex] [OK] interface.composerIcon -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache/assets/ecc-icon.svg\n[ecc-codex] [OK] interface.logo -> /tmp/ecc-u01a-cache-probe-xm_7oi74/C2/cache/assets/hero.png\n[ecc-codex] 1 cached manifest reference(s) do not resolve.\n[ecc-codex] codex plugin list only confirms marketplace registration; it is not proof of runtime skill loading.\n[ecc-codex] Use the supported manual sync workflow from your ECC installation.\n",
+      "stderr": "",
+      "matches_source_prediction": true
+    }
+  ],
+  "interpretation": {
+    "presence_baseline_accepted": true,
+    "missing_hook_missed": true,
+    "missing_mcp_detected": true,
+    "host_runtime_or_effectiveness_tested": false,
+    "upstream_test_suite_run": false
+  }
+}

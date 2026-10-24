@@ -1,0 +1,185 @@
+{
+  "experiment": "U07B / E15 runner / E16 output",
+  "source_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "source": {
+    "path": "scripts/bump-version.sh",
+    "git_blob": "14ead00291407c584f58a437f3acf5be1e772e78",
+    "bytes": 7461
+  },
+  "evidence_class": "source-informed exploratory exact-helper execution",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+    "jq": "jq-1.7"
+  },
+  "limitations": [
+    "JSON-only synthetic config; production nine-manifest/YAML path not run",
+    "No release, packaging/sync, host/model, installation, network or upstream suite",
+    "Criteria fixed after source reading, before this execution; not independent replication",
+    "Earlier E01-E14 unchanged and not rerun"
+  ],
+  "counts": {
+    "cases": 8,
+    "unexpected_observation_failures": 0,
+    "unmet_explicit_stronger_criteria": 2
+  },
+  "cases": [
+    {
+      "id": "C01",
+      "kind": "positive_control",
+      "name": "Complete JSON update",
+      "runs": [
+        {
+          "argument": "--check",
+          "exit": 0,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      1.0.0\n  manifest-1.json (version)                      1.0.0\n\nAll declared files are in sync at 1.0.0\n",
+          "stderr": ""
+        },
+        {
+          "argument": "1.1.0",
+          "exit": 0,
+          "stdout": "Bumping all declared files to 1.1.0...\n\n  manifest-0.json (version)                      1.0.0 -> 1.1.0\n  manifest-1.json (version)                      1.0.0 -> 1.1.0\n\nDone. Running audit to check for missed files...\n\nVersion check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      1.1.0\n\nAll declared files are in sync at 1.1.0\n\nAudit: scanning repo for version string '1.1.0'...\n\nNo undeclared files contain the version string. All clear.\n",
+          "stderr": ""
+        },
+        {
+          "argument": "--check",
+          "exit": 0,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      1.1.0\n\nAll declared files are in sync at 1.1.0\n",
+          "stderr": ""
+        }
+      ],
+      "files": {
+        "manifest-0.json": "1.1.0",
+        "manifest-1.json": "1.1.0"
+      }
+    },
+    {
+      "id": "C02",
+      "kind": "mode_boundary",
+      "name": "Audit does not preserve check failure",
+      "runs": [
+        {
+          "argument": "--check",
+          "exit": 1,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      2.0.0\n  manifest-1.json (version)                      2.0.0\n  manifest-2.json (version)                      1.0.0\n\nDRIFT DETECTED — versions are not in sync:\n  2.0.0 (2 files)\n  1.0.0 (1 files)\n",
+          "stderr": ""
+        },
+        {
+          "argument": "--audit",
+          "exit": 0,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      2.0.0\n  manifest-1.json (version)                      2.0.0\n  manifest-2.json (version)                      1.0.0\n\nDRIFT DETECTED — versions are not in sync:\n  2.0.0 (2 files)\n  1.0.0 (1 files)\n\nAudit: scanning repo for version string '2.0.0'...\n\nNo undeclared files contain the version string. All clear.\n",
+          "stderr": ""
+        }
+      ],
+      "files": {
+        "manifest-0.json": "2.0.0",
+        "manifest-1.json": "2.0.0",
+        "manifest-2.json": "1.0.0"
+      },
+      "limit": "Audit prints drift; its zero exit is not a clean version gate."
+    },
+    {
+      "id": "C03",
+      "kind": "scope_challenge",
+      "name": "Successful bump with missing declared middle file",
+      "runs": [
+        {
+          "argument": "1.1.0",
+          "exit": 0,
+          "stdout": "Bumping all declared files to 1.1.0...\n\n  manifest-0.json (version)                      1.0.0 -> 1.1.0\n  SKIP (missing): manifest-1.json\n  manifest-2.json (version)                      1.0.0 -> 1.1.0\n\nDone. Running audit to check for missed files...\n\nVersion check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      MISSING\n  manifest-2.json (version)                      1.1.0\n\nAll declared files are in sync at 1.1.0\n\nAudit: scanning repo for version string '1.1.0'...\n\nNo undeclared files contain the version string. All clear.\n",
+          "stderr": ""
+        },
+        {
+          "argument": "--check",
+          "exit": 1,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      MISSING\n  manifest-2.json (version)                      1.1.0\n\nAll declared files are in sync at 1.1.0\n",
+          "stderr": ""
+        }
+      ],
+      "files": {
+        "manifest-0.json": "1.1.0",
+        "manifest-1.json": null,
+        "manifest-2.json": "1.1.0"
+      },
+      "criterion": "A zero bump exit entails every declared manifest exists at the requested version.",
+      "criterion_met": false,
+      "limit": "Missing path is printed; no claim that the full transcript conceals it."
+    },
+    {
+      "id": "C04",
+      "kind": "ordering_and_partial_effect",
+      "name": "Missing final path fails after writes",
+      "runs": [
+        {
+          "argument": "1.1.0",
+          "exit": 1,
+          "stdout": "Bumping all declared files to 1.1.0...\n\n  manifest-0.json (version)                      1.0.0 -> 1.1.0\n  manifest-1.json (version)                      1.0.0 -> 1.1.0\n  SKIP (missing): manifest-2.json\n\nDone. Running audit to check for missed files...\n\nVersion check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      1.1.0\n  manifest-2.json (version)                      MISSING\n\nAll declared files are in sync at 1.1.0\n\n",
+          "stderr": ""
+        },
+        {
+          "argument": "--check",
+          "exit": 1,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      1.1.0\n  manifest-2.json (version)                      MISSING\n\nAll declared files are in sync at 1.1.0\n",
+          "stderr": ""
+        }
+      ],
+      "files": {
+        "manifest-0.json": "1.1.0",
+        "manifest-1.json": "1.1.0",
+        "manifest-2.json": null
+      },
+      "limit": "Bash loop/pipeline status differs when missing entry is last; a nonzero result is not rollback."
+    },
+    {
+      "id": "C05",
+      "kind": "negative_control",
+      "name": "Unreadable manifest blocks before prior file update",
+      "runs": [
+        {
+          "argument": "1.1.0",
+          "exit": 1,
+          "stdout": "",
+          "stderr": "jq: parse error: Invalid numeric literal at line 1, column 5\nerror: cannot read declared manifest: manifest-1.json (version)\n"
+        }
+      ],
+      "first_file_unchanged": true
+    },
+    {
+      "id": "C06",
+      "kind": "scope_challenge",
+      "name": "Post-bump audit misses undeclared old-version file",
+      "runs": [
+        {
+          "argument": "1.1.0",
+          "exit": 0,
+          "stdout": "Bumping all declared files to 1.1.0...\n\n  manifest-0.json (version)                      1.0.0 -> 1.1.0\n  manifest-1.json (version)                      1.0.0 -> 1.1.0\n\nDone. Running audit to check for missed files...\n\nVersion check:\n\n  manifest-0.json (version)                      1.1.0\n  manifest-1.json (version)                      1.1.0\n\nAll declared files are in sync at 1.1.0\n\nAudit: scanning repo for version string '1.1.0'...\n\nNo undeclared files contain the version string. All clear.\n",
+          "stderr": ""
+        }
+      ],
+      "extra_file_version": "1.0.0",
+      "criterion": "The post-bump all-clear establishes no unregistered old-version manifest remains.",
+      "criterion_met": false,
+      "limit": "Literal scan searches the now-current version; it is not a general manifest inventory."
+    },
+    {
+      "id": "C07",
+      "kind": "positive_sensitivity_control",
+      "name": "Same-version undeclared file is reported, still advisory",
+      "runs": [
+        {
+          "argument": "--audit",
+          "exit": 0,
+          "stdout": "Version check:\n\n  manifest-0.json (version)                      1.0.0\n  manifest-1.json (version)                      1.0.0\n\nAll declared files are in sync at 1.0.0\n\nAudit: scanning repo for version string '1.0.0'...\n\nUNDECLARED files containing '1.0.0':\n  <TMP>/undeclared-current/unregistered-manifest.json:1:{\"version\":\"1.0.0\"}\n\nReview the above files — if they should be bumped, add them to .version-bump.json\nIf they should be skipped, add them to the audit.exclude list.\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "id": "C08",
+      "kind": "oracle_negative_control",
+      "name": "Zero-exit-only completeness oracle is falsified",
+      "incorrect_oracle_rejected": true
+    }
+  ]
+}

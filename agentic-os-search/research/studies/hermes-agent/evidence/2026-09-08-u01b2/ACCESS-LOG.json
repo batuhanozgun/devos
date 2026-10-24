@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-08",
+  "exact_upstream_attempt_time": "not recorded by tool output",
+  "upstream_attempt": {
+    "tool": "GitHub.fetch_file",
+    "repository_full_name": "NousResearch/hermes-agent",
+    "path": "run_agent.py",
+    "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+    "start_line": 1,
+    "end_line": 190,
+    "count_this_turn": 1,
+    "http_status": 429,
+    "message": "gitmon refuses to schedule us: fail-fast:network",
+    "content_received": false
+  },
+  "archive_access": "Research repository archive readable; both full source blobs re-read and locally hashed.",
+  "web_search": "Exact-pin discovery and official-source availability search did not supply pinned caller code; search results not used for technical findings.",
+  "write_capability": {
+    "create_keyword_discovery": "no result",
+    "full_discovery_count": 48,
+    "write_action_listed": false,
+    "plugin_search": "GitHub installed/enabled",
+    "local_gh_available": false,
+    "write_api_attempted": false,
+    "why_not": "No supported write action exposed; no authenticated CLI write route established. Not diagnosed as an account permission error."
+  },
+  "research_main_at_start_and_final_check": "a218acfc20e7ece488709e00a9762166ec970fba",
+  "new_publication_commit": null
+}

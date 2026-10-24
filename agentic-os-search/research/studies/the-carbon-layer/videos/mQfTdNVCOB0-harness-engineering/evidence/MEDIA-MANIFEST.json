@@ -1,0 +1,37 @@
+{
+  "schema": "study-local-media-identity-v1",
+  "observed_on": "2026-09-12",
+  "video_id": "mQfTdNVCOB0",
+  "original_url": "https://www.youtube.com/watch?v=mQfTdNVCOB0&list=PPSV",
+  "transcript_representation_url": "https://iamtypist.dev/tools/youtube-transcript/mQfTdNVCOB0",
+  "native_youtube_caption_track_verified": false,
+  "full_audio_transcript_alignment_performed": false,
+  "original_media_committed_to_repository": false,
+  "files": [
+    {
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].f401(1).mp4",
+      "role": "user-uploaded video-only stream",
+      "bytes": 309337669,
+      "sha256": "48c697f9f88088ceb4a509aeeaf4c2cabd9607fc1da54680747da6058f33c789",
+      "duration_seconds": 1685.750,
+      "codec": "av1"
+    },
+    {
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].f251-14(1).webm",
+      "role": "user-uploaded audio-only stream",
+      "bytes": 28905635,
+      "sha256": "23bb3f385bdac0e10c8e88a1e5246c234936a9216ccd0d5d6e8b8debd263bb1f",
+      "duration_seconds": 1685.781,
+      "codec": "opus"
+    }
+  ],
+  "visual_sample_seconds": [18, 210, 280, 400, 530, 675, 805, 920, 1010, 1120, 1250, 1380, 1525, 1605],
+  "operations_actually_performed": [
+    "ffprobe stream and duration inspection",
+    "streaming SHA-256 and byte-count measurement",
+    "ffmpeg extraction of 14 frames scaled to width 960",
+    "visual inspection of all 14 sampled frames through three contact sheets"
+  ],
+  "coverage_limit": "Chapter/diagram and limited visible-caption checks only; no full video viewing or audio listening is claimed.",
+  "recovery": "Recover original by video ID or exact user-provided media. Local session files and contact sheets are not durable canonical repository assets. Recheck original media for decision-critical spoken claims."
+}

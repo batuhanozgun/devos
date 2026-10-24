@@ -1,0 +1,199 @@
+{
+  "unit": "U08",
+  "research_base": "188095b930ac77f8d2a5dd605191a09a369a57ce",
+  "primary_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "sources": [
+    {
+      "id": "S01",
+      "path": "gateway/run.py",
+      "git_blob": "d6bfc83ec1271dbd3ee7193ca1b2af794b7844e5",
+      "ranges": [
+        [
+          1100,
+          1340
+        ],
+        [
+          1530,
+          1755
+        ],
+        [
+          4400,
+          4625
+        ],
+        [
+          4950,
+          5125
+        ],
+        [
+          5230,
+          5395
+        ]
+      ],
+      "status": "SELECTED SOURCE READ; NOT EXECUTED",
+      "claims": "gateway startup running gate; independent housekeeping launch; per-profile drain and scopes; incidental cached-history selector",
+      "incidental_or_partial": [
+        [
+          1750,
+          2020
+        ],
+        [
+          4680,
+          4950
+        ]
+      ],
+      "notes": "Whole-file response retrieved but not fully read or materialized. Incidental ranges do not close their subsystems.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/gateway/run.py"
+    },
+    {
+      "id": "S02",
+      "path": "cron/scheduler.py",
+      "git_blob": "3a1b3839521b3a6fcb687c4875d446b184a82f20",
+      "ranges": [
+        [
+          1070,
+          1285
+        ]
+      ],
+      "status": "SELECTED SOURCE READ; NOT EXECUTED",
+      "claims": "actual drain_delivery_queue wrapper, queue file gate and real _deliver_result callback",
+      "incidental_or_partial": [
+        [
+          850,
+          1080
+        ]
+      ],
+      "notes": "Outer classifier/finish are prior U07 same-conversation pinned source reuse, not a new full-parent execution.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/scheduler.py"
+    },
+    {
+      "id": "S03",
+      "path": "cron/scheduler_delivery.py",
+      "git_blob": "45b9843c4487abd82b41e649dfe2ed552964a945",
+      "ranges": [
+        [
+          1100,
+          1455
+        ],
+        [
+          1370,
+          1470
+        ]
+      ],
+      "status": "SELECTED SOURCE READ; NOT EXECUTED",
+      "claims": "live route/send, cancellation branches, seeding, native versus relay standalone fallback",
+      "notes": "First range output truncated in standalone tail; second direct range recovers that tail. Prior U07 850–1100 and1450–1715 reused for aggregator/queue/verification fields. All enclosing runtime remains NOT RUN.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/scheduler_delivery.py"
+    },
+    {
+      "id": "S04",
+      "path": "agent/async_utils.py",
+      "git_blob": "2bc558fad21eeec736c0283cb7df86304349f222",
+      "ranges": [
+        [
+          1,
+          49
+        ]
+      ],
+      "status": "FULL READ; FULL BYTE MATCH; BOUNDED EXECUTION",
+      "bytes": 2049,
+      "sha256": "9e2dc6964bd826c1cd0a5b756e2031761933d96da76fc4804064121925f04ee7",
+      "claims": "actual safe_schedule_threadsafe bridge returns asyncio thread-safe Future; B01–B03",
+      "notes": "Only this complete Hermes module executed in U08. Real asyncio/thread/file, synthetic transport; not scheduler, gateway, queue, SessionDB or network.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/agent/async_utils.py"
+    },
+    {
+      "id": "S05",
+      "path": "hermes_cli/cron.py",
+      "git_blob": "c56df9b69d87f54c2f6fdb4901a4220a06338ce7",
+      "ranges": [
+        [
+          1,
+          230
+        ]
+      ],
+      "status": "SELECTED SOURCE READ; NOT EXECUTED",
+      "claims": "cron_list, _job_rows, _last_run_display, _job_warnings; one concrete CLI observation path",
+      "notes": "Not all dashboards/UI/TUI or real terminal render execution.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/hermes_cli/cron.py"
+    },
+    {
+      "id": "S06",
+      "path": "cron/jobs.py",
+      "git_blob": "adb75eea2d0317672708da57808c2dc5f0aee93e",
+      "ranges": [
+        [
+          1800,
+          2040
+        ],
+        [
+          2110,
+          2245
+        ]
+      ],
+      "status": "SELECTED SOURCE READ; NOT EXECUTED",
+      "claims": "list_jobs joins latest execution, _record_run_outcome status inputs, scoped last-status trace",
+      "notes": "Other update/manual/rearm sections incidental; full occurrence and store lifecycle not closed.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/jobs.py"
+    },
+    {
+      "id": "S07",
+      "path": "tests/gateway/test_cron_delivery_housekeeping.py",
+      "git_blob": "ce1dede5bfca7702c36104eb9320701cae46f2a8",
+      "requested_ranges": [
+        [
+          1,
+          240
+        ]
+      ],
+      "status": "FULL TEST SOURCE READ; TEST NOT RUN",
+      "claims": "mocked routing/call-argument assertions; not a transport receipt oracle",
+      "notes": "EOF received. No claim that all upstream tests lack cancellation coverage.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/tests/gateway/test_cron_delivery_housekeeping.py"
+    },
+    {
+      "id": "S08",
+      "path": "LICENSE",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "status": "PREVIOUS PINNED FULL READ REUSE; LOCAL BYTE MATCH",
+      "bytes": 1070,
+      "claims": "MIT redistribution notice",
+      "notes": "Recovered unchanged from published-U07-matching raw archive, not a new current-license/adoption review.",
+      "repository": "NousResearch/hermes-agent",
+      "ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/LICENSE"
+    }
+  ],
+  "execution_scope": "S04 only",
+  "navigation_ref": "31d0a2428e9db346d6781da66f5b37ff3e12def2",
+  "web_sources": [
+    {
+      "id": "P01",
+      "url": "https://docs.python.org/3.13/library/asyncio-task.html",
+      "role": "official primary API reference; not pinned Hermes source"
+    },
+    {
+      "id": "P02",
+      "url": "https://docs.python.org/3.13/library/concurrent.futures.html",
+      "role": "official primary Future reference; distinguish executor Future from asyncio Task bridge"
+    },
+    {
+      "id": "W01",
+      "url": "https://hermes-agent.nousresearch.com/docs/developer-guide/cron-internals",
+      "role": "mutable official navigation only; not current-version revalidation"
+    }
+  ]
+}

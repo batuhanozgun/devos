@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "a2fd011deb320dfc82e05154613d75d55e0c94a3",
+  "snapshot_root_tree": "3418d97c15f4d28dd01b20f14cb189ea991c21a9",
+  "scope": "PARTIAL repository inventory: 1172 explicit paths by pinned composition. 04_top-level-adequacy-rerun complete with 16 files. Foundation has 662 explicit files and 5 opaque subtrees; studies remains opaque. Metadata only.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-INFORMATION-REMAINDER-INVENTORY.json",
+    "ref": "a2fd011deb320dfc82e05154613d75d55e0c94a3",
+    "git_blob": "471962c20d662844b1cca863869cc9fde26b5017",
+    "composed_explicit_leaves": 1154
+  },
+  "composition": [
+    "Recover the pinned prior inventory and published maintenance delta.",
+    "Replace the 04_top-level-adequacy-rerun frontier by its 16 leaves.",
+    "Retain the five remaining Foundation frontiers and studies.",
+    "Repository composition is 1154 + 2 prior-publication maintenance files + 16 = 1172 explicit paths; Foundation is 646 + 16 = 662.",
+    "This is metadata coverage, not research-body review or the whole-repository file count."
+  ],
+  "block": {
+    "prefix": "research/soul-foundations/04_top-level-adequacy-rerun",
+    "git_tree": "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a",
+    "source_url": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a?recursive=1",
+    "source_truncated": false,
+    "recursive_inventory_complete": true,
+    "files": 16,
+    "api_bytes": 125095,
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          [
+            "CURRENT-SURFACES.md",
+            "07e14ab72263371f3db693080304eaf1339811b5",
+            3306
+          ],
+          [
+            "DEFERRED-RELATIONS.md",
+            "d39dbc2f9ad3c0f73e5fbb6168f3e98ecdaacde7",
+            8727
+          ],
+          [
+            "FINDINGS-MAP.md",
+            "ac9fbccfe26b590a316870b98fedfd3fd4f20757",
+            6546
+          ],
+          [
+            "INDEX.md",
+            "92683a82527bdf833c5af5365c66a13239448ab4",
+            1981
+          ],
+          [
+            "KEY.md",
+            "76c8831ac48f05646f9450ee0183a2761f1bf102",
+            2227
+          ],
+          [
+            "OPEN-QUESTIONS.md",
+            "05b47aaae1ee0a0a62ace7fe0536ec4c03ce130a",
+            4274
+          ],
+          [
+            "PLAN.md",
+            "6d218a331a85cd1251b054c1d2b2a726c1ff4a4d",
+            5929
+          ],
+          [
+            "Q0-EVIDENCE-RECOVERY.md",
+            "97f344400cf1640a9c733a05b80736f0541601d4",
+            10006
+          ],
+          [
+            "Q1-EXHAUSTIVENESS-MISSING-GROUND.md",
+            "df5b885043f81a785dce5dde05826fa383d4246f",
+            11002
+          ],
+          [
+            "Q2-LEVEL-ALIGNMENT-REDUCTION.md",
+            "6129628f92fc81abf4da4769bb2494bb593e3046",
+            10702
+          ],
+          [
+            "Q3-BOUNDARY-INTERACTION-PRESSURE.md",
+            "94f35bf829e14ef9ee7a3f172988045fed0da509",
+            10786
+          ],
+          [
+            "Q4-MATERIALLY-DIFFERENT-HOLDOUTS.md",
+            "7d3cea94097dce1df032a4e182ebc64fcffd4f12",
+            12647
+          ],
+          [
+            "Q5-RIVAL-DECOMPOSITIONS.md",
+            "65ea8afa1a4335093c15069c99961362afaaf564",
+            12777
+          ],
+          [
+            "Q6-CLOSURE.md",
+            "6c2b093b72ccb93c0ae6b9a7ba9f56950bee1817",
+            10307
+          ],
+          [
+            "STATE.md",
+            "5ef329cee01e1c09e1445de802a248c90f1e1233",
+            2829
+          ]
+        ]
+      },
+      {
+        "directory": "synthesis",
+        "leaves": [
+          [
+            "TOP-LEVEL-ADEQUACY-RERUN-SYNTHESIS.md",
+            "c84cd4ba8509d3ba18604d6604f176404f9d4aff",
+            11049
+          ]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [
+    [
+      "05_relation-control-composition",
+      "81e9db36f1b14d2248e99660350734c30d501d8d"
+    ],
+    [
+      "06_integration-frontier-review",
+      "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"
+    ],
+    [
+      "07_selection-dynamics-integration-review",
+      "c88b8399a330f56533c1ef1f452712e0cc2c72f2"
+    ],
+    [
+      "08_foundation-sufficiency-reuse-review",
+      "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"
+    ],
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "source_root": "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a",
+    "reconstructed_root": "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a",
+    "direct_entries": 16,
+    "omission_controls_detected": 16,
+    "mutation_controls_detected": 1,
+    "new_files": 16,
+    "new_api_bytes": 125095,
+    "file_types": {
+      ".md": 16
+    },
+    "foundation_paths_by_composition": 662,
+    "repository_paths_by_composition": 1172,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "verification_limits": [
+    "Git tree reconstruction and negative controls are deterministic same-author metadata checks, not independent content verification.",
+    "API byte sizes are metadata; source-body truth, status semantics, links, archive contents and reader behavior were not reviewed in this slice."
+  ],
+  "next": "Continue A4 path inventory at research/soul-foundations/05_relation-control-composition, then 06-08, history and studies. Content/link/archive-internal review, A5 and two A3 access gaps remain open."
+}

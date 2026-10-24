@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "ac7e4549ee87b35d84a3f34b86e5f48912549cb3",
+  "snapshot_root_tree": "47a16b3c9a41c9350668fbda81535bb7538fa6d5",
+  "scope": "PARTIAL: 702 explicit repository paths by composition; Foundation has 200 explicit files and 8 opaque subtrees, studies remains opaque. No new research-body scan.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-RESEARCH-INVENTORY.json",
+    "ref": "ac7e4549ee87b35d84a3f34b86e5f48912549cb3",
+    "git_blob": "a908c77955190588cd199a2cc436342a20949e7a",
+    "bytes": 14762,
+    "composed_explicit_leaves": 527,
+    "describes_commit": "2dbf81a5ae66ea0482371725e40a4b8a84802979"
+  },
+  "composition": [
+    "Recover the pinned base inventory and its previous inventory dependencies; retain earlier body-review scope and decisions.",
+    "Apply snapshot_upserts, checking expected_old_blob or absence. These are already published changes, not new source edits.",
+    "For each block replace the matching Foundation frontier entry by its prefixed leaves and prefixed frontier. Keep all other leaves and frontier entries.",
+    "Require 527 + 2 + 173 = 702 unique explicit paths; Foundation contributes 27 + 173 = 200. Keep 8 Foundation frontiers and the studies frontier.",
+    "The two new maintenance records and root-plan edit publishing this inventory occur after this snapshot; add that delta next time, not recursively here."
+  ],
+  "snapshot_upserts": [
+    {
+      "path": "REPOSITORY-TRANSITION.md",
+      "expected_old_blob": "bacff9a6c3228fd644f8b1aca3a71249dd3c354c",
+      "git_blob": "cd6b0c130200b9d49de46a3bb5d6afcd3675e511",
+      "bytes": 42474
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-RESEARCH-INVENTORY.json",
+      "expected_old_blob": null,
+      "git_blob": "a908c77955190588cd199a2cc436342a20949e7a",
+      "bytes": 14762
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-RESEARCH-INVENTORY.md",
+      "expected_old_blob": null,
+      "git_blob": "4ff9c6c19129f5f80dad569e8e1e907036136922",
+      "bytes": 7513
+    }
+  ],
+  "defaults": {
+    "mode": "100644",
+    "type": "blob",
+    "body_read": "NOT_READ_IN_THIS_SLICE",
+    "content_disposition": "PENDING_CONTENT_AND_LINK_REVIEW; preserve previous A2 decisions"
+  },
+  "foundation_prefix": "research/soul-foundations",
+  "columns": [
+    "relative_path",
+    "git_blob",
+    "bytes"
+  ],
+  "blocks": [
+    {
+      "prefix": "01_verticals/records-artifacts",
+      "git_tree": "cfb93f2d2e6d59a515758a745b7bd8c08bf41890",
+      "recursive_inventory_complete": true,
+      "files": 66,
+      "api_bytes": 402099,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/cfb93f2d2e6d59a515758a745b7bd8c08bf41890?recursive=1",
+      "leaves": [
+        ["CHANGE-LIFECYCLE-PLAN.md", "994763d22ad21756d9367dbd90dc4f8b4433263a", 7176],
+        ["CURRENT-REVISION.md", "5543860ed0eac080d839c57598cc02cf714da6c5", 3734],
+        ["DEFERRED-RELATIONS.md", "caea5a5502e7ade5e1c6bc35dfecdd86e2d7cce5", 6090],
+        ["DOCUMENT-STATUS.md", "8d090bf1d82cb3ed67a1ce4f8671f954f6ec9bd3", 4672],
+        ["FINDINGS-MAP.md", "4e020b465fe97dff745ed8c10d3afac55d141124", 5717],
+        ["FOUNDATIONAL-SYNTHESIS.md", "0f116086dba8ec2c9a7d882db07b05d6b8ced732", 832],
+        ["INDEX.md", "8df2cb201a35e8cea4e3f51ef0a8777bb802e40c", 4871],
+        ["KEY.md", "9050bf3ea76e0b983a1c93f3bafa0c55f15625d6", 2841],
+        ["MECHANISM-PATTERNS-PLAN.md", "099aed9223804863f1b28532da631cdb726752e4", 3270],
+        ["MINIMUM-ENVELOPE-PLAN.md", "851de353b484e9e2b31af120a828436612b05344", 6855],
+        ["OBJECT-BOUNDARIES-PLAN.md", "0bdd2182fc719bd51a9a2b624ad30faf62327959", 3949],
+        ["OPEN-QUESTIONS.md", "2634cc4639a8798f8d4f60f73aca76e5621a693d", 3722],
+        ["ORGANISATION-RETRIEVAL-PLAN.md", "00ea335dace1fd3efdc08275e9a618cc0b101910", 7962],
+        ["README.md", "15bedacb37bdc2eda5971cf542a6a387d5ab67a9", 2513],
+        ["REQUIREMENT-PROFILE-PLAN.md", "6307f49663c23ca9c5c1488364984aa35b588a96", 6542],
+        ["RESEARCH-PLAN.md", "90524d390c4d9f508c6edea5ca070fec4fdaa64c", 5774],
+        ["RETENTION-DISPOSITION-PLAN.md", "d7e663453a59cb219d2a875cc95a06633b0e2a05", 4792],
+        ["SOURCES.md", "3a5c76aba298a349be295fd9c02fd114f9370900", 19321],
+        ["STATE.md", "941ac8707a18d6e9384707d2165cb9dd5bf317b1", 4494],
+        ["VERTICAL-COMPLETENESS-PLAN.md", "5086ec83bef8792bf21184e286023eb4ab90aa7a", 3895],
+        ["sources/README.md", "e3e79da6a8b68b137c80647aee3aa87fdffdae69", 1924],
+        ["sources/artifact-counterframe.md", "80d6d27dfa2fabf32a50b8647a7afbb43ae3583f", 4454],
+        ["sources/change-status-temporal-semantics.md", "16664d1a4022866920234bc77aaa94dd84c6ca6d", 14544],
+        ["sources/digital-preservation.md", "7f94164b05e87d6ecde516af9b4d17226123c6a6", 5473],
+        ["sources/mechanism-pattern-landscape.md", "a8dba5b921ac8ad5f7a06124a84b6c8f3b66a91f", 10162],
+        ["sources/minimum-envelope.md", "5f4021749757572ff8ace6cde2a7ab9fa65b1678", 15918],
+        ["sources/object-boundaries-recordhood.md", "c262972e75b8be7c527d9725fbf281f2a3729acb", 13478],
+        ["sources/organisation-retrieval-semantics.md", "2282f03381bbd5021c5055e1bcf505a404e52c06", 14571],
+        ["sources/organization-retrieval-lifecycle.md", "308fa8bb0cfe5fe8f5d0142996d5d91027038a70", 7393],
+        ["sources/provenance-identity-time-versioning.md", "3b911c9c3f11fd0fb3f50d5c614149f700689a61", 6142],
+        ["sources/records-archival-science.md", "b846e996e9e1d50b28e3e8c7cc530098ba6778f0", 6557],
+        ["sources/requirement-profile-derivation.md", "386487fe88b790ea2026b1ed53bf8a58c26d56c3", 12132],
+        ["sources/retention-disposition.md", "22abfb2183e06c9df6b2175f88cdc8c7d04e5f6b", 9851],
+        ["sources/term-boundaries.md", "d86c9e2e78ce26930f172b213262e2ad006e8d4b", 4867],
+        ["sources/vertical-completeness-omission-review.md", "4e5fe1c75175b56ad699ec2d0fd8b4ecbb07884a", 10230],
+        ["synthesis/ARTIFACT-COUNTERCHECK.md", "b3e42135ee94b206af0e45a3daea7628a8e31573", 2918],
+        ["synthesis/CHANGE-STATUS-TEMPORAL-COUNTERCHECK.md", "ee7c1b8cbc1e65a6a064b8c9ab3057a3593666cb", 12478],
+        ["synthesis/CHANGE-STATUS-TEMPORAL-SEMANTICS.md", "faa1ac0a6eb5aee3a6bcf1f734a482e81ac4b77f", 702],
+        ["synthesis/COLD-READ-CURRENTNESS-COUNTERCHECK.md", "c984537dab7f442e5032530e5acd0b29b9cb28c7", 7932],
+        ["synthesis/CONCEPT-BOUNDARIES.md", "1d4757f053c491bb6761e3df73a82c9ade3f9cb7", 750],
+        ["synthesis/FAILURE-MODES.md", "3b9da13ba1e54728476d3559355b58d387b0f235", 703],
+        ["synthesis/MECHANISM-PATTERN-COUNTERCHECK.md", "6284b5c118706b976eaf7504749fdd32df4575f0", 11088],
+        ["synthesis/MECHANISM-PATTERN-LANDSCAPE.md", "8912be7786c78b14eca82f35fe378191d9eaf783", 711],
+        ["synthesis/MINIMUM-ENVELOPE-COUNTERCHECK.md", "26e1d7ec44f2465de109b5cb7637a5939a6de251", 10951],
+        ["synthesis/MINIMUM-ENVELOPE.md", "63f20608bdcd44f3bf4cce01ff7f4191dc6e2b06", 795],
+        ["synthesis/OBJECT-BOUNDARIES.md", "4de3c5f4af11fc0920dd745f214cc43617e084a8", 700],
+        ["synthesis/ORGANISATION-RETRIEVAL-COUNTERCHECK.md", "eb82d2157365698d92ed44ca51cdbd0151aed61f", 13471],
+        ["synthesis/ORGANISATION-RETRIEVAL-SEMANTICS.md", "6a9b4783a304ba6d147c31af3f83acd80c50e2b7", 671],
+        ["synthesis/README.md", "8588c4a5ed2b6f06b7f18eb1c88e9cf443eed9a3", 1327],
+        ["synthesis/RECORDS-VERTICAL-SYNTHESIS.md", "76fb18f2538aceeccf353a807a777cd1e91c9d3a", 20151],
+        ["synthesis/REQUIREMENT-PROFILE-COUNTERCHECK.md", "9f780df8192d66efe81dfa16f9ba1b0f1e176bc0", 11622],
+        ["synthesis/REQUIREMENT-PROFILE-DERIVATION.md", "a5f3c75f466292aa976319f35ca3cdbbe1752efc", 726],
+        ["synthesis/RETENTION-DISPOSITION-COUNTERCHECK.md", "d1ad564fc13ed9dab0105ebc8cdca1777cfe9a74", 9345],
+        ["synthesis/RETENTION-DISPOSITION-SEMANTICS.md", "b5b844240260889807f92480a37ce694cc6303e9", 757],
+        ["synthesis/RETURN-CONDITION-REVIEW.md", "951a6fd9b258a932a21ed5485fb097b1523737b3", 5987],
+        ["synthesis/VERTICAL-COMPLETENESS-COUNTERCHECK.md", "432bf11948ec5cf925258ca90134be5747ffdfa0", 11066],
+        ["synthesis/current/CHANGE-TIME-STANDING.md", "bee8197ff3490f94316c1b32cb6df40c1f116017", 3293],
+        ["synthesis/current/COMPLETENESS.md", "0a7add99862bdc054410e9e21b0ee0066aea4952", 2891],
+        ["synthesis/current/FAILURE-SURFACES.md", "73c9f99bfb052b87eb8b576ad8ec4a121248ff74", 5074],
+        ["synthesis/current/MECHANISM-LANDSCAPE.md", "9e2fe2fcafe802ec1f8b5be7dbc4d58e531df60c", 3350],
+        ["synthesis/current/OBJECT-IDENTITY.md", "64296b4356f842dae49d9e6083766aa0b1ce66b1", 2659],
+        ["synthesis/current/ORGANISATION-RETRIEVAL.md", "94d5152050bf5cf501e86128c90e802e72f056b8", 2954],
+        ["synthesis/current/PRESERVATION-CLOSURE.md", "bb255435ad69a678326988931b3dd5d4af682810", 2953],
+        ["synthesis/current/README.md", "0f54413a9282d026beb2f6d55afb25286d7807fd", 1227],
+        ["synthesis/current/REQUIREMENT-DERIVATION.md", "491c40143ede4bba16047796a5d5bd972e2f21f4", 3022],
+        ["synthesis/current/RETENTION-DISPOSITION.md", "244adcbd9108e8b0617e4caf8340bf81ddbb4ce3", 3107]
+      ],
+      "frontier": []
+    },
+    {
+      "prefix": "01_verticals/work-environment",
+      "git_tree": "db3c75f35663df5528bd5d727bf90b320b53091b",
+      "recursive_inventory_complete": true,
+      "files": 30,
+      "api_bytes": 251409,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/db3c75f35663df5528bd5d727bf90b320b53091b?recursive=1",
+      "leaves": [
+        ["CURRENT-SURFACES.md", "83ed3856ae1406ce2af8786d9670e18d4e945255", 6089],
+        ["DEFERRED-RELATIONS.md", "cf1fdc7b701dfd5bdf3ac97604766a6afe3527da", 2794],
+        ["FINDINGS-MAP.md", "c7175a5c8a4189b6bee0e1da155f13330b399654", 3811],
+        ["INDEX.md", "ae82da1749f64fd6562eaf7b767034c21c0bb31e", 5509],
+        ["KEY.md", "61a74d38d7bfe2ee3c8458041726ce3637d096ac", 4991],
+        ["OPEN-QUESTIONS.md", "63d3fec35a3cf48dfbc961c4784cac4c93be07b0", 2606],
+        ["README.md", "7655680c9a9dcfd09f01eae28cce0ee37d95c8c4", 3378],
+        ["STATE.md", "abe8e66b5090e9b4494834fa6454fa7f9f85505e", 5645],
+        ["evidence/SOURCE-LEDGER.md", "80d5051e7511d50e206a4e91cdf06b9598dbaf01", 3604],
+        ["evidence/sources/BOUNDARY-IDENTITY-SOURCES.md", "ebd52a212008a8a579a32830b507931aef5c578d", 9177],
+        ["evidence/sources/CAPABILITY-CONSTRAINT-SOURCES.md", "f25910b3c9ff43ab38497740275d36d33456fecb", 5579],
+        ["evidence/sources/COMPOSITION-LIFECYCLE-SOURCES.md", "f7ec36ce8706521193e36af885ec30decb94bda7", 5786],
+        ["evidence/sources/CONFIGURATION-STATE-SOURCES.md", "8194028209eb8545415b5f8cb037e03c25643745", 6798],
+        ["evidence/sources/COUNTERFRAME-TERMINOLOGY-SOURCES.md", "b53fdd15113d817cce0efc93e9a62cc900013906", 5901],
+        ["evidence/sources/DECLARED-DISCOVERED-DYNAMIC-SOURCES.md", "225fbafa725ccc2f8be8ccaab15f2c35484f710f", 4521],
+        ["evidence/sources/FAILURE-HEALTH-SOURCES.md", "7df70e517c78661ff20b5166f52c4285620fa0ed", 5777],
+        ["evidence/sources/OMISSION-PROBE-SOURCES.md", "9a5777877d7c38e261f6fa30f6c51c36f1985cd6", 8057],
+        ["evidence/sources/ORIENTATION-SOURCES.md", "c0c3495e76e486b64746f56226034db9ae1265b0", 6813],
+        ["evidence/sources/PURPOSE-CONTROL-PORTABILITY-SOURCES.md", "e78e373e13d056739991d63f6aa87efb37889a13", 7151],
+        ["findings/01-boundary-and-identity.md", "6f9d8ef15650de6b9277ac600801c0182626fdaa", 12957],
+        ["findings/02-configuration-state-reproducibility.md", "8a7e1af3b6d1f8e7f4fc14cf7ce1f577c48b0866", 11075],
+        ["findings/03-capabilities-constraints-interfaces-resources.md", "3e0870da164c33c78a52a145f6bf51280e4fa4b3", 11456],
+        ["findings/04-composition-sharedness-lifecycle.md", "0340517cc8d377c6251ca4880fef30430311a080", 11587],
+        ["findings/05-failure-health-observability.md", "822f026217fef5e77390960e20806c8492f45c2c", 12685],
+        ["findings/06-counterframes-and-terminology.md", "02e61f283451b646781ff4b080c9c808c08fee2c", 13809],
+        ["findings/07-purpose-control-portability.md", "ed986675d4a361fccbbf59fe5a671c05993bd8e4", 12896],
+        ["findings/08-declared-discovered-dynamic.md", "d2358705cbbe4f7a52c02d0d8f7fe1133ce4eda1", 10795],
+        ["orientation/RESEARCH-ORIENTATION.md", "9c3ec805dbaeee9e7a0921053f59cd7c4fa95cbd", 9201],
+        ["synthesis/COMPLETENESS-OMISSION-CHECK.md", "32704b9f6bee000d3f624c1306f3efd0795b30bd", 15362],
+        ["synthesis/WORK-ENVIRONMENT-VERTICAL-SYNTHESIS.md", "39da9399d6328a71904e24fdab7e718dcceb43eb", 25599]
+      ],
+      "frontier": []
+    },
+    {
+      "prefix": "01_verticals/work",
+      "git_tree": "3b5356b5a9e011ead5f2b1b047c210cf19184afa",
+      "recursive_inventory_complete": true,
+      "files": 17,
+      "api_bytes": 122069,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/3b5356b5a9e011ead5f2b1b047c210cf19184afa?recursive=1",
+      "leaves": [
+        ["CURRENT-REVISION.md", "17fba33a86aa82c8fdf3ef41d38e6308cc4c7b77", 3527],
+        ["DEFERRED-RELATIONS.md", "28b6d8583a6425871f9503733a06a55bf4a5ceca", 3990],
+        ["DOCUMENT-STATUS.md", "e1f24612c95438c4294192fb18529c8b19ba3318", 4104],
+        ["FINDINGS-MAP.md", "624e53ad4f6dc3cc6806898bf95f023d616b0999", 4765],
+        ["INDEX.md", "a1d266b2d26f397483ebc3dd61dc4d487f38c833", 5654],
+        ["KEY.md", "89b26785d4828605bc61ac1f6a5d16c45abddef2", 3426],
+        ["OPEN-QUESTIONS.md", "1e14f4907c6c2c9c9b9ca17b3ae33797d907dd7a", 3395],
+        ["README.md", "e5a6442a7da8281f7a24cc6fe54fbda53f6a8e85", 2818],
+        ["STATE.md", "1ac22035b6172059cd606435e7f536a744cf7fc4", 3663],
+        ["evidence/SOURCE-LEDGER.md", "7970f0c1e97b1544a2c1c568eb865358134bd551", 16724],
+        ["findings/CONTROL-STATE-CLOSURE-AND-RECOVERY.md", "8dd706301c5b4bc1bd7d6d02a7df5512e14a7e49", 11049],
+        ["findings/COORDINATION-FLOW-AND-SITUATEDNESS.md", "7ae84b61d980068d8522a33bbecb59c3ac7b5ff0", 8622],
+        ["findings/INTAKE-SELECTION-COMMITMENT-AND-PRIORITY.md", "0201c31111716b1dac2ccfb8782b1fcea0822f38", 7620],
+        ["findings/WORK-FRAMES-AND-UNITS.md", "592fccfb1633c37425890a883f52cf8606258f45", 7416],
+        ["orientation/RESEARCH-ORIENTATION.md", "b49a2e78f794dcd79b3f28960994d043e00e3634", 6750],
+        ["synthesis/COMPLETENESS-OMISSION-CHECK.md", "b335f54caa93955c8073099babc9c331d5ebd43d", 12170],
+        ["synthesis/WORK-VERTICAL-SYNTHESIS.md", "58fb887139fa84adf6eb522569c593e320b51684", 16376]
+      ],
+      "frontier": []
+    },
+    {
+      "prefix": "02_adequacy",
+      "git_tree": "b2e1b9894ee3dbbfe09e9d759eb28149f8c33627",
+      "recursive_inventory_complete": true,
+      "files": 22,
+      "api_bytes": 216148,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/b2e1b9894ee3dbbfe09e9d759eb28149f8c33627?recursive=1",
+      "leaves": [
+        ["CURRENT-SURFACES.md", "430fc3c212d3d19b9ee6659cb6e7a3efe97a4c50", 4702],
+        ["FINDINGS-MAP.md", "674b40fdb911285dac8144e0e919e6c7c91e21b7", 4308],
+        ["INDEX.md", "6eb206c85b1c9e92d75901c4533975a92f2185ff", 4954],
+        ["KEY.md", "dd7ce2b615b520b6fa8e844fd5b790f70b3aad12", 4254],
+        ["OPEN-QUESTIONS.md", "0d5d04380cfc4962c4a3ad7b689537fc545ea02f", 4572],
+        ["README.md", "c95c60d9cafdf189895e5c300f9f52e188490692", 2933],
+        ["STATE.md", "0d83ef188dbba7a75bc6c2b237d66d6a87e9d1f3", 6914],
+        ["evidence/ENVIRONMENT-HIERARCHY-SOURCES.md", "8c3c42feb7143aeffcc4091bbbcd14ec0f9c3082", 12430],
+        ["evidence/SOURCE-LEDGER.md", "17d2cb4f4168561fa0b644e3fa79cab2d41a77e7", 16461],
+        ["findings/01-internal-problem-inventory.md", "e1525a99b20baf77ff66248b6005c5a45569eeee", 12842],
+        ["findings/02-four-foundation-mapping.md", "546ed1b10977fe4c3c49e776bbc29c9edc112d71", 13993],
+        ["findings/03-rival-and-missing-region-challenge.md", "4e4958e2db3eff6acb8b2ec4ea491cbb75280f56", 12867],
+        ["findings/04-external-holdouts.md", "215310ebb1e07fdcda3f7d1931daad38e624233e", 12648],
+        ["findings/05-information-representation-boundary.md", "3b150d5f527855dbb075c36be596fb9743d729cd", 9610],
+        ["findings/06-soul-vs-development-os-adequacy.md", "83dc333d57a023344a829fd3c120a050b9402ab7", 8826],
+        ["findings/07-corrected-ground-omission-challenge.md", "728942048cdf769d66de052af3eea58b23bc6e0f", 12974],
+        ["findings/08-environment-parent-hierarchy.md", "e9d6c61cb69e7631b3efe48e454b44b279258d0e", 15533],
+        ["findings/09-environment-parent-boundary-leak-check.md", "069d91c67800f32c77dcb8f9a833440a0ab68264", 10483],
+        ["findings/10-agent-control-counterframe.md", "668d6a46af7ccb2670042de302f05343b86fc76c", 3695],
+        ["synthesis/ADEQUACY-SYNTHESIS.md", "8603f4d15ba013aa2cfee8f367b53a9546c49b74", 19555],
+        ["synthesis/COMPLETENESS-OMISSION-CHECK.md", "9efdd38c2f13fdd41f6ea493cf51504f85a661f6", 11665],
+        ["synthesis/ENVIRONMENT-HIERARCHY-REFINEMENT-CHECK.md", "223daa500c337c7f2690ef442b8699ae1a446dfc", 9929]
+      ],
+      "frontier": []
+    },
+    {
+      "prefix": "03_ground-deepening",
+      "git_tree": "5fb5eadaf698907c136501dfd4ae11718fe1d311",
+      "recursive_inventory_complete": false,
+      "files": 38,
+      "api_bytes": 244280,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/5fb5eadaf698907c136501dfd4ae11718fe1d311?recursive=1",
+      "leaves": [
+        ["CURRENT-SURFACES.md", "029e5547697bbc5a80b5262bc6a12abb91dcebc8", 3434],
+        ["HIERARCHICAL-DEEPENING-METHOD.md", "4d964c09a70ebe5f114d597f5413b41193ce650b", 7045],
+        ["INDEX.md", "27681c6cec6512f5ff1913d5c8e5ffe63a1d61c4", 1597],
+        ["PLAN.md", "dfe00d2ca4d43758c476f640332751c3af013725", 13312],
+        ["README.md", "b3c0e043673a689fb54193b38f250e80abcae55d", 3560],
+        ["STATE.md", "116f59297cf82f893b5e53e23892267307d6ea76", 1859],
+        ["grounds/actors/A0-EVIDENCE-RECOVERY.md", "09e164c848a481eb67374dfabad61e1614838d60", 8197],
+        ["grounds/actors/A1-FOUR-GROUND-BOUNDARY-COVERAGE.md", "ed69393d6ddcb417a1107aa4bb54e0e71c11b008", 10282],
+        ["grounds/actors/A2-FIRST-ORDER-GAP-TEST.md", "907bb9d093cf8ba0f351076ce00d75842a49e41b", 14115],
+        ["grounds/actors/A3-NEW-CANDIDATE-STUDY-HOLDOUTS.md", "f2a3ce9ab378344064dc39a15d22b93fa966367b", 10572],
+        ["grounds/actors/A4-EXTERNAL-HOLDOUT-DECISION.md", "7b8f8aee589b27a48928bec185946b2e353bd025", 2657],
+        ["grounds/actors/A5-ADVERSARIAL-RIVAL-REDUCTION-AUDIT.md", "8158852e0b0fa88f12296038b0beb89413c83342", 14264],
+        ["grounds/actors/A6-CLOSURE.md", "3d086190c19ece158bc562e0462c4161dca51764", 8520],
+        ["grounds/actors/AUDIT-PLAN.md", "de0a79a2d35630c98b8f97599b52cfa928ad312b", 6556],
+        ["grounds/actors/CURRENT-SURFACES.md", "bdc47144c4208ff26428a5dabf4e3282702520f7", 2896],
+        ["grounds/actors/DEFERRED-RELATIONS.md", "0512f97a5e1ff795ed9ad7dd645ccc5cfc05945c", 5375],
+        ["grounds/actors/FINDINGS-MAP.md", "d37b6b606dfac6530b31fbd2d399e9ce58fc007d", 6659],
+        ["grounds/actors/INDEX.md", "9c9d1576bd3afe3e84927bd72f844908726e2c5e", 3251],
+        ["grounds/actors/KEY.md", "e7167928c13fe9830e76f32daf79ee4470bbf6ec", 3835],
+        ["grounds/actors/OPEN-QUESTIONS.md", "33d6076597a31d49edab6d5940d8b95ba09b0b5e", 3595],
+        ["grounds/actors/STATE.md", "70698995ed89cdbbf0f10f77452ef52aa26d5284", 3288],
+        ["grounds/actors/synthesis/ACTORS-GROUND-AUDIT-SYNTHESIS.md", "28ae2efed0bc19255e2df678b30480450c60e572", 10045],
+        ["grounds/work/A0-EVIDENCE-RECOVERY.md", "7e8458ecef8f1b64a86c40edcb6423b5270fae76", 7506],
+        ["grounds/work/A1-FOUR-GROUND-BOUNDARY-COVERAGE.md", "62859f6f5931d3b49066254adb8e19119a8a0f2f", 10738],
+        ["grounds/work/A2-FIRST-ORDER-GAP-TEST.md", "28e476ad2c11e5ba0ec6ee27316832f6d85d5e74", 11332],
+        ["grounds/work/A3-NEW-CANDIDATE-STUDY-HOLDOUTS.md", "e699862a77a0712b9224309f9e460aecc38e9160", 9763],
+        ["grounds/work/A4-EXTERNAL-HOLDOUT-DECISION.md", "27386cf846add0fe8b2f5091fc6802d0c9751614", 1978],
+        ["grounds/work/A5-ADVERSARIAL-RIVAL-REDUCTION-AUDIT.md", "c1bdb1e6bb3fd385e02f315d63a3c07e61797e02", 11820],
+        ["grounds/work/A6-CLOSURE.md", "38207d7f47362d03c3ed1a865a0990c57f977379", 5941],
+        ["grounds/work/AUDIT-PLAN.md", "35e0783a459242c99acc8cb7d4141ad4012cf279", 6273],
+        ["grounds/work/CURRENT-SURFACES.md", "8ad664b6c7ea6886e6fc9ee8dfb6bab3c3c77a11", 3722],
+        ["grounds/work/DEFERRED-RELATIONS.md", "3149be2c8c83f326bfadec5d254ff0b5fbe17dad", 3596],
+        ["grounds/work/FINDINGS-MAP.md", "98f8ee2eb35bb05baf9601295b5e8a26b7a4b159", 5182],
+        ["grounds/work/INDEX.md", "881a29bb5046e85b50cd63a7198f3f198da1509e", 2954],
+        ["grounds/work/KEY.md", "2b9e0a9d06cf461a42c38643f7fdc5e7717ed2eb", 2539],
+        ["grounds/work/OPEN-QUESTIONS.md", "de07bb35b067543fe92e7a6904440257c2df9e2e", 2870],
+        ["grounds/work/STATE.md", "594ee63728cbe5e049769395d6dd61557c9962e5", 3555],
+        ["grounds/work/synthesis/WORK-GROUND-AUDIT-SYNTHESIS.md", "5967c60b7650c0493cfb21813ff894b678a54138", 9597]
+      ],
+      "frontier": [
+        [
+          "grounds/environment",
+          "0a3666bc4f96403d7ef3523fa0614004293fdcb9"
+        ],
+        [
+          "grounds/information",
+          "57e5859ade346c254e49172028909434af87a460"
+        ]
+      ]
+    }
+  ],
+  "remaining_foundation_frontier": [
+    [
+      "03_ground-deepening/grounds/environment",
+      "0a3666bc4f96403d7ef3523fa0614004293fdcb9"
+    ],
+    [
+      "03_ground-deepening/grounds/information",
+      "57e5859ade346c254e49172028909434af87a460"
+    ],
+    [
+      "04_top-level-adequacy-rerun",
+      "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a"
+    ],
+    [
+      "05_relation-control-composition",
+      "81e9db36f1b14d2248e99660350734c30d501d8d"
+    ],
+    [
+      "06_integration-frontier-review",
+      "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"
+    ],
+    [
+      "07_selection-dynamics-integration-review",
+      "c88b8399a330f56533c1ef1f452712e0cc2c72f2"
+    ],
+    [
+      "08_foundation-sufficiency-reuse-review",
+      "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"
+    ],
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "foundation_reconstructed_root": "0f9513f91bba76f1e52c955ddcb6270908c11939",
+    "foundation_explicit_files": 200,
+    "foundation_explicit_api_bytes": 1396067,
+    "expanded_foundation_directories": 32,
+    "complete_verticals_root": "4e2325dfd8f49454e8bf9cd8f63908e171c0c131",
+    "complete_verticals_files": 133,
+    "git_cli_hash_object_crosscheck": true,
+    "negative_controls": {
+      "foundation_leaf_omissions": 200,
+      "frontier_omissions": 8,
+      "path_or_blob_mutations": 2,
+      "all_detected": true
+    },
+    "whole_repository_root_recomputed": false,
+    "limits": "Same-author deterministic metadata verification. Git tree identity covers names/modes/blob identities, not API byte-size fields. No source truth, body/link/archive-content audit or independent reader behavior is established."
+  },
+  "coverage": {
+    "new_explicit_leaves": 173,
+    "composed_explicit_leaves": 702,
+    "foundation_explicit_leaves": 200,
+    "remaining_foundation_subtrees": 8,
+    "remaining_opaque_subtrees": 9,
+    "new_research_bodies_read": 0
+  },
+  "retrieval_limit": "The large 03_ground-deepening recursive metadata response was expanded to its end. Only its six root files and the complete actors/work blocks were persisted and verified in this slice. Environment and information remain opaque in the canonical inventory, not silently counted as completed.",
+  "next": "Continue A4 leaf inventory at research/soul-foundations/03_ground-deepening/grounds/environment, then information and the remaining Foundation frontier, then studies. A4 body/link and necessary archive-internal review and A5 remain open. A3 still has two blocked sources."
+}

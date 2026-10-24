@@ -1,0 +1,19 @@
+{
+  "kind": "U04_EXACT_EVIDENCE_TRANSFER_MANIFEST",
+  "archive": "diagnostic-evidence.tar.xz",
+  "bytes": 14308,
+  "sha256": "90228e3c0697b4461a6658865881196ca7b404f363fba06222489eb54cc497d7",
+  "git_blob": "89b1c87027f7e794133697ff07259474591affa4",
+  "members": [
+    {"path":"README.md","bytes":1766,"sha256":"63cbd8a6752329265a963e40667e7688f5645e3d13385157eafddd8e3680f405","git_blob":"b408784878460822c5acb7b67852b34bc49e802c"},
+    {"path":"INPUTS.json","bytes":591,"sha256":"e0bcbc6fe8b0d238b9c68bf79a32d3eaa6cb97dca3c74aee9c708b9e26ed9eeb","git_blob":"515f3c8c7f33ee992fa809a66e63e440be95326c"},
+    {"path":"probe.py","bytes":15041,"sha256":"c7e3f2c51d631c8ac6ef4eaf0ad7d980526bbb38e38e82f4ce4cd5e0fd4d2d1e","git_blob":"9cdfe4e3755113dabc5139aeca874ef7b69cc8dd"},
+    {"path":"source/heartbeat.py","bytes":11016,"sha256":"e5243d64f23cf3c9fcc3d669d6122650acd90bc756cfa119ecb59a3911461021","git_blob":"d3f440d9ed2035505b0bdfbe7d6d57dec926317f"},
+    {"path":"source/kanban_goal_selection.py","bytes":6904,"sha256":"8905267346ccb530a8eb6c85697f989b5f21a893db1d62eb651f533bdaf77827","git_blob":"b1bb33e8c13b7084c60ac41be4f3245cf2a56d31"},
+    {"path":"source/LICENSE.txt","bytes":1070,"sha256":"821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6","git_blob":"75410e73319c72cd3e991a501c5455eb78f38375"},
+    {"path":"evidence/RESULT.json","bytes":42549,"sha256":"ae5b94ce2e4c540ef72074e4e37bd3f20fe60615c8e126781615b1e08ce7ebf3","git_blob":"62870f5dc5f70e59ba63df9dd9732d1ad79b6da8"},
+    {"path":"evidence/stdout.txt","bytes":227,"sha256":"4b0d62c55603d8eae35f49cc832d47d7b43220f98f90efcd9d918b19487e67aa","git_blob":"b0a1dc40f5c59808871cb44f5f967f598e29a2f7"},
+    {"path":"evidence/stderr.txt","bytes":82,"sha256":"0a25abe2bf309aea4a0868eb1b2cb45bcc347630be9d4aed1b1fc9f8ae90ed15","git_blob":"9ea90c136af7f397b4114f780bbb995cacb25290"}
+  ],
+  "not_a_behavior_rerun": true
+}

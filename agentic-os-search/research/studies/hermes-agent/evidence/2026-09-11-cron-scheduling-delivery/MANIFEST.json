@@ -1,0 +1,311 @@
+{
+  "schema": "hermes-u07-evidence-manifest-v1",
+  "publication_status": "local delivery; not published to main",
+  "baseline_main": "d928ee14b16a277c010a966816fc2c4097944aab",
+  "primary_repository": "NousResearch/hermes-agent",
+  "primary_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "archive": {
+    "path": "diagnostic-evidence.tar.xz",
+    "bytes": 13912,
+    "sha256": "4fdf2481f64ef6b1ee1ac177f43f727958f7769cf976276266be71a570b9644b",
+    "git_blob_sha1": "b42a8116e38fa7fe2d58fff52476e7b347c7e191"
+  },
+  "archived_regular_files": [
+    {
+      "path": "diagnostic/HARNESS-REVISION.md",
+      "bytes": 692,
+      "sha256": "9ccc7839ff8599e80036f4f004ebfe01bfb6b510f22cb8b3d284de8166dc2b7e",
+      "git_blob_sha1": "49da404fede14fd649e43c3d6a1b7feeafe1d6fd"
+    },
+    {
+      "path": "diagnostic/PRE-RUN-INPUTS.json",
+      "bytes": 352,
+      "sha256": "8bfc1bae67c30aa12ec4889357bc087b96fe3f3c798ebb3448756fda4431afc6",
+      "git_blob_sha1": "dd07d8c42adda31f67385ece3e4b8504186a53c9"
+    },
+    {
+      "path": "diagnostic/RESULT.json",
+      "bytes": 18713,
+      "sha256": "c53f850cceaad5e84eb800ce88b02c9a4eb227a00d82ee1714aecaefe7b51719",
+      "git_blob_sha1": "bcf896971c559fb21fa4453e1a6be0d500e3b330"
+    },
+    {
+      "path": "diagnostic/SPEC.md",
+      "bytes": 4241,
+      "sha256": "13f39fd036f6ee2c96916b0d29b3a4ac2abee0529191c05ffaecceadcdc1bebe",
+      "git_blob_sha1": "9ad48c81732becdf9a009781e2dd1f8f8db889e7"
+    },
+    {
+      "path": "diagnostic/attempt-00/PRE-RUN-INPUTS.json",
+      "bytes": 352,
+      "sha256": "f29512fd5297f426f8616d74354df4f4011cd4474cb72e2470cf344cd7429a38",
+      "git_blob_sha1": "5548ba7c187a72a5f1d59193f4aa1396a07012e8"
+    },
+    {
+      "path": "diagnostic/attempt-00/probe.py",
+      "bytes": 12619,
+      "sha256": "6907e20986fb4d0810be6779a66ba523b3c9cfefe236e7d9dfeef6448ba5ae24",
+      "git_blob_sha1": "a94e1a3b9bf92b1819e24ba4527cf744739a10a0"
+    },
+    {
+      "path": "diagnostic/attempt-00/stderr.txt",
+      "bytes": 2726,
+      "sha256": "c8e7ece221cd88ac3a9864d4fe4f6448de4585a0de5c68f51a68a0ff395be5c9",
+      "git_blob_sha1": "16c59aff82211f075e2394523bb9c3abf5cb3888"
+    },
+    {
+      "path": "diagnostic/attempt-00/stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "diagnostic/probe.py",
+      "bytes": 12616,
+      "sha256": "fed4ebffda6f15126b13721ba5d6d43fccdbd18e7d141d8c4c8612aef0075bf1",
+      "git_blob_sha1": "d2b6e96a349213397eb64427dce85bd94178f92f"
+    },
+    {
+      "path": "diagnostic/raw/D01.db",
+      "bytes": 20480,
+      "sha256": "f3a5ff9af8337504a63314a8bee07bbc9819debe8c17bb094856ec39299cb288",
+      "git_blob_sha1": "b79c2673988e8e118b2eccfd6932c8346f81859b"
+    },
+    {
+      "path": "diagnostic/raw/D02.db",
+      "bytes": 20480,
+      "sha256": "3cb0e068fcb9575c5518873411132a19f1a63f02dbc543dc26a4a7450929d5df",
+      "git_blob_sha1": "2b041612af467c99c88f62b95026a8361b567cc9"
+    },
+    {
+      "path": "diagnostic/raw/D03.db",
+      "bytes": 20480,
+      "sha256": "5af39dba6222f0a302aea9529965e50dd9add65c081fbba1f4877f0819c5df73",
+      "git_blob_sha1": "de845ea852bfdc8f8fd1e2850d26d863e85a98ec"
+    },
+    {
+      "path": "diagnostic/raw/D04.db",
+      "bytes": 20480,
+      "sha256": "f9d9d0662f174823da6fc19f78fb982febecc9c7747d2889467d5ed49a4f2783",
+      "git_blob_sha1": "815d2a9ec97a3cb773ca6081facee2e9bf8dc1f3"
+    },
+    {
+      "path": "diagnostic/raw/D05.db",
+      "bytes": 20480,
+      "sha256": "2a6030a522e121c1c8ae5f6bc2d2ad7e0ae54686d2d4d8cd2b31564f1c97d9cb",
+      "git_blob_sha1": "c682e2e9d395141060e55d0b63e49e6a5f2ca08d"
+    },
+    {
+      "path": "diagnostic/raw/D06.db",
+      "bytes": 20480,
+      "sha256": "278785034cb1a07d6414cbb6cd68e778db4fed2d0e0404d5c38820e266077d28",
+      "git_blob_sha1": "abe9332ca723447e6f6129dd9b319333c10db01b"
+    },
+    {
+      "path": "diagnostic/raw/N01.db",
+      "bytes": 20480,
+      "sha256": "a59c6d75842d80631d6cab125f941beaac2c24ac17bc1dbac3c0ebbbff4c00c7",
+      "git_blob_sha1": "3c93c0a524eedf2d848e985b57bce56bce35a611"
+    },
+    {
+      "path": "diagnostic/raw/N02.db",
+      "bytes": 20480,
+      "sha256": "414fb4753ef69b41f11059b2f965b8aa4f2b58a9747402da6cd01e2f0fdfac53",
+      "git_blob_sha1": "b66beec229d0a3f78963321a05541df288fdfc3b"
+    },
+    {
+      "path": "diagnostic/source/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob_sha1": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "diagnostic/source/N01_mutant.py",
+      "bytes": 13879,
+      "sha256": "3fff4f63b6d65902d9905ec71e1e856726b43faa11cc188139a94033b0d27e92",
+      "git_blob_sha1": "2dcdc15a2a0b785e4830747d96e87cfb8d3053b5"
+    },
+    {
+      "path": "diagnostic/source/N02_mutant.py",
+      "bytes": 13813,
+      "sha256": "859684e61135a1238537c68c17783c8ccee41cff1901958472b6f5230ab4c7ee",
+      "git_blob_sha1": "19da0ccc427a000a1d129ec22055309e33082f86"
+    },
+    {
+      "path": "diagnostic/source/delivery_queue.py",
+      "bytes": 13837,
+      "sha256": "62529e31774f414f9cda886505f0db7f291d13f566cc06982c11cba1da005c4b",
+      "git_blob_sha1": "689fd620d6193003bbd168a0e62770a0d0306ac6"
+    },
+    {
+      "path": "diagnostic/source/identity_bad.py",
+      "bytes": 13866,
+      "sha256": "ba24e5f868725fc71fe6ea284ecdb3f591a85bf609f03682a4497ede9b08a877",
+      "git_blob_sha1": "2268cb61659648072c7afa06eb7eee67b51767a3"
+    },
+    {
+      "path": "diagnostic/stderr.txt",
+      "bytes": 256,
+      "sha256": "15789b3bba3e815d18548740c894b8e18550f689cda765575428846f0b6d4ff5",
+      "git_blob_sha1": "304e143dd7b4c59d9dc7fb7c8e3f8802aec3db7f"
+    },
+    {
+      "path": "diagnostic/stdout.txt",
+      "bytes": 460,
+      "sha256": "bee42475bac44c925c7b3ade737574447a28390375b1efc5595a34d70adbaa17",
+      "git_blob_sha1": "0bd7ed4a09ebd4931e6192f915aea7e53ec6956f"
+    }
+  ],
+  "excluded_generated_files": [
+    {
+      "path": "raw/D01.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D01.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D02.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D02.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D03.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D03.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D04.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D04.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D05.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D05.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D06.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/D06.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/N01.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/N01.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/N02.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "git_blob_sha1": "fe9ac2845eca6fe6da8a63cd096d9cf9e24ece10",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "raw/N02.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "reason": "post-read SQLite auxiliary bookkeeping; WAL empty; main DB immutable integrity validated"
+    },
+    {
+      "path": "source/__pycache__/N01_mutant.cpython-313.pyc",
+      "bytes": 17599,
+      "sha256": "dcd602071f46d2da4c08cb0981042a57832062f05201d6c82e0b952c286e4b5b",
+      "git_blob_sha1": "4a0a5f63ae26f60aac9be103685884fd2ea7a146",
+      "reason": "generated Python bytecode"
+    },
+    {
+      "path": "source/__pycache__/N02_mutant.cpython-313.pyc",
+      "bytes": 17530,
+      "sha256": "da25c38e078f71a4235e580c3086f466be3809a97bb8ecd65135931237d42562",
+      "git_blob_sha1": "aa4bd96c34bfb2aba1166cc42f801347afcd6dbe",
+      "reason": "generated Python bytecode"
+    },
+    {
+      "path": "source/__pycache__/delivery_queue.cpython-313.pyc",
+      "bytes": 17558,
+      "sha256": "2f123d6b7046a1a97ac25316080c1494f5a803d905e8f567abe2c0664c91c18a",
+      "git_blob_sha1": "dd1a7fc05aa03997884eb07919c29a32d43739d8",
+      "reason": "generated Python bytecode"
+    }
+  ],
+  "original_source": {
+    "bytes": 13837,
+    "sha256": "62529e31774f414f9cda886505f0db7f291d13f566cc06982c11cba1da005c4b",
+    "git_blob_sha1": "689fd620d6193003bbd168a0e62770a0d0306ac6"
+  },
+  "recorded_result": {
+    "started_at_utc": "2026-09-11T14:22:57.364884+00:00",
+    "ended_at_utc": "2026-09-11T14:22:57.404381+00:00",
+    "bytes": 18713,
+    "sha256": "c53f850cceaad5e84eb800ce88b02c9a4eb227a00d82ee1714aecaefe7b51719",
+    "git_blob_sha1": "bcf896971c559fb21fa4453e1a6be0d500e3b330"
+  },
+  "native_exact_copies": [
+    "SPEC.md",
+    "RESULT.json"
+  ],
+  "scope": "Only full queue module with real temp SQLite and explicit seams. No actual SessionDB/Gateway/network/OS restart/model, no repeated old evidence."
+}

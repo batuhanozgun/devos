@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "ccb8f2ecb36a243dcced2b1b203b8cfbe224872c",
+  "snapshot_root_tree": "be65636549f51fbd2667ee9fcbc7e6c58516d7a9",
+  "scope": "PARTIAL repository inventory: 1408 explicit paths by pinned composition. 07_selection-dynamics-integration-review complete with 14 files. Foundation has 892 explicit files and 2 opaque subtrees; studies remains opaque. Metadata only.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-INTEGRATION-FRONTIER-INVENTORY.json",
+    "ref": "ccb8f2ecb36a243dcced2b1b203b8cfbe224872c",
+    "git_blob": "3801d922061cd3c94d5b820ab928b5c2a8ea744a",
+    "composed_explicit_leaves": 1392
+  },
+  "composition": [
+    "Recover the pinned prior inventory and published ccb8f2e maintenance delta.",
+    "Replace the 07_selection-dynamics-integration-review frontier by its 14 leaves.",
+    "Retain the two remaining Foundation frontiers and studies.",
+    "Repository composition is 1392 + 2 prior-publication maintenance files + 14 = 1408 explicit paths; Foundation is 878 + 14 = 892.",
+    "This is metadata coverage, not research-body review or whole-repository file count."
+  ],
+  "block": {
+    "prefix": "research/soul-foundations/07_selection-dynamics-integration-review",
+    "git_tree": "c88b8399a330f56533c1ef1f452712e0cc2c72f2",
+    "source_url": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/c88b8399a330f56533c1ef1f452712e0cc2c72f2?recursive=1",
+    "source_truncated": false,
+    "recursive_inventory_complete": true,
+    "files": 14,
+    "api_bytes": 85504,
+    "file_types": {
+      ".md": 12,
+      ".json": 1,
+      ".py": 1
+    },
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          [
+            "COMPLETION-DEPTH.md",
+            "a725caa4abbcb4d40e79c6162b93ae027ae9c52b",
+            10278
+          ],
+          [
+            "CURRENT-SURFACES.md",
+            "3d25d23a94934ade02a4263e4095f9b4f9b2f708",
+            2131
+          ],
+          [
+            "INDEX.md",
+            "fad1484e79b7588e51436a50fcaa75054d3fcf64",
+            2371
+          ],
+          [
+            "NEXT-RESEARCH-HANDOFF.md",
+            "3e756188a448f2bcf622b35e532e21d55c37973e",
+            3465
+          ],
+          [
+            "PLAN.md",
+            "d39eef7af5d063989fd5c1eb50236fd556e3e9ef",
+            9045
+          ],
+          [
+            "PUBLICATION.md",
+            "55d552963c1427cb0f042f9a3c1b470fe241d0c9",
+            7581
+          ],
+          [
+            "RIVAL-AND-BOUNDARY-REVIEW.md",
+            "3bd34ad0379daca87542277c5a6e0500e8a35e3a",
+            8797
+          ],
+          [
+            "SOURCE-LEDGER.md",
+            "26617c39cf4b13e8192a8a470e37df6c624c6e10",
+            6466
+          ],
+          [
+            "STATE.md",
+            "d0c64a5f3f1b1e2b1fe9ee5fafb2d78ceff057b3",
+            3317
+          ],
+          [
+            "SYNTHESIS.md",
+            "c2b1138ee898d9be8c829c5aa0f160c86eb58aba",
+            14151
+          ]
+        ]
+      },
+      {
+        "directory": "checks",
+        "leaves": [
+          [
+            "EXECUTION.md",
+            "e5f0ee17ba066bd26224d0d63459771a661c9c49",
+            3302
+          ],
+          [
+            "integration_checks.py",
+            "9d1f8078f0233600f195f0aa92a36b4ec61c3178",
+            7081
+          ],
+          [
+            "RESULT.json",
+            "c98d30d6fabcde14383a083de011a3d7a9f4f7b7",
+            3995
+          ],
+          [
+            "SPEC.md",
+            "62b098090b24d810bc82b910bae37b5eafbe78c5",
+            3524
+          ]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [
+    [
+      "08_foundation-sufficiency-reuse-review",
+      "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"
+    ],
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "source_root": "c88b8399a330f56533c1ef1f452712e0cc2c72f2",
+    "reconstructed_root": "c88b8399a330f56533c1ef1f452712e0cc2c72f2",
+    "root_direct_entries": 11,
+    "root_omission_control_detected": true,
+    "root_blob_mutation_detected": true,
+    "recursive_source_truncated": false,
+    "new_files": 14,
+    "new_api_bytes": 85504,
+    "file_types": {
+      ".md": 12,
+      ".json": 1,
+      ".py": 1
+    },
+    "foundation_paths_by_composition": 892,
+    "repository_paths_by_composition": 1408,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "verification_limits": [
+    "Git tree reconstruction and root-level negative controls are same-author deterministic metadata checks, not independent content verification.",
+    "Research-body truth, status semantics, links, archive contents, historical scripts and reader behavior were not reviewed in this inventory slice."
+  ],
+  "next": "Continue A4 path inventory at research/soul-foundations/08_foundation-sufficiency-reuse-review, then history and studies. Content/link/archive-internal review, A5 and two A3 access gaps remain open."
+}

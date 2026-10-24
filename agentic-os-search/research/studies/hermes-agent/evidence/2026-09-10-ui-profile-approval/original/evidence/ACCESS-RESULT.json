@@ -1,0 +1,118 @@
+{
+  "kind": "BOUNDED_FULL_MODULE_POLICY_DIAGNOSTIC_NOT_GATEWAY_VALIDATION",
+  "checked_at_utc": "2026-09-10T05:40:37.183963+00:00",
+  "python": "3.13.5",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "source_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "source_path": "gateway/slash_access.py",
+  "source_git_blob": "07204201e411f29f912bb9bba6beec0566acab9d",
+  "source_sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1",
+  "source_bytes": 5666,
+  "negative_identity_rejected_before_import": true,
+  "cases": [
+    {
+      "id": "AP01",
+      "label": "No admins disables slash gate",
+      "observed": [
+        false,
+        true,
+        true
+      ],
+      "expected": [
+        false,
+        true,
+        true
+      ],
+      "matched": true
+    },
+    {
+      "id": "AP02",
+      "label": "Explicit administrator and discovery floor",
+      "observed": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "matched": true
+    },
+    {
+      "id": "AP03",
+      "label": "Canonical name grants, not verb permissions",
+      "observed": [
+        true,
+        false,
+        false
+      ],
+      "expected": [
+        true,
+        false,
+        false
+      ],
+      "matched": true
+    },
+    {
+      "id": "AP04",
+      "label": "Separate administrator scopes",
+      "observed": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "expected": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "matched": true
+    },
+    {
+      "id": "AP05",
+      "label": "DM command fallback without admin fallback",
+      "observed": [
+        true,
+        false,
+        false
+      ],
+      "expected": [
+        true,
+        false,
+        false
+      ],
+      "matched": true
+    },
+    {
+      "id": "AP06",
+      "label": "Missing principal and missing policy are distinct",
+      "observed": [
+        false,
+        true,
+        false
+      ],
+      "expected": [
+        false,
+        true,
+        false
+      ],
+      "matched": true
+    }
+  ],
+  "all_diagnostic_expectations_matched": true,
+  "synthetic": "Config, source and user-id values only; no application or external service",
+  "not_executed": [
+    "actual gateway ingress and dispatch",
+    "CLI and gateway pending handlers",
+    "profile routing and credentials",
+    "MemoryStore writes",
+    "cache reload or model request"
+  ],
+  "prior_probes_rerun": false
+}

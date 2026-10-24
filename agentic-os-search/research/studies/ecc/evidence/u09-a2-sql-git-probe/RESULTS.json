@@ -1,0 +1,267 @@
+{
+  "experiment": "E07",
+  "plan_commit": "b61879501ed5124acf4487b27c6a1916773b858b",
+  "scope": "source-derived SQL/Git fixture; no ECC Rust, model or live host",
+  "python": "3.13.5",
+  "sqlite": "3.46.1",
+  "platform": "Linux",
+  "cases": {
+    "C01": {
+      "count": 1000,
+      "first": "line-0003",
+      "last": "line-1002",
+      "match": true
+    },
+    "C02": {
+      "autocommit": {
+        "error": "E07 injected prune failure",
+        "rows_after_reopen": [
+          "seed",
+          "new"
+        ]
+      },
+      "transaction": {
+        "error": "E07 injected prune failure",
+        "rows_after_reopen": [
+          "seed"
+        ]
+      }
+    },
+    "C03": {
+      "earlier_state": "pending",
+      "id_only_rows": 1,
+      "id_only_final": "running",
+      "expected_state_rows": 0,
+      "expected_state_final": "stopped"
+    },
+    "C04": {
+      "registered_before": true,
+      "absent_after_cleanup_before_log": true,
+      "path_recreated": true,
+      "registered_after": false,
+      "git_identity_exit": 128,
+      "removed_marker_exists": false,
+      "retained_control_registered": true,
+      "retained_control_marker": "synthetic retained-work marker",
+      "retained_control_git_identity": true
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "--version"
+      ],
+      "code": 0,
+      "stdout": "git version 2.47.3\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "init",
+        "--template=",
+        "-b",
+        "main"
+      ],
+      "code": 0,
+      "stdout": "Initialized empty Git repository in $TMP/repo/.git/\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "config",
+        "user.name",
+        "E07 Fixture"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "config",
+        "user.email",
+        "fixture@example.invalid"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "add",
+        "tracked.txt"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "commit",
+        "-m",
+        "synthetic base"
+      ],
+      "code": 0,
+      "stdout": "[main (root-commit) 5b17395] synthetic base\n 1 file changed, 1 insertion(+)\n create mode 100644 tracked.txt\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "worktree",
+        "add",
+        "-b",
+        "ecc/keep",
+        "$TMP/keep",
+        "HEAD"
+      ],
+      "code": 0,
+      "stdout": "HEAD is now at 5b17395 synthetic base\n",
+      "stderr": "Preparing worktree (new branch 'ecc/keep')\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "worktree",
+        "add",
+        "-b",
+        "ecc/cleaned",
+        "$TMP/cleaned",
+        "HEAD"
+      ],
+      "code": 0,
+      "stdout": "HEAD is now at 5b17395 synthetic base\n",
+      "stderr": "Preparing worktree (new branch 'ecc/cleaned')\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "code": 0,
+      "stdout": "worktree $TMP/repo\nHEAD 5b173954817cc06b0fc96942981517ab940bffcf\nbranch refs/heads/main\n\nworktree $TMP/cleaned\nHEAD 5b173954817cc06b0fc96942981517ab940bffcf\nbranch refs/heads/ecc/cleaned\n\nworktree $TMP/keep\nHEAD 5b173954817cc06b0fc96942981517ab940bffcf\nbranch refs/heads/ecc/keep\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "worktree",
+        "remove",
+        "--force",
+        "$TMP/cleaned"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "branch",
+        "-D",
+        "ecc/cleaned"
+      ],
+      "code": 0,
+      "stdout": "Deleted branch ecc/cleaned (was 5b17395).\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/repo",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "code": 0,
+      "stdout": "worktree $TMP/repo\nHEAD 5b173954817cc06b0fc96942981517ab940bffcf\nbranch refs/heads/main\n\nworktree $TMP/keep\nHEAD 5b173954817cc06b0fc96942981517ab940bffcf\nbranch refs/heads/ecc/keep\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/cleaned",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "code": 128,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any of the parent directories): .git\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-C",
+        "$TMP/keep",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "code": 0,
+      "stdout": "$TMP/keep\n",
+      "stderr": ""
+    }
+  ],
+  "git": "git version 2.47.3",
+  "all_planned_discriminators_observed": true,
+  "runner_sha256": "172731836fb21273f5d48ecdbb0f2fac3ba41f8618e8a895a595ac1bf9db3391"
+}

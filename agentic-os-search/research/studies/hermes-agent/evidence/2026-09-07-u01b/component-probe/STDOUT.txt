@@ -1,0 +1,6 @@
+{
+  "output": "/mnt/data/hermes_research_work/probe/RESULT.json",
+  "diagnostic_cases": 10,
+  "expected_outcomes_observed": true,
+  "is_upstream_suite_pass": false
+}

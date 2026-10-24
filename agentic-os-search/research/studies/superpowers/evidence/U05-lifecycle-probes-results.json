@@ -1,0 +1,375 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "source_identity": {
+    "sdd_workspace_blob": "4e2d16802ecaa23eb9a682663e4c356c4aa5a656",
+    "bytes": 1586,
+    "verified": true,
+    "finishing_skill_blob_observed_through_connector": "fa8aecaf8813f1b19d19996f7957d1b0121f2d9c"
+  },
+  "environment": {
+    "os": "Linux",
+    "python": "3.13.5",
+    "git": "git version 2.47.3",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "scope": "Exact S32 plus selected Git primitives in synthetic repos. Not full S55 execution, actual human choice, live host, remote service, forge PR or upstream suite.",
+  "criteria": "Fixed before this run after source inspection. Retention challenge tests a stronger inference, not an asserted upstream archival guarantee.",
+  "cases": [
+    {
+      "id": "green_merge_then_cleanup",
+      "kind": "mechanism",
+      "criterion": "Green merged fixture retains feature commit after worktree then branch removal",
+      "result": "PASS",
+      "observed": {
+        "feature_commit_in_main": true,
+        "branch_absent": true,
+        "worktree_absent": true
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/clean-merge/.worktrees/feature",
+          "argv": [
+            "/opt/pyvenv/bin/python",
+            "-c",
+            "from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/clean-merge",
+          "argv": [
+            "git",
+            "merge",
+            "feature"
+          ],
+          "exit": 0,
+          "stdout": "Updating b3b7f66..b15e09c\nFast-forward\n a.txt | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/clean-merge",
+          "argv": [
+            "/opt/pyvenv/bin/python",
+            "-c",
+            "from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/clean-merge",
+          "argv": [
+            "git",
+            "worktree",
+            "remove",
+            "<TMP>/clean-merge/.worktrees/feature"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/clean-merge",
+          "argv": [
+            "git",
+            "branch",
+            "-d",
+            "feature"
+          ],
+          "exit": 0,
+          "stdout": "Deleted branch feature (was b15e09c).\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "id": "green_inputs_red_merged_result",
+      "kind": "integration-observation",
+      "criterion": "Both inputs pass but clean merge fails the synthetic combined-behavior test",
+      "result": "PASS",
+      "observed": {
+        "feature_test_exit": 0,
+        "base_test_exit": 0,
+        "merge_exit": 0,
+        "merged_test_exit": 1,
+        "worktree_retained_by_fixture": true,
+        "cleanup_attempted": false
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/combined-test/.worktrees/feature",
+          "argv": [
+            "/opt/pyvenv/bin/python",
+            "-c",
+            "from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/combined-test",
+          "argv": [
+            "/opt/pyvenv/bin/python",
+            "-c",
+            "from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/combined-test",
+          "argv": [
+            "git",
+            "merge",
+            "--no-edit",
+            "feature"
+          ],
+          "exit": 0,
+          "stdout": "Merge made by the 'ort' strategy.\n a.txt | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/combined-test",
+          "argv": [
+            "/opt/pyvenv/bin/python",
+            "-c",
+            "from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'"
+          ],
+          "exit": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    from pathlib import Path; assert sum(int(Path(f).read_text()) for f in ('a.txt','b.txt')) <= 1, 'combined invariant violated'\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: combined invariant violated\n"
+        }
+      ]
+    },
+    {
+      "id": "untracked_note_blocks_removal",
+      "kind": "mechanism",
+      "criterion": "Non-ignored untracked evidence is visible and blocks ordinary removal",
+      "result": "PASS",
+      "observed": {
+        "visible_in_status": true,
+        "remove_exit": 128,
+        "note_preserved": true
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/untracked-note/.worktrees/feature",
+          "argv": [
+            "git",
+            "status",
+            "--porcelain",
+            "-uall"
+          ],
+          "exit": 0,
+          "stdout": "?? only-copy-note.txt\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/untracked-note",
+          "argv": [
+            "git",
+            "worktree",
+            "remove",
+            "<TMP>/untracked-note/.worktrees/feature"
+          ],
+          "exit": 128,
+          "stdout": "",
+          "stderr": "fatal: '<TMP>/untracked-note/.worktrees/feature' contains modified or untracked files, use --force to delete it\n"
+        }
+      ]
+    },
+    {
+      "id": "ignored_sdd_evidence_retention",
+      "kind": "retention-challenge",
+      "criterion": "Refusal-based removal protection also preserves only-copy ignored SDD evidence",
+      "result": "FAIL",
+      "observed": {
+        "existed_before": true,
+        "ignored": true,
+        "ordinary_status_empty": true,
+        "tracked_history_exists": false,
+        "remove_exit": 0,
+        "note_preserved": false,
+        "force_used": false,
+        "explicit_sdd_rm_used": false
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/ignored-evidence/.worktrees/feature",
+          "argv": [
+            "bash",
+            "<PINNED_S32>",
+            "plan.md"
+          ],
+          "exit": 0,
+          "stdout": "<TMP>/ignored-evidence/.worktrees/feature/.superpowers/sdd/plan\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/ignored-evidence/.worktrees/feature",
+          "argv": [
+            "git",
+            "check-ignore",
+            "-q",
+            "<TMP>/ignored-evidence/.worktrees/feature/.superpowers/sdd/plan/progress.md"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/ignored-evidence/.worktrees/feature",
+          "argv": [
+            "git",
+            "status",
+            "--porcelain",
+            "-uall"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/ignored-evidence",
+          "argv": [
+            "git",
+            "worktree",
+            "remove",
+            "<TMP>/ignored-evidence/.worktrees/feature"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "id": "preserved_worktree_blocks_branch_delete",
+      "kind": "lifecycle-observation",
+      "criterion": "Without a host-exit/detach step, merged branch deletion is refused while checked out",
+      "result": "PASS",
+      "observed": {
+        "branch_delete_exit": 1,
+        "branch_preserved": true,
+        "worktree_preserved": true,
+        "host_exit_invoked": false
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/external-owner",
+          "argv": [
+            "git",
+            "merge",
+            "feature"
+          ],
+          "exit": 0,
+          "stdout": "Updating 0ef4976..0416d05\nFast-forward\n a.txt | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/external-owner",
+          "argv": [
+            "git",
+            "branch",
+            "-d",
+            "feature"
+          ],
+          "exit": 1,
+          "stdout": "",
+          "stderr": "error: cannot delete branch 'feature' used by worktree at '<TMP>/external-owner-host-owned'\n"
+        }
+      ]
+    },
+    {
+      "id": "detached_push_to_local_only_remote",
+      "kind": "capability-observation",
+      "criterion": "Explicit HEAD refspec creates local-remote branch while local HEAD remains detached",
+      "result": "PASS",
+      "observed": {
+        "remote_ref_matches_commit": true,
+        "still_detached": true,
+        "worktree_preserved": true,
+        "remote_transport": "local filesystem only",
+        "forge_pr_created": false
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/detached-host-owned",
+          "argv": [
+            "git",
+            "push",
+            "origin",
+            "HEAD:refs/heads/review-fixture"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": "To <TMP>/local-origin.git\n * [new branch]      HEAD -> review-fixture\n"
+        },
+        {
+          "cwd": "<TMP>",
+          "argv": [
+            "git",
+            "--git-dir=<TMP>/local-origin.git",
+            "rev-parse",
+            "refs/heads/review-fixture"
+          ],
+          "exit": 0,
+          "stdout": "0a8e3c79202662ae58b8299b83c0f56070728b1c\n",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "id": "conflict_is_pending_state",
+      "kind": "failure-observation",
+      "criterion": "Conflicting merge fails with unmerged file and MERGE_HEAD, leaving feature worktree intact",
+      "result": "PASS",
+      "observed": {
+        "merge_exit": 1,
+        "unmerged_file": "a.txt",
+        "merge_head_present": true,
+        "feature_worktree_preserved": true,
+        "cleanup_attempted": false,
+        "rollback_performed": false
+      },
+      "trace": [
+        {
+          "cwd": "<TMP>/merge-conflict",
+          "argv": [
+            "git",
+            "merge",
+            "--no-edit",
+            "feature"
+          ],
+          "exit": 1,
+          "stdout": "Auto-merging a.txt\nCONFLICT (content): Merge conflict in a.txt\nAutomatic merge failed; fix conflicts and then commit the result.\n",
+          "stderr": ""
+        },
+        {
+          "cwd": "<TMP>/merge-conflict",
+          "argv": [
+            "git",
+            "diff",
+            "--name-only",
+            "--diff-filter=U"
+          ],
+          "exit": 0,
+          "stdout": "a.txt\n",
+          "stderr": ""
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "observations_matched": 6,
+    "retention_challenges_failed": 1,
+    "unexpected_observation_failures": 0
+  }
+}

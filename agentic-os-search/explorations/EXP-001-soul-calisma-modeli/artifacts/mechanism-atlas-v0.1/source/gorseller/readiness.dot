@@ -1,0 +1,26 @@
+digraph atlas {
+graph [rankdir=TB, bgcolor="transparent", pad="0.2", nodesep="0.40", ranksep="0.60", splines=polyline, overlap=false, outputorder=edgesfirst, fontname="DejaVu Sans"];
+node [shape=box, style="rounded,filled", color="#bac8d6", fillcolor="#ffffff", penwidth=1.4, fontname="DejaVu Sans", margin="0.20,0.13"];
+edge [fontname="DejaVu Sans", fontsize=10.5, arrowsize=0.65, penwidth=1.2];
+M05 [id="M05", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M05 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İş adaylarını keşfet</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q03, Q07</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M07 [id="M07", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M07 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İş hazır mı?</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q07</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M08 [id="M08", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M08 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Aktör hazır mı?</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q01, Q06</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M09 [id="M09", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M09 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Ortam hazır mı?</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q06, Q09</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M10 [id="M10", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M10 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Seç / kabul et</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q02, Q07, Q11</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M06 [id="M06", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M06 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Bilgi / karar bekle</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q02, Q11</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M11 [id="M11", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M11 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İşi yürüt</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q05, Q09</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+{rank=same; M05;}
+{rank=same; M07;M08;M09;}
+{rank=same; M10;}
+{rank=same; M06;M11;}
+M06 -> M11 [style=invis, weight=50, constraint=false];
+M05 -> M07 [id="E08", label="sınırlı iş adayı", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E08: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M07 -> M05 [id="E09", label="önkoşul / alt iş", color="#516ca2", fontcolor="#516ca2", style="dashed", constraint=false, tooltip="E09: İşin bir kısmı hazır değil; başlanabilir küçük bölüm veya bilgi edinme işi bulunabilir."];
+M07 -> M08 [id="E10", label="iş sözleşmesi", color="#287c74", fontcolor="#287c74", style="solid", constraint=false, tooltip="E10: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M08 -> M09 [id="E11", label="gerekli araç / kaynak", color="#287c74", fontcolor="#287c74", style="solid", constraint=false, tooltip="E11: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M09 -> M10 [id="E12", label="fiilî koşul gözlemi", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E12: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M07 -> M10 [id="E13", label="iş hazırlığı", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E13: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M08 -> M10 [id="E14", label="katılım hazırlığı", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E14: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M10 -> M06 [id="E15", label="karar / yetki eksik", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="E15: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M10 -> M11 [id="E16", label="sınırlı kabul", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="E16: İş, aktör, ortam, yetki ve seçim bakımından ilgili koşullar karşılandığında."];
+}

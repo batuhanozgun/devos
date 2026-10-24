@@ -1,0 +1,146 @@
+<svg role="img" aria-label="Kayıtların üretimi" width="787pt" height="407pt"
+ viewBox="0.00 0.00 787.30 406.80" xmlns="http://www.w3.org/2000/svg" >
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 392.4)">
+
+<!-- I01&#45;&gt;M03 -->
+<g id="svg-information-E56" class="edge t-context" data-edge="E56" tabindex="0" role="button" aria-label="E56 I01 → M03: kaynak talep">
+
+<g id="a_E56">
+<path fill="none" stroke="#80608b" stroke-width="1.2" stroke-dasharray="1,5" d="M170.97,-309.12C182.73,-313.16 191,-316 191,-316 191,-316 283.5,-340 283.5,-340 283.5,-340 352.5,-340 352.5,-340 352.5,-340 404.16,-323.93 453.11,-308.71"/>
+<polygon fill="#80608b" stroke="#80608b" stroke-width="1.2" points="453.84,-310.87 459.37,-306.77 452.48,-306.52 453.84,-310.87"/>
+
+</g>
+<text text-anchor="middle" x="318" y="-341.6" font-family="DejaVu Sans" font-size="10.50" fill="#80608b">kaynak talep</text>
+</g>
+<!-- I01&#45;&gt;M05 -->
+<!-- M03&#45;&gt;I02 -->
+<g id="svg-information-E49" class="edge t-data" data-edge="E49" tabindex="0" role="button" aria-label="E49 M03 → I02: C taslağı">
+
+<g id="a_E49">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M459.44,-282C437.74,-282 413.99,-282 391.45,-282"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="391.32,-279.73 384.82,-282 391.32,-284.28 391.32,-279.73"/>
+
+</g>
+<text text-anchor="middle" x="422" y="-288.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">C taslağı</text>
+</g>
+<!-- I02&#45;&gt;M05 -->
+<g id="svg-information-E57" class="edge t-context" data-edge="E57" tabindex="0" role="button" aria-label="E57 I02 → M05: mevcut amaç">
+
+<g id="a_E57">
+<path fill="none" stroke="#80608b" stroke-width="1.2" stroke-dasharray="1,5" d="M248.58,-254.95C223.25,-240.73 197,-226 197,-226 197,-226 173.96,-211.3 149.46,-195.66"/>
+<polygon fill="#80608b" stroke="#80608b" stroke-width="1.2" points="150.59,-193.69 143.88,-192.11 148.14,-197.52 150.59,-193.69"/>
+
+</g>
+<text text-anchor="middle" x="233.5" y="-217.6" font-family="DejaVu Sans" font-size="10.50" fill="#80608b">mevcut amaç</text>
+</g>
+<!-- M05&#45;&gt;I03 -->
+<g id="svg-information-E50" class="edge t-data" data-edge="E50" tabindex="0" role="button" aria-label="E50 M05 → I03: iş önerisi">
+
+<g id="a_E50">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M184.12,-187.27C193.12,-190.13 199,-192 199,-192 199,-192 277,-216 277,-216 277,-216 325,-216 325,-216 325,-216 357.3,-202.02 390.18,-187.79"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="391.25,-189.8 396.32,-185.13 389.45,-185.63 391.25,-189.8"/>
+
+</g>
+<text text-anchor="middle" x="301" y="-217.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">iş önerisi</text>
+</g>
+<!-- M05&#45;&gt;I10 -->
+<!-- I03&#45;&gt;M11 -->
+<!-- M11&#45;&gt;I10 -->
+<g id="svg-information-E52" class="edge t-data" data-edge="E52" tabindex="0" role="button" aria-label="E52 M11 → I10: çıktı üretir">
+
+<g id="a_E52">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M218.18,-123.99C192.13,-105.62 159.96,-82.92 134.61,-65.05"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="135.61,-62.97 128.99,-61.08 132.99,-66.69 135.61,-62.97"/>
+
+</g>
+<text text-anchor="middle" x="210" y="-93.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">çıktı üretir</text>
+</g>
+<!-- I10&#45;&gt;M14 -->
+<g id="svg-information-E58" class="edge t-data" data-edge="E58" tabindex="0" role="button" aria-label="E58 I10 → M14: incelenecek çıktı">
+
+<g id="a_E58">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M158.23,-34C191.4,-34 232.38,-34 269.81,-34"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="270.25,-36.28 276.75,-34 270.25,-31.73 270.25,-36.28"/>
+
+</g>
+<text text-anchor="middle" x="217.5" y="-40.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">incelenecek çıktı</text>
+</g>
+<!-- M14&#45;&gt;I04 -->
+<g id="svg-information-E51" class="edge t-data" data-edge="E51" tabindex="0" role="button" aria-label="E51 M14 → I04: bulgu / değerlendirme">
+
+<g id="a_E51">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M475.24,-34C520.94,-34 574.27,-34 616.47,-34"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="616.64,-36.28 623.14,-34 616.64,-31.73 616.64,-36.28"/>
+
+</g>
+<text text-anchor="middle" x="549.25" y="-40.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">bulgu / değerlendirme</text>
+</g>
+<!-- I01 -->
+<g id="svg-information-I01" class="node k-information" data-node="I01" tabindex="0" role="button" aria-label="I01 Özgün talep / A">
+
+<path fill="#edf5f3" stroke="#8db6ae" stroke-width="1.4" d="M164.5,-309C164.5,-309 19.5,-309 19.5,-309 13.5,-309 7.5,-303 7.5,-297 7.5,-297 7.5,-267 7.5,-267 7.5,-261 13.5,-255 19.5,-255 19.5,-255 164.5,-255 164.5,-255 170.5,-255 176.5,-261 176.5,-267 176.5,-267 176.5,-297 176.5,-297 176.5,-303 170.5,-309 164.5,-309"/>
+<text text-anchor="start" x="25" y="-289" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">I01 · BİLGİ</text>
+<text text-anchor="start" x="25" y="-271.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">A — kaynak talep</text>
+</g>
+<!-- M03 -->
+<g id="svg-information-M03" class="node k-operation" data-node="M03" tabindex="0" role="button" aria-label="M03 Mevcut anlayışı oluştur veya düzelt">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M606.5,-316C606.5,-316 471.5,-316 471.5,-316 465.5,-316 459.5,-310 459.5,-304 459.5,-304 459.5,-260 459.5,-260 459.5,-254 465.5,-248 471.5,-248 471.5,-248 606.5,-248 606.5,-248 612.5,-248 618.5,-254 618.5,-260 618.5,-260 618.5,-304 618.5,-304 618.5,-310 612.5,-316 606.5,-316"/>
+<text text-anchor="start" x="477" y="-296" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M03 · İŞLEM</text>
+<text text-anchor="start" x="477" y="-278.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">C’yi değerlendir</text>
+<text text-anchor="start" x="477" y="-262.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q02, Q03</text>
+</g>
+<!-- I02 -->
+<g id="svg-information-I02" class="node k-information" data-node="I02" tabindex="0" role="button" aria-label="I02 Mevcut anlayış / C">
+
+<path fill="#edf5f3" stroke="#8db6ae" stroke-width="1.4" d="M372.5,-309C372.5,-309 217.5,-309 217.5,-309 211.5,-309 205.5,-303 205.5,-297 205.5,-297 205.5,-267 205.5,-267 205.5,-261 211.5,-255 217.5,-255 217.5,-255 372.5,-255 372.5,-255 378.5,-255 384.5,-261 384.5,-267 384.5,-267 384.5,-297 384.5,-297 384.5,-303 378.5,-309 372.5,-309"/>
+<text text-anchor="start" x="223" y="-289" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">I02 · BİLGİ</text>
+<text text-anchor="start" x="223" y="-271.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">C — güncel anlayış</text>
+</g>
+<!-- M05 -->
+<g id="svg-information-M05" class="node k-operation" data-node="M05" tabindex="0" role="button" aria-label="M05 Gerekli koşulları ve iş adaylarını keşfet">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M172,-192C172,-192 12,-192 12,-192 6,-192 0,-186 0,-180 0,-180 0,-136 0,-136 0,-130 6,-124 12,-124 12,-124 172,-124 172,-124 178,-124 184,-130 184,-136 184,-136 184,-180 184,-180 184,-186 178,-192 172,-192"/>
+<text text-anchor="start" x="17" y="-172" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M05 · İŞLEM</text>
+<text text-anchor="start" x="17" y="-154.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İş adaylarını keşfet</text>
+<text text-anchor="start" x="17" y="-138.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q03, Q07</text>
+</g>
+<!-- I03 -->
+<g id="svg-information-I03" class="node k-information" data-node="I03" tabindex="0" role="button" aria-label="I03 İş ve bağımlılık görünümü">
+
+<path fill="#edf5f3" stroke="#8db6ae" stroke-width="1.4" d="M532,-185C532,-185 386,-185 386,-185 380,-185 374,-179 374,-173 374,-173 374,-143 374,-143 374,-137 380,-131 386,-131 386,-131 532,-131 532,-131 538,-131 544,-137 544,-143 544,-143 544,-173 544,-173 544,-179 538,-185 532,-185"/>
+<text text-anchor="start" x="391" y="-165" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">I03 · BİLGİ</text>
+<text text-anchor="start" x="391" y="-147.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">W — iş görünümü</text>
+</g>
+<!-- M11 -->
+<g id="svg-information-M11" class="node k-operation" data-node="M11" tabindex="0" role="button" aria-label="M11 Sınırlı işi yürüt">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M304.5,-192C304.5,-192 225.5,-192 225.5,-192 219.5,-192 213.5,-186 213.5,-180 213.5,-180 213.5,-136 213.5,-136 213.5,-130 219.5,-124 225.5,-124 225.5,-124 304.5,-124 304.5,-124 310.5,-124 316.5,-130 316.5,-136 316.5,-136 316.5,-180 316.5,-180 316.5,-186 310.5,-192 304.5,-192"/>
+<text text-anchor="start" x="231" y="-172" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M11 · İŞLEM</text>
+<text text-anchor="start" x="231" y="-154.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İşi yürüt</text>
+<text text-anchor="start" x="231" y="-138.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q05, Q09</text>
+</g>
+<!-- I10 -->
+<g id="svg-information-I10" class="node k-information" data-node="I10" tabindex="0" role="button" aria-label="I10 Üretilmiş çıktılar">
+
+<path fill="#edf5f3" stroke="#8db6ae" stroke-width="1.4" d="M146,-61C146,-61 38,-61 38,-61 32,-61 26,-55 26,-49 26,-49 26,-19 26,-19 26,-13 32,-7 38,-7 38,-7 146,-7 146,-7 152,-7 158,-13 158,-19 158,-19 158,-49 158,-49 158,-55 152,-61 146,-61"/>
+<text text-anchor="start" x="43" y="-41" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">I10 · BİLGİ</text>
+<text text-anchor="start" x="43" y="-23.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Çıktı / taslak</text>
+</g>
+<!-- M14 -->
+<g id="svg-information-M14" class="node k-operation" data-node="M14" tabindex="0" role="button" aria-label="M14 Çıktıyı ilgili iddiaya karşı değerlendir">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M463,-68C463,-68 289,-68 289,-68 283,-68 277,-62 277,-56 277,-56 277,-12 277,-12 277,-6 283,0 289,0 289,0 463,0 463,0 469,0 475,-6 475,-12 475,-12 475,-56 475,-56 475,-62 469,-68 463,-68"/>
+<text text-anchor="start" x="294" y="-48" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M14 · İŞLEM</text>
+<text text-anchor="start" x="294" y="-30.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İddia / kanıt kontrolü</text>
+<text text-anchor="start" x="294" y="-14.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q08</text>
+</g>
+<!-- I04 -->
+<g id="svg-information-I04" class="node k-information" data-node="I04" tabindex="0" role="button" aria-label="I04 Bulgu, öneri ve kararlar">
+
+<path fill="#edf5f3" stroke="#8db6ae" stroke-width="1.4" d="M746.5,-61C746.5,-61 635.5,-61 635.5,-61 629.5,-61 623.5,-55 623.5,-49 623.5,-49 623.5,-19 623.5,-19 623.5,-13 629.5,-7 635.5,-7 635.5,-7 746.5,-7 746.5,-7 752.5,-7 758.5,-13 758.5,-19 758.5,-19 758.5,-49 758.5,-49 758.5,-55 752.5,-61 746.5,-61"/>
+<text text-anchor="start" x="641" y="-41" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">I04 · BİLGİ</text>
+<text text-anchor="start" x="641" y="-23.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Bulgu / karar</text>
+</g>
+</g>
+</svg>

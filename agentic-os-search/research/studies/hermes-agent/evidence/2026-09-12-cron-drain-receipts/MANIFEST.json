@@ -1,0 +1,111 @@
+{
+  "unit": "U08",
+  "project_date": "2026-09-12",
+  "publication_status": "local candidate, not published to main; current authority is PUBLICATION.md",
+  "research_base_main": "188095b930ac77f8d2a5dd605191a09a369a57ce",
+  "primary_upstream_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "execution_scope": "full-byte-verified Hermes async bridge; no enclosing scheduler/gateway/network/SessionDB",
+  "recorded_run_utc": "2026-09-11T21:12:38.167078+00:00",
+  "recorded_result_sha256": "91833c4ae0b9f229a1c82f6edaa4a25bfc9b39ebc061c9e1811dbe32247dbfa0",
+  "input_hashes": {
+    "source_git_blob": "2bc558fad21eeec736c0283cb7df86304349f222",
+    "source_sha256": "9e2dc6964bd826c1cd0a5b756e2031761933d96da76fc4804064121925f04ee7",
+    "spec_sha256": "74ba37605b512ef273b66236628ac50f5382321fd3edcabfe26cc42ab0c3f967",
+    "probe_sha256": "4437ef23a547c281d6caa5f5a051d5b9b0cc6826071715d739bc5eee32f35db7"
+  },
+  "archive": {
+    "path": "diagnostic-evidence.tar.xz",
+    "bytes": 11352,
+    "sha256": "4160254a832787443c170dc579fbc8eb043aba6915034f60ef2a70a71b9f23e0",
+    "git_blob": "1a6bdb8690a1c0cfe7dcadd622148ad0b74939dd",
+    "member_count": 12,
+    "members": [
+      {
+        "path": "diagnostic/INPUTS.json",
+        "bytes": 326,
+        "sha256": "0df178c1f93698f0a9c4ee492040027fb18f72b401d1cd48c052f23304b07e6b",
+        "git_blob": "978a19db8a597c6ab20696fe7b5012e09fbf390b"
+      },
+      {
+        "path": "diagnostic/SPEC.md",
+        "bytes": 3152,
+        "sha256": "74ba37605b512ef273b66236628ac50f5382321fd3edcabfe26cc42ab0c3f967",
+        "git_blob": "1600d758c832b4bd7f70c53f022228abc89b19cc"
+      },
+      {
+        "path": "diagnostic/probe.py",
+        "bytes": 10557,
+        "sha256": "4437ef23a547c281d6caa5f5a051d5b9b0cc6826071715d739bc5eee32f35db7",
+        "git_blob": "4d4dfe3157a7820f092d6c9c19f8e63a2e44d841"
+      },
+      {
+        "path": "diagnostic/run-01/B01-effect.txt",
+        "bytes": 4,
+        "sha256": "3d5e712f6c3ef607e349f828c58fd3ef52e005cc85537b920c2e0ea7b154e961",
+        "git_blob": "0ec6c231f4be3c7e80737c3c098d5a4c75e7de79"
+      },
+      {
+        "path": "diagnostic/run-01/B02-effect.txt",
+        "bytes": 4,
+        "sha256": "4219b9486ee3d4c4eff0e6878b7a42c64ab5902800a105a053e66d540d0fa4f6",
+        "git_blob": "a8ddd6f91ecf728cb5541068b085d32796e23684"
+      },
+      {
+        "path": "diagnostic/run-01/RESULT.json",
+        "bytes": 2840,
+        "sha256": "91833c4ae0b9f229a1c82f6edaa4a25bfc9b39ebc061c9e1811dbe32247dbfa0",
+        "git_blob": "7fa940557140c3c2ea82546caffc906fa65548b6"
+      },
+      {
+        "path": "diagnostic/run-01/RUNTIME-EXCERPTS.json",
+        "bytes": 3276,
+        "sha256": "3ce1100dcf88c136f8380cffc840324f31e98a79b9389834a996673705889662",
+        "git_blob": "7cd5052ef8a9dbb27ef356afdee82d2401260d5b"
+      },
+      {
+        "path": "diagnostic/source/CPYTHON-LICENSE.txt",
+        "bytes": 13809,
+        "sha256": "78b12c3a81360b357002334f0e70ea0e92eebf7a9b358805c03c48484945f3bb",
+        "git_blob": "14603b95c2e23b5a4cd6ff93f50348d1817f7638"
+      },
+      {
+        "path": "diagnostic/source/LICENSE",
+        "bytes": 1070,
+        "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+        "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+      },
+      {
+        "path": "diagnostic/source/async_utils.py",
+        "bytes": 2049,
+        "sha256": "9e2dc6964bd826c1cd0a5b756e2031761933d96da76fc4804064121925f04ee7",
+        "git_blob": "2bc558fad21eeec736c0283cb7df86304349f222"
+      },
+      {
+        "path": "diagnostic/stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "diagnostic/stdout.txt",
+        "bytes": 2840,
+        "sha256": "91833c4ae0b9f229a1c82f6edaa4a25bfc9b39ebc061c9e1811dbe32247dbfa0",
+        "git_blob": "7fa940557140c3c2ea82546caffc906fa65548b6"
+      }
+    ]
+  },
+  "negative_control_scope": "N00 source identity, N01/N02 observation validator contradictions; no Hermes source mutants",
+  "not_run": [
+    "enclosing scheduler _live_send_text",
+    "GatewayRunner",
+    "real transport/network",
+    "SessionDB",
+    "old U07 queue rerun",
+    "actual duplicate-send measurement",
+    "upstream test suite"
+  ],
+  "post_run_additions": [
+    "source/LICENSE (MIT, published-U07 byte-matched reuse)",
+    "source/CPYTHON-LICENSE.txt (local runtime redistribution notice)"
+  ]
+}

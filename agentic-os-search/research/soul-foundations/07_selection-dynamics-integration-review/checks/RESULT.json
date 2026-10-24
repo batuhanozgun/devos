@@ -1,0 +1,173 @@
+{
+  "suite": "selection-dynamics-integration-v1",
+  "python": "3.13.5",
+  "all_required_checks_passed": true,
+  "construction_count": 4,
+  "false_rule_witness_count": 5,
+  "J1": {
+    "mask_combinations": 16,
+    "joint_feasible": 7,
+    "separate_existence_false_positives": [
+      {
+        "adequate_mask": 1,
+        "available_mask": 2,
+        "joint_feasible": false,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 2,
+        "available_mask": 1,
+        "joint_feasible": false,
+        "separate_existence": true
+      }
+    ],
+    "rows": [
+      {
+        "adequate_mask": 0,
+        "available_mask": 0,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 0,
+        "available_mask": 1,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 0,
+        "available_mask": 2,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 0,
+        "available_mask": 3,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 1,
+        "available_mask": 0,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 1,
+        "available_mask": 1,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 1,
+        "available_mask": 2,
+        "joint_feasible": false,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 1,
+        "available_mask": 3,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 2,
+        "available_mask": 0,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 2,
+        "available_mask": 1,
+        "joint_feasible": false,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 2,
+        "available_mask": 2,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 2,
+        "available_mask": 3,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 3,
+        "available_mask": 0,
+        "joint_feasible": false,
+        "separate_existence": false
+      },
+      {
+        "adequate_mask": 3,
+        "available_mask": 1,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 3,
+        "available_mask": 2,
+        "joint_feasible": true,
+        "separate_existence": true
+      },
+      {
+        "adequate_mask": 3,
+        "available_mask": 3,
+        "joint_feasible": true,
+        "separate_existence": true
+      }
+    ]
+  },
+  "J2": {
+    "worlds": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "consumer_A_adequate": false,
+    "consumer_B_adequate": false,
+    "actually_pooled_observation_adequate": true
+  },
+  "J3": {
+    "partitions": 15,
+    "specifications_per_partition": 81,
+    "oracle_comparisons": 1215,
+    "adequate_pairs": 817,
+    "algorithm_disagreements": 0,
+    "original_encoding_adequate": true,
+    "nonidentical_encoding_adequate": true,
+    "constant_content_adequate": false
+  },
+  "J4": {
+    "new_item_alone_adequate": false,
+    "with_established_side_information": true
+  },
+  "false_rules_rejected": [
+    "separate_exists_implies_common_witness",
+    "distributed_implies_each_consumer",
+    "exact_encoding_identity_is_necessary",
+    "content_present_implies_adequate",
+    "item_adequacy_is_context_free"
+  ],
+  "limits": [
+    "finite_supplied_worlds_and_output_contracts",
+    "shared_author_and_fixtures",
+    "no_live_actor_or_database_execution",
+    "no_taxonomy_or_natural_language_oracle"
+  ]
+}

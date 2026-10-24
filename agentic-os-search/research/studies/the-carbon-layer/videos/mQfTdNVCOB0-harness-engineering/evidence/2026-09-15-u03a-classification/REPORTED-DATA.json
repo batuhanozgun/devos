@@ -1,0 +1,38 @@
+{
+  "source": "https://arxiv.org/pdf/2603.28052v1",
+  "status": "Manual transcription of selected published table cells, checked against PDF screenshots; not raw experimental records",
+  "observed_on": "2026-09-15",
+  "accuracy_unit": "percent",
+  "table2": {
+    "page": 6,
+    "datasets": ["USPTO", "S2D", "Law"],
+    "context_unit": "thousand additional input tokens, as labeled by Table 2",
+    "rows": {
+      "Zero-shot": {"scores": [12.0, 63.2, 7.0], "reported_mean": 27.4, "context": 0},
+      "Few-shot-8": {"scores": [14.0, 67.9, 21.0], "reported_mean": 34.3, "context": 2.0},
+      "Few-shot-32": {"scores": [13.0, 72.2, 21.0], "reported_mean": 35.4, "context": 7.9},
+      "Few-shot-all": {"scores": [15.0, 78.3, 29.0], "reported_mean": 40.8, "context": 12.3},
+      "MCE": {"scores": [14.0, 83.0, 23.0], "reported_mean": 40.0, "context": 28.5},
+      "ACE": {"scores": [16.0, 77.8, 29.0], "reported_mean": 40.9, "context": 50.8},
+      "Meta-Harness": {"scores": [14.0, 86.8, 45.0], "reported_mean": 48.6, "context": 11.4}
+    }
+  },
+  "table5": {
+    "page": 8,
+    "datasets": ["SciC", "FiNER", "Amz5", "FPB", "GoEmo", "Bank77", "News", "SciT", "TwHate"],
+    "context_unit": "thousand average additional context tokens, as labeled by Table 5",
+    "rows": {
+      "Zero-shot": {"scores": [32.7, 56.0, 52.7, 90.0, 42.0, 80.7, 84.7, 89.3, 75.3], "reported_mean": 67.0, "context": null},
+      "Few-shot-8": {"scores": [34.0, 63.0, 54.0, 90.0, 44.0, 82.7, 84.7, 91.3, 76.7], "reported_mean": 68.9, "context": 2.2},
+      "Few-shot-32": {"scores": [38.7, 62.0, 53.3, 90.7, 43.3, 86.0, 85.3, 90.7, 76.7], "reported_mean": 69.6, "context": 5.2},
+      "Few-shot-all": {"scores": [35.3, 61.0, 50.0, 93.3, 42.7, 80.7, 84.0, 90.0, 76.7], "reported_mean": 68.2, "context": 7.4},
+      "ACE": {"scores": [40.7, 74.0, 48.0, 96.7, 44.0, 83.3, 86.0, 90.7, 68.7], "reported_mean": 70.2, "context": 11.7},
+      "Meta-Harness": {"scores": [53.3, 67.0, 60.0, 94.0, 46.0, 82.7, 86.7, 91.3, 77.3], "reported_mean": 73.1, "context": 7.3}
+    }
+  },
+  "limits": [
+    "Rounded aggregate cells; no paired predictions, sample identities or independent search replicates.",
+    "No p-values, confidence intervals, total-cost claims or inference about unseen production workloads are computed.",
+    "Figure 3's axis says characters while its caption says tokens; Table 9 separately labels characters. No conversion is assumed here."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "study": "harness-engineering-and-evolution",
+  "unit": "U02-A",
+  "date": "2026-09-13",
+  "video_id": "mQfTdNVCOB0",
+  "original_url": "https://www.youtube.com/watch?v=mQfTdNVCOB0",
+  "derivative_transcript_url": "https://iamtypist.dev/tools/youtube-transcript/mQfTdNVCOB0",
+  "files_reverified": [
+    {
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].f401(1).mp4",
+      "bytes": 309337669,
+      "sha256": "48c697f9f88088ceb4a509aeeaf4c2cabd9607fc1da54680747da6058f33c789",
+      "role": "video-only; identity matches original manifest"
+    },
+    {
+      "name": "Harness Engineering Masterclass： Technical Deep Dive on how to build Agentic Systems [mQfTdNVCOB0].f251-14(1).webm",
+      "bytes": 28905635,
+      "sha256": "23bb3f385bdac0e10c8e88a1e5246c234936a9216ccd0d5d6e8b8debd263bb1f",
+      "role": "audio-only; identity matches original manifest, no new listening/alignment"
+    }
+  ],
+  "samples_seconds": [280, 340, 400, 480, 530, 580, 675, 740, 805, 845, 920, 950],
+  "overlap_with_u00_seconds": [280, 400, 530, 675, 805, 920],
+  "frame_scale_width": 1280,
+  "contact_sheets_inspected": 3,
+  "operations": ["local byte count and SHA-256", "ffmpeg selected frame extraction", "visual reading of twelve frames"],
+  "transcript_passage": "approximately 04:16–16:13, with opening and adjacent context",
+  "native_caption_track_verified": false,
+  "continuous_video_viewing": false,
+  "full_audio_alignment": false,
+  "application_runtime_test": false,
+  "representations_note": "A selected embedded caption at 15:20 contains confidence table; the derivative text is less complete. Neither is promoted to verified exact audio.",
+  "durability": "Original binaries/contact sheets are not committed. Recover by original ID and matching user media; local session paths are not a promised future resource."
+}

@@ -1,0 +1,171 @@
+{
+  "schema": 2,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "base_commit": "23b589703f0849c77a91e7b8c182ce16f8a38748",
+  "scope": "Two complete subtree leaf inventories; not the full repository and not a body-read claim.",
+  "source_record": {
+    "filename": "A4-SCOPED-INVENTORY.json",
+    "bytes": 27252,
+    "sha256": "89ab9481219484b09a4032ffcd667c2624435c582eb2f4a35a2211d0fe824b02",
+    "conversion": "Lossless path/mode/type/blob/size inventory; original per-file read dispositions preserved in full_reads, default dispositions unchanged."
+  },
+  "default_mode": "100644",
+  "default_type": "blob",
+  "default_read": "NOT_READ_THIS_TURN",
+  "default_disposition": "A4_CONTENT_SCAN_PENDING_OR_PRIOR_A2_RESULT_NOT_RECHECKED",
+  "columns": [
+    "relative_path",
+    "git_blob",
+    "bytes"
+  ],
+  "subtrees": [
+    {
+      "prefix": "development-os/",
+      "expected_tree": "e3a104adc534aa5f4caf10f4252b000aae94731b",
+      "files": 19,
+      "rows": [
+        ["INDEX.md", "1e120d91e9d2a16476d3d8ddfa2df664f448e9e8", 3595],
+        ["attempts/001/BRIEF.md", "7caf86c7ee3a0f5943cdc75330c5680f85a66425", 3710],
+        ["attempts/001/EXCHANGE.md", "c19927bbc7d95379ab8f1c50395d4f5d7b0dcce4", 6774],
+        ["attempts/001/METHOD.md", "dace099f39ac2a1cb3df7c4b65a45734eb96ec82", 6851],
+        ["attempts/001/REVIEW.md", "ac3ccb666bb66bfd51697f81ba7bcb9f57f74922", 3273],
+        ["attempts/001/WORK.md", "3e951cbca0a0b781d66f9e2ad8eadc2e0a9dfe11", 3444],
+        ["attempts/001/evidence/W02-D01/probe.py", "9ef3a7ade3cf387ae8e79a6f2b0002b5b80eaeea", 5890],
+        ["attempts/001/evidence/W02-D01/result.json", "2500d1af139c5ecc44f35b4d440f5a83d499c296", 3838],
+        ["attempts/001/messages/research/R-001.md", "6c761fa62be838f418f3c6e358f59bbf3fb3956c", 5107],
+        ["attempts/001/messages/research/R-002.md", "48aa6dd610cd03e966bd53ba8e19dcc191090b93", 8866],
+        ["attempts/001/messages/research/R-003.md", "87b67cd907d7d58951e0ab2f2aef8c0ee7dc13ac", 9936],
+        ["attempts/001/messages/research/R-004.md", "44ef85e006d411f89846395594956442cd174572", 6403],
+        ["attempts/001/messages/research/R-005.md", "82c7ad0127705fa837fda48e49b7bebf7871bd3d", 4579],
+        ["attempts/001/messages/research/R-006.md", "db008f4cc68f968456ff138661ce4431de640b00", 4296],
+        ["attempts/001/reading/COVERAGE.md", "9d14c5e8df3fa0ae3a8478167854a8f86956e766", 7218],
+        ["attempts/001/reading/F00-CONTEXT-AND-USE.md", "8ea29fa4071a7cf6f5e8c6ac1e60c3e61fbcb303", 8479],
+        ["attempts/001/reading/F08-FOUNDATION-FRAME.md", "b8eead3585ce0b2e624b09d3479c0d3644ef13fd", 23985],
+        ["attempts/001/reading/F08-RECONCILIATION.md", "381455e6c6b91ddb5cc1c65ca8c5fb3fc7fba1c3", 7200],
+        ["attempts/002/README.md", "a94b6ec4b2dad985fe6d2a8c33f41ecf1f29cd04", 14648]
+      ]
+    },
+    {
+      "prefix": "explorations/EXP-006-development-os-calisma-duzeni/",
+      "expected_tree": "aaaa2f0764b42c896315ed7b2fbb5d013da27e7f",
+      "files": 50,
+      "rows": [
+        ["ACTORS.md", "d0419f6c40e6a47295a369936a0dac0f6f784848", 19214],
+        ["DECISIONS.md", "a275229196f1f693e3845758194b8b59261151bc", 13851],
+        ["EXP-006_Context", "d368b3cb9ce90a2279fff077da4125557ce71551", 14796],
+        ["HANDOFF.md", "cf674a7f25f1e70e01f3fc6512a04f39ba008b34", 5364],
+        ["INDEX.md", "d0c38562767503cb2503cdfb4e4f803a83292418", 4277],
+        ["STATE.md", "8ddd066654b033a36d17d859381278613e1806e7", 5855],
+        ["WORK.md", "4de465c22d8bccf1c49d944e13381b775b37f915", 9973],
+        ["history/2026-09-25-pre-split-WORK-MAP.md", "bfdc8c64896e34126cdbe8058cb6c0493c442631", 29860],
+        ["history/2026-09-25-pre-work-system-INDEX.md", "e27aacbf86992c150e96665af3dffba4c18a3f23", 5510],
+        ["history/2026-09-25-pre-work-system-STATE.md", "c074998b3c3a874b09ba3c0c19317dc62f336b05", 16438],
+        ["history/README.md", "5882579ebfe88024fc3dfa3a962efe29b6186ba5", 886],
+        ["sources/U001.md", "17b433ae6a8770dadea53f5857a92bb7b1f699e5", 2223],
+        ["sources/U002-cloud-plan-and-autonomy.md", "da943d27503acb7feca4b1e638ccc54b110a7f9f", 10140],
+        ["work/B1-common-intellectual-baseline.md", "b0c2d4137b6526819f916416f4ced59d115754e8", 12835],
+        ["work/B2-information-capacity.md", "44245f98fd0c989911ab2d493a509b15f3f4c1ae", 14243],
+        ["work/B3-actors-capacity.md", "642d332facd458a97812699b747ab82145f95d5e", 14375],
+        ["work/B4-work-capacity.md", "2324f8f0dfe2ba33dc830995d9e79cca225dbb6e", 14990],
+        ["work/B5-environment-capacity.md", "56efeb24ab2ca1144162e6a4162aa257931504b5", 15020],
+        ["work/B6-cross-ground-integration.md", "e53bde1601ae3d65b817616a19b7a383120413d9", 16503],
+        ["work/B7-system-formation.md", "26ccc397674eb4b0101d2af190c28e430f9acd5c", 16018],
+        ["work/B8-continuity-change-recovery.md", "dacd8038f127569f9a2849a1a5f36629b3626fc5", 16996],
+        ["work/B9-integration-and-testing.md", "8ba12a944f8eca7cb25ae461320eb5552f5fb644", 17225],
+        ["work/P1-01-claude-cloud-environment-map.md", "3e281be98d6ddcfa4d5b4f06eff7c342b8de3153", 18789],
+        ["work/P2-01-named-role-contracts.md", "eca7bc238e6f24cf993af4cac2951cfd6bf9d12b", 29302],
+        ["work/P3-01-work-information-discussion.md", "51adc25ff94924145b2b7a116469c6257cdd9fdb", 35784],
+        ["work/P4-01-cloud-runtime-and-workspace-design.md", "41e0571627ff4bfc2e391c8a002f48596fdc479b", 24378],
+        ["work/P4-02-soul-derived-report-v2.md", "09281c5d930ecf2102810a296b4d2c84ee567e5c", 9605],
+        ["work/P4-03-unbounded-stress-test-handoff.md", "6b92207a7ba668edca453e498348c381801d0143", 10908],
+        ["work/P4-04-unbounded-stress-test-report-v3.md", "20d2cefcf9881275d23f78da874bf8abead9c134", 10984],
+        ["work/P4-05-codex-environment-revision-v4.md", "2889c9adbe43b331a749f7b8fc7c6823519f88d1", 6254],
+        ["work/P5-01-codex-build-installation-package.md", "641506fe75d26da63bd6a64bbf17cbd15b6dc094", 13565],
+        ["work/S1-01-production-review-correction.md", "e09b1d142d8f3a77c7a09b0ffd6a164b60696040", 16926],
+        ["work/S1-02-actor-conditioned-role-purpose.md", "b7041ee6237e1e24e150a3bd6e0fc7a4a7d8d41f", 11236],
+        ["work/S1-03-role-purpose-activation-and-transfer.md", "0ff47fb0ca829c8abe52a83df4596d03249a5454", 15047],
+        ["work/S1-04-read-only-reviewer-development-chain.md", "0dc97183c88a801e707f8acc2948e3cf7ea00eb3", 17911],
+        ["work/S1-05-initial-role-family-draft.md", "4b099511e056d54ec76f0c3d9314a521d9cfc5c3", 7012],
+        ["work/S1-06-full-role-family-mapping.md", "20e470c2232cc6bf7dbd2d68ad6a4ed1361fd7ff", 8497],
+        ["work/S1-07-verification-assurance-family.md", "be73efa543f8091a2463c496f48f77c70ee7330e", 7276],
+        ["work/S1-08-design-formation-family.md", "4daa7c94bb11bd3f6b8f9551663520c20056f4f6", 5173],
+        ["work/S1-09-realization-implementation-family.md", "478bc9bd3f30fc5ed00d6f904cf704136fbd05cb", 6141],
+        ["work/S1-10-operations-stewardship-coordination-family.md", "189434a6831f1bbf9ea431d8a371ee6313b6f4bd", 6263],
+        ["work/S1-11-governance-authority-control-family.md", "de49ff2f2afc035e76935a5b83f676bde82f331c", 5508],
+        ["work/S1-12-diagnosis-impact-recovery-routing-family.md", "efdeddada2dcdd9966e0b0798151b927568eae74", 5553],
+        ["work/S1-13-learning-adaptation-direction-family.md", "33dae6724a0d811ca9e82587bd500552cb1d725c", 7078],
+        ["work/S1-14-full-model-coverage-overlap-audit.md", "2f65cb6e0e685df853cdda9c928aa891943bdffe", 16512],
+        ["work/S1-15-research-discovery-synthesis-family.md", "d07948d419238bef688e47f10161490ca3bb63f3", 15940],
+        ["work/S1-16-realization-and-lifecycle-specializations.md", "b6cadf35eb731cec8c09e07864eeab5321322504", 14983],
+        ["work/S1-17-consolidation-closure-audit.md", "a067dc31cf2b453d66f47d9c22d1a00afdc3dc05", 25239],
+        ["work/S1-role-responsibility-consolidation.md", "c3e9d2cb78bb142726f8dae111918bf7f14c7497", 13574],
+        ["work/p5/CODEX_START.md", "bb20f259a79b969bc00581b38a9e9b104624dbf9", 4168]
+      ]
+    }
+  ],
+  "full_reads": [
+    {
+      "path": "development-os/attempts/001/evidence/W02-D01/probe.py",
+      "read": "FULL",
+      "disposition_at_preparation": "KEEP",
+      "reason": "Sabit eski repo/commit ve sentetik tanılama kapsamı açık; komut örnekleri log verisi. Eski kod çalıştırılmadı; kullanım örneği yeni yürütme yetkisi sayılmadı."
+    },
+    {
+      "path": "development-os/attempts/001/evidence/W02-D01/result.json",
+      "read": "FULL",
+      "disposition_at_preparation": "KEEP",
+      "reason": "Tarih, kaynak kimliği, sentetik veri ve sınırlamalar mevcut. Eski üç başarısız örnek gizlenmedi; yeni test başarısı gibi sunulmadı."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/history/2026-09-25-pre-split-WORK-MAP.md",
+      "read": "FULL",
+      "disposition_at_preparation": "PREPEND_PENDING",
+      "reason": "Şimdi yalnız B1 açılacaktır ifadesi ve ilk rol akışları tarihsel aday modeldir; güncel ürün iş listesi veya rol topolojisi olarak devralınmaz."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/history/2026-09-25-pre-work-system-INDEX.md",
+      "read": "FULL",
+      "disposition_at_preparation": "PREPEND_PENDING",
+      "reason": "Doğrudan açıldığında güncel okuma yolu gibi görünür; STATE/Context/Work Map ve araştırma bağlantıları taşınan dosyanın eski göreli tabanındadır."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/history/2026-09-25-pre-work-system-STATE.md",
+      "read": "FULL",
+      "disposition_at_preparation": "PREPEND_PENDING",
+      "reason": "Güncel durum başlığı, OPEN durumu, sonraki yetkili hareket ve artık mevcut olmayan EXP-006_Work_Map.md yetki anlatımı tarihsel anlık görüntüye bağlanır."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/history/README.md",
+      "read": "FULL",
+      "disposition_at_preparation": "PREPEND_PENDING",
+      "reason": "Tarihsel statü zaten açık; eski “Current authority” yolunu güncel DevOS yetkisinden ayıran not ve üç sabit kaynak bağlantısı eklenir."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/sources/U001.md",
+      "read": "FULL",
+      "disposition_at_preparation": "KEEP",
+      "reason": "Konuşmacı, tarih, kaynak türü ve aktarım sınırı başta açık; kullanıcı sözleri yeni talimat değil tarihsel alıntıdır. Yazım korunur."
+    },
+    {
+      "path": "explorations/EXP-006-development-os-calisma-duzeni/sources/U002-cloud-plan-and-autonomy.md",
+      "read": "FULL",
+      "disposition_at_preparation": "KEEP",
+      "reason": "27 Eylül kullanıcı aktarımı açıkça etiketli; üç mesaj kod bloklarında, eski URL yazımları özellikle korunmuş. Sonraki STATE/HANDOFF/DECISIONS yönleri D030 ile güncellenmiş; kaynak gövdesi yeniden yazılmaz."
+    }
+  ],
+  "total_files": 69,
+  "publication_status_at_preparation": "NOT_PUBLISHED",
+  "validation": {
+    "leaf_trees_reconstructed": true,
+    "missing_leaf_negative_control": true,
+    "source_inventory_semantic_equality": true,
+    "source_bodies_retrieved": false,
+    "full_repository_inventory": false,
+    "full_repository_scan": false,
+    "independence": "Same author; deterministic metadata checks, no independent reader test."
+  },
+  "metadata_sources": [
+    "GitHub pinned trees; conversation results 794,796,797,798,799"
+  ]
+}

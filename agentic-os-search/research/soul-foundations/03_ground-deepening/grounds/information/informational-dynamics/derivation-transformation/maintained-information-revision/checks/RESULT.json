@@ -1,0 +1,302 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "C01",
+      "observed": {
+        "left_next": [
+          "10"
+        ],
+        "old_beliefs": [
+          "00"
+        ],
+        "right_next": [
+          "11"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C02",
+      "observed": {
+        "after_all_support_removed": [],
+        "after_direct_removal": [
+          "a",
+          "q"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C03",
+      "observed": {
+        "before": [
+          "a",
+          "b"
+        ],
+        "grounded_after": [],
+        "recycled_after": [
+          "a",
+          "b"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C04",
+      "observed": {
+        "after_set_a": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "learned": [
+          [
+            1,
+            0
+          ]
+        ],
+        "rejected_if_exclusivity_invariant": [
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C05",
+      "observed": {
+        "a_priority": [
+          "a"
+        ],
+        "b_priority": [
+          "b"
+        ],
+        "tied_repairs": [
+          [
+            "a"
+          ],
+          [
+            "b"
+          ]
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C06",
+      "observed": {
+        "as_known_15": [
+          "ready"
+        ],
+        "as_known_25": [
+          "blocked"
+        ],
+        "retained_rows": 2,
+        "same_reference_time": 15
+      },
+      "passed": true
+    },
+    {
+      "id": "C07",
+      "observed": {
+        "applicable_15": [
+          "v1"
+        ],
+        "applicable_35": [
+          "v2"
+        ],
+        "arrival_latest": "v2"
+      },
+      "passed": true
+    },
+    {
+      "id": "C08",
+      "observed": {
+        "protected": [
+          2,
+          "blocked-by-new-evidence"
+        ],
+        "stale_write_rows": 0,
+        "unconditional": [
+          3,
+          "ready"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C09",
+      "observed": {
+        "declared_dependency_check_pass": false,
+        "focal_version_pass": true
+      },
+      "passed": true
+    },
+    {
+      "id": "C10",
+      "observed": {
+        "absolute_assignment": 1,
+        "identity_deduplicated": 1,
+        "unqualified_delta_replay": 2
+      },
+      "passed": true
+    },
+    {
+      "id": "C11",
+      "observed": {
+        "compatible_contexts": [
+          [],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ]
+        ],
+        "contextual_results": [
+          [],
+          [
+            "a",
+            "p"
+          ],
+          [
+            "b",
+            "not-p"
+          ]
+        ],
+        "invalid_unconditional_union": [
+          "a",
+          "b",
+          "not-p",
+          "p"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "C12",
+      "observed": {
+        "initial": [
+          [
+            "110",
+            "111"
+          ],
+          [
+            "100",
+            "101"
+          ],
+          [
+            "001"
+          ],
+          [
+            "011"
+          ],
+          [
+            "000",
+            "010"
+          ]
+        ],
+        "lex_1": [
+          [
+            "100",
+            "101"
+          ],
+          [
+            "011"
+          ],
+          [
+            "010"
+          ],
+          [
+            "110",
+            "111"
+          ],
+          [
+            "001"
+          ],
+          [
+            "000"
+          ]
+        ],
+        "lex_2_beliefs": [
+          "011"
+        ],
+        "natural_1": [
+          [
+            "100",
+            "101"
+          ],
+          [
+            "110",
+            "111"
+          ],
+          [
+            "001"
+          ],
+          [
+            "011"
+          ],
+          [
+            "000",
+            "010"
+          ]
+        ],
+        "natural_2_beliefs": [
+          "110",
+          "111"
+        ],
+        "source": "Schwind et al. KR2022 p322 Example5 Figure1"
+      },
+      "passed": true
+    }
+  ],
+  "environment": {
+    "python": "3.13.5",
+    "sqlite": "3.46.1"
+  },
+  "negative_controls": [
+    {
+      "id": "current_belief_only",
+      "rejected": true
+    },
+    {
+      "id": "direct_delete_removes_all_support",
+      "rejected": true
+    },
+    {
+      "id": "recycle_unseeded_cycle",
+      "rejected": true
+    },
+    {
+      "id": "learn_equals_world_update",
+      "rejected": true
+    },
+    {
+      "id": "minimal_change_is_unique",
+      "rejected": true
+    },
+    {
+      "id": "latest_receipt_is_current",
+      "rejected": true
+    },
+    {
+      "id": "focal_check_covers_all_dependencies",
+      "rejected": true
+    },
+    {
+      "id": "all_replay_idempotent",
+      "rejected": true
+    }
+  ],
+  "scope": "Synthetic finite/native checks; one published mathematical example reperformed; not live or independent Foundation validation",
+  "script_sha256": "c9ccf7a80c3b8f0b3cb1f1cb4b09d3964de06a4b53c7b7c4c81e73acdd5f2536",
+  "spec_sha256": "d94fa7cb18c31be20e1bbc1663c034f33019f681d667d9d5926ddf868a2f08d5"
+}

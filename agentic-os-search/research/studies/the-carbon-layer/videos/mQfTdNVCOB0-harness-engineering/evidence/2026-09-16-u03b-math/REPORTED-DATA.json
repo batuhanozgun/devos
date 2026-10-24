@@ -1,0 +1,113 @@
+{
+  "source": "https://arxiv.org/pdf/2603.28052v1",
+  "observation_date": "2026-09-16",
+  "source_extent": "Manual transcription from visually inspected Table 6 (PDF page 8) and Tables 10–11 (page 24); rounded author-reported values, not raw outcomes.",
+  "models": [
+    {
+      "id": "gpt-5.4-nano",
+      "paper_label": "GPT-5.4n",
+      "used_for_search": false
+    },
+    {
+      "id": "gpt-5.4-mini",
+      "paper_label": "GPT-5.4m",
+      "used_for_search": false
+    },
+    {
+      "id": "gemini-3.1-flash-lite",
+      "paper_label": "Gem-3.1FL",
+      "used_for_search": false
+    },
+    {
+      "id": "gemini-3-flash",
+      "paper_label": "Gem-3F",
+      "used_for_search": false
+    },
+    {
+      "id": "gpt-oss-20b",
+      "paper_label": "GPT-20B",
+      "used_for_search": true
+    }
+  ],
+  "table6": {
+    "no_retriever": {
+      "cells": [
+        "23.0",
+        "28.8",
+        "28.6",
+        "42.6",
+        "47.6"
+      ],
+      "reported_mean": "34.1"
+    },
+    "dense_k1": {
+      "cells": [
+        "27.1",
+        "24.5",
+        "31.3",
+        "42.3",
+        "46.9"
+      ],
+      "reported_mean": "34.4"
+    },
+    "dense_k5": {
+      "cells": [
+        "31.1",
+        "28.3",
+        "37.1",
+        "47.2",
+        "46.7"
+      ],
+      "reported_mean": "38.1"
+    },
+    "random_fewshot": {
+      "cells": [
+        "23.1",
+        "24.5",
+        "31.0",
+        "40.4",
+        "41.8"
+      ],
+      "reported_mean": "32.2"
+    },
+    "bm25": {
+      "cells": [
+        "30.2",
+        "29.2",
+        "32.8",
+        "46.6",
+        "48.9"
+      ],
+      "reported_mean": "37.5"
+    },
+    "meta_harness": {
+      "cells": [
+        "31.7",
+        "30.4",
+        "34.9",
+        "46.3",
+        "50.6"
+      ],
+      "reported_mean": "38.8"
+    }
+  },
+  "table10_counts": {
+    "OpenMathReasoning": 281743,
+    "DeepMath-103K": 103021,
+    "NuminaMath-1.5": 129520,
+    "PolyMath": 11083,
+    "Omni-MATH": 4289,
+    "FineProofs-SFT": 4275,
+    "AIME 1983–2024": 933,
+    "Putnam-AXIOM": 492
+  },
+  "table10_reported_total": 535356,
+  "table11_counts": {
+    "IMO-AnswerBench": 100,
+    "IMO-ProofBench": 60,
+    "ArXivMath Dec. 2025": 17,
+    "ArXivMath Jan. 2026": 23
+  },
+  "table11_reported_total": 200,
+  "qualification": "False used_for_search means explicitly described as not used in harness search; it does not assert absence from model training. Counts do not establish effective eligible corpus, score weighting or grader identity."
+}

@@ -1,0 +1,150 @@
+{
+  "scope": "constructed semantic-transfer relations plus native Unicode/JSON checks",
+  "environment": {
+    "python": "3.13.5",
+    "unicode_database": "15.1.0"
+  },
+  "script_sha256": "0f6da431e60a66f2f5aaa29bca98bc9a937f8b21e5291e3bee81f75cfe1f0d15",
+  "case_count": 14,
+  "known_bad_count": 6,
+  "cases": {
+    "C01": {
+      "worlds": 8,
+      "questions_checked": 256,
+      "preserved": 16,
+      "lost_bit_preserved": false,
+      "two_calculation_paths_agree": true
+    },
+    "C02": {
+      "weakening_source_supported": true,
+      "blocker_answer_unique": false,
+      "narrowing_preserves_permitted_alternatives": false
+    },
+    "C03": {
+      "token_multiset_equal": true,
+      "role_binding_equal": false
+    },
+    "C04": {
+      "same_operations": true,
+      "first_result": "checked_publication",
+      "reordered_result": "unchecked_publication"
+    },
+    "C05": {
+      "canonical_equivalents_NFC_equal": true,
+      "compatibility_inputs": [
+        "x²",
+        "x2"
+      ],
+      "NFKC_output": "x2",
+      "stipulated_exponent_identifier_distinction_lost": true
+    },
+    "C06": {
+      "components_NFC": true,
+      "concatenation_NFC": false,
+      "whole_normalized": "á"
+    },
+    "C07": {
+      "source": "[9007199254740992,9007199254740993]",
+      "python_integer_values_distinct": true,
+      "binary64_values_equal": true,
+      "node": {
+        "available": true,
+        "version": "v22.16.0",
+        "equal": true,
+        "roundtrip": "[9007199254740992,9007199254740992]"
+      }
+    },
+    "C08": {
+      "default_mapping": {
+        "status": "ready"
+      },
+      "pair_preserving_output": [
+        [
+          "status",
+          "blocked"
+        ],
+        [
+          "status",
+          "ready"
+        ]
+      ],
+      "parsed": true,
+      "default_preserves_both_members": false
+    },
+    "C09": {
+      "source_value": "248/5",
+      "approximation": "50",
+      "tolerance": "1/2",
+      "source_decision": false,
+      "approximate_decision": true,
+      "margin_condition_cases": 960,
+      "all_margin_cases_stable": true
+    },
+    "C10": {
+      "code": "A7",
+      "intended_v1_meaning": "blocked",
+      "wrong_v2_meaning": "ready",
+      "same_code_bytes": true
+    },
+    "C11": {
+      "original": "blocked",
+      "intermediate_under_fixed_labels": "ready",
+      "roundtrip": "blocked",
+      "roundtrip_equal": true,
+      "intermediate_meaning_correct": false
+    },
+    "C12": {
+      "first_preserves_original_b": true,
+      "second_preserves_own_a": true,
+      "composed_preserves_original_b": false,
+      "aligned_composition_preserves_b": true
+    },
+    "C13": {
+      "output_generated_checks": {
+        "completed": true
+      },
+      "source_task_checks": {
+        "completed": true,
+        "blocker": false
+      }
+    },
+    "C14": {
+      "public_count_question_preserved": true,
+      "identity_question_preserved": false,
+      "authority_and_privacy_not_tested": true
+    }
+  },
+  "known_bad_controls": {
+    "token_bag_implies_fidelity": {
+      "rejected": true,
+      "case": "C03"
+    },
+    "parsing_implies_preservation": {
+      "rejected": true,
+      "case": "C08"
+    },
+    "small_error_preserves_decisions": {
+      "rejected": true,
+      "case": "C09"
+    },
+    "roundtrip_proves_meaning": {
+      "rejected": true,
+      "case": "C11"
+    },
+    "local_success_implies_global": {
+      "rejected": true,
+      "case": "C12"
+    },
+    "output_only_checks_certify_coverage": {
+      "rejected": true,
+      "case": "C13"
+    }
+  },
+  "limits": [
+    "same-author fixtures and semantics",
+    "no live SOUL or LLM",
+    "no human translation evaluation",
+    "no universal semantic or privacy verifier",
+    "no independent taxonomy replication"
+  ]
+}

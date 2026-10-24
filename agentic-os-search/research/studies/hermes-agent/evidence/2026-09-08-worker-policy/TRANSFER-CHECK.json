@@ -1,0 +1,18 @@
+{
+  "kind": "PUBLICATION_TRANSFER_INTEGRITY_NOT_BEHAVIOR_VALIDATION",
+  "checked_at_utc": "2026-09-09T06:12:54.439597+00:00",
+  "research_base": "36f1b7e6ae07da5c1d9d57ff9633d48473c42537",
+  "zip_name": "hermes-worker-policy-2026-09-08.zip",
+  "zip_bytes": 53655,
+  "zip_sha256": "f9a18ac43009a28d2b76c2d6c4df928666f3f768c5c23d5e7758317d7aba72c7",
+  "zip_crc_valid": true,
+  "original_manifest_entries": 25,
+  "original_files_including_manifest": 26,
+  "all_original_byte_lengths_and_sha256_match": true,
+  "expected_tree_computed_from_original_bytes": "d6ea71085c402744afbf80b1f9f4553eb97fbdb4",
+  "github_tree_readback": "d6ea71085c402744afbf80b1f9f4553eb97fbdb4",
+  "exact_original_tree_match": true,
+  "experiments_rerun": false,
+  "excerpt_ast_check_run": false,
+  "scope": "Original artifact transfer only. Complete product behavior, dependency closure, current upstream and manual excerpt fidelity remain unverified."
+}

@@ -1,0 +1,23 @@
+{
+  "kind": "DERIVED_RECORDED_RESULT_SUMMARY_NOT_NEW_EXECUTION",
+  "original_archive": "original-evidence.tar.xz",
+  "original_member": "RESULT.json",
+  "original_sha256": "52e859f9a0511fe731958e89096c63be722f05914a257387e4714f46bcad70fb",
+  "executed_at_utc": "2026-09-10T20:06:13.848575+00:00",
+  "pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "parent_full_byte_or_AST_fidelity": "NOT VERIFIED; manual selections, not full modules",
+  "cases": [
+    {"id":"K01","observed":{"first":true,"duplicate":false,"unchanged_on_duplicate":true,"durable":{"task_status":"done","current_run_id":null,"run_outcomes":["completed"],"completion_event_count":1}},"matched":true},
+    {"id":"K02","observed":{"attempts":[{"claimer":"fixture:a","won":false,"run_id":null},{"claimer":"fixture:b","won":true,"run_id":1}],"durable":{"task_status":"running","current_run_id":1,"run_outcomes":[null],"completion_event_count":0}},"matched":true},
+    {"id":"K03","observed":{"run_A":1,"run_B":2,"reclaimed":true,"late_A_return":false,"B_preserved":true,"current_B_return":true,"durable":{"task_status":"done","current_run_id":null,"run_outcomes":["reclaimed","completed"],"completion_event_count":1}},"matched":true},
+    {"id":"K04","observed":{"claim_denied":true,"completion_return":false,"demotion":{"task_status":"todo","current_run_id":null,"run_outcomes":[],"completion_event_count":0},"durable":{"task_status":"running","current_run_id":1,"run_outcomes":[null],"completion_event_count":0}},"matched":true},
+    {"id":"K05","observed":{"exception":"synthetic artifact staging failure","rollback_preserved_all_rows":true,"retry":true,"after_failure":{"task_status":"running","current_run_id":1,"run_outcomes":[null],"completion_event_count":0}},"matched":true},
+    {"id":"K06","observed":{"exception":"synthetic post-commit child-promotion failure","retry":false,"durable_after_exception":{"task_status":"done","current_run_id":null,"run_outcomes":["completed"],"completion_event_count":1}},"matched":true},
+    {"id":"K07","observed":{"return":true,"durable":{"task_status":"done","current_run_id":null,"run_outcomes":["completed"],"completion_event_count":1}},"matched":true},
+    {"id":"K08","observed":{"nested_rejected":"write_txn: already inside a transaction. Nested composition must opt in explicitly with write_txn(conn, allow_nested=True) (savepoint semantics; the inner RELEASE is not durable until the outer transaction commits).","after_outer_rollback":{"task_status":"running","current_run_id":1,"run_outcomes":[null],"completion_event_count":0}},"matched":true}
+  ],
+  "negative_controls": {"local_mutation_rejected":true,"stale_guard_mutant_detected":true,"rollback_mutant_detected":true},
+  "previous_suites_rerun": false,
+  "independent_replication": false,
+  "not_executed": ["product init/migrations","actual worker/dispatcher process","real model/provider","actual artifact copying","real OS termination","full authorization/profile stack","review/goal judge","automatic retry/watchdog","notification delivery"]
+}

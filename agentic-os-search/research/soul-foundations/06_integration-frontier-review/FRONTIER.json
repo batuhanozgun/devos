@@ -1,0 +1,33 @@
+{
+  "input_commit": "a6c47ef3ff697c2d23c492dcf4ccfa32003040da",
+  "review_state": "user_evaluation_pending",
+  "next_recommendation": "Informational Formation / Acquisition",
+  "next_active": false,
+  "persistent_adaptation": {
+    "accepted": true,
+    "basis": "current user acceptance; D6 exact refinement scope"
+  },
+  "parent_result_accepted": true,
+  "separate_child_passes": [
+    {
+      "name": "Informational Formation / Acquisition",
+      "structurally_accepted": true,
+      "separately_researched": false
+    },
+    {
+      "name": "Informational Derivation / Transformation",
+      "structurally_accepted": true,
+      "separately_researched": false
+    },
+    {
+      "name": "Informational Selection / Exposure",
+      "structurally_accepted": true,
+      "separately_researched": false
+    }
+  ],
+  "source_snapshot": {
+    "path": "evidence/INPUT-DYNAMICS-STATE.md",
+    "git_blob_sha": "df5e44427d3c07eb8fdd312a3fa3594c3a239b2e"
+  },
+  "scope": "Routed Information Dynamics child frontier; not exhaustive empirical verification or all-repository absence."
+}

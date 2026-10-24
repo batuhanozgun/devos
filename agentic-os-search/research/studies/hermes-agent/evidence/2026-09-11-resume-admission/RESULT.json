@@ -1,0 +1,130 @@
+{
+  "started_at_utc": "2026-09-11T11:06:33.167739+00:00",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "scope": "exact full process-local asyncio lease module; no actual DB, gateway host, model, OS restart or upstream suite",
+  "identities": {
+    "source_git_blob": "1f65614e66e748ec61573aced3fa48b57ee20281",
+    "source_sha256": "266b0138e30ce14b1c641db43965e81661d82dc4b4a5b41cdbffdbdc75e0b21b",
+    "spec_sha256": "96c88cd6841904d21dadf75892c6f7156021d5198b4f60fa68e120fd3541f6ad",
+    "probe_sha256": "c0bca675859be03a6573f1a465fa2683936b44274a3810594f352ac161e5bf35"
+  },
+  "cases": [
+    {
+      "id": "L01",
+      "outcome": "expectation_met",
+      "trace": [
+        "A admitted",
+        "B waiting",
+        "A released",
+        "B admitted",
+        "B released"
+      ]
+    },
+    {
+      "id": "L02",
+      "outcome": "expectation_met",
+      "trace": [
+        {
+          "exception": "TurnLeaseTimeoutError",
+          "session": "held",
+          "generation": 2
+        },
+        "original holder and lock retained; zero waiters"
+      ]
+    },
+    {
+      "id": "L03",
+      "outcome": "expectation_met",
+      "trace": [
+        "parent/child share held lease",
+        "A released",
+        "B admitted",
+        "B released",
+        "C admitted",
+        "C released"
+      ]
+    },
+    {
+      "id": "L04",
+      "outcome": "expectation_met",
+      "trace": [
+        {
+          "rebind_result": false,
+          "token_sid": "old",
+          "maps_same": false
+        }
+      ]
+    },
+    {
+      "id": "L05",
+      "outcome": "expectation_met",
+      "trace": [
+        "lookalike rejected; stale repeated release rejected; successor retained"
+      ]
+    },
+    {
+      "id": "L06",
+      "outcome": "expectation_met",
+      "trace": [
+        "waiter cancelled",
+        {
+          "max_entries": 1,
+          "live_entries": 2
+        },
+        "idle cleanup on next acquire"
+      ]
+    },
+    {
+      "id": "L07",
+      "outcome": "expectation_met",
+      "trace": [
+        "two independent registries both admit same SID; no DB or process restart exercised"
+      ]
+    }
+  ],
+  "negative_controls": [
+    {
+      "id": "N00",
+      "rejected_before_import": true,
+      "message": "upstream source identity mismatch before import"
+    },
+    {
+      "id": "N01",
+      "mutant_sha256": "dd87ea5d97d1728d7abf2770239cdfe504da5113d2e12277f923377e0004bf3a",
+      "target": "L02",
+      "oracle_rejected": true,
+      "observation": {
+        "id": "L02",
+        "outcome": "expectation_failed",
+        "trace": [
+          "post-acquire synthetic body entered"
+        ],
+        "exception": "AssertionError",
+        "message": "timeout must raise before subsequent body",
+        "traceback": "Traceback (most recent call last):\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 176, in run_case\n    await asyncio.wait_for(fn(module,trace),timeout=3)\n  File \"/usr/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 82, in L02\n    demand(raised and not entered, 'timeout must raise before subsequent body')\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 38, in demand\n    raise AssertionError(message)\nAssertionError: timeout must raise before subsequent body\n"
+      }
+    },
+    {
+      "id": "N02",
+      "mutant_sha256": "3147137fbc8c66a30703993940071edda5ed0e0568782396b544e8b6cced64db",
+      "target": "L04",
+      "oracle_rejected": true,
+      "observation": {
+        "id": "L04",
+        "outcome": "expectation_failed",
+        "trace": [
+          {
+            "rebind_result": true,
+            "token_sid": "new",
+            "maps_same": true
+          }
+        ],
+        "exception": "AssertionError",
+        "message": "conflicting target rebind must return False",
+        "traceback": "Traceback (most recent call last):\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 176, in run_case\n    await asyncio.wait_for(fn(module,trace),timeout=3)\n  File \"/usr/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 126, in L04\n    demand(result is False, 'conflicting target rebind must return False')\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/data/hermes_u06/diagnostic/probe.py\", line 38, in demand\n    raise AssertionError(message)\nAssertionError: conflicting target rebind must return False\n"
+      }
+    }
+  ],
+  "ended_at_utc": "2026-09-11T11:06:33.214860+00:00"
+}

@@ -1,0 +1,108 @@
+{
+  "kind": "LOCAL_EVIDENCE_FILE_INTEGRITY_NOT_PUBLICATION",
+  "files": [
+    {
+      "path": "ACCESS-LOG.json",
+      "bytes": 1957,
+      "sha256": "28ab4dbf10c7fd4ebabfdce2254a48f7778e19ceac2542173cb059f0268c07b6",
+      "git_blob": "68db4b95c10d6132318c3a5101d1cba5bc17b9b7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3850,
+      "sha256": "fb919a44a94247a455c62ed243da3ebb26b7428c6d35c3851907dfff21821168",
+      "git_blob": "0fbba4549ba0b6a318a1d18ae70ecbd7f892de37"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 14068,
+      "sha256": "5d278a7b10ba3553333df33a851d3d89830711136e70bad72deffc048fcf7040",
+      "git_blob": "234a239b9647b75279deefabbae7c0e9615c4ed8"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 29725,
+      "sha256": "9d592a3d06d7c37da0295e500e953bf500bf759d8ef4cbc05f1eb8bb45124ae4",
+      "git_blob": "b34f838527de0b3d52f238cee40006b027d048c2"
+    },
+    {
+      "path": "REVIEW-ADMISSION.md",
+      "bytes": 2905,
+      "sha256": "1d50676f88aadab3bece24f1061da6c96ba66be3131688ff1828fef8bdc55731",
+      "git_blob": "571991b756df4034cee34f6d5996ecab6e6b6b01"
+    },
+    {
+      "path": "SOURCE-IDENTITY.json",
+      "bytes": 1675,
+      "sha256": "142800516e0887c60326d5a4d16423a725d80f41bdd6bb9709e6f3539c22d25c",
+      "git_blob": "129480d97e633fa64986c9b78bc46854493b172e"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 5698,
+      "sha256": "2ec5298454c9909bb0d47854ecebca73fa0b6d755beaef50fe0fd1041f20842b",
+      "git_blob": "1e62fed90f82ee73c0b28c564492e8f1b2af08d5"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 3839,
+      "sha256": "5c0ce2e34f74b9b9451cbb1721cc334447e3fb5079812b6d8b853ce7afca09a0",
+      "git_blob": "6074ada2557616e43f8c9466cc8ef4a4f0f0ca9f"
+    },
+    {
+      "path": "probe.py",
+      "bytes": 16635,
+      "sha256": "0dff0e1a90eee2cebebd004a5a1998a1be985d4965556e8bb3b6fc844de00315",
+      "git_blob": "874b1f5c7314464b5ea011bc4e4adfaf124a1fb0"
+    },
+    {
+      "path": "stderr.txt",
+      "bytes": 145,
+      "sha256": "35805b1cb56f4640b52fe963f1a63e2f2ee263b6668bc00b7d477f87f6505c1c",
+      "git_blob": "4203fde35b8137f30311efb3cb4a8aa88907cc8b"
+    },
+    {
+      "path": "stdout.txt",
+      "bytes": 84,
+      "sha256": "e66a74d58fc699881f925db0f628bbeee9d433ab0ea593f00cecd0cea448e5d3",
+      "git_blob": "9d19683f1ab7dab90809e4d8ac7c079b933171da"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "upstream/memory_tool.py",
+      "bytes": 18039,
+      "sha256": "38630aab4d9ef64be4c21a6fa91db5588636bdb9450e0d83ac9ef63b813bbcfc",
+      "git_blob": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7"
+    },
+    {
+      "path": "upstream/memory_tool_store.py",
+      "bytes": 23548,
+      "sha256": "5d25c0604de0c4bf4b4f07402b0582b20c33377330a0c7354e059a7e7cf52293",
+      "git_blob": "457594444311af31c837dcdd74cd1c55f2b47b3c"
+    },
+    {
+      "path": "upstream/skill_provenance.py",
+      "bytes": 1168,
+      "sha256": "58a064c44aec13925c724a8bb377bea90fbf6b2a817c8d8bcf4823e6c5436713",
+      "git_blob": "3df9cf143045644310fa7d27a65666c8c23caf95"
+    },
+    {
+      "path": "upstream/write_approval.py",
+      "bytes": 12431,
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232",
+      "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d"
+    },
+    {
+      "path": "upstream/write_approval_commands.py",
+      "bytes": 5683,
+      "sha256": "de520311f9da69d171b8896be05740adc00823829cfcc1207d55f38f379609c9",
+      "git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352"
+    }
+  ],
+  "experiments_rerun_for_packaging": false
+}

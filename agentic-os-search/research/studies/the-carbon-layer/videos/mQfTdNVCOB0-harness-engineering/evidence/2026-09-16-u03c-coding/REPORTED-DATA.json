@@ -1,0 +1,36 @@
+{
+  "schema": "u03c-published-aggregate-audit-v1",
+  "status": "Manually transcribed published aggregates; not raw trials or newly measured efficacy.",
+  "paper": "https://arxiv.org/pdf/2603.28052v1",
+  "table7": [
+    {"model": "Claude Opus 4.6", "scope": "P01_Table7_historical_comparison", "rates": {"Terminus 2": "62.9", "Terminus-KIRA": "74.7", "Meta-Harness": "76.4"}},
+    {"model": "Claude Haiku 4.5", "scope": "P01_Table7_historical_comparison", "rates": {"Terminus 2": "28.3", "Terminus-KIRA": "33.7", "Goose": "35.5", "Meta-Harness": "37.6"}}
+  ],
+  "artifact_readme": {
+    "url": "https://github.com/stanford-iris-lab/meta-harness-tbench2-artifact/blob/57fefdb2ff84af3fd81b69d67814acbe69bd0743/README.md",
+    "git_blob": "00e631ed58c8d7d1ab5c7e7f9e4ea283a388f893",
+    "model": "Claude Opus 4.6",
+    "tasks": 89,
+    "attempts_per_task": 5,
+    "reported_overall_pct": "76.4",
+    "groups": [
+      {"name": "Easy", "tasks": 4, "rate_pct": "100.0"},
+      {"name": "Medium", "tasks": 55, "rate_pct": "81.1"},
+      {"name": "Hard", "tasks": 30, "rate_pct": "64.7"}
+    ]
+  },
+  "website_demo": {
+    "url": "https://yoonholee.com/meta-harness/",
+    "observed_on": "2026-09-16",
+    "scope": "Earlier deliberately selected 19-task demonstration; explicitly not the final reported harness run.",
+    "tasks": 19,
+    "baseline_pct": "28.5",
+    "iteration7_pct": "46.5"
+  },
+  "limits": [
+    "Table 7 external rows are historical leaderboard comparators, not verified paired same-condition reruns.",
+    "The five-attempt count is directly attested for the selected Opus artifact; it is not silently assigned to every other row.",
+    "Subgroup weighting uses rounded published percentages; no raw successful-attempt counts are claimed.",
+    "No p-values, confidence intervals, newly solved-task counts or causal attribution follow."
+  ]
+}

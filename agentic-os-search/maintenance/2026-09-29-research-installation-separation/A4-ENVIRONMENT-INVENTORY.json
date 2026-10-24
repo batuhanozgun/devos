@@ -1,0 +1,543 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "5566cbeecd5b818b5673c0687bbc07ed08631801",
+  "snapshot_root_tree": "1661760d0ab0a4b626961193cb4fae7c2131777d",
+  "scope": "PARTIAL repository inventory: 912 explicit paths by composition. Environment subtree complete; Foundation has 408 explicit files and 7 opaque subtrees. Studies remains opaque. No new research-body review.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-FOUNDATION-INVENTORY.json",
+    "ref": "5566cbeecd5b818b5673c0687bbc07ed08631801",
+    "git_blob": "e2939212e1095881e5bac5c7ea2b22565f56332b",
+    "bytes": 24141,
+    "composed_explicit_leaves": 702,
+    "describes_commit": "ac7e4549ee87b35d84a3f34b86e5f48912549cb3"
+  },
+  "composition": ["Recover the pinned base inventory and its pinned dependency chain, preserving previous body-review decisions and limits.", "Apply snapshot_upserts with expected-old-blob or absence checks. They are already published changes, not new source edits.", "Expand block.directory_groups: concatenate block.prefix, group.directory if nonempty, and each leaf name. Every row is one direct file; no directory implies unlisted children.", "Replace exactly the matching environment frontier by the 208 expanded leaves. Keep all other existing leaves and frontiers. Require unique paths.", "Require 702 + 2 + 208 = 912 explicit paths; Foundation contributes 200 + 208 = 408. This is not the whole-repository file count.", "This is a pre-publication snapshot. The two new maintenance files and plan update publishing this record are a later delta, not recursively included here."],
+  "snapshot_upserts": [
+    {
+      "path": "REPOSITORY-TRANSITION.md",
+      "expected_old_blob": "cd6b0c130200b9d49de46a3bb5d6afcd3675e511",
+      "git_blob": "0ecc75934300033ad191a0cb5e035bf9426fa6d3",
+      "bytes": 45154
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-FOUNDATION-INVENTORY.json",
+      "expected_old_blob": null,
+      "git_blob": "e2939212e1095881e5bac5c7ea2b22565f56332b",
+      "bytes": 24141
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-FOUNDATION-INVENTORY.md",
+      "expected_old_blob": null,
+      "git_blob": "65f089e212cc403bc5402711ca92c8a2f76a4536",
+      "bytes": 7758
+    }
+  ],
+  "defaults": {
+    "mode": "100644",
+    "type": "blob",
+    "new_research_bodies_read": 0,
+    "disposition": "PENDING_CONTENT_AND_LINK_REVIEW; preserve previous A2 decisions"
+  },
+  "columns": ["direct_filename", "git_blob", "api_bytes"],
+  "block": {
+    "prefix": "research/soul-foundations/03_ground-deepening/grounds/environment",
+    "git_tree": "0a3666bc4f96403d7ef3523fa0614004293fdcb9",
+    "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/0a3666bc4f96403d7ef3523fa0614004293fdcb9?recursive=1",
+    "source_truncated": false,
+    "recursive_inventory_complete": true,
+    "files": 208,
+    "api_bytes": 1168031,
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "1708d5fa7d368650780e048276afeb1ca91660eb", 3518],
+          ["DEFERRED-RELATIONS.md", "57e69d2d2607e0028478aaec662a6244f67d0a42", 2863],
+          ["DOMAIN-EFFECT-RESEARCH-PLAN.md", "d10e5ef6d7ce9ff8a08084cc757c3b511f6e4603", 10095],
+          ["ENVIRONMENT-COMPLETION-REVIEW-PLAN.md", "c530ef2e6ec8a0f88358ba1c2cae32d66e70607f", 10655],
+          ["FINDINGS-MAP.md", "faa8e197ca866ed64fd9b42c9e203b2cffdd66a5", 5002],
+          ["INDEX.md", "50aa8fab763ee71051feab44f016d219911df542", 2768],
+          ["KEY.md", "355dd7e8da4922121118da409a7e01fbecc8bad7", 2268],
+          ["OPEN-QUESTIONS.md", "38453a3c341bc269fa4a861ca5941ebc7ab3e79c", 5589],
+          ["README.md", "139b064879de4e2efda74a3a6d34e249746d8c86", 2565],
+          ["STATE.md", "60f13d8fe562b57acd8c51bad8349dd5770a307b", 4325],
+          ["WORK-CONDITIONS-RESEARCH-PLAN.md", "c1c7076d41526dde89d0ce0dbeb9b30be9070f17", 8578]
+        ]
+      },
+      {
+        "directory": "completion-review",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "447f3e79b2b7e38b51c37665d0b8e1490c125889", 2856],
+          ["INDEX.md", "88c10883f11fef65e83211d3c149cc33b44dbfe3", 1698],
+          ["KEY.md", "d4b68a494cbf3eecc0d1d79f46248db193b562dc", 1984],
+          ["STATE.md", "61fa96b618dddf90b3faa6576dfeef1651e21e40", 2359]
+        ]
+      },
+      {
+        "directory": "completion-review/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "944d17f926b1a884f973666a3858e9753914ffc1", 5165]
+        ]
+      },
+      {
+        "directory": "completion-review/findings",
+        "leaves": [
+          ["01-parent-coherence-and-external-challenge.md", "b476b942a7d0adcc868407d9e814ada54e852cfb", 3670],
+          ["02-descendant-sufficiency-and-research-debt.md", "d5a324b67d68091afeb4efa0984c5750c303cc57", 6905],
+          ["03-leaf-replay-and-residual-classification.md", "4b7da595dc632cfe3ee517e4299df8e8f8c0a62f", 4229],
+          ["04-transition-safety-and-next-debt.md", "df742ca24f85452b5be8c2ee4b0bc9c7824f1d1e", 3627]
+        ]
+      },
+      {
+        "directory": "completion-review/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "c815d767bd716330a07e6aa2605d7c425280a762", 7095],
+          ["ENVIRONMENT-COMPLETION-REVIEW.md", "08d27c6caf3669dd924ce1e3f3eacf694f97047e", 10100]
+        ]
+      },
+      {
+        "directory": "domain-effect",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "4e5dd224dd7fe9e53ffbcf18a9968550d12d9de4", 2700],
+          ["DEFERRED-RELATIONS.md", "56d238a0f5b7fac2d4dd963473fe501a66d778a5", 2614],
+          ["DOMAIN-DYNAMICS-RESEARCH-PLAN.md", "3c46fd5e4dd053ae4a57cd4caf473131a3183d15", 22841],
+          ["DOMAIN-STATE-RESEARCH-PLAN.md", "8f5cabdd360fee61cd31a230018591673c348f24", 14030],
+          ["FINDINGS-MAP.md", "a0c3b18fd608a37dafc379e988048b5446c56ad0", 3770],
+          ["INDEX.md", "b30202661d90a5f9982d51a29a3c701936758781", 1226],
+          ["KEY.md", "b705c34867dbb28fc5d90a50ecdb1cabb7f94c5b", 1106],
+          ["OPEN-QUESTIONS.md", "0197089b1f5e97beef77790f68b46bebd509a40c", 4968],
+          ["STATE.md", "378371c3d7cab4d806e6a47201f50686d1612786", 1751]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-dynamics",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "cd4c1dbbd23ac73227ed3765df3c514a54b707ef", 3324],
+          ["DEFERRED-RELATIONS.md", "1a3f9e0c96999dca32cb38a7912d80e4e64ca263", 2941],
+          ["FINDINGS-MAP.md", "6372072c8dd29dd27092d70f0b37f98c7af4248a", 3164],
+          ["INDEX.md", "c97b5c3d7803c68b4f05b6528b8ca7166f3edbad", 2401],
+          ["KEY.md", "f2c7104974508c965af735f9f1d0166623bf5c6b", 4262],
+          ["OPEN-QUESTIONS.md", "c22e82742d5405ff0b6d56d343d097084b396ecd", 3920],
+          ["STATE.md", "349ee46c988cc9cd1bf82cfaf2aa42cba123a824", 6568]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-dynamics/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "a601a94509f3f0037040f24638f17b6e4fb99fea", 9479]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-dynamics/findings",
+        "leaves": [
+          ["01-canonical-recovery-and-falsifiers.md", "08722e4c274a5415deca243f47b543b65d8354a3", 2351],
+          ["02-node-coherence-and-rival-decomposition.md", "09291e64a9474b5baf7a7fd7e64666b10d8b4402", 4988],
+          ["03-dynamics-problem-map-and-boundaries.md", "d2192311c1093d3d3d0d9f63f23a24c9f16a3bc2", 5003],
+          ["04-external-cross-lineage-falsification.md", "42dce2777af8ed54839c152aae05938633a178e8", 7969],
+          ["05-cross-domain-holdouts.md", "60b5acc1a1f62a8f04ecb76df5a8375bb2046785", 5791],
+          ["06-falsifier-disposition-and-leaf-result.md", "ef4c9ba813c28cea67f4b368216481a6ef2d80a2", 5306]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-dynamics/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "d06541365190cd012c58ebbb03cc48d2f03ede87", 10314],
+          ["DOMAIN-DYNAMICS-SYNTHESIS.md", "15943a085c3178e01d5bfea130c1af0f2cc381e4", 15464]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "975c4fd8bb5322f1b0ebf97039388bd19ba537fa", 2293],
+          ["DEFERRED-RELATIONS.md", "6b331ef678a46fb9aaeb20a0d9cab68073d4143e", 2743],
+          ["DOMAIN-CONDITION-RESEARCH-PLAN.md", "17708a8592c7e3607846a71bc6f8174955d3fd5d", 15128],
+          ["DOMAIN-STRUCTURE-RESEARCH-PLAN.md", "fc402ad7dd0259cec4a831586766e0c1a1cfdad4", 12791],
+          ["FINDINGS-MAP.md", "221a9f80449c171b84d3c4d4125dd0d1098464ac", 4193],
+          ["INDEX.md", "7837ef4dc8629ae19a966aaaee84549ec5ff49ca", 1298],
+          ["KEY.md", "127db2038c1d61154efd13a75cb5cdac39cd5bd1", 1152],
+          ["OPEN-QUESTIONS.md", "554a54fb344348b1bfb32502cd165f754c14235f", 3477],
+          ["STATE.md", "f5b2ae81a6f4545b5575dca2da2e28c292dbfc6f", 2067]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition",
+        "leaves": [
+          ["CRITERION-RELATIVE-STANDING-STATUS-RESEARCH-PLAN.md", "4aba6a1bc268a3b372a76c460d3cd978f3171765", 12888],
+          ["CURRENT-SURFACES.md", "4da470968c36fbbe0919634d82467f5df2032d96", 2371],
+          ["DEFERRED-RELATIONS.md", "1a7a6f5d73293ca7962255bfcadbabfc3f57b139", 3427],
+          ["FINDINGS-MAP.md", "f13abc3480f6366ef11df4b58f79dfdc50edd7a8", 1292],
+          ["INDEX.md", "0783d54d938d458534df4058aea3a9b92cd42f79", 1900],
+          ["KEY.md", "726a4e7adad846388e70254552805133015f658c", 2840],
+          ["OPEN-QUESTIONS.md", "788c4200e82da2a981667e2890d36a7c13be2373", 4137],
+          ["REALIZED-CHARACTERISTICS-VALUES-RESEARCH-PLAN.md", "71d6c9d10d3984bf2c8abf9d8b2d60dddfae6837", 10370],
+          ["STATE.md", "88fb9c6360a77307eab13c4581fc33f041a51226", 3097]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/criterion-relative-standing-status",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "8332e981ed1de6f30da72870230e9f39e8632c66", 3360],
+          ["DEFERRED-RELATIONS.md", "738bf4187dd332e872f713a15fdf65182e18ea42", 2835],
+          ["FINDINGS-MAP.md", "4fc10e6244c5ded4fcc53ec186683b9ca4fd18fa", 2516],
+          ["INDEX.md", "0d93290ad45a49dba13774947eb62f056e617959", 2228],
+          ["KEY.md", "f72bf953eabaa93a138e32607b9a2a229751ecea", 4263],
+          ["OPEN-QUESTIONS.md", "330732193c0eee99715ee91b0d5768fdacfd364f", 4299],
+          ["STATE.md", "ffa5e5687dde593f7d591a4c8ac5e8567b2838f9", 6619]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/criterion-relative-standing-status/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "814693b4bb62dc3b3954a12b293b6e19038a0f22", 10249]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/criterion-relative-standing-status/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "95a04501ce916a28b9105c76480d011b863aff0b", 3503],
+          ["02-standing-structure-and-sibling-separation.md", "87d3d510f1f3f5b5610c690895274f1e6b33a835", 3150],
+          ["03-standing-families-and-split-rivals.md", "f9623008df5e2ff3ea27dd872fc228ad6b1d099e", 3985],
+          ["04-scale-grade-access-capability-and-dynamics.md", "689d105929318a5555f9768b0a8aa88a44cbd222", 3403],
+          ["05-reality-representation-authority-boundary.md", "b7d21780191e16964bae53641f6830fbbca4856d", 4101],
+          ["06-cross-domain-holdouts-and-leaf-judgment.md", "77bd677dc09a4ae7d2055000068eb628dc25322b", 5689]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/criterion-relative-standing-status/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "5af6d580f90922437445c0e904dd1a75a508e3f9", 8440],
+          ["CRITERION-RELATIVE-STANDING-SYNTHESIS.md", "eae4d69297095312692a9be7431658f2d068a298", 11156]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "351e8307286e8c0ffb34b0b783cfbaf3693185c4", 10717]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "844a024832e48080805e27dd8a65e2373403602f", 3172],
+          ["02-descriptive-vs-standing-split.md", "9ca843b5010d15e4e23221ca70bf5d02a541900a", 5885],
+          ["03-health-mode-capability-constraint-boundaries.md", "d6fdc31157b5f12c59b87d5df2fdbbcf32533d8b", 4199],
+          ["04-scale-aggregation-and-property-form-audit.md", "efff9a6591e0c9364be28fe26a6b9cc857c7d687", 3441],
+          ["05-cross-domain-holdouts.md", "9989c090c4e1753ff0e619d1cfd701c4e6a59d91", 6784],
+          ["06-boundary-and-anti-collapse.md", "4354c01537338dccdf44356db19ba32625cfc820", 4675]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/realized-characteristics-values",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "c11e6c8285bc8f0d7f20e08f6bc94bb679c40cb7", 3066],
+          ["DEFERRED-RELATIONS.md", "73130c86ef01efed4671472fb458a9e06907d071", 2442],
+          ["FINDINGS-MAP.md", "43a50a722dd240dd40d487d131245c843baf8a9c", 2367],
+          ["INDEX.md", "641de48eeb709f47037f936fca25c89a1b1b735b", 1843],
+          ["KEY.md", "37d40cc6e61f5700e9f91c1b5600681a60ea1193", 3150],
+          ["OPEN-QUESTIONS.md", "df71b3a7c8db7b22910160f74c434d0bca70dc2c", 3486],
+          ["STATE.md", "89f92492c6856b3a3e446b22ef3278ea84243178", 5524]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/realized-characteristics-values/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "f3e289c860430f286b00320e7098f92c8de49eee", 9348]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/realized-characteristics-values/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "b6a0e719e6c7376e2edfd50391c4ca51a3c85248", 3057],
+          ["02-property-forms-and-split-rivals.md", "a0f0b46d2048d0e7544c82b6794245447a5c8223", 3284],
+          ["03-mode-aggregate-relational-capability-boundaries.md", "869f7c1ede4d2b019bf33d2205615b162377632a", 3455],
+          ["04-actual-observed-standing-dynamics-boundaries.md", "cfd7d07f611b1458efa39dbc811a0c9180f2eb02", 3467],
+          ["05-cross-domain-holdouts.md", "fe747c649fb9a38572c03b9cb45bb2ac5fe0ef6d", 4678],
+          ["06-leaf-judgment-and-omission.md", "4bc5d17f63e3fa56a23f35307b54401ca3214179", 4248]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/realized-characteristics-values/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "0b0a49ba158244187d082cc2bc80d1ce78aa808c", 5977],
+          ["REALIZED-CHARACTERISTICS-SYNTHESIS.md", "ea6e31311e7a5a37928c388c661ef163bc0f2ab5", 8813]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-condition/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "308149e0755ac97923e533c427e08540b03a78dc", 8151],
+          ["DOMAIN-CONDITION-SYNTHESIS.md", "d448b8b81edb3400fc0d11e8c05000cc475b698b", 12929]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure",
+        "leaves": [
+          ["CONSTITUENT-COMPOSITION-MEMBERSHIP-RESEARCH-PLAN.md", "eac741f457d0505830cafbafa80a4534c510507f", 9494],
+          ["CURRENT-SURFACES.md", "9248086987e5c339b28aca4ae8b095068812d7c6", 2242],
+          ["DEFERRED-RELATIONS.md", "248c52cc19f6145d15b6cab48dbdb6795a77d23f", 3630],
+          ["FINDINGS-MAP.md", "eb44182754418ccd46b53b048b93807a5707cbcf", 3749],
+          ["INDEX.md", "ad0ed6c80e8a3c150becf38e330c7f5d9e05999a", 2496],
+          ["KEY.md", "c4f9c2e22034ded20187c0056c07c36050f4e5d7", 3884],
+          ["OPEN-QUESTIONS.md", "a7a94666fac213c5fecc55086afaa14affd93d19", 4062],
+          ["RELATIONAL-ORGANIZATION-TOPOLOGY-RESEARCH-PLAN.md", "1dfdd04550b455380d5ac12bfd998d501379159d", 10722],
+          ["STATE.md", "5585a9b4605ef8a284f96fac26274373601c2b2a", 2358]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/constituent-composition-membership",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "09f059582ab244c60aea4559bc8f927f7565126c", 3611],
+          ["DEFERRED-RELATIONS.md", "ea7b33445caa6ae8ad7473abfacd1d627bd0942f", 3068],
+          ["FINDINGS-MAP.md", "8299a6db71ab4c7a1d9605a5bb337bf48da032af", 2358],
+          ["INDEX.md", "a1519428bc9b890375f3f0012c9362bc213f59a8", 2094],
+          ["KEY.md", "76e3be3a417732965c59d9ddf90e7939d81a279c", 3559],
+          ["OPEN-QUESTIONS.md", "dab56e3760367ec5d0a70c0558e0f485467258a4", 3799],
+          ["STATE.md", "320f5c207bfe6b5b7ae595846d252921127d6dd5", 6686]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/constituent-composition-membership/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "9fca1910621bd39a3a77aa702d4b0c7e51f796f7", 10440]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/constituent-composition-membership/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "dfa504406ca057e33a0c12d5ead583535cb6650a", 3663],
+          ["02-parthood-membership-and-relation-semantics.md", "82cff5e1d93384a226c67ffc3d547936c9a87563", 3642],
+          ["03-multiplicity-amount-and-condition-boundary.md", "9e75dd94aad7dfcd0e41dc73d6bf259677c9ae5f", 3895],
+          ["04-scope-time-identity-and-nesting.md", "6692a9e2784ff6762aa3dcac0073c376d6795200", 4387],
+          ["05-cross-domain-holdouts.md", "9f66c39b9b137d3477b2c1e2075b206b718c5144", 5249],
+          ["06-boundary-anti-collapse-and-leaf-judgment.md", "b599aee3dcc5e61849235bbe0dd8910d9f07ec26", 4818]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/constituent-composition-membership/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "71c02894133f4f94d3e5dc2fd55652346acec6e5", 9443],
+          ["CONSTITUENT-COMPOSITION-SYNTHESIS.md", "72ba70d992b858f49e2b5858461a66f57c185f86", 10294]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "375b79264e9ce81297fd35630c9bae97c48e7234", 17900]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "95404a30f99f5a3fd20d7c85cc91ae552ed879a0", 3011],
+          ["02-composition-membership-child.md", "27842a0cc64b242c2ca4b5d2b00227b757c22a4e", 4106],
+          ["03-relational-organization-topology-child.md", "7b2bab1e5e2e80865067393b91f8e739419143ce", 4314],
+          ["04-third-child-and-crosscut-audit.md", "4ddcc6b5bc2ea7cbf055fb8907a71b2ff42e21e6", 5592],
+          ["05-cross-domain-holdouts.md", "ddd812fe4810812585cca1c4aa1b7ecdaa4ba236", 7338],
+          ["06-boundary-and-anti-collapse.md", "ad35d1c6d7bb99ec67f3b98ca0462a7cc66a8cc6", 4495]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/relational-organization-topology",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "c1b009ce05079ea2e5acf499d542d3664476be54", 2948],
+          ["DEFERRED-RELATIONS.md", "6dc49218552698b0117e8a73e61cc31a41d3db66", 3170],
+          ["FINDINGS-MAP.md", "2790fa8db1aafe53fdf42e298750486ace6d3d95", 2155],
+          ["INDEX.md", "37cc13ea47255f6f54546bea683d06b48e1f12d6", 1797],
+          ["KEY.md", "76ca095ddbf7a351e1ef79c441a3e84290bb8469", 2231],
+          ["OPEN-QUESTIONS.md", "49d82bd6531c9cd3367c56c27155804d4eecdacb", 3766],
+          ["STATE.md", "2e3473273472aba0189ade56525c03e40fe5e413", 4544]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/relational-organization-topology/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "3654be0e1f4b3b86dcd1623ef24f845d8a8e0b07", 12475]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/relational-organization-topology/findings",
+        "leaves": [
+          ["01-node-coherence-and-label.md", "d3df51f3c926aad1381743c557c201e6f292974d", 3157],
+          ["02-relation-semantics-and-split-rivals.md", "94b1d951d48bdbd478a29ebd6a6aca299b0d0556", 3281],
+          ["03-spatial-interface-hierarchy-and-patterns.md", "5f39b11374cb67b082981ad9b02216cec6f77591", 4060],
+          ["04-boundary-and-anti-collapse.md", "e82dca3ef5a9cbfd146a0e65102596cbcffde814", 4540],
+          ["05-cross-domain-holdouts.md", "3fe8f0c319eb652a193a9f9411c7d95e6648416b", 5108],
+          ["06-leaf-judgment-and-omission.md", "4a65398ef8f97dd2a724cde796ed8cff3a57127a", 3362]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/relational-organization-topology/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "0d1eaf4f173a4387173e6e4b22dfc2941f8344c5", 7874],
+          ["RELATIONAL-ORGANIZATION-SYNTHESIS.md", "67f855b7a4da9e0f266f289e5f976574239a06ae", 8279]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/domain-structure/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "0105b90ccd7290c4398eb44c02b699df1483e27f", 13799],
+          ["DOMAIN-STRUCTURE-SYNTHESIS.md", "a222a028119edbd9c90b18a6449ba2929c526596", 17353]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "352c75725f8e19fc751cc60ba07cd37a0891e2b6", 13657]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/findings",
+        "leaves": [
+          ["01-evidence-inventory-and-starting-falsifiers.md", "bc64abf902c7aa6853e8cacae60897e672a04386", 4565],
+          ["02-node-coherence-and-rename.md", "6b765454a53bfb19f5d805e37f520b275b3d0b7d", 2773],
+          ["03-structure-composition-child.md", "6d0c29848b86b3d31ecdf65b02a241d96ca911ad", 4054],
+          ["04-condition-status-child.md", "faddd2e642d92f980d92792c75d25c8e85826b27", 3413],
+          ["05-identity-constraints-granularity-crosscut.md", "22bbfeaab395ff4b14d013de66ccd48a7334e75e", 4236],
+          ["06-actual-vs-represented-state-boundary.md", "196c6499091fe26117f51df873434f876e3b7dd5", 3257],
+          ["07-cross-domain-holdouts.md", "5f074cbb4cd62c6ea7a52eec4c176d571c8f6dca", 7040],
+          ["08-rival-decomposition-and-child-result.md", "19c2c214cd52414f190d4ce90eb80eff8b4ae1aa", 4701],
+          ["09-domain-state-problem-map.md", "26c347258cd6320dcfeeeddd93be485dea439c4c", 5769]
+        ]
+      },
+      {
+        "directory": "domain-effect/domain-state/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "4564baf491b6f2b6a7465d26b19fc80ad1769348", 12211],
+          ["DOMAIN-STATE-SYNTHESIS.md", "2fb261ec3a4522f8482421674d4c12e9c584eb9b", 15660]
+        ]
+      },
+      {
+        "directory": "domain-effect/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "df64c57371cacbe2fb0f407977b19283e6d9a56b", 13299]
+        ]
+      },
+      {
+        "directory": "domain-effect/findings",
+        "leaves": [
+          ["01-evidence-inventory-and-starting-falsifiers.md", "69a0646034e12c38aaa9b9db0fc2911b45e3c37c", 3149],
+          ["02-node-coherence-and-rename.md", "ddd0c544bbe37e54202ee590ff8d152cab9481f5", 3082],
+          ["03-effect-is-relation-not-child.md", "f04d90f8bca9344eb1d61dc4de3abc758e4db595", 2788],
+          ["04-state-configuration-vs-dynamics-processes.md", "77b4f3a987d25e0ac64f54eb0ff9decdfb0aeecf", 4846],
+          ["05-cross-ground-and-institutional-boundary.md", "544a7e1994ac7d409d80728a1d61726365fd69ee", 3805],
+          ["06-cross-domain-holdouts.md", "ac59a3b8ab617300698d8e6cd7dd710cdbadc83d", 6380],
+          ["07-rival-decomposition-and-child-result.md", "b49fa12288dcef57e136ea5497f7ac23cbe8bdf9", 5113],
+          ["08-domain-reality-problem-map.md", "2ddd54a330ce4a90c8fcd5bda193b9713dc9ce66", 5687]
+        ]
+      },
+      {
+        "directory": "domain-effect/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "ece9e98e051c4590f386bb3941d0040d5f4396d3", 10927],
+          ["DOMAIN-REALITY-SYNTHESIS.md", "c371af143aec53663b5ff5e01ad5bb89b2093df4", 15223]
+        ]
+      },
+      {
+        "directory": "evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "da594dfaf32430b6f51824396ccfa37b5fc8cf9b", 11752]
+        ]
+      },
+      {
+        "directory": "findings",
+        "leaves": [
+          ["01-evidence-inventory-and-starting-falsifiers.md", "a2fe8e27f2d004452c554e8ea3cd0b8107d457cf", 3747],
+          ["02-parent-boundary-and-reference-frame.md", "f3bd3623ec275dab989962a518fb92603a78922b", 4151],
+          ["03-domain-effect-vs-execution-condition-roles.md", "3478e3ae6db53bfd7083d5d4dd2c8faa17626fb7", 4818],
+          ["04-realized-state-dynamics-and-observability.md", "4cf85e8a59e76b5a7dc66bd077c836049011f7be", 4068],
+          ["05-actionability-resources-constraints-and-effects.md", "aff408d598b5b98cf163d86b100fc61b0ed8f85a", 4421],
+          ["06-nontechnical-conditions-and-boundary-leak.md", "b42c697e1ac2417d4de0e8dc575843962d7e8aa2", 4335],
+          ["07-nesting-role-switching-and-environment-identity.md", "f13b7c5e106a21bc422b5f25fb8a395176c307e8", 4438],
+          ["08-rival-decomposition-and-naming-challenge.md", "2624a5a904ef69aacb25dfccd64523af92ea6475", 5846],
+          ["09-cross-domain-holdouts-and-omission.md", "c8b39fb525496c3a8ad77fab6f00cba7cb170363", 7044],
+          ["10-environment-problem-map-and-failure-surfaces.md", "05888458a8db46a261869dbda33d8e457e8064b7", 5004]
+        ]
+      },
+      {
+        "directory": "synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "4761b1abb60e68a90b4ad71d5bd40d413803c7a7", 10826],
+          ["ENVIRONMENT-GROUND-SYNTHESIS.md", "983bda2a3730430ca9588762e1f5e3de13c16244", 17269]
+        ]
+      },
+      {
+        "directory": "work-conditions",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "dc71e5477d41b8c3ce65af8cb3969e7458ce0deb", 3459],
+          ["DEFERRED-RELATIONS.md", "12010ccb47b65efa41ecbeae3a70002070a37351", 4035],
+          ["FINDINGS-MAP.md", "b47e0dd7746c985100362ed9434f0d434723cb5e", 2460],
+          ["INDEX.md", "fb1615676b4144069a77973cb1aba6057ed1d784", 2396],
+          ["KEY.md", "ab894627a1ee8755613444db8550089e5a013014", 4102],
+          ["OPEN-QUESTIONS.md", "190d76b988ad005142168838d94ba92d97ceaa2a", 4387],
+          ["STATE.md", "0cb57424c88f205093349a4ec4a8f5e46994d79c", 5842]
+        ]
+      },
+      {
+        "directory": "work-conditions/evidence",
+        "leaves": [
+          ["SOURCE-LEDGER.md", "e35f045d33c70a17af9cc9027f41fcace51c2e0d", 10206]
+        ]
+      },
+      {
+        "directory": "work-conditions/findings",
+        "leaves": [
+          ["01-canonical-recovery-and-falsifiers.md", "4bc53bfd69d6ffa48f1ed1c00cbb2c4f135773a5", 2465],
+          ["02-node-coherence-and-rival-decomposition.md", "e21f885e197f1541533e732a74a7ddb00dfde063", 7346],
+          ["03-problem-map-and-boundaries.md", "31da0ca406595df425a7022b813f9e3cdec92792", 8013],
+          ["04-external-cross-lineage-falsification.md", "cb7551aa0552d3b09ead5921105a33625551de5d", 6789],
+          ["05-cross-domain-holdouts.md", "7ab3effb1e9a8a0d24f1ae584a52d357006ab4fc", 8570],
+          ["06-falsifier-disposition-and-leaf-result.md", "f36569397a7878889456e535d29a7414cd043bb3", 6665]
+        ]
+      },
+      {
+        "directory": "work-conditions/synthesis",
+        "leaves": [
+          ["COMPLETENESS-OMISSION-CHECK.md", "1275f12812ad7f78a20296fd4e8cfdb0ca3cf16c", 11459],
+          ["WORK-CONDITIONS-SYNTHESIS.md", "5018a8df1e320c97ea980e1d486d798a7fbd5ee0", 10602]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [
+    ["03_ground-deepening/grounds/information", "57e5859ade346c254e49172028909434af87a460"],
+    ["04_top-level-adequacy-rerun", "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a"],
+    ["05_relation-control-composition", "81e9db36f1b14d2248e99660350734c30d501d8d"],
+    ["06_integration-frontier-review", "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"],
+    ["07_selection-dynamics-integration-review", "c88b8399a330f56533c1ef1f452712e0cc2c72f2"],
+    ["08_foundation-sufficiency-reuse-review", "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"],
+    ["history", "151fb029cdc58085ee71f0f470efe89af712971f"]
+  ],
+  "other_frontier": [
+    ["research/studies", "0e0a8511931de0be5b171d08a056681b992ed798"]
+  ],
+  "reconciliation": {
+    "previous_chat_last_observed_main": "ac7e4549ee87b35d84a3f34b86e5f48912549cb3",
+    "observed_published_commit": "5566cbeecd5b818b5673c0687bbc07ed08631801",
+    "observed_author_and_committer": "batuhanozgun",
+    "pending_zip_sha256": "d30f075517f7f1f3af3e856c864a7e780ac4914ea4dd2381a61f636643c461af",
+    "zip_manifest_members_verified": 15,
+    "zip_scope_files": 135,
+    "published_slice_scope_files": 173,
+    "overlap_validation": "Four ZIP leaf lists reproduce the four published subtree identities; prior 27 plus 135 plus the 38 canonical deepening leaves and 8 opaque frontiers reproduce the current Foundation root. The old replacement spec was not replayed.",
+    "not_claimed": "This turn did not publish 5566cbe; the complete old ZIP is not byte-identical to the broader published record."
+  },
+  "verification": {
+    "environment_reconstructed_root": "0a3666bc4f96403d7ef3523fa0614004293fdcb9",
+    "expanded_environment_directories": 48,
+    "foundation_reconstructed_root": "0f9513f91bba76f1e52c955ddcb6270908c11939",
+    "foundation_explicit_files": 408,
+    "foundation_api_bytes": 2564098,
+    "expanded_foundation_directories": 80,
+    "negative_controls": {
+      "environment_leaf_omissions_detected": 208,
+      "environment_path_or_blob_mutations_detected": 2,
+      "new_foundation_leaf_omissions_detected": 208,
+      "remaining_frontier_omissions_detected": 7
+    },
+    "whole_repository_root_recomputed": false,
+    "limits": "Same-author deterministic metadata check. Sizes are API metadata, not tree-hash-bound. No research-content truth, body/link/ZIP/PDF audit or independent reader behavior is established."
+  },
+  "next": "Continue A4 leaf inventory at research/soul-foundations/03_ground-deepening/grounds/information, then the remaining Foundation frontier, then studies. Content/link and necessary archive-internal review, A5 and the two A3 source gaps remain open."
+}

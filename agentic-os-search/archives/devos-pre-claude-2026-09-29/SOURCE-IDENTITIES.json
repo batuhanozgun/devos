@@ -1,0 +1,323 @@
+{
+  "schema": 3,
+  "task": "REPO-SEPARATION-20260929/A3",
+  "date": "2026-10-01",
+  "source_baseline": "58eaaf5f1dfe2f22deecdc07420deb503e95f7d6",
+  "scope": "Raw-byte and manifest identity. Source correctness, transfer completeness, historic test execution, PDF layout, and target behavior not validated. No archived code executed.",
+  "families": [
+    {
+      "id": "p4-v3",
+      "title": "P4 v3",
+      "historical_status": "Tarihsel; uygulama kaynağı değil",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_IN_REPOSITORY_ARCHIVE",
+      "standalone_files_published": false,
+      "artifacts": [
+        {
+          "path": "p4-v3/EXP-006_DevOS_v3.md",
+          "bytes": 136429,
+          "sha256": "8de38d5fba33aa43a8923a53b032a5585e5515ead842c1daa72a9b26b7184d1d",
+          "git_blob_sha1": "74e667f926975e4ada8cbcf46a3e388163a61b3b"
+        },
+        {
+          "path": "p4-v3/EXP-006_DevOS_v3_Sayfa_Sinirsiz_Rapor.pdf",
+          "bytes": 321263,
+          "sha256": "65b04558abb36335c25cb0d28faa6733db42f34f62e2960cb499dd6b62a34c5d",
+          "git_blob_sha1": "c2f87dc7f94b99629bb0d36c4898902c12fa93d4"
+        },
+        {
+          "path": "p4-v3/EXP-006_DevOS_v3_Kaynak_ve_Kanit_Paketi.zip",
+          "bytes": 1776487,
+          "sha256": "df9e1ef363b649e82dc88341aaeba2028852878d4e36131f30738a7d548ee100",
+          "git_blob_sha1": "6e6ccc90d89851526035eccfd4e8598a56bb04ea"
+        },
+        {
+          "path": "p4-v3/EXP-006_DevOS_v3_Teslim_Kimligi.json",
+          "bytes": 2235,
+          "sha256": "e27fa379ab68a45007b6fec1acd55a78594ea371e4c1e422695063041dae4cbf",
+          "git_blob_sha1": "42a48ae5575cd2ca5ca4a984d9ce1a37d703c909"
+        }
+      ]
+    },
+    {
+      "id": "p4-v4",
+      "title": "P4 v4 (Codex)",
+      "historical_status": "Tarihsel; mimari ilkelerinin yeni plana aktarılması görevde bildirilmiştir; ortam kararı geçersiz",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_IN_REPOSITORY_ARCHIVE",
+      "standalone_files_published": false,
+      "artifacts": [
+        {
+          "path": "p4-v4/EXP-006_DevOS_v4.md",
+          "bytes": 141259,
+          "sha256": "22f4660d16b487f5a35a3a9eecff1e65246efc53707f93ce50d99b3d3dc9f146",
+          "git_blob_sha1": "f9f5431c9ebc2394983b465b2afbf1894748fbc1"
+        },
+        {
+          "path": "p4-v4/EXP-006_DevOS_v4_Codex_Hedefli_Rapor.pdf",
+          "bytes": 355677,
+          "sha256": "cd60f7fde9e1ba4fe7f1ecc7f2abb0b008e57bc12868d51721d6442f17c2e425",
+          "git_blob_sha1": "5d3795d0eed8a10daa9070e69bb033a45671971e"
+        },
+        {
+          "path": "p4-v4/EXP-006_DevOS_v4_Codex_Kaynak_ve_Kanit_Paketi.zip",
+          "bytes": 3638865,
+          "sha256": "df895557d77c4585627615010ac5061cde95ce768f73cfdea59259d1e5726aff",
+          "git_blob_sha1": "6d5d0d29c2e73ef8271db7ec382bb3cd7078e364"
+        },
+        {
+          "path": "p4-v4/EXP-006_DevOS_v4_Teslim_Kimligi.json",
+          "bytes": 948,
+          "sha256": "2f1cf35254fc306aed5e6bfc2bcd6ea24407bcacad9dce3c18bbcfd64f4ff77b",
+          "git_blob_sha1": "34271d88266cd8a9017db1aa130c537b48e9b216"
+        }
+      ]
+    },
+    {
+      "id": "p5-k00-k15",
+      "title": "P5 K00–K15",
+      "historical_status": "Tarihsel; rol sözleşmeleri ve veri modelinin aktarılması görevde bildirilmiştir",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_IN_REPOSITORY_ARCHIVE",
+      "standalone_files_published": false,
+      "artifacts": [
+        {
+          "path": "p5-k00-k15/EXP-006_P5_Codex_Kurulum_Rehberi.md",
+          "bytes": 102530,
+          "sha256": "578561d7c21d3e69982487c9993ea2d061c37eedc707e1be971b1b24081cb219",
+          "git_blob_sha1": "fe5cd3fd00b0811d9cdf44e413dd98f313a362b4"
+        },
+        {
+          "path": "p5-k00-k15/EXP-006_P5_Codex_Kurulum_Rehberi.pdf",
+          "bytes": 269096,
+          "sha256": "f97c51b7de8bcfec74016c593a5952cd9c31fca48626d75441009b67296a001f",
+          "git_blob_sha1": "8b6fe197b80aac5a872e914d19ab32c6f65a4d65"
+        },
+        {
+          "path": "p5-k00-k15/EXP-006_P5_Codex_Kurulum_ve_Devir_Paketi.zip",
+          "bytes": 4980121,
+          "sha256": "ecee05bde83334e8c45a9f864d0244456462b76a3b0ce054bd6c5cfaaf4dc94c",
+          "git_blob_sha1": "c6907fe57effa138cfe0d8528b0f5e8c1d39d053"
+        },
+        {
+          "path": "p5-k00-k15/EXP-006_P5_Codex_Teslim_Kimligi.json",
+          "bytes": 2346,
+          "sha256": "285db22891ad0d056fb8035119842b54a5fc43cab6f2f3379c0c627a2907aae9",
+          "git_blob_sha1": "2bd651a0fc1764bcd28cc9b6a56327e305221a38"
+        },
+        {
+          "path": "p5-k00-k15/EXP-006_P5_Codex_Baslangic.md",
+          "bytes": 2634,
+          "sha256": "a6eaeca448be24005ff1f4a6751706b7f0e11108625edf547e71668b685b8f6d",
+          "git_blob_sha1": "33a8c4e3a764b95ab452d09a432e5316ff762c1c"
+        }
+      ]
+    },
+    {
+      "id": "p5-v2-interface",
+      "title": "P5 v2 Codex arayüzü",
+      "historical_status": "Tarihsel; veri modeli tablosunun aktarılması görevde bildirilmiştir",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_IN_REPOSITORY_ARCHIVE",
+      "standalone_files_published": false,
+      "artifacts": [
+        {
+          "path": "p5-v2-interface/EXP-006_P5_v2_Codex_Arayuzu_Rehberi.md",
+          "bytes": 84497,
+          "sha256": "4a1a13e8df7d3cfa37964a43339509417240c5970559b88b3d12cfb70ce5a6f8",
+          "git_blob_sha1": "b47dfd07dcaf93d003cafd780feea8e52421418d"
+        },
+        {
+          "path": "p5-v2-interface/EXP-006_P5_v2_Codex_Arayuzu_Rehberi.pdf",
+          "bytes": 134750,
+          "sha256": "5c59f2fc3e1236b58d462727499d7b93ee48d7fcd3a0fdf3db2389519850c930",
+          "git_blob_sha1": "7d7627c87f7f152560b3309309a119f81ea516ae"
+        },
+        {
+          "path": "p5-v2-interface/EXP-006_P5_v2_Codex_Arayuzu_Kaynak_Paketi.zip",
+          "bytes": 8939667,
+          "sha256": "56f6a8ab15f3d63ea1df35c29b88970e926f45c97e3b455f43e9129d8c046e95",
+          "git_blob_sha1": "c5f41176e3cf76f38a6dfa43fcec1dbdec9ad36e"
+        },
+        {
+          "path": "p5-v2-interface/EXP-006_P5_v2_Teslim_Kimligi.json",
+          "bytes": 2333,
+          "sha256": "618bf8ba87c5a95c7ee0daf2363e2200d220610572e36b2c46529411acae3d98",
+          "git_blob_sha1": "22e0581e6714812dd7f18356b00078a71ed30c5c"
+        },
+        {
+          "path": "p5-v2-interface/EXP-006_P5_v2_CODEX_START.md",
+          "bytes": 2496,
+          "sha256": "d42ed1de8d1b31ff2e64f384c53e5f650095023c728af587134be5c7150b1bce",
+          "git_blob_sha1": "d7016ec3128dafd2dfe98b55bea84ed7dc1a4d1c"
+        }
+      ]
+    },
+    {
+      "id": "academy",
+      "title": "SOUL Academy",
+      "historical_status": "Keşif notu, karar değil; özgün §27 karar yolu tamamlanmadan kurulum veya iş açma yetkisi üretmez",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_STANDALONE_AND_ARCHIVE",
+      "standalone_files_published": true,
+      "standalone_repository_path": "archives/devos-pre-claude-2026-09-29/academy/SOUL_ACADEMY_EXPLORATORY_CONCEPT_NOTE.md",
+      "source_identity": {
+        "file_id": "file_00000000215881f495d5e343f56fb757",
+        "version_id": "1",
+        "representation": "raw_file"
+      },
+      "artifacts": [
+        {
+          "path": "academy/SOUL_ACADEMY_EXPLORATORY_CONCEPT_NOTE.md",
+          "bytes": 32834,
+          "sha256": "2d879468005bf2ecdeb6a1bbf85be20e1f4a2457d13b2237c8fe13a3d42af973",
+          "git_blob_sha1": "c5ff616d696334009f8e67432707c14ffedc7630"
+        }
+      ]
+    },
+    {
+      "id": "p5-s00-s12",
+      "title": "P5 S00–S12",
+      "historical_status": "Tarihsel; senaryolar ileride sınav fikri olabilir",
+      "source_access": "NOT_RECOVERED",
+      "repository_content_status": "NOT_PUBLISHED",
+      "artifacts": [],
+      "expected_unverified": [
+        {
+          "filename": "EXP-006_P5_Codex_Kurulum_Rehberi.pdf",
+          "bytes": 346149,
+          "sha256": "23869514aed4cac88ab135874d7d899d03ba76ddf56668bbb30d4b251d8b8d79"
+        },
+        {
+          "filename": "EXP-006_P5_Codex_Kurulum_Rehberi.md",
+          "bytes": 199205,
+          "sha256": "2208394f898037305e10939c400a6bfbffae0da4461514e76226ddf62d9aa5f9"
+        },
+        {
+          "filename": "EXP-006_P5_Codex_Insa_ve_Kurulum_Paketi.zip",
+          "bytes": 4209549,
+          "sha256": "40aee0e270e683b12ee7316406dfb2254a7bf64d8aeffcf215dcd6b54b62c36b"
+        },
+        {
+          "filename": "EXP-006_P5_CODEX_START.md",
+          "bytes": 3326,
+          "sha256": "a4b9e42158780d98a3fdbfd4ab7000c68047ca9b15837612ce30f408df43ff00"
+        }
+      ],
+      "metadata_source": "explorations/EXP-006-development-os-calisma-duzeni/work/P5-01-codex-build-installation-package.md",
+      "open_boundary": "PERMANENT_OPEN_SOURCE_ACCESS_BOUNDARY",
+      "non_substitution": "P5 K00-K15 does not substitute for P5 S00-S12. Reopen only on a new original source or concrete access evidence."
+    },
+    {
+      "id": "soul-and-devos",
+      "title": "SOUL ve DevOS",
+      "historical_status": "Tarihsel kaynak; SOUL tanımının yeni planda güncellendiği görevde bildirilmiştir",
+      "source_access": "RECOVERED_RAW_BYTES",
+      "repository_content_status": "VERIFIED_STANDALONE",
+      "artifacts": [
+        {
+          "path": "soul-and-devos/SOUL_ve_DevOS.md",
+          "repository_path": "archives/devos-pre-claude-2026-09-29/soul-and-devos/SOUL_ve_DevOS.md",
+          "archive_container_member": false,
+          "bytes": 147006,
+          "sha256": "0f8221445a59eccf1a52efa3d2fe3c7fac642d1370aff99acdc1894fbcfdc3c2",
+          "git_blob_sha1": "bcf79ccfcc21e1b8c294bd60cc17b065ce19e15a"
+        }
+      ],
+      "expected_unverified": [],
+      "standalone_files_published": true,
+      "standalone_repository_path": "archives/devos-pre-claude-2026-09-29/soul-and-devos/SOUL_ve_DevOS.md",
+      "source_identity": {
+        "supplied_filename": "SOUL_ve_DevOS.md",
+        "identity_basis": "Owner explicitly identified the attached file as the requested report in the five-item closure correction; supplied in this continuation on 2026-10-01."
+      }
+    }
+  ],
+  "delivery_identity_checks": {
+    "artifact_entries": 14,
+    "matched": 14
+  },
+  "package_checks": [
+    {
+      "origin": "EXP-006_DevOS_v3_Kaynak_ve_Kanit_Paketi.zip",
+      "manifest_entries": 76,
+      "checked": 76,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    },
+    {
+      "origin": "EXP-006_DevOS_v3_Kaynak_ve_Kanit_Paketi.zip!baseline/original-v2-source.zip",
+      "manifest_entries": 22,
+      "checked": 22,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    },
+    {
+      "origin": "EXP-006_DevOS_v4_Codex_Kaynak_ve_Kanit_Paketi.zip",
+      "manifest_entries": 95,
+      "checked": 95,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    },
+    {
+      "origin": "EXP-006_P5_Codex_Kurulum_ve_Devir_Paketi.zip",
+      "manifest_entries": 80,
+      "checked": 80,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    },
+    {
+      "origin": "EXP-006_P5_v2_Codex_Arayuzu_Kaynak_Paketi.zip",
+      "manifest_entries": 71,
+      "checked": 71,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    },
+    {
+      "origin": "EXP-006_Yeni_Oturum_Devir_Paketi.zip",
+      "manifest_entries": 5,
+      "checked": 5,
+      "crc": "PASS",
+      "size_and_sha256": "ALL_MATCH",
+      "duplicate_or_unsafe_paths": 0,
+      "unlisted_files": 0
+    }
+  ],
+  "publication_limit": "Recovered P4 v3, P4 v4, P5 K00-K15 and P5 v2 originals are published as members of the verified repository ZIP, not as standalone repository files. Academy is also a standalone file. SOUL ve DevOS is supplied by the owner and archived as a standalone file, outside the unchanged ZIP. Only P5 S00-S12 remains unavailable. Remote binary was not downloaded again: remote Git blob identity and size were matched to local bytes, then local members were validated. No target-reader ingestion or source-correctness claim.",
+  "search_limit": "Targeted searches and one known folder listing; not a complete Library or full-history absence proof.",
+  "publication_observed_at_commit": "93216f73ea565ed3ba22e4ba0e18e2144e1368c4",
+  "archive_container": {
+    "repository_path": "archives/devos-pre-claude-2026-09-29/A3_Dogrulanmis_Tarihsel_Kaynaklar_2026-09-30.zip",
+    "observed_commit": "93216f73ea565ed3ba22e4ba0e18e2144e1368c4",
+    "bytes": 20275988,
+    "sha256": "8b06cb2b3dca5875cab0ad72595701e3e0d4d756d0c80fa2f49041df48aa9b17",
+    "git_blob_sha1": "547522120893c25d5c709deb5c0e18f57ebe7806",
+    "member_prefix": "archives/devos-pre-claude-2026-09-29/",
+    "locator_rule": "For the 19 recovered ZIP artifacts, exact ZIP member = member_prefix + artifact.path. SOUL ve DevOS has archive_container_member=false and an explicit standalone repository_path; it is not a ZIP member.",
+    "remote_verification": "GitHub path metadata size and Git blob SHA-1 matched the locally hashed original.",
+    "remote_binary_download_performed": false,
+    "local_verification": {
+      "members": 21,
+      "originals": 19,
+      "original_identities_matched": 19,
+      "crc": "PASS",
+      "safe_unique_member_paths": true
+    },
+    "embedded_inventory": {
+      "member": "archives/devos-pre-claude-2026-09-29/SOURCE-IDENTITIES.json",
+      "git_blob_sha1": "db2fb9829de6ce39888dde65aca045c081e10ba1",
+      "status": "HISTORICAL_SNAPSHOT_NOT_CURRENT_PUBLICATION_STATE"
+    }
+  },
+  "prior_package_checks_scope": "delivery_identity_checks and package_checks retain the A3-INTAKE results from commit 323e38d288b6760ab70e15744c86678fcbc9d125; historic tests were not rerun."
+}

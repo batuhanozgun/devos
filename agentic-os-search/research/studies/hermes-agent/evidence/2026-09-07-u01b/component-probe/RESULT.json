@@ -1,0 +1,177 @@
+{
+  "research_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "utc_run_timestamp": "2026-09-07T09:35:13.772427+00:00",
+  "python": "3.13.5",
+  "platform": "Linux",
+  "source_identities": {
+    "skill_manager_batch.py": {
+      "git_blob": "9f38adff284eede4234948f67e99a43752c0926e",
+      "bytes": 9964,
+      "sha256": "2cefa015de4db1122ea59834f9a38debb2643c0b035592e941f853aab995bd52",
+      "identity_matches": true
+    },
+    "write_approval.py": {
+      "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+      "bytes": 12431,
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232",
+      "identity_matches": true
+    },
+    "LICENSE": {
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "identity_matches": true
+    }
+  },
+  "scope": "Two exact pinned modules; dependency stubs; synthetic files only.",
+  "not_performed": [
+    "Hermes installation",
+    "whole application test",
+    "upstream test-suite run",
+    "provider/network call",
+    "real Hermes config/user-data access",
+    "independent researcher replication",
+    "remote repository mutation"
+  ],
+  "interpretation": "Diagnostic assertions confirm the listed observations. They are not a Hermes conformance PASS. Exception rollback and preview/pending limitations are bounded component findings, not measured production incident rates.",
+  "cases": [
+    {
+      "id": "B01",
+      "case": "success",
+      "result": {
+        "success": true,
+        "operations_applied": 2,
+        "results": [
+          {
+            "name": "probe",
+            "action": "patch",
+            "file_path": null,
+            "success": true
+          },
+          {
+            "name": "probe",
+            "action": "patch",
+            "file_path": null,
+            "success": true
+          }
+        ]
+      },
+      "exception": null,
+      "live_file": "SECOND-APPLIED\n",
+      "rollback_snapshot_dirs_remaining": 0,
+      "synthetic_side_effects_remaining": [
+        "synthetic-side-effect-1",
+        "synthetic-side-effect-2"
+      ],
+      "gate_context_restored": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "B02",
+      "case": "error_result",
+      "result": {
+        "success": false,
+        "error": "operations[1] (patch on 'probe') failed: synthetic returned failure — batch aborted, all touched skills rolled back.",
+        "failed_index": 1,
+        "completed_before_failure": 1
+      },
+      "exception": null,
+      "live_file": "ORIGINAL\n",
+      "rollback_snapshot_dirs_remaining": 0,
+      "synthetic_side_effects_remaining": [
+        "synthetic-side-effect-1"
+      ],
+      "gate_context_restored": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "B03",
+      "case": "malformed_result",
+      "result": {
+        "success": false,
+        "error": "operations[1] (patch on 'probe') failed: unparseable op result — batch aborted, all touched skills rolled back.",
+        "failed_index": 1,
+        "completed_before_failure": 1
+      },
+      "exception": null,
+      "live_file": "ORIGINAL\n",
+      "rollback_snapshot_dirs_remaining": 0,
+      "synthetic_side_effects_remaining": [
+        "synthetic-side-effect-1"
+      ],
+      "gate_context_restored": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "B04",
+      "case": "exception",
+      "result": null,
+      "exception": "synthetic mutator exception",
+      "live_file": "FIRST-APPLIED\n",
+      "rollback_snapshot_dirs_remaining": 0,
+      "synthetic_side_effects_remaining": [
+        "synthetic-side-effect-1"
+      ],
+      "gate_context_restored": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "B05",
+      "case": "restore_error",
+      "result": {
+        "success": false,
+        "error": "operations[1] (patch on 'probe') failed: synthetic returned failure — batch aborted, ROLLBACK FAILED for 'probe' (synthetic restore failure); snapshot preserved at '<synthetic-root>/restore_error/snapshots/skill_batch_ln3j9a9g/probe'.",
+        "failed_index": 1,
+        "completed_before_failure": 1
+      },
+      "exception": null,
+      "live_file": "FIRST-APPLIED\n",
+      "rollback_snapshot_dirs_remaining": 1,
+      "synthetic_side_effects_remaining": [
+        "synthetic-side-effect-1"
+      ],
+      "gate_context_restored": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "D01",
+      "case": "flat_targeted_patch_preview_control",
+      "rendered": "--- a/SKILL.md\n+++ b/SKILL.md\n@@ -2,4 +2,4 @@\n name: probe\n description: Example.\n ---\n-ORIGINAL\n+REPLACED\n",
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "D02",
+      "case": "advertised_batch_shape_preview",
+      "rendered": "(batch on '')",
+      "proposed_change_visible_in_diff": false,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "D03",
+      "case": "flat_content_rewrite_preview",
+      "rendered": "(no textual change)",
+      "payload_differs_from_current_file": true,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "D04",
+      "case": "stage_success_control",
+      "record_returned": true,
+      "retrievable_by_id": true,
+      "listed_pending_records": 1,
+      "orphan_temporary_records": 0,
+      "expected_diagnostic_outcome_observed": true
+    },
+    {
+      "id": "D05",
+      "case": "stage_rename_failure",
+      "record_returned": true,
+      "retrievable_by_id": false,
+      "listed_pending_records": 0,
+      "orphan_temporary_records": 1,
+      "expected_diagnostic_outcome_observed": true
+    }
+  ],
+  "diagnostic_cases": 10,
+  "all_expected_diagnostic_outcomes_observed": true
+}

@@ -1,0 +1,62 @@
+{
+  "scope": "Descriptive calculation over reported aggregates only.",
+  "table7_comparisons": [
+    {
+      "model": "Claude Opus 4.6",
+      "comparator": "Terminus 2",
+      "difference_pp": "13.500000",
+      "status": "Difference of reported percentages; not a causal effect or controlled rerun."
+    },
+    {
+      "model": "Claude Opus 4.6",
+      "comparator": "Terminus-KIRA",
+      "difference_pp": "1.700000",
+      "status": "Difference of reported percentages; not a causal effect or controlled rerun."
+    },
+    {
+      "model": "Claude Haiku 4.5",
+      "comparator": "Terminus 2",
+      "difference_pp": "9.300000",
+      "status": "Difference of reported percentages; not a causal effect or controlled rerun."
+    },
+    {
+      "model": "Claude Haiku 4.5",
+      "comparator": "Terminus-KIRA",
+      "difference_pp": "3.900000",
+      "status": "Difference of reported percentages; not a causal effect or controlled rerun."
+    },
+    {
+      "model": "Claude Haiku 4.5",
+      "comparator": "Goose",
+      "difference_pp": "2.100000",
+      "status": "Difference of reported percentages; not a causal effect or controlled rerun."
+    }
+  ],
+  "artifact_readme": {
+    "declared_tasks": 89,
+    "declared_attempts_per_task": 5,
+    "nominal_attempts_if_complete": 445,
+    "weighted_mean_from_rounded_groups_pct": "76.421348",
+    "reported_overall_pct": "76.4",
+    "equal_group_mean_not_the_reported_task_weighted_metric_pct": "81.933333",
+    "limit": "445 nominal attempts remain 89 task identities; raw outcomes and coverage not reconstructed."
+  },
+  "separate_website_demo": {
+    "declared_tasks": 19,
+    "within_demo_difference_pp": "18.000000",
+    "limit": "Not a final full-benchmark gain. Do not join to Table 7 or Appendix A as one run."
+  },
+  "experimental_reproduction": false,
+  "statistical_significance_established": false,
+  "input_sha256": "046260e0266ad359fc0b7d92753a7c3e09f2f8d4642ca6c6c46f0e2db5b55bc7",
+  "self_checks": {
+    "fixed_arithmetic_checks": 3,
+    "rejected_inputs": [
+      "different model",
+      "different scope",
+      "nonfinite rate",
+      "incomplete group declaration"
+    ],
+    "limit": "Checks this script only; not agent, verifier or model tests."
+  }
+}

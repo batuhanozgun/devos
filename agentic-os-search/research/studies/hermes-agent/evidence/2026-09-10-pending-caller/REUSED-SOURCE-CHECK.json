@@ -1,0 +1,14 @@
+{
+  "write_approval.py": {
+    "bytes": 12431,
+    "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d"
+  },
+  "write_approval_commands.py": {
+    "bytes": 5683,
+    "git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352"
+  },
+  "LICENSE": {
+    "bytes": 1070,
+    "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+  }
+}

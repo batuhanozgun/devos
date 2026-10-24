@@ -1,0 +1,189 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "E01",
+      "observed": {
+        "c_exists": true,
+        "full": [
+          "c"
+        ],
+        "full_absent": [],
+        "indexed": [],
+        "z_exists": false
+      },
+      "passed": true
+    },
+    {
+      "id": "E02",
+      "observed": {
+        "both_item_precision": 1,
+        "mmr": [
+          "a",
+          "c"
+        ],
+        "mmr_coverage": [
+          "risk",
+          "test"
+        ],
+        "relevance": [
+          "a",
+          "b"
+        ],
+        "relevance_coverage": [
+          "test"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "E03",
+      "observed": {
+        "best_effort_adequate": false,
+        "budget_one": [],
+        "budget_two": [
+          [
+            "a",
+            "c"
+          ]
+        ],
+        "restricted": []
+      },
+      "passed": true
+    },
+    {
+      "id": "E04",
+      "observed": {
+        "bound": "SAFE",
+        "quote_matches": [
+          0,
+          5
+        ],
+        "unbound": " mod"
+      },
+      "passed": true
+    },
+    {
+      "id": "E05",
+      "observed": {
+        "compatible": [
+          [
+            "s1",
+            "r1"
+          ]
+        ],
+        "newest": [
+          "s2",
+          "r1"
+        ],
+        "newest_compatible": false
+      },
+      "passed": true
+    },
+    {
+      "id": "E06",
+      "observed": {
+        "observations": [
+          {
+            "exact_exposure": true,
+            "ids": [
+              "a",
+              "c"
+            ],
+            "ids_present": true,
+            "selected_adequate": true
+          },
+          {
+            "exact_exposure": false,
+            "ids": [
+              "a",
+              "c"
+            ],
+            "ids_present": true,
+            "selected_adequate": true
+          },
+          {
+            "exact_exposure": true,
+            "ids": [
+              "a",
+              "b"
+            ],
+            "ids_present": true,
+            "selected_adequate": false
+          },
+          {
+            "exact_exposure": false,
+            "ids": [
+              "a",
+              "b"
+            ],
+            "ids_present": true,
+            "selected_adequate": false
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "E07",
+      "observed": {
+        "actual_adequacy": [
+          true,
+          false
+        ],
+        "actual_enlarged": [
+          "a",
+          "b"
+        ],
+        "actual_prior": [
+          "a",
+          "c"
+        ],
+        "planned_enlarged": [
+          "a",
+          "b",
+          "c"
+        ],
+        "planned_prior": [
+          "a",
+          "c"
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "id": "index_miss_proves_absence",
+      "rejected": true
+    },
+    {
+      "id": "precision_proves_set_adequacy",
+      "rejected": true
+    },
+    {
+      "id": "best_effort_is_sufficient",
+      "rejected": true
+    },
+    {
+      "id": "unbound_selector_is_unique",
+      "rejected": true
+    },
+    {
+      "id": "newest_is_coherent",
+      "rejected": true
+    },
+    {
+      "id": "ids_prove_exposure",
+      "rejected": true
+    },
+    {
+      "id": "larger_bundle_preserves_coverage",
+      "rejected": true
+    }
+  ],
+  "python": "3.13.5",
+  "scope": "Seven finite cases and seven same-fixture false rules; not independent or live validation",
+  "script_sha256": "4c0d26b0788be1a807fdbe452a63fc5f1261bb1b67fb436104f1a062408e5777",
+  "spec_sha256": "2766ef77f85a0661f7f8aa49df81d970095fb1b448f70c75b55196c9f1539894"
+}

@@ -1,0 +1,164 @@
+{
+  "kind": "constructed_semantic_counterexamples",
+  "empirical_or_live_agent_test": false,
+  "cases": [
+    {
+      "name": "inert_record",
+      "status": "PASS",
+      "observed": {
+        "stored_change": true,
+        "response_changed": false
+      }
+    },
+    {
+      "name": "fixed_code_external_carrier",
+      "status": "PASS",
+      "observed": {
+        "same_code": true,
+        "before": [
+          "continue",
+          "continue"
+        ],
+        "after": [
+          "continue",
+          "check"
+        ]
+      }
+    },
+    {
+      "name": "parameter_change_without_behavior",
+      "status": "PASS",
+      "observed": {
+        "parameters_changed": true,
+        "tested_inputs": 11,
+        "different_outputs": 0
+      }
+    },
+    {
+      "name": "declared_restart",
+      "status": "PASS",
+      "observed": {
+        "with_restore": [
+          "continue",
+          "check"
+        ],
+        "without_restore": [
+          "continue",
+          "continue"
+        ]
+      }
+    },
+    {
+      "name": "partial_propagation",
+      "status": "PASS",
+      "observed": {
+        "workers": [
+          "check",
+          "continue"
+        ],
+        "all_paths_changed": false
+      }
+    },
+    {
+      "name": "transient_episode_state",
+      "status": "PASS",
+      "observed": {
+        "during_episode": "pause",
+        "later_vector": [
+          "continue",
+          "continue"
+        ]
+      }
+    },
+    {
+      "name": "declared_horizon",
+      "status": "PASS",
+      "observed": {
+        "threshold": 0.5,
+        "after_2_opportunities": 0.6400000000000001,
+        "after_10_opportunities": 0.10737418240000006
+      }
+    },
+    {
+      "name": "latent_cancellation",
+      "status": "PASS",
+      "observed": {
+        "initial_output": 0.0,
+        "following_output": 0.49,
+        "initial_latent_states": [
+          1.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "name": "probe_changes_target",
+      "status": "PASS",
+      "observed": {
+        "before_probe_update": "continue",
+        "after_probe_update": "check"
+      }
+    },
+    {
+      "name": "changed_situation_without_adaptation",
+      "status": "PASS",
+      "observed": {
+        "observed_before": 2,
+        "observed_after": 8,
+        "response_function_changed": false
+      }
+    },
+    {
+      "name": "occurrence_without_benefit",
+      "status": "PASS",
+      "observed": {
+        "before_correct": 2,
+        "after_correct": 1,
+        "responses_changed": true
+      }
+    },
+    {
+      "name": "redundant_carriers",
+      "status": "PASS",
+      "observed": {
+        "single_removal_changes_response": false,
+        "joint_removal_changes_response": true
+      }
+    },
+    {
+      "name": "same_mean_different_distribution",
+      "status": "PASS",
+      "observed": {
+        "mean_before": 2.0,
+        "mean_after": 2.0,
+        "distributions_equal": false
+      }
+    },
+    {
+      "name": "latent_update_rule",
+      "status": "PASS",
+      "observed": {
+        "current_output_both": 0.0,
+        "after_identical_future_feedback": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "name": "functional_restore_not_bytes",
+      "status": "PASS",
+      "observed": {
+        "bytes_same": false,
+        "declared_response_class_preserved": true
+      }
+    }
+  ],
+  "passed": 15,
+  "negative_rules_rejected": [
+    "any_durable_record_proves_response_change",
+    "every_input_must_show_change",
+    "one_carrier_ablation_always_detects_contribution",
+    "same_mean_proves_same_distribution"
+  ]
+}

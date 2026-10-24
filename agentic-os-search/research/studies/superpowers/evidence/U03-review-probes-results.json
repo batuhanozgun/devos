@@ -1,0 +1,125 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "source_identity": {
+    "path": "skills/subagent-driven-development/scripts/review-package",
+    "blob": "31852e2abbeb9a41084f67a9f2ef3cfc3378bce9",
+    "bytes": 1469,
+    "verified": true
+  },
+  "predicate_source": {
+    "test_blob": "151fc64d04668567c4980301dc28f323bd5424b5",
+    "helper_blob": "9e187610d6a973c6db0aed91dfb8deadfcac3e78",
+    "literal": "provide.*directly\\|full.*text\\|paste\\|include.*prompt",
+    "scope": "literal grep predicate only; no upstream suite/model call"
+  },
+  "environment": {
+    "os": "Linux",
+    "python": "3.13.5",
+    "git": "git version 2.47.3",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "scope": "Exact review-package explicit-OUTFILE execution in synthetic Git repository; constructed verbal-oracle counterexamples. No reviewer/model, installation, network, or credentials.",
+  "criteria": "Source-informed exploratory; criteria fixed before this run. Descriptive PASS is not task acceptance or product efficacy.",
+  "cases": [
+    {
+      "id": "missing_plan",
+      "kind": "mechanism",
+      "criterion": "Reject missing plan before producing a package",
+      "result": "PASS",
+      "observed": {
+        "exit": 2,
+        "output_exists": false
+      }
+    },
+    {
+      "id": "bad_base",
+      "kind": "mechanism",
+      "criterion": "Reject unresolved BASE before producing a package",
+      "result": "PASS",
+      "observed": {
+        "exit": 2,
+        "output_exists": false
+      }
+    },
+    {
+      "id": "full_multicommit_range",
+      "kind": "mechanism",
+      "criterion": "Recorded BASE retains both commits and both changed files",
+      "result": "PASS",
+      "observed": {
+        "exit": 0,
+        "both_files": true,
+        "reports_two_commits": true
+      }
+    },
+    {
+      "id": "narrow_range_is_accepted",
+      "kind": "scope-observation",
+      "criterion": "A valid but shortened BASE omits the first commit; helper does not infer task admission",
+      "result": "PASS",
+      "observed": {
+        "exit": 0,
+        "first_file_present": false,
+        "second_file_present": true
+      }
+    },
+    {
+      "id": "coverage_oracle_rejects_narrow",
+      "kind": "negative-control",
+      "criterion": "Fixture file-coverage oracle rejects omission of a known task file",
+      "result": "PASS",
+      "observed": {
+        "accepts_incomplete_packet": false
+      }
+    },
+    {
+      "id": "scoped_fix_range",
+      "kind": "mechanism",
+      "criterion": "Previous reviewed HEAD bounds the fix-only packet",
+      "result": "PASS",
+      "observed": {
+        "exit": 0,
+        "fix_file_present": true,
+        "earlier_file_present": false
+      }
+    },
+    {
+      "id": "committed_packet_not_working_state",
+      "kind": "scope-observation",
+      "criterion": "Same explicit commit endpoints give identical packet despite dirty/staged/untracked state; helper preserves that state",
+      "result": "PASS",
+      "observed": {
+        "packet_unchanged": true,
+        "checkout_preserved": true,
+        "dirty_state_present": true
+      }
+    },
+    {
+      "id": "predicate_accepts_current_file_handoff",
+      "kind": "oracle-health-challenge",
+      "criterion": "Test-7 predicate should accept the current file-based handoff answer",
+      "result": "FAIL",
+      "observed": {
+        "synthetic_reply": "Controller provides: by file\nImplementer must read plan file: no\n",
+        "accepted": false
+      }
+    },
+    {
+      "id": "predicate_rejects_obsolete_paste_handoff",
+      "kind": "oracle-health-challenge",
+      "criterion": "Test-7 predicate should reject the obsolete direct-paste handoff answer",
+      "result": "FAIL",
+      "observed": {
+        "synthetic_reply": "Controller provides: directly; paste the task into the prompt\nImplementer must read plan file: no\n",
+        "accepted": true
+      }
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 7,
+    "oracle_health_failures": 2,
+    "other_failures": 0
+  }
+}

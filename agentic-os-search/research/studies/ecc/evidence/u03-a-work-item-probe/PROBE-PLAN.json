@@ -1,0 +1,18 @@
+{
+  "id": "E02",
+  "unit": "U03-A",
+  "design": "Source-informed exploratory probe; criteria written before execution. Same assistant, not independent replication.",
+  "target": "affaan-m/ECC@8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "sourcePath": "scripts/lib/control-pane/work-item-mutations.js",
+  "sourceBlob": "c82a26196432b1cc0a95aee023354fe285c9bbdd",
+  "environment": "Unmodified CommonJS helper plus a new in-memory store double. No SQLite, provider, CLI, agent process, user state, credentials, or network execution.",
+  "cases": [
+    {"id":"C0", "question":"Baseline unassigned open card", "criterion":"Claim sets owner to worker-a and status running; one store write."},
+    {"id":"C1", "question":"Does automatic pickup exclude blocked cards?", "criterion":"A higher-priority unassigned blocked card is chosen ahead of an open normal-priority card; state becomes running."},
+    {"id":"C2", "question":"Does explicit claim preserve an existing different owner?", "criterion":"Explicit claim changes alice to bob without rejecting; existing session link remains."},
+    {"id":"C3", "question":"Negative control: already-done explicit claim", "criterion":"Throws the already-done error and performs no store write."},
+    {"id":"C4", "question":"Reopen by board movement", "criterion":"Moving a done card to ready sets open, preserving owner and session link."},
+    {"id":"C5", "question":"Scope of priority selection", "criterion":"The store is asked for limit 100; an older critical card outside that returned window is not selected."}
+  ],
+  "limits": "No concurrent-writer safety, SQL persistence/foreign keys, authenticated authorization, process dispatch, integration success, or task effectiveness claim. Matching a criterion is not a product-safety PASS. A contrary result must be retained."
+}

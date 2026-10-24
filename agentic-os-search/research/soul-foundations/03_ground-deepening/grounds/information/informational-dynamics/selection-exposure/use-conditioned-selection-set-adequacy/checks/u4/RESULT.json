@@ -1,0 +1,82 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "N01",
+      "observed": {
+        "action_preserved": true,
+        "common_reasons": [],
+        "constant_policies": [],
+        "exact_reason_preserved": false,
+        "full_reasons": [
+          "tests-incomplete",
+          "dependency-incompatible"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "N02",
+      "observed": {
+        "after_delete_full": [
+          "module"
+        ],
+        "after_delete_selected": [],
+        "full_output": [
+          "module"
+        ],
+        "minimal_witnesses": [
+          [
+            "a"
+          ],
+          [
+            "b"
+          ]
+        ],
+        "selected_has_all_witnesses": false,
+        "selected_has_one_witness": true,
+        "selected_output": [
+          "module"
+        ],
+        "subsets_executed": 8
+      },
+      "passed": true
+    },
+    {
+      "id": "N03",
+      "observed": {
+        "comparisons": 256,
+        "disagreements": [],
+        "full_zero_certified": true,
+        "naive_false_certifications": 65,
+        "probe_after": "FALSE",
+        "probe_before": "UNKNOWN",
+        "verdict_counts": {
+          "FALSE": 175,
+          "TRUE": 1,
+          "UNKNOWN": 80
+        }
+      },
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "id": "action_implies_reason",
+      "rejected": true
+    },
+    {
+      "id": "one_witness_implies_all",
+      "rejected": true
+    },
+    {
+      "id": "all_green_certifies",
+      "rejected": true
+    }
+  ],
+  "python": "3.13.5",
+  "scope": "Three finite same-author cases, not live or independent validation",
+  "script_sha256": "69a2992fd2fb2af4abb511e5ff871ced6df7f9c2eaf753f021b674a0fd32072d",
+  "spec_sha256": "eaa0368766f00f1be9025e5fc8882c9143476c3279554d371d0484bc1510219e",
+  "sqlite": "3.46.1"
+}

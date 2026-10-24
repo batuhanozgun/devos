@@ -1,0 +1,240 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "K01",
+      "observed": {
+        "comparisons": 3840,
+        "disagreements": 0,
+        "partitions": 15,
+        "tie_common": [
+          1
+        ],
+        "tie_sets_equal": false
+      },
+      "passed": true
+    },
+    {
+      "id": "K02",
+      "observed": {
+        "cell_sizes": [
+          2,
+          2
+        ],
+        "exact_state_identified": false,
+        "first_use_adequate": true,
+        "regrets": [
+          "0",
+          "1",
+          "0"
+        ],
+        "second_use_adequate": false
+      },
+      "passed": true
+    },
+    {
+      "id": "K03",
+      "observed": {
+        "deterministic_minimax_winner": "B",
+        "expected": [
+          "1/10",
+          "99/50"
+        ],
+        "expected_winner": "A",
+        "feasible_at_one": false,
+        "feasible_at_two": true,
+        "worst_regrets": [
+          10,
+          2
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "K04",
+      "observed": {
+        "gross": [
+          "1/2",
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        "joint_gain": "3/10",
+        "myopic_stops": true,
+        "net": [
+          "1/2",
+          "2/5",
+          "2/5",
+          "4/5"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "K05",
+      "observed": {
+        "lambda_one": [
+          "1",
+          "91/80",
+          "6/5"
+        ],
+        "lambda_zero": [
+          "1",
+          "21/20",
+          "81/80"
+        ],
+        "preferred_observations": [
+          1,
+          2
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "K06",
+      "observed": {
+        "adaptive_all_correct": true,
+        "adaptive_paths": [
+          {
+            "correct": true,
+            "inferred": 0,
+            "read": [
+              0,
+              1
+            ],
+            "world": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 0,
+            "read": [
+              0,
+              1
+            ],
+            "world": [
+              0,
+              0,
+              1
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 1,
+            "read": [
+              0,
+              1
+            ],
+            "world": [
+              0,
+              1,
+              0
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 1,
+            "read": [
+              0,
+              1
+            ],
+            "world": [
+              0,
+              1,
+              1
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 0,
+            "read": [
+              0,
+              2
+            ],
+            "world": [
+              1,
+              0,
+              0
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 1,
+            "read": [
+              0,
+              2
+            ],
+            "world": [
+              1,
+              0,
+              1
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 0,
+            "read": [
+              0,
+              2
+            ],
+            "world": [
+              1,
+              1,
+              0
+            ]
+          },
+          {
+            "correct": true,
+            "inferred": 1,
+            "read": [
+              0,
+              2
+            ],
+            "world": [
+              1,
+              1,
+              1
+            ]
+          }
+        ],
+        "adequate_fixed": [],
+        "all_three_adequate": true,
+        "fixed_subsets_checked": 7
+      },
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "id": "equal_argmin_sets_required",
+      "rejected": true
+    },
+    {
+      "id": "adequacy_survives_every_use_change",
+      "rejected": true
+    },
+    {
+      "id": "expected_loss_meets_worst_tolerance",
+      "rejected": true
+    },
+    {
+      "id": "zero_single_gain_means_zero_joint_gain",
+      "rejected": true
+    },
+    {
+      "id": "context_independent_information_order",
+      "rejected": true
+    },
+    {
+      "id": "fixed_infeasibility_proves_adaptive_infeasibility",
+      "rejected": true
+    }
+  ],
+  "python": "3.13.5",
+  "scope": "Six finite same-author cases; no live or independent taxonomy verification",
+  "script_sha256": "c023ba8dc030d0f880e14d86aaddb770f3060406c456cb04eb0ac3eb3798a53e",
+  "spec_sha256": "68449d6552497e372142a8e31723e9ece3e5610787c9ab9e1214cffcff5a750d"
+}

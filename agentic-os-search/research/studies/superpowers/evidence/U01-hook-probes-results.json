@@ -1,0 +1,62 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "upstream_hook_blob_sha1": "93a6bc2c6b7269c704378cb6a61fce6aea7ff631",
+  "source_identity_verified": true,
+  "environment": {
+    "os": "Linux",
+    "python": "3.13.5",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "execution_scope": "exact hook script in synthetic temporary filesystem; not actual harness startup; not upstream full test suite; not model obedience",
+  "cases": [
+    {
+      "case": "claude",
+      "criterion": "unique correct envelope and decoded fixture fidelity",
+      "result": "PASS"
+    },
+    {
+      "case": "cursor_precedence",
+      "criterion": "unique correct envelope and decoded fixture fidelity",
+      "result": "PASS"
+    },
+    {
+      "case": "copilot_override",
+      "criterion": "unique correct envelope and decoded fixture fidelity",
+      "result": "PASS"
+    },
+    {
+      "case": "unknown_platform",
+      "criterion": "unique correct envelope and decoded fixture fidelity",
+      "result": "PASS"
+    },
+    {
+      "case": "missing_skill",
+      "criterion": "absent usable bootstrap must not signal successful exit",
+      "result": "FAIL",
+      "exit_code": 0,
+      "valid_nonempty_envelope": true,
+      "error_marker_present": true,
+      "fixture_marker_present": false
+    },
+    {
+      "case": "empty_skill",
+      "criterion": "absent usable bootstrap must not signal successful exit",
+      "result": "FAIL",
+      "exit_code": 0,
+      "valid_nonempty_envelope": true,
+      "error_marker_present": false,
+      "fixture_marker_present": false
+    },
+    {
+      "case": "oracle_wrong_event",
+      "criterion": "validator rejects syntactically valid wrong event",
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "output_cases_passed": 4,
+    "bootstrap_health_challenges_failed": 2,
+    "oracle_negative_control_passed": 1
+  }
+}

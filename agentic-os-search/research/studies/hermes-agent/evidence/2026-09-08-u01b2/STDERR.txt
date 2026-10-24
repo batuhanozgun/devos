@@ -1,0 +1,1 @@
+Inline memory approval prompt failed: synthetic callback failure

@@ -1,0 +1,28 @@
+{
+  "baseline": "PASS",
+  "source_blob_verified": "df5e44427d3c07eb8fdd312a3fa3594c3a239b2e",
+  "explicit_unresearched_children": 3,
+  "negative_controls": [
+    {
+      "case": "inherited_completion",
+      "rejected": true,
+      "reason": "parent acceptance incorrectly inherited as child research"
+    },
+    {
+      "case": "acceptance_regression",
+      "rejected": true,
+      "reason": "current accepted D result reverted to pending"
+    },
+    {
+      "case": "wrong_frontier_member",
+      "rejected": true,
+      "reason": "frontier membership changed"
+    },
+    {
+      "case": "unauthorized_activation",
+      "rejected": true,
+      "reason": "review evaluation gate or successor authority corrupted"
+    }
+  ],
+  "limits": "Declared source/ledger invariants only; no proof of taxonomy, literature coverage or live behavior."
+}

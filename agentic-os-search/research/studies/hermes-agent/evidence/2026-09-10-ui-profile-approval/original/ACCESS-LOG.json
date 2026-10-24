@@ -1,0 +1,36 @@
+{
+  "kind": "OBSERVED_PUBLICATION_FAILURE_LOG",
+  "date": "2026-09-10",
+  "repository": "batuhanozgun/agentic-os-search",
+  "branch": "main",
+  "last_observed_main": "91af4415c22e05b80484b935383ceeb04a3c5b7b",
+  "readback_source": "GitHub.fetch git/ref/heads/main, final current-turn readback",
+  "attempts": [
+    {
+      "order": 1,
+      "tool": "GitHub.create_blob",
+      "result": "Resource not found: GitHub.create_blob"
+    },
+    {
+      "order": 2,
+      "tool": "GitHub.create_tree",
+      "result": "Resource not found: GitHub.create_tree"
+    },
+    {
+      "order": 3,
+      "tool": "GitHub.create_file",
+      "result": "Resource not found: GitHub.create_file",
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-ui-profile-approval/SPEC.md"
+    }
+  ],
+  "successful_mutations": 0,
+  "published": false,
+  "permission_settings_changed": false,
+  "root_cause": "UNDETERMINED; not established as a GitHub permission or Codex problem",
+  "source_materialization_failures": [
+    "urllib DNS failure",
+    "web pinned raw cache miss",
+    "download precondition: url not viewed"
+  ],
+  "scope": "Failure history, not a permanent capability claim. All source-read and diagnostic scopes are separate."
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Recorded probe payload only. README/SOURCES are publication interpretation; no self-hash claim.",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "files": [
+    {"path":"CHALLENGE.md","bytes":2067,"sha256":"2a3ab7dfc163ededf22684b900257c20ef2b8f6a4c166c516fe085d02280f844","git_blob":"04571dd00d8dc21ee12341c7f9ba8597f28ffe65"},
+    {"path":"RESULT.json","bytes":6530,"sha256":"f7307adc3a7d12fced13687284e24612c18aa971ccd74b736940ce9bed8b0721","git_blob":"365889b52a7f44a216b1aad257a1014e5c2ab7a4"},
+    {"path":"harness.py","bytes":7384,"sha256":"17f4587a28c0d744a8a27aaddd679c6b0aa0122dfa8fcd6837b86c8e80ed0cc4","git_blob":"9800810ba35e57e9e819635a3c607eb56c8b1670"},
+    {"path":"stderr.txt","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","git_blob":"e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"},
+    {"path":"stdout.txt","bytes":6530,"sha256":"f7307adc3a7d12fced13687284e24612c18aa971ccd74b736940ce9bed8b0721","git_blob":"365889b52a7f44a216b1aad257a1014e5c2ab7a4"},
+    {"path":"upstream/LICENSE","bytes":1070,"sha256":"821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6","git_blob":"75410e73319c72cd3e991a501c5455eb78f38375"},
+    {"path":"upstream/daemon_pool.py","bytes":2533,"sha256":"f66c379ee655496a9a79ec0565766f383fd70ba6f5e56c8f7abb92fa236141a4","git_blob":"5682a8f6ae103a421c1081b69ee6f9272957acdf"},
+    {"path":"upstream/skill_provenance.py","bytes":1168,"sha256":"58a064c44aec13925c724a8bb377bea90fbf6b2a817c8d8bcf4823e6c5436713","git_blob":"3df9cf143045644310fa7d27a65666c8c23caf95"},
+    {"path":"upstream/thread_context.py","bytes":2855,"sha256":"30b868f14013ec6bc741c5e5a1937e405024d0e7344a92bac903f1de3d0e38e2","git_blob":"d8c37af8f5a529680e81e867177140e41c4c6656"}
+  ]
+}

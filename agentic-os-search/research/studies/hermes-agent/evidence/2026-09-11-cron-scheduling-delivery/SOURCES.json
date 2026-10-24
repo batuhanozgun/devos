@@ -1,0 +1,128 @@
+{
+  "primary_repository": "NousResearch/hermes-agent",
+  "primary_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "current_release_claim": false,
+  "source_scopes": [
+    {
+      "id": "U07-S01",
+      "path": "gateway/run_startup.py",
+      "git_blob": "b20d49e66a30e89888f56d11a5bdfaae8beadee7",
+      "requested_ranges_merged": [
+        [
+          30,
+          190
+        ]
+      ],
+      "status": "selected read",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/gateway/run_startup.py"
+    },
+    {
+      "id": "U07-S02",
+      "path": "cron/scheduler.py",
+      "git_blob": "3a1b3839521b3a6fcb687c4875d446b184a82f20",
+      "requested_ranges_merged": [
+        [
+          1,
+          475
+        ],
+        [
+          2570,
+          3950
+        ]
+      ],
+      "status": "selected read; final interval reached EOF",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/scheduler.py"
+    },
+    {
+      "id": "U07-S03",
+      "path": "cron/executions.py",
+      "git_blob": "f90515337921b4b61178a737f108c6df46dfa82b",
+      "requested_ranges_merged": [
+        [
+          1,
+          450
+        ]
+      ],
+      "status": "full read; EOF reached; NOT EXECUTED",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/executions.py"
+    },
+    {
+      "id": "U07-S04",
+      "path": "cron/scheduler_provider.py",
+      "git_blob": "fc02d14fce179a647499bb1ebb9b5aaaa57ab28a",
+      "requested_ranges_merged": [
+        [
+          1,
+          485
+        ]
+      ],
+      "status": "selected read",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/scheduler_provider.py"
+    },
+    {
+      "id": "U07-S05",
+      "path": "cron/jobs.py",
+      "git_blob": "adb75eea2d0317672708da57808c2dc5f0aee93e",
+      "requested_ranges_merged": [
+        [
+          1,
+          455
+        ],
+        [
+          2200,
+          2840
+        ]
+      ],
+      "status": "selected read",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/jobs.py"
+    },
+    {
+      "id": "U07-S06",
+      "path": "cron/delivery_queue.py",
+      "git_blob": "689fd620d6193003bbd168a0e62770a0d0306ac6",
+      "requested_ranges_merged": [
+        [
+          1,
+          455
+        ]
+      ],
+      "status": "full read; EOF379; full byte verified; bounded temp SQLite executed",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/delivery_queue.py"
+    },
+    {
+      "id": "U07-S07",
+      "path": "cron/scheduler_delivery.py",
+      "git_blob": "45b9843c4487abd82b41e649dfe2ed552964a945",
+      "requested_ranges_merged": [
+        [
+          850,
+          1100
+        ],
+        [
+          1450,
+          1715
+        ]
+      ],
+      "status": "selected read; final interval reached EOF",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/cron/scheduler_delivery.py"
+    },
+    {
+      "id": "U07-S08",
+      "path": "LICENSE",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "requested_ranges_merged": [],
+      "status": "same-conversation pinned license reuse; full local byte match",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a/LICENSE"
+    }
+  ],
+  "unread_blocker": {
+    "path": "gateway/run.py",
+    "range": [
+      3150,
+      3325
+    ],
+    "status": "HTTP429; NOT READ; no serial retry"
+  },
+  "default_branch_navigation_ref": "04dd80a977f40b05e5b2054111747af07a61886a",
+  "default_branch_revalidated": false
+}

@@ -1,0 +1,29 @@
+{
+  "id": "ECC-U01A-CACHE-01",
+  "class": "source-informed exploratory local probe",
+  "source_ref": "8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "criterion_set_before_execution": true,
+  "claim_under_challenge": "check-plugin-cache success implies existence of all current string file/directory references, including hooks",
+  "cases": [
+    {
+      "id": "C0",
+      "fixture": "all five referenced targets exist; dummy file contents",
+      "expected_exit_from_source": 0,
+      "integrity_criterion": "accept presence-only baseline; not executable readiness"
+    },
+    {
+      "id": "C1",
+      "fixture": "only hooks/codex-hooks.json removed",
+      "expected_exit_from_source": 0,
+      "integrity_criterion": "a complete reference-existence verifier would reject; exit 0 is a missed missing reference"
+    },
+    {
+      "id": "C2",
+      "fixture": "hook restored; only .mcp.json removed",
+      "expected_exit_from_source": 1,
+      "integrity_criterion": "reject missing checked reference; sensitivity control"
+    }
+  ],
+  "scope": "exact checker and manifest bytes; synthetic root package.json version 2.2.1; explicit temporary plugin-dir and fake home; no ECC install or Codex process",
+  "excluded": "actual installed cache, host hook trust/loading, hook payload semantics, package tarball, task benefit, upstream full test suite"
+}

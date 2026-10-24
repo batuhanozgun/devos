@@ -1,0 +1,128 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "upstream_blob_sha1": "423e5ed513261485c657ba166b0372a5293639c7",
+  "source_identity_verified": true,
+  "source_bytes": 5464,
+  "environment": {
+    "os": "linux",
+    "arch": "x64",
+    "node": "v22.16.0"
+  },
+  "scope": "Exact adapter module with temporary synthetic filesystem and manually invoked callbacks; no real host, model, installed package or upstream suite",
+  "criteria_status": "Source-informed exploratory, fixed in runner before this run; health criteria are study-defined, not upstream promises",
+  "cases": [
+    {
+      "id": "config_idempotence",
+      "kind": "mechanism",
+      "criterion": "Preserve existing path and register fixture skills exactly once",
+      "result": "PASS",
+      "observed": {
+        "path_count": 2,
+        "existing_preserved": true
+      }
+    },
+    {
+      "id": "first_delivery",
+      "kind": "mechanism",
+      "criterion": "Deliver unique fixture body before original user content",
+      "result": "PASS",
+      "observed": {
+        "has_fixture_body": true,
+        "parts": 2
+      }
+    },
+    {
+      "id": "repeat_dedup",
+      "kind": "mechanism",
+      "criterion": "Repeated transform of already transformed array does not duplicate bootstrap",
+      "result": "PASS",
+      "observed": {
+        "parts": 2
+      }
+    },
+    {
+      "id": "fresh_array_delivery",
+      "kind": "mechanism",
+      "criterion": "New eligible message array receives cached body",
+      "result": "PASS",
+      "observed": {
+        "has_fixture_body": true
+      }
+    },
+    {
+      "id": "marker_collision",
+      "kind": "health-challenge",
+      "criterion": "Mere mention of generic marker must not substitute for a delivered bootstrap body",
+      "result": "FAIL",
+      "observed": {
+        "has_fixture_body": false,
+        "parts": 1
+      }
+    },
+    {
+      "id": "cached_old_content",
+      "kind": "mechanism",
+      "criterion": "Same loaded module retains V1 after file changes to V2",
+      "result": "PASS",
+      "observed": {
+        "v1_present": true,
+        "v2_present": false
+      }
+    },
+    {
+      "id": "fresh_module_reads_update",
+      "kind": "mechanism",
+      "criterion": "Fresh ES module identity reads current V2; not a claim about host session restart",
+      "result": "PASS",
+      "observed": {
+        "v1_present": false,
+        "v2_present": true
+      }
+    },
+    {
+      "id": "missing_result_shared_by_factories",
+      "kind": "mechanism",
+      "criterion": "Absent-file result persists after repair and new factory call in the same module",
+      "result": "PASS",
+      "observed": {
+        "before_has_body": false,
+        "after_repair_new_factory_has_body": false
+      }
+    },
+    {
+      "id": "fresh_module_reads_repaired_file",
+      "kind": "mechanism",
+      "criterion": "Fresh module identity observes repaired file",
+      "result": "PASS",
+      "observed": {
+        "has_fixture_body": true
+      }
+    },
+    {
+      "id": "empty_skill_claims_loaded",
+      "kind": "health-challenge",
+      "criterion": "Empty source must not produce a claim that its usable skill body is already loaded",
+      "result": "FAIL",
+      "observed": {
+        "claims_already_loaded": true,
+        "parts": 2
+      }
+    },
+    {
+      "id": "oracle_rejects_tag_only",
+      "kind": "oracle-negative-control",
+      "criterion": "Body oracle rejects a marker-only output",
+      "result": "PASS",
+      "observed": {
+        "oracle_accepts_tag_only": false
+      }
+    }
+  ],
+  "summary": {
+    "mechanism_checks_passed": 8,
+    "mechanism_checks_failed": 0,
+    "health_challenges_failed": 2,
+    "oracle_negative_controls_passed": 1
+  }
+}

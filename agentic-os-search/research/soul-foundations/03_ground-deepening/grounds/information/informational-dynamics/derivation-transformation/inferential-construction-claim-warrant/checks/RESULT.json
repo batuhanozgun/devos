@@ -1,0 +1,293 @@
+{
+  "cases": [
+    {
+      "id": "C01",
+      "observed": {
+        "conditional_only_entails_q": false,
+        "countermodel": {
+          "p": false,
+          "q": false
+        },
+        "with_p_entails_q": true
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C02",
+      "observed": {
+        "classical_entails_not_q": true,
+        "classical_entails_q": true,
+        "compatible_model_count": 0,
+        "factual_warrant": "not established: inconsistent basis"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C03",
+      "observed": {
+        "after_one_round": "search incomplete, not negation",
+        "one_round": [
+          "a",
+          "b"
+        ],
+        "two_rounds": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C04",
+      "observed": {
+        "changed_prior_posterior": "9/10",
+        "count_population": 10000,
+        "false_alerts": 990,
+        "likelihood": "9/10",
+        "posterior": "1/12",
+        "true_alerts": 90
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C05",
+      "observed": {
+        "conditionally_independent_pair_posterior": "9/20",
+        "duplicate_alert_posterior": "1/12"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C06",
+      "observed": {
+        "confounded_do_means": {
+          "0": "1/2",
+          "1": "1/2"
+        },
+        "direct_do_means": {
+          "0": "0",
+          "1": "1"
+        },
+        "intervention_effects": [
+          "1",
+          "0"
+        ],
+        "perfect_prediction": "Y=X in both observational models",
+        "shared_observational_support": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C07",
+      "observed": {
+        "alternative_route": "supported",
+        "conflict": "contested",
+        "contrary_route": "contrary-supported",
+        "h_values_after_undercut": [
+          false,
+          true
+        ],
+        "original": "supported",
+        "undercut": "unsettled"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C08",
+      "observed": {
+        "seed_truth": "not tested",
+        "seeded_closure": [
+          "a",
+          "b"
+        ],
+        "unseeded_closure": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C09",
+      "observed": {
+        "exhaustive_population": 160000,
+        "family_probability": "29679/160000",
+        "formula": "29679/160000",
+        "selected_crossings": 29679,
+        "single_test_probability": "1/20"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C10",
+      "observed": {
+        "group_accuracies": [
+          "1",
+          "3/5"
+        ],
+        "meaning": "exact uniform finite-population example",
+        "population_accuracy": "4/5",
+        "reported_confidence": "4/5"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C11",
+      "observed": {
+        "joint_lower_upper_independent": [
+          "7/10",
+          "9/10",
+          "729/1000"
+        ],
+        "shared_marginals": [
+          "9/10",
+          "9/10",
+          "9/10"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C12",
+      "observed": {
+        "different_decisions": [
+          "act",
+          "wait"
+        ],
+        "first_losses": {
+          "act": "1/5",
+          "wait": "4/5"
+        },
+        "operational_authority": "not conferred by this calculation",
+        "same_posterior": "4/5",
+        "second_losses": {
+          "act": "2",
+          "wait": "4/5"
+        }
+      },
+      "status": "PASS"
+    }
+  ],
+  "cases_passed": 12,
+  "false_rule_controls": [
+    {
+      "false_rule_value": true,
+      "fixture_correct_value": false,
+      "id": "N01_missing_premise",
+      "status": "REJECTED",
+      "witness": {
+        "p": false,
+        "q": false
+      }
+    },
+    {
+      "false_rule_value": "not-c established",
+      "fixture_correct_value": "search incomplete",
+      "id": "N02_failed_search_as_negation",
+      "status": "REJECTED",
+      "witness": {
+        "two_round_derivation": [
+          "a",
+          "b",
+          "c"
+        ]
+      }
+    },
+    {
+      "false_rule_value": "9/10",
+      "fixture_correct_value": "1/12",
+      "id": "N03_probability_reversal",
+      "status": "REJECTED",
+      "witness": {
+        "count_check": "1/12"
+      }
+    },
+    {
+      "false_rule_value": "9/20",
+      "fixture_correct_value": "1/12",
+      "id": "N04_duplicates_as_independence",
+      "status": "REJECTED",
+      "witness": "The second report repeats the same event E"
+    },
+    {
+      "false_rule_value": "unique effect 1",
+      "fixture_correct_value": "effect not identified: {0,1}",
+      "id": "N05_prediction_as_causal_identification",
+      "status": "REJECTED",
+      "witness": {
+        "effects": [
+          "1",
+          "0"
+        ],
+        "same_observation": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "false_rule_value": [
+        false
+      ],
+      "fixture_correct_value": [
+        false,
+        true
+      ],
+      "id": "N06_undercut_as_negation",
+      "status": "REJECTED",
+      "witness": "No supplied statement settles H or not-H after this support route fails"
+    },
+    {
+      "false_rule_value": "1/20",
+      "fixture_correct_value": "29679/160000",
+      "id": "N07_per_test_as_family",
+      "status": "REJECTED",
+      "witness": {
+        "independent_null_tests": 4
+      }
+    },
+    {
+      "false_rule_value": [
+        "4/5",
+        "4/5"
+      ],
+      "fixture_correct_value": [
+        "1",
+        "3/5"
+      ],
+      "id": "N08_global_as_subgroup_calibration",
+      "status": "REJECTED",
+      "witness": {
+        "group_correct_counts": [
+          5,
+          3
+        ],
+        "group_sizes": [
+          5,
+          5
+        ]
+      }
+    }
+  ],
+  "false_rules_rejected": 8,
+  "runtime": {
+    "python": "3.13.5"
+  },
+  "schema": "soul-warrant-finite-checks-v1",
+  "scope": "same-author synthetic finite checks; no live SOUL/LLM/empirical or independent taxonomy validation",
+  "script_sha256": "b725177d9f227463571c5c3c44648ad75398ba26a6445e3d4121a65d268d43f7",
+  "spec_sha256": "d368883dc88a091ebfe2169469e79fbd2cdd995ce6e7dd6180a31f41adfe089d"
+}
