@@ -1,0 +1,30 @@
+{
+  "kind": "LOCAL ARTIFACT READBACK; NO BEHAVIORAL RERUN",
+  "raw_archive_hash_and_all_regular_members": true,
+  "raw_member_count": 12,
+  "native_spec_result_equal_to_archive": true,
+  "source_spec_probe_input_result_hash_binding": true,
+  "observed_effect_files_match_result": true,
+  "B03_effect_absence_checked_in_complete_archive": true,
+  "stdout_equals_result_and_stderr_empty": true,
+  "all_recorded_case_expectations_and_negative_observation_controls": true,
+  "loop_cleanup_and_no_forbidden_audit_events_recorded": true,
+  "six_local_baseline_files_full_git_blob_matched": true,
+  "state_baseline_scope": "remote full text read and blob metadata; no local baseline bytes claimed",
+  "catalog_non_hermes_bytes_unchanged": true,
+  "old_question_ids_preserved": true,
+  "only_question_rows_amended": [
+    "Q12",
+    "Q46",
+    "Q48"
+  ],
+  "new_question": "Q50",
+  "remote_published": false,
+  "last_observed_main": "a6c47ef3ff697c2d23c492dcf4ccfa32003040da",
+  "hermes_remote_state": "U07/v0.20",
+  "limitations": [
+    "hash checks verify artifact fidelity, not research truth",
+    "no independent replication",
+    "no actual enclosing transport/network/SessionDB"
+  ]
+}

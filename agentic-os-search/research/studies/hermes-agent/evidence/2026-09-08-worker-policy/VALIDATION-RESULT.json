@@ -1,0 +1,270 @@
+{
+  "kind": "COMPLETE_NAME_VALIDATOR_PLUS_SOURCE_SELECTED_WORKER_BRIDGE_NOT_PRODUCT_PASS",
+  "started_at_utc": "2026-09-08T19:36:58.555297+00:00",
+  "finished_at_utc": "2026-09-08T19:36:58.569509+00:00",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "runtime": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41"
+  },
+  "full_sources": {
+    "thread_context.py": {
+      "git_blob": "d8c37af8f5a529680e81e867177140e41c4c6656",
+      "sha256": "30b868f14013ec6bc741c5e5a1937e405024d0e7344a92bac903f1de3d0e38e2",
+      "bytes": 2855
+    },
+    "daemon_pool.py": {
+      "git_blob": "5682a8f6ae103a421c1081b69ee6f9272957acdf",
+      "sha256": "f66c379ee655496a9a79ec0565766f383fd70ba6f5e56c8f7abb92fa236141a4",
+      "bytes": 2533
+    },
+    "LICENSE": {
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "bytes": 1070
+    },
+    "turn_tool_validation.py": {
+      "git_blob": "db3e89334ebb4302f55357e8063c28f5758becd5",
+      "sha256": "7bbc0cf31e38e0621ca0a85b6a3e0e9ad227aae7fb83d4a2bac8b486e64b692d",
+      "bytes": 10065
+    }
+  },
+  "cases": [
+    {
+      "id": "V01",
+      "synthetic_valid_names": [
+        "memory",
+        "research_marker"
+      ],
+      "initial_raw_arguments": "{\"marker\":\"benign\"}",
+      "normalized_arguments": "{\"marker\":\"benign\"}",
+      "verdict": "ok",
+      "handler_count": 1,
+      "blocked": false,
+      "checks": {
+        "verdict_matches": true,
+        "handler_count_matches": true,
+        "parent_policy_preserved": true,
+        "worker_registration_clean": true
+      },
+      "expectations_matched": true,
+      "messages": [],
+      "trace": [
+        {
+          "kind": "validation_verdict",
+          "thread": 140383035377536,
+          "context": "background_review_marker",
+          "action": "ok"
+        },
+        {
+          "kind": "policy_consumer",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "begin_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "handler",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "args": {
+            "marker": "benign"
+          }
+        }
+      ]
+    },
+    {
+      "id": "V02",
+      "synthetic_valid_names": [
+        "memory"
+      ],
+      "initial_raw_arguments": "{\"marker\":\"benign\"}",
+      "normalized_arguments": "{\"marker\":\"benign\"}",
+      "verdict": "continue",
+      "handler_count": 0,
+      "blocked": null,
+      "checks": {
+        "verdict_matches": true,
+        "handler_count_matches": true,
+        "parent_policy_preserved": true,
+        "worker_registration_clean": true,
+        "error_message_recorded": true
+      },
+      "expectations_matched": true,
+      "messages": [
+        {
+          "role": "assistant",
+          "fixture": "tool_calls"
+        },
+        {
+          "role": "tool",
+          "name": "research_marker",
+          "tool_call_id": "V02",
+          "content": "fixture unknown tool: research_marker"
+        }
+      ],
+      "trace": [
+        {
+          "kind": "validation_verdict",
+          "thread": 140383035377536,
+          "context": "background_review_marker",
+          "action": "continue"
+        }
+      ]
+    },
+    {
+      "id": "V03",
+      "synthetic_valid_names": [
+        "memory",
+        "research_marker"
+      ],
+      "initial_raw_arguments": "{\"marker\":",
+      "normalized_arguments": "{\"marker\":",
+      "verdict": "return",
+      "handler_count": 0,
+      "blocked": null,
+      "checks": {
+        "verdict_matches": true,
+        "handler_count_matches": true,
+        "parent_policy_preserved": true,
+        "worker_registration_clean": true,
+        "partial_exit_and_cleanup": true
+      },
+      "expectations_matched": true,
+      "messages": [],
+      "trace": [
+        {
+          "kind": "cleanup_fixture",
+          "thread": 140383035377536,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "persist_fixture",
+          "thread": 140383035377536,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "validation_verdict",
+          "thread": 140383035377536,
+          "context": "background_review_marker",
+          "action": "return"
+        }
+      ]
+    },
+    {
+      "id": "V04",
+      "synthetic_valid_names": [
+        "memory",
+        "research_marker"
+      ],
+      "initial_raw_arguments": "{\"marker\":\"benign\"}",
+      "normalized_arguments": "{\"marker\":\"benign\"}",
+      "verdict": "ok",
+      "handler_count": 0,
+      "blocked": true,
+      "checks": {
+        "verdict_matches": true,
+        "handler_count_matches": true,
+        "parent_policy_preserved": true,
+        "worker_registration_clean": true,
+        "independent_block_survives": true
+      },
+      "expectations_matched": true,
+      "messages": [],
+      "trace": [
+        {
+          "kind": "validation_verdict",
+          "thread": 140383035377536,
+          "context": "background_review_marker",
+          "action": "ok"
+        },
+        {
+          "kind": "policy_consumer",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "post_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "status": "blocked"
+        }
+      ]
+    },
+    {
+      "id": "V05",
+      "synthetic_valid_names": [
+        "memory",
+        "research_marker"
+      ],
+      "initial_raw_arguments": "",
+      "normalized_arguments": "{}",
+      "verdict": "ok",
+      "handler_count": 1,
+      "blocked": false,
+      "checks": {
+        "verdict_matches": true,
+        "handler_count_matches": true,
+        "parent_policy_preserved": true,
+        "worker_registration_clean": true,
+        "empty_arguments_normalized": true
+      },
+      "expectations_matched": true,
+      "messages": [],
+      "trace": [
+        {
+          "kind": "validation_verdict",
+          "thread": 140383035377536,
+          "context": "background_review_marker",
+          "action": "ok"
+        },
+        {
+          "kind": "policy_consumer",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "begin_fixture",
+          "thread": 140382645466816,
+          "context": "background_review_marker"
+        },
+        {
+          "kind": "handler",
+          "thread": 140382645466816,
+          "context": "background_review_marker",
+          "args": {}
+        }
+      ]
+    }
+  ],
+  "all_expectations_matched": true,
+  "script_sha256": "835e1a03087b8d9d3dbbb8f5ce328ebc3f8660e68136ebd9a96edf27f1fc87ca",
+  "spec_sha256": "b1720dd38de4fe4ded0d553ca2cead65079ce2c3bd337ee81bca0bb75657214c",
+  "limits": [
+    "valid_tool_names supplied by synthetic holder, not real review construction",
+    "message helpers are doubles; excerpts not complete-module verified",
+    "selected worker pipeline only, not full ordinary loop/PluginManager/alternate transport",
+    "no model/provider, install, credentials, real profile, network or dangerous handler"
+  ]
+}

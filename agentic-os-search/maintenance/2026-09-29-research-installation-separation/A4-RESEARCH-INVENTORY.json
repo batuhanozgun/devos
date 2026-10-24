@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "2dbf81a5ae66ea0482371725e40a4b8a84802979",
+  "snapshot_root_tree": "938fa623d9ffbec64f89a2713ee636d6eb574c7d",
+  "scope": "PARTIAL: 527 explicit paths by composition; soul-context complete, Foundation partial, studies opaque. No new research-body scan.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-EXP001-005-INVENTORY.json",
+    "ref": "2dbf81a5ae66ea0482371725e40a4b8a84802979",
+    "git_blob": "2b72cac6c98844e55ec5275a4cfedf976eec213b",
+    "bytes": 28701,
+    "composed_explicit_leaves": 438,
+    "describes_commit": "d5cbe13f8d38066f1d5d138022dff28b443a58bf"
+  },
+  "composition": [
+    "Recover the pinned base inventory, its A4-PATH-INVENTORY dependency and its recorded snapshot_upserts; retain their read-scope distinctions.",
+    "Apply the three snapshot_upserts below, checking expected_old_blob or absence. These changes were already published at snapshot_commit.",
+    "Replace the soul-context frontier with its 60 leaves. Replace the Foundation frontier with its 27 leaves and 11 opaque frontier entries. Retain the studies frontier.",
+    "Require unique paths and 438 + 2 + 60 + 27 = 527 explicit leaves. This is not the total repository file count.",
+    "This publication adds two maintenance records and changes the root plan after the snapshot; do not recursively insert their own final identities into this snapshot."
+  ],
+  "snapshot_upserts": [
+    {
+      "path": "REPOSITORY-TRANSITION.md",
+      "expected_old_blob": "ac173d7fcf7bd9af35d23c92e3711647e09a7d6a",
+      "git_blob": "bacff9a6c3228fd644f8b1aca3a71249dd3c354c",
+      "bytes": 40317
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-EXP001-005-INVENTORY.json",
+      "expected_old_blob": null,
+      "git_blob": "2b72cac6c98844e55ec5275a4cfedf976eec213b",
+      "bytes": 28701
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-EXPLORATIONS-INVENTORY.md",
+      "expected_old_blob": null,
+      "git_blob": "af19d16377a36ff995f4c463c3a6c02a258a3d28",
+      "bytes": 7313
+    }
+  ],
+  "defaults": {
+    "mode": "100644",
+    "type": "blob",
+    "body_read": "NOT_READ_IN_THIS_SLICE",
+    "content_disposition": "PENDING_CONTENT_AND_LINK_REVIEW; preserve prior A2 decisions"
+  },
+  "columns": [
+    "relative_path",
+    "git_blob",
+    "bytes"
+  ],
+  "blocks": [
+    {
+      "prefix": "research/soul-context",
+      "git_tree": "7b823b3e422516c46b696395caf97c7b58263a5f",
+      "recursive_inventory_complete": true,
+      "files": 60,
+      "api_bytes": 677364,
+      "expanded_directories": 24,
+      "source": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/7b823b3e422516c46b696395caf97c7b58263a5f?recursive=1",
+      "leaves": [
+        ["INDEX.md", "7ae5ff39acff4a3d5ace920a93b094906c24e533", 4459],
+        ["README.md", "627fa704dc23200834c97465595d2a1316a6e25c", 3232],
+        ["STATE.md", "3f431961de125346c135f128b330c3898b070fb8", 4603],
+        ["current/COORDINATION-TRANSFER-PLAN.md", "aa1f7fc31c91a9f7280ed7595b3e1014ba77aa3c", 15137],
+        ["current/DEVELOPMENT-OS-BOOTSTRAP.md", "82a2d7a98500763b0ba693e7a3a41e01c31b5aff", 20353],
+        ["current/README.md", "077338ed9419ad9c5a96345758cf2a0e9ffcb32e", 2483],
+        ["current/briefs/CODEX-COORD-01-NATIVE-HANDOFF.md", "10d24819ff13ff879e363eaf8f4f7a6f712c1d11", 13289],
+        ["current/briefs/CODEX-COORD-02-PERSIST-ENTRY.md", "d488334795873553bcea1cc12515747d17ce980c", 8689],
+        ["current/briefs/CODEX-COORD-03-PUBLISH-ENTRY.md", "d799a547e83adc60ed74b9ce162b5e5e26333ebb", 9991],
+        ["current/briefs/CODEX-COORDINATION-HANDOFF.md", "0cc172937a68919d52a603a0a0c2224df74b9ff7", 11579],
+        ["current/briefs/CODEX-DESIGN-01-FIRST-SOUL-SCENARIO.md", "391343b6ee4c7a10dda35347e1d70872dad8976b", 12212],
+        ["current/briefs/CODEX-DEVOS-AGENT-CONTROL.md", "fc81629186236407a7e16e739e0bbaba5e2761c7", 13933],
+        ["current/briefs/CODEX-DEVOS-CONSTRUCTION-PLAN.md", "f0845c55d0df8492cc3bf6f4be035d7491c41f4c", 25861],
+        ["current/briefs/CODEX-G0-D1-BOUNDARY-DIAGNOSIS.md", "f9dadde28c99dac0e6972deedb59cc2560f29562", 13526],
+        ["current/briefs/CODEX-G1-PURPOSE-PILOT.md", "69204bcfa709a59b6425e08bd4bf9eb002ccb9f3", 14106],
+        ["current/briefs/CODEX-G1-R1-LAUNCHER-CONTINUATION.md", "45b4ac7b2f6f3417beb2ab96d3618c4ba251add1", 10896],
+        ["current/briefs/CODEX-STAGE-1-BOOTSTRAP-DESIGN.md", "75c37f39b35047d99d441225a0ad64b5e218f4b5", 12902],
+        ["current/briefs/CODEX-STAGE-1A-STARTER-CONTRACT.md", "ee1375e44f5f738d5ce3d56b954c8cfbd50291bf", 11067],
+        ["current/briefs/CODEX-STAGE-2-G0-EXPERIMENT.md", "65dca36b03d8b4235e5e9e50c973ca94cb9bf421", 16863],
+        ["current/claude-code-devos-preparation/CLAUDE-TASK-01.md", "50f9adef674d8e39a2b0eb19935835541f9ff901", 1830],
+        ["current/claude-code-devos-preparation/OWNER-CONTEXT.md", "e3f72ec441ddfa4d5f4266f876cc14ffdf67e60c", 4977],
+        ["current/claude-code-devos-preparation/SOURCE-REGISTER.md", "dd6f8f4d604913bc3b13506ed966eb1b4c66cc8d", 8292],
+        ["current/claude-code-devos-preparation/WORK.md", "93bdec4ee5034a12d640e9529621a44fce2c24db", 2256],
+        ["current/reviews/2026-09-06-direction/OPENING-VISION-SOURCE.md", "c616fe4578dcf395525b9fdd98c354d8ee590e9b", 14726],
+        ["current/reviews/2026-09-06-direction/REVIEW.md", "a227673ab8ae1228864a0dd3a76a7208c9092ce9", 14196],
+        ["current/reviews/2026-09-06-g0/EVIDENCE-EXTRACTS.md", "f66e20322e8fa3b27aeed4c68331d20cdafd36b3", 9410],
+        ["current/reviews/2026-09-06-g0/REVIEW.md", "808efed5dfe154d1b873084d7bf5516be533e97f", 15125],
+        ["current/reviews/2026-09-06-stage-1/CODEX-RESPONSE.md", "4b1ee3129fb6d54ca7f8d7d6f58ac084a150e9bb", 22103],
+        ["current/reviews/2026-09-06-stage-1/REVIEW.md", "d3c8dc09759563ce312d43fed4260f250363c915", 20134],
+        ["current/reviews/2026-09-06-stage-1a/CODEX-RESPONSE.md", "3be146d18c786896af2b0e0a32b37591cef7ec9f", 25156],
+        ["current/reviews/2026-09-06-stage-1a/REVIEW.md", "efc82901132c1c85f7bb02e67eaf8435d76ca75c", 14658],
+        ["current/reviews/2026-09-07-collaboration/REVIEW.md", "9c8dabb112474046173dc4f948c2e0ad0055527d", 12344],
+        ["current/reviews/2026-09-07-coord-01/CODEX-RESPONSE.md", "a6cc52aed2c09c89faf728b592a74db5221bc7f6", 9654],
+        ["current/reviews/2026-09-07-coord-01/REVIEW.md", "5e0702dfa7d649ff3cda0afbef439ad952364e26", 9087],
+        ["current/reviews/2026-09-07-coord-02/FRESH-SESSION-REVIEW.md", "b314ec72703884ae1269ead00640f7055809c54c", 11712],
+        ["current/reviews/2026-09-07-coord-02/IDENTITY-RESOLUTION.md", "2bf0b9dba7126c76d865afc3fcc3f6039a751d3b", 9686],
+        ["current/reviews/2026-09-07-coord-02/REVIEW.md", "adbd97ab597b0915289ab6f5e52ebcdd719ca022", 7455],
+        ["current/reviews/2026-09-07-coord-03/REVIEW.md", "9243c3b76f78c5fe8af9ab643e361c1f80c7cec7", 10259],
+        ["current/reviews/2026-09-07-d1/EVIDENCE-EXTRACTS.md", "42fb4fd8810b2bbf7f2b681faf30265e8729403c", 8957],
+        ["current/reviews/2026-09-07-d1/REVIEW.md", "ef1c9ce64b35c48e33e34dd9ff16bfa0ffa5b96f", 11253],
+        ["current/reviews/2026-09-07-g1/EVIDENCE-EXTRACTS.md", "78f31b8bdb324141168095d643ea183e198758bf", 8981],
+        ["current/reviews/2026-09-07-g1/PARSER-REGRESSION.py", "4ac9e88bd9da533f5c9cde81126eb38a27a121b1", 5331],
+        ["current/reviews/2026-09-07-g1/REVIEW.md", "de39339b81c3b4d463ff644925d19af02076bfcc", 10549],
+        ["current/reviews/2026-09-07-method/REVIEW.md", "0956e07a4882287957293185bf5de1aa3752d8d3", 13144],
+        ["current/reviews/2026-09-08-devos02-plan/REVIEW.md", "0aff39b1104a042b39b3bcc8ef6562a1884c42e1", 34256],
+        ["evidence/CONTEXT-SYNTHESIS.md", "42ddc1dcc9bb7c07b927961bc74179008060a562", 5809],
+        ["evidence/research-architecture-boundary.md", "ec06e7323d2f2951f3786cfd74bb1b19a94ad641", 3497],
+        ["evidence/transition-to-soul.md", "2039c1b99ef2066500b2cfcef4d85822b26bcfb3", 8493],
+        ["exploratory/README.md", "981f11d9b7edfa92ba36961616b746ebc455b0d3", 2123],
+        ["exploratory/dimension-boundary-test-2026-08-30.md", "7733906b2e005f166d55934f525cc703631670c5", 14377],
+        ["exploratory/prearchitecture-research-scope.md", "7d16f4b3fe84ec3957b3eaf01131ad076ccc1fe9", 13948],
+        ["exploratory/research-dimension-map.md", "d326d832ddb483aa224ac92fc73aa5ca9285eedd", 22658],
+        ["exploratory/research-method-implications.md", "19f3bcf3d560bd8699fd43a5993aee81454e1ad4", 2950],
+        ["exploratory/scenario-holdout-matrix.md", "bff25971aa1534faf0d9be4a23929f8ca586a6c2", 12343],
+        ["exploratory/scenario-holdout-s5-supply-chain-trust.md", "6cf5c36c803d9162111a0718a27206921e4faea7", 7879],
+        ["exploratory/taxonomy-red-team-2026-08-30.md", "5b00e48a7eacacc8439b7fbc5d472ad695f24ace", 13283],
+        ["repos/keel-research/README.md", "66e4b70e3de6a30f30334c40395ad9dc0e44a300", 3665],
+        ["repos/keel/README.md", "03fd666c8bd76c530d360f621204a82ec23dd094", 7460],
+        ["repos/os-architect/README.md", "0dd04882d093a2e5cf954782dcec8a7e7951b6b8", 8022],
+        ["repos/soul/README.md", "9c85d29a495ef4162cba5d5910a6daedbbcd6d50", 10145]
+      ],
+      "frontier": []
+    },
+    {
+      "prefix": "research/soul-foundations",
+      "git_tree": "0f9513f91bba76f1e52c955ddcb6270908c11939",
+      "recursive_inventory_complete": false,
+      "files": 27,
+      "api_bytes": 160062,
+      "expanded_directories": 7,
+      "source": "Pinned Foundation root/direct vertical tree and the complete visible 00_context and actors blocks of its recursive response; remainder not fully recovered.",
+      "leaves": [
+        ["INDEX.md", "f72d7f30159f1b3dcfbd5f37caf67933cf0b92fd", 4591],
+        ["README.md", "7e39c8789f8d76b1a6efc5c9c503095c1f0b7f2e", 6892],
+        ["REPAIR-AUDIT.md", "f5f54d66667b17581c514a2710b735d6b77663ac", 6736],
+        ["REPAIR-PUBLICATION.md", "130768ddd315876a4f774ce96d705e4f76f31ac0", 6993],
+        ["RESEARCH-USE-ALIGNMENT.md", "e3a2b788acd19ae2cbe230953476265831753e12", 5875],
+        ["STATE.md", "6d1c3db664bb154546cb6c0bf5edc6da5275dcf8", 7161],
+        ["00_context/README.md", "f3b25187808b4d0b01cd78b408c7528db3323bc8", 1438],
+        ["01_verticals/actors/CURRENT-SURFACES.md", "19f538ecb6d2e5a84bad5f7d547529a51d87bf96", 4907],
+        ["01_verticals/actors/DEFERRED-RELATIONS.md", "06a7a1abb867fdc732e7cf6dca7b03ca2e55c966", 5027],
+        ["01_verticals/actors/FINDINGS-MAP.md", "20d83aac6a415ce6e84f35bf3a265c1d49945b84", 3536],
+        ["01_verticals/actors/FRAME-EVOLUTION.md", "5e9e0c339b48582072890b2d149390f4716bafcb", 8963],
+        ["01_verticals/actors/INDEX.md", "c55847cfb60779231712c70f20479f864da62f97", 3071],
+        ["01_verticals/actors/KEY.md", "f77dcbe403dadd68ea4424172638d11abc119187", 2603],
+        ["01_verticals/actors/OPEN-QUESTIONS.md", "90eee421805f7b4259526d26e6ff883d7bf2fa47", 4781],
+        ["01_verticals/actors/ORIENTATION.md", "f300b08e8160cc5d33762c5cf230512fb370bcb0", 8521],
+        ["01_verticals/actors/README.md", "9df7706c8afa2303dd348f0e0b7380fb1197e7b2", 2359],
+        ["01_verticals/actors/STATE.md", "48fc6c098aa33c1f246335c62c038e005fa299bd", 3657],
+        ["01_verticals/actors/evidence/SOURCE-LEDGER.md", "75ed65c5e87851a868d163298427e4dde504a3ad", 10003],
+        ["01_verticals/actors/findings/ACTION-OMISSION-DECISION.md", "35ee0ca499f5642eed31799df157c4f69890f5a9", 3879],
+        ["01_verticals/actors/findings/CAPABILITY-AUTHORITY-OBLIGATION.md", "c1e2edfa445de1e31922db41e06dc0a0d16b1945", 5616],
+        ["01_verticals/actors/findings/COLLECTIVE-INSTITUTIONAL-AGENCY.md", "d576b282ed3e20dbdbc1ff0b817b0725ccb38a4a", 6493],
+        ["01_verticals/actors/findings/IDENTITY-ROLE-PARTICIPATION.md", "0b3e47ca2a9b0db2798b604e905629acc7b8263d", 3906],
+        ["01_verticals/actors/findings/NONHUMAN-DISTRIBUTED-AGENCY.md", "258b74669aa400db8169359a7f31d439eb8479a1", 4967],
+        ["01_verticals/actors/findings/REPRESENTATION-DELEGATION-ATTRIBUTION.md", "84fe0768bf48c89ad751d987c23050daf230c36d", 6218],
+        ["01_verticals/actors/findings/RESPONSIBILITY-ACCOUNTABILITY.md", "08b984083cd75bcb6ca4f4bcdd57e6e8d9f4deb0", 5957],
+        ["01_verticals/actors/synthesis/ACTORS-VERTICAL-SYNTHESIS.md", "5ae5260cc5fc7ae8f5e7cc0171e3a1b887901224", 15005],
+        ["01_verticals/actors/synthesis/COMPLETENESS-OMISSION-CHECK.md", "1bf9e58d58be3cce18913803e185dd101cf85cf9", 10907]
+      ],
+      "frontier": [
+        ["01_verticals/records-artifacts", "cfb93f2d2e6d59a515758a745b7bd8c08bf41890"],
+        ["01_verticals/work-environment", "db3c75f35663df5528bd5d727bf90b320b53091b"],
+        ["01_verticals/work", "3b5356b5a9e011ead5f2b1b047c210cf19184afa"],
+        ["02_adequacy", "b2e1b9894ee3dbbfe09e9d759eb28149f8c33627"],
+        ["03_ground-deepening", "5fb5eadaf698907c136501dfd4ae11718fe1d311"],
+        ["04_top-level-adequacy-rerun", "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a"],
+        ["05_relation-control-composition", "81e9db36f1b14d2248e99660350734c30d501d8d"],
+        ["06_integration-frontier-review", "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"],
+        ["07_selection-dynamics-integration-review", "c88b8399a330f56533c1ef1f452712e0cc2c72f2"],
+        ["08_foundation-sufficiency-reuse-review", "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"],
+        ["history", "151fb029cdc58085ee71f0f470efe89af712971f"]
+      ]
+    }
+  ],
+  "other_frontier": [
+    ["research/studies", "0e0a8511931de0be5b171d08a056681b992ed798"]
+  ],
+  "verification": {
+    "soul_context_reconstructed_root": "7b823b3e422516c46b696395caf97c7b58263a5f",
+    "foundation_leaves_plus_frontier_root": "0f9513f91bba76f1e52c955ddcb6270908c11939",
+    "complete_foundation_leaf_areas": [
+      "00_context/",
+      "01_verticals/actors/"
+    ],
+    "negative_controls": {
+      "new_leaf_omissions": 87,
+      "foundation_frontier_omissions": 11,
+      "all_detected": true
+    },
+    "composed_repository_root_recomputed": false,
+    "limits": "Same-author deterministic metadata check. Sizes are API metadata, not tree-hash-bound. No whole-repository completeness, source correctness, body/link/PDF/ZIP scan or independent reader behavior is established."
+  },
+  "coverage": {
+    "new_explicit_leaves": 87,
+    "composed_explicit_leaves": 527,
+    "remaining_opaque_subtrees": 12,
+    "incomplete_top_level_research_areas": 2,
+    "new_research_bodies_read": 0
+  },
+  "next": "Continue Foundation leaf inventory at research/soul-foundations/01_verticals/records-artifacts, then remaining Foundation frontier, then studies. Body/link and required archive-internal review remain open; A3 has two blocked sources and A5 is pending."
+}

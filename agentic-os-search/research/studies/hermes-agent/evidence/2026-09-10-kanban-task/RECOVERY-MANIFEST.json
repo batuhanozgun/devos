@@ -1,0 +1,41 @@
+{
+  "kind": "RECOVERY_TRANSFER_AUDIT_NOT_HERMES_EXECUTION",
+  "recovered_on": "2026-09-11",
+  "archive": {
+    "path": "original-evidence.tar.xz",
+    "git_blob": "5484ca39caf7ae5a8f6a31b68caeec0f9a44363d",
+    "bytes": 14096,
+    "sha256": "10700e22109183950b38c6def699e05010bfa008dc8dae39d8e01ad82b38fefc"
+  },
+  "original_readme_blob": "64533b4183596c3beaee798c4a165cc31a9510f4",
+  "archive_members": [
+    {"path":"HARNESS-REPAIR.md","bytes":785,"sha256":"59171ba3241c9db7f57c6832e1083f2d7043b68521282b1f516330c1503d7861","git_blob":"f76396094c39df42dc9352f8e6748b5f35066648"},
+    {"path":"INPUT-IDENTITIES.json","bytes":372,"sha256":"f7c5bbc581e27d12e2d48fdbe6a11d786a3fbd03e3b3190a9049e1820645b0c7","git_blob":"44906c8676170e26cdd430ab018ba47c9ae31111"},
+    {"path":"LICENSE","bytes":1070,"sha256":"821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6","git_blob":"75410e73319c72cd3e991a501c5455eb78f38375"},
+    {"path":"REPRODUCE.md","bytes":1116,"sha256":"fbb09ffe2f155338ec9c02d2567695375ceb52d0991166e991cf8012d5909bdb","git_blob":"e137909f15a50bcaa18b8b96fdfd39238cf476bf"},
+    {"path":"RESULT.json","bytes":28781,"sha256":"52e859f9a0511fe731958e89096c63be722f05914a257387e4714f46bcad70fb","git_blob":"cb7d9b8dceef55b40e1a1ab8dbd582feacf1e01c"},
+    {"path":"SPEC.md","bytes":3963,"sha256":"b6f7be06a5f048b5319049b3e4c718a8777930b6fe7d3cfd2f710ef9a908e2e8","git_blob":"f0936e16a9ad5b8d8a09f6ad2186c44a643835e6"},
+    {"path":"probe.initial.py","bytes":14476,"sha256":"b039fb491580c0814b70ddb391935af638158a90241f0233f1a0695aaccd8482","git_blob":"8ff624273d0483feb62863330a47629073c65c11"},
+    {"path":"probe.py","bytes":14469,"sha256":"94b62cafedb0a38d1c23270904185302005e3529a1d6a85ca0a45dcc67a37c47","git_blob":"f212cbb243625d346854c84099f80316118e2bd1"},
+    {"path":"selected/schema.sql","bytes":1414,"sha256":"e13247ad65e127e91cf7fc13c489b0f5089ba00243372003337bc81d9f78ad8d","git_blob":"f72f5e8221f261d1ed0702c29b8055648b206009"},
+    {"path":"selected/transactions.py","bytes":3078,"sha256":"7c6f3df4eb9aa129663e20ccd902ce78a802789b44ce223f8faba3f628b0e6db","git_blob":"ae6861eb9afba960c3a0a9d7ac70f20c7138b632"},
+    {"path":"selected/transitions.py","bytes":10875,"sha256":"2a8790857ed8f9c8c699badf73c5ee3138934e90ce091158f570ec4304f9b5e6","git_blob":"2980142c2a861548793c74073678c4613409be10"},
+    {"path":"stderr.initial.txt","bytes":1944,"sha256":"b3662adc7a7ba6cad3915aae1fcc6c87784179d8b1018747be861f74353e47e0","git_blob":"029a58ab4ece52e6d729c6632fa2c26e9ddc2db9"},
+    {"path":"stderr.txt","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","git_blob":"e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"},
+    {"path":"stdout.initial.txt","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","git_blob":"e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"},
+    {"path":"stdout.txt","bytes":259,"sha256":"8ca8eb29a61cffe902c7a665e57bfaf733805d306a7d94dbfa6b5d91e5316556","git_blob":"1f3d0ca227fc0b77d67be5899cfd3e0bc1f9337d"}
+  ],
+  "checks": {
+    "member_count": 15,
+    "all_members_regular_safe_paths": true,
+    "result_input_sha256s_match": true,
+    "probe_sha256_matches_recorded_result": true,
+    "initial_corrected_diff_only_platform_metadata": true,
+    "python_files_parse": true,
+    "new_behavior_run_performed": false
+  },
+  "limitations": [
+    "Hash identity validates transfer/local artifact identity, not full upstream source fidelity or independent behavior replication.",
+    "README draft references RESEARCH.md and SOURCES.md which were not archive members; current companions are prepared during recovery, not claimed recovered original prose."
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "a3bd10747face4de7a72427ef14591c7d595336e",
+  "snapshot_root_tree": "5079e7e549e6701b8325cb2c71b335547060c4bb",
+  "scope": "PARTIAL repository inventory: 1451 explicit paths by composition. Foundation history complete with 26 files; Foundation path inventory complete with 931 explicit files. research/studies remains the sole opaque research subtree. Metadata only.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-SUFFICIENCY-REUSE-INVENTORY.json",
+    "ref": "a3bd10747face4de7a72427ef14591c7d595336e",
+    "git_blob": "8725baaa7725dae5dff88d4543b9c15c2b3c51ac",
+    "composed_explicit_leaves": 1423
+  },
+  "block": {
+    "prefix": "research/soul-foundations/history",
+    "git_tree": "151fb029cdc58085ee71f0f470efe89af712971f",
+    "recursive_inventory_complete": true,
+    "files": 26,
+    "directories": 8,
+    "api_bytes": 157872,
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          [
+            "INDEX.md",
+            "3b46ac647e6345e8f4855e5fd4d37453e959812d",
+            2367
+          ]
+        ]
+      },
+      {
+        "directory": "handoffs",
+        "leaves": [
+          [
+            "2026-09-01-environment-evaluation.md",
+            "a5575155a98ea4f720b03eff0ac9f7c4c349cbe3",
+            5623
+          ],
+          [
+            "2026-09-01-environment-research.md",
+            "536a209038a87f8616b6025c984dfab187bd2eb1",
+            16009
+          ],
+          [
+            "2026-09-01-four-foundation-discussion.md",
+            "69fcdd5b65f0a8dbe6243b8411173edd6caa62ce",
+            6069
+          ],
+          [
+            "2026-09-01-three-vertical-discussion.md",
+            "518cded9cd82183097b3ed84a9471572da2048de",
+            6353
+          ],
+          [
+            "2026-09-02-work-environment-correction.md",
+            "0aecf0f9e2d73c009bce68c72583a118448d61a7",
+            5189
+          ],
+          [
+            "2026-09-02-work-environment-evaluation.md",
+            "5730af134fd209ebe9d738c723ab80dcf93eb2b0",
+            9498
+          ]
+        ]
+      },
+      {
+        "directory": "superseded/operating-world-environment",
+        "leaves": [
+          [
+            "ARCHIVE-NOTICE.md",
+            "57bc643d9ae6ff20da8d75897f78ad9a28e605c8",
+            2297
+          ]
+        ]
+      },
+      {
+        "directory": "superseded/operating-world-environment/corpus",
+        "leaves": [
+          [
+            "CURRENT-SURFACES.md",
+            "53167ef58616f80cfe5bc8da12488ab230327593",
+            2169
+          ],
+          [
+            "DEFERRED-RELATIONS.md",
+            "8c8f98b46a5aabc82357235a8c4ec9db53c36b3b",
+            4705
+          ],
+          [
+            "FINDINGS-MAP.md",
+            "923ca23e88cb0f740abde9be76bbe13ba8f2b9ea",
+            3999
+          ],
+          [
+            "FRAME-EVOLUTION.md",
+            "93b74b7647c46e534aa1d372f360d513d48e84bf",
+            3391
+          ],
+          [
+            "INDEX.md",
+            "e22a3c94fefbbbd165e9b0b7070b3ee69921e862",
+            2415
+          ],
+          [
+            "KEY.md",
+            "bb6a9673f4d09a438f8acee6ad95daa1432da06b",
+            2990
+          ],
+          [
+            "OPEN-QUESTIONS.md",
+            "eac2b1784921501827d312902dae43c5d268dded",
+            2817
+          ],
+          [
+            "ORIENTATION.md",
+            "ab84075966a03a96f16f889a9a5adeb066f07681",
+            8191
+          ],
+          [
+            "STATE.md",
+            "a5416087baceb066b27642b11b2549b8a70c684d",
+            5305
+          ]
+        ]
+      },
+      {
+        "directory": "superseded/operating-world-environment/corpus/evidence",
+        "leaves": [
+          [
+            "SOURCE-LEDGER.md",
+            "6591a8fe5e08dd2e6c1fbe276b1f61d694b298bd",
+            15418
+          ]
+        ]
+      },
+      {
+        "directory": "superseded/operating-world-environment/corpus/findings",
+        "leaves": [
+          [
+            "01-boundary-relative-environment.md",
+            "f7695b0a457f8f3d9bbef3cf3a8fa4808cacf35d",
+            4534
+          ],
+          [
+            "02-context-is-not-environment.md",
+            "9c4df4be62392f04a4e2d1d120af0114f438aeea",
+            4624
+          ],
+          [
+            "03-actionability-is-relational.md",
+            "5be53a406520a10e5c899d6079d89ec8ac6385ad",
+            4905
+          ],
+          [
+            "04-world-state-observation-and-record.md",
+            "2f8bfeccc5df565aad36234290d54edc80739859",
+            4505
+          ],
+          [
+            "05-tools-runtime-infrastructure-are-boundary-roles.md",
+            "e171b94d93b1236b40e1823041804297d4831bf2",
+            5826
+          ],
+          [
+            "06-reduction-and-null-hypothesis-test.md",
+            "ba23d30427550a58b6945faba424fc13dbc080cd",
+            6855
+          ]
+        ]
+      },
+      {
+        "directory": "superseded/operating-world-environment/corpus/synthesis",
+        "leaves": [
+          [
+            "COMPLETENESS-OMISSION-CHECK.md",
+            "94b8ecc848fd9904afc86273ae2beb66d2458325",
+            9509
+          ],
+          [
+            "ENVIRONMENT-VERTICAL-SYNTHESIS.md",
+            "be4824f2e1ff9d439b11a3dd3c9241b2a5c02467",
+            12309
+          ]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "reconstructed_root": "151fb029cdc58085ee71f0f470efe89af712971f",
+    "root_omission_control_detected": true,
+    "new_files": 26,
+    "foundation_paths_by_composition": 931,
+    "repository_paths_by_composition": 1451,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "limits": [
+    "Metadata inventory only; history contents remain historical research material and were not reinterpreted in this slice."
+  ],
+  "next": "Continue A4 path inventory at research/studies. After that, path inventory is complete and A4 moves to content/status/link/archive-internal scanning."
+}

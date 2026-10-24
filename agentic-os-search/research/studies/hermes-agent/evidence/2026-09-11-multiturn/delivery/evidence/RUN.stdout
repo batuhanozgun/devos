@@ -1,0 +1,7 @@
+{
+  "result_path": "/mnt/data/hermes-u04/evidence/RESULT.json",
+  "cases": 21,
+  "matched": 21,
+  "negative_controls_detected": true,
+  "denied_network_process_events": []
+}

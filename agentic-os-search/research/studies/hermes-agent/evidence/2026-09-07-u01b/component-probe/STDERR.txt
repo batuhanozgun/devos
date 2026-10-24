@@ -1,0 +1,15 @@
+skill_manage batch rollback failed, snapshots kept at /tmp/hermes_component_probe_j7pyqhgp/restore_error/snapshots/skill_batch_ln3j9a9g
+Failed to stage pending skills write: synthetic rename failure
+Traceback (most recent call last):
+  File "/mnt/data/hermes_research_work/probe/upstream/write_approval.py", line 89, in stage_write
+    os.replace(tmp, path)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+OSError: synthetic rename failure

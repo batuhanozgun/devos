@@ -1,0 +1,135 @@
+{
+  "kind": "LOCAL_DELIVERY_MANIFEST_NOT_PUBLICATION_PROOF",
+  "excludes": [
+    "MANIFEST.json"
+  ],
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "last_checked_research_main": "36f1b7e6ae07da5c1d9d57ff9633d48473c42537",
+  "files": [
+    {
+      "path": "CONTINUATION-DELTA.md",
+      "bytes": 3278,
+      "sha256": "07f1462e40e6f9d74326b0f677f22a9b617a87d93f83f6ebe013ea23703acb8b"
+    },
+    {
+      "path": "IDENTITY-CHECK.json",
+      "bytes": 1220,
+      "sha256": "162c2072e1484d3eb1f37f9efb50066398ec96a029c0c61b25f7d8e07d245be2"
+    },
+    {
+      "path": "PUBLICATION-HANDOFF.md",
+      "bytes": 3808,
+      "sha256": "cbd28121ed10c76b6a381922c5b26fd9078df469aff76e05cb2498d1f1e71bf9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3692,
+      "sha256": "5c2740f8239117fae62180e9a8b793b329e752a831170a3dab4eb89badb07bb1"
+    },
+    {
+      "path": "REPO-NOTE-09.md",
+      "bytes": 2050,
+      "sha256": "84dae1d37b1b94f3bf576e06a6f963dce3b0a0638d9f16932103739df1d5bf94"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 14147,
+      "sha256": "6ade4182598a6f3907151cc0afd9f3447f1116953f818f134ab77892ce964b32"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 31417,
+      "sha256": "3fd4edd6725f1b95054727c836f447a80b3fc403eddcb1ab907fa4dbbb074993"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 7721,
+      "sha256": "b398a768671b6366850b832c020b74146b1a3c9723aefc0575055a157e7ad3e2"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 2442,
+      "sha256": "2785cd508757fe4b5f9defc3bdd24756223ec49a8581b6f81b3c0dd1d7e68e92"
+    },
+    {
+      "path": "VALIDATION-RESULT.json",
+      "bytes": 7883,
+      "sha256": "5056360b1ad1f1810592f76817d273c6fcf7feea2c83797cc6c402338556b245"
+    },
+    {
+      "path": "VALIDATION-SPEC.md",
+      "bytes": 2165,
+      "sha256": "b1720dd38de4fe4ded0d553ca2cead65079ce2c3bd337ee81bca0bb75657214c"
+    },
+    {
+      "path": "excerpts/plugins.selected.py",
+      "bytes": 5869,
+      "sha256": "4b1f70713eb61521c796a10ed98ad9478079c88591ff1daa7adff02d827cb75d"
+    },
+    {
+      "path": "excerpts/tool_executor.selected.py",
+      "bytes": 19884,
+      "sha256": "e00f408438b5c614b0ce22a3aec981b9a651651274a0e575088a295e799a95f3"
+    },
+    {
+      "path": "harness.py",
+      "bytes": 14907,
+      "sha256": "4d5fc40c653accefc0dcbb8051d2247c101cf52d1dd097ffbfdbe792ce12b09f"
+    },
+    {
+      "path": "identity_check.py",
+      "bytes": 1769,
+      "sha256": "130a9a5ec7e694e6854ae674d3daf48960cc17ed16ee1d4e0499466cc4d288d5"
+    },
+    {
+      "path": "stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.txt",
+      "bytes": 100,
+      "sha256": "ce66c7d9a21c96b8553d09535362bc9a43b570e9926e592f50ae3b4b902fffde"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    },
+    {
+      "path": "upstream/daemon_pool.py",
+      "bytes": 2533,
+      "sha256": "f66c379ee655496a9a79ec0565766f383fd70ba6f5e56c8f7abb92fa236141a4"
+    },
+    {
+      "path": "upstream/thread_context.py",
+      "bytes": 2855,
+      "sha256": "30b868f14013ec6bc741c5e5a1937e405024d0e7344a92bac903f1de3d0e38e2"
+    },
+    {
+      "path": "upstream/turn_tool_validation.py",
+      "bytes": 10065,
+      "sha256": "7bbc0cf31e38e0621ca0a85b6a3e0e9ad227aae7fb83d4a2bac8b486e64b692d"
+    },
+    {
+      "path": "validation-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-stdout.txt",
+      "bytes": 30,
+      "sha256": "615f71e57237fb59f75be7e483a76d14d3a17b84dddb3758427ab1fb4b93b130"
+    },
+    {
+      "path": "validation_probe.py",
+      "bytes": 8642,
+      "sha256": "835e1a03087b8d9d3dbbb8f5ce328ebc3f8660e68136ebd9a96edf27f1fc87ca"
+    },
+    {
+      "path": "verify_excerpts.py",
+      "bytes": 2645,
+      "sha256": "b9ddc07f2ec13e79b74d6faa18b27c2facf34a379134bca1633ef9887f6a8dac"
+    }
+  ]
+}

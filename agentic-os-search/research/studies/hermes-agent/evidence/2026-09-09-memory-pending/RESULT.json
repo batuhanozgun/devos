@@ -1,0 +1,757 @@
+{
+  "kind": "BOUNDED_FIVE_FULL_MODULE_MEMORY_PENDING_DIAGNOSTICS_NOT_PRODUCT_PASS",
+  "started_at_utc": "2026-09-09T08:10:46.824877+00:00",
+  "finished_at_utc": "2026-09-09T08:10:46.849596+00:00",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "source_identities": {
+    "memory_tool_store.py": {
+      "git_blob": "457594444311af31c837dcdd74cd1c55f2b47b3c",
+      "expected_git_blob": "457594444311af31c837dcdd74cd1c55f2b47b3c",
+      "match": true,
+      "bytes": 23548,
+      "sha256": "5d25c0604de0c4bf4b4f07402b0582b20c33377330a0c7354e059a7e7cf52293"
+    },
+    "memory_tool.py": {
+      "git_blob": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7",
+      "expected_git_blob": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7",
+      "match": true,
+      "bytes": 18039,
+      "sha256": "38630aab4d9ef64be4c21a6fa91db5588636bdb9450e0d83ac9ef63b813bbcfc"
+    },
+    "write_approval_commands.py": {
+      "git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352",
+      "expected_git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352",
+      "match": true,
+      "bytes": 5683,
+      "sha256": "de520311f9da69d171b8896be05740adc00823829cfcc1207d55f38f379609c9"
+    },
+    "skill_provenance.py": {
+      "git_blob": "3df9cf143045644310fa7d27a65666c8c23caf95",
+      "expected_git_blob": "3df9cf143045644310fa7d27a65666c8c23caf95",
+      "match": true,
+      "bytes": 1168,
+      "sha256": "58a064c44aec13925c724a8bb377bea90fbf6b2a817c8d8bcf4823e6c5436713"
+    },
+    "write_approval.py": {
+      "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+      "expected_git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+      "match": true,
+      "bytes": 12431,
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232"
+    },
+    "LICENSE": {
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "expected_git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "match": true,
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    }
+  },
+  "harness_sha256": "0dff0e1a90eee2cebebd004a5a1998a1be985d4965556e8bb3b6fc844de00315",
+  "spec_sha256": "5c0ce2e34f74b9b9451cbb1721cc334447e3fb5079812b6d8b853ce7afca09a0",
+  "imported_complete_modules": [
+    "tools.skill_provenance",
+    "tools.write_approval",
+    "tools.memory_tool_store",
+    "tools.memory_tool",
+    "hermes_cli.write_approval_commands"
+  ],
+  "cases": [
+    {
+      "id": "N01",
+      "expectations_matched": true,
+      "observation": {
+        "before": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "result": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "0% — 4/2,200 chars",
+          "entry_count": 1,
+          "message": "Entry replaced.",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "after": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "reloaded": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 4/2,200 chars]\n══════════════════════════════════════════════\nBeta",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Beta"
+        },
+        {
+          "kind": "load_scan",
+          "text": "Beta",
+          "scope": "strict"
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "expectations_matched": true,
+      "observation": {
+        "error": "Failed to write memory file <fixture>/memories/MEMORY.md: synthetic pre-commit failure",
+        "failed": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "repaired": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "retry": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "0% — 4/2,200 chars",
+          "entry_count": 1,
+          "message": "Entry replaced.",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "final": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": true
+        },
+        {
+          "kind": "load_scan",
+          "text": "Alpha",
+          "scope": "strict"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Beta"
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "expectations_matched": true,
+      "observation": {
+        "final_budget": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "50% — 4/8 chars",
+          "entry_count": 1,
+          "message": "Applied 2 operation(s).",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "after_success": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "unmatched": {
+          "success": false,
+          "error": "Operation 2 (remove): no entry matched 'absent'. No operations were applied (batch is all-or-nothing).",
+          "current_entries": [
+            "Beta"
+          ],
+          "usage": "4/8"
+        },
+        "after_failure": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Beta"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "C",
+          "scope": "strict"
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "expectations_matched": true,
+      "observation": {
+        "batch": {
+          "success": false,
+          "error": "Refusing to empty MEMORY.md: this batch would remove every entry from a previously non-empty store. Nothing was applied (batch is all-or-nothing). Keep at least one entry — merge overlapping entries into a shorter one instead of removing the last one (see current_entries below). To delete the final entry deliberately, use single remove() calls.",
+          "current_entries": [
+            "Alpha"
+          ],
+          "usage": "5/2,200"
+        },
+        "after_batch": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "single": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "0% — 0/2,200 chars",
+          "entry_count": 0,
+          "message": "Entry removed.",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "after_single": {
+          "disk_hex": "",
+          "disk_utf8": "",
+          "live_entries": [],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "N05",
+      "expectations_matched": true,
+      "observation": {
+        "result": {
+          "success": false,
+          "error": "Refusing to write MEMORY.md: the file exists on disk but could not be read right now (temporarily locked by another program, a permission change, invalid/corrupt text encoding, or a filesystem error). Treating an unreadable file as empty and saving would wipe existing memory, so the write is refused. Nothing was changed — retry in a moment."
+        },
+        "after": {
+          "disk_hex": "416c706861ff",
+          "disk_utf8": "Alpha\\xff",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        }
+      ]
+    },
+    {
+      "id": "N06",
+      "expectations_matched": true,
+      "observation": {
+        "other_before": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "first_result": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "0% — 12/2,200 chars",
+          "entry_count": 2,
+          "message": "Entry added.",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "second_result": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "0% — 20/2,200 chars",
+          "entry_count": 3,
+          "message": "Entry added.",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "other_after": {
+          "disk_hex": "416c7068610ac2a70a426574610ac2a70a47616d6d61",
+          "disk_utf8": "Alpha\n§\nBeta\n§\nGamma",
+          "live_entries": [
+            "Alpha",
+            "Beta",
+            "Gamma"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "load_scan",
+          "text": "Alpha",
+          "scope": "strict"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "Gamma",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta\n§\nGamma",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta\n§\nGamma"
+        }
+      ]
+    },
+    {
+      "id": "N07",
+      "expectations_matched": true,
+      "observation": {
+        "single_alias": {
+          "success": false,
+          "error": "Synthetic sentinel rejection"
+        },
+        "batch_content": {
+          "success": false,
+          "error": "Operation 1: Synthetic sentinel rejection"
+        },
+        "batch_alias": {
+          "success": true,
+          "done": true,
+          "target": "memory",
+          "usage": "1% — 37/2,200 chars",
+          "entry_count": 2,
+          "message": "Applied 1 operation(s).",
+          "note": "Write saved. This update is complete — do not repeat it."
+        },
+        "before_reload": {
+          "disk_hex": "416c7068610ac2a70a4845524d45535f4841524d4c4553535f544553545f53454e54494e454c",
+          "disk_utf8": "Alpha\n§\nHERMES_HARMLESS_TEST_SENTINEL",
+          "live_entries": [
+            "Alpha",
+            "HERMES_HARMLESS_TEST_SENTINEL"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "after_reload": {
+          "disk_hex": "416c7068610ac2a70a4845524d45535f4841524d4c4553535f544553545f53454e54494e454c",
+          "disk_utf8": "Alpha\n§\nHERMES_HARMLESS_TEST_SENTINEL",
+          "live_entries": [
+            "Alpha",
+            "HERMES_HARMLESS_TEST_SENTINEL"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [7% — 161/2,200 chars]\n══════════════════════════════════════════════\nAlpha\n§\n[BLOCKED: MEMORY.md entry contained threat pattern(s): synthetic-sentinel. Removed from system prompt; use memory(action=remove) to delete the original.]",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "HERMES_HARMLESS_TEST_SENTINEL",
+          "scope": "strict"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "HERMES_HARMLESS_TEST_SENTINEL",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nHERMES_HARMLESS_TEST_SENTINEL",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nHERMES_HARMLESS_TEST_SENTINEL"
+        },
+        {
+          "kind": "load_scan",
+          "text": "Alpha",
+          "scope": "strict"
+        },
+        {
+          "kind": "load_scan",
+          "text": "HERMES_HARMLESS_TEST_SENTINEL",
+          "scope": "strict"
+        }
+      ]
+    },
+    {
+      "id": "N08",
+      "expectations_matched": true,
+      "observation": {
+        "record": {
+          "id": "10affaad",
+          "subsystem": "memory",
+          "action": "add",
+          "summary": "add to memory: Beta",
+          "origin": "background_review",
+          "created_at": 1788941446.8445508,
+          "payload": {
+            "action": "add",
+            "target": "memory",
+            "content": "Beta",
+            "old_text": null
+          }
+        },
+        "staged": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        },
+        "listing": "Pending memory writes (1):\n  10affaad [auto]  add to memory: Beta\n\nApply: /memory approve <id>   Reject: /memory reject <id>",
+        "command": "Approved 1 memory write(s).",
+        "after": {
+          "disk_hex": "416c7068610ac2a70a42657461",
+          "disk_utf8": "Alpha\n§\nBeta",
+          "live_entries": [
+            "Alpha",
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        },
+        "apply_origin": "foreground"
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta"
+        }
+      ]
+    },
+    {
+      "id": "N09",
+      "expectations_matched": true,
+      "observation": {
+        "command_failure": "Approved 0 memory write(s).\nFailed:\n  6c28489e: Failed to write memory file <fixture>/memories/MEMORY.md: synthetic pre-commit failure",
+        "failed": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        },
+        "command_retry": "Approved 1 memory write(s).",
+        "final": {
+          "disk_hex": "42657461",
+          "disk_utf8": "Beta",
+          "live_entries": [
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": true
+        },
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Beta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Beta"
+        }
+      ]
+    },
+    {
+      "id": "N10",
+      "expectations_matched": true,
+      "observation": {
+        "command": "Approved 0 memory write(s).\nFailed:\n  3f17026d: Built-in MEMORY.md writes are disabled in memory config.",
+        "after": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        }
+      },
+      "trace": []
+    },
+    {
+      "id": "N11",
+      "expectations_matched": true,
+      "observation": {
+        "command": "Approved 1 memory write(s).",
+        "uncleared": {
+          "disk_hex": "416c7068610ac2a70a42657461",
+          "disk_utf8": "Alpha\n§\nBeta",
+          "live_entries": [
+            "Alpha",
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        },
+        "retry_command": "Approved 1 memory write(s).",
+        "final": {
+          "disk_hex": "416c7068610ac2a70a42657461",
+          "disk_utf8": "Alpha\n§\nBeta",
+          "live_entries": [
+            "Alpha",
+            "Beta"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 0
+        }
+      },
+      "trace": [
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        },
+        {
+          "kind": "write_attempt",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta",
+          "origin": "foreground",
+          "failure_injected": false
+        },
+        {
+          "kind": "write_committed",
+          "file": "MEMORY.md",
+          "text": "Alpha\n§\nBeta"
+        },
+        {
+          "kind": "pre_scan",
+          "text": "Beta",
+          "scope": "strict"
+        }
+      ]
+    },
+    {
+      "id": "N12",
+      "expectations_matched": true,
+      "observation": {
+        "record": {
+          "id": "805b2e1c",
+          "subsystem": "memory",
+          "action": "batch",
+          "summary": "apply 1 op(s) to memory: - not-an-operation:",
+          "origin": "background_review",
+          "created_at": 1788941446.8487267,
+          "payload": {
+            "action": "batch",
+            "target": "memory",
+            "operations": [
+              {
+                "action": "not-an-operation"
+              }
+            ]
+          }
+        },
+        "staged": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        },
+        "command": "Approved 0 memory write(s).\nFailed:\n  805b2e1c: Operation 1 (not-an-operation): unknown action. Use add, replace, or remove. No operations were applied (batch is all-or-nothing).",
+        "after": {
+          "disk_hex": "416c706861",
+          "disk_utf8": "Alpha",
+          "live_entries": [
+            "Alpha"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 5/2,200 chars]\n══════════════════════════════════════════════\nAlpha",
+          "pending_count": 1
+        }
+      },
+      "trace": []
+    }
+  ],
+  "identity_negative_control": {
+    "modified_copy_rejected_by_actual_guard": true,
+    "no_import_performed": true
+  },
+  "all_diagnostic_expectations_matched": true,
+  "limits": [
+    "synthetic home/config/registry/terminal callback",
+    "synthetic sentinel scanner, NOT actual threat detection",
+    "synthetic stdlib temp/replace helper with pre-commit fault injection",
+    "real Linux fcntl lock branch; no concurrency stress test",
+    "no actual CLI/gateway/AIAgent/provider/credentials/network",
+    "not D2 original-file AST or full worker integration"
+  ]
+}

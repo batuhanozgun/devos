@@ -1,0 +1,83 @@
+{
+  "kind": "U06_NEW_PROCESS_LOCAL_DIAGNOSTIC",
+  "primary_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "upstream_full_source_blob": "1f65614e66e748ec61573aced3fa48b57ee20281",
+  "recorded_run_utc": "2026-09-11T11:06:33.167739+00:00",
+  "raw_result_sha256": "04663c7528a379c27450ddc2c0d91dd2f5182a751984062aa1af5f1a58e696a0",
+  "archive": {
+    "path": "diagnostic-evidence.tar.xz",
+    "bytes": 10212,
+    "sha256": "2b62b7b919e5cf710601bffff88bf50a058112add94b8b85bfc038c69779f7db",
+    "git_blob": "3cbd1a1d3b452af456af9ec51d32c79a79e043e2",
+    "file_count": 11
+  },
+  "scope": "Full exact gateway turn_lease module; no real SessionDB, gateway host, provider, model or OS restart. Negative controls not independent replication.",
+  "files": [
+    {
+      "path": "diagnostic/N01-mutant.py",
+      "bytes": 9072,
+      "sha256": "dd87ea5d97d1728d7abf2770239cdfe504da5113d2e12277f923377e0004bf3a",
+      "git_blob": "2e16a33247e8d8b93d9dc44e65828534a6d5b1d9"
+    },
+    {
+      "path": "diagnostic/N02-mutant.py",
+      "bytes": 9163,
+      "sha256": "3147137fbc8c66a30703993940071edda5ed0e0568782396b544e8b6cced64db",
+      "git_blob": "65622f7d01f537a9aac8a99359d4dd297c8578a2"
+    },
+    {
+      "path": "diagnostic/PRE-RUN.json",
+      "bytes": 251,
+      "sha256": "ea69773fd35800a302f87f379d010b3eca4c90b40bc15149b53c1de1bd8a079d",
+      "git_blob": "b750eb77fa85d5afaa7f5fd1c5d64e9e59dee563"
+    },
+    {
+      "path": "diagnostic/RESULT.json",
+      "bytes": 4799,
+      "sha256": "04663c7528a379c27450ddc2c0d91dd2f5182a751984062aa1af5f1a58e696a0",
+      "git_blob": "4f19133cc84c6a2fa63d8ee9957b90d90a474faa"
+    },
+    {
+      "path": "diagnostic/RUN.stderr",
+      "bytes": 2377,
+      "sha256": "e739c0e92d333fe0759bc3a8b628785aa2291ad01aac93761a6ff7c449d5545b",
+      "git_blob": "ee1b9eb3d15f60cc0c59349f9d4883a5b761876b"
+    },
+    {
+      "path": "diagnostic/RUN.stdout",
+      "bytes": 143,
+      "sha256": "d276c20dcefbfd0cf6b4c86020abd91b0363d420ba6f746c6de8a297ab1482a6",
+      "git_blob": "220693a4b428abf918a9ae06ac451f9725ce7621"
+    },
+    {
+      "path": "diagnostic/SPEC.md",
+      "bytes": 3626,
+      "sha256": "96c88cd6841904d21dadf75892c6f7156021d5198b4f60fa68e120fd3541f6ad",
+      "git_blob": "c727cd9eae94d5b3a4ee3b791c62487b04787785"
+    },
+    {
+      "path": "diagnostic/probe.py",
+      "bytes": 10616,
+      "sha256": "c0bca675859be03a6573f1a465fa2683936b44274a3810594f352ac161e5bf35",
+      "git_blob": "5ccbf00135a225fe52a07d9b7ef57e88815152f7"
+    },
+    {
+      "path": "source/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "source/NOTICE.md",
+      "bytes": 547,
+      "sha256": "beb9ec1c15113e006d69b4f1d1e460d84770ab224dd4a4ab5617ccdb0e812e8b",
+      "git_blob": "9305794ca73ac89a29f3dcda8da1cce4c6654c6d"
+    },
+    {
+      "path": "source/turn_lease.py",
+      "bytes": 9190,
+      "sha256": "266b0138e30ce14b1c641db43965e81661d82dc4b4a5b41cdbffdbdc75e0b21b",
+      "git_blob": "1f65614e66e748ec61573aced3fa48b57ee20281"
+    }
+  ]
+}

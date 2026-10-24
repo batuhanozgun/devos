@@ -1,0 +1,121 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "X01",
+      "observed": {
+        "disagreements": [],
+        "ordered_deadline_one": false,
+        "ordered_instantaneous_paths": [
+          false,
+          false
+        ],
+        "ordered_temporal": true,
+        "reachable": 3328,
+        "reverse_static": true,
+        "reverse_temporal": false,
+        "schedules": 4096,
+        "static_false_positives": 320
+      },
+      "passed": true
+    },
+    {
+      "id": "X02",
+      "observed": {
+        "ack_only_verdict": "UNKNOWN",
+        "observations": [
+          {
+            "ack_body": "{\"accepted\":true,\"result\":\"/result\"}",
+            "ack_status": 202,
+            "content_present": true,
+            "result_status": 200
+          },
+          {
+            "ack_body": "{\"accepted\":true,\"result\":\"/result\"}",
+            "ack_status": 202,
+            "content_present": false,
+            "result_status": 404
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "X03",
+      "observed": {
+        "latest": "{\"version\":2,\"decision\":\"REVIEW\"}",
+        "retained": "{\"version\":1,\"decision\":\"HOLD\"}",
+        "retained_current_match": false,
+        "retained_historical_match": true
+      },
+      "passed": true
+    },
+    {
+      "id": "X04",
+      "observed": {
+        "new_read_status": 403,
+        "retained_copy_present": true,
+        "retained_sha256": "133f9da7cd782f41275638ccf5e18f72895369598e1aa4629a6bfe80c5ef88e2"
+      },
+      "passed": true
+    },
+    {
+      "id": "X05",
+      "observed": {
+        "decoded_sha256": "2bda5e50d3e920dea8b3f0fae3dbb8fff579a6ea7a73a70a1386b5e727b84710",
+        "encoded_sha256": "634149112867e4a8e5ef16ae32ba015bc8d03bc799d21c164b07673a9c593ec3",
+        "equal_bytes": true,
+        "plain_reader_error": "UnicodeDecodeError",
+        "recovered": {
+          "decision": "HOLD",
+          "reason": "dependency"
+        }
+      },
+      "passed": true
+    },
+    {
+      "id": "X06",
+      "observed": {
+        "data_accessible": false,
+        "data_reader_error": "FileNotFoundError",
+        "metadata": {
+          "data": "data.txt",
+          "id": "research-item-1"
+        },
+        "metadata_accessible": true
+      },
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "id": "static_path_guarantees_timely_access",
+      "rejected": true
+    },
+    {
+      "id": "acceptance_proves_presence",
+      "rejected": true
+    },
+    {
+      "id": "source_update_refreshes_old_view",
+      "rejected": true
+    },
+    {
+      "id": "source_revocation_removes_copy",
+      "rejected": true
+    },
+    {
+      "id": "equal_bytes_guarantee_decoded_view",
+      "rejected": true
+    },
+    {
+      "id": "metadata_proves_data_access",
+      "rejected": true
+    }
+  ],
+  "python": "3.13.5",
+  "scope": "Six bounded cases and same-fixture controls; loopback/file execution, not live-agent validation",
+  "script_sha256": "c7f3b8698bbd3e9a366558f1e3df6bfe0a339e84cd1b19cd0da708c5a2cb5be3",
+  "spec_sha256": "d099223d621b301fe6d96dc7c30da3722a8fe5e3757ebb3ca164ea3b23d7606b",
+  "zlib": "1.3.1"
+}

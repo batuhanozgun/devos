@@ -1,0 +1,5 @@
+Stored system prompt for session m4-synthetic-session is null; rebuilding from scratch this turn. Prefix cache will miss until the rebuild persists. Investigate the previous turn's update_system_prompt write path.
+Session DB get_session failed for system-prompt restore (session=m4-synthetic-session): synthetic DB read failure. Falling back to fresh build — prefix cache will miss for this turn.
+Stored system prompt for session m4-synthetic-session is null; rebuilding from scratch this turn. Prefix cache will miss until the rebuild persists. Investigate the previous turn's update_system_prompt write path.
+Session DB get_session failed for system-prompt restore (session=m4-synthetic-session): synthetic DB read failure. Falling back to fresh build — prefix cache will miss for this turn.
+Session DB update_system_prompt failed for session m4-synthetic-session: synthetic DB write failure. Subsequent turns will rebuild the system prompt and miss the prefix cache.

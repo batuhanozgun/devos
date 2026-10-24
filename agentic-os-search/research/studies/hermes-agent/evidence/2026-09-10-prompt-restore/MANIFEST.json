@@ -1,0 +1,71 @@
+{
+  "kind": "M4_LOCAL_ARTIFACT_IDENTITY_NOT_PARENT_FIDELITY_OR_PRODUCT_VALIDATION",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1070,
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1460,
+      "git_blob": "cd4deb01d098b363b11f66ebb37b426ebf31926b",
+      "sha256": "6c8b9cf0fe845411f1d425d51d2fd3b148ab8a48bb25f0cc52c95c472e84afa9"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 9195,
+      "git_blob": "6ced9a41128f406482a48385650f1c77f1cee2d9",
+      "sha256": "a961f3c9bcf555066a0498bb968b8f86063cfffc0e821611aec0466cd4e504e9"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 8803,
+      "git_blob": "a98e98de3c6859dee651b131d0d76958b1a576e9",
+      "sha256": "d074a8b0a800e277b8fe5f39ca5fdcaaf411055268dd004c4dbc61729f5586c9"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 5979,
+      "git_blob": "ecd19099bef88dd1567930bb19ae990deb1db28b",
+      "sha256": "fca426c67123c5d9c2c04464839aa8e42b040d9e158723cc17cd3f5633cc64d4"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 4309,
+      "git_blob": "23ded3713b8e739633f8fe3453940bf6e10cade4",
+      "sha256": "3c62bdfa85c35e9dbd0a5fb65d5569e52f02bcd37665a45039972baefe3b7ad8"
+    },
+    {
+      "path": "probe.py",
+      "bytes": 16556,
+      "git_blob": "0363461ff1e1f49028118716c3e2638c18cee4f9",
+      "sha256": "1237f52e9dcc3f56ad3203d3576f73cf03f46c90df69a6e0e62054ac5e2bd437"
+    },
+    {
+      "path": "selected/conversation_prompt.py",
+      "bytes": 10290,
+      "git_blob": "f17da38db17d516a4c9605b9c0d75766ad5485be",
+      "sha256": "38ef876383548ce6e905c99b1951a5e5d7fa6197df2bd2637e0a6faadab65591"
+    },
+    {
+      "path": "selected/memory_prompt.py",
+      "bytes": 2598,
+      "git_blob": "4794e39d8284c8d20031bc330a0d1b7984fa8e68",
+      "sha256": "c05bec56e92103836e7f4bb72bde24f57d5dffa71d3ff9ae50107d6f2274c07b"
+    },
+    {
+      "path": "stderr.txt",
+      "bytes": 974,
+      "git_blob": "db1515668b38e25eb7c04c5c32a2d6217aac8e15",
+      "sha256": "8bf41e5f375aa1d55f07cf3c61dc9a7e11940d30358900876af89a694125d8bd"
+    },
+    {
+      "path": "stdout.txt",
+      "bytes": 128,
+      "git_blob": "87d054f5540e23dae9a2d8606ce3b1ad42216f02",
+      "sha256": "8ed7fdc1b6cd96b6b00d130bf2bdae190e0ace3b80f5b1559e506e9495e231d3"
+    }
+  ]
+}

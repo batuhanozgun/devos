@@ -1,0 +1,27 @@
+# Use-conditioned selection — Question-to-evidence map
+
+**Updated:** 2026-09-15. **Status:** bounded leaf and U5.1–U5.6 accepted.
+**Use:** find a relevant claim with its conditions, not replace evidence or prescribe a SOUL schema.
+
+| Reuse question / trigger | Bounded finding and applicability | Exact evidence | What is not established |
+|---|---|---|---|
+| Must a view identify every fact before a choice is possible? | For a supplied finite decision contract, each view cell needs a common optimal action; equal optimal-action sets are unnecessary. | U2 §2; K01/K02; U5 §2 | Actual state-domain completeness, truth or explanation sufficiency |
+| Was an adequate summary reused after the question changed? | The same view can preserve one decision and fail another; adequacy is bound to the use. | U2 §§2,6; K02; U5.1 | All future questions known or full history required in every context |
+| Does good average performance satisfy a hard loss limit? | Expected loss and deterministic worst-case regret can select differently; state the criterion and baseline. | U2 §3; K03 | Universal risk policy, calibrated probabilities or randomized optimum |
+| Was a finding discarded because it has no value alone? | Complementary reports can have useful joint value after stated reading costs. | U2 §4; P1; K04; U5.4 | Universal complementarity or empirical actor gains |
+| Can each unit have a context-free priority? | A published finite model changes preferred observation when an outside alternative changes. | U2 §4; P2; K05 | A universal ranking method or complete source-theorem replication |
+| Did fixed-context infeasibility stop inquiry? | A contingent strategy can succeed where fixed bundles under the same per-path budget fail. | U2 §5; K06; U5.5 | Discovery of unknown needs, actual access or LLM use |
+| Is the query or criterion standing for the real task? | Satisfying an implemented criterion differs from grounding it in the protected use. | U1 §2; P3; U4 §6; U5.1 | Subjective relevance as truth or a complete criterion-discovery method |
+| Does reproducing the action preserve its explanation? | N01 retains HOLD but cannot recover the exact recorded reason. Explanatory material depends on the requested explanation kind. | U4 §2; N01; P4; U5.2 | True causal explanation, actual decision production or introspective faithfulness |
+| Is one support route enough for an audit? | Same query output/one witness can lose alternative minimal witnesses; a withdrawal can then be misinterpreted. | U4 §3; P5; N02; U5.2 | Independent source support, full provenance implementation or universal all-support requirement |
+| Do green selected tests certify the wider claim? | Counterexample discovery and bounded universal certification require different coverage; compatible unknown cases can remain. | U4 §4; N03; U5.3 | Production completeness or a prohibition on proof from other justified assumptions |
+| Does adaptive reading mean the real need was discovered? | Fixed-need adaptation, changing query proxies and evolving needs differ. Exploratory progress can yield a question, not a final answer. | U4 §§5,7; P6; contrast K06; U5.5 | Complete unknown-need discovery or authority to substitute goals |
+| Can sufficiency be described without action payoff? | A supplied finite acceptable-output relation admits a valid view-only response iff each cell has a common acceptable output. | Explicit argument U5 §3; N01 illustrates one case | Natural-language oracle or exhaustive empirical validation of that relation |
+| What should remain reusable although not selected now? | Keep recoverable applicability, contrary cases and evidence limits when future use requires them; selection is not disposition. | U2 §6; U5.6/§7; Records/Revision routes in PLAN | Total retention, storage architecture or guaranteed use of every finding |
+| Do these findings establish actor reasoning behavior? | They expose informational prerequisites and possible failure diagnoses, not demonstrated attention, use, compliance or benefit. | U4 §§1,9; U5.6/§7 | Live actor/LLM efficacy or installed behavioral control |
+| Why no immediate child? | Strong specification/construction and adaptive/fixed rivals remain explicit; qualified facets are preferred at current depth. | U4 §§6–10; U5 §8; OPEN-QUESTIONS | Unique or independently verified taxonomy |
+| What work follows the accepted result? | The sibling handoff is executed; its actual result and gate belong to Exposure STATE and Foundation STATE. | STATE; NEXT-RESEARCH-HANDOFF; ../consumer-relative-exposure-availability/STATE.md | Automatic acceptance of Exposure or a later successor |
+
+Exact filenames and links are in [INDEX](INDEX.md). P1–P3 belong to SOURCE-LEDGER; P4–P6 to U4-SOURCE-AND-EXECUTION-ADDENDUM. P6 rechecks the parent's earlier P7 rather than becoming an independent study. K cases are the original checks; N cases are checks/u4. Original K tests were not rerun in U4. Controls share fixtures and authorship; K01's 3840 and N03's 256 comparisons are finite enumerations, not independent samples.
+
+Original U5/U6/PUBLICATION proposal labels are historical under acceptance in STATE. A finding's later role may be a premise, exclusion, falsifier, scope condition, audit aid or next question. Recover exact evidence limits before relying on it. Research completion, publication, user acceptance and actual consumer use remain separate claims.

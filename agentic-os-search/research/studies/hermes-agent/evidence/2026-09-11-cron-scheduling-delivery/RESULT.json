@@ -1,0 +1,536 @@
+{
+  "started_at_utc": "2026-09-11T14:22:57.364884+00:00",
+  "scope": "full byte-matched cron delivery_queue module; real temporary SQLite; dependency seams and synthetic send; NOT full Hermes runtime",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": [
+    "Linux",
+    "localhost",
+    "6.18.35",
+    "#1 SMP Mon Aug 31 18:10:37 UTC 2026",
+    "x86_64"
+  ],
+  "sqlite": "3.46.1",
+  "identities": {
+    "source_git_blob": "689fd620d6193003bbd168a0e62770a0d0306ac6",
+    "source_sha256": "62529e31774f414f9cda886505f0db7f291d13f566cc06982c11cba1da005c4b",
+    "spec_sha256": "13f39fd036f6ee2c96916b0d29b3a4ac2abee0529191c05ffaecceadcdc1bebe",
+    "probe_sha256": "fed4ebffda6f15126b13721ba5d6d43fccdbd18e7d141d8c4c8612aef0075bf1"
+  },
+  "cases": [
+    {
+      "id": "D01",
+      "oracle": "D01",
+      "trace": [
+        {
+          "returned": null,
+          "snapshot": {
+            "rows": [
+              {
+                "execution_id": "e1",
+                "job_json": "{\"deliver\": \"synthetic:chat\", \"execution_id\": \"e1\", \"id\": \"synthetic-job\"}",
+                "content": "payload-one",
+                "for_failure": 0,
+                "status": "pending",
+                "owner_process_id": null,
+                "owner_pid": null,
+                "owner_started_at": null,
+                "created_at": "2026-09-11T14:22:57.368502+00:00",
+                "finished_at": null,
+                "error": null
+              }
+            ],
+            "tombstones": []
+          },
+          "callback_count": 0
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 2,
+        "column_check": 2,
+        "process_start_tag": 0,
+        "foreign_owner_probe": 0
+      }
+    },
+    {
+      "id": "D02",
+      "oracle": "D02",
+      "trace": [
+        {
+          "during_callback": "synthetic transport only",
+          "callback_index": 1
+        },
+        {
+          "first_count": 1,
+          "repeat_count": 0,
+          "calls": [
+            {
+              "job": {
+                "deliver": "synthetic:chat",
+                "execution_id": "e2",
+                "id": "synthetic-job"
+              },
+              "content": "original-two",
+              "for_failure": true
+            }
+          ],
+          "first_snapshot": {
+            "rows": [
+              {
+                "execution_id": "e2",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 1,
+                "status": "delivered",
+                "owner_process_id": "1ba045b902c54e19bfd11d8e89c4bc40",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.371007+00:00",
+                "finished_at": "2026-09-11T14:22:57.372430+00:00",
+                "error": null
+              }
+            ],
+            "tombstones": []
+          },
+          "repeat_result": {
+            "execution_id": "e2",
+            "job_json": "{}",
+            "content": "",
+            "for_failure": 1,
+            "status": "delivered",
+            "owner_process_id": "1ba045b902c54e19bfd11d8e89c4bc40",
+            "owner_pid": 455,
+            "owner_started_at": 123456789,
+            "created_at": "2026-09-11T14:22:57.371007+00:00",
+            "finished_at": "2026-09-11T14:22:57.372430+00:00",
+            "error": null
+          },
+          "final_snapshot": {
+            "rows": [
+              {
+                "execution_id": "e2",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 1,
+                "status": "delivered",
+                "owner_process_id": "1ba045b902c54e19bfd11d8e89c4bc40",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.371007+00:00",
+                "finished_at": "2026-09-11T14:22:57.372430+00:00",
+                "error": null
+              }
+            ],
+            "tombstones": []
+          }
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 8,
+        "column_check": 8,
+        "process_start_tag": 3,
+        "foreign_owner_probe": 0
+      }
+    },
+    {
+      "id": "D03",
+      "oracle": "D03",
+      "trace": [
+        {
+          "claim": {
+            "execution_id": "e3",
+            "content": "payload-three",
+            "for_failure": 0,
+            "status": "delivering",
+            "owner_process_id": "7041275581c04eb1aa29a8082b957834",
+            "owner_pid": 455,
+            "owner_started_at": 123456789,
+            "created_at": "2026-09-11T14:22:57.376461+00:00",
+            "finished_at": null,
+            "error": null,
+            "job": {
+              "deliver": "synthetic:chat",
+              "execution_id": "e3",
+              "id": "synthetic-job"
+            }
+          },
+          "before_timeout": {
+            "rows": [
+              {
+                "execution_id": "e3",
+                "job_json": "{\"deliver\": \"synthetic:chat\", \"execution_id\": \"e3\", \"id\": \"synthetic-job\"}",
+                "content": "payload-three",
+                "for_failure": 0,
+                "status": "delivering",
+                "owner_process_id": "7041275581c04eb1aa29a8082b957834",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.376461+00:00",
+                "finished_at": null,
+                "error": null
+              }
+            ],
+            "tombstones": []
+          },
+          "timeout_return": "timed out while gateway delivery was in progress; outcome is unknown and was not retried",
+          "after_timeout": {
+            "rows": [
+              {
+                "execution_id": "e3",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 0,
+                "status": "unknown",
+                "owner_process_id": "7041275581c04eb1aa29a8082b957834",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.376461+00:00",
+                "finished_at": "2026-09-11T14:22:57.378011+00:00",
+                "error": "timed out while gateway delivery was in progress; outcome is unknown and was not retried"
+              }
+            ],
+            "tombstones": []
+          },
+          "late_finish": false,
+          "after_late_finish": {
+            "rows": [
+              {
+                "execution_id": "e3",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 0,
+                "status": "unknown",
+                "owner_process_id": "7041275581c04eb1aa29a8082b957834",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.376461+00:00",
+                "finished_at": "2026-09-11T14:22:57.378011+00:00",
+                "error": "timed out while gateway delivery was in progress; outcome is unknown and was not retried"
+              }
+            ],
+            "tombstones": []
+          },
+          "retry_claim": null,
+          "send_callbacks": 0
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 6,
+        "column_check": 6,
+        "process_start_tag": 2,
+        "foreign_owner_probe": 0
+      }
+    },
+    {
+      "id": "D04",
+      "oracle": "D04",
+      "trace": [
+        {
+          "during_callback": "synthetic transport only",
+          "callback_index": 1
+        },
+        {
+          "pruned_snapshot": {
+            "rows": [],
+            "tombstones": [
+              {
+                "execution_id": "e4",
+                "terminal_status": "delivered",
+                "finished_at": "2026-09-11T14:22:57.382268+00:00"
+              }
+            ]
+          },
+          "repeat_result": {
+            "execution_id": "e4",
+            "status": "delivered",
+            "finished_at": "2026-09-11T14:22:57.382268+00:00"
+          },
+          "retry_claim": null,
+          "callback_count": 1,
+          "final_snapshot": {
+            "rows": [],
+            "tombstones": [
+              {
+                "execution_id": "e4",
+                "terminal_status": "delivered",
+                "finished_at": "2026-09-11T14:22:57.382268+00:00"
+              }
+            ]
+          }
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 8,
+        "column_check": 8,
+        "process_start_tag": 3,
+        "foreign_owner_probe": 0
+      }
+    },
+    {
+      "id": "D05",
+      "oracle": "D05",
+      "trace": [
+        {
+          "during_callback": "synthetic transport only",
+          "callback_index": 1
+        },
+        {
+          "processed_count": 1,
+          "snapshot": {
+            "rows": [
+              {
+                "execution_id": "e5",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 0,
+                "status": "failed",
+                "owner_process_id": "7115c8089d0d4ab5aff564410faf14f4",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.385758+00:00",
+                "finished_at": "2026-09-11T14:22:57.387078+00:00",
+                "error": "RuntimeError: synthetic send rejection"
+              }
+            ],
+            "tombstones": []
+          },
+          "next_count": 0,
+          "callback_count": 1
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 7,
+        "column_check": 7,
+        "process_start_tag": 3,
+        "foreign_owner_probe": 0
+      }
+    },
+    {
+      "id": "D06",
+      "oracle": "D06",
+      "trace": [
+        {
+          "during_callback": "synthetic transport only",
+          "callback_index": 1
+        },
+        {
+          "caught": {
+            "class": "IntegrityError",
+            "text": "injected terminal SQLite write fault"
+          },
+          "after_failed_finish": {
+            "rows": [
+              {
+                "execution_id": "e6",
+                "job_json": "{\"deliver\": \"synthetic:chat\", \"execution_id\": \"e6\", \"id\": \"synthetic-job\"}",
+                "content": "payload-six",
+                "for_failure": 0,
+                "status": "delivering",
+                "owner_process_id": "989c20115a9941d48124c3978dd09839",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.389683+00:00",
+                "finished_at": null,
+                "error": null
+              }
+            ],
+            "tombstones": []
+          },
+          "active_set": [],
+          "recovered": 1,
+          "after_recovery": {
+            "rows": [
+              {
+                "execution_id": "e6",
+                "job_json": "{}",
+                "content": "",
+                "for_failure": 0,
+                "status": "unknown",
+                "owner_process_id": "989c20115a9941d48124c3978dd09839",
+                "owner_pid": 455,
+                "owner_started_at": 123456789,
+                "created_at": "2026-09-11T14:22:57.389683+00:00",
+                "finished_at": "2026-09-11T14:22:57.391971+00:00",
+                "error": "Gateway finished delivery but could not persist its outcome; send was not retried."
+              }
+            ],
+            "tombstones": []
+          },
+          "second_drain_count": 0,
+          "calls": [
+            {
+              "job": {
+                "deliver": "synthetic:chat",
+                "execution_id": "e6",
+                "id": "synthetic-job"
+              },
+              "content": "payload-six",
+              "for_failure": false
+            }
+          ]
+        }
+      ],
+      "outcome": "expectation_met",
+      "dependency_seams": {
+        "wal": 7,
+        "column_check": 7,
+        "process_start_tag": 2,
+        "foreign_owner_probe": 0
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "id": "N00",
+      "rejected_before_import": true,
+      "error": "upstream source identity mismatch before import",
+      "mutant_sha256": "ba24e5f868725fc71fe6ea284ecdb3f591a85bf609f03682a4497ede9b08a877"
+    },
+    {
+      "id": "N01",
+      "mutant_sha256": "3fff4f63b6d65902d9905ec71e1e856726b43faa11cc188139a94033b0d27e92",
+      "oracle_rejected": true,
+      "observation": {
+        "id": "N01",
+        "oracle": "D01",
+        "trace": [
+          {
+            "returned": "synthetic mutation: pending deadline error",
+            "snapshot": {
+              "rows": [
+                {
+                  "execution_id": "e1",
+                  "job_json": "{\"deliver\": \"synthetic:chat\", \"execution_id\": \"e1\", \"id\": \"synthetic-job\"}",
+                  "content": "payload-one",
+                  "for_failure": 0,
+                  "status": "pending",
+                  "owner_process_id": null,
+                  "owner_pid": null,
+                  "owner_started_at": null,
+                  "created_at": "2026-09-11T14:22:57.396242+00:00",
+                  "finished_at": null,
+                  "error": null
+                }
+              ],
+              "tombstones": []
+            },
+            "callback_count": 0
+          }
+        ],
+        "outcome": "expectation_failed",
+        "exception": "AssertionError",
+        "error": "pending timeout must return no error",
+        "traceback": "Traceback (most recent call last):\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 185, in run_case\n    fn(q, trace)\n    ~~^^^^^^^^^^\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 91, in D01\n    demand(result is None, 'pending timeout must return no error')\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 18, in demand\n    if not ok: raise AssertionError(text)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: pending timeout must return no error\n",
+        "dependency_seams": {
+          "wal": 2,
+          "column_check": 2,
+          "process_start_tag": 0,
+          "foreign_owner_probe": 0
+        }
+      }
+    },
+    {
+      "id": "N02",
+      "mutant_sha256": "859684e61135a1238537c68c17783c8ccee41cff1901958472b6f5230ab4c7ee",
+      "oracle_rejected": true,
+      "observation": {
+        "id": "N02",
+        "oracle": "D03",
+        "trace": [
+          {
+            "claim": {
+              "execution_id": "e3",
+              "content": "payload-three",
+              "for_failure": 0,
+              "status": "delivering",
+              "owner_process_id": "a0d73f9121664c7e91d86167d43a51df",
+              "owner_pid": 455,
+              "owner_started_at": 123456789,
+              "created_at": "2026-09-11T14:22:57.400341+00:00",
+              "finished_at": null,
+              "error": null,
+              "job": {
+                "deliver": "synthetic:chat",
+                "execution_id": "e3",
+                "id": "synthetic-job"
+              }
+            },
+            "before_timeout": {
+              "rows": [
+                {
+                  "execution_id": "e3",
+                  "job_json": "{\"deliver\": \"synthetic:chat\", \"execution_id\": \"e3\", \"id\": \"synthetic-job\"}",
+                  "content": "payload-three",
+                  "for_failure": 0,
+                  "status": "delivering",
+                  "owner_process_id": "a0d73f9121664c7e91d86167d43a51df",
+                  "owner_pid": 455,
+                  "owner_started_at": 123456789,
+                  "created_at": "2026-09-11T14:22:57.400341+00:00",
+                  "finished_at": null,
+                  "error": null
+                }
+              ],
+              "tombstones": []
+            },
+            "timeout_return": "timed out while gateway delivery was in progress; outcome is unknown and was not retried",
+            "after_timeout": {
+              "rows": [
+                {
+                  "execution_id": "e3",
+                  "job_json": "{}",
+                  "content": "",
+                  "for_failure": 0,
+                  "status": "unknown",
+                  "owner_process_id": "a0d73f9121664c7e91d86167d43a51df",
+                  "owner_pid": 455,
+                  "owner_started_at": 123456789,
+                  "created_at": "2026-09-11T14:22:57.400341+00:00",
+                  "finished_at": "2026-09-11T14:22:57.401825+00:00",
+                  "error": "timed out while gateway delivery was in progress; outcome is unknown and was not retried"
+                }
+              ],
+              "tombstones": []
+            },
+            "late_finish": true,
+            "after_late_finish": {
+              "rows": [
+                {
+                  "execution_id": "e3",
+                  "job_json": "{}",
+                  "content": "",
+                  "for_failure": 0,
+                  "status": "delivered",
+                  "owner_process_id": "a0d73f9121664c7e91d86167d43a51df",
+                  "owner_pid": 455,
+                  "owner_started_at": 123456789,
+                  "created_at": "2026-09-11T14:22:57.400341+00:00",
+                  "finished_at": "2026-09-11T14:22:57.402864+00:00",
+                  "error": null
+                }
+              ],
+              "tombstones": []
+            },
+            "retry_claim": null,
+            "send_callbacks": 0
+          }
+        ],
+        "outcome": "expectation_failed",
+        "exception": "AssertionError",
+        "error": "late finish must not rewrite unknown",
+        "traceback": "Traceback (most recent call last):\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 185, in run_case\n    fn(q, trace)\n    ~~^^^^^^^^^^\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 121, in D03\n    demand(late is False and after['rows'][0]['status'] == 'unknown', 'late finish must not rewrite unknown')\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/data/hermes_u07/diagnostic/probe.py\", line 18, in demand\n    if not ok: raise AssertionError(text)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: late finish must not rewrite unknown\n",
+        "dependency_seams": {
+          "wal": 6,
+          "column_check": 6,
+          "process_start_tag": 2,
+          "foreign_owner_probe": 0
+        }
+      }
+    }
+  ],
+  "ended_at_utc": "2026-09-11T14:22:57.404381+00:00"
+}

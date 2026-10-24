@@ -1,0 +1,30 @@
+digraph atlas {
+graph [rankdir=LR, bgcolor="transparent", pad="0.2", nodesep="0.40", ranksep="0.60", splines=polyline, overlap=false, outputorder=edgesfirst, fontname="DejaVu Sans"];
+node [shape=box, style="rounded,filled", color="#bac8d6", fillcolor="#ffffff", penwidth=1.4, fontname="DejaVu Sans", margin="0.20,0.13"];
+edge [fontname="DejaVu Sans", fontsize=10.5, arrowsize=0.65, penwidth=1.2];
+G01 [id="G01", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G01 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Giriş / bağlam</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G02 [id="G02", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G02 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Anlayış / keşif</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G03 [id="G03", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G03 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Başlama değerlendirmesi</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G04 [id="G04", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G04 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Yürütme / gözlem</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G05 [id="G05", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G05 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İnceleme / öneri</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G06 [id="G06", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G06 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Kabul / etki</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G07 [id="G07", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G07 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Süreklilik / kapanış</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+G08 [id="G08", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">G08 · ÜST GÖRÜNÜM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Uzmanlık / bilgi zemini</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#65748a">İç görünümü aç</FONT></TD></TR></TABLE>>, fillcolor="#f5f8fc", color="#9dacc0"];
+{rank=same; G01;G08;}
+{rank=same; G02;G07;}
+{rank=same; G03;G06;}
+{rank=same; G04;G05;}
+G01 -> G08 [style=invis, weight=50, constraint=false];
+G02 -> G07 [style=invis, weight=50, constraint=false];
+G01 -> G02 [id="B01", label="ilgili kaynak", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="B01: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G02 -> G03 [id="B02", label="iş adayları", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="B02: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G03 -> G04 [id="B03", label="sınırlı kabul", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="B03: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G04 -> G05 [id="B04", label="çıktı / gözlem", color="#287c74", fontcolor="#287c74", style="solid", constraint=false, tooltip="B04: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G05 -> G06 [id="B05", label="gerekçeli öneri", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=false, tooltip="B05: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G06 -> G02 [id="B06", label="C / iş etkisi", color="#516ca2", fontcolor="#516ca2", style="dashed", constraint=false, tooltip="B06: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G06 -> G03 [id="B07", label="hazırlık değişimi", color="#516ca2", fontcolor="#516ca2", style="dashed", constraint=false, tooltip="B07: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G05 -> G07 [id="B08", label="teslim / deneyim", color="#287c74", fontcolor="#287c74", style="solid", constraint=false, tooltip="B08: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G07 -> G01 [id="B09", label="devir / yeniden giriş", color="#516ca2", fontcolor="#516ca2", style="dashed", constraint=false, tooltip="B09: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G08 -> G02 [id="B10", label="uzmanlık bakışı", color="#80608b", fontcolor="#80608b", style="dotted", constraint=true, tooltip="B10: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+G08 -> G03 [id="B11", label="çalışma donanımı", color="#80608b", fontcolor="#80608b", style="dotted", constraint=true, tooltip="B11: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+}

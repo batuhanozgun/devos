@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "archive_id": "EXP-001",
+  "prepared_date": "2026-09-10",
+  "originals_modified": false,
+  "originals": [
+    {"input_name":"SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.md","path":"artifacts/consolidation-v0.1/SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.md","size_bytes":87606,"sha256":"d0d3b62689f77259866778c26859a8d374dce568847539809a4ad60a63e7fdfa","git_blob_sha1":"d7a6a6dbcffc3700e04e7afa91163c24536343fb","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity"},
+    {"input_name":"SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.pdf","path":"artifacts/consolidation-v0.1/SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.pdf","size_bytes":651941,"sha256":"f259df701171625713f5165408243e7d3a627df36691c40b30dbc2e6a7a7a9d2","git_blob_sha1":"68ca3fef85c2d305bbb546907b9cb50cae37e169","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity","pdf_pages":35},
+    {"input_name":"SOUL_Mekanizma_Atlasi_v0_1.html","path":"artifacts/mechanism-atlas-v0.1/SOUL_Mekanizma_Atlasi_v0_1.html","size_bytes":490297,"sha256":"5773c43ccf8f4208503a9c56d247917ca5bb70e9d4be32c7fe9748147416b7e0","git_blob_sha1":"6123952786511909a4c18a19583ffe6edfd6adaa","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity"},
+    {"input_name":"SOUL_Mekanizma_Atlasi_v0_1.pdf","path":"artifacts/mechanism-atlas-v0.1/SOUL_Mekanizma_Atlasi_v0_1.pdf","size_bytes":1332083,"sha256":"c62c3edb32dec89a3d088e5f91ebf7a36cdad7c9d18818ce15eeba609b413151","git_blob_sha1":"bda2af6b3a07e9bd4ef7af2a551d549529143d5f","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity","pdf_pages":51},
+    {"input_name":"SOUL_Mekanizma_Atlasi_v0_1_Kaynaklar.zip","path":"artifacts/mechanism-atlas-v0.1/SOUL_Mekanizma_Atlasi_v0_1_Kaynaklar.zip","size_bytes":756782,"sha256":"616ce7cba7514952a925240f350b8206ac1a45359c47caeb1c487408ab339f07","git_blob_sha1":"6fcaf60282380bcfb3b36069cd933c38a1287cc6","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity"},
+    {"input_name":"9e04f670-b6e2-4ef1-bee6-432cdb1431ac.png","path":"sources/original-sketch.png","size_bytes":602469,"sha256":"b9f68a640a1eaa89c077404695bfb6c304d70fb70ca38a7e68901a9ad208b2a6","git_blob_sha1":"076fa2228dcd344a020852ab62d7865ad3d642af","local_copy":"verified-byte-equal","github_payload":"verified-git-object-identity"}
+  ],
+  "zip_entry_count": 26,
+  "extracted_sources": {
+    "path": "artifacts/mechanism-atlas-v0.1/source",
+    "file_count": 26,
+    "github_payload": "verified-git-tree-identity",
+    "git_tree_sha1": "a3dcce0f21849f6e4d37365446a2d429993c6fd6"
+  },
+  "remote_verification": {
+    "date": "2026-09-10",
+    "upload_commit": "a3987312bbfbb8aa0fbf4ea6fd8a1113d467f415",
+    "root_tree": "9309246f6b1fc1a7d766104399112f82d2e99315",
+    "payload_count": 32,
+    "payload_bytes": 6176086,
+    "matched_count": 32,
+    "missing_count": 0,
+    "mismatch_count": 0,
+    "method": "GitHub pinned path/tree/blob identities compared to identities recomputed from the original pre-upload ZIP bytes; local SHA-256 values checked against the pre-upload manifest.",
+    "remote_binary_redownload_sha256_performed": false,
+    "evidence": "checks/PAYLOAD-VERIFICATION.md",
+    "transport_zip_sha256": "054983b46aaa6ac33b226445ce194c1125ff89e5a7a1e4bdbc11cb579783a5a2",
+    "transport_manifest_sha256": "f694d43923ec28e190f985aa30de6b9eefbe739bd00f0c773695785ee1a9e42c"
+  },
+  "note": "Payload publication and Git content-identity verification are complete for the stated 32 files. SHA-256 values originate from original local bytes, not a claimed fresh binary download. Transcript fidelity and SOUL efficacy are separate, unverified properties."
+}

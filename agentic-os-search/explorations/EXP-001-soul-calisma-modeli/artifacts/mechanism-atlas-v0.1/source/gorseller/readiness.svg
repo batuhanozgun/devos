@@ -1,0 +1,153 @@
+<svg role="img" aria-label="İş ve aktör hazırlığı" width="732pt" height="469pt"
+ viewBox="0.00 0.00 732.30 468.80" xmlns="http://www.w3.org/2000/svg" >
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 454.4)">
+
+<!-- M05&#45;&gt;M07 -->
+<g id="svg-readiness-E08" class="edge t-data" data-edge="E08" tabindex="0" role="button" aria-label="E08 M05 → M07: sınırlı iş adayı">
+
+<g id="a_E08">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M90.79,-371.74C90.37,-360.15 90,-350 90,-350 90,-350 90,-338 90,-338 90,-338 90.23,-331.55 90.54,-323.07"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="92.83,-322.84 90.79,-316.26 88.28,-322.68 92.83,-322.84"/>
+
+</g>
+<text text-anchor="middle" x="126.5" y="-341.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">sınırlı iş adayı</text>
+</g>
+<!-- M07&#45;&gt;M05 -->
+<g id="svg-readiness-E09" class="edge t-feedback" data-edge="E09" tabindex="0" role="button" aria-label="E09 M07 → M05: önkoşul / alt iş">
+
+<g id="a_E09">
+<path fill="none" stroke="#516ca2" stroke-width="1.2" stroke-dasharray="5,2" d="M136.75,-316.26C152.34,-327.85 166,-338 166,-338 166,-338 166,-350 166,-350 166,-350 155.35,-357.91 142.13,-367.74"/>
+<polygon fill="#516ca2" stroke="#516ca2" stroke-width="1.2" points="140.61,-366.03 136.75,-371.74 143.33,-369.69 140.61,-366.03"/>
+
+</g>
+<text text-anchor="middle" x="204" y="-341.6" font-family="DejaVu Sans" font-size="10.50" fill="#516ca2">önkoşul / alt iş</text>
+</g>
+<!-- M07&#45;&gt;M08 -->
+<g id="svg-readiness-E10" class="edge t-data" data-edge="E10" tabindex="0" role="button" aria-label="E10 M07 → M08: iş sözleşmesi">
+
+<g id="a_E10">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M153.7,-282C181.63,-282 215.06,-282 245.14,-282"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="245.4,-284.28 251.9,-282 245.4,-279.73 245.4,-284.28"/>
+
+</g>
+<text text-anchor="middle" x="202.75" y="-288.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">iş sözleşmesi</text>
+</g>
+<!-- M07&#45;&gt;M10 -->
+<g id="svg-readiness-E13" class="edge t-data" data-edge="E13" tabindex="0" role="button" aria-label="E13 M07 → M10: iş hazırlığı">
+
+<g id="a_E13">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M153.7,-249.11C185.58,-232.62 224.63,-212.44 257.68,-195.35"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="259.05,-197.2 263.78,-192.2 256.96,-193.16 259.05,-197.2"/>
+
+</g>
+<text text-anchor="middle" x="245" y="-217.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">iş hazırlığı</text>
+</g>
+<!-- M08&#45;&gt;M09 -->
+<g id="svg-readiness-E11" class="edge t-data" data-edge="E11" tabindex="0" role="button" aria-label="E11 M08 → M09: gerekli araç / kaynak">
+
+<g id="a_E11">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M404.23,-282C445.04,-282 495.46,-282 537.71,-282"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="537.91,-284.28 544.41,-282 537.91,-279.73 537.91,-284.28"/>
+
+</g>
+<text text-anchor="middle" x="474.25" y="-288.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">gerekli araç / kaynak</text>
+</g>
+<!-- M08&#45;&gt;M10 -->
+<g id="svg-readiness-E14" class="edge t-data" data-edge="E14" tabindex="0" role="button" aria-label="E14 M08 → M10: katılım hazırlığı">
+
+<g id="a_E14">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M328,-247.99C328,-232.8 328,-214.65 328,-198.72"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="330.28,-198.54 328,-192.04 325.73,-198.54 330.28,-198.54"/>
+
+</g>
+<text text-anchor="middle" x="369" y="-217.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">katılım hazırlığı</text>
+</g>
+<!-- M09&#45;&gt;M10 -->
+<g id="svg-readiness-E12" class="edge t-data" data-edge="E12" tabindex="0" role="button" aria-label="E12 M09 → M10: fiilî koşul gözlemi">
+
+<g id="a_E12">
+<path fill="none" stroke="#287c74" stroke-width="1.2" d="M544.29,-248.15C500.88,-230.25 447.42,-208.22 404.52,-190.54"/>
+<polygon fill="#287c74" stroke="#287c74" stroke-width="1.2" points="405.14,-188.33 398.27,-187.96 403.41,-192.54 405.14,-188.33"/>
+
+</g>
+<text text-anchor="middle" x="530" y="-217.6" font-family="DejaVu Sans" font-size="10.50" fill="#287c74">fiilî koşul gözlemi</text>
+</g>
+<!-- M10&#45;&gt;M06 -->
+<g id="svg-readiness-E15" class="edge t-control" data-edge="E15" tabindex="0" role="button" aria-label="E15 M10 → M06: karar / yetki eksik">
+
+<g id="a_E15">
+<path fill="none" stroke="#354b6b" stroke-width="1.2" d="M298.37,-123.74C288.05,-112.15 279,-102 279,-102 279,-102 269.33,-88.51 258.67,-73.63"/>
+<polygon fill="#354b6b" stroke="#354b6b" stroke-width="1.2" points="260.35,-72.07 254.72,-68.11 256.65,-74.72 260.35,-72.07"/>
+
+</g>
+<text text-anchor="middle" x="326" y="-93.6" font-family="DejaVu Sans" font-size="10.50" fill="#354b6b">karar / yetki eksik</text>
+</g>
+<!-- M10&#45;&gt;M11 -->
+<g id="svg-readiness-E16" class="edge t-control" data-edge="E16" tabindex="0" role="button" aria-label="E16 M10 → M11: sınırlı kabul">
+
+<g id="a_E16">
+<path fill="none" stroke="#354b6b" stroke-width="1.2" d="M357.03,-123.74C367.14,-112.15 376,-102 376,-102 376,-102 386.07,-88.51 397.17,-73.63"/>
+<polygon fill="#354b6b" stroke="#354b6b" stroke-width="1.2" points="399.23,-74.68 401.29,-68.11 395.58,-71.96 399.23,-74.68"/>
+
+</g>
+<text text-anchor="middle" x="414.5" y="-93.6" font-family="DejaVu Sans" font-size="10.50" fill="#354b6b">sınırlı kabul</text>
+</g>
+<!-- M06&#45;&gt;M11 -->
+<!-- M05 -->
+<g id="svg-readiness-M05" class="node k-operation" data-node="M05" tabindex="0" role="button" aria-label="M05 Gerekli koşulları ve iş adaylarını keşfet">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M172,-440C172,-440 12,-440 12,-440 6,-440 0,-434 0,-428 0,-428 0,-384 0,-384 0,-378 6,-372 12,-372 12,-372 172,-372 172,-372 178,-372 184,-378 184,-384 184,-384 184,-428 184,-428 184,-434 178,-440 172,-440"/>
+<text text-anchor="start" x="17" y="-420" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M05 · İŞLEM</text>
+<text text-anchor="start" x="17" y="-402.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İş adaylarını keşfet</text>
+<text text-anchor="start" x="17" y="-386.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q03, Q07</text>
+</g>
+<!-- M07 -->
+<g id="svg-readiness-M07" class="node k-operation" data-node="M07" tabindex="0" role="button" aria-label="M07 Belirli işin başlanabilirliğini değerlendir">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M141.5,-316C141.5,-316 42.5,-316 42.5,-316 36.5,-316 30.5,-310 30.5,-304 30.5,-304 30.5,-260 30.5,-260 30.5,-254 36.5,-248 42.5,-248 42.5,-248 141.5,-248 141.5,-248 147.5,-248 153.5,-254 153.5,-260 153.5,-260 153.5,-304 153.5,-304 153.5,-310 147.5,-316 141.5,-316"/>
+<text text-anchor="start" x="48" y="-296" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M07 · İŞLEM</text>
+<text text-anchor="start" x="48" y="-278.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İş hazır mı?</text>
+<text text-anchor="start" x="48" y="-262.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q07</text>
+</g>
+<!-- M08 -->
+<g id="svg-readiness-M08" class="node k-operation" data-node="M08" tabindex="0" role="button" aria-label="M08 Aktörün işe katılımını hazırla">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M392,-316C392,-316 264,-316 264,-316 258,-316 252,-310 252,-304 252,-304 252,-260 252,-260 252,-254 258,-248 264,-248 264,-248 392,-248 392,-248 398,-248 404,-254 404,-260 404,-260 404,-304 404,-304 404,-310 398,-316 392,-316"/>
+<text text-anchor="start" x="269" y="-296" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M08 · İŞLEM</text>
+<text text-anchor="start" x="269" y="-278.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Aktör hazır mı?</text>
+<text text-anchor="start" x="269" y="-262.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q01, Q06</text>
+</g>
+<!-- M09 -->
+<g id="svg-readiness-M09" class="node k-operation" data-node="M09" tabindex="0" role="button" aria-label="M09 Fiilî ortam ve araç koşullarını kontrol et">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M691.5,-316C691.5,-316 556.5,-316 556.5,-316 550.5,-316 544.5,-310 544.5,-304 544.5,-304 544.5,-260 544.5,-260 544.5,-254 550.5,-248 556.5,-248 556.5,-248 691.5,-248 691.5,-248 697.5,-248 703.5,-254 703.5,-260 703.5,-260 703.5,-304 703.5,-304 703.5,-310 697.5,-316 691.5,-316"/>
+<text text-anchor="start" x="562" y="-296" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M09 · İŞLEM</text>
+<text text-anchor="start" x="562" y="-278.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Ortam hazır mı?</text>
+<text text-anchor="start" x="562" y="-262.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q06, Q09</text>
+</g>
+<!-- M10 -->
+<g id="svg-readiness-M10" class="node k-operation" data-node="M10" tabindex="0" role="button" aria-label="M10 İşi seç ve yürütmeye kabulü değerlendir">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M386,-192C386,-192 270,-192 270,-192 264,-192 258,-186 258,-180 258,-180 258,-136 258,-136 258,-130 264,-124 270,-124 270,-124 386,-124 386,-124 392,-124 398,-130 398,-136 398,-136 398,-180 398,-180 398,-186 392,-192 386,-192"/>
+<text text-anchor="start" x="275" y="-172" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M10 · İŞLEM</text>
+<text text-anchor="start" x="275" y="-154.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Seç / kabul et</text>
+<text text-anchor="start" x="275" y="-138.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q02, Q07, Q11</text>
+</g>
+<!-- M06 -->
+<g id="svg-readiness-M06" class="node k-operation" data-node="M06" tabindex="0" role="button" aria-label="M06 Eksik bilgi veya yetkili karara başvur">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M305,-68C305,-68 157,-68 157,-68 151,-68 145,-62 145,-56 145,-56 145,-12 145,-12 145,-6 151,0 157,0 157,0 305,0 305,0 311,0 317,-6 317,-12 317,-12 317,-56 317,-56 317,-62 311,-68 305,-68"/>
+<text text-anchor="start" x="162" y="-48" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M06 · İŞLEM</text>
+<text text-anchor="start" x="162" y="-30.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">Bilgi / karar bekle</text>
+<text text-anchor="start" x="162" y="-14.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q02, Q11</text>
+</g>
+<!-- M11 -->
+<g id="svg-readiness-M11" class="node k-operation" data-node="M11" tabindex="0" role="button" aria-label="M11 Sınırlı işi yürüt">
+
+<path fill="#ffffff" stroke="#aebccd" stroke-width="1.4" d="M465.5,-68C465.5,-68 386.5,-68 386.5,-68 380.5,-68 374.5,-62 374.5,-56 374.5,-56 374.5,-12 374.5,-12 374.5,-6 380.5,0 386.5,0 386.5,0 465.5,0 465.5,0 471.5,0 477.5,-6 477.5,-12 477.5,-12 477.5,-56 477.5,-56 477.5,-62 471.5,-68 465.5,-68"/>
+<text text-anchor="start" x="392" y="-48" font-family="DejaVu Sans" font-size="10.00" fill="#64748b">M11 · İŞLEM</text>
+<text text-anchor="start" x="392" y="-30.8" font-family="DejaVu Sans" font-weight="bold" font-size="14.00" fill="#16324f">İşi yürüt</text>
+<text text-anchor="start" x="392" y="-14.8" font-family="DejaVu Sans" font-size="9.00" fill="#985323">Açık: Q05, Q09</text>
+</g>
+</g>
+</svg>

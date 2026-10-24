@@ -1,0 +1,1036 @@
+{
+  "kind": "SOURCE_EXTRACTED_FUNCTION_INTEGRATION_NOT_PRODUCT_PASS",
+  "started_at_utc": "2026-09-08T19:31:50.677314+00:00",
+  "finished_at_utc": "2026-09-08T19:31:50.694886+00:00",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "runtime": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41"
+  },
+  "full_source_identities": {
+    "thread_context.py": {
+      "git_blob": "d8c37af8f5a529680e81e867177140e41c4c6656",
+      "sha256": "30b868f14013ec6bc741c5e5a1937e405024d0e7344a92bac903f1de3d0e38e2",
+      "bytes": 2855
+    },
+    "daemon_pool.py": {
+      "git_blob": "5682a8f6ae103a421c1081b69ee6f9272957acdf",
+      "sha256": "f66c379ee655496a9a79ec0565766f383fd70ba6f5e56c8f7abb92fa236141a4",
+      "bytes": 2533
+    },
+    "LICENSE": {
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "bytes": 1070
+    }
+  },
+  "source_excerpts": {
+    "plugins.selected.py": {
+      "sha256": "4b1f70713eb61521c796a10ed98ad9478079c88591ff1daa7adff02d827cb75d",
+      "bytes": 5869,
+      "full_upstream_blob_verified": false
+    },
+    "tool_executor.selected.py": {
+      "sha256": "e00f408438b5c614b0ce22a3aec981b9a651651274a0e575088a295e799a95f3",
+      "bytes": 19884,
+      "full_upstream_blob_verified": false
+    }
+  },
+  "harness_sha256": "4d5fc40c653accefc0dcbb8051d2247c101cf52d1dd097ffbfdbe792ce12b09f",
+  "spec_sha256": "2785cd508757fe4b5f9defc3bdd24756223ec49a8581b6f81b3c0dd1d7e68e92",
+  "modified_full_source_identity_rejected": true,
+  "all_diagnostic_expectations_matched": true,
+  "cases": [
+    {
+      "id": "C01",
+      "route": "direct",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"Tool 'research_marker' denied: not in this thread's tool whitelist\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "same_thread_sees_policy": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": [
+            "memory"
+          ]
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "route": "direct",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": false,
+      "dispatched": true,
+      "result": "{\"ok\": true, \"marker\": \"unchanged\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": [
+            "research_marker"
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "unchanged"
+          },
+          "callback_present": true
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": false,
+      "dispatched": true,
+      "result": "{\"ok\": true, \"marker\": \"unchanged\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "unchanged"
+          },
+          "callback_present": true
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": false,
+      "dispatched": true,
+      "result": "{\"ok\": true, \"marker\": \"unchanged\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "unchanged"
+          },
+          "callback_present": true
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "route": "worker",
+      "tool_name": "clarify",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"Tool 'clarify' denied: not in this thread's tool whitelist\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "same_thread_sees_policy": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": [
+            "memory"
+          ]
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640931448704,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C06",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": true,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"Tool 'research_marker' denied: not in this thread's tool whitelist\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_binding_restores_policy": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": [
+            "memory"
+          ]
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C07",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"synthetic scope block\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "tool_scope_block"
+        }
+      ]
+    },
+    {
+      "id": "C08",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "none",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"synthetic guardrail block\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": false
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "guardrail_block"
+        }
+      ]
+    },
+    {
+      "id": "C09",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "block",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"synthetic lifecycle block\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C10",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "raise",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": false,
+      "dispatched": true,
+      "result": "{\"ok\": true, \"marker\": \"unchanged\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "lifecycle_exception",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "unchanged"
+          },
+          "callback_present": true
+        }
+      ]
+    },
+    {
+      "id": "C11",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "approve",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"BLOCKED: plugin approval gate failed for research_marker\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "approval_exception",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C12",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "double-callback",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": null,
+      "dispatched": null,
+      "result": null,
+      "exception": {
+        "type": "RuntimeError",
+        "message": "Hermes tool execution callback invoked more than once"
+      },
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "double_callback_rejected": true,
+        "worker_has_no_parent_whitelist": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "unchanged"
+          },
+          "callback_present": true
+        }
+      ]
+    },
+    {
+      "id": "C13",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "modify-block",
+      "worker_binding_intervention": false,
+      "handler_count": 0,
+      "blocked": true,
+      "dispatched": true,
+      "result": "{\"error\": \"synthetic after-modify block\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "post_hook_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "status": "blocked",
+          "error_type": "plugin_block"
+        }
+      ]
+    },
+    {
+      "id": "C14",
+      "route": "worker",
+      "tool_name": "research_marker",
+      "fixture_mode": "modify",
+      "worker_binding_intervention": false,
+      "handler_count": 1,
+      "blocked": false,
+      "dispatched": true,
+      "result": "{\"ok\": true, \"marker\": \"changed\"}",
+      "exception": null,
+      "checks": {
+        "handler_count": true,
+        "parent_preserved": true,
+        "worker_registry_empty": true,
+        "no_unexpected_exception": true,
+        "blocked_matches": true,
+        "dispatched_is_callback_flag": true,
+        "worker_has_no_parent_whitelist": true,
+        "modified_args_reach_handler": true,
+        "context_retained": true
+      },
+      "expectations_matched": true,
+      "events": [
+        {
+          "kind": "relay_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "request_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "execution_middleware_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "actual_whitelist_consumer",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allowed": null
+        },
+        {
+          "kind": "lifecycle",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "hook": "pre_tool_call"
+        },
+        {
+          "kind": "guardrail_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "allows": true
+        },
+        {
+          "kind": "begin_execution_fixture",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile"
+        },
+        {
+          "kind": "handler",
+          "thread": 139640542574272,
+          "origin": "background_review",
+          "profile": "synthetic-profile",
+          "args": {
+            "marker": "changed"
+          },
+          "callback_present": true
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Manually transcribed large-module source selections, not full-module byte-verified execution.",
+    "Boundary doubles for Relay/middleware/lifecycle delivery/guardrail/UI/approval/config/profile.",
+    "Only selected sequential wrapper and direct branch; no complete ordinary loop, PluginManager, concurrent executor or AIAgent.",
+    "No real tool effect except harmless in-memory marker; no network, provider or credentials.",
+    "Not a production exploit, prevalence estimate, security certification or learning-quality evaluation."
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "kind": "BOUNDED_FULL_POLICY_MODULE_DIAGNOSTICS_NOT_GATEWAY_E2E",
+  "executed_at_utc": "2026-09-10T05:42:55.258536+00:00",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "source": {
+    "bytes": 5666,
+    "git_blob": "07204201e411f29f912bb9bba6beec0566acab9d",
+    "sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1"
+  },
+  "spec": {
+    "bytes": 2510,
+    "git_blob": "19bfbb5346f1b31f5b41aa74a71ea8e8baa4f7e3",
+    "sha256": "c4acaf218a976efdbfdd460e97b56a028023fd78a9e5526a43c5c9a0bce05676"
+  },
+  "probe": {
+    "bytes": 6716,
+    "git_blob": "5251d91b4a75a5b64f0ec07f072807bd4fddb781",
+    "sha256": "143cc1bcf47a15e9a77130d0a2f516e0f7acbf4eb6fed43928a38bf650ac6367"
+  },
+  "synthetic": [
+    "configuration namespace",
+    "platform key",
+    "source/user/chat holders"
+  ],
+  "not_executed": [
+    "GatewayRunner",
+    "ingress authorization",
+    "profile resolution",
+    "slash handlers",
+    "memory/store mutation",
+    "provider"
+  ],
+  "cases": [
+    {
+      "id": "A01",
+      "observed": {
+        "enabled": false,
+        "memory": true
+      },
+      "expected": {
+        "enabled": false,
+        "memory": true
+      },
+      "matched": true
+    },
+    {
+      "id": "A02",
+      "observed": {
+        "memory": false,
+        "skills": false,
+        "help": true,
+        "whoami": true
+      },
+      "expected": {
+        "memory": false,
+        "skills": false,
+        "help": true,
+        "whoami": true
+      },
+      "matched": true
+    },
+    {
+      "id": "A03",
+      "observed": {
+        "memory": true,
+        "skills": true,
+        "approvals": true
+      },
+      "expected": {
+        "memory": true,
+        "skills": true,
+        "approvals": true
+      },
+      "matched": true
+    },
+    {
+      "id": "A04",
+      "observed": {
+        "memory": true,
+        "skills": false,
+        "memory approve": false
+      },
+      "expected": {
+        "memory": true,
+        "skills": false,
+        "memory approve": false
+      },
+      "matched": true
+    },
+    {
+      "id": "A05",
+      "observed": {
+        "dm_owner_in_dm": true,
+        "dm_owner_in_group": false,
+        "group_owner_in_group": true,
+        "group_owner_in_dm": false
+      },
+      "expected": {
+        "dm_owner_in_dm": true,
+        "dm_owner_in_group": false,
+        "group_owner_in_group": true,
+        "group_owner_in_dm": false
+      },
+      "matched": true
+    },
+    {
+      "id": "A06",
+      "observed": {
+        "fallback_memory": true,
+        "explicit_memory": false,
+        "explicit_skills": true
+      },
+      "expected": {
+        "fallback_memory": true,
+        "explicit_memory": false,
+        "explicit_skills": true
+      },
+      "matched": true
+    },
+    {
+      "id": "A07",
+      "observed": {
+        "numeric_admin": true,
+        "commands": [
+          "memory",
+          "skills"
+        ]
+      },
+      "expected": {
+        "numeric_admin": true,
+        "commands": [
+          "memory",
+          "skills"
+        ]
+      },
+      "matched": true
+    },
+    {
+      "id": "A08",
+      "observed": {
+        "enabled": false,
+        "memory": true
+      },
+      "expected": {
+        "enabled": false,
+        "memory": true
+      },
+      "matched": true
+    }
+  ],
+  "identity_negative_control": {
+    "rejected_before_import": true,
+    "error": "source identity mismatch; import refused"
+  },
+  "oracle_mutation_control": {
+    "mutation": "can_run always True",
+    "detected_by": [
+      "A02",
+      "A04",
+      "A06"
+    ],
+    "A02_detected": true
+  },
+  "all_diagnostic_expectations_matched": true,
+  "product_conformance": "NOT ASSESSED"
+}

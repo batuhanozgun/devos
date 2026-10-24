@@ -1,0 +1,67 @@
+{
+  "kind": "U01_M3_ARTIFACT_IDENTITY_NOT_PRODUCT_VALIDATION",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "core_tree": "1052daf850945e5644239030d88fc2012305c1c2",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2053,
+      "git_blob": "c7a302623077d891ea646877061a4e2536363b25",
+      "sha256": "61833a66034001e2608ddad6eb6d18b86d51346aec05148a6143c4a87ce6a128"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 15260,
+      "git_blob": "81002fe6089fcc179e5a7a57c82108a7b5cced1d",
+      "sha256": "3a8d44bfe8d7f0ecb13a401a7b25eca982ab9ff384ebd6660795c5bb9a7e5b59"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 3790,
+      "git_blob": "8b9accde551cd5e316a35723f34e6508d17ddd72",
+      "sha256": "cb5d3bb1f6348fbd16ab0ea8062daa9b1a34671b07c6d4963fa62c971d2edbc8"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 5612,
+      "git_blob": "31b2ecdcc6b150931bf29d32f6ae5e639e2a9e55",
+      "sha256": "20dfa05256e59d5784a1226d4e6a6ff599ad78bd233ad40e7d2c832d4908d420"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 2510,
+      "git_blob": "19bfbb5346f1b31f5b41aa74a71ea8e8baa4f7e3",
+      "sha256": "c4acaf218a976efdbfdd460e97b56a028023fd78a9e5526a43c5c9a0bce05676"
+    },
+    {
+      "path": "policy_probe.py",
+      "bytes": 6716,
+      "git_blob": "5251d91b4a75a5b64f0ec07f072807bd4fddb781",
+      "sha256": "143cc1bcf47a15e9a77130d0a2f516e0f7acbf4eb6fed43928a38bf650ac6367"
+    },
+    {
+      "path": "stderr.txt",
+      "bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.txt",
+      "bytes": 81,
+      "git_blob": "7feef61993fa799469de40cc26e829f38cc6ef93",
+      "sha256": "1c0150a0e2eefabb28c20527d99b6a5f49397a09607461c12495d62ff54842cf"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "bytes": 1070,
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    },
+    {
+      "path": "upstream/slash_access.py",
+      "bytes": 5666,
+      "git_blob": "07204201e411f29f912bb9bba6beec0566acab9d",
+      "sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1"
+    }
+  ]
+}

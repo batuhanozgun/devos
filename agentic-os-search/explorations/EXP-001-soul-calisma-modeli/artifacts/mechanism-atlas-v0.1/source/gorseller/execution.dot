@@ -1,0 +1,30 @@
+digraph atlas {
+graph [rankdir=TB, bgcolor="transparent", pad="0.2", nodesep="0.40", ranksep="0.60", splines=polyline, overlap=false, outputorder=edgesfirst, fontname="DejaVu Sans"];
+node [shape=box, style="rounded,filled", color="#bac8d6", fillcolor="#ffffff", penwidth=1.4, fontname="DejaVu Sans", margin="0.20,0.13"];
+edge [fontname="DejaVu Sans", fontsize=10.5, arrowsize=0.65, penwidth=1.2];
+M11 [id="M11", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M11 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İşi yürüt</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q05, Q09</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M12 [id="M12", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M12 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Aracı çalıştır</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q09</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M13 [id="M13", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M13 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Sonucu gözle</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q08, Q09</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M14 [id="M14", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M14 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>İddia / kanıt kontrolü</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q08</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M15 [id="M15", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M15 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Değişikliği öner</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q02, Q03</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M18 [id="M18", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M18 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Toparlan / onar</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q04, Q09, Q11</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M21 [id="M21", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M21 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Kapanışı değerlendir</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q02, Q08, Q11</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+M22 [id="M22", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M22 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Birikimi güncelle</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q10, Q12</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+{rank=same; M11;}
+{rank=same; M12;M13;}
+{rank=same; M18;M14;}
+{rank=same; M15;M21;M22;}
+M15 -> M21 [style=invis, weight=50, constraint=false];
+M21 -> M22 [style=invis, weight=50, constraint=false];
+M18 -> M15 [style=invis, weight=80];
+M11 -> M12 [id="E17", label="eylem isteği", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="E17: İş için araç eylemi gerektiğinde ve bu eylem yetkili olduğunda."];
+M12 -> M13 [id="E18", label="araç sonucu", color="#287c74", fontcolor="#287c74", style="solid", constraint=false, tooltip="E18: Araç gerçek yanıt veya belirsiz sonuç verdiğinde."];
+M11 -> M14 [id="E19", label="düşünsel çıktı", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E19: Çıktı bir taslak veya hesap ise araç kullanmak zorunlu değildir."];
+M13 -> M14 [id="E20", label="gözlenen sonuç", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E20: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+M13 -> M11 [id="E21", label="ara gözlem", color="#516ca2", fontcolor="#516ca2", style="dashed", constraint=false, tooltip="E21: İşin yetkili sınırı içinde başka bir sınırlı adım gerekiyorsa."];
+M12 -> M18 [id="E22", label="hata / kısmi etki", color="#a34b37", fontcolor="#a34b37", style="dashed", constraint=true, tooltip="E22: Araç hatası, kesinti veya belirsiz dış etki gözlendiğinde."];
+M14 -> M15 [id="E23", label="bulgu / değişiklik", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="E23: C, Work veya çıktının statüsünde gerekçeli değişiklik gerekiyorsa."];
+M14 -> M18 [id="E24", label="uygunsuz / eksik", color="#a34b37", fontcolor="#a34b37", style="dashed", constraint=false, tooltip="E24: Hedef iddia karşılanmıyorsa veya gerekli gözlem eksikse."];
+M14 -> M21 [id="E36", label="teslim değerlendirmesi", color="#354b6b", fontcolor="#354b6b", style="solid", constraint=true, tooltip="E36: Sınırlı görev veya üst amaç için kapanış adayı varsa."];
+M14 -> M22 [id="E39", label="deneyim adayı", color="#287c74", fontcolor="#287c74", style="solid", constraint=true, tooltip="E39: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+}

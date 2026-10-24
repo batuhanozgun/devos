@@ -1,0 +1,43 @@
+{
+  "kind": "RESEARCH_ACCESS_AND_PUBLICATION_OBSERVATIONS",
+  "date": "2026-09-10",
+  "research_base": "91af4415c22e05b80484b935383ceeb04a3c5b7b",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "canonical_read_access": "SUCCESS: pinned GitHub source and research-state reads",
+  "write_attempts": [
+    {
+      "action": "GitHub.create_blob",
+      "payload_role": "U01-M3 inquiry scope",
+      "result": "Resource not found: GitHub.create_blob",
+      "success": false
+    },
+    {
+      "action": "GitHub.create_tree",
+      "payload_role": "Tree containing meaningful inquiry scope",
+      "result": "Resource not found: GitHub.create_tree",
+      "success": false
+    },
+    {
+      "action": "GitHub.create_file",
+      "payload_role": "evidence/2026-09-10-pending-caller/SCOPE.md source checkpoint",
+      "result": "Resource not found: GitHub.create_file",
+      "success": false
+    },
+    {
+      "action": "GitHub.update_file",
+      "payload_role": "Existing STATE continuity checkpoint; current content SHA supplied",
+      "result": "Resource not found: GitHub.update_file",
+      "success": false
+    }
+  ],
+  "fresh_discovery_attempted": true,
+  "write_errors_are_tool_resolution_errors_not_observed_github_permission_rejections": true,
+  "technical_root_cause": "NOT ESTABLISHED",
+  "permissions_or_app_settings_changed": false,
+  "successful_writes_this_turn": 0,
+  "current_main_last_read": "91af4415c22e05b80484b935383ceeb04a3c5b7b",
+  "current_main_observation": "GitHub ref readback, not inferred from previous chat",
+  "byte_materialization_limit": "Large pinned sources read through connector, not all materialized locally. Exact source materialized and executed: gateway/slash_access.py only.",
+  "source_identity_correction": "First transcription had four extra escape bytes. Corrected to observed source quotation form; final expected Git blob matched before import. Expected source identity was not changed.",
+  "later_step": "Recover and publish this evidence before opening another research unit; re-read current main and reconcile rather than overwrite."
+}

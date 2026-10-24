@@ -1,0 +1,45 @@
+{
+  "status": "ARCHIVED_SOURCE_IDENTITY_VERIFIED",
+  "sources": [
+    {
+      "file": "LICENSE",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "bytes": 1070,
+      "retrieved_from_repository": "batuhanozgun/agentic-os-search",
+      "retrieved_at_ref": "a218acfc20e7ece488709e00a9762166ec970fba",
+      "retrieved_path": "research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/LICENSE",
+      "archive_url": "https://github.com/batuhanozgun/agentic-os-search/blob/a218acfc20e7ece488709e00a9762166ec970fba/research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/LICENSE",
+      "upstream_pin_previously_recorded": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "reading": "FULL this turn",
+      "fresh_upstream_revalidation": false
+    },
+    {
+      "file": "skill_manager_batch.py",
+      "git_blob": "9f38adff284eede4234948f67e99a43752c0926e",
+      "sha256": "2cefa015de4db1122ea59834f9a38debb2643c0b035592e941f853aab995bd52",
+      "bytes": 9964,
+      "retrieved_from_repository": "batuhanozgun/agentic-os-search",
+      "retrieved_at_ref": "a218acfc20e7ece488709e00a9762166ec970fba",
+      "retrieved_path": "research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/skill_manager_batch.py",
+      "archive_url": "https://github.com/batuhanozgun/agentic-os-search/blob/a218acfc20e7ece488709e00a9762166ec970fba/research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/skill_manager_batch.py",
+      "upstream_pin_previously_recorded": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "reading": "FULL this turn",
+      "fresh_upstream_revalidation": false
+    },
+    {
+      "file": "write_approval.py",
+      "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232",
+      "bytes": 12431,
+      "retrieved_from_repository": "batuhanozgun/agentic-os-search",
+      "retrieved_at_ref": "a218acfc20e7ece488709e00a9762166ec970fba",
+      "retrieved_path": "research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/write_approval.py",
+      "archive_url": "https://github.com/batuhanozgun/agentic-os-search/blob/a218acfc20e7ece488709e00a9762166ec970fba/research/studies/hermes-agent/evidence/2026-09-07-u01b/component-probe/upstream/write_approval.py",
+      "upstream_pin_previously_recorded": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+      "reading": "FULL this turn",
+      "fresh_upstream_revalidation": false
+    }
+  ],
+  "upstream_dependency_closure": "NOT_REVALIDATED"
+}

@@ -1,0 +1,1 @@
+{"scenarios": 12, "all_observation_assertions_satisfied": true, "product_conformance_claim": false, "output": "RESULT.json"}

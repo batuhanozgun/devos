@@ -1,0 +1,259 @@
+{
+  "kind": "BOUNDED_MEMORY_APPLY_AND_SELECTED_PROMPT_RESTORE_NOT_PREPARED_REQUEST",
+  "executed_at_utc": "2026-09-10T16:11:51.320434+00:00",
+  "python": "3.13.5",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "five_full_M2_module_git_identities": {
+    "memory_tool_store.py": "457594444311af31c837dcdd74cd1c55f2b47b3c",
+    "memory_tool.py": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7",
+    "write_approval_commands.py": "150b72dfd17696ab7a64f97057b7405128f5b352",
+    "skill_provenance.py": "3df9cf143045644310fa7d27a65666c8c23caf95",
+    "write_approval.py": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d"
+  },
+  "reused_M2_setup_git_blob": "874b1f5c7314464b5ea011bc4e4adfaf124a1fb0",
+  "selected_definition_sha256": {
+    "conversation_prompt.py": "38ef876383548ce6e905c99b1951a5e5d7fa6197df2bd2637e0a6faadab65591",
+    "memory_prompt.py": "c05bec56e92103836e7f4bb72bde24f57d5dffa71d3ff9ae50107d6f2274c07b"
+  },
+  "selected_parent_full_byte_fidelity": "NOT_VERIFIED; manual source selections",
+  "spec_sha256": "3c62bdfa85c35e9dbd0a5fb65d5569e52f02bcd37665a45039972baefe3b7ad8",
+  "probe_sha256": "1237f52e9dcc3f56ad3203d3576f73cf03f46c90df69a6e0e62054ac5e2bd437",
+  "cases": [
+    {
+      "id": "V01",
+      "observed": {
+        "approval": "Approved 1 memory write(s).",
+        "original_store": {
+          "disk_utf8": "M4_NEW_MEMORY",
+          "live_entries": [
+            "M4_NEW_MEMORY"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 13/2,200 chars]\n══════════════════════════════════════════════\nM4_OLD_MEMORY",
+          "pending_count": 0
+        },
+        "fresh_store": {
+          "disk_utf8": "M4_NEW_MEMORY",
+          "live_entries": [
+            "M4_NEW_MEMORY"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 13/2,200 chars]\n══════════════════════════════════════════════\nM4_NEW_MEMORY",
+          "pending_count": 0
+        },
+        "selected": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "V02",
+      "observed": {
+        "variants": [
+          {
+            "mode": "empty_history",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          },
+          {
+            "mode": "null_prompt",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          },
+          {
+            "mode": "read_failure",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "id": "V03",
+      "observed": {
+        "variants": [
+          {
+            "mismatch": "model",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          },
+          {
+            "mismatch": "provider",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          },
+          {
+            "mismatch": "platform",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          },
+          {
+            "mismatch": "cwd",
+            "contains_old": false,
+            "contains_new": true,
+            "same_as_stored_old": false,
+            "builder_calls": 1
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "id": "V04",
+      "observed": {
+        "reload_only": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        },
+        "after_invalidation": {
+          "cache_none": true,
+          "snapshot_new": true,
+          "db_unchanged": true,
+          "plugin_previous_saved": true
+        },
+        "then_restore": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        },
+        "after_explicit_build_persist": {
+          "contains_old": false,
+          "contains_new": true,
+          "same_as_stored_old": false,
+          "builder_calls": 0
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "V05",
+      "observed": {
+        "approval": "Approved 1 memory write(s).",
+        "fresh_store": {
+          "disk_utf8": "",
+          "live_entries": [],
+          "snapshot": null,
+          "pending_count": 0
+        },
+        "restored": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        },
+        "built_without_stored_prompt": {
+          "contains_old": false,
+          "contains_new": false,
+          "same_as_stored_old": false,
+          "builder_calls": 1
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "V06",
+      "observed": {
+        "approval": "Approved 0 memory write(s).\nFailed:\n  001793e6: Failed to write memory file /tmp/hermes-m4-0dxqylqd/memories/MEMORY.md: synthetic pre-commit failure",
+        "failed_store": {
+          "disk_utf8": "M4_OLD_MEMORY",
+          "live_entries": [
+            "M4_NEW_MEMORY"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 13/2,200 chars]\n══════════════════════════════════════════════\nM4_OLD_MEMORY",
+          "pending_count": 1
+        },
+        "reloaded_store": {
+          "disk_utf8": "M4_OLD_MEMORY",
+          "live_entries": [
+            "M4_OLD_MEMORY"
+          ],
+          "snapshot": "══════════════════════════════════════════════\nMEMORY (your personal notes) [0% — 13/2,200 chars]\n══════════════════════════════════════════════\nM4_OLD_MEMORY",
+          "pending_count": 1
+        },
+        "selected": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "V07",
+      "observed": {
+        "first_under_fake_db_faults": {
+          "contains_old": false,
+          "contains_new": true,
+          "same_as_stored_old": false,
+          "builder_calls": 1
+        },
+        "db_kept_old": true,
+        "later_after_faults_removed": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "V08",
+      "observed": {
+        "controlled_capability_change": {
+          "contains_old": false,
+          "contains_new": true,
+          "same_as_stored_old": false,
+          "builder_calls": 1
+        },
+        "cache_clear_callback": true,
+        "probe_exception": {
+          "contains_old": true,
+          "contains_new": false,
+          "same_as_stored_old": true,
+          "builder_calls": 0
+        }
+      },
+      "matched": true
+    }
+  ],
+  "negative_controls": {
+    "full_source_rejected_before_import": true,
+    "local_selection_change_rejected": true,
+    "always_true_detected_by_V03": true,
+    "always_false_detected_by_V01": true
+  },
+  "all_expectations_matched": true,
+  "endpoint": "selected cached prompt, disk/live/frozen memory and synthetic DB state",
+  "not_executed": [
+    "real CLI/gateway",
+    "actual compression caller",
+    "full prompt builder",
+    "turn_context/request assembly",
+    "provider/model",
+    "real Bot Chat probe",
+    "actual SQLite"
+  ],
+  "previous_N_A_SA_AP_suites_rerun": false,
+  "semantic_mutants_are_separate": true
+}

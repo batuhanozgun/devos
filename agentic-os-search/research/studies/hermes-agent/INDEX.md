@@ -1,0 +1,37 @@
+# Hermes Agent — INDEX
+
+**Current U15 / plan v0.28.** [STATE](STATE.md) work/yetki, [META](META.md) study/reuse, [METHOD](METHOD.md) yöntem, [PLAN](RESEARCH-PLAN.md) sıra, [MAP](CURRENT-RESEARCH-MAP.md) derived büyük resim. ACTIVE PARTIAL, dört provisional synthesis; final CORE değil. [U15 PUBLICATION](evidence/2026-09-13-skill-library/PUBLICATION.md).
+
+## Güncel girişler
+
+| İhtiyaç | Kaynak yolu |
+|---|---|
+| Dağıtılan beceri ile yerel değişiklik nasıl eşitlenir? | **[30/U15](notes/30-SKILL-LIBRARY-LIFECYCLE.md)**→[A SYNC-AND-LOCAL-STATE](evidence/2026-09-13-skill-library/SYNC-AND-LOCAL-STATE.md)/[SYNC-SOURCES S01–S05](evidence/2026-09-13-skill-library/SYNC-SOURCES.md) |
+| Bakım yetkisi, arşiv ve geri alma sonraki kullanıma nasıl bağlanır? | [B ARCHIVE-LEDGER-AND-DISCOVERY](evidence/2026-09-13-skill-library/ARCHIVE-LEDGER-AND-DISCOVERY.md)/[DISCOVERY-SOURCES S04 ekleri/S06–S14](evidence/2026-09-13-skill-library/DISCOVERY-SOURCES.md) |
+| U15 neyi çalıştırmadı ve hangi farkları açık bıraktı? | [NOT RUN](evidence/2026-09-13-skill-library/CHECKS-NOT-RUN.md): sync/restore/curator/FS/model/DB/OS/suite yok; remote governance ve actual request/quality açık |
+| Neden sonraki iş değerlendirme? | [PLAN kapsam dengesi](RESEARCH-PLAN.md)→Q60 actual test/eval runner, target, oracle ve başarı iddiası. Q60 henüz araştırılmadı; Q59 remote Hub/org governance kapanmadı |
+| Kaynak nasıl kurulu komut/profil/çalışan sistem olur? | [29/U14](notes/29-INSTALLATION-UPDATE-AND-ACTIVATION.md)→[A INSTALL-AND-ACTIVATION](evidence/2026-09-13-install-update/INSTALL-AND-ACTIVATION.md)/[INSTALL-SOURCES](evidence/2026-09-13-install-update/INSTALL-SOURCES.md) |
+| Update neyi değiştirir, neyi reddeder, neyi yeniden başlatır? | [U14 B UPDATE-AND-RECOVERY](evidence/2026-09-13-install-update/UPDATE-AND-RECOVERY.md)/[UPDATE-SOURCES](evidence/2026-09-13-install-update/UPDATE-SOURCES.md)/[NOT RUN](evidence/2026-09-13-install-update/CHECKS-NOT-RUN.md)/[PUBLICATION](evidence/2026-09-13-install-update/PUBLICATION.md) |
+| Child sonucu gerçek parent turuna nasıl girer? | [28/U13](notes/28-DELEGATION-COMPLETION-AND-PARENT-REENTRY.md)→[A RESEARCH](evidence/2026-09-13-delegation-reentry/RESEARCH.md)/[SOURCES](evidence/2026-09-13-delegation-reentry/SOURCES.md) |
+| No-exception False ile ack ilişkisi ne kadar sınandı? | [U13 B DIAGNOSTIC](evidence/2026-09-13-delegation-reentry/DIAGNOSTIC.md)→[SPEC](evidence/2026-09-13-delegation-reentry/SPEC.md)→[MANIFEST](evidence/2026-09-13-delegation-reentry/MANIFEST.json)→[raw archive](evidence/2026-09-13-delegation-reentry/diagnostic-evidence.tar.xz); exact D/N için source/input/probe/full RESULT/log. [Özet](evidence/2026-09-13-delegation-reentry/RESULT-SUMMARY.json) derived |
+| U13 neyi doğrulamadı? | [NOT RUN](evidence/2026-09-13-delegation-reentry/CHECKS-NOT-RUN.md): full-parent fidelity/model/DB/gateway/OS yok; bu tur yeniden koşulmadı |
+| Araç kabulü ve yeni child | [27/U12](notes/27-TOOL-ADMISSION-AND-DELEGATION.md)→[tool A](evidence/2026-09-13-tool-delegation/TOOL-ADMISSION.md)/[A SOURCES](evidence/2026-09-13-tool-delegation/TOOL-SOURCES.md)→[delegation B](evidence/2026-09-13-tool-delegation/DELEGATION-LIFECYCLE.md)/[B SOURCES](evidence/2026-09-13-tool-delegation/DELEGATION-SOURCES.md)/[NOT RUN](evidence/2026-09-13-tool-delegation/CHECKS-NOT-RUN.md) |
+| Runtime seçimi ve gerçek control sahibi | [26/U11](notes/26-RUNTIME-BACKEND-AND-CONTROL-OWNERSHIP.md)→[A](evidence/2026-09-12-runtime-backend/RESEARCH.md)/[SOURCES](evidence/2026-09-12-runtime-backend/SOURCES.md)→[B](evidence/2026-09-12-runtime-backend/BACKEND-OWNERSHIP.md)/[B SOURCES](evidence/2026-09-12-runtime-backend/BACKEND-SOURCES.md)/[NOT RUN](evidence/2026-09-12-runtime-backend/CHECKS-NOT-RUN.md) |
+| Cron snapshot gerçek iş/bağlama nasıl dönüşür? | [25/U10](notes/25-CRON-EXECUTION-AND-CONTEXT.md)→[RESEARCH](evidence/2026-09-12-cron-execution-context/RESEARCH.md)/[SOURCES](evidence/2026-09-12-cron-execution-context/SOURCES.md)/[NOT RUN](evidence/2026-09-12-cron-execution-context/CHECKS-NOT-RUN.md); exact C için [SPEC](evidence/2026-09-12-cron-execution-context/SPEC.md)/[RESULT](evidence/2026-09-12-cron-execution-context/RESULT.json)/[MANIFEST](evidence/2026-09-12-cron-execution-context/MANIFEST.json) |
+| Planlanmış occurrence ve fire kabul | [24/U09](notes/24-CRON-OCCURRENCE-AND-FIRE-ADMISSION.md)→[RESEARCH](evidence/2026-09-12-cron-occurrence-admission/RESEARCH.md)/[SOURCES](evidence/2026-09-12-cron-occurrence-admission/SOURCES.md) |
+| Gerçek drainer/status/cancel | [23/U08](notes/23-CRON-DRAIN-RECEIPTS-AND-CANCELLATION.md)→[RESEARCH](evidence/2026-09-12-cron-drain-receipts/RESEARCH.md)/[SOURCES](evidence/2026-09-12-cron-drain-receipts/SOURCES.md); exact eski B için SPEC/RESULT/MANIFEST |
+| Job/trigger/attempt/queue | [22/U07](notes/22-CRON-SCHEDULING-EXECUTION-AND-DELIVERY.md)→[RESEARCH](evidence/2026-09-11-cron-scheduling-delivery/RESEARCH.md)/[SOURCES](evidence/2026-09-11-cron-scheduling-delivery/SOURCES.md); exact eski D için SPEC/RESULT/MANIFEST |
+| Resume/lease/history/restart | [21/U06](notes/21-RESUME-ADMISSION-AND-DRIVER-RECOVERY.md)→[RESEARCH](evidence/2026-09-11-resume-admission/RESEARCH.md)/[SOURCES](evidence/2026-09-11-resume-admission/SOURCES.md); [20/U05](notes/20-SESSION-LEASE-HISTORY-AND-RECOVERY.md)→[RESEARCH](evidence/2026-09-11-session-lease-recovery/RESEARCH.md)/[SOURCES](evidence/2026-09-11-session-lease-recovery/SOURCES.md) |
+| U04-A ve B ayrımı | [19](notes/19-U04-DELIVERY-RECONCILIATION.md)→[B README](evidence/2026-09-11-multiturn/README.md)/[RECONCILIATION](evidence/2026-09-11-multiturn/RECONCILIATION.md)/[33-file manifest](evidence/2026-09-11-multiturn/DELIVERY-MANIFEST.json); [A RESEARCH](evidence/2026-09-11-multi-turn-continuity/RESEARCH.md)/[A SOURCES](evidence/2026-09-11-multi-turn-continuity/SOURCES.md)/[CONTINUITY COVERAGE](inventory/CONTINUITY-COVERAGE-2026-09-11.md) |
+| Task/run/claim/terminal | [17/U03](notes/17-KANBAN-TASK-CLAIM-AND-ACCEPTANCE.md)→[Kanban sources](evidence/2026-09-10-kanban-task/SOURCES.md) |
+| Bütün açık disposition ve raw kanıt rotaları | [OPEN-QUESTIONS](OPEN-QUESTIONS.md)/[SOURCE-LEDGER](SOURCE-LEDGER.md) |
+
+## Korunan dört provisional sentez
+
+[01 öğrenme/değişim](synthesis/01-LEARNING-AND-CHANGE-PROVISIONAL.md)→notes02–15; [02 normal turn/context/session](synthesis/02-TURN-CONTEXT-AND-SESSION-PROVISIONAL.md)→note16/U02; [03 persistent work/continuation](synthesis/03-PERSISTENT-WORK-AND-CONTINUATION-PROVISIONAL.md)→notes17–21; [04 scheduled work/context](synthesis/04-SCHEDULED-WORK-AND-CONTEXT-PROVISIONAL.md)→notes22–25. U11–15 notes26–30 ile birlikte okunur. U15 için synthesis01 ve notes03/04/08'in tamamlanmış approval/curator işi yeniden deney sayılmadı; yeni library consumer bağı eklendi.
+
+## Retrieval ve yayın sınırı
+
+STATE mandatory cold-start uygulanır. [Exact U14 INDEX](https://github.com/batuhanozgun/agentic-os-search/blob/c76dfd796996e96824d9860b0735a60a663ed7a0/research/studies/hermes-agent/INDEX.md) önceki source/coverage/yayın rotalarını korur. Eski not/evidence taşınmadı. U04-A/B, eski D/B ve U13 D/N eş numaraları aynı deney değildir.
+
+U08–U14 completed yayınlar bekleyen ZIP değildir. U15 opening/A/B/readback ve final routes kendi PUBLICATION'ında. Q59 yerel lifecycle source-advanced, remote governance/fidelity/quality maddi açık; **Q60 evaluation/task-quality ilk next, henüz araştırılmadı.** Catalog/MAP/synthesis raw kanıt yerine geçmez; final CORE/dört-alan/adoption yoktur.

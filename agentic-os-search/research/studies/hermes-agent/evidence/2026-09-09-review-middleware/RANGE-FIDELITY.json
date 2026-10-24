@@ -1,0 +1,181 @@
+{
+  "kind": "MANUAL_PINNED_RANGE_TRANSCRIPTION_AST_CROSSCHECK",
+  "checked_at_utc": "2026-09-09T08:13:01.073141+00:00",
+  "runtime": {
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41"
+  },
+  "prior_research_ref": "9a95b2cf1f8a0460ac6128e1409bf54aa3191022",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "definition_count": 22,
+  "all_equal": true,
+  "checks_satisfied": true,
+  "symbols": [
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_ToolCallRef",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_ManagedToolResult",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_ToolTimeoutResult",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_ToolCancelledResult",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_registered_tool_worker",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_blocked_tool_result",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_pre_tool_block",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_dispatch_authorized_once",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_run_agent_tool_execution_middleware",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_SEQUENTIAL_INTERRUPT_POLL_SECONDS",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_SEQUENTIAL_DEADLINE_EXEMPT_TOOLS",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_abandoned_sequential_result",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_poll_sequential_future",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_run_sequential_tool_execution_middleware",
+      "equal": true
+    },
+    {
+      "source": "agent/tool_executor.py",
+      "claimed_upstream_blob": "799199c10f9930da77c01da2324373614b27cb78",
+      "symbol": "_ConcurrentToolAuthorizationGate",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "_thread_tool_whitelist",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "_PreToolCallDirective",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "set_thread_tool_whitelist",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "clear_thread_tool_whitelist",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "_get_pre_tool_call_directive_details",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "_resolve_block_from_details",
+      "equal": true
+    },
+    {
+      "source": "hermes_cli/plugins.py",
+      "claimed_upstream_blob": "da8d7e2c68b2346e6ecc15567d755d96085ef767",
+      "symbol": "_dispatch_pre_tool_call_hooks",
+      "equal": true
+    }
+  ],
+  "comparison_inputs": {
+    "executor": {
+      "executor-types.py": {
+        "bytes": 6595,
+        "sha256": "4244abe0376c5d6f9b999471d379ed5d5ee088feab7c0b6f165a7231c1d57e58"
+      },
+      "executor-policy.py": {
+        "bytes": 6613,
+        "sha256": "5074ec3fcc51b72cd49e035d76b2907d7e9a9b844cac592123b112c0957ec3aa"
+      },
+      "executor-sequential.py": {
+        "bytes": 5593,
+        "sha256": "98963db098cb4162fb0be8802e07d82874bf6ab2e3a5a0d9f56071957bda98f6"
+      }
+    },
+    "plugins": {
+      "plugins.py": {
+        "bytes": 5266,
+        "sha256": "92b566234a05403865b80e6046b8d8b3f389d5d8d2559b904af2e9eee9e4fd88"
+      }
+    }
+  },
+  "negative_control": {
+    "symbol": "_get_pre_tool_call_directive_details",
+    "synthetic_change_applied": true,
+    "comparison_detected_change": true,
+    "target_code_executed": false
+  },
+  "comparison_policy": "AST includes docstrings and decorators; excludes source positions, imports and logger scaffolding",
+  "complete_large_originals_locally_hash_verified": false,
+  "original_verify_excerpts_script_run": false,
+  "preliminary_ad_hoc_equality_observed_before_spec": true,
+  "limitation": "Both old excerpt and fresh range inputs are assistant transcriptions. This reduces selection-error uncertainty only; no independent whole-file fidelity or whole-runtime verdict.",
+  "checker_sha256": "c6fb223dbc6bf15b9932c5cb6a690faea9676ba8af1d1f88b5cab3c3d8d4bce4"
+}

@@ -1,0 +1,614 @@
+{
+  "kind": "EXPLORATORY_COMPONENT_OBSERVATIONS_NOT_PRODUCT_PASS",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "research_archive_ref": "a218acfc20e7ece488709e00a9762166ec970fba",
+  "started_at_utc": "2026-09-08T15:48:02.995262+00:00",
+  "runtime": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41"
+  },
+  "source_identity": {
+    "skill_manager_batch.py": {
+      "git_blob": "9f38adff284eede4234948f67e99a43752c0926e",
+      "sha256": "2cefa015de4db1122ea59834f9a38debb2643c0b035592e941f853aab995bd52",
+      "bytes": 9964
+    },
+    "write_approval.py": {
+      "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+      "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232",
+      "bytes": 12431
+    }
+  },
+  "harness_sha256": "80f19ce22ddd971cdf77f47e49052936e1993f8a3504507d43bd11ef8ee99f74",
+  "spec_sha256": "488b0acb870fe7bae52497842bfdd283763445cca22fdb1d503283fb9d20c812",
+  "results": [
+    {
+      "id": "G01",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "rows": [
+          {
+            "case": "off",
+            "decision": "allow",
+            "callback_calls": 0
+          },
+          {
+            "case": "skill-on",
+            "decision": "stage",
+            "callback_calls": 0
+          },
+          {
+            "case": "background-memory",
+            "decision": "stage",
+            "callback_calls": 0
+          },
+          {
+            "case": "approve-once",
+            "decision": "allow",
+            "callback_calls": 1
+          },
+          {
+            "case": "approve-session",
+            "decision": "allow",
+            "callback_calls": 1
+          },
+          {
+            "case": "deny",
+            "decision": "blocked",
+            "callback_calls": 1
+          },
+          {
+            "case": "no-channel",
+            "decision": "stage",
+            "callback_calls": 0
+          },
+          {
+            "case": "unknown-answer",
+            "decision": "stage",
+            "callback_calls": 1
+          },
+          {
+            "case": "callback-error",
+            "decision": "stage",
+            "callback_calls": 1
+          },
+          {
+            "case": "config-error",
+            "decision": "allow",
+            "callback_calls": 0
+          }
+        ],
+        "pending_after_decisions_only": 0,
+        "note": "stage decision is not stage_write"
+      }
+    },
+    {
+      "id": "T01",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "stored_record": {
+          "id": "c04d912d",
+          "subsystem": "skills",
+          "action": "batch",
+          "summary": "batch(1 ops: patch) on alpha",
+          "origin": "background_review",
+          "created_at": 1788882483.0028422,
+          "payload": {
+            "action": "batch",
+            "operations": [
+              {
+                "action": "patch",
+                "old_string": "BASELINE",
+                "new_string": "PROPOSED",
+                "name": "alpha"
+              }
+            ]
+          }
+        },
+        "staged_state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 1,
+          "mutator_calls": 0,
+          "snapshot_roots_created": 0,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "background_review",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            }
+          ]
+        },
+        "synthetic_component_reentry": {
+          "success": true,
+          "operations_applied": 1,
+          "results": [
+            {
+              "name": "alpha",
+              "action": "patch",
+              "file_path": null,
+              "success": true
+            }
+          ]
+        },
+        "final_state": {
+          "skill_content": "PROPOSED\n",
+          "pending_count": 1,
+          "mutator_calls": 1,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "background_review",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": true
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            }
+          ]
+        },
+        "warning": "Origin changed by fixture; production replay NOT tested. Pending consumption is outside these calls."
+      }
+    },
+    {
+      "id": "T02",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "success": true,
+          "operations_applied": 1,
+          "results": [
+            {
+              "name": "alpha",
+              "action": "patch",
+              "file_path": null,
+              "success": true
+            }
+          ]
+        },
+        "state": {
+          "skill_content": "PROPOSED\n",
+          "pending_count": 0,
+          "mutator_calls": 1,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "T03",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "stored_record": {
+          "id": "05a7209f",
+          "subsystem": "skills",
+          "action": "batch",
+          "summary": "batch(1 ops: patch) on alpha",
+          "origin": "foreground",
+          "created_at": 1788882483.0055177,
+          "payload": {
+            "action": "batch",
+            "operations": [
+              {
+                "action": "patch",
+                "old_string": "BASELINE",
+                "new_string": "PROPOSED"
+              }
+            ]
+          }
+        },
+        "synthetic_component_reentry": {
+          "error": "operations[0] needs a 'name' (the skill it targets).",
+          "success": false
+        },
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 1,
+          "mutator_calls": 0,
+          "snapshot_roots_created": 0,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "T04",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "intervention": "fixture inserts operation names before staging; upstream unchanged",
+        "result": {
+          "success": true,
+          "operations_applied": 1,
+          "results": [
+            {
+              "name": "alpha",
+              "action": "patch",
+              "file_path": null,
+              "success": true
+            }
+          ]
+        },
+        "state": {
+          "skill_content": "PROPOSED\n",
+          "pending_count": 1,
+          "mutator_calls": 1,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": true
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "T05",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "error": "operations[0] needs an 'action'.",
+          "success": false
+        },
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 0,
+          "mutator_calls": 0,
+          "snapshot_roots_created": 0,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": []
+        }
+      }
+    },
+    {
+      "id": "T06",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "success": false,
+          "error": "synthetic policy rejects target"
+        },
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 0,
+          "mutator_calls": 0,
+          "snapshot_roots_created": 0,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": true
+            }
+          ]
+        },
+        "scope": "preflight routing only; guard policy is synthetic"
+      }
+    },
+    {
+      "id": "D01",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "first_diff": "--- a/SKILL.md\n+++ b/SKILL.md\n@@ -1 +1 @@\n-BASELINE\n+PROPOSED\n",
+        "second_diff": "--- a/SKILL.md\n+++ b/SKILL.md\n@@ -1 +1 @@\n-EXTERNAL-WRITER\n+PROPOSED\n",
+        "pending_bytes_sha256_before": "194bbbf2da50625e96dbc28c1e662c0cca9cb07df51c6fa10d58cfd9575ab7d5",
+        "pending_bytes_sha256_after": "194bbbf2da50625e96dbc28c1e662c0cca9cb07df51c6fa10d58cfd9575ab7d5",
+        "record_keys": [
+          "action",
+          "created_at",
+          "id",
+          "origin",
+          "payload",
+          "subsystem",
+          "summary"
+        ],
+        "applied_write_tested": false
+      }
+    },
+    {
+      "id": "R01",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "error": "Could not snapshot 'alpha' for atomic batch: synthetic snapshot failure",
+          "success": false
+        },
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 0,
+          "mutator_calls": 0,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "R02",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "success": false,
+          "error": "operations[1] (write_file on 'alpha') failed: synthetic ordinary second-operation failure — batch aborted, all touched skills rolled back.",
+          "failed_index": 1,
+          "completed_before_failure": 1
+        },
+        "raised_exception": null,
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 0,
+          "mutator_calls": 2,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_guard",
+              "action": "write_file",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "write_file",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "R03",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": null,
+        "raised_exception": {
+          "type": "OSError",
+          "message": "synthetic second-operation exception"
+        },
+        "state": {
+          "skill_content": "PROPOSED\n",
+          "pending_count": 0,
+          "mutator_calls": 2,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_guard",
+              "action": "write_file",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "write_file",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "R04",
+      "observation_assertions_satisfied": true,
+      "observation": {
+        "result": {
+          "success": false,
+          "error": "operations[1] (write_file on 'alpha') failed: synthetic ordinary second-operation failure — batch aborted, all touched skills rolled back.",
+          "failed_index": 1,
+          "completed_before_failure": 1
+        },
+        "raised_exception": null,
+        "state": {
+          "skill_content": "BASELINE\n",
+          "pending_count": 0,
+          "mutator_calls": 2,
+          "snapshot_roots_created": 1,
+          "snapshot_roots_remaining": 0,
+          "bypass": false,
+          "trace": [
+            {
+              "event": "synthetic_guard",
+              "action": "patch",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_guard",
+              "action": "write_file",
+              "name": "alpha",
+              "origin": "foreground",
+              "bypass": false
+            },
+            {
+              "event": "synthetic_gate_adapter"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "patch",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            },
+            {
+              "event": "synthetic_mutator",
+              "name": "alpha",
+              "action": "write_file",
+              "origin": "foreground",
+              "bypass": true,
+              "task_id": "fixture-task",
+              "session_id": "fixture-session"
+            },
+            {
+              "event": "deterministic_external_fixture_write",
+              "content": "EXTERNAL-WRITER\n"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Only two archived upstream modules are real.",
+    "Production caller/dispatcher/replay/profile/guards/mutator/ledger/sync not imported.",
+    "Test-side adapter and serialized-payload re-entry are synthetic.",
+    "No HERMES installation, provider, network, account or credential use.",
+    "Interleaving is a deterministic fixture schedule, not production concurrency reachability.",
+    "Assertions encode diagnostic observations, including limitations; not product acceptance."
+  ],
+  "finished_at_utc": "2026-09-08T15:48:03.013577+00:00",
+  "all_observation_assertions_satisfied": true,
+  "scenario_count": 12
+}

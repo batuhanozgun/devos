@@ -1,0 +1,32 @@
+{
+  "kind": "TURN_ACCESS_OBSERVATIONS_NOT_ROOT_CAUSE_DIAGNOSIS",
+  "research_date": "2026-09-09",
+  "research_base": "9a95b2cf1f8a0460ac6128e1409bf54aa3191022",
+  "last_observed_main": "9a95b2cf1f8a0460ac6128e1409bf54aa3191022",
+  "source_reads": "Pinned GitHub fetch_file reads succeeded. Complete byte-verified local memory/pending modules were produced.",
+  "worker_original_capture": "Complete local original E01/E02 files were not produced. Existing verify_excerpts.py was not run. Direct raw download attempts failed; this is not a claim of general source inaccessibility.",
+  "publication_discovery": [
+    "GitHub-only full discovery exposed 48 read operations in this turn.",
+    "Targeted create_tree/create/update_ref discovery did not expose a writable recipient.",
+    "Combined GitHub and Plugin_Management unfiltered discovery surfaced 95 operation schemas, including writes.",
+    "GitHub plugin directory search reported the installed GitHub plugin enabled. No install/permission changes were made.",
+    "Final targeted create_file discovery returned read tools only; no fresh callable create_file was exposed by that result."
+  ],
+  "actual_write_attempts": [
+    {
+      "action": "GitHub.create_blob",
+      "purpose": "Store the already-written prospective SPEC as a publication object",
+      "result": "Resource not found: GitHub.create_blob",
+      "object_sha_returned": null
+    },
+    {
+      "action": "GitHub.create_tree",
+      "purpose": "Alternative Git object path using three existing source/license blobs for the new evidence subtree",
+      "result": "Resource not found: GitHub.create_tree",
+      "object_sha_returned": null
+    }
+  ],
+  "successful_repository_mutations_this_turn": 0,
+  "publication_completed": false,
+  "root_cause": "UNKNOWN. These are tool-resource errors, not a demonstrated GitHub repository permission rejection. No attribution to Codex, settings, cache or backend internals is established."
+}

@@ -1,0 +1,26 @@
+{
+  "kind":"DERIVED_BROWSING_VIEW_NOT_RAW_RESULT",
+  "raw":"diagnostic-evidence.tar.xz::evidence/RESULT.json",
+  "raw_sha256":"ae5b94ce2e4c540ef72074e4e37bd3f20fe60615c8e126781615b1e08ce7ebf3",
+  "executed_at_utc":"2026-09-11T06:10:29.139368+00:00",
+  "pin":"c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "cases":[
+    {"id":"G01","expected":"All four terminal states bypass judge/turn","matched":true},
+    {"id":"G02","expected":"Continue then finalize nudge then terminal status","matched":true},
+    {"id":"G03","expected":"First response counts; no extra turn at budget one","matched":true},
+    {"id":"G04","expected":"Block result is not a durable block receipt","matched":true},
+    {"id":"G05","expected":"Ownership loss at status boundary stops before work","matched":true},
+    {"id":"G06","expected":"Loss during judge allows one callback before next status read","matched":true},
+    {"id":"G07","expected":"WAIT is converted to a continuation, not parked","matched":true},
+    {"id":"G08","expected":"Failure flags do not give this helper separate early-pause counters","matched":true},
+    {"id":"G09","expected":"One finalize nudge; repeated DONE without worker terminal blocks","matched":true},
+    {"id":"G10","expected":"Reader or run errors stop without completion","matched":true},
+    {"id":"H01","expected":"Five missed intervals coalesce to one recorded fire","matched":true},
+    {"id":"H02","expected":"Pause suppresses; resume reanchors; clear removes active view","matched":true},
+    {"id":"H03","expected":"Abandon rewinds same fire but does not erase a later pause","matched":true},
+    {"id":"H04","expected":"Write failure separates live fire from durable anchor/count","matched":true},
+    {"id":"H05","expected":"Two preloaded managers are not one atomic cross-manager claim","matched":true}
+  ],
+  "negative_controls":{"superseded_guard_mutant_detected":true,"repeated_finalize_mutant_detected":true,"changed_full_source_rejected":true},
+  "scope":{"heartbeat_full_original_git_match":true,"kanban_manual_selection_parent_byte_AST_verified":false,"judge_and_kanban_state_callbacks":"synthetic","heartbeat_db":"real temporary SQLite, fixture state_meta adapter, not Hermes SessionDB","clock":"synthetic","drivers_and_profiles":"not executed","model_provider_network_process":"not executed","previous_suites_rerun":false,"independent_replication":false}
+}

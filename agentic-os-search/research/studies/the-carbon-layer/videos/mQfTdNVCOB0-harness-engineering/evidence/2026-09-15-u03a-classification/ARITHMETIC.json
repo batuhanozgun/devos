@@ -1,0 +1,84 @@
+{
+  "kind": "descriptive arithmetic on manually transcribed rounded publication cells",
+  "table2_vs_ACE": {
+    "reported_mean_difference_pp": "7.7000",
+    "mean_of_rounded_cell_differences_pp": "7.6667",
+    "dataset_differences_pp": {
+      "USPTO": "-2.0",
+      "S2D": "9.0",
+      "Law": "16.0"
+    },
+    "wins_ties_losses_on_rounded_cells": [
+      2,
+      0,
+      1
+    ],
+    "baseline_context_divided_by_MH": "4.4561",
+    "context_reduction_percent_vs_baseline": "77.5591"
+  },
+  "table2_vs_Few_shot_all": {
+    "reported_mean_difference_pp": "7.8000",
+    "mean_of_rounded_cell_differences_pp": "7.8333",
+    "dataset_differences_pp": {
+      "USPTO": "-1.0",
+      "S2D": "8.5",
+      "Law": "16.0"
+    },
+    "wins_ties_losses_on_rounded_cells": [
+      2,
+      0,
+      1
+    ],
+    "baseline_context_divided_by_MH": "1.0789",
+    "context_reduction_percent_vs_baseline": "7.3171"
+  },
+  "table5_vs_ACE": {
+    "reported_mean_difference_pp": "2.9000",
+    "mean_of_rounded_cell_differences_pp": "2.9111",
+    "dataset_differences_pp": {
+      "SciC": "12.6",
+      "FiNER": "-7.0",
+      "Amz5": "12.0",
+      "FPB": "-2.7",
+      "GoEmo": "2.0",
+      "Bank77": "-0.6",
+      "News": "0.7",
+      "SciT": "0.6",
+      "TwHate": "8.6"
+    },
+    "wins_ties_losses_on_rounded_cells": [
+      6,
+      0,
+      3
+    ],
+    "baseline_context_divided_by_MH": "1.6027",
+    "context_reduction_percent_vs_baseline": "37.6068"
+  },
+  "table5_vs_best_listed_baseline": {
+    "strict_wins": [
+      "SciC",
+      "Amz5",
+      "GoEmo",
+      "News",
+      "TwHate"
+    ],
+    "tied_best": [
+      "SciT"
+    ],
+    "below_best": [
+      "FiNER",
+      "FPB",
+      "Bank77"
+    ]
+  },
+  "not_established": [
+    "raw-data correctness",
+    "statistical significance",
+    "causal attribution",
+    "historical reproduction",
+    "live efficacy",
+    "total cost"
+  ],
+  "input_sha256": "8082646b528dc37a119f36db49c5c5a78358d2cb2db15ab53dc697aa4be9c15c",
+  "script_sha256": "f76c41ac3341bcb6a6d37d62b927643ebe7e63b1041ebbff7c606c8c2fbb6eb3"
+}

@@ -1,0 +1,163 @@
+{
+  "kind": "descriptive arithmetic on author-reported rounded cells",
+  "method_means_from_rounded_cells": {
+    "no_retriever": {
+      "all_five_evaluated": "34.12",
+      "four_not_used_for_search": "30.75",
+      "search_model_only": "47.6"
+    },
+    "dense_k1": {
+      "all_five_evaluated": "34.42",
+      "four_not_used_for_search": "31.3",
+      "search_model_only": "46.9"
+    },
+    "dense_k5": {
+      "all_five_evaluated": "38.08",
+      "four_not_used_for_search": "35.925",
+      "search_model_only": "46.7"
+    },
+    "random_fewshot": {
+      "all_five_evaluated": "32.16",
+      "four_not_used_for_search": "29.75",
+      "search_model_only": "41.8"
+    },
+    "bm25": {
+      "all_five_evaluated": "37.54",
+      "four_not_used_for_search": "34.7",
+      "search_model_only": "48.9"
+    },
+    "meta_harness": {
+      "all_five_evaluated": "38.78",
+      "four_not_used_for_search": "35.825",
+      "search_model_only": "50.6"
+    }
+  },
+  "meta_harness_minus_comparator": {
+    "no_retriever": {
+      "per_model_delta_pp": {
+        "gpt-5.4-nano": "8.7",
+        "gpt-5.4-mini": "1.6",
+        "gemini-3.1-flash-lite": "6.3",
+        "gemini-3-flash": "3.7",
+        "gpt-oss-20b": "3"
+      },
+      "group_mean_delta_pp_from_rounded_cells": {
+        "all_five_evaluated": "4.66",
+        "four_not_used_for_search": "5.075",
+        "search_model_only": "3"
+      },
+      "wins_ties_losses_over_models": [
+        5,
+        0,
+        0
+      ],
+      "difference_of_reported_all_model_means_pp": "4.7"
+    },
+    "dense_k1": {
+      "per_model_delta_pp": {
+        "gpt-5.4-nano": "4.6",
+        "gpt-5.4-mini": "5.9",
+        "gemini-3.1-flash-lite": "3.6",
+        "gemini-3-flash": "4",
+        "gpt-oss-20b": "3.7"
+      },
+      "group_mean_delta_pp_from_rounded_cells": {
+        "all_five_evaluated": "4.36",
+        "four_not_used_for_search": "4.525",
+        "search_model_only": "3.7"
+      },
+      "wins_ties_losses_over_models": [
+        5,
+        0,
+        0
+      ],
+      "difference_of_reported_all_model_means_pp": "4.4"
+    },
+    "dense_k5": {
+      "per_model_delta_pp": {
+        "gpt-5.4-nano": "0.6",
+        "gpt-5.4-mini": "2.1",
+        "gemini-3.1-flash-lite": "-2.2",
+        "gemini-3-flash": "-0.9",
+        "gpt-oss-20b": "3.9"
+      },
+      "group_mean_delta_pp_from_rounded_cells": {
+        "all_five_evaluated": "0.7",
+        "four_not_used_for_search": "-0.1",
+        "search_model_only": "3.9"
+      },
+      "wins_ties_losses_over_models": [
+        3,
+        0,
+        2
+      ],
+      "difference_of_reported_all_model_means_pp": "0.7"
+    },
+    "random_fewshot": {
+      "per_model_delta_pp": {
+        "gpt-5.4-nano": "8.6",
+        "gpt-5.4-mini": "5.9",
+        "gemini-3.1-flash-lite": "3.9",
+        "gemini-3-flash": "5.9",
+        "gpt-oss-20b": "8.8"
+      },
+      "group_mean_delta_pp_from_rounded_cells": {
+        "all_five_evaluated": "6.62",
+        "four_not_used_for_search": "6.075",
+        "search_model_only": "8.8"
+      },
+      "wins_ties_losses_over_models": [
+        5,
+        0,
+        0
+      ],
+      "difference_of_reported_all_model_means_pp": "6.6"
+    },
+    "bm25": {
+      "per_model_delta_pp": {
+        "gpt-5.4-nano": "1.5",
+        "gpt-5.4-mini": "1.2",
+        "gemini-3.1-flash-lite": "2.1",
+        "gemini-3-flash": "-0.3",
+        "gpt-oss-20b": "1.7"
+      },
+      "group_mean_delta_pp_from_rounded_cells": {
+        "all_five_evaluated": "1.24",
+        "four_not_used_for_search": "1.125",
+        "search_model_only": "1.7"
+      },
+      "wins_ties_losses_over_models": [
+        4,
+        0,
+        1
+      ],
+      "difference_of_reported_all_model_means_pp": "1.3"
+    }
+  },
+  "table10_count_sum": 535356,
+  "table11_count_sum": 200,
+  "table11_task_count_shares_not_verified_score_weights": {
+    "IMO-AnswerBench": "0.5",
+    "IMO-ProofBench": "0.3",
+    "ArXivMath Dec. 2025": "0.085",
+    "ArXivMath Jan. 2026": "0.115"
+  },
+  "interpretation_limits": [
+    "Displayed cells are rounded; small differences are not statistically established.",
+    "Model-wise wins are not problem-wise wins.",
+    "Three responses to a problem are not three independent tasks or pass@3.",
+    "A four-model subset calculation is descriptive, not a new experiment.",
+    "Counts do not establish effective corpus eligibility, score weights, decontamination or proof correctness."
+  ],
+  "self_check": {
+    "fixed_arithmetic_assertions": 3,
+    "invalid_inputs_rejected": [
+      "missing_cell",
+      "wrong_transfer_group",
+      "wrong_population_total"
+    ],
+    "scope": "Only this local arithmetic/validation program; not research efficacy."
+  },
+  "input_sha256": "5a1566899a5d7f3cde4388a63c5989242885e228bd87b963946399b3b5009ad8",
+  "script_sha256": "79e2a679a844843d2e0bb9e44517423578375c9a61e0cc08607f53be0a3606a6"
+}

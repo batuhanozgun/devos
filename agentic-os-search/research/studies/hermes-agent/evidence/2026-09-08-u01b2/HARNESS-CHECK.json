@@ -1,0 +1,10 @@
+{
+  "checked_at_utc": "2026-09-08T15:53:08.925606+00:00",
+  "kind": "HARNESS_SOURCE_IDENTITY_NEGATIVE_CONTROL_NOT_HERMES_TEST",
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Source mismatch for write_approval.py: 3890243579b65dc055b9eb7ab25224e9b65731f2\n",
+  "result_created": false,
+  "expected": "source hash mismatch rejects before component execution",
+  "criterion_satisfied": true
+}

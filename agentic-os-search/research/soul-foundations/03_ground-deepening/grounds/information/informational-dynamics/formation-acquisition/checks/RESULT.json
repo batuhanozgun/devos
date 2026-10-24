@@ -1,0 +1,174 @@
+{
+  "kind": "constructed_finite_checks",
+  "cases_passed": 12,
+  "mutations_rejected": 5,
+  "cases": [
+    {
+      "name": "faithful_false_assertion",
+      "status": "pass",
+      "observed": {
+        "source_faithful": true,
+        "world_claim_true": false
+      }
+    },
+    {
+      "name": "processing_not_target_coverage",
+      "status": "pass",
+      "observed": {
+        "processing": 1.0,
+        "target": 0.5
+      }
+    },
+    {
+      "name": "record_only_identification",
+      "status": "pass",
+      "observed": {
+        "worlds": 4,
+        "boolean_targets_checked": 16,
+        "hidden_identifiable": false,
+        "visible_identifiable": true
+      }
+    },
+    {
+      "name": "missingness_not_zero",
+      "status": "pass",
+      "observed": {
+        "decoded": [
+          [
+            "missing",
+            null
+          ],
+          [
+            "null",
+            null
+          ],
+          [
+            "unknown",
+            null
+          ],
+          [
+            "value",
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "origin_not_delivery_or_payload",
+      "status": "pass",
+      "observed": {
+        "deliveries": 2,
+        "delivery_origins": 1,
+        "same_payload_observation_origins": 2
+      }
+    },
+    {
+      "name": "reference_not_receipt_order",
+      "status": "pass",
+      "observed": {
+        "reference_latest": "new",
+        "receipt_latest": "old"
+      }
+    },
+    {
+      "name": "parse_success_not_fidelity",
+      "status": "pass",
+      "observed": {
+        "both_parse": true,
+        "good_faithful": true,
+        "bad_faithful": false
+      }
+    },
+    {
+      "name": "probe_changes_source",
+      "status": "pass",
+      "observed": {
+        "before": 0,
+        "under_probe": 1
+      }
+    },
+    {
+      "name": "capture_selection_four_combinations",
+      "status": "pass",
+      "observed": {
+        "combinations": [
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            true
+          ],
+          [
+            true,
+            false
+          ],
+          [
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forecast_acquired_not_observed_future",
+      "status": "pass",
+      "observed": {
+        "faithful_copy": true,
+        "future_observed": false
+      }
+    },
+    {
+      "name": "model_mediated_value",
+      "status": "pass",
+      "observed": {
+        "indication": 10,
+        "calibrated": 20,
+        "wrong_interpretation": 10
+      }
+    },
+    {
+      "name": "conditional_negative_evidence",
+      "status": "pass",
+      "observed": {
+        "perfect_compatible": [
+          false
+        ],
+        "incomplete_compatible": [
+          false,
+          true
+        ]
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "name": "missing_to_zero",
+      "status": "rejected",
+      "reason": "missingness collapsed"
+    },
+    {
+      "name": "drop_negation",
+      "status": "rejected",
+      "reason": "source qualifier lost"
+    },
+    {
+      "name": "deliveries_as_origins",
+      "status": "rejected",
+      "reason": "delivery count is not origin count"
+    },
+    {
+      "name": "processed_as_target_coverage",
+      "status": "rejected",
+      "reason": "wrong denominator"
+    },
+    {
+      "name": "receipt_as_reference",
+      "status": "rejected",
+      "reason": "wrong temporal role"
+    }
+  ],
+  "scope": "Same-author fixtures and code; no live-system, statistical or independent taxonomy validation.",
+  "script_sha256": "45c86014409c23b634f8ab1f56ee6a2fc9f489a60bddae61bb431271450de48d"
+}

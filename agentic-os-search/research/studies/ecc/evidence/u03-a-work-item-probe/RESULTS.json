@@ -1,0 +1,240 @@
+{
+  "id": "E02",
+  "target": "affaan-m/ECC@8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "sourcePath": "scripts/lib/control-pane/work-item-mutations.js",
+  "sourceBlob": "c82a26196432b1cc0a95aee023354fe285c9bbdd",
+  "sourceBytes": 3588,
+  "generatedAt": "2026-09-17T17:22:29.790Z",
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64",
+    "osRelease": "6.18.44"
+  },
+  "executionClass": "LOCAL EXECUTION: unchanged helper plus in-memory store double",
+  "criteriaMatched": 6,
+  "cases": [
+    {
+      "id": "C0",
+      "criterionMatched": true,
+      "observation": {
+        "result": {
+          "claimed": true,
+          "item": {
+            "id": "open-card",
+            "source": "manual",
+            "title": "open-card",
+            "status": "running",
+            "priority": "normal",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {
+              "assigneeKind": "agent"
+            },
+            "updatedAt": "2026-09-17T17:22:29.776Z"
+          }
+        },
+        "calls": [
+          {
+            "method": "listWorkItems",
+            "limit": 100
+          }
+        ],
+        "writes": [
+          {
+            "id": "open-card",
+            "source": "manual",
+            "title": "open-card",
+            "status": "running",
+            "priority": "normal",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {
+              "assigneeKind": "agent"
+            },
+            "updatedAt": "2026-09-17T17:22:29.776Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1",
+      "criterionMatched": true,
+      "observation": {
+        "result": {
+          "claimed": true,
+          "item": {
+            "id": "blocked-card",
+            "source": "manual",
+            "title": "blocked-card",
+            "status": "running",
+            "priority": "high",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {
+              "blockedBy": [
+                "unfinished-prerequisite"
+              ]
+            },
+            "updatedAt": "2026-09-17T17:22:29.785Z"
+          }
+        },
+        "calls": [
+          {
+            "method": "listWorkItems",
+            "limit": 100
+          }
+        ],
+        "writes": [
+          {
+            "id": "blocked-card",
+            "source": "manual",
+            "title": "blocked-card",
+            "status": "running",
+            "priority": "high",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {
+              "blockedBy": [
+                "unfinished-prerequisite"
+              ]
+            },
+            "updatedAt": "2026-09-17T17:22:29.785Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C2",
+      "criterionMatched": true,
+      "observation": {
+        "result": {
+          "claimed": true,
+          "item": {
+            "id": "assigned-card",
+            "source": "manual",
+            "title": "assigned-card",
+            "status": "running",
+            "priority": "normal",
+            "owner": "bob",
+            "sessionId": "prior-session",
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.786Z"
+          }
+        },
+        "calls": [
+          {
+            "method": "getWorkItemById",
+            "id": "assigned-card"
+          }
+        ],
+        "writes": [
+          {
+            "id": "assigned-card",
+            "source": "manual",
+            "title": "assigned-card",
+            "status": "running",
+            "priority": "normal",
+            "owner": "bob",
+            "sessionId": "prior-session",
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.786Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C3",
+      "criterionMatched": true,
+      "observation": {
+        "error": "Work item done-card is already done; cannot claim.",
+        "calls": [
+          {
+            "method": "getWorkItemById",
+            "id": "done-card"
+          }
+        ],
+        "writes": []
+      }
+    },
+    {
+      "id": "C4",
+      "criterionMatched": true,
+      "observation": {
+        "result": {
+          "moved": true,
+          "item": {
+            "id": "done-card",
+            "source": "manual",
+            "title": "done-card",
+            "status": "open",
+            "priority": "normal",
+            "owner": "alice",
+            "sessionId": "prior-session",
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.788Z"
+          }
+        },
+        "calls": [
+          {
+            "method": "getWorkItemById",
+            "id": "done-card"
+          }
+        ],
+        "writes": [
+          {
+            "id": "done-card",
+            "source": "manual",
+            "title": "done-card",
+            "status": "open",
+            "priority": "normal",
+            "owner": "alice",
+            "sessionId": "prior-session",
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C5",
+      "criterionMatched": true,
+      "observation": {
+        "result": {
+          "claimed": true,
+          "item": {
+            "id": "recent-0",
+            "source": "manual",
+            "title": "recent-0",
+            "status": "running",
+            "priority": "low",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.790Z"
+          }
+        },
+        "calls": [
+          {
+            "method": "listWorkItems",
+            "limit": 100
+          }
+        ],
+        "writes": [
+          {
+            "id": "recent-0",
+            "source": "manual",
+            "title": "recent-0",
+            "status": "running",
+            "priority": "low",
+            "owner": "worker-a",
+            "sessionId": null,
+            "metadata": {},
+            "updatedAt": "2026-09-17T17:22:29.790Z"
+          }
+        ]
+      }
+    }
+  ],
+  "limits": "Not a CLI/SQLite/provider/host run; not a concurrent claim or authentication test. Criteria matches describe observed semantics, not overall safety or efficacy."
+}

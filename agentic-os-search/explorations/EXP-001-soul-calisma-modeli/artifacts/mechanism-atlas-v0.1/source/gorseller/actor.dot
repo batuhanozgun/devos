@@ -1,0 +1,29 @@
+digraph atlas {
+graph [rankdir=TB, bgcolor="transparent", pad="0.2", nodesep="0.40", ranksep="0.60", splines=polyline, overlap=false, outputorder=edgesfirst, fontname="DejaVu Sans"];
+node [shape=box, style="rounded,filled", color="#bac8d6", fillcolor="#ffffff", penwidth=1.4, fontname="DejaVu Sans", margin="0.20,0.13"];
+edge [fontname="DejaVu Sans", fontsize=10.5, arrowsize=0.65, penwidth=1.2];
+I05 [id="I05", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I05 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Çalışma standardı</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I06 [id="I06", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I06 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Bilgi / kaynaklar</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I07 [id="I07", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I07 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Birikim</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I02 [id="I02", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I02 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>C — güncel anlayış</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I03 [id="I03", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I03 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>W — iş görünümü</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I08 [id="I08", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I08 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Rol / yetki</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+I09 [id="I09", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">I09 · BİLGİ</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Ortam gözlemi</B></FONT></TD></TR></TABLE>>, fillcolor="#edf5f3", color="#8db6ae"];
+M08 [id="M08", label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10" COLOR="#64748b">M08 · İŞLEM</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="14" COLOR="#16324f"><B>Aktör hazır mı?</B></FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9" COLOR="#985323">Açık: Q01, Q06</FONT></TD></TR></TABLE>>, fillcolor="#ffffff", color="#aebccd"];
+{rank=same; I05;I06;I07;}
+{rank=same; M08;}
+{rank=same; I02;I03;I08;I09;}
+I05 -> I06 [style=invis, weight=50, constraint=false];
+I06 -> I07 [style=invis, weight=50, constraint=false];
+I02 -> I03 [style=invis, weight=50, constraint=false];
+I03 -> I08 [style=invis, weight=50, constraint=false];
+I08 -> I09 [style=invis, weight=50, constraint=false];
+M08 -> I02 [style=invis, weight=80];
+I05 -> M08 [id="E42", label="çalışma standardı", color="#80608b", fontcolor="#80608b", style="dotted", constraint=true, tooltip="E42: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I06 -> M08 [id="E43", label="alan dayanakları", color="#80608b", fontcolor="#80608b", style="dotted", constraint=true, tooltip="E43: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I07 -> M08 [id="E44", label="sınırlı deneyim", color="#80608b", fontcolor="#80608b", style="dotted", constraint=true, tooltip="E44: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I02 -> M08 [id="E45", label="güncel C", color="#80608b", fontcolor="#80608b", style="dotted", constraint=false, tooltip="E45: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I03 -> M08 [id="E46", label="görev / bağımlılık", color="#80608b", fontcolor="#80608b", style="dotted", constraint=false, tooltip="E46: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I08 -> M08 [id="E47", label="sorumluluk / yetki", color="#80608b", fontcolor="#80608b", style="dotted", constraint=false, tooltip="E47: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+I09 -> M08 [id="E48", label="koşul gözlemleri", color="#80608b", fontcolor="#80608b", style="dotted", constraint=false, tooltip="E48: Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda."];
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "RESEARCH_PUBLICATION_IDENTITY_NOT_HERMES_EXECUTION",
+  "date": "2026-09-10",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "publication_base": "c163836d959e3ada2f31afd353bb364671b5fb32",
+  "original_core_tree": "5b991a523852e4e5110854063352b0b28b791a8b",
+  "core_files": [
+    {
+      "path": "README.md",
+      "bytes": 1177,
+      "git_blob": "644be390106723f3aca22e71446fdc611d09528b",
+      "sha256": "4bc844a617e16375a904215cf6281b58435dda21d24d08ef5feac3a9193520af"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 17014,
+      "git_blob": "94f96c97aa5051653abbc9338483b648178ab065",
+      "sha256": "57cea486d79017bf9656a4b0bbecc106f543bdbb9ece9c44cc85fad61bee0969"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 9970,
+      "git_blob": "d0639a35754c1ac5ccc8dc2d16dc7504d83ce304",
+      "sha256": "5703e7eb778f6fdd4ab42974f7a57c9825556161e5fb867d4f94a85f61963569"
+    }
+  ],
+  "hermes_experiments_run": false,
+  "source_status": "Source inspected and cross-module inference; full/selected boundaries in SOURCES.md. Connector-reported source blobs are not local full-source byte validation.",
+  "scope": "The three Markdown research core files, excluding manifest and publication note. Branch publication requires separate final commit/ref/file readback."
+}

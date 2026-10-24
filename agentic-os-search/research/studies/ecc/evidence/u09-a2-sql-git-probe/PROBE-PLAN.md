@@ -1,0 +1,20 @@
+# E07 — pre-execution plan
+
+**2026-09-18 / U09-A continuation. NOT EXECUTED at publication of this plan.** This is a new source-derived SQLite/Git fixture, not historical E06 recovery, an ECC Rust build, a model run or a host integration test. E01–E06 retain their identities.
+
+## Question and source binding
+
+Do the reviewed SQL statement boundaries and worktree command sequence permit retained state to differ from a method result or recreated path? Pin: `affaan-m/ECC@8321021c54d670126ce3b2969d5deb880b4b0c2a`. S190 store blob `f71bb3640991f9d471e2ab98dad54dff4d346721`: append_output_line/get_output_lines 3935–4002, state mutations 1280–1400 (exact broader ledger ranges prevail). S193 worktree blob `aea51b4ddc52a7c331f045a2905ca52a772db930`: remove 183–248 and base_checkout_path 1570–1630 (function names authoritative if approximate locator overlaps). S187 manager blob `515235760adb242fe3b4bd1e8481c8b78aee5cc4`: stop_session_recorded, resume_session_with_program and background_runner_stderr_log_path. This plan does not assert byte-identical extraction of full Rust files.
+
+## Frozen cases and counter-controls
+
+- **C01 retained output:** apply the inspected INSERT / DELETE newest-1000 / timestamp UPDATE ordering to a minimal compatible SQLite schema, append 1,002 labelled lines and reopen the database. Distinguish persisted bounded tail from complete archive. Expected discriminator: exactly the last 1,000 labels, in ascending insertion order. No claim about power-loss durability.
+- **C02 partial failure:** inject an explicit BEFORE DELETE trigger that raises ABORT while pruning a seeded output row. Run append statements with SQLite autocommit. Inspect the error and database from a new connection. Contrast the same fault inside an explicit transaction followed by rollback. Expected discriminator: the new INSERT remains only in the autocommit case. The injected trigger is a fixture fault, not an asserted upstream trigger or naturally observed incident.
+- **C03 guarded-write interleaving:** two connections read the same Pending row; one changes it to Stopped, the other applies the reviewed id-only state UPDATE using its earlier admission. Contrast an expected-state predicate in a separate reset run. Expected discriminator: the id-only update overwrites, while the compare-and-swap control updates zero rows. This deterministic schedule is a SQL-level counterexample, not measured ECC concurrent-process behavior or frequency.
+- **C04 worktree identity:** create an isolated Git repository and two worktrees containing controlled uncommitted markers. Preserve one as a no-cleanup control. Apply the reviewed successful cleanup command vector (worktree remove --force; branch -D) to the other, then create only its runner-log directory below the old stored working_dir. Query Git worktree list, branch existence, Git identity and marker content. Expected discriminator: recreated path exists but is not the former registered worktree and lacks its marker; the retained control still has both. This is not a running ECC stop/resume or proof of permanent Git object loss.
+
+## Scope and oracle
+
+Run only local standard-library Python sqlite3 and installed git, with temporary files under /mnt/data, isolated HOME/XDG/Git configuration and no network. No live harness, user home/config/cache, provider, credentials or upstream mutation. Record actual versions, commands, output, failures and results in readable UTF-8. The fixture uses a schema subset and transcribed statement/command semantics; do not call it the complete original program. Compare explicit control results rather than counting green assertions as integration success.
+
+Criteria are fixed before execution. If a case fails or the harness is defective, retain the first result and describe any revision separately. Publish the runner and raw structured results with corresponding content hashes; a tool success alone is not integrity or research validation. This is same-assistant testing with database/Git observations, not independent review. The broader lifecycle source inquiry and actual process ownership remain separate obligations.

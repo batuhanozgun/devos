@@ -1,0 +1,1169 @@
+{
+  "kind": "U04_EXECUTED_BOUNDED_DIAGNOSTIC",
+  "started_at_utc": "2026-09-11T06:11:47.964054+00:00",
+  "pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "linux",
+  "sqlite": "3.46.1",
+  "source_identity": {
+    "pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+    "files": {
+      "source/heartbeat.py": {
+        "sha256": "e5243d64f23cf3c9fcc3d669d6122650acd90bc756cfa119ecb59a3911461021",
+        "git_blob": "d3f440d9ed2035505b0bdfbe7d6d57dec926317f",
+        "bytes": 11016
+      },
+      "source/kanban_goal_selected.py": {
+        "sha256": "496612aa7511b4789ab5a47e927fdd4e44d7655f867d5554535c450843017d50",
+        "git_blob": "c38d649b1f857e64414a0b7a5a1ba56c04b2928c",
+        "bytes": 6955
+      },
+      "source/run_status_selected.py": {
+        "sha256": "240b507cdf122ec727cbb267af19a1b666e7c8b3e33b83e2fb19073913f37b6e",
+        "git_blob": "cb5aa6147fff8e707085359a8751dd1ccd7d4617",
+        "bytes": 2052
+      }
+    },
+    "whole_parent_verified": [
+      "source/heartbeat.py"
+    ],
+    "manual_selections": [
+      "source/kanban_goal_selected.py",
+      "source/run_status_selected.py"
+    ]
+  },
+  "probe_sha256": "9fb2bef88e069d99233d978c02603cf15acc0aa7b38af0b5e8dc42a13b8e1a38",
+  "spec_sha256": "1253b10234b4dbe2cac3d11f1afdd8bb4547ba456609edbf4ae8e8aad65ba869",
+  "cases": [
+    {
+      "id": "G01",
+      "observed": {
+        "loop_result": {
+          "outcome": "completed_by_worker",
+          "turns_used": 1,
+          "reason": "worker completed the task"
+        },
+        "judge_calls": 0,
+        "extra_turns": 0,
+        "block_calls": 0,
+        "prompts": [],
+        "trace": [
+          {
+            "status_read": "done"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture completed by worker after 1 turn(s)"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "done",
+              "current_run_id": null
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "completed"
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "completed_by_worker",
+            0,
+            0
+          ],
+          "actual": [
+            "completed_by_worker",
+            0,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G02",
+      "observed": {
+        "loop_result": {
+          "outcome": "review_requested_by_worker",
+          "turns_used": 1,
+          "reason": "worker requested review"
+        },
+        "judge_calls": 0,
+        "extra_turns": 0,
+        "block_calls": 0,
+        "prompts": [],
+        "trace": [
+          {
+            "status_read": "review"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture handed off for review by worker after 1 turn(s)"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 2
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "review_requested"
+            },
+            {
+              "id": 2,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "review_requested_by_worker",
+            0,
+            0
+          ],
+          "actual": [
+            "review_requested_by_worker",
+            0,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G03",
+      "observed": {
+        "loop_result": {
+          "outcome": "stopped",
+          "turns_used": 1,
+          "reason": "status=superseded"
+        },
+        "judge_calls": 0,
+        "extra_turns": 0,
+        "block_calls": 0,
+        "prompts": [],
+        "trace": [
+          {
+            "status_read": "superseded"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture status='superseded'; stopping"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 2
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "reclaimed"
+            },
+            {
+              "id": 2,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "stopped",
+            0,
+            0
+          ],
+          "actual": [
+            "stopped",
+            0,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G04",
+      "observed": {
+        "loop_result": {
+          "outcome": "completed_by_worker",
+          "turns_used": 2,
+          "reason": "worker completed the task"
+        },
+        "judge_calls": 1,
+        "extra_turns": 1,
+        "block_calls": 0,
+        "prompts": [
+          "[The work looks complete, but the task is still open]\nReason: fixture verdict\n\nIf the task is genuinely done, call kanban_complete now with a short summary of what you did. If it is a code change awaiting same-card review, call kanban_request_review with that summary instead. If something still blocks completion, call kanban_block with the reason instead."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "done",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=done reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "status_read": "done"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture completed by worker after 2 turn(s)"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "done",
+              "current_run_id": null
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "completed"
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "completed_by_worker",
+            1,
+            1
+          ],
+          "actual": [
+            "completed_by_worker",
+            1,
+            1
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G05",
+      "observed": {
+        "loop_result": {
+          "outcome": "blocked_budget",
+          "turns_used": 2,
+          "reason": "judged done, never finalized"
+        },
+        "judge_calls": 2,
+        "extra_turns": 1,
+        "block_calls": 1,
+        "prompts": [
+          "[The work looks complete, but the task is still open]\nReason: fixture verdict\n\nIf the task is genuinely done, call kanban_complete now with a short summary of what you did. If it is a code change awaiting same-card review, call kanban_request_review with that summary instead. If something still blocks completion, call kanban_block with the reason instead."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "done",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/10 verdict=done reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "done",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 2/10 verdict=done reason=fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture judged done but worker won't finalize; blocking"
+          },
+          {
+            "block_attempt": "accept",
+            "reason": "Goal-mode worker's output looked complete but it never called kanban_complete after a finalize nudge (fixture verdict)."
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "blocked",
+              "current_run_id": null
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "blocked"
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "blocked_budget",
+            2,
+            1
+          ],
+          "actual": [
+            "blocked_budget",
+            2,
+            1
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G06",
+      "observed": {
+        "loop_result": {
+          "outcome": "blocked_budget",
+          "turns_used": 3,
+          "reason": "turn budget exhausted"
+        },
+        "judge_calls": 3,
+        "extra_turns": 2,
+        "block_calls": 1,
+        "prompts": [
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them.",
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "wait",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "wait",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 2/3 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 2
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "wait",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 3/3 verdict=continue reason=fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture exhausted 3/3 turns; blocking"
+          },
+          {
+            "block_attempt": "accept",
+            "reason": "Goal-mode worker exhausted its turn budget (3/3) without completing the task. Last judge verdict: fixture verdict"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "blocked",
+              "current_run_id": null
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "blocked"
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "blocked_budget",
+            3,
+            2
+          ],
+          "actual": [
+            "blocked_budget",
+            3,
+            2
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G07",
+      "observed": {
+        "loop_result": {
+          "outcome": "blocked_budget",
+          "turns_used": 5,
+          "reason": "turn budget exhausted"
+        },
+        "judge_calls": 5,
+        "extra_turns": 4,
+        "block_calls": 1,
+        "prompts": [
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them.",
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them.",
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them.",
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": true
+          },
+          {
+            "log": "kanban goal loop: turn 1/5 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": true
+          },
+          {
+            "log": "kanban goal loop: turn 2/5 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 2
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": true
+          },
+          {
+            "log": "kanban goal loop: turn 3/5 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 3
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": true
+          },
+          {
+            "log": "kanban goal loop: turn 4/5 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 4
+          },
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": true
+          },
+          {
+            "log": "kanban goal loop: turn 5/5 verdict=continue reason=fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture exhausted 5/5 turns; blocking"
+          },
+          {
+            "block_attempt": "accept",
+            "reason": "Goal-mode worker exhausted its turn budget (5/5) without completing the task. Last judge verdict: fixture verdict"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "blocked",
+              "current_run_id": null
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "blocked"
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "blocked_budget",
+            5,
+            4
+          ],
+          "actual": [
+            "blocked_budget",
+            5,
+            4
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G08",
+      "observed": {
+        "loop_result": {
+          "outcome": "blocked_unachievable",
+          "turns_used": 1,
+          "reason": "judge verdict blocked: fixture verdict"
+        },
+        "judge_calls": 1,
+        "extra_turns": 0,
+        "block_calls": 1,
+        "prompts": [],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "blocked",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=blocked reason=fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture judged unachievable; blocking"
+          },
+          {
+            "block_attempt": "false",
+            "reason": "Goal-mode judge ruled the goal unachievable: fixture verdict"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "blocked_unachievable",
+            1,
+            0
+          ],
+          "actual": [
+            "blocked_unachievable",
+            1,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G09",
+      "observed": {
+        "loop_result": {
+          "outcome": "blocked_unachievable",
+          "turns_used": 1,
+          "reason": "judge verdict blocked: fixture verdict"
+        },
+        "judge_calls": 1,
+        "extra_turns": 0,
+        "block_calls": 1,
+        "prompts": [],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "blocked",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=blocked reason=fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture judged unachievable; blocking"
+          },
+          {
+            "block_attempt": "raise",
+            "reason": "Goal-mode judge ruled the goal unachievable: fixture verdict"
+          },
+          {
+            "log": "kanban goal loop: block_fn failed (synthetic block failure)"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "blocked_unachievable",
+            1,
+            0
+          ],
+          "actual": [
+            "blocked_unachievable",
+            1,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G10",
+      "observed": {
+        "loop_result": {
+          "outcome": "stopped",
+          "turns_used": 2,
+          "reason": "status=superseded"
+        },
+        "judge_calls": 1,
+        "extra_turns": 1,
+        "block_calls": 0,
+        "prompts": [
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": false
+          },
+          {
+            "fixture_ownership_transfer": "1 -> 2"
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "status_read": "superseded"
+          },
+          {
+            "log": "kanban goal loop: task t_fixture status='superseded'; stopping"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 2
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": "reclaimed"
+            },
+            {
+              "id": 2,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "stopped",
+            1,
+            1
+          ],
+          "actual": [
+            "stopped",
+            1,
+            1
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G11",
+      "observed": {
+        "loop_result": {
+          "outcome": "stopped",
+          "turns_used": 1,
+          "reason": "status check failed"
+        },
+        "judge_calls": 0,
+        "extra_turns": 0,
+        "block_calls": 0,
+        "prompts": [],
+        "trace": [
+          {
+            "log": "kanban goal loop: status check failed (synthetic status read failure); stopping"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "stopped",
+            0,
+            0
+          ],
+          "actual": [
+            "stopped",
+            0,
+            0
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "G12",
+      "observed": {
+        "loop_result": {
+          "outcome": "stopped",
+          "turns_used": 1,
+          "reason": "run_turn error: RuntimeError"
+        },
+        "judge_calls": 1,
+        "extra_turns": 1,
+        "block_calls": 0,
+        "prompts": [
+          "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them."
+        ],
+        "trace": [
+          {
+            "status_read": "running"
+          },
+          {
+            "judge": "continue",
+            "parse_failed": false
+          },
+          {
+            "log": "kanban goal loop: turn 1/3 verdict=continue reason=fixture verdict"
+          },
+          {
+            "run_turn": 1
+          },
+          {
+            "log": "kanban goal loop: run_turn failed (synthetic turn failure); stopping"
+          }
+        ],
+        "durable": {
+          "tasks": [
+            {
+              "id": "t_fixture",
+              "status": "running",
+              "current_run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "id": 1,
+              "task_id": "t_fixture",
+              "outcome": null
+            }
+          ]
+        },
+        "oracle": {
+          "expected": [
+            "stopped",
+            1,
+            1
+          ],
+          "actual": [
+            "stopped",
+            1,
+            1
+          ]
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H01",
+      "observed": {
+        "fired_at_1000_1059_1060": [
+          false,
+          false,
+          true
+        ],
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 1060,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H02",
+      "observed": {
+        "first": "[Heartbeat — recurring instruction, fires every 1m]\nObserve harmless fixture\n\nIf there is nothing meaningful to do or report for this instruction right now, reply briefly that nothing has changed and stop — do not invent work.",
+        "second": null,
+        "fire_count": 1,
+        "last_fired_at": 4600,
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 4600,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H03",
+      "observed": {
+        "reloaded": {
+          "prompt": "Observe harmless fixture",
+          "interval_seconds": 60,
+          "status": "active",
+          "created_at": 1000.0,
+          "last_fired_at": 1060.0,
+          "fire_count": 1
+        },
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 1060,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H04",
+      "observed": {
+        "paused_fire": null,
+        "resumed_fires": [
+          false,
+          false,
+          true
+        ],
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 5060,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H05",
+      "observed": {
+        "abandoned": true,
+        "again": true,
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 1060,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H06",
+      "observed": {
+        "abandoned": false,
+        "fresh_status": "paused",
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "paused",
+            "created_at": 1000.0,
+            "last_fired_at": 1060.0,
+            "fire_count": 1
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H07",
+      "observed": {
+        "live_status": "active",
+        "fresh_exists": false,
+        "durable": {}
+      },
+      "matched": true
+    },
+    {
+      "id": "H08",
+      "observed": {
+        "helper_return": true,
+        "old_loadable": false,
+        "new_loadable": true,
+        "durable": {
+          "heartbeat:new": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "active",
+            "created_at": 1000.0,
+            "last_fired_at": 0.0,
+            "fire_count": 0
+          },
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "cleared",
+            "created_at": 1000.0,
+            "last_fired_at": 0.0,
+            "fire_count": 0
+          }
+        }
+      },
+      "matched": true
+    },
+    {
+      "id": "H09",
+      "observed": {
+        "helper_return": true,
+        "old_loadable": false,
+        "new_loadable": false,
+        "durable": {
+          "heartbeat:old": {
+            "prompt": "Observe harmless fixture",
+            "interval_seconds": 60,
+            "status": "cleared",
+            "created_at": 1000.0,
+            "last_fired_at": 0.0,
+            "fire_count": 0
+          }
+        }
+      },
+      "matched": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "id": "NC01",
+      "input_mutation_rejected": true
+    },
+    {
+      "id": "NC02",
+      "loop_result": {
+        "outcome": "blocked_budget",
+        "turns_used": 2,
+        "reason": "turn budget exhausted"
+      },
+      "judge_calls": 2,
+      "extra_turns": 1,
+      "block_calls": 1,
+      "prompts": [
+        "[Continuing toward this kanban task — judge says it is not done yet]\nReason: fixture verdict\n\nTake the next concrete step toward completing the task. When the work is genuinely finished, call kanban_complete with a summary. If it is a code change that needs same-card review before counting as done, call kanban_request_review with a summary instead. If you are blocked and need human input, call kanban_block with a reason. Do not stop without calling one of them."
+      ],
+      "trace": [
+        {
+          "status_read": "running"
+        },
+        {
+          "judge": "continue",
+          "parse_failed": false
+        },
+        {
+          "log": "kanban goal loop: turn 1/2 verdict=continue reason=fixture verdict"
+        },
+        {
+          "run_turn": 1
+        },
+        {
+          "status_read": "running"
+        },
+        {
+          "judge": "continue",
+          "parse_failed": false
+        },
+        {
+          "log": "kanban goal loop: turn 2/2 verdict=continue reason=fixture verdict"
+        },
+        {
+          "log": "kanban goal loop: task t_fixture exhausted 2/2 turns; blocking"
+        },
+        {
+          "block_attempt": "false",
+          "reason": "Goal-mode worker exhausted its turn budget (2/2) without completing the task. Last judge verdict: fixture verdict"
+        }
+      ],
+      "durable": {
+        "tasks": [
+          {
+            "id": "t_fixture",
+            "status": "running",
+            "current_run_id": 2
+          }
+        ],
+        "runs": [
+          {
+            "id": 1,
+            "task_id": "t_fixture",
+            "outcome": "reclaimed"
+          },
+          {
+            "id": 2,
+            "task_id": "t_fixture",
+            "outcome": null
+          }
+        ]
+      },
+      "detected_by_G03_oracle": true
+    },
+    {
+      "id": "NC03",
+      "loop_result": {
+        "outcome": "stopped",
+        "turns_used": 1,
+        "reason": "mutant parks immediately"
+      },
+      "judge_calls": 1,
+      "extra_turns": 0,
+      "block_calls": 0,
+      "prompts": [],
+      "trace": [
+        {
+          "status_read": "running"
+        },
+        {
+          "judge": "wait",
+          "parse_failed": false
+        }
+      ],
+      "durable": {
+        "tasks": [
+          {
+            "id": "t_fixture",
+            "status": "running",
+            "current_run_id": 1
+          }
+        ],
+        "runs": [
+          {
+            "id": 1,
+            "task_id": "t_fixture",
+            "outcome": null
+          }
+        ]
+      },
+      "detected_by_G06_oracle": true
+    }
+  ],
+  "limits": [
+    "Only heartbeat.py has full upstream-byte identity verified.",
+    "Kanban loop and run-status are manual selections, not full original modules.",
+    "Judge, model turns, task writers, get_task, clock and MetaDB are fixtures.",
+    "SQLite is real; schema and SessionDB adapter are reduced.",
+    "No real app, gateway, workers, providers, network, OS signals or semantic-quality test.",
+    "Tests are not independent external replication."
+  ],
+  "denied_network_process_events": [],
+  "ended_at_utc": "2026-09-11T06:11:48.063972+00:00",
+  "all_case_expectations_matched": true,
+  "all_negative_controls_detected": true
+}

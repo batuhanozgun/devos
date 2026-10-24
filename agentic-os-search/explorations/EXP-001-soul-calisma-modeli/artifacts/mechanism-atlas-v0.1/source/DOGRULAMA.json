@@ -1,0 +1,138 @@
+{
+  "version": "0.1",
+  "date": "2026-09-10",
+  "scope": "Belge/model/arayüz doğrulaması; SOUL çalışma etkinliği deneyi değil.",
+  "method": "Playwright + sistem Chromium; tam HTML ağsız set_content; PyMuPDF; Graphviz.",
+  "checks": [
+    {
+      "check": "Benzersiz kimlikler ve ilişki uçları",
+      "result": "PASS",
+      "detail": "179 kimlik; 71 ilişki"
+    },
+    {
+      "check": "Yedi görünümün model bütünlüğü ve SVG XML geçerliliği",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Konsolidasyon kaynak SHA-256 bağı",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Sentetik sayım ve tekrar gönderim aritmetiği",
+      "result": "PASS",
+      "detail": "H1 25% / 75%; H3 50% → 60%. Örnek doğruluğu, ürün veya ajan doğruluğu değildir."
+    },
+    {
+      "check": "7 harita ve eşdeğer liste görünümleri",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Üst görünümden iç görünüme geçiş",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Düğüm seçimi ve Enter ile klavye erişimi",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Ok seçimi ve koşul/taşıdığı bilgi/sınır ayrıntısı",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Yakınlaştırma, sığdırma, seçim kapama",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Arama → nesne → güncel seçim",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Boş arama sonucu ve arama temizleme",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "10 demo adımı, uç sınırlar, başa dönüş ve aday D09 ayrımı",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Dosya envanteri 6 / 15 / 21 filtreleri",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Bütün 71 ilişkinin harita dışında da bulunabilirliği",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Açık mekanizmalar, ilkeler, durum eksenleri ve kaynak görünümleri",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "SVG ve JSON dışa aktarma, içerik eşliği",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Kılavuz diyaloğu ve Escape",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "URL hash durumuyla görünüm/seçim ve tarayıcı geri",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "PDF okuma görünümü iç bağlantı hedefleri",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "PDF sayfaları: içerik ile altbilgi çakışması yok",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Ağ kapalıyken gömülü belgenin başlangıcı ve etkileşim",
+      "result": "PASS",
+      "detail": "Yönetilen Chromium file:// ve localhost navigasyonunu engellediği için tam HTML set_content ile yüklendi; tarayıcı politikası değiştirilmedi."
+    },
+    {
+      "check": "390×844 mobil menü, liste, ayrıntı ve sayfa taşması",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JavaScript çalışma hatası ve ağ isteği yok",
+      "result": "PASS",
+      "detail": "0 hata, 0 ağ isteği"
+    },
+    {
+      "check": "PDF: 51 sayfa, metin, model kimlikleri ve bağlantılar",
+      "result": "PASS",
+      "detail": "538 bağlantı"
+    }
+  ],
+  "limits": [
+    "Tarayıcı file:// navigasyonu ortam politikası nedeniyle doğrudan denenemedi; HTML baytları aynı motorun sayfasına doğrudan yüklendi.",
+    "Gerçek ajan, dış araç yürütmesi, bağımsız ikinci model veya ürün uygulaması test edilmedi.",
+    "Görsel sayfa incelemesi ve Türkçe metin kontrolü aynı üretici tarafından yapıldı."
+  ],
+  "visual_review": {
+    "scope": "51 sayfa render edildi; sayfa düzenleri montaj görünümünde ve seçilmiş yoğun sayfalar yüksek çözünürlükte incelendi. Masaüstü ana harita/ayrıntı/demo, mobil liste/ayrıntı incelendi.",
+    "changes": "PDF sözleşme fontları büyütüldü, bir sayfanın altbilgiye yaklaşması düzeltildi. B ilişkileri PDF ilişki siciline de eklendi. HTML gezinme/ayrıntı sınıfları eşitlendi.",
+    "limit": "İnceleme aynı üretici tarafından yapıldı; bağımsız uzman veya çoklu tarayıcı sertifikası değildir."
+  }
+}

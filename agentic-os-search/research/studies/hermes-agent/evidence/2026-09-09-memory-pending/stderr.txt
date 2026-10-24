@@ -1,0 +1,2 @@
+Memory entry from MEMORY.md blocked at load time: synthetic-sentinel
+Failed to discard pending memory/97d38ba0: synthetic pending unlink failure

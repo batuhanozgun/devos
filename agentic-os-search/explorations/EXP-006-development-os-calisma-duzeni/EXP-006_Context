@@ -1,0 +1,349 @@
+# EXP-006_Context
+
+## Bu dosyanın amacı
+
+Bu dosya EXP-006 boyunca konuşmanın neden başladığını, hangi bakış açısıyla ilerlediğini, Batu ile yapay zekânın birbirini nasıl yönlendirdiğini ve şu anda hangi soruyu çözmeye çalıştığını korur.
+
+Amaç alınan bütün kararları veya üretilen bütün fikirleri toplamak değildir. Amaç, yeni bir turda veya oturumda yalnız son konuşulan konuya takılıp çalışmanın yönünden kopmayı engellemektir.
+
+Bu dosyadaki içerik konuşma ilerledikçe birlikte değerlendirilerek güncellenecektir. Yeni bir düşünce ortaya çıktığı için otomatik olarak buraya eklenmeyecektir.
+
+## Authority notu
+
+Bu dosya **kronolojik yön ve metodoloji bağlamıdır**; current phase veya next responsibility kaynağı değildir. Metin içinde tarihsel olarak "şu an", "güncel yön" veya "sıradaki iş" diye yazılmış ifadeler kendi üretildikleri döneme aittir. Current yön her zaman `STATE.md → HANDOFF.md → WORK.md` yolundan alınır.
+
+---
+
+## EXP-006 neden başladı?
+
+Üst amaç SOUL'u yaratmaktır.
+
+Development OS ihtiyacı baştan bağımsız bir ürün fikri olarak ortaya çıkmadı. SOUL'u yaratma işinin kendisi incelendiğinde bazı pratik ihtiyaçlar görünür oldu:
+
+- SOUL'u oluşturan bütün dosyaları Batu'nun tek başına üretmesi gerçekçi değildir.
+- İş yalnız sözel dosyalardan oluşmayacaktır; kod ve teknik üretim de gerektirecektir.
+- Hangi dosyaların ve yapıların gerekli olduğuna karar vermek de başlı başına düşünme ve tartışma gerektirir.
+- Çalışma tek bir konuşmaya sığmayacaktır; bilgi ve çalışma durumunun konuşmalar arasında devam etmesi gerekir.
+- İş ilerledikçe yeni işler keşfedilecek, plan değişecek ve ana işlerle alt işler birlikte yönetilmek zorunda kalacaktır.
+
+Dolayısıyla Development OS'un ilk anlamı şudur:
+
+**SOUL'u yaratma işini, tek bir insanın bilgisine, üretim kapasitesine veya tek bir konuşmanın bağlamına bağımlı bırakmadan yürütebilecek çalışma düzeni.**
+
+Bunun nasıl bir sistem olacağı henüz belirlenmiş değildir.
+
+---
+
+## Bu exploration nasıl çalışıyor?
+
+Development OS'u bir oturumda tasarlamaya çalışmıyoruz.
+
+Çalışma, Batu ile yapay zekânın karşılıklı düşünmesiyle ilerliyor. Bir taraf hazır mimari getirip diğer tarafa kabul ettirmiyor.
+
+Batu özellikle:
+
+- erken çözüme atlanmasını,
+- jenerik sistem veya rol listeleri üretilmesini,
+- kavramların birbirine karıştırılmasını,
+- önceki çalışmaların doğrulanmış mimari gibi kullanılmasını,
+- teknik uzmanlık yükünün fark edilmeden tekrar kullanıcıya bırakılmasını
+
+sorguluyor ve gerektiğinde yönü düzeltiyor.
+
+Yapay zekânın görevi ise:
+
+- repository'deki araştırma ve eski explorations birikimini gerektiği yerde geri çağırmak,
+- Batu'nun ortaya koyduğu düşünceyi daha temiz ayrımlara dönüştürmek,
+- örtük varsayımları veya eksik bağlantıları göstermek,
+- alternatif çerçeveler önermek,
+- ancak bir düşünce yeterince olgunlaşmadan onu mimari karara çevirmemek.
+
+Konuşmada bir önerinin ilk hali korunmak zorunda değildir. Daha iyi bir ayrım bulunduğunda önceki ifade bırakılabilir.
+
+Örneğin insanın müşteri rolünde devredilemez sorumlulukları başlangıçta amaç, tercih, kapsam, karar ve kabul gibi birçok başlık altında düşünüldü. Tartışma ilerledikçe bunun daha temel iki ayrıma indirgenebildiği görüldü:
+
+**yetki ve kabul.**
+
+Bu tür sadeleşmeler çalışma yönteminin önemli parçasıdır.
+
+---
+
+## Aktörlerden işe doğru geçiş
+
+İlk soru Development OS içinde kaç aktör bulunacağıydı.
+
+Konuşmada şimdilik iki temel aktör sınıfıyla ilerlenmesine karar verildi:
+
+- insan
+- yapay zekâ
+
+Buradaki “yapay zekâ” ifadesi bilinçli olarak geniş bırakılmıştır. LLM, agent, alt agent veya agentic sistem ayrımları bu aşamada ana soruyu gereksiz yere dallandırmamak için açılmamıştır.
+
+Ayrıca şu ayrım belirginleşti:
+
+**Aktör ile rol aynı şey değildir.**
+
+Bir aktör birden fazla rol taşıyabilir. Aynı rol farklı aktör örnekleri tarafından yerine getirilebilir. Rol sayısından aktör sayısı çıkarılamaz.
+
+### İnsan aktörü
+
+Bu Development OS örneğinde insanın başlangıç rolü **müşteri** olarak ele alındı.
+
+Müşteri, SOUL'u nasıl yapacağını bilen teknik yönetici veya Development OS'un eksik mühendislik parçalarını tamamlayan kişi değildir.
+
+Müşteri açısından çekirdekte kalan iki şey:
+
+**Yetki:** Yapay zekânın hangi sınırlar içinde müşteri adına hareket edebileceğinin meşru kaynağı.
+
+**Kabul:** Ortaya çıkan sonucun müşterinin ihtiyacını karşılayıp karşılamadığına ilişkin son hüküm.
+
+Bu, müşterinin bütün önemli kararları kendisinin vermesi gerektiği anlamına gelmez. Aksine Development OS'un amacı, teknik keşif, çözüm geliştirme ve çalışma yönetimi yükünün mümkün olduğunca yapay zekâ tarafında kalmasıdır.
+
+### Yapay zekâ aktörü
+
+Yapay zekâyı yalnız “işçi” olarak tanımlamak yetersiz kaldı.
+
+Müşteri yalnız yetki ve kabul çekirdeğinde kalıyorsa; ihtiyaç keşfi, araştırma, çözüm geliştirme, planlama, üretim, doğrulama, koordinasyon ve süreklilik gibi geniş bir sorumluluk alanı yapay zekâ tarafına geçmektedir.
+
+Fakat buradan hemen jenerik “araştırmacı, planlayıcı, doğrulayıcı...” rol listesi çıkarmanın yanlış olacağı fark edildi.
+
+Çünkü:
+
+**Roller yapılacak işten türemelidir.**
+
+Önce Development OS'un hangi işleri yapması gerektiğini anlamadan rol isimleri üretmek, gerçek ihtiyaçtan kopuk organizasyon şeması üretme riski taşır.
+
+---
+
+## İş keşfine geçiş
+
+Foundation'daki Work–Actors ilişkisi bu yönü güçlendirdi.
+
+İşin varlığı ile:
+
+- kimin yapacağı,
+- kimin yapmakla yükümlü olduğu,
+- kimin yetkili olduğu,
+- kimin karar verdiği,
+- kimin kabul ettiği,
+- kimin sonuçtan sorumlu olduğu
+
+aynı şey değildir.
+
+Bu nedenle mevcut yön şudur:
+
+**Önce Development OS'un yaptığı işi keşfet.  
+Sonra bu işlerin hangi sorumlulukları doğurduğuna bak.  
+Rolleri en son bu sorumluluklardan türet.**
+
+---
+
+## İş keşfi için kullanılan yöntem
+
+Development OS'un yaptığı işi anlamak için Özyinelemeli Önkoşul Keşfi yaklaşımı kullanılmaya başlandı.
+
+Buradaki amaç Development OS için baştan özellik listesi çıkarmak değildir.
+
+Temel soru:
+
+**SOUL'u yaratma hedefinin gerçekleşmesi için önce ne doğru olmak zorunda?**
+
+Bir gereklilik ortaya çıktığında aynı soru onun için de sorulabilir.
+
+Development OS tek turda tamamlanmaya çalışılmayacaktır. Katman katman ilerlenir. Bir katman konuşulup yeterince anlaşılmadan daha aşağıdaki mekanizmalara veya araçlara atlanmaz.
+
+İlk aday iş katmanı şu şekilde ortaya çıktı:
+
+1. Neyin yapılması gerektiğini belirlemek.
+2. Hedef için gereken işleri keşfetmek.
+3. İşleri yapılabilir hâle getirmek.
+4. İşleri gerçekleştirmek.
+5. Ortaya çıkan şeyi sınamak ve gerektiğinde yeniden çalışmak.
+6. Bütün bunları zaman içinde sürdürebilmek.
+
+Bu liste henüz Development OS'un nihai iş sınıflandırması değildir. RPD ile açılacak ilk çalışma haritasıdır.
+
+İlk olarak **“neyin yapılması gerektiğini belirlemek”** dalına girildi.
+
+---
+
+## Tarihsel aşama — SOUL hedefini somutlaştırma
+
+Development OS'un işini anlayabilmek için önce onun üretmesi gereken şeyin yeterince somut olması gerektiği fark edildi.
+
+“SOUL'u yarat” ifadesi çalışma için hâlâ fazla geniştir.
+
+Bu yüzden mevcut alt amaç:
+
+**SOUL'u, Development OS'un üzerinde çalışabileceği kadar somut bir hedefe dönüştürmek.**
+
+Bu tanımı sıfırdan üretmek yerine önceki explorations birikimi kullanılacaktır.
+
+EXP-001–EXP-004 bu konuda birbirini izleyen düşünce çalışmalarını taşır.
+
+İlk görünürlük turunda ortaya çıkan genel harita:
+
+### EXP-001
+
+SOUL'un çalışma anlayışının ilk temelini taşır:
+
+- kullanıcının söylediği ile gerekli çalışma tanımı arasındaki fark,
+- anlayış ile işin birlikte gelişmesi,
+- planı üreten çalışma sistemi,
+- uzmanlık sürekliliği,
+- çalışma ortamı,
+- yaşayan plan.
+
+### EXP-002
+
+SOUL'un kendisine daha doğrudan yaklaşır:
+
+- yalnız sonuç üretmeyen,
+- gereken çalışma sistemini kurabilen,
+- bu sistemi işletebilen,
+- değerlendirebilen,
+- gerektiğinde değiştirebilen
+
+bir yapı düşüncesini belirginleştirir.
+
+Baz SOUL ile işe özgü oluşturulan çalışma düzeni arasındaki ayrım da burada gelişir.
+
+### EXP-003
+
+Bilgi ve hafıza tarafını derinleştirir:
+
+- bilginin varlığı,
+- bulunabilirliği,
+- kullanılabilirliği,
+- seçici erişim,
+- değişiklik etkisi,
+- araştırmadan yararlanma.
+
+SOUL'un ilk genel somutlaştırılması için destekleyici fakat daha dar bir alandır.
+
+### EXP-004
+
+Şu ana kadarki en somut çalışma sistemi taslağını taşır.
+
+Büyük ve uzun iş üzerinde:
+
+- iş keşfi,
+- roller ve aktörler,
+- bağlam,
+- yöntem ve kabiliyet seçimi,
+- gerçek etki,
+- doğrulama ve kabul,
+- süreklilik,
+- değişiklik ve toparlanma
+
+aynı sistem içinde düşünülmüştür.
+
+Fakat EXP-004 hâlâ kavramsal exploration'dır; nihai SOUL mimarisi değildir.
+
+---
+
+## O aşamada seçilen okuma
+
+Dosyaları körlemesine topluca okumak yerine önce görünürlük turu yapıldı. Bundan sonra SOUL'un somut hedefini çıkarmak için aşağıdaki dosyaların tam okunması üzerinde anlaşıldı:
+
+1. `EXP-001/.../SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.md`
+2. `EXP-002/artifacts/CONSOLIDATION.md`
+3. `EXP-004/artifacts/MS01-SOUL-WORKING-SYSTEM-DRAFT.md`
+4. `EXP-004/artifacts/MS01-COVERAGE-AND-OPEN-MECHANISMS.md`
+5. `EXP-004/artifacts/MS01-RESEARCH-TO-MECHANISM-MAP.md`
+
+EXP-003 şimdilik ertelenmiştir. SOUL'un genel hedefi belirginleştikten sonra bilgi/hafıza gereksinimlerinin ayrıntısına girildiğinde yeniden çağrılabilir.
+
+Konsolidasyonlar veya türetilmiş taslaklar tek başına kaynak kabul edilmeyecektir. SOUL tanımını taşıyan kritik bir iddia çıktığında gerektiği yerde özgün kullanıcı–assistant mesajlarına geri dönülecektir.
+
+---
+
+## Tarihsel rota — ulaşılmak istenen yer
+
+Bu konuşmanın yakın hedefi Development OS mimarisini doğrudan çizmek değildir.
+
+Önce:
+
+**Development OS'un yaratması gereken SOUL'u yeterince somutlaştırmak.**
+
+Sonra:
+
+**Bu sonucu üretmek için Development OS'un hangi işleri yapması gerektiğini keşfetmek.**
+
+Ardından:
+
+**Bu işlerin yapay zekâ aktöründe hangi sorumlulukları ve rolleri doğurduğunu belirlemek.**
+
+Daha sonra ancak ihtiyaç ortaya çıktıkça:
+
+- bilgi düzeni,
+- çalışma yönetimi,
+- ortam,
+- araçlar,
+- doğrulama,
+- süreklilik,
+- agent düzeni,
+- teknik mekanizmalar
+
+gibi konulara inmek.
+
+Temel çalışma ilkesi:
+
+**Önce ihtiyaç ve iş; sonra sorumluluk ve rol; en son mekanizma ve araç.**
+
+Development OS, SOUL'u yaratmak için kuruluyor. Bu nedenle Development OS'un kendisi, SOUL'u yaratma işinin önüne geçen ayrı bir amaç hâline gelmemelidir.
+
+
+---
+
+## Tarihsel aşama — SOUL hedefinden Development OS kabiliyetlerine
+
+EXP-001, EXP-002 ve EXP-004'teki seçilmiş tam okumalar sonrasında SOUL için kapsamlı bir hedef tanımı çıkarıldı. Kullanıcı bu tanımı bu aşama için yeterince somut kabul etti. Amaç artık SOUL tanımını sonsuza kadar iyileştirmek değil; bu hedefi gerçekleştirecek Development OS işini keşfetmek.
+
+Development OS'un SOUL'u yaratırken yapacağı birinci seviye işler dokuz aday Work alanında toplandı. Bunlar SOUL'un parçaları değildir; Development OS'un SOUL üzerinde yapması gereken geliştirme işleridir.
+
+Çalışmanın güncel katman sırası:
+
+1. SOUL hedefi — bu aşama için yeterince somut kabul edildi.
+2. Development OS'un SOUL üzerinde yapacağı ana Work alanları — B1–B9 çalışma haritası.
+3. Her Work alanı için: **Development OS bunu yapabilmek için hangi kabiliyet ve sorumluluklara sahip olmalı?**
+4. Bu kabiliyet ve sorumlulukların hangisini yapay zekâ rolü, hangisini mekanik sistem, hangisini insan taşır?
+5. Buradan Development OS'un rol düzeni ve sistem yapısı türetilir.
+6. Mekanizma, araç, host, dosya yapısı ve benzeri seçimler ancak bu ihtiyaçlardan sonra yapılır.
+
+Bu aşamadaki sıradaki iş doğrudan Development OS mimarisi çizmek değil; B1'den başlayarak her ana Work alanının Development OS tarafında gerektirdiği kabiliyet ve sorumlulukları açmaktı. Bu yön daha sonra tamamlandı ve S1 konsolidasyonuna geçildi.
+
+Aktif Work özeti `WORK.md`, dal ayrıntıları ise `work/B*.md` yüzeylerinde tutulur. Bu Context dosyası çalışma haritasının bütün ayrıntılarını kopyalamaz; yönü, yöntemi ve neden bu sırayla ilerlediğimizi korur.
+
+
+---
+
+## Yaşayan çalışma sistemine geçiş
+
+EXP-006 büyüdükçe yalnız bir exploration konuşma arşiviyle devam etmenin yetersiz kalacağı görüldü. Yeni oturumdaki yapay zekânın yalnız geçmiş konuşmayı hatırlaması değil, **current Work'ü doğru statü, aktör/rol ilişkileri ve sıradaki hareketle devralması** gerekiyor.
+
+Bu nedenle paket; kısa current STATE, fresh-session HANDOFF, üst WORK haritası, dal-bazlı `work/B*.md`, ACTORS ve DECISIONS yüzeyleriyle yaşayan çalışma düzenine ayrıldı. Bu, Development OS implementasyonu değildir; Development OS'u tasarlama Work'ünün sürekliliğini koruyan çalışma sistemidir.
+
+Temel continuity ilkesi:
+
+> **Aktör/oturum değişebilir; Work'ün amacı, durumu, kararları ve devralma noktası konuşmanın belleğine bağlı kalmamalıdır.**
+
+Normal yeni-oturum yolu `INDEX → STATE → HANDOFF → WORK → ACTORS → active phase master/slice` şeklindedir. Context yalnız yön/metodoloji gerçekten değiştiğinde güncellenir.
+
+
+---
+
+## EXP-006 iletişim disiplini
+
+Bu çalışma uzun ve çok katmanlı olduğu için kullanıcıya verilen cevap ana hattı örneklerin içine gömmemelidir.
+
+Varsayılan cevap düzeni:
+
+1. **Ne yapıyoruz?** — mevcut üst amaç ve bu turun yeri bir-iki kısa cümleyle.
+2. **Bu turda ne çıktı?** — doğrudan sonuç; kısa cümleler.
+3. **Bu ne anlama geliyor?** — gerekiyorsa yalnız karar için gerekli açıklama.
+4. **Sıradaki adım ne?** — tek ve açık devam yönü.
+
+Örnek, araştırma ayrıntısı ve terminoloji ana sonucu açıklamak için kullanılır; ana sonucu ikame etmez. Kullanıcı özellikle ayrıntı istemedikçe, bütünsel görünme uğruna tek cevapta çok fazla katman birleştirilmez.
+
+Bu iletişim kuralı yalnız EXP-006 çalışmasının kullanıcıya anlatım biçimidir; agent-control katmanı değildir.

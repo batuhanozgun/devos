@@ -1,0 +1,44 @@
+{
+  "memory_tool_store.py": {
+    "git_blob": "457594444311af31c837dcdd74cd1c55f2b47b3c",
+    "expected_git_blob": "457594444311af31c837dcdd74cd1c55f2b47b3c",
+    "match": true,
+    "bytes": 23548,
+    "sha256": "5d25c0604de0c4bf4b4f07402b0582b20c33377330a0c7354e059a7e7cf52293"
+  },
+  "memory_tool.py": {
+    "git_blob": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7",
+    "expected_git_blob": "8028ffd88a91b1625e1f1cebe500c37c6e6842a7",
+    "match": true,
+    "bytes": 18039,
+    "sha256": "38630aab4d9ef64be4c21a6fa91db5588636bdb9450e0d83ac9ef63b813bbcfc"
+  },
+  "write_approval_commands.py": {
+    "git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352",
+    "expected_git_blob": "150b72dfd17696ab7a64f97057b7405128f5b352",
+    "match": true,
+    "bytes": 5683,
+    "sha256": "de520311f9da69d171b8896be05740adc00823829cfcc1207d55f38f379609c9"
+  },
+  "skill_provenance.py": {
+    "git_blob": "3df9cf143045644310fa7d27a65666c8c23caf95",
+    "expected_git_blob": "3df9cf143045644310fa7d27a65666c8c23caf95",
+    "match": true,
+    "bytes": 1168,
+    "sha256": "58a064c44aec13925c724a8bb377bea90fbf6b2a817c8d8bcf4823e6c5436713"
+  },
+  "write_approval.py": {
+    "git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+    "expected_git_blob": "f1e99b46e934595c002c2bc659143fcbc1f9fe8d",
+    "match": true,
+    "bytes": 12431,
+    "sha256": "4a6416e6edc75fda0313adf32e2f4a6740f2ffcc5eb1a6addfd5846e69b02232"
+  },
+  "LICENSE": {
+    "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+    "expected_git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+    "match": true,
+    "bytes": 1070,
+    "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+  }
+}

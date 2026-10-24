@@ -1,0 +1,204 @@
+{
+  "kind": "BOUNDED_EXACT_SLASH_POLICY_COMPONENT_NOT_GATEWAY_EXECUTION",
+  "run_at_utc": "2026-09-10T05:12:08.954654+00:00",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "upstream_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "source_git_blob": "07204201e411f29f912bb9bba6beec0566acab9d",
+  "source_sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1",
+  "source_bytes": 5666,
+  "spec_sha256": "9de1c4e1be65a9af5c350ffd247e0a3acd1df2bb1fa4faf9c1a445a7ac5321d7",
+  "probe_sha256": "5f42e40e9f203721c670f7deb840b3c8674e6487d9588d4cf5ff4b860fdfd124",
+  "cases": [
+    {
+      "id": "SA01",
+      "observed": {
+        "enabled": false,
+        "guest": {
+          "memory": true,
+          "skills": true,
+          "help": true,
+          "whoami": true
+        }
+      },
+      "expected": {
+        "enabled": false,
+        "guest": {
+          "memory": true,
+          "skills": true,
+          "help": true,
+          "whoami": true
+        }
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA02",
+      "observed": {
+        "enabled": true,
+        "guest": {
+          "memory": false,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "owner": {
+          "memory": true,
+          "skills": true,
+          "help": true,
+          "whoami": true
+        }
+      },
+      "expected": {
+        "enabled": true,
+        "guest": {
+          "memory": false,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "owner": {
+          "memory": true,
+          "skills": true,
+          "help": true,
+          "whoami": true
+        }
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA03",
+      "observed": {
+        "names": [
+          "memory"
+        ],
+        "guest": {
+          "memory": true,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "removed_grant_denies_memory": true,
+        "uncanonical_input_allowed": false
+      },
+      "expected": {
+        "names": [
+          "memory"
+        ],
+        "guest": {
+          "memory": true,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "removed_grant_denies_memory": true,
+        "uncanonical_input_allowed": false
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA04",
+      "observed": {
+        "dm_only_group_enabled": false,
+        "dm_only_group_guest_skills": true,
+        "both_dm_owner_skills": false,
+        "both_group_owner_skills": true
+      },
+      "expected": {
+        "dm_only_group_enabled": false,
+        "dm_only_group_guest_skills": true,
+        "both_dm_owner_skills": false,
+        "both_group_owner_skills": true
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA05",
+      "observed": {
+        "names": [
+          "memory"
+        ],
+        "guest": {
+          "memory": true,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "group_owner_is_dm_admin": false
+      },
+      "expected": {
+        "names": [
+          "memory"
+        ],
+        "guest": {
+          "memory": true,
+          "skills": false,
+          "help": true,
+          "whoami": true
+        },
+        "group_owner_is_dm_admin": false
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA06",
+      "observed": {
+        "profile_only_equal": true,
+        "alpha": false,
+        "beta_same_config": false,
+        "beta_different_config": true
+      },
+      "expected": {
+        "profile_only_equal": true,
+        "alpha": false,
+        "beta_same_config": false,
+        "beta_different_config": true
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA07",
+      "observed": {
+        "absent_config_enabled": false,
+        "missing_platform_enabled": false,
+        "absent_memory": true,
+        "missing_memory": true
+      },
+      "expected": {
+        "absent_config_enabled": false,
+        "missing_platform_enabled": false,
+        "absent_memory": true,
+        "missing_memory": true
+      },
+      "expectation_matched": true
+    },
+    {
+      "id": "SA08",
+      "observed": {
+        "dm": false,
+        "": true,
+        "None": true
+      },
+      "expected": {
+        "dm": false,
+        "": true,
+        "None": true
+      },
+      "expectation_matched": true
+    }
+  ],
+  "source_identity_negative_control": {
+    "rejected": true,
+    "module_imported": false,
+    "error": "SOURCE_IDENTITY_REJECTED expected=07204201e411f29f912bb9bba6beec0566acab9d actual=2f629cc1da3898b3361d92c95fdd1295173312d4"
+  },
+  "all_diagnostic_expectations_matched": true,
+  "product_conformance": "NOT_ASSESSED",
+  "limits": [
+    "Synthetic config/source values; no real person authenticated",
+    "No real gateway, CLI, profile-scope or caller construction",
+    "No pending mutation, provider, network or credential use",
+    "Profile-only comparison does not prove a deployment isolation failure",
+    "Source-informed exploratory cases, not independent verification"
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "experiment": "U07A / E13 runner / E14 output",
+  "evidence_class": "source-informed exploratory mocked-client execution",
+  "primary_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "source": {
+    "path": "skills/brainstorming/scripts/helper.js",
+    "git_blob": "e11d26489ce248f37af3e4dd01ddec6a4e88287f",
+    "bytes": 5615
+  },
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64",
+    "clock": "synthetic milliseconds",
+    "transport": "in-memory fake WebSocket",
+    "dom": "minimal fake DOM"
+  },
+  "limitations": [
+    "No browser or real WebSocket/HTTP server",
+    "No host/model, filesystem watcher, security or efficacy test",
+    "No external requests, credentials, installation or upstream test suite",
+    "Prior E01-E12 not rerun",
+    "Criteria selected after source reading and before this execution; not preregistered independent replication"
+  ],
+  "counts": {
+    "scenarios": 9,
+    "unexpected_observation_failures": 0,
+    "unmet_explicit_criteria": 2
+  },
+  "cases": [
+    {
+      "id": "C01",
+      "name": "Configured-key and cookie-only URL controls",
+      "observation_verified": true,
+      "classification": "positive_control",
+      "keyed_url": "ws://localhost:7777/?key=synthetic-session-key",
+      "cookie_only_url": "ws://localhost:7777",
+      "limit": "URL construction only; no cookie, authentication or server handshake tested."
+    },
+    {
+      "id": "C02",
+      "name": "Normal click captures choice, id, text and synthetic timestamp",
+      "observation_verified": true,
+      "classification": "positive_control",
+      "event": {
+        "type": "click",
+        "text": "Layout A",
+        "choice": "a",
+        "id": null,
+        "timestamp": 1000
+      }
+    },
+    {
+      "id": "C03",
+      "name": "Explicit choice API lacks the server persistence field by default",
+      "observation_verified": true,
+      "classification": "cross_surface_criterion",
+      "event": {
+        "type": "choice",
+        "value": "a",
+        "timestamp": 1000
+      },
+      "criterion": "Default explicit choice output supplies the truthy choice field required by inspected server handleMessage.",
+      "criterion_met": false,
+      "metadata_control": {
+        "type": "choice",
+        "value": "a",
+        "choice": "a",
+        "timestamp": 1000
+      },
+      "limit": "Client output executed; server append predicate inspected as source, not executed."
+    },
+    {
+      "id": "C04",
+      "name": "Multiselect deselection still emits the same last choice",
+      "observation_verified": true,
+      "classification": "overstrong_inference_challenge",
+      "events": [
+        {
+          "type": "click",
+          "text": "Layout A",
+          "choice": "a",
+          "id": null,
+          "timestamp": 1000
+        },
+        {
+          "type": "click",
+          "text": "Layout A",
+          "choice": "a",
+          "id": null,
+          "timestamp": 1100
+        }
+      ],
+      "selected_after": false,
+      "selectedChoice_after": "a",
+      "criterion": "The latest click/selectedChoice alone determines the final selected set for multiselect.",
+      "criterion_met": false,
+      "limit": "The guide makes terminal feedback primary; this is not an upstream universal approval promise."
+    },
+    {
+      "id": "C05",
+      "name": "Queued old-screen event flushes before recovery reload without a screen binding",
+      "observation_verified": true,
+      "classification": "scope_observation",
+      "trace": [
+        {
+          "kind": "send",
+          "event": {
+            "type": "click",
+            "text": "Old layout A",
+            "choice": "a",
+            "id": null,
+            "timestamp": 2000
+          }
+        },
+        {
+          "kind": "replace",
+          "url": "/?key=synthetic-session-key"
+        }
+      ],
+      "limit": "Mock transport reconnection, not a real cross-session server replay or wrong approval incident."
+    },
+    {
+      "id": "C06",
+      "name": "Brief reconnect does not force a content reload",
+      "observation_verified": true,
+      "classification": "scope_observation",
+      "trace": [],
+      "status": "Connected",
+      "limit": "No server reload message injected; this does not test fs.watch delivery in a real runtime."
+    },
+    {
+      "id": "C07",
+      "name": "Unsent queue is memory-local, not restored into a new client",
+      "observation_verified": true,
+      "classification": "scope_observation",
+      "old_client_pending_sends": 1,
+      "new_client_sends": 0,
+      "limit": "Fresh VM models a new helper instance, not a browser storage durability test."
+    },
+    {
+      "id": "C08",
+      "name": "Reconnect backoff reaches its cap",
+      "observation_verified": true,
+      "classification": "positive_control",
+      "delay_sequence_ms": [
+        500,
+        1000,
+        2000,
+        4000,
+        8000,
+        16000,
+        30000,
+        30000,
+        30000
+      ]
+    },
+    {
+      "id": "C09",
+      "name": "Control rejects an invented selected set inferred from last click",
+      "observation_verified": true,
+      "classification": "negative_control",
+      "incorrect_last_click_oracle_rejected": true
+    }
+  ]
+}

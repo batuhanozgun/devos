@@ -1,0 +1,148 @@
+{
+  "capture_date": "2026-09-16",
+  "method": "Read-only LinkedIn Chrome UI via CUA. Source body read from article.innerText after the displayed time. No direct LinkedIn network requests. No LinkedIn writes.",
+  "normalization": {
+    "source": [
+      "Take article.innerText, remove the prefix through its time element text.",
+      "For csvpf only, remove the image control text İçerik kimlik bilgilerine bakın.",
+      "Remove all whitespace using JavaScript /\\s+/g."
+    ],
+    "local": [
+      "Take Markdown text after the first newline + --- + newline metadata/body boundary.",
+      "Remove HTML comments via <!--.*?--> (DOTALL).",
+      "Replace inline Markdown links matching \\[([^\\]]*)\\]\\([^\\n]*?\\) with captured label.",
+      "Before removing emphasis markers, remove start-of-line heading markers #{1,6} + space, quote markers > + space, bullet markers - + space, ordered list markers digits + dot + space, and standalone --- separator lines. Bold-numbered body paragraphs (e.g. **1. Defekti...) keep their numeric source text.",
+      "Remove * emphasis markers. No literal asterisks occur in these source bodies.",
+      "Remove all whitespace via Python re.sub(r\"\\s+\", \"\", text)."
+    ],
+    "checksum": "FNV-1a 32-bit over each normalized UTF-16 code unit; initial 2166136261; for each unit XOR then multiply by 16777619 modulo 2^32. Length is UTF-16 code units. This validates text including punctuation with whitespace/Markdown representation excluded, not image contents or byte-identical HTML."
+  },
+  "articles": [
+    {
+      "slug": "zaxzf",
+      "local_file": "articles/2026-09-11-llm-dusunmez-zaxzf.md",
+      "title": "LLM Düşünmez - Olasılıksal Olarak En Uygun Kelimeleri Sıralar",
+      "author": "Batuhan Özgün",
+      "displayed_publication_date": "11 Eylül 2026",
+      "publication_date": "2026-09-11",
+      "source_url": "https://www.linkedin.com/pulse/llm-d%25C3%25BC%25C5%259F%25C3%25BCnmez-olas%25C4%25B1l%25C4%25B1ksal-olarak-en-uygun-kelimeleri-batuhan-%25C3%25B6zg%25C3%25BCn-zaxzf/",
+      "capture_date": "2026-09-16",
+      "file_bytes": 23481,
+      "body_end_observed": true,
+      "body_end_evidence": "Final nonempty body paragraph/link observed immediately before comments region in article DOM snapshot.",
+      "expected_source_normalized_utf16_length": 17695,
+      "local_normalized_utf16_length": 17695,
+      "expected_source_fnv1a32": 14048581,
+      "local_fnv1a32": 14048581,
+      "match": true,
+      "source_exclusions": [
+        "Article header, author profile, time, controls and comments"
+      ],
+      "limitations": [
+        "Images were not downloaded or transcribed; existing figure captions are preserved where present.",
+        "Markdown representation preserves body text, headings, paragraphs, lists and links; exact HTML/CSS appearance is not archived."
+      ]
+    },
+    {
+      "slug": "csvpf",
+      "local_file": "articles/2026-07-16-ai-defolari-csvpf.md",
+      "title": "AI'ın Defoları ve defoları tetikleyen davranışlar",
+      "author": "Batuhan Özgün",
+      "displayed_publication_date": "16 Temmuz 2026",
+      "publication_date": "2026-07-16",
+      "source_url": "https://www.linkedin.com/pulse/ai%25C4%25B1n-defolar%25C4%25B1-ve-tetikleyen-davran%25C4%25B1%25C5%259Flar-batuhan-%25C3%25B6zg%25C3%25BCn-csvpf/",
+      "capture_date": "2026-09-16",
+      "file_bytes": 13419,
+      "body_end_observed": true,
+      "body_end_evidence": "Final nonempty body paragraph/link observed immediately before comments region in article DOM snapshot.",
+      "expected_source_normalized_utf16_length": 9736,
+      "local_normalized_utf16_length": 9736,
+      "expected_source_fnv1a32": 2268739652,
+      "local_fnv1a32": 2268739652,
+      "match": true,
+      "source_exclusions": [
+        "Article header, author profile, time, controls and comments",
+        "Image content-credentials UI label: İçerik kimlik bilgilerine bakın"
+      ],
+      "limitations": [
+        "Images were not downloaded or transcribed; existing figure captions are preserved where present.",
+        "Markdown representation preserves body text, headings, paragraphs, lists and links; exact HTML/CSS appearance is not archived."
+      ]
+    },
+    {
+      "slug": "2z2tf",
+      "local_file": "articles/2026-07-04-yanlis-seyi-iyi-yapar-2z2tf.md",
+      "title": "AI Bazen Yanlış Yapmaz; Yanlış Şeyi İyi Yapar",
+      "author": "Batuhan Özgün",
+      "displayed_publication_date": "4 Temmuz 2026",
+      "publication_date": "2026-07-04",
+      "source_url": "https://www.linkedin.com/pulse/ai-bazen-yanl%C4%B1%C5%9F-yapmaz-%C5%9Feyi-iyi-yapar-batuhan-%C3%B6zg%C3%BCn-2z2tf/",
+      "capture_date": "2026-09-16",
+      "file_bytes": 15650,
+      "body_end_observed": true,
+      "body_end_evidence": "Final nonempty body paragraph/link observed immediately before comments region in article DOM snapshot.",
+      "expected_source_normalized_utf16_length": 11245,
+      "local_normalized_utf16_length": 11245,
+      "expected_source_fnv1a32": 3074356160,
+      "local_fnv1a32": 3074356160,
+      "match": true,
+      "source_exclusions": [
+        "Article header, author profile, time, controls and comments"
+      ],
+      "limitations": [
+        "Images were not downloaded or transcribed; existing figure captions are preserved where present.",
+        "Markdown representation preserves body text, headings, paragraphs, lists and links; exact HTML/CSS appearance is not archived."
+      ]
+    },
+    {
+      "slug": "lwr8f",
+      "local_file": "articles/2026-06-20-sahte-secenek-lwr8f.md",
+      "title": "AI Boşlukta Sana Sahte Seçenek Uydurur - Canlı Vaka",
+      "author": "Batuhan Özgün",
+      "displayed_publication_date": "20 Haziran 2026",
+      "publication_date": "2026-06-20",
+      "source_url": "https://www.linkedin.com/pulse/ai-bo%25C5%259Flukta-sana-sahte-se%25C3%25A7enek-uydurur-canl%25C4%25B1-vaka-batuhan-%25C3%25B6zg%25C3%25BCn-lwr8f/",
+      "capture_date": "2026-09-16",
+      "file_bytes": 14858,
+      "body_end_observed": true,
+      "body_end_evidence": "Final nonempty body paragraph/link observed immediately before comments region in article DOM snapshot.",
+      "expected_source_normalized_utf16_length": 10421,
+      "local_normalized_utf16_length": 10421,
+      "expected_source_fnv1a32": 430857335,
+      "local_fnv1a32": 430857335,
+      "match": true,
+      "source_exclusions": [
+        "Article header, author profile, time, controls and comments"
+      ],
+      "limitations": [
+        "Images were not downloaded or transcribed; existing figure captions are preserved where present.",
+        "Markdown representation preserves body text, headings, paragraphs, lists and links; exact HTML/CSS appearance is not archived."
+      ]
+    },
+    {
+      "slug": "20q5f",
+      "local_file": "articles/2026-05-20-calisma-prensipleri-20q5f.md",
+      "title": "Bu makaleyi ben yazdım ama diğer 8'ini Claude'a yazdıracak çalışma prensiplerini kurdum.",
+      "author": "Batuhan Özgün",
+      "displayed_publication_date": "20 Mayıs 2026",
+      "publication_date": "2026-05-20",
+      "source_url": "https://www.linkedin.com/pulse/bu-makaleyi-ben-yazd%25C4%25B1m-ama-di%25C4%259Fer-8ini-claudea-yazd%25C4%25B1racak-%25C3%25B6zg%25C3%25BCn-20q5f/",
+      "capture_date": "2026-09-16",
+      "file_bytes": 10517,
+      "body_end_observed": true,
+      "body_end_evidence": "Final nonempty body paragraph/link observed immediately before comments region in article DOM snapshot.",
+      "expected_source_normalized_utf16_length": 6166,
+      "local_normalized_utf16_length": 6166,
+      "expected_source_fnv1a32": 4176111280,
+      "local_fnv1a32": 4176111280,
+      "match": true,
+      "source_exclusions": [
+        "Article header, author profile, time, controls and comments"
+      ],
+      "limitations": [
+        "Images were not downloaded or transcribed; existing figure captions are preserved where present.",
+        "Markdown representation preserves body text, headings, paragraphs, lists and links; exact HTML/CSS appearance is not archived."
+      ]
+    }
+  ]
+}

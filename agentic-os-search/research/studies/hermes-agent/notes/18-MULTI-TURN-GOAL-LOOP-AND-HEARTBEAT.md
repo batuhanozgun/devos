@@ -1,0 +1,9 @@
+# 18 — Çok turlu Kanban, goal, loop ve heartbeat
+
+**U04 / 2026-09-11 — yeni araştırma ve yeni sınırlı deney.** [RESEARCH](../evidence/2026-09-11-multi-turn-continuity/RESEARCH.md) → [SOURCES](../evidence/2026-09-11-multi-turn-continuity/SOURCES.md) → [SPEC](../evidence/2026-09-11-multi-turn-continuity/SPEC.md) → [sonuç görünümü](../evidence/2026-09-11-multi-turn-continuity/RESULT-SUMMARY.json). [Tam kod/ham sonuç arşivi](../evidence/2026-09-11-multi-turn-continuity/diagnostic-evidence.tar.xz) ve [manifest](../evidence/2026-09-11-multi-turn-continuity/MANIFEST.json) aynı pakettedir.
+
+Gerçek quiet CLI → Kanban goal helper → expected-run status/block callback bağı açıldı. Judge DONE task commit değildir; finalize nudge ve gerçek terminal durum ayrıdır. Kanban WAIT'i continuation'a çevirirken session GoalManager park/gate/failure sayaçları taşır. Loop cadence/tick/marker/until/times ile, heartbeat recurring idle istemle devam eder. Kalıcı state, canlı manager, driver registration ve model bağlamı birbirinin yerine geçmez.
+
+G01–G10 manuel tam-function seçkisinin callback semantiğini; H01–H05 Git kimliği doğrulanmış tam heartbeat modülünün geçici SQLite adapter ile davranışını sınadı. 15 grup ve üç negatif kontrol eşleşti. G04 block sonucu receipt değil; G06 judge sırasında sahiplik değişirse bir callback daha mümkün; H04 live/durable ayrışması; H05 önceden yüklenmiş iki manager global atomic claim değil. Gerçek worker/model/driver/OS veya bütün SessionDB çalıştırılmadı.
+
+[Üçüncü geçici sentez](../synthesis/03-PERSISTENT-WORK-AND-CONTINUATION-PROVISIONAL.md) U02/U03/U04'ü birleştirir. S10 facade history'yi lease admission sonucuyla değiştirebilir; altında kalan turn_facade_lease kaynağı 429 aldı. Bu yüzden same-session'ı kayıpsız history diye veya quiet caller'ı doğrudan history-loss bug'ı diye sunmuyoruz. Sonraki ilk birim [STATE](../STATE.md)/[PLAN](../RESEARCH-PLAN.md)'da session lease/history/restore ve devam driver'ına bağlanmıştır.

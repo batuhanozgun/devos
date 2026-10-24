@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "ffd3d7d59ca9e650c13c30c618c12d607e066617",
+  "snapshot_root_tree": "4341a0ebee01cf9ba9fbd96192f053ba2b3ac23a",
+  "scope": "PARTIAL repository inventory: 1423 explicit paths by composition. 08_foundation-sufficiency-reuse-review complete with 13 files. Foundation has 905 explicit files and history as the final opaque Foundation subtree; studies remains opaque. Metadata only.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-SELECTION-DYNAMICS-INVENTORY.json",
+    "ref": "ffd3d7d59ca9e650c13c30c618c12d607e066617",
+    "git_blob": "9978bc1447fa1a4aaedbaf5dfa525373c1162657",
+    "composed_explicit_leaves": 1408
+  },
+  "block": {
+    "prefix": "research/soul-foundations/08_foundation-sufficiency-reuse-review",
+    "git_tree": "dbdafeb7b08274073f103f61a90c2a0c9c318c3b",
+    "recursive_inventory_complete": true,
+    "files": 13,
+    "directories": 1,
+    "api_bytes": 93478,
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          [
+            "CASE-AUDIT.md",
+            "95e3b1403117ea32cbcde4fdfb9f19263ef47ffd",
+            14409
+          ],
+          [
+            "COLD-START-CHECK-2026-09-17.md",
+            "b271b077e8a1b887081425981e38f08c9b2f25b8",
+            5076
+          ],
+          [
+            "COMPLETION-AND-RESIDUALS.md",
+            "13f27678a44622f526b987cb6adfbaaca07e0cd3",
+            6319
+          ],
+          [
+            "CURRENT-SURFACES.md",
+            "7f305811e27d0dd3202f2305ef807eb924109d45",
+            2341
+          ],
+          [
+            "DISCUSSION-HANDOFF.md",
+            "e95cf01635d328ae4d5db414ba5a9c4d70a42fb7",
+            7874
+          ],
+          [
+            "INDEX.md",
+            "14dba4ddf33641e844ca2a838254772d3572535c",
+            2111
+          ],
+          [
+            "PLAN.md",
+            "1187a25836db547c24dd08f90f82912d6da6cdba",
+            9230
+          ],
+          [
+            "PUBLICATION.md",
+            "c3f2fb9da4d35df10ef7522520d87d6cbfe5bff2",
+            6964
+          ],
+          [
+            "REUSE.md",
+            "b92c29d85055c70536392c0804a7a621efc9caff",
+            6263
+          ],
+          [
+            "RIVALS-AND-REUSE.md",
+            "ecead748106c832ca80d99df2a07876e6d66f9f7",
+            8991
+          ],
+          [
+            "SOURCE-LEDGER.md",
+            "633d4a228e26ced9fe110c53f672c69fedb80e35",
+            8202
+          ],
+          [
+            "STATE.md",
+            "e83a30b124c337714f8539ccf0f6d8ecc2454f7b",
+            4149
+          ],
+          [
+            "SYNTHESIS.md",
+            "4e162b0476d17322fb8cefb69d411e4fa1f444b0",
+            11549
+          ]
+        ]
+      }
+    ]
+  },
+  "remaining_foundation_frontier": [
+    [
+      "history",
+      "151fb029cdc58085ee71f0f470efe89af712971f"
+    ]
+  ],
+  "other_frontier": [
+    [
+      "research/studies",
+      "0e0a8511931de0be5b171d08a056681b992ed798"
+    ]
+  ],
+  "verification": {
+    "reconstructed_root": "dbdafeb7b08274073f103f61a90c2a0c9c318c3b",
+    "root_omission_control_detected": true,
+    "root_blob_mutation_detected": true,
+    "new_files": 13,
+    "foundation_paths_by_composition": 905,
+    "repository_paths_by_composition": 1423,
+    "body_reads": 0,
+    "source_scripts_run": 0
+  },
+  "limits": [
+    "Metadata inventory only; no research-body/status/link/archive/reader verification."
+  ],
+  "next": "Continue A4 inventory at research/soul-foundations/history, then research/studies. Content/link/archive-internal review, A5 and two A3 gaps remain open."
+}

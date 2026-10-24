@@ -1,0 +1,164 @@
+{
+  "study_date": "2026-09-17",
+  "upstream_commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+  "source_identities": {
+    "sdd-workspace": {
+      "blob": "4e2d16802ecaa23eb9a682663e4c356c4aa5a656",
+      "bytes": 1586
+    },
+    "task-brief": {
+      "blob": "612e14a1ee7ca9c0078d896325935759a1827c24",
+      "bytes": 1158
+    }
+  },
+  "documented_snippet": {
+    "source_blob": "1381dacb3516b94382dd6ec736ede21ee8ede2b3",
+    "text": "git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null"
+  },
+  "environment": {
+    "os": "Linux",
+    "python": "3.13.5",
+    "git": "git version 2.47.3",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "scope": "Exact sdd-workspace/task-brief helpers plus one literal documented ignore command, in synthetic local repositories. No live agent/host, approval simulation, network, install, credentials or upstream suite.",
+  "criteria": "Source-informed exploratory; criteria fixed in runner before execution. Descriptive PASS confirms the named observation, not safety or effectiveness. Health FAILs remain failures.",
+  "cases": [
+    {
+      "id": "missing_plan",
+      "kind": "mechanism",
+      "criterion": "Missing plan is rejected with exit 2",
+      "result": "PASS",
+      "observed": {
+        "exit": 2
+      }
+    },
+    {
+      "id": "distinct_basenames",
+      "kind": "mechanism",
+      "criterion": "Distinct basenames receive distinct directories",
+      "result": "PASS",
+      "observed": {
+        "distinct": true
+      }
+    },
+    {
+      "id": "scratch_ignored",
+      "kind": "mechanism",
+      "criterion": "Generated scratch artifact is ignored by Git",
+      "result": "PASS",
+      "observed": {
+        "ignored": true
+      }
+    },
+    {
+      "id": "task_extraction",
+      "kind": "mechanism",
+      "criterion": "Requested task retained, adjacent task excluded, fenced heading retained",
+      "result": "PASS",
+      "observed": {
+        "task_present": true,
+        "adjacent_present": false,
+        "fenced_heading_present": true
+      }
+    },
+    {
+      "id": "header_and_globals_not_in_brief",
+      "kind": "representation-observation",
+      "criterion": "Record that task-only extraction omits plan-level Spec and Global Constraints; not an efficacy pass",
+      "result": "PASS",
+      "observed": {
+        "spec_pointer_present": false,
+        "global_constraint_present": false
+      }
+    },
+    {
+      "id": "missing_task",
+      "kind": "mechanism",
+      "criterion": "Missing task heading is rejected with exit 3",
+      "result": "PASS",
+      "observed": {
+        "exit": 3
+      }
+    },
+    {
+      "id": "same_basename_different_paths",
+      "kind": "health-challenge",
+      "criterion": "Different plan paths in one worktree must not alias and overwrite each other under a per-plan isolation claim",
+      "result": "FAIL",
+      "observed": {
+        "same_workspace": true,
+        "first_brief_had_A": true,
+        "after_has_A": false,
+        "after_has_B": true
+      }
+    },
+    {
+      "id": "plan_revision_retains_ledger",
+      "kind": "identity-observation",
+      "criterion": "Record helper behavior after same-path plan revision; no simulated controller or completion verdict",
+      "result": "PASS",
+      "observed": {
+        "same_workspace": true,
+        "completion_marker_preserved": true,
+        "brief_uses_revised_task": true
+      }
+    },
+    {
+      "id": "saved_plan_not_in_new_worktree",
+      "kind": "handoff-observation",
+      "criterion": "A plan saved but not committed is absent from a new HEAD worktree and is rejected by the helper",
+      "result": "PASS",
+      "observed": {
+        "plan_present": false,
+        "helper_exit": 2
+      }
+    },
+    {
+      "id": "committed_plan_worktree_control",
+      "kind": "mechanism",
+      "criterion": "Committed plan is present in new worktree; scratch is worktree-local",
+      "result": "PASS",
+      "observed": {
+        "plan_present": true,
+        "scratch_local_to_worktree": true
+      }
+    },
+    {
+      "id": "ignore_check_both",
+      "kind": "mechanism",
+      "criterion": "Documented predicate must agree with ignore status of selected .worktrees directory (both directories exist)",
+      "result": "PASS",
+      "observed": {
+        "snippet_accepts": true,
+        "selected_directory_ignored": true
+      }
+    },
+    {
+      "id": "ignore_check_neither",
+      "kind": "mechanism",
+      "criterion": "Documented predicate must agree with ignore status of selected .worktrees directory (both directories exist)",
+      "result": "PASS",
+      "observed": {
+        "snippet_accepts": false,
+        "selected_directory_ignored": false
+      }
+    },
+    {
+      "id": "ignore_check_other_only",
+      "kind": "health-challenge",
+      "criterion": "Documented predicate must agree with ignore status of selected .worktrees directory (both directories exist)",
+      "result": "FAIL",
+      "observed": {
+        "snippet_accepts": true,
+        "selected_directory_ignored": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 13,
+    "passed": 11,
+    "health_failures": 2,
+    "other_failures": 0
+  }
+}

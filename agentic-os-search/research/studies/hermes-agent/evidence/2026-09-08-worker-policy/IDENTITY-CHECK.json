@@ -1,0 +1,30 @@
+{
+  "kind": "PRE_IMPORT_IDENTITY_GUARD_NEGATIVE_CONTROL",
+  "executed_at_utc": "2026-09-08T19:36:24.270992+00:00",
+  "original_sources_validated": {
+    "thread_context.py": {
+      "git_blob": "d8c37af8f5a529680e81e867177140e41c4c6656",
+      "sha256": "30b868f14013ec6bc741c5e5a1937e405024d0e7344a92bac903f1de3d0e38e2",
+      "bytes": 2855
+    },
+    "daemon_pool.py": {
+      "git_blob": "5682a8f6ae103a421c1081b69ee6f9272957acdf",
+      "sha256": "f66c379ee655496a9a79ec0565766f383fd70ba6f5e56c8f7abb92fa236141a4",
+      "bytes": 2533
+    },
+    "LICENSE": {
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "bytes": 1070
+    }
+  },
+  "mutation": "one appended newline in disposable thread_context.py",
+  "observed_error": {
+    "type": "ValueError",
+    "message": "Upstream identity mismatch: thread_context.py: 2f52918e56f75cbafa2d2417ef885044eac5bd11"
+  },
+  "upstream_imports_after_check": [],
+  "guard_rejected_before_upstream_import": true,
+  "limitation": "Source binding only, not behavior or excerpt equivalence.",
+  "script_sha256": "130a9a5ec7e694e6854ae674d3daf48960cc17ed16ee1d4e0499466cc4d288d5"
+}

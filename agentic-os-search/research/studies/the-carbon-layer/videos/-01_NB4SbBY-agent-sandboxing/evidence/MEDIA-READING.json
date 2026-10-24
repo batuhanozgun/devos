@@ -1,0 +1,36 @@
+{
+  "observed_date": "2026-09-16",
+  "video_id": "-01_NB4SbBY",
+  "research_order": 2,
+  "publication_date_verified": false,
+  "input_repository_commit": "cbeb6085a39981d0ed6bb3f34b1d43311908dd34",
+  "video": {
+    "filename": "AI Agent Sandboxing： Layers, Tradeoffs, and Blast Radius [-01_NB4SbBY].mp4",
+    "bytes": 82092054,
+    "sha256": "3262425d95a0f8009681c8571bacca9529acae3352a273afa8d804ab9b66077b",
+    "format_duration_seconds": "2159.394000",
+    "video_stream_duration_seconds": "2159.375000",
+    "width": 1920,
+    "height": 1080,
+    "continuous_viewing": false,
+    "full_audio_alignment": false
+  },
+  "subtitles": {
+    "filename": "AI Agent Sandboxing： Layers, Tradeoffs, and Blast Radius [-01_NB4SbBY].en.srt",
+    "bytes": 62372,
+    "sha256": "901bb3e4bed22f9935541e70186a8034e731fbfeb1790974a8bdd2f5158cee35",
+    "cue_count": 859,
+    "full_text_read": true,
+    "first_cue_start": "00:00:01,964",
+    "last_cue_end": "00:35:57,600",
+    "native_caption_provenance_verified": false,
+    "overlapping_cues_are_not_independent_claims": true
+  },
+  "selected_frames_seconds": [75, 210, 325, 465, 520, 600, 705, 800, 875, 985, 1125, 1320, 1470, 1575, 1670, 1750, 1865, 1980, 2025, 2075],
+  "distinct_frame_count": 20,
+  "additional_full_resolution_rechecks_seconds": [985, 1750],
+  "repository_persists_original_media": false,
+  "repository_persists_extracted_frames": false,
+  "execution_scope": ["file measurement and sha256", "ffprobe metadata", "SRT parsing and reading", "ffmpeg frame extraction", "local contact sheets"],
+  "not_executed": ["sandbox runtime", "kernel policy", "container", "gVisor", "microVM", "security probe", "model API", "benchmark", "external media upload"]
+}

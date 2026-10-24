@@ -1,0 +1,1 @@
+{"output": "RESULT.json", "cases": 12, "all_diagnostic_expectations_matched": true}

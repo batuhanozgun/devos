@@ -1,0 +1,109 @@
+{
+  "status": "NOT_PUBLISHED",
+  "research_base": "91af4415c22e05b80484b935383ceeb04a3c5b7b",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "files": [
+    {
+      "path": "CONTINUATION-DELTA.md",
+      "bytes": 3283,
+      "sha256": "b579aeb2f22c5a49a74b1a82ec8105e01a2f700191d65d0a0a91324730d0b0e7",
+      "git_blob": "64a452cf9a6d0c20884c6099aa384925ef6fdadc"
+    },
+    {
+      "path": "PUBLICATION-HANDOFF.md",
+      "bytes": 4208,
+      "sha256": "8f5ddff7db0b13a3321644f1184b56c768264a0df48993252986c7af4ab7cd77",
+      "git_blob": "0944b89c294c479309a6f1a905c23d5cc49ac45d"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/ACCESS-AND-PUBLICATION.json",
+      "bytes": 2104,
+      "sha256": "05f8cbf25d40e92d4922cb02fbd5b1c9dabc2b73cc1c9318abe3da471c1fca32",
+      "git_blob": "2db179936df6df0a69e1b8455f10f1da0d0a926f"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/MANIFEST.json",
+      "bytes": 2751,
+      "sha256": "28fb971bd66f848937b3f7e574411b64f271d66a52bbd11fa9a845a5963ea2a2",
+      "git_blob": "f1cf7a410b90677f6f013eb8be0bb412b3931bf5"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/POLICY-RESULT.json",
+      "bytes": 5230,
+      "sha256": "d8ef80a2fa29f7aca722a54b9a6819b3f1c75367cf1176a96515585e18e34706",
+      "git_blob": "fef263bdb9be246c9ce7b10a4df36e935edf68c8"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/README.md",
+      "bytes": 1239,
+      "sha256": "9464312fa47c5979c2863f4db010665292d668da441c105adf1e0661b124f44f",
+      "git_blob": "3f770319399d444d5d33f06322121ee010b23784"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/RESEARCH.md",
+      "bytes": 15191,
+      "sha256": "0bfd82db7aa94318e5b9fcbfdc00ac70faf0966791fc328fc0e34b25c949e350",
+      "git_blob": "3864c894aceca240276a12ac50ce18bcff9437ce"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/REUSED-SOURCE-CHECK.json",
+      "bytes": 327,
+      "sha256": "72b5f427ed453e213224e7c0b86eed220d44cf9c3036f16adfd532dd721ff954",
+      "git_blob": "dfd4fa3fac0ba6fdc00e0a115e85a052a3fe2126"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/SOURCES.md",
+      "bytes": 6450,
+      "sha256": "17d34d37b63537a72facfb68d2dfc719f95194fbab2abf1daa4b8b4ae76f3119",
+      "git_blob": "5510f4c33c39367d5e07725f037ad3e9b2e5ac77"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/SPEC.md",
+      "bytes": 2755,
+      "sha256": "9de1c4e1be65a9af5c350ffd247e0a3acd1df2bb1fa4faf9c1a445a7ac5321d7",
+      "git_blob": "7c2d102c299bf4f679dd4d12eba260e9bb2578d9"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/policy_probe.py",
+      "bytes": 7831,
+      "sha256": "5f42e40e9f203721c670f7deb840b3c8674e6487d9588d4cf5ff4b860fdfd124",
+      "git_blob": "ecf2891a9f6f02a9d48f94745199c3da18b9d3bf"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/stdout.txt",
+      "bytes": 54,
+      "sha256": "9155c5b8edacc88517ef52cf6d43f0b70930f773740a1a031623a6845f5db566",
+      "git_blob": "81ea5375f2fd1f179e9f909608484908042f71a0"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "research/studies/hermes-agent/evidence/2026-09-10-pending-caller/upstream/slash_access.py",
+      "bytes": 5666,
+      "sha256": "9ccd9a7cf066dc271a6673e581a6a7fe420633763c000e3e6f2cb80c03a8b0e1",
+      "git_blob": "07204201e411f29f912bb9bba6beec0566acab9d"
+    },
+    {
+      "path": "research/studies/hermes-agent/notes/12-PENDING-CALLER-AUTHORITY-PROFILE-AND-VISIBILITY.md",
+      "bytes": 2949,
+      "sha256": "897098c6f3a0e57229ec79e48e6a5c8721db7a2623cc0767e49ba074cb16c81a",
+      "git_blob": "05b545dc47167b914d1e2317dff32620bd84e045"
+    },
+    {
+      "path": "verify_delivery.py",
+      "bytes": 1454,
+      "sha256": "ff7bd4314c4a275603630054da42bcdd174ad2a5b57db0b845a7d90d23684045",
+      "git_blob": "af2a2ead4be8aa1a668884aed5f634b11ad077c4"
+    }
+  ]
+}

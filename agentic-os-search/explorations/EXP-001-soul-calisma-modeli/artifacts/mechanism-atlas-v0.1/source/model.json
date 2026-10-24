@@ -1,0 +1,3362 @@
+{
+  "meta": {
+    "title": "SOUL Mekanizma Atlası",
+    "version": "0.1",
+    "date": "2026-09-10",
+    "language": "tr",
+    "status": "Konuşmadan türetilmiş aday işleyiş modeli",
+    "scope": "SOUL’un tasarlanan çalışma ilişkilerini incelemek için etkileşimli belge. SOUL çalıştırıcısı, benimsenmiş mimari, yetki kaynağı veya gerçek ajan deneyi değildir.",
+    "source_document": "SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.md",
+    "source_sha256": "d0d3b62689f77259866778c26859a8d374dce568847539809a4ad60a63e7fdfa",
+    "repo_state_blob": "049ec467cd4eccaf814249982b74525dcd3d8abb",
+    "reading": "Bir kutuya tıklayarak işlem sözleşmesini, bir oka tıklayarak geçişin koşulunu açın. Genel harita özet görünüm; alt görünümler aynı modelin seçilmiş ilişkileridir.",
+    "implementation": "Tek dosyalık HTML; gömülü SVG ve JSON; harici JavaScript, telemetri, hesap veya ağ bağlantısı gerekmez. Kaynak bağlantılarını açmak isteğe bağlı ağ erişimi gerektirir.",
+    "counts": {
+      "operations": 22,
+      "information_objects": 11,
+      "overview_groups": 8,
+      "relations": 71,
+      "graph_views": 7,
+      "demo_steps": 10,
+      "open_mechanisms": 12,
+      "hypothetical_files": 21
+    }
+  },
+  "sources": [
+    {
+      "id": "S00",
+      "title": "SOUL’un Çalışma Anlayışı — konsolidasyon v0.1",
+      "url": "",
+      "path": "SOUL_Calisma_Anlayisi_Konsolidasyon_v0_1.md",
+      "sha": "d0d3b62689f77259866778c26859a8d374dce568847539809a4ad60a63e7fdfa",
+      "role": "Atlasın ana içerik kaynağı. Bölüm işaretleri bu belgeye gönderme yapar; yeni atlas öğeleri ayrıca modelleme önerisidir."
+    },
+    {
+      "id": "S01",
+      "title": "Konsolidasyondan sonraki mekanizma ve atlas konuşması",
+      "url": "",
+      "path": "Bu konuşma: program benzetmesi, işlem sözleşmesi ve HTML + PDF atlas önerisi",
+      "sha": "",
+      "role": "İşlem kutularını, koşullu bağlantıları, çoklu görünümü ve açık mekanizma gösterimini yetkilendiren tasarım bağlamı."
+    },
+    {
+      "id": "K01",
+      "title": "Work: bütünleşik sentez",
+      "path": "research/soul-foundations/01_verticals/work/synthesis/WORK-VERTICAL-SYNTHESIS.md",
+      "sha": "58fb887139fa84adf6eb522569c593e320b51684",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/01_verticals/work/synthesis/WORK-VERTICAL-SYNTHESIS.md",
+      "role": "Amaç–eylem–yöntem, iş kabulü, uyarlama, bağımlılık ve kapanış ayrımları. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K02",
+      "title": "Work: ground denetimi",
+      "path": "research/soul-foundations/03_ground-deepening/grounds/work/synthesis/WORK-GROUND-AUDIT-SYNTHESIS.md",
+      "sha": "5967c60b7650c0493cfb21813ff894b678a54138",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/03_ground-deepening/grounds/work/synthesis/WORK-GROUND-AUDIT-SYNTHESIS.md",
+      "role": "İşin gerçek durumu ile kaydı; keşif işi; başlanabilirlik ve ortam ayrımı. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K03",
+      "title": "Information: oluşum, dönüşüm, görünürlük",
+      "path": "research/soul-foundations/03_ground-deepening/grounds/information/informational-dynamics/synthesis/INFORMATIONAL-DYNAMICS-SYNTHESIS.md",
+      "sha": "1c3f3f3c12c7f859c63d79e9d65ef0ae91154a93",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/03_ground-deepening/grounds/information/informational-dynamics/synthesis/INFORMATIONAL-DYNAMICS-SYNTHESIS.md",
+      "role": "Kaynak edinme, türetme ve tüketiciye güncel bağlam sunma farklı sorumluluklardır. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K04",
+      "title": "Actors: rol, kapasite, yetki ve süreklilik",
+      "path": "research/soul-foundations/03_ground-deepening/grounds/actors/synthesis/ACTORS-GROUND-AUDIT-SYNTHESIS.md",
+      "sha": "28ae2efed0bc19255e2df678b30480450c60e572",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/03_ground-deepening/grounds/actors/synthesis/ACTORS-GROUND-AUDIT-SYNTHESIS.md",
+      "role": "Süregelen uzmanlık sorumluluğu; rol etiketi yeterlilik veya yetki değildir. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K05",
+      "title": "Context / Memory / Harness sentezi",
+      "path": "research/studies/context-memory-harness-engineering/04-CROSS-LAYER-SYNTHESIS.md",
+      "sha": "293ca01ac04952417d9d56b3c79c5f195dd6da35",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/studies/context-memory-harness-engineering/04-CROSS-LAYER-SYNTHESIS.md",
+      "role": "Model kapasitesi, dış bellek, çağrı bağlamı ve çalışma ortamı aynı şey değildir. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K06",
+      "title": "Agent Memory araştırması",
+      "path": "research/studies/context-memory-harness-engineering/02-AGENT-MEMORY-ENGINEERING.md",
+      "sha": "6203b06fe56cad61354e9093d0b404a1ee3592c7",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/studies/context-memory-harness-engineering/02-AGENT-MEMORY-ENGINEERING.md",
+      "role": "Deneyimi statüsüyle koruma, güncelleme ve geri çağırma. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K07",
+      "title": "Harness Engineering araştırması",
+      "path": "research/studies/context-memory-harness-engineering/03-HARNESS-ENGINEERING.md",
+      "sha": "53f3cbcfbc934155553c9ae6c4ff931126b00876",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/studies/context-memory-harness-engineering/03-HARNESS-ENGINEERING.md",
+      "role": "Araç, kontrol, bağlam, gözlem ve sürekliliğin işletimi. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K08",
+      "title": "Önkoşul keşfi değerlendirmesi",
+      "path": "research/studies/recursive-prerequisite-discovery/ASSESSMENT.md",
+      "sha": "ffd95e71c6f49192d3cdf6ffc2a4d13b1b7a10d0",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/studies/recursive-prerequisite-discovery/ASSESSMENT.md",
+      "role": "İhtiyaç, koşul, yöntem, karar ve eylem; bitmemiş keşfi sürdürebilme. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K09",
+      "title": "Work: çerçeveler ve analiz birimleri",
+      "path": "research/soul-foundations/01_verticals/work/findings/WORK-FRAMES-AND-UNITS.md",
+      "sha": "592fccfb1633c37425890a883f52cf8606258f45",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/01_verticals/work/findings/WORK-FRAMES-AND-UNITS.md",
+      "role": "Tek ve değişmez görev ayrıştırması zorunlu değildir. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    },
+    {
+      "id": "K10",
+      "title": "Foundation durum kaydı",
+      "path": "research/soul-foundations/STATE.md",
+      "sha": "049ec467cd4eccaf814249982b74525dcd3d8abb",
+      "url": "https://github.com/batuhanozgun/agentic-os-search/blob/634ab66f195130d551d58dfc062639e0feec23fa/research/soul-foundations/STATE.md",
+      "role": "Yetki ve araştırma statüsü. Atlas bu kaydı veya Foundation kabul durumunu değiştirmez. Kaynak kimliği konsolidasyon Ek D’den aktarılmıştır; bu atlas için yeni bir dış davranış doğrulaması değildir."
+    }
+  ],
+  "principles": [
+    {
+      "id": "P01",
+      "title": "A, tamamlanmış iş tanımı değildir.",
+      "body": "Özgün kullanıcı ifadesini koru. B hakkında bilmediğini uydurma. C, amaç ve koşullarla gelişen mevcut anlayıştır.",
+      "source": "§3–4",
+      "nodes": [
+        "M01",
+        "M03"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P02",
+      "title": "C’nin bütünü bitmeden sınırlı iş başlayabilir.",
+      "body": "Keşif de Work’tür. Başlanabilirlik belirli iş ve ilgili belirsizlikler üzerinde değerlendirilir; bütün proje için tek geçiş kapısı yoktur.",
+      "source": "§5–6",
+      "nodes": [
+        "M05",
+        "M07"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P03",
+      "title": "İhtiyaç ile seçilen yöntemin gereğini ayır.",
+      "body": "Alternatif yollar yeni veya gereksizleşen işleri doğurabilir. Koşulun bir başkasınca karşılanması hedef gereğini ortadan kaldırmaz.",
+      "source": "§4.3, §5.3",
+      "nodes": [
+        "M05",
+        "M17"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P04",
+      "title": "İşin ve aktörün hazır oluşu farklıdır.",
+      "body": "Yetkinlik, bağlam, erişim, yetki ve seçim birbirinin yerine geçmez. Hazır görünen bir iş, mevcut aktör için başlayamayabilir.",
+      "source": "§6, §15",
+      "nodes": [
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P05",
+      "title": "Öneri, kabul ve gerçekleşen etki farklıdır.",
+      "body": "Bir bulgu C’yi kendiliğinden değiştirmez; kayda yazılan durum fiilî uygulamanın kanıtı değildir.",
+      "source": "§2.3, §7, §17.4",
+      "nodes": [
+        "M13",
+        "M15",
+        "M16"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P06",
+      "title": "Değişiklik yalnız etkilenen kısımları yeniden açar.",
+      "body": "Bir çıktı üretilmiş kalabilir; belirli kullanımının geçerliliği değişebilir. Eski dayanaklar ve dönüş gerekçesi korunur.",
+      "source": "§7.3, §8.4–8.5",
+      "nodes": [
+        "M17",
+        "M19"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P07",
+      "title": "Profesyonel standart ürün ölçeğiyle küçülmez.",
+      "body": "Katılım derinliği yetkin değerlendirmeyle belirlenir. Küçük ürün, kaynak sadakati veya sorumluluk açısından muafiyet yaratmaz.",
+      "source": "§13",
+      "nodes": [
+        "M04",
+        "M08",
+        "M14"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P08",
+      "title": "Uzmanlık sorumluluğu oturumdan uzun yaşayabilir.",
+      "body": "Rol etiketi uzmanlık değildir. Gereken birikim ve güncel bağlam yeniden kurulur; bütün model eğitimi baştan yapılmaz.",
+      "source": "§14–15",
+      "nodes": [
+        "M04",
+        "M08",
+        "M20",
+        "M22"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P09",
+      "title": "Araştırma bulgusu kendiliğinden çalışma kuralı değildir.",
+      "body": "Kaynak, benimsenmiş yöntem ve anlık proje bilgisi ayrı yetki ve kullanım statüsüyle taşınır.",
+      "source": "§2.2, §10",
+      "nodes": [
+        "M02",
+        "I05",
+        "I06"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P10",
+      "title": "Kayıt, erişim, görünürlük ve kullanım ayrı halkalardır.",
+      "body": "Doğru C’nin dışarıda bulunması, aktörün doğru sürümle çalıştığını göstermez.",
+      "source": "§7.2, §10.5",
+      "nodes": [
+        "M19",
+        "M02"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P11",
+      "title": "Yürütme tamamlanması amaç başarısı değildir.",
+      "body": "Sonuç, kanıtı ve gerekli kabul ayrı değerlendirilir. Devam eden sorumluluklar sahte bir “bitti” ile silinmez.",
+      "source": "§6.4, §8.6, §12.5",
+      "nodes": [
+        "M14",
+        "M21"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    },
+    {
+      "id": "P12",
+      "title": "Atlas, amaçlanan davranışı gösterir.",
+      "body": "Oklar koşullu ilişkileri tarif eder; LLM’in bunlara fiilen uyduğu veya mekanizmanın kurulu olduğu anlamına gelmez.",
+      "source": "Belge kapsamı; atlas konuşması",
+      "nodes": [
+        "M16",
+        "M19",
+        "M21"
+      ],
+      "status": "Konuşmada geliştirilen ilke"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "Q01",
+      "title": "İlk uzmanlık değerlendirmesini kim başlatıyor?",
+      "why": "Koordinatörün bütün uzmanlığı zaten bildiği veya boş bağlamdaki ajanın kendi hazırlığını eksiksiz doğrulayabildiği varsayılamaz.",
+      "needed": "Başlangıç sorumluluğu, asgari hazır kapasite ve uzmanlık boşluğu fark edildiğinde başvuru yolu belirlenmeli.",
+      "nodes": [
+        "M02",
+        "M04",
+        "M08"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q02",
+      "title": "Ortak duruma kabul yetkisi nasıl belirleniyor?",
+      "why": "Öneriyi üreten, inceleyen, kabul eden ve kayıt yazan roller birbiriyle eşit değil.",
+      "needed": "Değişiklik türüne göre yetki ve kabul sınırı; ret, bekleme ve çatışma yolu açıklanmalı.",
+      "nodes": [
+        "M06",
+        "M15",
+        "M16"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q03",
+      "title": "Değişen C hangi iddia ve işi etkiliyor?",
+      "why": "Yalnızca “C değişti” bilgisi bütün planı bozabilir veya önemli bir etkiyi kaçırabilir.",
+      "needed": "İddia–kaynak–karar–çıktı ilişkilerinin ayrıntı seviyesi ve kapsama duyarlılığı belirlenmeli.",
+      "nodes": [
+        "M03",
+        "M17"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q04",
+      "title": "Eşzamanlı ve eski sürümlü yazımlar nasıl karşılanıyor?",
+      "why": "İki geçerli öneri aynı önceki duruma dayanıp birbirini ezebilir.",
+      "needed": "Sürüm kontrolü, çatışma çözümü, kayıt yayını ve başarısız yazım sonrası davranış seçilmeli; atlas belirli bir depolama algoritması seçmez.",
+      "nodes": [
+        "M16",
+        "M18"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q05",
+      "title": "Güncelleme aktöre gerçekten ulaştı mı?",
+      "why": "Kayıt bulunması, bağlama konması ve doğru kullanılması farklı kanıt ister.",
+      "needed": "İlgili çağrıyı bulma, sürüm bildirimi, yeniden bağlama alma ve eskimiş çıktıyı ele alma yolu tanımlanmalı.",
+      "nodes": [
+        "M19",
+        "M02",
+        "M20"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q06",
+      "title": "Aktörün yeterliliği nasıl değerlendirilir?",
+      "why": "Bir role isim vermek veya daha uzun istem kullanmak yeterliliği kanıtlamaz.",
+      "needed": "İşe özgü kapasite, doğru araç erişimi, bağlam ve inceleme sınırları; yeterlilik hükmünün ne zaman eskidiği belirlenmeli.",
+      "nodes": [
+        "M04",
+        "M08",
+        "M09"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q07",
+      "title": "Hazır işler arasında seçim nasıl yapılıyor?",
+      "why": "Başlanabilir her işi başlatmak kapasiteyi aşabilir veya daha önemli işi geciktirebilir.",
+      "needed": "Öncelik, kapasite, eşzamanlılık ve çakışma politikası gerçek bağlama göre belirlenmeli.",
+      "nodes": [
+        "M05",
+        "M07",
+        "M10"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q08",
+      "title": "İnceleme hangi yanlışı gerçekten ayırt eder?",
+      "why": "İkinci rol veya yeşil örnek tek başına bağımsız ve kapsamlı doğrulama değildir.",
+      "needed": "Hedef iddia, ölçüt, kanıt, kapsam ve olumsuz örneklerin geçerliliği belirlenmeli.",
+      "nodes": [
+        "M14",
+        "M21"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q09",
+      "title": "Kısmi dış etkiden nasıl dönülür?",
+      "why": "Bir araç hatası, hiçbir etkinin oluşmadığını göstermez; yeniden denemek etkiyi iki kez yaratabilir.",
+      "needed": "Gözleme, tekrar deneme, telafi, onarım ve kullanıcıya dönüş koşulları tanımlanmalı.",
+      "nodes": [
+        "M12",
+        "M13",
+        "M18"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q10",
+      "title": "Deneyim ne zaman yeniden kullanılabilir bilgi olur?",
+      "why": "Kaydedilen öz değerlendirme, doğrulanmış mesleki bilgi değildir.",
+      "needed": "Deneyimin kaynağı, doğrulama statüsü, geçerliliği, kapsamı ve güncelleme/unutma yolu belirlenmeli.",
+      "nodes": [
+        "M22",
+        "I07"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q11",
+      "title": "Ara verme ve devam yetkisi nasıl ayrılır?",
+      "why": "Sonraki mantıklı adım, yürütme yetkisi değildir. Bütçenin bitmesi de işin bitmesi değildir.",
+      "needed": "Kesinti nedeni, açık iş, geri dönüş noktası ve yeni oturumda yetki yenileme koşulu taşınmalı.",
+      "nodes": [
+        "M20",
+        "M21",
+        "M10"
+      ],
+      "status": "Açık mekanizma"
+    },
+    {
+      "id": "Q12",
+      "title": "Dış araştırma hangi güvenle içeri alınır?",
+      "why": "Uzaktaki kaynağın değişmesi, yerel çalışma kuralını kendiliğinden değiştirmemeli.",
+      "needed": "Kaynak sürümü, erişim, güven ve benimseme sınırı belirlenmeli; çevrimiçi bağımlılık burada seçilmedi.",
+      "nodes": [
+        "M02",
+        "I06",
+        "M22"
+      ],
+      "status": "Açık mekanizma"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "M01",
+      "title": "Talebi veya yeni olayı al",
+      "short": "Talebi / olayı al",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Yeni ifadeyi kaynak kimliği ve bağlamıyla yakalar; yorumunu kaynağın üzerine yazmaz.",
+      "actor": "Giriş sorumluluğunu üstlenen aktör / çalışma ortamı",
+      "trigger": "Yeni kullanıcı talebi, açıklama veya dış sonuç geldi.",
+      "inputs": [
+        "Özgün ifade ve kaynağı",
+        "Zaman, proje ve mevcut çalışma sınırı"
+      ],
+      "rules": [
+        "Kaynak ile çıkarımı ayır; gerekli asgari kaydı tut."
+      ],
+      "outputs": [
+        "A veya yeni olay kaydı",
+        "İlgili projeyle bağ"
+      ],
+      "updates": [
+        "I01 — özgün talep; I11 — olay izi"
+      ],
+      "guard": "Kayda alma, teslim taahhüdü veya bütün işi başlatma yetkisi değildir.",
+      "failure": "Kaynak erişilemiyorsa eksik kaydı tam kaynak gibi sunma.",
+      "example": "Son kullanıcı talebi raporun toplu seçimleri göstereceğini netleştirir.",
+      "section": "§2.2, §3, §8.2",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": [
+        "Q01"
+      ]
+    },
+    {
+      "id": "M02",
+      "title": "Güncel çalışma bağlamını kur",
+      "short": "Bağlamı kur",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "İş için gerekli talimat, proje durumu, kaynak ve yetkiyi doğru sürüm ve statüyle görünür hale getirir.",
+      "actor": "Bağlamı kuran aktör ve onu taşıyan çalıştırma ortamı",
+      "trigger": "Yeni çağrı, devir, bağlam kaybı veya maddi bilgi değişimi.",
+      "inputs": [
+        "I01, I02, I03 — ilgili proje bilgisi",
+        "I05 — benimsenmiş çalışma ilkeleri",
+        "I06, I07, I08 — kaynak, deneyim ve yetki"
+      ],
+      "rules": [
+        "Araştırmayı talimat sayma.",
+        "Kalıcılık, erişim ve fiilî görünürlüğü ayır."
+      ],
+      "outputs": [
+        "İşe özel görünür bağlam",
+        "Yüklü sürümler ve açık eksikler"
+      ],
+      "updates": [
+        "I11 — çağrı / bağlam kaydı"
+      ],
+      "guard": "Giriş kontrolü asgari yetkili okumaya dayanır; henüz verilmemiş üretim yetkisini türetmez.",
+      "failure": "Zorunlu kaynak çelişkili veya erişilemezse etkilenen işi beklet; çözülebilen diğer işleri genellemeyle durdurma.",
+      "example": "W-02 bağlamı C₂ ve D-02’yi içerir; eski C₀ tek başına verilmez.",
+      "section": "§2, §7.2, §10.4–10.5",
+      "sources": [
+        "S00",
+        "K03",
+        "K05"
+      ],
+      "gaps": [
+        "Q01",
+        "Q05",
+        "Q12"
+      ]
+    },
+    {
+      "id": "M03",
+      "title": "Mevcut anlayışı oluştur veya düzelt",
+      "short": "C’yi değerlendir",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "A’dan ve yeni bilgilerden C için gerekçeli bir çalışma anlayışı veya değişiklik önerisi türetir.",
+      "actor": "Amaç / problem değerlendirmesini üstlenen aktör",
+      "trigger": "İlk talep veya mevcut C’yi etkileyen bilgi.",
+      "inputs": [
+        "Özgün A ve mevcut C",
+        "Kaynaklar, tercih ve kısıtlar",
+        "Açık belirsizlikler"
+      ],
+      "rules": [
+        "A ≠ B ≠ C.",
+        "Alternatifleri karar etkisine göre değerlendir."
+      ],
+      "outputs": [
+        "C taslağı veya değişiklik önerisi",
+        "Korunan amaç, değişen kısım ve belirsizlikler"
+      ],
+      "updates": [
+        "I02 için öneri; kabul edilmiş sürümü doğrudan değiştirmez"
+      ],
+      "guard": "Kapsam genişletme veya kullanıcı tercihini seçme yetkisi kendiliğinden doğmaz.",
+      "failure": "Sonucu değiştiren bilinmeyeni mevcut kaynak, araştırma, deney veya yetkili karar yoluna yönlendir.",
+      "example": "C₁ oranların anlamını; C₂ yanıtların sayılma koşulunu açıklaştırır.",
+      "section": "§3–5, §8.2–8.4",
+      "sources": [
+        "S00",
+        "K01",
+        "K08"
+      ],
+      "gaps": [
+        "Q02",
+        "Q03"
+      ]
+    },
+    {
+      "id": "M04",
+      "title": "Gerekli uzmanlık sorumluluğunu belirle",
+      "short": "Uzmanlık ihtiyacı",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Talebi ve değişiklikleri hangi mesleki bakışların değerlendirmesi gerektiğini araştırır; eksik işi de keşfedebilir.",
+      "actor": "Yetkin ilk değerlendirme sorumluluğu; gerekirse başka uzmanlık",
+      "trigger": "Yeni amaç, alan, risk veya kapsam değişimi.",
+      "inputs": [
+        "İşin amacı ve etkileri",
+        "Mevcut kapasite ve sürekli sorumluluklar",
+        "İlgili alan dayanakları"
+      ],
+      "rules": [
+        "Küçük ürün, uzmanlık değerlendirmesinden muafiyet değildir.",
+        "Rol adı yeterlilik kanıtı değildir."
+      ],
+      "outputs": [
+        "Gerekli uzmanlık fonksiyonları",
+        "Katılım kapsamı veya ek değerlendirme ihtiyacı"
+      ],
+      "updates": [
+        "I03 — değerlendirme işleri; I08 — sorumluluk önerisi"
+      ],
+      "guard": "Bütün uzmanlığı koordinatörün zaten bildiği varsayılmaz.",
+      "failure": "Değerlendirme kapasitesi eksikse rol etiketiyle kapatmak yerine eksikliği kaydet ve yetkili destek iste.",
+      "example": "Veri doğruluğu bakışı, “kaç kişi” ile “kaç gönderim” ayrımını gündeme getirir.",
+      "section": "§13, §15.1",
+      "sources": [
+        "S00",
+        "K04"
+      ],
+      "gaps": [
+        "Q01",
+        "Q06"
+      ]
+    },
+    {
+      "id": "M05",
+      "title": "Gerekli koşulları ve iş adaylarını keşfet",
+      "short": "İş adaylarını keşfet",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Hedef koşulları, alternatif yöntemleri, kararları ve şimdi yapılabilecek sınırlı işleri ayırır.",
+      "actor": "İlgili işi / uzmanlığı üstlenen her aktör",
+      "trigger": "Yeni C, yeni bulgu veya karşılanmamış önkoşul.",
+      "inputs": [
+        "Güncel amaç ve C",
+        "Mevcut koşullar ve önceki çıktılar",
+        "Alternatif yollar ve açık sorular"
+      ],
+      "rules": [
+        "Hedef gereği ile yöntem gereğini ayır.",
+        "Keşif de Work’tür; sabit kontrol listesi zorunlu değildir."
+      ],
+      "outputs": [
+        "İş adayları ve bağımlılıklar",
+        "Koşullu / alternatif işler",
+        "Geri dönülecek üst ihtiyaç"
+      ],
+      "updates": [
+        "I03 — iş görünümü; I04 — açık soru"
+      ],
+      "guard": "İş adayı üretmek, seçme ve kaynak tahsisiyle aynı değildir.",
+      "failure": "Sonsuz önkoşul ağacı yerine mevcut başlanabilir sınırı ve durma nedenini kaydet.",
+      "example": "W-03 kullanıcı tarafından söylenmedi; raporun anlamı için gerekli karar işi olarak keşfedildi.",
+      "section": "§4.3, §6, §8.4",
+      "sources": [
+        "S00",
+        "K01",
+        "K08"
+      ],
+      "gaps": [
+        "Q03",
+        "Q07"
+      ]
+    },
+    {
+      "id": "M06",
+      "title": "Eksik bilgi veya yetkili karara başvur",
+      "short": "Bilgi / karar bekle",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Eksikliği uygun kaynağa, araştırmaya, denemeye veya gerçek karar sahibine yönlendirir.",
+      "actor": "Eksikliği bulan aktör; gerektiğinde kullanıcı / yetkili taraf",
+      "trigger": "Bir belirsizlik sıradaki kararı maddi olarak değiştiriyor.",
+      "inputs": [
+        "Açık soru ve etkilediği iş",
+        "Bilinenler ve araştırılabilir alternatifler",
+        "Karar / yetki sınırı"
+      ],
+      "rules": [
+        "Her bilinmeyeni kullanıcıya yükleme.",
+        "Kullanıcı tercihinin gerekli olduğunu bulmak cevabını vermek değildir."
+      ],
+      "outputs": [
+        "Sınırlı soru veya araştırma işi",
+        "Bekleme / erteleme gerekçesi",
+        "Geldiğinde işlenecek yanıt"
+      ],
+      "updates": [
+        "I04 — açık karar; I03 — bekleyen ilgili bölüm"
+      ],
+      "guard": "Dış karar veya yanıt yoksa varsayımı alınmış karar diye kaydetmez.",
+      "failure": "Yanıt gelmezse yalnız etkilenen bölüm bekler; bağımsız iş değerlendirilebilir.",
+      "example": "Tekrar gönderim seçenekleri araştırılabilir; nihai politika kullanıcı adına seçilmez.",
+      "section": "§3.3, §8.4, §17.4",
+      "sources": [
+        "S00",
+        "K08"
+      ],
+      "gaps": [
+        "Q02",
+        "Q11"
+      ]
+    },
+    {
+      "id": "M07",
+      "title": "Belirli işin başlanabilirliğini değerlendir",
+      "short": "İş hazır mı?",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Bütün C yerine sınırlı işin gerekli girdilerini, belirsizlik etkisini ve değişme bedelini değerlendirir.",
+      "actor": "İşi değerlendirme sorumluluğunu üstlenen aktör",
+      "trigger": "İş adayı oluştu veya koşulu değişti.",
+      "inputs": [
+        "Hedef çıktı ve kapsam",
+        "Girdiler / önkoşullar",
+        "Açık bilgi ve yeniden çalışma bedeli"
+      ],
+      "rules": [
+        "Mutlak değişmezlik değil, gerekçeli başlanabilirlik ara.",
+        "Gerekirse bağımsız bir iş bölümü ayır."
+      ],
+      "outputs": [
+        "Başlanabilirlik değerlendirmesi",
+        "Eksik koşul veya daha küçük iş",
+        "Değerlendirmenin dayanakları"
+      ],
+      "updates": [
+        "I03 — hazır oluş iddiası ve koşulları"
+      ],
+      "guard": "Hazır olmak, seçilmek, yetkilendirilmek veya başlamış olmak değildir.",
+      "failure": "Açık koşul sonucu değiştiriyorsa ilgili bölümü beklet; bilgi edinme işi aç.",
+      "example": "W-01 için platform ve nihai hareket isimleri gerekli değildir.",
+      "section": "§6, §8.3",
+      "sources": [
+        "S00",
+        "K01",
+        "K02",
+        "K08"
+      ],
+      "gaps": [
+        "Q07"
+      ]
+    },
+    {
+      "id": "M08",
+      "title": "Aktörün işe katılımını hazırla",
+      "short": "Aktör hazır mı?",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Mesleki kapasiteyi, sorumluluğu, ilgili birikimi ve güncel bağlamı bu iş için bir araya getirir.",
+      "actor": "Rolü üstlenecek aktör ve katılımı değerlendiren sorumluluk",
+      "trigger": "Yeni iş / rol devri veya hazırlığı etkileyen değişiklik.",
+      "inputs": [
+        "İş sözleşmesi ve ilgili C",
+        "Kapasite / deneyim / çalışma ilkeleri",
+        "Yetki, araç ve erişim bilgisi"
+      ],
+      "rules": [
+        "Genel eğitim yeniden sıfırlanmaz; proje bağlamı recover edilir.",
+        "Ürün ölçeği mesleki standardı düşürmez."
+      ],
+      "outputs": [
+        "Sınırlı katılım / hazırlık değerlendirmesi",
+        "Eksik kapasite, bağlam veya yetki"
+      ],
+      "updates": [
+        "I08 — katılım; I11 — kullanılan bağlam"
+      ],
+      "guard": "Hazırlık kendi kendine uzman sertifikası üretmez.",
+      "failure": "Eksik bilgi, araç veya kapasite varsa role isim vermekle giderilmiş sayma.",
+      "example": "W-03 aktörü, rapor amacını ve D-02’yi görerek seçenek incelemesini üstlenir.",
+      "section": "§11, §14–15",
+      "sources": [
+        "S00",
+        "K04",
+        "K05"
+      ],
+      "gaps": [
+        "Q01",
+        "Q06"
+      ]
+    },
+    {
+      "id": "M09",
+      "title": "Fiilî ortam ve araç koşullarını kontrol et",
+      "short": "Ortam hazır mı?",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Gerekli kaynağın yalnız listede bulunmasını değil, bu iş için kullanılabilir olmasını değerlendirir.",
+      "actor": "İlgili aktör ve araç / çalışma ortamı",
+      "trigger": "İşin yürütülmesi erişim veya araç koşuluna bağlı.",
+      "inputs": [
+        "Gerekli araç ve kaynak",
+        "Gözlenmiş erişim / sürüm / kullanılabilirlik",
+        "Eylemin etkisi ve izin kapsamı"
+      ],
+      "rules": [
+        "Teknik erişim, meşru yetki değildir.",
+        "İzin yazısı, fiilî erişim kanıtı değildir."
+      ],
+      "outputs": [
+        "İşe bağlı ortam gözlemi",
+        "Eksik / çelişkili koşul"
+      ],
+      "updates": [
+        "I09 — koşul gözlemleri; I11 — araç sonucu"
+      ],
+      "guard": "Gereksiz veya yetkisiz yan etki oluşturan “kontrol” yapılmaz.",
+      "failure": "Erişim yoksa varmış gibi devam etme; kaynak edinme veya kapsam değişikliği öner.",
+      "example": "Sentetik W-01 için hesaplama yeterlidir; gerçek veri deposu gereksizdir.",
+      "section": "§6.1, §10.5, §15.3",
+      "sources": [
+        "S00",
+        "K02",
+        "K07"
+      ],
+      "gaps": [
+        "Q06",
+        "Q09"
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "İşi seç ve yürütmeye kabulü değerlendir",
+      "short": "Seç / kabul et",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Başlanabilir iş, aktör hazırlığı, fiilî koşullar, öncelik ve yetkiyi birlikte ele alır.",
+      "actor": "Seçim / kabul sorumluluğu; gerektiğinde yetkili kullanıcı",
+      "trigger": "Hazırlık değerlendirmeleri var veya yeniden değerlendirilmeli.",
+      "inputs": [
+        "M07, M08, M09 sonuçları",
+        "Kapasite ve bağımlılıklar",
+        "Güncel yetki ve amaç"
+      ],
+      "rules": [
+        "Hazır olan her işi aynı anda başlatma.",
+        "Mantıklı sonraki iş ≠ yetkili sonraki iş."
+      ],
+      "outputs": [
+        "Sınırlı yürütme kararı / bekleme / ret",
+        "Sorumluluk, çıktı ve durma sınırı"
+      ],
+      "updates": [
+        "I03 — kabul / seçim durumu; I08 — görev ilişkisi"
+      ],
+      "guard": "Seçilmiş iş fiilen başlamış sayılmaz; kapasite ve izinler ayrıca geçerlidir.",
+      "failure": "Kararlar çelişirse açıklık sağlanana kadar ilgili yürütmeyi durdur.",
+      "example": "W-01 kabul edilir; teknoloji seçimi bilgi eksikliğiyle aday olarak kalır.",
+      "section": "§6.4, §15.3",
+      "sources": [
+        "S00",
+        "K01",
+        "K04"
+      ],
+      "gaps": [
+        "Q02",
+        "Q07",
+        "Q11"
+      ]
+    },
+    {
+      "id": "M11",
+      "title": "Sınırlı işi yürüt",
+      "short": "İşi yürüt",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Verilen amaç ve sınır içinde düşünsel çıktı veya araç eylemi üretir; yeni keşifler de doğurabilir.",
+      "actor": "İşi üstlenen aktör",
+      "trigger": "Yürütme için geçerli kabul ve hazırlık var.",
+      "inputs": [
+        "İş sözleşmesi ve güncel bağlam",
+        "İlgili ilkeler, bilgi ve araçlar"
+      ],
+      "rules": [
+        "Planı amaçla karıştırma.",
+        "Üretim sırasında keşif ve durma mümkündür."
+      ],
+      "outputs": [
+        "Taslak / hesap / eylem isteği",
+        "Yeni bulgu veya açık soru"
+      ],
+      "updates": [
+        "I10 — çıktı; I11 — yürütme izi"
+      ],
+      "guard": "Sözlü “yaptım”, gerçekleşmiş araç etkisini kanıtlamaz.",
+      "failure": "Kritik bilgi değişirse etkilenen eylemi yeniden değerlendir; sessiz kapsam genişletme.",
+      "example": "W-01 sentetik tabloda iki ayrı payda ile oran üretir.",
+      "section": "§2.3, §5, §8",
+      "sources": [
+        "S00",
+        "K01",
+        "K07"
+      ],
+      "gaps": [
+        "Q05",
+        "Q09"
+      ]
+    },
+    {
+      "id": "M12",
+      "title": "Yetkili araç işlemini uygula",
+      "short": "Aracı çalıştır",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Modelin eylem isteğini somut araca iletir; sınır ve yan etkiyi korur.",
+      "actor": "Araç çağıran aktör ve gerçek çalıştırıcı",
+      "trigger": "İş için bir araç işlemi gerekli ve yetkili.",
+      "inputs": [
+        "Eylem isteği ve hedef",
+        "Gerekli izinler ve girdi sürümü",
+        "Araç sözleşmesi"
+      ],
+      "rules": [
+        "İstek ile uygulamayı ayır.",
+        "Yan etki sınırını eylem öncesi koru."
+      ],
+      "outputs": [
+        "Araç yanıtı / hata / belirsiz durum",
+        "İşlem kimliği veya etki izi"
+      ],
+      "updates": [
+        "I11 — işlem izi"
+      ],
+      "guard": "Atlas araç çağırmaz; gösterilen kontrolün gerçek karşılığı kurulmuş değildir.",
+      "failure": "Hata veya zaman aşımında etki yok varsayma; M18’e kısmi etki bilgisiyle dön.",
+      "example": "Gerçek kaydetme aracı olsaydı isteğin ve geri okumanın kayıtları ayrılırdı.",
+      "section": "§2.3, §10.5",
+      "sources": [
+        "S00",
+        "K07"
+      ],
+      "gaps": [
+        "Q09"
+      ]
+    },
+    {
+      "id": "M13",
+      "title": "Sonucu ve gerçekleşen etkiyi gözle",
+      "short": "Sonucu gözle",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Araç yanıtı, üretilen nesne ve dış etki hakkında hangi bilginin gerçekten elde edildiğini ayırır.",
+      "actor": "Gözlem / sonuç alma sorumluluğu",
+      "trigger": "Üretim veya araç işlemi sonuç verdi; belirsiz etki de mümkün.",
+      "inputs": [
+        "Ham çıktı ve işlem izi",
+        "Gerçek hedefe gerekli erişim",
+        "Beklenen etki"
+      ],
+      "rules": [
+        "Araç başarı yanıtı ile amaç başarısını eşitleme.",
+        "Gözlenmemiş sonucu tamamlanmış yazma."
+      ],
+      "outputs": [
+        "Kaynağı belli gözlem",
+        "Doğrulanamayan kısım"
+      ],
+      "updates": [
+        "I04 — gözlem; I11 — sonuç izi"
+      ],
+      "guard": "Dış gerçeklik, onun kaydı ve kaydın doğruluğu ayrı tutulur.",
+      "failure": "Yetersiz gözlem varsa bunu belirsizlik olarak bırak; M18 / M14 ile gerekli işi ayır.",
+      "example": "Demoda gerçek uygulama gözlenmedi; sayılar sentetik tablodan hesaplandı.",
+      "section": "§2.3, §7.1, §8.8",
+      "sources": [
+        "S00",
+        "K02",
+        "K03"
+      ],
+      "gaps": [
+        "Q08",
+        "Q09"
+      ]
+    },
+    {
+      "id": "M14",
+      "title": "Çıktıyı ilgili iddiaya karşı değerlendir",
+      "short": "İddia / kanıt kontrolü",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Sonucun hangi gereği karşıladığını ve hangi yanlışı dışlamadığını araştırır.",
+      "actor": "Gözden geçiren sorumluluk; bağımsızlık ayrıca değerlendirilir",
+      "trigger": "Çıktı var veya dayanağı değişti.",
+      "inputs": [
+        "Çıktı ve hedef iddia",
+        "Başarı ölçütü, örnekler, kanıt",
+        "Üreticinin dayanakları ve sınırları"
+      ],
+      "rules": [
+        "Aritmetik doğruluk anlamsal doğruluk değildir.",
+        "Rol sayısı bağımsız doğrulama değildir."
+      ],
+      "outputs": [
+        "Sınırlı uygunluk değerlendirmesi",
+        "Karşı örnek / hata / açık koşul"
+      ],
+      "updates": [
+        "I04 — bulgu; I10 — çıktının geçerlilik statüsü"
+      ],
+      "guard": "Yeşil sonucu kapsamı dışındaki iddiaya yükseltme.",
+      "failure": "Eksik ölçüt, yanlış payda veya yetersiz kapsam yeni Work üretebilir.",
+      "example": "K1 ikinci kez eklendiğinde H3 %50’den %60’a çıkar: kişi yorumu desteklenmez.",
+      "section": "§8.3–8.4, §10.2",
+      "sources": [
+        "S00",
+        "K02",
+        "K07"
+      ],
+      "gaps": [
+        "Q08"
+      ]
+    },
+    {
+      "id": "M15",
+      "title": "Gerekçeli değişiklik önerisi oluştur",
+      "short": "Değişikliği öner",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Yeni bilgiyi kaynak, etki ve statüsüyle öneri haline getirir; ortak gerçeğe sessizce dönüştürmez.",
+      "actor": "Bulguyu / ihtiyacı üreten aktör",
+      "trigger": "C, iş, çıktı veya kuralın değişmesi gerektiği görülüyor.",
+      "inputs": [
+        "Yeni bulgu / karar dayanağı",
+        "Mevcut kayıt ve sürüm",
+        "Önerilen fark ve etkilenen kapsam"
+      ],
+      "rules": [
+        "Bulgu, çıkarım, öneri ve karar statüsünü koru."
+      ],
+      "outputs": [
+        "Değişiklik önerisi",
+        "Dayanak ve açık kalan kapsam"
+      ],
+      "updates": [
+        "I04 — öneri kaydı"
+      ],
+      "guard": "Öneri yazmak, geçerli C veya yetkiyi değiştirmez.",
+      "failure": "Kaynak eksik veya etkisi belirsizse öneriyi koşullu tut.",
+      "example": "D-02, C₂ ve W-03 için değişiklik ihtiyacı doğurur.",
+      "section": "§7.3, §8.4, §17.4",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": [
+        "Q02",
+        "Q03"
+      ]
+    },
+    {
+      "id": "M16",
+      "title": "Öneriyi değerlendir ve ortak duruma işle",
+      "short": "Kabul / kayıt yayını",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Kabul, ret veya bekleme kararını yetkili kapsamda verir; kabul edilen değişikliği sürüm ve geçmişiyle kaydeder.",
+      "actor": "Yetkili kabul sorumluluğu ve kontrollü kayıt yazıcısı",
+      "trigger": "Dayanaklı değişiklik önerisi var.",
+      "inputs": [
+        "Öneri, kaynak ve önceki sürüm",
+        "Kabul yetkisi / ölçütü",
+        "Eşzamanlı değişiklik bilgisi"
+      ],
+      "rules": [
+        "Kabul ≠ yalnızca dosya yazma.",
+        "Önceki kaydı görünmez biçimde ezme."
+      ],
+      "outputs": [
+        "Kabul / ret / bekleme sonucu",
+        "Yayımlanmış değişiklik veya kayıt hatası"
+      ],
+      "updates": [
+        "I02, I03, I04 — yalnız yetkili kabul kapsamı"
+      ],
+      "guard": "Kabul mekanizması tasarımda açık; demoda C güncellemelerini anlatıcı yaptı.",
+      "failure": "Yetki veya sürüm çatışması varsa otomatik son yazan kazanır varsayma.",
+      "example": "C₁→C₂ geçişinin burada nasıl kabul edileceği Q02 ve Q04’te açık tutulur.",
+      "section": "§17.4–17.5",
+      "sources": [
+        "S00",
+        "S01",
+        "K03"
+      ],
+      "gaps": [
+        "Q02",
+        "Q04"
+      ]
+    },
+    {
+      "id": "M17",
+      "title": "Değişikliğin bağımlı işlere etkisini değerlendir",
+      "short": "Etkiyi değerlendir",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Hangi iddia, çıktı, iş veya aktör hazırlığının değişen bilgiye bağlı olduğunu bulur.",
+      "actor": "İlgili çalışma ve uzmanlık sorumlulukları",
+      "trigger": "Kabul edilmiş bilgi / yetki / koşul değişti; güvenilir kritik bulgu da koruyucu duraklama gerektirebilir.",
+      "inputs": [
+        "Değişiklik farkı ve dayanakları",
+        "İş–çıktı–iddia bağımlılıkları",
+        "Mevcut yürütmeler"
+      ],
+      "rules": [
+        "Her C değişikliği bütün işleri bozmaz.",
+        "Üretilmişlik ve kullanım geçerliliğini ayrı tut."
+      ],
+      "outputs": [
+        "Korunacak / uyarlanacak / bekletilecek kısım",
+        "Yeni veya gereksizleşen iş önerileri"
+      ],
+      "updates": [
+        "I03 / I04 için etki değerlendirmesi"
+      ],
+      "guard": "Etki değerlendirmesi kendi başına yeni yetki yaratmaz.",
+      "failure": "Bağımlılık kapsamı belirsizse eksikliği görünür kıl; tam kapsama iddiası üretme.",
+      "example": "D-02 rapora sayılma kuralını etkiler; üç farklı seçim taslağını ortadan kaldırmaz.",
+      "section": "§7.3, §8.5",
+      "sources": [
+        "S00",
+        "K01",
+        "K03"
+      ],
+      "gaps": [
+        "Q03",
+        "Q05"
+      ]
+    },
+    {
+      "id": "M18",
+      "title": "Hata, eksik koşul ve kısmi etkiden toparlan",
+      "short": "Toparlan / onar",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Arıza veya engelin neyi gerçekten etkilediğini belirler; güvenli devam, telafi veya durma yolu arar.",
+      "actor": "İlgili aktör ve yetkili operasyon sorumluluğu",
+      "trigger": "Araç hatası, eksik erişim, çatışma veya uygun olmayan çıktı.",
+      "inputs": [
+        "Gözlenen hata ve mevcut etkiler",
+        "Yetki, kaynak ve tekrar deneme sınırı",
+        "Dönülecek iş / amaç"
+      ],
+      "rules": [
+        "Hata yeni Work doğurabilir.",
+        "Geri alma, telafi ve tekrar deneme aynı değildir."
+      ],
+      "outputs": [
+        "Gerekçeli onarım / bekleme / eskalasyon",
+        "Yeni iş ve korunacak durum"
+      ],
+      "updates": [
+        "I03, I04, I11 — toparlanma kaydı"
+      ],
+      "guard": "Bilinmeyen etkiyi yok sayarak aynı işlemi körlemesine tekrar etmez.",
+      "failure": "Güvenli yol bulunmazsa M20 ile durumu devret; tamamlandı sayma.",
+      "example": "Kayıt işlemi yanıt vermese de ikinci yazım öncesi ne gerçekleştiği araştırılır.",
+      "section": "§7, §12.5",
+      "sources": [
+        "S00",
+        "K01",
+        "K07"
+      ],
+      "gaps": [
+        "Q04",
+        "Q09",
+        "Q11"
+      ]
+    },
+    {
+      "id": "M19",
+      "title": "Güncel değişikliği ilgili çağrılara taşı",
+      "short": "Bağlamı güncelle",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Kabul edilmiş değişikliği ve geçerlilik sınırını etkilenen işin kullandığı bağlama ulaştırır.",
+      "actor": "Bağlam / devir sorumluluğu ve çalıştırma ortamı",
+      "trigger": "İlgili kayıt veya yetki değişti.",
+      "inputs": [
+        "Yeni sürüm ve etki listesi",
+        "İlgili aktif / bekleyen işler",
+        "Önceki bağlam kimliği"
+      ],
+      "rules": [
+        "Kayıt var ≠ aktör gördü ≠ doğru kullandı."
+      ],
+      "outputs": [
+        "Yeniden kurulacak bağlam",
+        "Güncelleme / duraklama bildirimi",
+        "Ulaşmayan veya eski kalan çağrı"
+      ],
+      "updates": [
+        "I11 — aktarım ve kullanılan sürüm"
+      ],
+      "guard": "Bir bildirim teslimi semantik kullanımın doğrulandığı anlamına gelmez.",
+      "failure": "Yeni bağlam kurulamıyorsa ilgili eylem için eski hükmü güncel sayma.",
+      "example": "W-02’ye C₂ ve D-02 aktarılır; kesinleşmeyen politika açık kalır.",
+      "section": "§7.2, §8.5, §10.5",
+      "sources": [
+        "S00",
+        "K03",
+        "K05"
+      ],
+      "gaps": [
+        "Q05"
+      ]
+    },
+    {
+      "id": "M20",
+      "title": "Ara ver, devret veya yeniden başlat",
+      "short": "Devamı koru",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Kesintide amacı, açık işi, dayanakları, geri dönüş noktasını ve yetki sınırını korur.",
+      "actor": "İşi bırakan / devralan aktör ve kayıt ortamı",
+      "trigger": "Oturum bitti, süre doldu, dış karar bekleniyor veya devir gerekiyor.",
+      "inputs": [
+        "Mevcut iş ve sonuçlar",
+        "Açık sorular / alternatifler",
+        "Sonraki mantıklı ve yetkili adımlar"
+      ],
+      "rules": [
+        "Süre bitti ≠ iş bitti.",
+        "Sonraki mantıklı iş ≠ sonraki yetkili iş."
+      ],
+      "outputs": [
+        "Devam kaydı",
+        "Yeni çağrı için gerekli giriş yolu"
+      ],
+      "updates": [
+        "I11 — devir; I03 — durma / bekleme"
+      ],
+      "guard": "Sorumluluk oturumdan uzun yaşayabilir; otomatik yeni çağrı varsayılmaz.",
+      "failure": "Yeni oturum M02 ile kaynak ve yetkiyi recover etmeden eski durumu gerçek saymaz.",
+      "example": "Demo, W-03 incelemesine başlanabilir noktada durur; W-03 yapılmış sayılmaz.",
+      "section": "§8.7, §14–15",
+      "sources": [
+        "S00",
+        "K06",
+        "K08"
+      ],
+      "gaps": [
+        "Q05",
+        "Q11"
+      ]
+    },
+    {
+      "id": "M21",
+      "title": "Amaç, teslim ve açık sorumlulukları değerlendir",
+      "short": "Kapanışı değerlendir",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "İş çıktılarından üst amacın karşılanmasına geçişi ayrıca değerlendirir; süren sorumlulukları korur.",
+      "actor": "Teslim / kabul yetkisi bulunan taraf ve ilgili uzmanlık",
+      "trigger": "Sınırlı teslim veya kapanış adayı var.",
+      "inputs": [
+        "Yetkilendirilmiş güncel amaç",
+        "Üretilmiş çıktılar ve kanıt",
+        "Açık sorumluluk ve kabul koşulları"
+      ],
+      "rules": [
+        "Çocuk işler bitti ≠ amaç gerçekleşti.",
+        "Kod var ≠ gerçek kullanım var."
+      ],
+      "outputs": [
+        "Sınırlı kapanış / kabul önerisi",
+        "Eksik veya süren iş",
+        "Teslim sınırı"
+      ],
+      "updates": [
+        "I03 / I04 — kapanış kaydı; gerekirse M16 kabulü"
+      ],
+      "guard": "Atlas ve demo, uygulamanın başarısı veya genel SOUL yeterliliği verdict’i vermez.",
+      "failure": "Kabul yetkisi veya hedef kanıtı yoksa tamamlanmış proje ilan etme.",
+      "example": "Gerçek katılımcı bilgisi için ilk katılım sorumluluğu ayrı kalır.",
+      "section": "§8.6–8.8, §12.5",
+      "sources": [
+        "S00",
+        "K01",
+        "K02"
+      ],
+      "gaps": [
+        "Q02",
+        "Q08",
+        "Q11"
+      ]
+    },
+    {
+      "id": "M22",
+      "title": "Deneyimi statüsüyle birikime dönüştür",
+      "short": "Birikimi güncelle",
+      "kind": "operation",
+      "status": "Modelleme önerisi",
+      "summary": "Çalışma sonucundan yeniden kullanılabilir deneyim adayı çıkarır; genellemenin sınırını korur.",
+      "actor": "Bilgi / mesleki birikim sorumluluğu",
+      "trigger": "İş, hata, düzeltme veya öğrenme sonucu var.",
+      "inputs": [
+        "Olay, sonuç ve kaynaklar",
+        "İnceleme kapsamı",
+        "Önceki benzer deneyim ve koşullar"
+      ],
+      "rules": [
+        "Hatırlanan yorum doğrulanmış bilgi değildir.",
+        "Güncelleme, çelişki ve kullanım kapsamını koru."
+      ],
+      "outputs": [
+        "Deneyim adayı / sınırlı ders",
+        "Geçerlilik ve yeniden inceleme koşulu"
+      ],
+      "updates": [
+        "I07 — birikim; I06 — kaynak ilişkisi"
+      ],
+      "guard": "Her olay kalıcı ve genel kural haline getirilmez.",
+      "failure": "Yetersiz dayanak varsa episodik kayıt olarak tut; doğrulanmış mesleki sonuç diye yükseltme.",
+      "example": "Kayıt–kişi ayrımı örneği genel dikkat noktası olabilir; demo performans kanıtı olamaz.",
+      "section": "§14.4, §17.6",
+      "sources": [
+        "S00",
+        "K06"
+      ],
+      "gaps": [
+        "Q10",
+        "Q12"
+      ]
+    },
+    {
+      "id": "I01",
+      "title": "Özgün talep / A",
+      "short": "A — kaynak talep",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Kullanıcının ifadesi; B’nin veya C’nin tam karşılığı olduğu varsayılmaz.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "talep.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Kullanıcının ifadesi; B’nin veya C’nin tam karşılığı olduğu varsayılmaz.",
+      "section": "§3, §9",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I02",
+      "title": "Mevcut anlayış / C",
+      "short": "C — güncel anlayış",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Amaç, kapsam, çıkarım, kabul edilmiş seçim ve açık belirsizlikler; sürüm ve kaynak ilişkisi korunur.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "anlayis.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Amaç, kapsam, çıkarım, kabul edilmiş seçim ve açık belirsizlikler; sürüm ve kaynak ilişkisi korunur.",
+      "section": "§3–5",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I03",
+      "title": "İş ve bağımlılık görünümü",
+      "short": "W — iş görünümü",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "İş adayları, çıktı beklentileri, bağımlılıklar ve çok boyutlu durumlar. Work’ün kendisi değildir.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "isler.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "İş adayları, çıktı beklentileri, bağımlılıklar ve çok boyutlu durumlar. Work’ün kendisi değildir.",
+      "section": "§6–7, §9",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I04",
+      "title": "Bulgu, öneri ve kararlar",
+      "short": "Bulgu / karar",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Gözlem, çıkarım, öneri ve yetkili kararın farklı statüleri. Dosya adına bakılarak karar oldukları varsayılmaz.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "kararlar.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Gözlem, çıkarım, öneri ve yetkili kararın farklı statüleri. Dosya adına bakılarak karar oldukları varsayılmaz.",
+      "section": "§8–10",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I05",
+      "title": "Çalışma ilkeleri ve kayıt anlamları",
+      "short": "Çalışma standardı",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Benimsenmiş mesleki disiplin, muhakeme sorumluluğu ve kayıt semantiği; alan araştırmasından ayrı tutulur.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "SOUL.md",
+        "isletim/*.md",
+        "sozlesmeler/kayit-anlamlari.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Benimsenmiş mesleki disiplin, muhakeme sorumluluğu ve kayıt semantiği; alan araştırmasından ayrı tutulur.",
+      "section": "§10, §13",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I06",
+      "title": "Alan bilgisi ve araştırma kaynakları",
+      "short": "Bilgi / kaynaklar",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Kaynak, sürüm, geçerlilik ve araştırma sınırları; otomatik davranış otoritesi değildir.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "bilgi/temel-ayrimlar.md",
+        "bilgi/alanlar/veri-toplama-ve-raporlama.md",
+        "bilgi/KAYNAKLAR.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Kaynak, sürüm, geçerlilik ve araştırma sınırları; otomatik davranış otoritesi değildir.",
+      "section": "§10.3, §10.6",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I07",
+      "title": "Deneyim ve mesleki birikim",
+      "short": "Birikim",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Olaylar, değerlendirmeler, sınırlı dersler ve uygulanabilirlik koşulları; bu atlas dosya biçimini seçmez.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "Henüz özel dosya adı seçilmedi"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Olaylar, değerlendirmeler, sınırlı dersler ve uygulanabilirlik koşulları; bu atlas dosya biçimini seçmez.",
+      "section": "§14–15",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I08",
+      "title": "Sorumluluk ve yetki çerçevesi",
+      "short": "Rol / yetki",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "İşe ilişkin yetki, katılım, karar sınırı ve sürekli sorumluluk kayıtları; gerçek yetkinin yerine geçmez.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "proje/calisma-cercevesi.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "İşe ilişkin yetki, katılım, karar sınırı ve sürekli sorumluluk kayıtları; gerçek yetkinin yerine geçmez.",
+      "section": "§10.4, §11, §15",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I09",
+      "title": "Fiilî koşulların gözlemleri",
+      "short": "Ortam gözlemi",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Araç, erişim, kapasite ve sürüm hakkında gözlenmiş bilgi; gerçek Environment ile temsilini ayırır.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "Araç sonuçları / çalışma kayıtları"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Araç, erişim, kapasite ve sürüm hakkında gözlenmiş bilgi; gerçek Environment ile temsilini ayırır.",
+      "section": "§6, §10.5",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I10",
+      "title": "Üretilmiş çıktılar",
+      "short": "Çıktı / taslak",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Kurallar, hesaplar, kod veya başka ürünler. Üretildi, incelendi ve kullanıma uygun statüleri ayrı kalır.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "ciktilar/rapor-kurallari.md",
+        "ciktilar/yanit-kurallari.md"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Kurallar, hesaplar, kod veya başka ürünler. Üretildi, incelendi ve kullanıma uygun statüleri ayrı kalır.",
+      "section": "§8–9",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "I11",
+      "title": "Çağrı, olay ve devam izi",
+      "short": "Bağlam / devam izi",
+      "kind": "information",
+      "status": "Temsil önerisi",
+      "summary": "Hangi sürümle çalışıldığı, ne gözlendiği, neyin açık bırakıldığı ve geri dönüş noktası.",
+      "actor": "Bu bilgiyi üreten, kullanan veya sorumluluğunu taşıyan aktörler",
+      "trigger": "İlgili işlem bu nesneyi okur, üretir veya günceller.",
+      "inputs": [
+        "Kaynağı ve kapsamı belli bilgiler"
+      ],
+      "rules": [
+        "Kaynak / öneri / karar statüsünü ve sürümü ayır."
+      ],
+      "outputs": [
+        "İlgili çağrıya seçilmiş bilgi görünümü"
+      ],
+      "updates": [
+        "calismalar/W-02/baglam-kaydi.md",
+        "Çalışma izi / devam kaydı"
+      ],
+      "guard": "Dosya adı, içerik doğruluğu veya eylem yetkisi yaratmaz.",
+      "failure": "Eski, eksik veya çelişkili görünüm kullanılırsa ilgili hüküm yeniden değerlendirilir.",
+      "example": "Hangi sürümle çalışıldığı, ne gözlendiği, neyin açık bırakıldığı ve geri dönüş noktası.",
+      "section": "§10.4–10.5, §14–15",
+      "sources": [
+        "S00",
+        "K03"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "G01",
+      "title": "Talep ve başlangıç bağlamı",
+      "short": "Giriş / bağlam",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "A’yı ve geçerli çalışma sınırını recover et.",
+      "children": [
+        "M01",
+        "M02"
+      ],
+      "targetView": "intake",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "A’yı ve geçerli çalışma sınırını recover et."
+    },
+    {
+      "id": "G02",
+      "title": "Amaç ve iş keşfi",
+      "short": "Anlayış / keşif",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "C ve gerekli işleri, uzmanlık bakışlarıyla birlikte geliştir.",
+      "children": [
+        "M03",
+        "M04",
+        "M05",
+        "M06"
+      ],
+      "targetView": "intake",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "C ve gerekli işleri, uzmanlık bakışlarıyla birlikte geliştir."
+    },
+    {
+      "id": "G03",
+      "title": "İş ve aktörün hazırlığı",
+      "short": "Başlama değerlendirmesi",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "İş, aktör, ortam ve yetkiyi eşitlemeden değerlendir.",
+      "children": [
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "targetView": "readiness",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "İş, aktör, ortam ve yetkiyi eşitlemeden değerlendir."
+    },
+    {
+      "id": "G04",
+      "title": "Sınırlı yürütme ve gözlem",
+      "short": "Yürütme / gözlem",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "Metin üretimini, araç çağrısını ve gerçek etkiyi ayır.",
+      "children": [
+        "M11",
+        "M12",
+        "M13",
+        "M18"
+      ],
+      "targetView": "execution",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "Metin üretimini, araç çağrısını ve gerçek etkiyi ayır."
+    },
+    {
+      "id": "G05",
+      "title": "Sonuç ve değişiklik önerisi",
+      "short": "İnceleme / öneri",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "İddia, kanıt ve öneriyi kapsamıyla değerlendir.",
+      "children": [
+        "M14",
+        "M15"
+      ],
+      "targetView": "execution",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "İddia, kanıt ve öneriyi kapsamıyla değerlendir."
+    },
+    {
+      "id": "G06",
+      "title": "Kabul ve etki değerlendirmesi",
+      "short": "Kabul / etki",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "Ortak duruma geçişi ve bağımlı kısımları değerlendir.",
+      "children": [
+        "M16",
+        "M17",
+        "M19"
+      ],
+      "targetView": "change",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "Ortak duruma geçişi ve bağımlı kısımları değerlendir."
+    },
+    {
+      "id": "G07",
+      "title": "Devir, birikim ve kapanış",
+      "short": "Süreklilik / kapanış",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "Oturum değişirken sorumluluk, dayanak ve açık işi koru.",
+      "children": [
+        "M20",
+        "M21",
+        "M22"
+      ],
+      "targetView": "change",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "Oturum değişirken sorumluluk, dayanak ve açık işi koru."
+    },
+    {
+      "id": "G08",
+      "title": "Aktörün çalışma donanımı",
+      "short": "Uzmanlık / bilgi zemini",
+      "kind": "group",
+      "status": "Üst görünüm / modelleme önerisi",
+      "summary": "Çalışma standardı, alan bilgisi, birikim ve proje durumu.",
+      "children": [
+        "M04",
+        "M08",
+        "I05",
+        "I06",
+        "I07",
+        "I08"
+      ],
+      "targetView": "actor",
+      "section": "§1–18; atlas konuşması",
+      "sources": [
+        "S00",
+        "S01"
+      ],
+      "gaps": [],
+      "actor": "İç görünümdeki sorumluluklar",
+      "trigger": "Bu görünüm bir işlem çağrısı değil, alt sorumlulukların haritasıdır.",
+      "inputs": [
+        "İç işlemlere bakın."
+      ],
+      "rules": [
+        "Aynı kutuda gruplanmaları aynı ajan, servis veya dosya oldukları anlamına gelmez."
+      ],
+      "outputs": [
+        "İç işlemlerde tanımlıdır."
+      ],
+      "updates": [],
+      "guard": "Genel harita bütün bağlantıları göstermez; alt görünümlere açılır.",
+      "failure": "Bir üst ok, zorunlu ve tek yönlü yaşam döngüsü olarak yorumlanmamalı.",
+      "example": "Çalışma standardı, alan bilgisi, birikim ve proje durumu."
+    }
+  ],
+  "edges": [
+    {
+      "id": "E01",
+      "source": "M01",
+      "target": "M02",
+      "label": "kaynak + sınır",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E02",
+      "source": "M02",
+      "target": "M03",
+      "label": "güncel bağlam",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E03",
+      "source": "M03",
+      "target": "M04",
+      "label": "gerekli bakış",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "Amaç, kapsam ve uzmanlık boşluğu.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E04",
+      "source": "M04",
+      "target": "M05",
+      "label": "gereksinim / sınır",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E05",
+      "source": "M03",
+      "target": "M05",
+      "label": "çalışma amacı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Uzmanlık değerlendirmesini atlama muafiyeti değildir; mevcut kapsamda yeterli değerlendirme bulunabilir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E06",
+      "source": "M05",
+      "target": "M06",
+      "label": "kritik eksik",
+      "type": "control",
+      "condition": "Eksik bilgi veya tercih belirli kararı maddi olarak değiştiriyorsa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E07",
+      "source": "M06",
+      "target": "M01",
+      "label": "yeni yanıt / olay",
+      "type": "feedback",
+      "condition": "Yeni yanıt veya araştırma sonucu gerçekten geldiğinde.",
+      "payload": "Kaynak kimliğiyle yeni bilgi.",
+      "notMeans": "Bekliyor olmak, yanıtın geldiğini göstermez.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E08",
+      "source": "M05",
+      "target": "M07",
+      "label": "sınırlı iş adayı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E09",
+      "source": "M07",
+      "target": "M05",
+      "label": "önkoşul / alt iş",
+      "type": "feedback",
+      "condition": "İşin bir kısmı hazır değil; başlanabilir küçük bölüm veya bilgi edinme işi bulunabilir.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E10",
+      "source": "M07",
+      "target": "M08",
+      "label": "iş sözleşmesi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "İş hazırlığının aktör hazırlığını kanıtladığı anlamına gelmez.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E11",
+      "source": "M08",
+      "target": "M09",
+      "label": "gerekli araç / kaynak",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E12",
+      "source": "M09",
+      "target": "M10",
+      "label": "fiilî koşul gözlemi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E13",
+      "source": "M07",
+      "target": "M10",
+      "label": "iş hazırlığı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E14",
+      "source": "M08",
+      "target": "M10",
+      "label": "katılım hazırlığı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E15",
+      "source": "M10",
+      "target": "M06",
+      "label": "karar / yetki eksik",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E16",
+      "source": "M10",
+      "target": "M11",
+      "label": "sınırlı kabul",
+      "type": "control",
+      "condition": "İş, aktör, ortam, yetki ve seçim bakımından ilgili koşullar karşılandığında.",
+      "payload": "Görev, çıktı, sınır, gerekli kaynaklar.",
+      "notMeans": "Kabul, fiilî başlangıç veya başarı değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E17",
+      "source": "M11",
+      "target": "M12",
+      "label": "eylem isteği",
+      "type": "control",
+      "condition": "İş için araç eylemi gerektiğinde ve bu eylem yetkili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E18",
+      "source": "M12",
+      "target": "M13",
+      "label": "araç sonucu",
+      "type": "data",
+      "condition": "Araç gerçek yanıt veya belirsiz sonuç verdiğinde.",
+      "payload": "Ham araç sonucu, işlem hedefi ve etki izi.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E19",
+      "source": "M11",
+      "target": "M14",
+      "label": "düşünsel çıktı",
+      "type": "data",
+      "condition": "Çıktı bir taslak veya hesap ise araç kullanmak zorunlu değildir.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E20",
+      "source": "M13",
+      "target": "M14",
+      "label": "gözlenen sonuç",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E21",
+      "source": "M13",
+      "target": "M11",
+      "label": "ara gözlem",
+      "type": "feedback",
+      "condition": "İşin yetkili sınırı içinde başka bir sınırlı adım gerekiyorsa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E22",
+      "source": "M12",
+      "target": "M18",
+      "label": "hata / kısmi etki",
+      "type": "exception",
+      "condition": "Araç hatası, kesinti veya belirsiz dış etki gözlendiğinde.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E23",
+      "source": "M14",
+      "target": "M15",
+      "label": "bulgu / değişiklik",
+      "type": "control",
+      "condition": "C, Work veya çıktının statüsünde gerekçeli değişiklik gerekiyorsa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E24",
+      "source": "M14",
+      "target": "M18",
+      "label": "uygunsuz / eksik",
+      "type": "exception",
+      "condition": "Hedef iddia karşılanmıyorsa veya gerekli gözlem eksikse.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E25",
+      "source": "M15",
+      "target": "M16",
+      "label": "gerekçeli öneri",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "Öneri, önceki sürüm, kaynak, statü ve kapsam.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E26",
+      "source": "M16",
+      "target": "M17",
+      "label": "kabul edilmiş fark",
+      "type": "control",
+      "condition": "Değişiklik yetkili kapsamda kabul edilip duruma işlendiğinde.",
+      "payload": "Yeni sürüm ve önceki sürüme fark.",
+      "notMeans": "Önerinin doğruluğu veya bütün aktarımın bittiği anlamına gelmez.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E27",
+      "source": "M16",
+      "target": "M15",
+      "label": "ret / ek dayanak",
+      "type": "feedback",
+      "condition": "Değişiklik kabul edilmedi veya ek bilgi gerektiriyor.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E28",
+      "source": "M16",
+      "target": "M18",
+      "label": "sürüm çatışması",
+      "type": "exception",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E29",
+      "source": "M17",
+      "target": "M05",
+      "label": "yeni / değişen iş",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E30",
+      "source": "M17",
+      "target": "M07",
+      "label": "hazırlığı yenile",
+      "type": "feedback",
+      "condition": "Değişen koşul mevcut işin uygunluğunu etkiliyorsa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E31",
+      "source": "M17",
+      "target": "M19",
+      "label": "etkilenen bağlamlar",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E32",
+      "source": "M19",
+      "target": "M02",
+      "label": "yeni görünür sürüm",
+      "type": "feedback",
+      "condition": "Güncel bağlamın kurulması gerektiğinde.",
+      "payload": "Yeni kaynaklar ve korunacak / açılacak sınırlar.",
+      "notMeans": "Teslim bildirimi, içeriğin doğru kullanıldığını kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E33",
+      "source": "M18",
+      "target": "M05",
+      "label": "onarım / araştırma",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E34",
+      "source": "M18",
+      "target": "M20",
+      "label": "güvenli ara verme",
+      "type": "control",
+      "condition": "Güvenli devam veya yetki yoksa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E35",
+      "source": "M20",
+      "target": "M02",
+      "label": "yeniden giriş",
+      "type": "feedback",
+      "condition": "Yeni çağrı gerçekten başladığında ve gerekli kaynak / yetki recover edilebildiğinde.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E36",
+      "source": "M14",
+      "target": "M21",
+      "label": "teslim değerlendirmesi",
+      "type": "control",
+      "condition": "Sınırlı görev veya üst amaç için kapanış adayı varsa.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E37",
+      "source": "M21",
+      "target": "M05",
+      "label": "eksik / süren sorumluluk",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E38",
+      "source": "M21",
+      "target": "M20",
+      "label": "devir / kapanış izi",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E39",
+      "source": "M14",
+      "target": "M22",
+      "label": "deneyim adayı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E40",
+      "source": "M22",
+      "target": "I07",
+      "label": "statülü birikim",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E41",
+      "source": "I07",
+      "target": "M02",
+      "label": "ilgili deneyim",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E42",
+      "source": "I05",
+      "target": "M08",
+      "label": "çalışma standardı",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E43",
+      "source": "I06",
+      "target": "M08",
+      "label": "alan dayanakları",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E44",
+      "source": "I07",
+      "target": "M08",
+      "label": "sınırlı deneyim",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E45",
+      "source": "I02",
+      "target": "M08",
+      "label": "güncel C",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E46",
+      "source": "I03",
+      "target": "M08",
+      "label": "görev / bağımlılık",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E47",
+      "source": "I08",
+      "target": "M08",
+      "label": "sorumluluk / yetki",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E48",
+      "source": "I09",
+      "target": "M08",
+      "label": "koşul gözlemleri",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E49",
+      "source": "M03",
+      "target": "I02",
+      "label": "C taslağı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Bu ilişki taslak üretimini gösterir; kabul edilmiş C güncellemesi M16 üzerinden ele alınır.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E50",
+      "source": "M05",
+      "target": "I03",
+      "label": "iş önerisi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E51",
+      "source": "M14",
+      "target": "I04",
+      "label": "bulgu / değerlendirme",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E52",
+      "source": "M11",
+      "target": "I10",
+      "label": "çıktı üretir",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E53",
+      "source": "M02",
+      "target": "I11",
+      "label": "bağlam izi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E54",
+      "source": "M20",
+      "target": "I11",
+      "label": "devam izi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E55",
+      "source": "M01",
+      "target": "I01",
+      "label": "A’yı korur",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E56",
+      "source": "I01",
+      "target": "M03",
+      "label": "kaynak talep",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E57",
+      "source": "I02",
+      "target": "M05",
+      "label": "mevcut amaç",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E58",
+      "source": "I10",
+      "target": "M14",
+      "label": "incelenecek çıktı",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E59",
+      "source": "I04",
+      "target": "M15",
+      "label": "bulgu dayanağı",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "E60",
+      "source": "M17",
+      "target": "M15",
+      "label": "iş değişikliği önerisi",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "Etki sonucunda gerekli iş/kapsam/başlanabilirlik değişikliği.",
+      "notMeans": "Ok, hedefin fiilen çalıştığını veya çıktının doğru olduğunu kanıtlamaz.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B01",
+      "source": "G01",
+      "target": "G02",
+      "label": "ilgili kaynak",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B02",
+      "source": "G02",
+      "target": "G03",
+      "label": "iş adayları",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B03",
+      "source": "G03",
+      "target": "G04",
+      "label": "sınırlı kabul",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B04",
+      "source": "G04",
+      "target": "G05",
+      "label": "çıktı / gözlem",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B05",
+      "source": "G05",
+      "target": "G06",
+      "label": "gerekçeli öneri",
+      "type": "control",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B06",
+      "source": "G06",
+      "target": "G02",
+      "label": "C / iş etkisi",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B07",
+      "source": "G06",
+      "target": "G03",
+      "label": "hazırlık değişimi",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B08",
+      "source": "G05",
+      "target": "G07",
+      "label": "teslim / deneyim",
+      "type": "data",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B09",
+      "source": "G07",
+      "target": "G01",
+      "label": "devir / yeniden giriş",
+      "type": "feedback",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B10",
+      "source": "G08",
+      "target": "G02",
+      "label": "uzmanlık bakışı",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    },
+    {
+      "id": "B11",
+      "source": "G08",
+      "target": "G03",
+      "label": "çalışma donanımı",
+      "type": "context",
+      "condition": "Kaynak işlemin kapsamlı sonucu, hedef sorumluluk için ilgili olduğunda.",
+      "payload": "İlgili çıktı ve dayanakları.",
+      "notMeans": "Üst görünüm ilişkisi: tek bir zorunlu işlem veya tüm ayrıntıların gösterimi değildir.",
+      "status": "Aday ilişki"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Genel harita",
+      "question": "Çalışma düzeni nasıl bir bütündür?",
+      "description": "Yedi çalışma sorumluluğu ve onları destekleyen uzmanlık zemini. Bu harita tek yönlü yaşam döngüsü değildir; ayrıntılar alt görünümlerdedir.",
+      "nodes": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08"
+      ],
+      "edges": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": "intake",
+      "title": "Talep ve keşif",
+      "question": "A’dan hangi işler doğabilir?",
+      "description": "Talep, yorum ve üstlenme ayrı kalır. Keşif işi de kabul, bağlam ve sorumluluk gerektirir; başlangıçta asgari bir yetkili kapasite varsayımı Q01’de açıktır.",
+      "nodes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M07"
+      ],
+      "edges": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05",
+        "E06",
+        "E07",
+        "E08"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": "readiness",
+      "title": "İş ve aktör hazırlığı",
+      "question": "Bu iş şimdi ve bu aktörle başlayabilir mi?",
+      "description": "Üç hazırlık görünümü tek bir doğru/yanlış alanı değildir. Sonraki seçimde kapasite ve yetki de ele alınır. Sürekli sorumluluklar tek görevden uzun yaşayabilir.",
+      "nodes": [
+        "M05",
+        "M07",
+        "M08",
+        "M09",
+        "M10",
+        "M06",
+        "M11"
+      ],
+      "edges": [
+        "E08",
+        "E09",
+        "E10",
+        "E11",
+        "E12",
+        "E13",
+        "E14",
+        "E15",
+        "E16"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": "actor",
+      "title": "Aktörün çalışma bağlamı",
+      "question": "Uzmanlığı çağırmak hangi girdileri birleştirir?",
+      "description": "Dosyalar işlem yapmaz; aktör bunları farklı statülerle kullanır. Buradaki kaynaklar zorunlu fiziksel klasörler veya tek dev istem değildir.",
+      "nodes": [
+        "I05",
+        "I06",
+        "I07",
+        "I02",
+        "I03",
+        "I08",
+        "I09",
+        "M08"
+      ],
+      "edges": [
+        "E42",
+        "E43",
+        "E44",
+        "E45",
+        "E46",
+        "E47",
+        "E48"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": "execution",
+      "title": "Yürütme ve sonuç",
+      "question": "Çıktı ne zaman gözlenmiş ve değerlendirilmiş sonuç olur?",
+      "description": "Düşünsel üretim ve araç eylemi farklı yollardır. İstek, gerçekleşen etki, gözlem, uygunluk ve ortak duruma kabul birbirine eşitlenmez.",
+      "nodes": [
+        "M11",
+        "M12",
+        "M13",
+        "M14",
+        "M15",
+        "M18",
+        "M21",
+        "M22"
+      ],
+      "edges": [
+        "E17",
+        "E18",
+        "E19",
+        "E20",
+        "E21",
+        "E22",
+        "E23",
+        "E24",
+        "E36",
+        "E39"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": "change",
+      "title": "Değişiklik ve devam",
+      "question": "C değişirken ne korunur, ne yeniden açılır?",
+      "description": "Öneri doğrudan gerçek olmaz. Kabul edilen farkın etkisi değerlendirilir; gerektiğinde yeni öneri oluşur. Geçerlilik, ilerleme, yetki ve görünürlük ayrı tutulur.",
+      "nodes": [
+        "M15",
+        "M16",
+        "M17",
+        "M19",
+        "M02",
+        "M18",
+        "M20"
+      ],
+      "edges": [
+        "E25",
+        "E26",
+        "E27",
+        "E28",
+        "E31",
+        "E32",
+        "E34",
+        "E35",
+        "E60"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": "information",
+      "title": "Kayıtların üretimi",
+      "question": "İş kaydı ile çalışma işlemi nasıl ayrılır?",
+      "description": "Bu görünüm yalnız örnek üretim/okuma ilişkilerini gösterir. Ortak kayda kabul M16’dadır; her üretilen taslak güncel durum değildir.",
+      "nodes": [
+        "I01",
+        "M03",
+        "I02",
+        "M05",
+        "I03",
+        "M11",
+        "I10",
+        "M14",
+        "I04"
+      ],
+      "edges": [
+        "E56",
+        "E49",
+        "E57",
+        "E50",
+        "E52",
+        "E58",
+        "E51"
+      ],
+      "direction": "TB"
+    }
+  ],
+  "records": [
+    {
+      "id": "R01",
+      "path": "talep.md",
+      "role": "Özgün A",
+      "status": "İlk demoda adlandırıldı",
+      "content": "Kaynak ifade ve kaynak kimliği.",
+      "writer": "M01",
+      "reader": "M03",
+      "node": "I01"
+    },
+    {
+      "id": "R02",
+      "path": "anlayis.md",
+      "role": "Mevcut C",
+      "status": "İlk demoda adlandırıldı",
+      "content": "Bilinen, türetilen, önerilen ve açık olan; C₀–C₃ ayrı fiziksel dosyalar değildir.",
+      "writer": "M03 / M16",
+      "reader": "M05 / M08",
+      "node": "I02"
+    },
+    {
+      "id": "R03",
+      "path": "kararlar.md",
+      "role": "Bulgu / öneri / karar",
+      "status": "İlk demoda adlandırıldı",
+      "content": "D-02 dahil; dosya adı içindeki her öğeyi alınmış karar yapmaz.",
+      "writer": "M14 / M15 / M16",
+      "reader": "M03 / M17",
+      "node": "I04"
+    },
+    {
+      "id": "R04",
+      "path": "isler.md",
+      "role": "İş görünümü",
+      "status": "İlk demoda adlandırıldı",
+      "content": "W-01–W-04 ve adaylar; durumların anlamı ayrıca belirlenir.",
+      "writer": "M05 / M10 / M16",
+      "reader": "M07 / M08",
+      "node": "I03"
+    },
+    {
+      "id": "R05",
+      "path": "ciktilar/rapor-kurallari.md",
+      "role": "Ürün taslağı",
+      "status": "İlk demoda adlandırıldı",
+      "content": "Sayım, payda, boş durum ve yorum sınırları.",
+      "writer": "M11",
+      "reader": "M14",
+      "node": "I10"
+    },
+    {
+      "id": "R06",
+      "path": "ciktilar/yanit-kurallari.md",
+      "role": "Ürün taslağı",
+      "status": "İlk demoda adlandırıldı",
+      "content": "Üç farklı seçim ve form uygunluğu; sayılabilirlikle aynı değil.",
+      "writer": "M11",
+      "reader": "M14",
+      "node": "I10"
+    },
+    {
+      "id": "R07",
+      "path": "SOUL.md",
+      "role": "Giriş / yönlendirme",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Kaynak ve davranış otoritesini ayıran giriş yüzeyi.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M02",
+      "node": "I05"
+    },
+    {
+      "id": "R08",
+      "path": "isletim/talebi-anlama.md",
+      "role": "Muhakeme sorumluluğu",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "A, B, C; amaç ve yöntem ayrımı.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M03",
+      "node": "I05"
+    },
+    {
+      "id": "R09",
+      "path": "isletim/ise-baslama.md",
+      "role": "Muhakeme sorumluluğu",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "İş bazında koşul, belirsizlik ve değişme bedeli.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M07 / M10",
+      "node": "I05"
+    },
+    {
+      "id": "R10",
+      "path": "isletim/bilgi-ve-karar-kaydi.md",
+      "role": "Kayıt disiplini",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Kaynak, gözlem, çıkarım, varsayım, öneri ve karar statüleri.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M15 / M16",
+      "node": "I05"
+    },
+    {
+      "id": "R11",
+      "path": "isletim/degisim-ve-yeniden-planlama.md",
+      "role": "Değişim disiplini",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Kısmi bağımlılık, koruma, uyarlama ve yeniden açma.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M17",
+      "node": "I05"
+    },
+    {
+      "id": "R12",
+      "path": "isletim/inceleme-ve-kapanis.md",
+      "role": "İnceleme disiplini",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Üretildi / uygun / gerçek sonuç / kabul ayrımı.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M14 / M21",
+      "node": "I05"
+    },
+    {
+      "id": "R13",
+      "path": "isletim/baglam-ve-devam.md",
+      "role": "Bağlam disiplini",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Seçici güncel bağlam, kesinti ve devir.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M02 / M19 / M20",
+      "node": "I05"
+    },
+    {
+      "id": "R14",
+      "path": "sozlesmeler/kayit-anlamlari.md",
+      "role": "Kayıt semantiği",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Alan biçiminin ötesinde durum ve geçerlilik anlamı.",
+      "writer": "Yetkili kural geliştirme",
+      "reader": "M16 / M21",
+      "node": "I05"
+    },
+    {
+      "id": "R15",
+      "path": "bilgi/temel-ayrimlar.md",
+      "role": "Araştırma dayanağı",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Temel ayrımların kapsamı; otomatik işletim kuralı değil.",
+      "writer": "Kaynak değerlendirme",
+      "reader": "M03 / M05",
+      "node": "I06"
+    },
+    {
+      "id": "R16",
+      "path": "bilgi/alanlar/veri-toplama-ve-raporlama.md",
+      "role": "Alan bilgisi",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Payda, tekrar kayıt, boş durum gibi konu bilgisi.",
+      "writer": "Alan araştırması",
+      "reader": "M04 / M14",
+      "node": "I06"
+    },
+    {
+      "id": "R17",
+      "path": "bilgi/KAYNAKLAR.md",
+      "role": "Kaynak yönlendirmesi",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Kaynak, sürüm, kapsam ve yeniden başvuru koşulu.",
+      "writer": "Kaynak sorumluluğu",
+      "reader": "M02",
+      "node": "I06"
+    },
+    {
+      "id": "R18",
+      "path": "proje/calisma-cercevesi.md",
+      "role": "Projeye özel sınır",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Talep ile çalışma yetkisi ve mevcut faz ayrımı.",
+      "writer": "Yetkili taraf / kayıt",
+      "reader": "M02 / M10",
+      "node": "I08"
+    },
+    {
+      "id": "R19",
+      "path": "calismalar/W-02/baglam-kaydi.md",
+      "role": "Çağrı izi",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "W-02 için C₂, D-02 ve açık sınırın gösterildiği kayıt.",
+      "writer": "M02 / M19",
+      "reader": "M08 / M20",
+      "node": "I11"
+    },
+    {
+      "id": "R20",
+      "path": "calistirma/ayarlar.yaml",
+      "role": "Çalıştırma ayarı",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "Yalnız aday dosya adı; gerçek konfigürasyon seçilmedi.",
+      "writer": "Çalıştırma kurulumu",
+      "reader": "M09 / M12",
+      "node": "I09"
+    },
+    {
+      "id": "R21",
+      "path": "calistirma/yurutucu.*",
+      "role": "Gerçek işletim",
+      "status": "Sonraki konuşmada önerildi",
+      "content": "İşlemleri fiilen başlatan ortam; Markdown yönergesiyle eşitlenmez.",
+      "writer": "Çalıştırma geliştirme",
+      "reader": "Araç / çağrı işletimi",
+      "node": "I09"
+    }
+  ],
+  "demo": [
+    {
+      "id": "D00",
+      "title": "Talep geldi: A₀",
+      "event": "Kullanıcı ad, e-posta ve üç hareket seçimi alınıp toplu tercihler gösterilsin diyor. Kişisel rapor mu toplu rapor mu belirsizliği son talepte giderildi.",
+      "understanding": "Henüz C yok; B hakkında eksik bilgi uydurulmaz.",
+      "work": "Henüz teslim taahhüdü veya başlamış üretim işi yok.",
+      "nodes": [
+        "M01",
+        "M02"
+      ],
+      "records": [
+        "R01",
+        "R18"
+      ],
+      "note": "Kaynak talep korunur; bu demo için yalnız sentetik ve hayali çalışma sınırı vardır.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D01",
+      "title": "C₀: ilk çalışma anlayışı",
+      "event": "Toplu kullanıcı bildirimlerinin seçim dağılımı gösterilecek. Platform, hareket listesi ve tekrar katılım açık. Sağlık üstünlüğü öneren sistem olduğu varsayılmıyor.",
+      "understanding": "C₀ — kaynak, çıkarım, öneri ve açık karar ayrıldı.",
+      "work": "W-01 aday: raporun neyi sayacağını örnekle belirle.",
+      "nodes": [
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "records": [
+        "R02",
+        "R04"
+      ],
+      "note": "C₀, kabul edilmiş tam gereksinim belgesi değil; demo içindeki çalışma taslağıdır.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D02",
+      "title": "W-01: sınırlı başlanabilirlik",
+      "event": "Gerçek hareket adı, platform veya kişisel veri gerekmeden sentetik örnek üzerinde hesap yapılabilir.",
+      "understanding": "C₀’nun açık platform kararı bu sınırlı işi engellemiyor.",
+      "work": "W-01 başlanabilir ve demo kapsamında ele alınıyor.",
+      "nodes": [
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "records": [
+        "R04"
+      ],
+      "note": "İş hazır oluşu, rol etiketi veya bütün projenin hazır olmasıyla eşitlenmiyor.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D03",
+      "title": "İlk çıktı: iki farklı payda",
+      "event": "Dört sentetik yanıt, her birinde üç seçim. H1 üç yanıtta var: seçim payı 3/12=%25; yanıtlayan oranı 3/4=%75.",
+      "understanding": "C₁ — payda, yanıt sayısı ve “en sık / çoğunluk” ayrımı görünür.",
+      "work": "W-01 rapor taslağı üretir; gerçek yazılım testi yapılmaz.",
+      "nodes": [
+        "M11",
+        "M13",
+        "M14",
+        "M15"
+      ],
+      "records": [
+        "R02",
+        "R05"
+      ],
+      "note": "H1,H2,H4=%75; H3=%50; H5=%25. Çoklu seçimde oran toplamı %100 olmak zorunda değil.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D04",
+      "title": "D-02 bulgusu: tekrar gönderim",
+      "event": "K1’in aynı yanıtı tekrar sayılır. Yeni insan yok; H3 sayısı 2/4=%50 iken 3/5=%60 olur.",
+      "understanding": "C₂ önerisi — form gönderimi ile ayrı kişi aynı şey değil.",
+      "work": "W-03 aday: tekrar gönderim ve sayılma politikası. W-01 aritmetiği korunur; kişi yorumu koşullu.",
+      "nodes": [
+        "M14",
+        "M15",
+        "M16",
+        "M17"
+      ],
+      "records": [
+        "R02",
+        "R03",
+        "R04",
+        "R05"
+      ],
+      "note": "D-02 bulgu kimliğidir; D04 atlas adımıdır. C kabulünü demoda anlatıcı yaptı; gerçek mekanizma Q02/Q04’te açıktır.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D05",
+      "title": "Etki sınırı: bütün formu durdurma",
+      "event": "Değişiklik hangi yanıtların sayılacağını etkiler. Alanlar ve üç farklı seçim taslağı bununla birlikte ortadan kalkmaz.",
+      "understanding": "C₂ ilgili çağrının bağlamına taşınır.",
+      "work": "W-02’nin bağımsız bölümü başlatılabilir. W-03 henüz nihai politika üretmedi.",
+      "nodes": [
+        "M17",
+        "M19",
+        "M02",
+        "M07"
+      ],
+      "records": [
+        "R02",
+        "R03",
+        "R04",
+        "R19"
+      ],
+      "note": "Demoda bağlam aktarımını anlatıcı yaptı; gerçek teslim ve doğru kullanım kanıtlanmadı.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D06",
+      "title": "W-02: giriş kuralları",
+      "event": "H1,H2,H3 üç farklı seçimdir; H1,H2 eksiktir; H1,H1,H2 üç farklı seçim değildir. Tekrar gönderenin formu biçimsel olarak uygun olabilir.",
+      "understanding": "C₂ korunur: giriş uygunluğu ≠ raporda sayılabilirlik.",
+      "work": "W-02 ilk taslak üretildi. “Üç farklı” yorumu ayrıca kabul edilmiş kullanıcı kararı değildir.",
+      "nodes": [
+        "M11",
+        "M14",
+        "M15"
+      ],
+      "records": [
+        "R06",
+        "R04"
+      ],
+      "note": "Ad ve e-posta toplanması, raporda halka açık gösterim izni anlamına gelmez.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D07",
+      "title": "W-04: hiç veri yoksa",
+      "event": "Sıfır yanıt, bütün hareketlerin %0 seçildiği anlamına gelmez. Rapor “henüz sonuç oluşmadı” durumunu ayırır.",
+      "understanding": "C₃ — veri yokluğu, yanıt sayısı ve katılım kapsamı açıklanır.",
+      "work": "W-04 taslağı üretildi. Gerçek katılımcı edinme sorumluluğu yeni aday olarak görünür.",
+      "nodes": [
+        "M11",
+        "M14",
+        "M15",
+        "M17",
+        "M05"
+      ],
+      "records": [
+        "R02",
+        "R04",
+        "R05"
+      ],
+      "note": "Demo verisi gerçek tercih gibi sunulmaz; uygulama içi yanıtlar bütün sporcuları kendiliğinden temsil etmez.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D08",
+      "title": "Durma noktası: W-03 sırada",
+      "event": "W-01, W-02, W-04 taslakları var. Tekrar katılım politikası, gerçek hareket listesi, platform ve ilk katılım kapsamı açık.",
+      "understanding": "C₃ çalışma anlayışı; tamamlanmış ürün tanımı değil.",
+      "work": "W-03 seçenek incelemesine başlanabilir; yapılmış sayılmaz. Bağımsız aday işler korunur.",
+      "nodes": [
+        "M20",
+        "M21"
+      ],
+      "records": [
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "note": "Proje bloke ilan edilmez; uygulama bitmiş ilan edilmez. Sonraki mantıklı iş ile yetkili iş yeniden ayrılır.",
+      "status": "Anlatılmış sentetik senaryo"
+    },
+    {
+      "id": "D09",
+      "title": "Uzmanlık sürekliliği: sonraki çağrı",
+      "event": "Yeni oturumda aynı veri doğruluğu sorumluluğu, kaynakları, C₃’ü, D-02’yi ve açık W-03’ü recover eder.",
+      "understanding": "Aynı konuşmanın veya tüm eğitimin yeniden öğrenildiği varsayılmaz.",
+      "work": "Yeni çağrı için aktör ve iş hazırlığı yeniden değerlendirilir.",
+      "nodes": [
+        "M02",
+        "M04",
+        "M08",
+        "M20",
+        "M22"
+      ],
+      "records": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R19"
+      ],
+      "note": "Bu adım, ilk demodan sonraki uzmanlık tartışmasının aday devamıdır; önceki demoda gerçekleşmiş ayrı ajan devri değildir.",
+      "status": "Atlas için aday devam"
+    }
+  ],
+  "state_axes": [
+    [
+      "Kaynak / epistemik statü",
+      "Gözlem · çıkarım · varsayım · öneri · kabul edilmiş karar",
+      "kararlar.md içinde hepsi aynı statü değildir."
+    ],
+    [
+      "İşin seçilmesi",
+      "Aday · değerlendirilen · seçilmiş / kabul edilmiş",
+      "Kayıtlı talep, teslim taahhüdü değildir."
+    ],
+    [
+      "Fiilî ilerleme",
+      "Başlamadı · yürütülüyor · bekliyor · üretimi tamamlandı",
+      "Kartta yazması tek başına gerçek durumu kanıtlamaz."
+    ],
+    [
+      "Kullanım geçerliliği",
+      "Uygun · koşullu · yeniden değerlendirme gerekli",
+      "W-01 üretilmişken kişi yorumu koşullu kalabilir."
+    ],
+    [
+      "Yetki / katılım",
+      "Sorumlu taraf · karar yetkisi · yürütme sınırı",
+      "İş gerekli diye belirli aktör otomatik yetkili olmaz."
+    ],
+    [
+      "Bağlam güncelliği",
+      "Kaynak sürümü · gösterilen sürüm · aktarım durumu",
+      "Yeni C kaydı, aktif çağrının onu gördüğünü göstermez."
+    ]
+  ],
+  "findings": [
+    {
+      "title": "Genel “değerlendir” kutusu tek bir işlem değilmiş.",
+      "body": "Girdi statüsü, iş hazırlığı, aktör hazırlığı, fiilî koşul ve yetki ayrı sözleşmeler gerektirdi. M07–M10 ayrımı bir uygulama kararı değil, gizli bağımlılıkları görünür kılan modelleme önerisi.",
+      "refs": [
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ]
+    },
+    {
+      "title": "C güncellemesinin ortasında bir kabul boşluğu var.",
+      "body": "Demodaki C₂ geçişi anlatıcıyla oldu. M15→M16 bağlantısı çizilebiliyor; fakat kimin hangi değişikliği kabul ettiği Q02’de çözülmüş sayılmıyor.",
+      "refs": [
+        "M15",
+        "M16"
+      ]
+    },
+    {
+      "title": "Etki değerlendirmesi yeniden öneri üretebilir.",
+      "body": "Kabul edilen bir bilgi farkı iş listesini otomatik değiştirmemeli. M17→M15 dönüşü, iş ve kapsam değişikliğinin yetkili kabulden geçebilmesi için eklendi.",
+      "refs": [
+        "M17",
+        "M15"
+      ]
+    },
+    {
+      "title": "Hazırlık küresel veya zamansız bir özellik değil.",
+      "body": "İş veya aktör koşulu değişince eski başlama hükmü yeniden ele alınabilir. Aynı proje içinde biri başlayabilen, diğeri bekleyen işler bulunabilir.",
+      "refs": [
+        "M07",
+        "M08",
+        "M19"
+      ]
+    },
+    {
+      "title": "Uzmanlık rolünü çağıran ilk sorumluluk görünür olmalı.",
+      "body": "Aksi halde uzmanlık keşfini koordinatörün gizli bilgisine yükleriz. Başlangıçta hangi yetkinlik ve sınırın mevcut olduğu Q01’de açık bırakıldı.",
+      "refs": [
+        "M04",
+        "M08"
+      ]
+    },
+    {
+      "title": "Süreklilik kaydı, sonraki çağrının başlaması değildir.",
+      "body": "M20→M02 geçişi ancak yeni çağrı gerçekten başlatılıp ilgili kaynaklara ulaştığında gerçekleşebilir. Devam bilgisi ile yürütme tetikleyicisi ayrı kaldı.",
+      "refs": [
+        "M20",
+        "M02"
+      ]
+    }
+  ]
+}

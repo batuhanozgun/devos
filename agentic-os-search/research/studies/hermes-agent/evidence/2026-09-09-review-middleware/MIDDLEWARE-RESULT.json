@@ -1,0 +1,256 @@
+{
+  "kind": "EXACT_MIDDLEWARE_COMPONENT_DIAGNOSTICS_NOT_PRODUCT_CONFORMANCE",
+  "started_at_utc": "2026-09-09T08:12:19.368928+00:00",
+  "finished_at_utc": "2026-09-09T08:12:19.374535+00:00",
+  "upstream_pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "source_git_blob": "897e4afc07ba0d78ba928baf39a8573422b648be",
+  "source_bytes": 9277,
+  "source_sha256": "62b1c1b6aa2e736c852ffd4dc551b9325ae4d41debafb6ece1169739fb6ce228",
+  "harness_sha256": "c24e6efd0f88d3b304b3b40ae12bbb2ef2f78fafd12194effb368025e686a19c",
+  "spec_sha256": "20f8e6e8a6a710bb29d36e362c9c16ef7a9285e818f895ab7b684d302f35d86e",
+  "runtime": {
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41"
+  },
+  "cases": [
+    {
+      "id": "MW01",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "initial"
+          }
+        ],
+        "trace": [
+          "handler"
+        ],
+        "result": {
+          "ok": true,
+          "value": "initial"
+        },
+        "error": null,
+        "warnings": []
+      },
+      "checks": {
+        "one_effect": true,
+        "no_exception": true,
+        "saved_result": true,
+        "effective_args": true,
+        "no_warning": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW02",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "initial"
+          }
+        ],
+        "trace": [
+          "pre-fail",
+          "handler"
+        ],
+        "result": {
+          "ok": true,
+          "value": "initial"
+        },
+        "error": null,
+        "warnings": [
+          "Middleware 'tool_execution' callback callback raised: synthetic pre-next failure"
+        ]
+      },
+      "checks": {
+        "one_effect": true,
+        "no_exception": true,
+        "saved_result": true,
+        "effective_args": true,
+        "warning": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW03",
+      "observation": {
+        "handler_count": 0,
+        "effects": [],
+        "trace": [
+          "short-circuit"
+        ],
+        "result": {
+          "blocked": true
+        },
+        "error": null,
+        "warnings": []
+      },
+      "checks": {
+        "no_effect": true,
+        "blocked_result": true,
+        "no_exception": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW04",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "initial"
+          }
+        ],
+        "trace": [
+          "enter",
+          "handler"
+        ],
+        "result": null,
+        "error": {
+          "type": "HandlerError",
+          "message": "synthetic downstream failure"
+        },
+        "warnings": []
+      },
+      "checks": {
+        "one_effect": true,
+        "original_exception": true,
+        "no_result": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW05",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "initial"
+          }
+        ],
+        "trace": [
+          "enter",
+          "handler",
+          "post-fail"
+        ],
+        "result": {
+          "ok": true,
+          "value": "initial"
+        },
+        "error": null,
+        "warnings": [
+          "Middleware 'tool_execution' callback callback raised: synthetic post-next failure"
+        ]
+      },
+      "checks": {
+        "one_effect": true,
+        "no_exception": true,
+        "saved_result": true,
+        "effective_args": true,
+        "warning": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW06",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "initial"
+          }
+        ],
+        "trace": [
+          "first-next",
+          "handler",
+          "second-next"
+        ],
+        "result": {
+          "ok": true,
+          "value": "initial"
+        },
+        "error": null,
+        "warnings": [
+          "Middleware 'tool_execution' callback callback raised: Middleware 'tool_execution' callback callback called next_call() more than once; downstream execution is single-use"
+        ]
+      },
+      "checks": {
+        "one_effect": true,
+        "no_exception": true,
+        "saved_result": true,
+        "effective_args": true,
+        "duplicate_warning": true,
+        "second_attempt_reached": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW07",
+      "observation": {
+        "handler_count": 1,
+        "effects": [
+          {
+            "value": "rewritten"
+          }
+        ],
+        "trace": [
+          "outer-rewrite",
+          "inner-pre-fail",
+          "handler"
+        ],
+        "result": {
+          "ok": true,
+          "value": "rewritten"
+        },
+        "error": null,
+        "warnings": [
+          "Middleware 'tool_execution' callback inner raised: inner failure"
+        ]
+      },
+      "checks": {
+        "one_effect": true,
+        "no_exception": true,
+        "saved_result": true,
+        "effective_args": true,
+        "trace": true,
+        "warning": true
+      },
+      "expectations_matched": true
+    },
+    {
+      "id": "MW08",
+      "observation": {
+        "handler_count": 0,
+        "effects": [],
+        "trace": [
+          "abort"
+        ],
+        "result": null,
+        "error": {
+          "type": "DeliberateAbort",
+          "message": "synthetic abort"
+        },
+        "warnings": []
+      },
+      "checks": {
+        "no_effect": true,
+        "abort_preserved": true,
+        "no_result": true
+      },
+      "expectations_matched": true
+    }
+  ],
+  "integrity_challenge": {
+    "rejected": true,
+    "not_imported": true,
+    "error": "source identity refused before import: 6bdf708b70ae436b5594c82d11d9d948883daf0c != 897e4afc07ba0d78ba928baf39a8573422b648be"
+  },
+  "all_expectations_matched": true,
+  "limitations": [
+    "Fake plugin registry and synthetic callbacks/handler",
+    "No complete review/AIAgent/PluginManager/executor/Relay run",
+    "No network, provider, credential, installation or production effect",
+    "Exploratory source-informed diagnostic cases; not independent holdout"
+  ]
+}

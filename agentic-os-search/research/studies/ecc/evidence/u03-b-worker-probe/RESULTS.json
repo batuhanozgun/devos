@@ -1,0 +1,292 @@
+{
+  "id": "E03",
+  "target": "affaan-m/ECC@8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "generatedAt": "2026-09-17T19:11:04.125458+00:00",
+  "sources": [
+    {
+      "path": "scripts/orchestrate-codex-worker.sh",
+      "gitBlob": "d73ad0cf26efb49cf5d177fadc651a7ba9ae182d",
+      "bytes": 2583
+    },
+    {
+      "path": "scripts/lib/orchestration-session.js",
+      "gitBlob": "9449020fcf7b7233edb581e77ff4bde5d749cf49",
+      "bytes": 7546
+    }
+  ],
+  "planSha256": "6784dde99b401e783c269038d2190017bc1e453b079c34c18210d3d9cc44b204",
+  "planUnchanged": true,
+  "environment": {
+    "python": "3.13.5",
+    "node": "v22.16.0",
+    "git": "git version 2.47.3",
+    "bash": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41"
+  },
+  "evidenceClass": "Unchanged Bash/Node local execution with fake provider, not model/host behavior",
+  "criteriaMatched": 5,
+  "cases": [
+    {
+      "id": "C0",
+      "criterionMatched": true,
+      "input": {
+        "fakeExit": 0,
+        "fakeOutput": "## Summary\n- Synthetic task complete.\n\n## Files Changed\n- None.\n\n## Validation\n- Synthetic verification passed.\n\n## Remaining Risks\n- None reported.\n",
+        "missingTask": false
+      },
+      "command": [
+        "/usr/bin/bash",
+        "/mnt/data/ecc-u03b/source/scripts/orchestrate-codex-worker.sh",
+        "/tmp/ecc-e03-p2hjb4z8/C0/worker/task.md",
+        "/tmp/ecc-e03-p2hjb4z8/C0/worker/handoff.md",
+        "/tmp/ecc-e03-p2hjb4z8/C0/worker/status.md"
+      ],
+      "wrapperExit": 0,
+      "stdout": "",
+      "stderr": "",
+      "fakeInvoked": true,
+      "fakeCall": {
+        "args": [
+          "exec",
+          "-p",
+          "yolo",
+          "-m",
+          "gpt-5.4",
+          "--color",
+          "never",
+          "-C",
+          "/tmp/ecc-e03-p2hjb4z8/repo",
+          "-o",
+          "/tmp/ecc-e03-p2hjb4z8/tmp/tmp.NX7do8Ux5v",
+          "-"
+        ],
+        "prompt": "You are one worker in an ECC tmux/worktree swarm.\n\nRules:\n- Work only in the current git worktree.\n- Do not touch sibling worktrees or the parent repo checkout.\n- Complete the task from the task file below.\n- Do not spawn subagents or external agents for this task.\n- Report progress and final results in stdout only.\n- Do not write handoff or status files yourself; the launcher manages those artifacts.\n- If you change code or docs, keep the scope narrow and defensible.\n- In your final response, include exactly these sections:\n  1. Summary\n  2. Files Changed\n  3. Validation\n  4. Remaining Risks\n\nTask file: /tmp/ecc-e03-p2hjb4z8/C0/worker/task.md\n\n# Synthetic Task\n\n## Objective\nDemonstrate wrapper boundaries.\n"
+      },
+      "rawStatus": "# Status\n\n- State: completed\n- Updated: 2026-09-17T19:10:54Z\n- Branch: master\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n- Handoff file: `/tmp/ecc-e03-p2hjb4z8/C0/worker/handoff.md`\n",
+      "rawHandoff": "# Handoff\n\n- Completed: 2026-09-17T19:10:54Z\n- Branch: `master`\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n## Summary\n- Synthetic task complete.\n\n## Files Changed\n- None.\n\n## Validation\n- Synthetic verification passed.\n\n## Remaining Risks\n- None reported.\n\n## Git Status\n\n",
+      "parsedStatus": {
+        "state": "completed",
+        "updated": "2026-09-17T19:10:54Z",
+        "branch": "master",
+        "worktree": "/tmp/ecc-e03-p2hjb4z8/repo",
+        "taskFile": null,
+        "handoffFile": "/tmp/ecc-e03-p2hjb4z8/C0/worker/handoff.md"
+      },
+      "parsedHandoff": {
+        "summary": [
+          "Synthetic task complete."
+        ],
+        "validation": [
+          "Synthetic verification passed."
+        ],
+        "remainingRisks": [
+          "None reported."
+        ]
+      },
+      "tempFilesAfterWrapper": []
+    },
+    {
+      "id": "C1",
+      "criterionMatched": true,
+      "input": {
+        "fakeExit": 0,
+        "fakeOutput": "## Summary\n- Synthetic task incomplete.\n\n## Files Changed\n- None.\n\n## Validation\n- Verification failed.\n\n## Remaining Risks\n- Work remains blocked.\n",
+        "missingTask": false
+      },
+      "command": [
+        "/usr/bin/bash",
+        "/mnt/data/ecc-u03b/source/scripts/orchestrate-codex-worker.sh",
+        "/tmp/ecc-e03-p2hjb4z8/C1/worker/task.md",
+        "/tmp/ecc-e03-p2hjb4z8/C1/worker/handoff.md",
+        "/tmp/ecc-e03-p2hjb4z8/C1/worker/status.md"
+      ],
+      "wrapperExit": 0,
+      "stdout": "",
+      "stderr": "",
+      "fakeInvoked": true,
+      "fakeCall": {
+        "args": [
+          "exec",
+          "-p",
+          "yolo",
+          "-m",
+          "gpt-5.4",
+          "--color",
+          "never",
+          "-C",
+          "/tmp/ecc-e03-p2hjb4z8/repo",
+          "-o",
+          "/tmp/ecc-e03-p2hjb4z8/tmp/tmp.CkQ5qc3BQh",
+          "-"
+        ],
+        "prompt": "You are one worker in an ECC tmux/worktree swarm.\n\nRules:\n- Work only in the current git worktree.\n- Do not touch sibling worktrees or the parent repo checkout.\n- Complete the task from the task file below.\n- Do not spawn subagents or external agents for this task.\n- Report progress and final results in stdout only.\n- Do not write handoff or status files yourself; the launcher manages those artifacts.\n- If you change code or docs, keep the scope narrow and defensible.\n- In your final response, include exactly these sections:\n  1. Summary\n  2. Files Changed\n  3. Validation\n  4. Remaining Risks\n\nTask file: /tmp/ecc-e03-p2hjb4z8/C1/worker/task.md\n\n# Synthetic Task\n\n## Objective\nDemonstrate wrapper boundaries.\n"
+      },
+      "rawStatus": "# Status\n\n- State: completed\n- Updated: 2026-09-17T19:10:57Z\n- Branch: master\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n- Handoff file: `/tmp/ecc-e03-p2hjb4z8/C1/worker/handoff.md`\n",
+      "rawHandoff": "# Handoff\n\n- Completed: 2026-09-17T19:10:56Z\n- Branch: `master`\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n## Summary\n- Synthetic task incomplete.\n\n## Files Changed\n- None.\n\n## Validation\n- Verification failed.\n\n## Remaining Risks\n- Work remains blocked.\n\n## Git Status\n\n",
+      "parsedStatus": {
+        "state": "completed",
+        "updated": "2026-09-17T19:10:57Z",
+        "branch": "master",
+        "worktree": "/tmp/ecc-e03-p2hjb4z8/repo",
+        "taskFile": null,
+        "handoffFile": "/tmp/ecc-e03-p2hjb4z8/C1/worker/handoff.md"
+      },
+      "parsedHandoff": {
+        "summary": [
+          "Synthetic task incomplete."
+        ],
+        "validation": [
+          "Verification failed."
+        ],
+        "remainingRisks": [
+          "Work remains blocked."
+        ]
+      },
+      "tempFilesAfterWrapper": []
+    },
+    {
+      "id": "C2",
+      "criterionMatched": true,
+      "input": {
+        "fakeExit": 0,
+        "fakeOutput": "1. Summary\nThe synthetic task remains incomplete.\n2. Files Changed\nNone.\n3. Validation\nVerification failed.\n4. Remaining Risks\nWork remains blocked.\n",
+        "missingTask": false
+      },
+      "command": [
+        "/usr/bin/bash",
+        "/mnt/data/ecc-u03b/source/scripts/orchestrate-codex-worker.sh",
+        "/tmp/ecc-e03-p2hjb4z8/C2/worker/task.md",
+        "/tmp/ecc-e03-p2hjb4z8/C2/worker/handoff.md",
+        "/tmp/ecc-e03-p2hjb4z8/C2/worker/status.md"
+      ],
+      "wrapperExit": 0,
+      "stdout": "",
+      "stderr": "",
+      "fakeInvoked": true,
+      "fakeCall": {
+        "args": [
+          "exec",
+          "-p",
+          "yolo",
+          "-m",
+          "gpt-5.4",
+          "--color",
+          "never",
+          "-C",
+          "/tmp/ecc-e03-p2hjb4z8/repo",
+          "-o",
+          "/tmp/ecc-e03-p2hjb4z8/tmp/tmp.GjKyrvTVOQ",
+          "-"
+        ],
+        "prompt": "You are one worker in an ECC tmux/worktree swarm.\n\nRules:\n- Work only in the current git worktree.\n- Do not touch sibling worktrees or the parent repo checkout.\n- Complete the task from the task file below.\n- Do not spawn subagents or external agents for this task.\n- Report progress and final results in stdout only.\n- Do not write handoff or status files yourself; the launcher manages those artifacts.\n- If you change code or docs, keep the scope narrow and defensible.\n- In your final response, include exactly these sections:\n  1. Summary\n  2. Files Changed\n  3. Validation\n  4. Remaining Risks\n\nTask file: /tmp/ecc-e03-p2hjb4z8/C2/worker/task.md\n\n# Synthetic Task\n\n## Objective\nDemonstrate wrapper boundaries.\n"
+      },
+      "rawStatus": "# Status\n\n- State: completed\n- Updated: 2026-09-17T19:11:00Z\n- Branch: master\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n- Handoff file: `/tmp/ecc-e03-p2hjb4z8/C2/worker/handoff.md`\n",
+      "rawHandoff": "# Handoff\n\n- Completed: 2026-09-17T19:11:00Z\n- Branch: `master`\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n1. Summary\nThe synthetic task remains incomplete.\n2. Files Changed\nNone.\n3. Validation\nVerification failed.\n4. Remaining Risks\nWork remains blocked.\n\n## Git Status\n\n",
+      "parsedStatus": {
+        "state": "completed",
+        "updated": "2026-09-17T19:11:00Z",
+        "branch": "master",
+        "worktree": "/tmp/ecc-e03-p2hjb4z8/repo",
+        "taskFile": null,
+        "handoffFile": "/tmp/ecc-e03-p2hjb4z8/C2/worker/handoff.md"
+      },
+      "parsedHandoff": {
+        "summary": [],
+        "validation": [],
+        "remainingRisks": []
+      },
+      "tempFilesAfterWrapper": []
+    },
+    {
+      "id": "C3",
+      "criterionMatched": true,
+      "input": {
+        "fakeExit": 7,
+        "fakeOutput": "PARTIAL OUTPUT SENTINEL\n",
+        "missingTask": false
+      },
+      "command": [
+        "/usr/bin/bash",
+        "/mnt/data/ecc-u03b/source/scripts/orchestrate-codex-worker.sh",
+        "/tmp/ecc-e03-p2hjb4z8/C3/worker/task.md",
+        "/tmp/ecc-e03-p2hjb4z8/C3/worker/handoff.md",
+        "/tmp/ecc-e03-p2hjb4z8/C3/worker/status.md"
+      ],
+      "wrapperExit": 1,
+      "stdout": "",
+      "stderr": "SYNTHETIC PROVIDER DIAGNOSTIC\n",
+      "fakeInvoked": true,
+      "fakeCall": {
+        "args": [
+          "exec",
+          "-p",
+          "yolo",
+          "-m",
+          "gpt-5.4",
+          "--color",
+          "never",
+          "-C",
+          "/tmp/ecc-e03-p2hjb4z8/repo",
+          "-o",
+          "/tmp/ecc-e03-p2hjb4z8/tmp/tmp.qJBmNdTExB",
+          "-"
+        ],
+        "prompt": "You are one worker in an ECC tmux/worktree swarm.\n\nRules:\n- Work only in the current git worktree.\n- Do not touch sibling worktrees or the parent repo checkout.\n- Complete the task from the task file below.\n- Do not spawn subagents or external agents for this task.\n- Report progress and final results in stdout only.\n- Do not write handoff or status files yourself; the launcher manages those artifacts.\n- If you change code or docs, keep the scope narrow and defensible.\n- In your final response, include exactly these sections:\n  1. Summary\n  2. Files Changed\n  3. Validation\n  4. Remaining Risks\n\nTask file: /tmp/ecc-e03-p2hjb4z8/C3/worker/task.md\n\n# Synthetic Task\n\n## Objective\nDemonstrate wrapper boundaries.\n"
+      },
+      "rawStatus": "# Status\n\n- State: failed\n- Updated: 2026-09-17T19:11:03Z\n- Branch: master\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n- Handoff file: `/tmp/ecc-e03-p2hjb4z8/C3/worker/handoff.md`\n",
+      "rawHandoff": "# Handoff\n\n- Failed: 2026-09-17T19:11:03Z\n- Branch: `master`\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\nThe Codex worker exited with a non-zero status.\n",
+      "parsedStatus": {
+        "state": "failed",
+        "updated": "2026-09-17T19:11:03Z",
+        "branch": "master",
+        "worktree": "/tmp/ecc-e03-p2hjb4z8/repo",
+        "taskFile": null,
+        "handoffFile": "/tmp/ecc-e03-p2hjb4z8/C3/worker/handoff.md"
+      },
+      "parsedHandoff": {
+        "summary": [],
+        "validation": [],
+        "remainingRisks": []
+      },
+      "tempFilesAfterWrapper": []
+    },
+    {
+      "id": "C4",
+      "criterionMatched": true,
+      "input": {
+        "fakeExit": 0,
+        "fakeOutput": "## Summary\n- Synthetic task complete.\n\n## Files Changed\n- None.\n\n## Validation\n- Synthetic verification passed.\n\n## Remaining Risks\n- None reported.\n",
+        "missingTask": true
+      },
+      "command": [
+        "/usr/bin/bash",
+        "/mnt/data/ecc-u03b/source/scripts/orchestrate-codex-worker.sh",
+        "/tmp/ecc-e03-p2hjb4z8/C4/worker/task.md",
+        "/tmp/ecc-e03-p2hjb4z8/C4/worker/handoff.md",
+        "/tmp/ecc-e03-p2hjb4z8/C4/worker/status.md"
+      ],
+      "wrapperExit": 1,
+      "stdout": "",
+      "stderr": "",
+      "fakeInvoked": false,
+      "fakeCall": null,
+      "rawStatus": "# Status\n\n- State: failed\n- Updated: 2026-09-17T19:11:03Z\n- Branch: master\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\n- Error: task file is missing or unreadable (`/tmp/ecc-e03-p2hjb4z8/C4/worker/task.md`)\n",
+      "rawHandoff": "# Handoff\n\n- Failed: 2026-09-17T19:11:03Z\n- Branch: `master`\n- Worktree: `/tmp/ecc-e03-p2hjb4z8/repo`\n\nTask file is missing or unreadable: `/tmp/ecc-e03-p2hjb4z8/C4/worker/task.md`\n",
+      "parsedStatus": {
+        "state": "failed",
+        "updated": "2026-09-17T19:11:03Z",
+        "branch": "master",
+        "worktree": "/tmp/ecc-e03-p2hjb4z8/repo",
+        "taskFile": null,
+        "handoffFile": null
+      },
+      "parsedHandoff": {
+        "summary": [],
+        "validation": [],
+        "remainingRisks": []
+      },
+      "tempFilesAfterWrapper": []
+    }
+  ],
+  "limits": "No real Codex/model/tmux, SQL, installed ECC, network, process-concurrency or task-quality evaluation. Temporary paths in raw results are historical, not reusable references."
+}

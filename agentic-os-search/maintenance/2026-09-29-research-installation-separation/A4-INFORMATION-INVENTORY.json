@@ -1,0 +1,365 @@
+{
+  "schema": 1,
+  "task": "REPO-SEPARATION-20260929/A4",
+  "repository": "batuhanozgun/agentic-os-search",
+  "snapshot_commit": "d45441970fbec9b022fea59253f6ef85e8e183b3",
+  "snapshot_root_tree": "92cbb172af53f65027d6ca90763c443ce0d2d4d2",
+  "scope": "PARTIAL: 1071 explicit repository paths by composition; 157 new information paths. Foundation has 565 explicit files and 8 opaque subtrees. No new research-body review.",
+  "base_inventory": {
+    "path": "maintenance/2026-09-29-research-installation-separation/A4-ENVIRONMENT-INVENTORY.json",
+    "ref": "d45441970fbec9b022fea59253f6ef85e8e183b3",
+    "git_blob": "0b3afb1662f3e0cd64753f90fbba83279a9e4224",
+    "bytes": 30774,
+    "composed_explicit_leaves": 912,
+    "describes_commit": "5566cbeecd5b818b5673c0687bbc07ed08631801"
+  },
+  "composition": ["Recover the pinned base and its dependency chain; preserve prior read/disposition limits.", "Apply snapshot_upserts with expected-old-blob or absence checks.", "Expand each directory group by joining block.prefix, directory and each direct filename. Replace the information frontier by exactly these 157 leaves and the two block.frontier entries.", "Retain the other six Foundation frontier entries and studies. Require 912 + 2 + 157 = 1071 unique explicit paths; Foundation 408 + 157 = 565.", "This is a pre-publication snapshot: the two new maintenance files and plan edit publishing it are a later delta, not recursively included."],
+  "snapshot_upserts": [
+    {
+      "path": "REPOSITORY-TRANSITION.md",
+      "expected_old_blob": "0ecc75934300033ad191a0cb5e035bf9426fa6d3",
+      "git_blob": "7e9da4381217f99b5a05d0f97c37420cc7a4eb9a",
+      "bytes": 47628
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-ENVIRONMENT-INVENTORY.json",
+      "expected_old_blob": null,
+      "git_blob": "0b3afb1662f3e0cd64753f90fbba83279a9e4224",
+      "bytes": 30774
+    },
+    {
+      "path": "maintenance/2026-09-29-research-installation-separation/A4-ENVIRONMENT-INVENTORY.md",
+      "expected_old_blob": null,
+      "git_blob": "40e3dd926ff562d812c5472126580942709f6469",
+      "bytes": 5957
+    }
+  ],
+  "defaults": {
+    "mode": "100644",
+    "type": "blob",
+    "body_read": "NOT_READ_IN_THIS_SLICE",
+    "disposition": "PENDING_CONTENT_AND_LINK_REVIEW; preserve previous A2 decisions"
+  },
+  "columns": ["direct_filename", "git_blob", "api_bytes"],
+  "block": {
+    "prefix": "research/soul-foundations/03_ground-deepening/grounds/information",
+    "git_tree": "57e5859ade346c254e49172028909434af87a460",
+    "recursive_inventory_complete": false,
+    "files": 157,
+    "api_bytes": 869925,
+    "directory_groups": [
+      {
+        "directory": "",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "b1671cb8b8d3d739c2795114e7023609a8b08e88", 1572],
+          ["DEFERRED-RELATIONS.md", "49d87281764d62f3c899808a852854c999842122", 4285],
+          ["EVIDENCE-INVENTORY.md", "7d329fa6978adfd63b78921c6166a5f4f1c263f2", 8701],
+          ["EXTERNAL-SOURCE-LEDGER.md", "3296c8a1668c830d728d9dfba4b6ce1defd777bd", 9205],
+          ["FINDINGS-MAP.md", "26cbaacf76fc90e73989f1d2f4219daa2964c125", 2472],
+          ["INDEX.md", "7cd21aab286533e83a5016c40cccc8a94dbd654d", 2069],
+          ["KEY.md", "de05e63c26e4b2040fb4ae94bdcec0bbf4c2b547", 2314],
+          ["N0-INTERNAL-EVIDENCE-RECOVERY.md", "882ccf3eaf53cd8ff76555d4fa87dbf032a71a58", 8165],
+          ["N1-NODE-COHERENCE-ATTACK.md", "aa9dcd1e879af38efc06d500a8671adb0591a70d", 10713],
+          ["N2-FIRST-PRINCIPLES-PROBLEM-INVENTORY.md", "e4dc4813943a7d0c1473e1e6ef2ff9a10e7baf6f", 13300],
+          ["N3-IMMEDIATE-CHILD-DISCOVERY.md", "aab298a025e0e99fc16199506e0e8707d0628409", 12172],
+          ["N4-BOUNDARY-ANTI-COLLAPSE.md", "4fc18f88efa91ce18eb43ea924e000ba35daa292", 11603],
+          ["N5-EXTERNAL-CROSS-DOMAIN-FALSIFIERS.md", "daa34ae45784201290b20139ab75517b920cea7c", 14242],
+          ["N6-OMISSION-REDUCTION-RIVAL-AUDIT.md", "bc67199884d2d0e2fea94723daad91097039dd3d", 13434],
+          ["N7-NODE-CLOSURE.md", "3363eee98643ca28b1ff6ab3d1ec55d7ca871cde", 10267],
+          ["OPEN-QUESTIONS.md", "36f4e87f869fa6ad68761513dfa73396746ed34b", 5967],
+          ["RESEARCH-PLAN.md", "59347ff22bb3b0349f325bda6e3af0c9bf46acef", 4793],
+          ["STATE.md", "da435e49ace40040175614c4ef5735bc4aa0f7ee", 2206]
+        ]
+      },
+      {
+        "directory": "informational-dynamics",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "1575f8525113637b8c095ad5ab6545a251ae0060", 2255],
+          ["DEFERRED-RELATIONS.md", "90c547a014fc0132c94e1ba705697a3e58800407", 2247],
+          ["EVIDENCE-INVENTORY.md", "86e858d3030c9248aca27903a9d8c95553045eb7", 8304],
+          ["EXTERNAL-SOURCE-LEDGER.md", "3439f837c8a4b92a93557a81acbd4cfae490f037", 4932],
+          ["FINDINGS-MAP.md", "e4219cb7c714cbeb91b38c4ed6b92a034496533a", 2932],
+          ["INDEX.md", "02dfafaf7e94bf3248e5aa4598147f0184ac2495", 2564],
+          ["KEY.md", "2ee143d38f621c9fa4d1b83abed6585374154b2b", 2015],
+          ["N0-CANONICAL-RECOVERY.md", "ebbe9bcd7103fd209168f0a64a0f7343ec6ac87b", 6650],
+          ["N1-NODE-COHERENCE-ATTACK.md", "cef10f4653634ec9ed59db2b05277c5d709404ff", 8200],
+          ["N2-FIRST-PRINCIPLES-PROBLEM-INVENTORY.md", "6f6c289875ef3c179c1a6c9ceccc3739918bd126", 11854],
+          ["N3-IMMEDIATE-CHILD-DISCOVERY.md", "83885c0341d94e77ee638d576c56012225642a7a", 11833],
+          ["N4-BOUNDARY-ANTI-COLLAPSE.md", "9faa356544198513fd9e1967127e2d3335af5fc0", 12047],
+          ["N5-EXTERNAL-CROSS-DOMAIN-FALSIFIERS.md", "e0fafda1bc252aa6d1b5dfe4ad3ff264c5ff7601", 8656],
+          ["N6-OMISSION-REDUCTION-RIVAL-AUDIT.md", "5b119974116459daa1d954d1dcf528a5919f4803", 11459],
+          ["N7-NODE-CLOSURE.md", "24bfa0bb8b488eddf932f0e7e5fba9d1161f45bd", 7938],
+          ["OPEN-QUESTIONS.md", "46aab99b29b34b448effe47d678e01cbea572ecc", 2494],
+          ["RESEARCH-PLAN.md", "02151a9447242fc611e8e3826c88af3bba35bb74", 7664],
+          ["STATE.md", "b1a3c17b958eeeeb4c52ff6fdb41410c3b8f0062", 2902]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "96cfa34a88c37c41e386d8a8f1152ee25469a1e2", 3331],
+          ["DEFERRED-RELATIONS.md", "daf7522afbd8a46315167b3559275e7949024d3e", 2029],
+          ["FINDINGS-MAP.md", "59c5b84005c519709f37b7016794109e5d3e5eff", 2862],
+          ["INDEX.md", "0c4ee5e2420eb5836a758b9ff9dfa2dd8d77b2f6", 2030],
+          ["KEY.md", "e8bf37816ad3b45d545cafce9c44c57a1e6ed10a", 1750],
+          ["NEXT-RESEARCH-HANDOFF.md", "2e65f823f38edada2cdb24bcd8a867f6696cf193", 1759],
+          ["OPEN-QUESTIONS.md", "b0cab542a66b71e41693ed2480138b34f5f1f7b7", 2278],
+          ["PLAN.md", "43bd950b3833f74aa743e428727d3d7f68b2b71c", 4285],
+          ["SOURCE-LEDGER.md", "ccc59880f7a033d23d5b92c1154ff78a6244d0a3", 10495],
+          ["STATE.md", "7b104aef01267569c6c47d25a7ea15cb4ac9fbb5", 2434],
+          ["T0-CANONICAL-RECOVERY.md", "f9aff300295942346e65f8a96bab728b77f31f28", 4609],
+          ["T1-TRANSFORMATION-OBJECT-AND-CLAIM-CONTRACTS.md", "887255bb57568c66fbaff009a43651cb5ac288d5", 6333],
+          ["T2-SEMANTIC-TRANSFER-WARRANT-AND-COMPOSITION.md", "a4525eda8a28ca8253fd8ffe99b6c2ce5431d8e1", 6700],
+          ["T3-LINEAGE-REVISION-AND-RELIANCE.md", "21f532ee2e100c5ab2e1fbb1b074cd99a97dcaee", 6643],
+          ["T4-RIVAL-DECOMPOSITIONS-AND-BOUNDARIES.md", "fea46ade29301e3602ef190ab64694b3741dd6d3", 8973],
+          ["T5-PRIMARY-AND-CANDIDATE-PRESSURE.md", "932ceb43d3687bdb38124cbaaddc0bdd510eda8d", 4035],
+          ["T6-SYNTHESIS-CHILD-DECISION.md", "327e721ae7c267750b466ff5c7cf255b37df6552", 4550],
+          ["T7-ADVERSARIAL-CLOSURE.md", "004504bba99e67b1ae15b6c897c16e31b35000ec", 6491]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/checks",
+        "leaves": [
+          ["RESULT.json", "f5acae646e85918d12eb792c11b8b8cf289a512b", 6410],
+          ["SPEC.md", "7b0ab00f563de673f242d127e5616a240901b6c0", 3817],
+          ["derivation_checks.py", "ea2ce35dfca7a0bf26a8116e27998e9d8575db8c", 10021]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/inferential-construction-claim-warrant",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "0671358884e860864244f10f9d0632b160c68a33", 2993],
+          ["DEFERRED-RELATIONS.md", "cf9b56e25a0398fed4ea3393176bc3a98342032c", 2146],
+          ["FINDINGS-MAP.md", "115872ba53fc0dede8fe5034fbc665e475853972", 2572],
+          ["INDEX.md", "cab68a3b02503c95bb770f10ade762e96ac7dfc4", 2026],
+          ["KEY.md", "60c2b508044536cff47e8b6e99210e6c9cbeb3ac", 1770],
+          ["NEXT-RESEARCH-HANDOFF.md", "10c2bf5773c7fad1d194aa5f1b0a5e0d0e44cf9d", 3526],
+          ["OPEN-QUESTIONS.md", "2129dad0ae47bab551da90f0213c4ec10395c565", 2389],
+          ["PLAN.md", "e98e399dc6abb444311871aeb15717da3cf41ab3", 4477],
+          ["SOURCE-LEDGER.md", "64c9681a89e4c98e3b3f8e5a1f408414649b010c", 12502],
+          ["STATE.md", "da726e10577290e4ebbc1eafb751e72058445781", 3019],
+          ["W0-CANONICAL-RECOVERY-AND-ACCEPTANCE.md", "1178257beb7c8e7875523842b091a5ca0c8bf450", 4273],
+          ["W1-CLAIM-BASIS-AND-WARRANT-OBJECT.md", "45bd380b3a6cc6e96aea2bd350f4e7484dbacaee", 5498],
+          ["W2-CONSEQUENCE-PROBABILITY-AND-TARGET.md", "62322619ded644a84833f7bbd6c963f7a67a64b9", 5792],
+          ["W3-DEFEAT-SELECTION-AND-RELIANCE-BOUNDARIES.md", "432cfc456d46f336ccd5b2c5e688a8b8f62cf18d", 6094],
+          ["W4-RIVAL-STRUCTURES-AND-NODE-DECISION.md", "1a7374f638f35437ae78f5c483ba8846527711d2", 8810],
+          ["W5-PRIMARY-PRESSURE-AND-READING-EXTENT.md", "a44c2a7fb43d9a3b73e6e961168c64f400541ee8", 4668],
+          ["W6-SYNTHESIS-DECISION-AND-PARENT-DELTA.md", "47aaaf240c34cca72c503598797dee885605f507", 4562],
+          ["W7-ADVERSARIAL-CLOSURE-AND-EXECUTION.md", "2333e616b43ce9058f3c4ef1fb75ba4ac3f4354e", 6525]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/inferential-construction-claim-warrant/checks",
+        "leaves": [
+          ["RESULT.json", "8b48268c4d9f316dd5876262fec7a780249b805b", 6434],
+          ["SPEC.md", "97555637989d16e86659cc39b4d3708bdf766d28", 4707],
+          ["warrant_checks.py", "3b6b48dd2ccbd698fc314d6dd079e1c9e47068d7", 10057]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/inferential-construction-claim-warrant/synthesis",
+        "leaves": [
+          ["INFERENTIAL-CONSTRUCTION-CLAIM-WARRANT-SYNTHESIS.md", "aa610d9537b6bbd1414975d93598dc53c74da74b", 10128]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/maintained-information-revision",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "93628bb9c9286d33b43acb4035668a5da851ede1", 3181],
+          ["FINDINGS-MAP.md", "b8fa5a1bf2f6907f79b9189f548aa4abd5389953", 3851],
+          ["INDEX.md", "fcfd75130766c41b943e7aa5891eb54654960805", 2532],
+          ["KEY.md", "31727dfd7cda30c9ab99e78df258d30057dae585", 2308],
+          ["M0-CANONICAL-RECOVERY.md", "ad477c7e0324739137798b5a3249a8ee84ff7e36", 3822],
+          ["M1-REVISION-OBJECT-AND-SUPPORT.md", "3a4b9ee34e3db79ce28c924bd6c8e3255ea685dc", 7387],
+          ["M2-TIME-POLICY-AND-REALIZATION.md", "451f25d0632f2f928da4e407cfb5bc06599dc730", 7445],
+          ["M3-PRIMARY-PRESSURE-AND-RIVAL-STRUCTURES.md", "dc7feacb18bcef7d89e347dd23281f1550c2fd29", 6984],
+          ["M4-CHECKS-AND-REPERFORMANCE.md", "a1a462cd95aedb52a9225dd9a23b94246bc2e496", 4508],
+          ["M5-RESUMPTION.md", "045b49faf7f499f6381cd06519d66d1b8c81825b", 4434],
+          ["M5-RIVAL-AND-OMISSION-REVIEW.md", "37b4db1ae8ebdf1d0f938521a645824cc7eea526", 9977],
+          ["M5-SOURCE-AND-EXECUTION-ADDENDUM.md", "bd42b45dbe9c9cd7fdef1db4fb0479a0ec43ea4e", 7648],
+          ["M5-SYNTHESIS-DECISION-AND-PARENT-DELTA.md", "13d23ff0f67e852f061d66000830b587059117c6", 9136],
+          ["M6-CLOSURE.md", "c7adad318085e18d70df9e33f3d3ad58969762f4", 5683],
+          ["NEXT-RESEARCH-HANDOFF.md", "27e70acc5202129820cd17e042221e73faf1233e", 2570],
+          ["OPEN-QUESTIONS.md", "d9e23388210f6cc7c8cca8153be98ba979e764c4", 2878],
+          ["PLAN.md", "daff8a042ac6c442a597b70a744462ecb49a73df", 3924],
+          ["PUBLICATION.md", "e8d01a2f4142d0e63dd0ea7d4fddd8edf65dbfd0", 6178],
+          ["SOURCE-LEDGER.md", "f642ebb4d4b5e83b2273acc9c851175d84cdde16", 11276],
+          ["STATE.md", "f2c03f148df713395d5aad96c93320840fd30c8e", 3687]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/maintained-information-revision/checks",
+        "leaves": [
+          ["RESULT.json", "0a2f2b559154d862af85ea784906a470e09b9cd3", 5269],
+          ["SPEC.md", "9b24cb312d2aea6f5638810ba6d710981951e281", 4024],
+          ["revision_checks.py", "965a7d58381b5b24c535ca92c548ea88d3894d60", 11049]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/maintained-information-revision/checks/m5",
+        "leaves": [
+          ["EXECUTION.md", "4d7d2e0f64ad4651dab822ccc6457d86c68989e2", 2476],
+          ["RESULT.json", "cb263d1fddff85dc2c12e311e55e0a7b53f6e193", 4222],
+          ["SPEC.md", "5464adec44bcd050e949eb0c87da9d51a2b68294", 4155],
+          ["m5_checks.py", "e8cba8c8a681b0d7327ad080989d350c9df4a851", 8387]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/maintained-information-revision/synthesis",
+        "leaves": [
+          ["MAINTAINED-INFORMATION-REVISION-SYNTHESIS.md", "1206dfc17dcf722089bd7bd3f5785a1a6127ecd4", 6626]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/re-expression-semantic-transfer",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "af07571ad1d344f7278d6954b47a2a68ec6ce11e", 2632],
+          ["DEFERRED-RELATIONS.md", "1a1561b4c9a0995fb9de4e3d1ab9a5d987b2442b", 2153],
+          ["FINDINGS-MAP.md", "1de59df8ad2d256b1e9837e0b47893e0b0a36f5e", 2555],
+          ["INDEX.md", "287c291d3af934230f4c0264eaba2b58a3cf65bf", 1687],
+          ["KEY.md", "a43136c287d0406986be442495cdf82130be60ca", 1622],
+          ["NEXT-RESEARCH-HANDOFF.md", "2382d87006ab1264ce347830bbe24a13b8b62a36", 1156],
+          ["OPEN-QUESTIONS.md", "1de607f84f2c1ecad3f2e84ad302c841ad2d6d90", 2367],
+          ["PLAN.md", "78071b137ecc155c91c90446cf3e2bad9ac5e7dd", 3919],
+          ["R0-CANONICAL-RECOVERY.md", "c594fe5dcf9aa06aa8a0c55e0ff992b4a6aa52a6", 4076],
+          ["R1-TRANSFER-OBJECT-AND-INTERPRETATION.md", "38398f1b7e48b0f9e09852dbedf631c7fe3b6c1e", 5893],
+          ["R2-LOSS-SUFFICIENCY-AND-SEMANTIC-FIDELITY.md", "4efcf6b90eb0116d5dd177a3c888739342f789b4", 5979],
+          ["R3-COMPOSITION-FORMATS-AND-VERIFICATION.md", "7856a85329f30298394a3ec21b59c63978500096", 6755],
+          ["R4-RIVAL-STRUCTURES-AND-BOUNDARIES.md", "5e6158f97fba1837d96d0d64f4127b99f73f0d7c", 8348],
+          ["R5-PRIMARY-PRESSURE-AND-READING-EXTENT.md", "8a7d716078c70a30e0d2c0a4cb452971bce148a4", 4662],
+          ["R6-SYNTHESIS-DECISION-AND-PARENT-DELTA.md", "7031b447ff438ff837a7f9d939e2fde6f6c5aa93", 4246],
+          ["R7-ADVERSARIAL-CLOSURE-AND-EXECUTION.md", "2a3d1eefa2c16e6848cc919d84468a0f4227db1a", 6924],
+          ["SOURCE-LEDGER.md", "58df7db1d34844a56b9870c57f05af05867bc703", 10744],
+          ["STATE.md", "6e885d787e48ba894bf6a9a3f9f54f768a245e6f", 2920]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/re-expression-semantic-transfer/checks",
+        "leaves": [
+          ["RESULT.json", "00cb347fa468505c4c40ae6df2f5017f16ab402a", 3771],
+          ["SPEC.md", "3ce2d321f6e12afd6f96b080126f3d7f038b9e10", 3842],
+          ["semantic_transfer_checks.py", "35845ef0c91175af1727b5d8f5a2c1e051791f48", 11130]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/re-expression-semantic-transfer/synthesis",
+        "leaves": [
+          ["HISTORICAL-RE-EXPRESSION-SEMANTIC-TRANSFER-SYNTHESIS.md", "bc9270e451bb0adc5cca32f7c2ab2d85501f8552", 9775],
+          ["RE-EXPRESSION-SEMANTIC-TRANSFER-SYNTHESIS.md", "253ed752df27c5226554f4b42ae99806fd1bd17e", 1990]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/derivation-transformation/synthesis",
+        "leaves": [
+          ["DERIVATION-TRANSFORMATION-SYNTHESIS.md", "dc6d35654d9b324818f88167c34dd56a3bda8d62", 3128],
+          ["HISTORICAL-DERIVATION-TRANSFORMATION-SYNTHESIS.md", "b415e3cb9744e0b5b79d7091a57840831fde7e61", 8977]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/formation-acquisition",
+        "leaves": [
+          ["CURRENT-SURFACES.md", "a6f34fc532c1cfb2b52cb95bfa2d5c88b96d4800", 2565],
+          ["DEFERRED-RELATIONS.md", "6040b4b8c89fc552b7b15bc3ba68f2a20bda6929", 2446],
+          ["F0-CANONICAL-RECOVERY.md", "fccdc81bc983fc67c02fd28b7031b246675c626c", 4175],
+          ["F1-ORIGIN-BOUNDARY-AND-SEMANTIC-CORE.md", "147e96746c067ad1dc08a28af4ae4689f0d1fbab", 6342],
+          ["F2-COVERAGE-DISTINGUISHABILITY-AND-MISSINGNESS.md", "7c2e3c2bc141304cdc7a33a0cc6e33aaf5113b9d", 6511],
+          ["F3-FIDELITY-MODE-TIME-AND-OBSERVER-EFFECT.md", "fda6d144d6ce8d5f8fefc9ce47c3fb618f2f57d5", 6593],
+          ["F4-RIVAL-DECOMPOSITIONS.md", "4ccff138a9fb511c7e39a1dd13bff42f226500b2", 8892],
+          ["F5-EXTERNAL-CANDIDATE-HOLDOUTS.md", "8642478d36908a8a86c406bbbc713ee859025d73", 3674],
+          ["F6-SYNTHESIS-CHILD-DECISION.md", "934dae21104a3742f2d7e5f0d99e2e802f877cb7", 4201],
+          ["F7-ADVERSARIAL-CLOSURE.md", "2ed83db06395771c47758a6d6b10b4135c697e22", 6739],
+          ["FINDINGS-MAP.md", "b2f526ab8a466b70f7e50bdea2883b2d8f3e56ec", 2137],
+          ["INDEX.md", "ff4f33f28c8e376cf9d149f802959d5d25ae60ce", 1596],
+          ["KEY.md", "fc24c5ede42c0eb1212499b7e53d6bf92220f43d", 1730],
+          ["NEXT-RESEARCH-HANDOFF.md", "aef1d65fc17873cb2b1d8e08e25f6a370e19b9a5", 1059],
+          ["OPEN-QUESTIONS.md", "8c288308c47ebc9a24be10f34dd476ab5ac508b1", 2834],
+          ["PLAN.md", "10a34bbaea4994e664fd94be957cb4ab8f59eb95", 4562],
+          ["SOURCE-LEDGER.md", "2c737f878259228a12bf145771825ce350853969", 8001],
+          ["STATE.md", "e167586c0c35cf95b001514e7691fbb1c66f2fbb", 2638]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/formation-acquisition/checks",
+        "leaves": [
+          ["RESULT.json", "d087b7881f08a6f5b44091b9118072b9b8ec38ae", 3647],
+          ["SPEC.md", "775c8b35f12f5add024990479e3cd93256221f5c", 2563],
+          ["formation_checks.py", "565fd0dc83d798a6670d03c2d0cd57da5d9134aa", 9626]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/formation-acquisition/synthesis",
+        "leaves": [
+          ["FORMATION-ACQUISITION-SYNTHESIS.md", "1d2495ceae009d0f282a7ea65c77a681ac9b7026", 2068],
+          ["HISTORICAL-FORMATION-ACQUISITION-SYNTHESIS.md", "d272cb77159678d1f79908fc760ae774a586cb76", 8788]
+        ]
+      },
+      {
+        "directory": "informational-dynamics/synthesis",
+        "leaves": [
+          ["INFORMATIONAL-DYNAMICS-SYNTHESIS.md", "1c3f3f3c12c7f859c63d79e9d65ef0ae91154a93", 6763]
+        ]
+      },
+      {
+        "directory": "synthesis",
+        "leaves": [
+          ["INFORMATION-TOP-LEVEL-SYNTHESIS.md", "15ab6fc1acac64d8bcf48296c2d15ad8c5a79b99", 11678]
+        ]
+      }
+    ],
+    "frontier": [
+      ["informational-dynamics/selection-exposure", "a253de09ad290d2a965c826d57ad943d72378abc"],
+      ["informational-state", "765f5e3de1f259911b7763742170a5ee925d1f1a"]
+    ]
+  },
+  "sources": [
+    ["information/direct", "57e5859ade346c254e49172028909434af87a460", false],
+    ["informational-dynamics/direct", "1572f3b13a12af17ed6799a52c36de9e1ed3df6e", false],
+    ["derivation-transformation/recursive", "935b9f45f14f04853e6d187f8420ec93a4ee3f8a", true],
+    ["formation-acquisition/recursive", "108ec0a498d73b57e24a23e3cbd2d03cc52bbd3f", true],
+    ["information/synthesis", "0fbb90fbbb159442ee7295e860e39ee3c71d4957", false],
+    ["informational-dynamics/synthesis", "7f6dacd12e65320112e8ad140e0f66387149bb35", false]
+  ],
+  "source_url_rule": "https://api.github.com/repos/batuhanozgun/agentic-os-search/git/trees/<sha>; append ?recursive=1 when the third source field is true. Complete responses for these six sources had truncated=false.",
+  "complete_subareas": [
+    ["informational-dynamics/derivation-transformation", 96, 493671],
+    ["informational-dynamics/formation-acquisition", 23, 103387]
+  ],
+  "remaining_foundation_frontier": [
+    ["03_ground-deepening/grounds/information/informational-dynamics/selection-exposure", "a253de09ad290d2a965c826d57ad943d72378abc"],
+    ["03_ground-deepening/grounds/information/informational-state", "765f5e3de1f259911b7763742170a5ee925d1f1a"],
+    ["04_top-level-adequacy-rerun", "5c5afe1cd2ee72b613d99589ef8b76cf03a43c2a"],
+    ["05_relation-control-composition", "81e9db36f1b14d2248e99660350734c30d501d8d"],
+    ["06_integration-frontier-review", "f34589cde45cd8d7fb8d93cdd4ec81d62a52781d"],
+    ["07_selection-dynamics-integration-review", "c88b8399a330f56533c1ef1f452712e0cc2c72f2"],
+    ["08_foundation-sufficiency-reuse-review", "dbdafeb7b08274073f103f61a90c2a0c9c318c3b"],
+    ["history", "151fb029cdc58085ee71f0f470efe89af712971f"]
+  ],
+  "other_frontier": [
+    ["research/studies", "0e0a8511931de0be5b171d08a056681b992ed798"]
+  ],
+  "verification": {
+    "information_reconstructed_root": "57e5859ade346c254e49172028909434af87a460",
+    "directories_recomputed": 20,
+    "git_cli_hash_object_agreement": true,
+    "leaf_omission_controls_detected": 157,
+    "frontier_omission_controls_detected": 2,
+    "path_blob_mutations_detected": 2,
+    "foundation_root_recomputed": false,
+    "whole_repository_root_recomputed": false,
+    "limits": "Same-author deterministic metadata check. Names/modes/blob identities are tree-bound; API sizes are not. No research content, link, archive-internal or independent reader verification."
+  },
+  "coverage": {
+    "new_paths": 157,
+    "new_markdown_paths": 145,
+    "new_json_paths": 6,
+    "new_python_paths": 6,
+    "new_research_bodies_read": 0,
+    "historical_scripts_executed": 0,
+    "composed_repository_paths": 1071,
+    "composed_foundation_paths": 565,
+    "foundation_frontiers": 8,
+    "all_frontiers": 9
+  },
+  "retrieval_limit": "The large recursive information response and a partial selection-exposure response were not accepted as complete inventories. The six bounded sources above establish only the 157 persisted leaves and two information boundaries.",
+  "next": "Continue A4 inventory at research/soul-foundations/03_ground-deepening/grounds/information/informational-dynamics/selection-exposure, then informational-state, remaining Foundation and studies. A4 body/link/archive-internal work, A5 and two A3 access gaps remain open."
+}

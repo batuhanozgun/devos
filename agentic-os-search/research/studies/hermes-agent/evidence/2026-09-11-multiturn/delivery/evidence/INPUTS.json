@@ -1,0 +1,27 @@
+{
+  "pin": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "files": {
+    "source/heartbeat.py": {
+      "sha256": "e5243d64f23cf3c9fcc3d669d6122650acd90bc756cfa119ecb59a3911461021",
+      "git_blob": "d3f440d9ed2035505b0bdfbe7d6d57dec926317f",
+      "bytes": 11016
+    },
+    "source/kanban_goal_selected.py": {
+      "sha256": "496612aa7511b4789ab5a47e927fdd4e44d7655f867d5554535c450843017d50",
+      "git_blob": "c38d649b1f857e64414a0b7a5a1ba56c04b2928c",
+      "bytes": 6955
+    },
+    "source/run_status_selected.py": {
+      "sha256": "240b507cdf122ec727cbb267af19a1b666e7c8b3e33b83e2fb19073913f37b6e",
+      "git_blob": "cb5aa6147fff8e707085359a8751dd1ccd7d4617",
+      "bytes": 2052
+    }
+  },
+  "whole_parent_verified": [
+    "source/heartbeat.py"
+  ],
+  "manual_selections": [
+    "source/kanban_goal_selected.py",
+    "source/run_status_selected.py"
+  ]
+}

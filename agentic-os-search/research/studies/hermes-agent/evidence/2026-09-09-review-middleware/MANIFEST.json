@@ -1,0 +1,119 @@
+{
+  "kind": "FILE_TRANSFER_IDENTITIES_NOT_PRODUCT_VERDICT",
+  "files": [
+    {
+      "path": "ACCESS.md",
+      "bytes": 1887,
+      "sha256": "cf9e0439878e9fdf244185362e849bff169d53bd939779e89388e844830f9e10",
+      "git_blob": "68ea02db946853abef2bf00c660926c64a4ca5a0"
+    },
+    {
+      "path": "MIDDLEWARE-RESULT.json",
+      "bytes": 6322,
+      "sha256": "00f2bbe76a129268c48ceff93f7ea0a0827b8322cde6bc597b66f394390de71d",
+      "git_blob": "267ca5980e5add486e50a85c7d39e95f2aac39de"
+    },
+    {
+      "path": "RANGE-FIDELITY.json",
+      "bytes": 6214,
+      "sha256": "24210ac8be2f1cd6c37680e234ad399c23ea66de9a63c59089ca654ef284a2d6",
+      "git_blob": "1a4a4b952d29f416a7ab9e143661c3d532250a95"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2672,
+      "sha256": "d64e258808fa67ae1874ee30421d0cb1cfdd5252c6f2db76a69674261e1a65e3",
+      "git_blob": "cfc8865d5c9afaaa8c9a6ced3098a394459cb0b9"
+    },
+    {
+      "path": "RESEARCH.md",
+      "bytes": 13433,
+      "sha256": "f386a8f7bf0152daa2835a9a26cef6d559eaf36221bd5e15329c2105c2011034",
+      "git_blob": "b58dfe5b11ccc5ef6eb099c68239cea4c7cc5607"
+    },
+    {
+      "path": "SOURCES.md",
+      "bytes": 5538,
+      "sha256": "e100fdc59cb798ae2b61f3e14e9b7cbdd6f2398d829a3dff922d9966434772ee",
+      "git_blob": "a1d4c2bd376785c9a9bf7d7dd587d111884f2de9"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 3052,
+      "sha256": "20f8e6e8a6a710bb29d36e362c9c16ef7a9285e818f895ab7b684d302f35d86e",
+      "git_blob": "85cd83862bcb4854e9ddd0ee366b4d9d55ff4bb9"
+    },
+    {
+      "path": "canonical-ranges/executor-policy.py",
+      "bytes": 6613,
+      "sha256": "5074ec3fcc51b72cd49e035d76b2907d7e9a9b844cac592123b112c0957ec3aa",
+      "git_blob": "e51ac647a46616ab0e11e47e1366e01cc6fcb4b8"
+    },
+    {
+      "path": "canonical-ranges/executor-sequential.py",
+      "bytes": 5593,
+      "sha256": "98963db098cb4162fb0be8802e07d82874bf6ab2e3a5a0d9f56071957bda98f6",
+      "git_blob": "9c56963fb55c1c3cd32ada73dd47685234417226"
+    },
+    {
+      "path": "canonical-ranges/executor-types.py",
+      "bytes": 6595,
+      "sha256": "4244abe0376c5d6f9b999471d379ed5d5ee088feab7c0b6f165a7231c1d57e58",
+      "git_blob": "4cdb5b62f1abd31ff11c184cee57afbe83fe788c"
+    },
+    {
+      "path": "canonical-ranges/plugins.py",
+      "bytes": 5266,
+      "sha256": "92b566234a05403865b80e6046b8d8b3f389d5d8d2559b904af2e9eee9e4fd88",
+      "git_blob": "eff771e79008a0aba4bab77a52da6b0277c563ec"
+    },
+    {
+      "path": "middleware-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "middleware-stdout.txt",
+      "bytes": 83,
+      "sha256": "c2d3366c99afa56e146f06350eb32da2040852613af52156011fc415fc63f089",
+      "git_blob": "49e01eb5f713b5f33c03013a405214dbb0fc2682"
+    },
+    {
+      "path": "middleware_probe.py",
+      "bytes": 8720,
+      "sha256": "c24e6efd0f88d3b304b3b40ae12bbb2ef2f78fafd12194effb368025e686a19c",
+      "git_blob": "0ad094060aa3940340c060b5cf8ca8f6e3f06e0b"
+    },
+    {
+      "path": "range-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "range-stdout.txt",
+      "bytes": 70,
+      "sha256": "321d0b6d06366fd99d37d463dbcf324ab65e9754dbf59b6c0d31233127d5fdc4",
+      "git_blob": "dc6fbf60f10392f95068f67e91744037d4f1b91a"
+    },
+    {
+      "path": "range_fidelity.py",
+      "bytes": 5281,
+      "sha256": "c6fb223dbc6bf15b9932c5cb6a690faea9676ba8af1d1f88b5cab3c3d8d4bce4",
+      "git_blob": "95b1790abd4889a77e63b632eca6ec363d46539e"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "upstream/middleware.py",
+      "bytes": 9277,
+      "sha256": "62b1c1b6aa2e736c852ffd4dc551b9325ae4d41debafb6ece1169739fb6ce228",
+      "git_blob": "897e4afc07ba0d78ba928baf39a8573422b648be"
+    }
+  ]
+}

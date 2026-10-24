@@ -1,0 +1,199 @@
+{
+  "cases": {
+    "B01": {
+      "expected_attempts": 4,
+      "flat_pass_rate": 0.25,
+      "metric_trial_population": 2,
+      "observed_rewards": {
+        "taskA": [
+          1.0,
+          0.0
+        ],
+        "taskB": [
+          0.0,
+          0.0
+        ]
+      },
+      "reported_cost": 2.0
+    },
+    "B02": {
+      "after_one_missing_average": 0.3333333333333333,
+      "after_task_missing_average": 1.0,
+      "expected_attempts": 4,
+      "missing_task_warned": false,
+      "selected_agent": "incomplete_candidate"
+    },
+    "B03": {
+      "derived_success_rate": 1.0,
+      "expected_trials": 2,
+      "extra_trials_counted": 3,
+      "fractional_reward": 0.01,
+      "stale_top_level_ignored": true,
+      "valid_json_wrong_shape_error": "AttributeError"
+    },
+    "B04": {
+      "actual_old_to_new_delta": 0.15,
+      "after_same_name_worse_score": {
+        "agent": "new",
+        "avg_pass_rate": 0.75
+      },
+      "frontier_identity_fields": [
+        "agent",
+        "avg_pass_rate"
+      ],
+      "new_score": 0.75,
+      "prior_best": 0.6,
+      "stored_delta": 0.0
+    },
+    "B05": {
+      "exec_return_code": 2,
+      "exec_timeout_sec": 15,
+      "later_sections_present": false,
+      "outer_wait_timeout_sec": 20,
+      "output": "[Environment Snapshot]\nWorking directory: /work\n/app contents: (empty directory)"
+    },
+    "B06": {
+      "exception_fallback": "",
+      "listing_rows": 30,
+      "no_session_fallback": "",
+      "normal_snapshot": "[Environment Snapshot]\nWorking directory: /app\n/app contents:\ntotal 1\nfile\nAvailable languages/tools: Python 3.x\nPackage managers: pip synthetic\nMemory: Mem: synthetic",
+      "omission_label": "10 more files",
+      "retained_rows": 20
+    },
+    "B07": {
+      "default": {
+        "calls": [
+          {
+            "argv": [
+              "run",
+              "python",
+              "<isolated-root>/meta_harness.py",
+              "--validate-agent",
+              "agents.synthetic:AgentHarness"
+            ],
+            "model": "synthetic/parent"
+          },
+          {
+            "argv": [
+              "run",
+              "harbor",
+              "run",
+              "--agent",
+              "agents.synthetic:AgentHarness",
+              "-d",
+              "terminal-bench@2.0",
+              "-m",
+              "synthetic/parent",
+              "-e",
+              "runloop",
+              "-n",
+              "3",
+              "--n-attempts",
+              "2",
+              "--ak",
+              "temperature=0.7"
+            ],
+            "model": "synthetic/parent"
+          }
+        ],
+        "exit_code": 0,
+        "invalid_environment_message": false
+      },
+      "dotenv_override": {
+        "calls": [
+          {
+            "argv": [
+              "run",
+              "python",
+              "<isolated-root>/meta_harness.py",
+              "--validate-agent",
+              "agents.synthetic:AgentHarness"
+            ],
+            "model": "synthetic/override"
+          },
+          {
+            "argv": [
+              "run",
+              "harbor",
+              "run",
+              "--agent",
+              "agents.synthetic:AgentHarness",
+              "-d",
+              "terminal-bench@2.0",
+              "-m",
+              "synthetic/override",
+              "-e",
+              "runloop",
+              "-n",
+              "3",
+              "--n-attempts",
+              "2",
+              "--ak",
+              "temperature=0.7"
+            ],
+            "model": "synthetic/override"
+          }
+        ],
+        "exit_code": 0,
+        "invalid_environment_message": false
+      },
+      "invalid_environment": {
+        "calls": [],
+        "exit_code": 1,
+        "invalid_environment_message": true
+      }
+    },
+    "B08": {
+      "compound_exit_code": 0,
+      "fake_ls_exit_code": 2,
+      "later_sections_executed": false,
+      "parsed_snapshot": "[Environment Snapshot]\nWorking directory: <isolated-cwd>\n/app contents: (empty directory)",
+      "stdout": "@@PWD@@\n<isolated-cwd>\n@@LS@@\n"
+    }
+  },
+  "groups_completed": 8,
+  "identity": {
+    "artifact": {
+      "functions": {
+        "_gather_env_snapshot": "2d0efaef55cad45699d331c02ecf0f53308003eae746976cc9fce1cac973b8fc"
+      },
+      "git_blob": "30d5b0252304475d6037141899e4b2a682289bd7",
+      "mode": "recorded source excerpt; parent full-file identity NOT locally verified",
+      "sha256": "c037e3e2f4e103e8d0eafb49edfd6b7259f78893b5418172e9af56406d0a43e6"
+    },
+    "optimizer": {
+      "functions": {
+        "compute_pass_rates": "78c0813827b9891ff6346f070a1fa10b7d7266b0c92650aab2043d18087a5c69",
+        "parse_job_results": "ff829f40b66822f7524e9162ba258c8250b4b22254d5e95742c6448b5481c83a",
+        "parse_trial_metrics": "bde3bfb80c954d995b8f42172fe512177879b0feeda50967100673de33f98146",
+        "summarize_trial_metrics": "747d5634d2a8cbeb4bb7aa59646032bbdfff061f1d61812fb15d016e8158e921",
+        "update_evolution_summary": "eb547047b12ff282597b76cc8924497e4e39b8782a6b3b2c108c61b6c7c8a246",
+        "update_frontier": "14796e3259190c64a3bf43cde452c7baecd88cb03588afb0a4c0b49ce0299d13"
+      },
+      "git_blob": "a7dc34c627cdc12a461eb2eb829fdd030ed9a3e7",
+      "mode": "recorded source excerpt; parent full-file identity NOT locally verified",
+      "sha256": "73f64489d1fedb5b56223c60d40f09278d79d9d64e783a7d893c71bb5f83f3f4"
+    },
+    "shell": {
+      "full_file_verified": true,
+      "git_blob": "54b511590818b4cc703288ccbca0f78036792d5f",
+      "sha256": "e534d0935ee8fd27ac24e197f8321a2853f9d5f3b8b4fa993755d0c3395a6434"
+    }
+  },
+  "limits": [
+    "Python functions are copied source excerpts, not a full upstream import",
+    "Only shell wrapper full-file Git blob identity verified locally",
+    "Synthetic fixtures; no LLM, Harbor installation, remote sandbox, credentials or benchmark",
+    "First-model-request consumption and caller timeout handling remain source-only",
+    "No historical incidence, general efficacy or independent replication inferred"
+  ],
+  "negative_controls": {
+    "N01_missing_default": true,
+    "N02_reward_threshold": true,
+    "N03_comparator": true,
+    "N04_incomplete_listing": true,
+    "N05_dotenv_precedence": true
+  },
+  "negative_controls_discriminated": 5,
+  "scope": "source-informed local mechanical diagnostics, not live system verification"
+}

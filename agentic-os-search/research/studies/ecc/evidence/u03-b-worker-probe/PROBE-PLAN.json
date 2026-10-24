@@ -1,0 +1,16 @@
+{
+  "id": "E03",
+  "target": "affaan-m/ECC@8321021c54d670126ce3b2969d5deb880b4b0c2a",
+  "claim": "Determine what worker completion and parsed handoff fields mean under controlled provider exits and output formats.",
+  "evidenceClass": "Source-informed local execution of unchanged Bash wrapper and Node collector; provider replaced by a deterministic fake executable.",
+  "cases": [
+    {"id":"C0","input":"exit 0, exact headings and dash bullets with successful report","expected":"wrapper exit 0; completed status; summary/validation/risks parsed"},
+    {"id":"C1","input":"exit 0, exact headings and dash bullets explicitly reporting failed verification and incomplete work","expected":"wrapper exit 0; completed status; failure and risk text still present in parsed handoff"},
+    {"id":"C2","input":"exit 0, prose under numbered section labels rather than recognized headings/bullets","expected":"wrapper exit 0; completed status; source handoff retained but parsed summary/validation/risks empty"},
+    {"id":"C3","input":"exit 7 with diagnostic stderr and partial final-output file","expected":"wrapper exit 1; failed status; generic failure handoff, not the partial output; stderr observable in captured process output"},
+    {"id":"C4","input":"missing task file","expected":"wrapper exit 1; failed status; fake provider not invoked"}
+  ],
+  "scope": "Temporary Git repository, fake HOME, restricted PATH with fake codex first, temporary files; no tmux, real Codex, model, network, installation, user data or concurrent execution.",
+  "oracle": "Literal process exit, unchanged collector output, exact source file contents and fake invocation log; no claim about task quality or actual model behavior.",
+  "criteriaTiming": "Written before running the experiment, after inspecting source. Matching predictions are not product-safety passes."
+}

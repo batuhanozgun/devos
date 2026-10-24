@@ -1,0 +1,91 @@
+{
+  "started_at_utc": "2026-09-11T21:12:38.167078+00:00",
+  "project_calendar_date": "2026-09-12",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": [
+    "Linux",
+    "localhost",
+    "6.18.35",
+    "#1 SMP Mon Aug 31 18:10:37 UTC 2026",
+    "x86_64"
+  ],
+  "scope": "full-byte-verified Hermes async bridge; no enclosing scheduler/gateway/network/SessionDB",
+  "inputs": {
+    "source_git_blob": "2bc558fad21eeec736c0283cb7df86304349f222",
+    "source_sha256": "9e2dc6964bd826c1cd0a5b756e2031761933d96da76fc4804064121925f04ee7",
+    "spec_sha256": "74ba37605b512ef273b66236628ac50f5382321fd3edcabfe26cc42ab0c3f967",
+    "probe_sha256": "4437ef23a547c281d6caa5f5a051d5b9b0cc6826071715d739bc5eee32f35db7"
+  },
+  "cases": [
+    {
+      "id": "B01",
+      "scope": "actual bridge + real asyncio thread; synthetic transport/file",
+      "receipt": {
+        "receipt": "B01"
+      },
+      "file_after": "B01\n",
+      "cancel_return": false,
+      "outcome": "expectation_met"
+    },
+    {
+      "id": "B02",
+      "scope": "actual bridge + real asyncio thread; synthetic transport/file",
+      "file_before_cancel": "B02\n",
+      "future_done_before_cancel": false,
+      "future_running_after_coroutine_started": false,
+      "timeout_observed": true,
+      "cancel_return": true,
+      "coroutine_cancel_observed": true,
+      "file_after_cancel": "B02\n",
+      "future_cancelled": true,
+      "outcome": "expectation_met"
+    },
+    {
+      "id": "B03",
+      "scope": "actual bridge + real asyncio thread; synthetic transport/file",
+      "timeout_observed": true,
+      "cancel_return": false,
+      "exception_type": "RuntimeError",
+      "exception_message": "B03 transport substitute failed",
+      "file_exists": false,
+      "outcome": "expectation_met"
+    }
+  ],
+  "cleanup": {
+    "loop_thread_joined": true,
+    "loop_closed": true
+  },
+  "negative_controls": [
+    {
+      "id": "N00",
+      "rejected": true,
+      "reason": "source identity mismatch before import"
+    },
+    {
+      "id": "N01",
+      "rejected": true,
+      "reason": "effect not independently observed before cancel"
+    },
+    {
+      "id": "N02",
+      "rejected": true,
+      "reason": "terminal error missing"
+    }
+  ],
+  "forbidden_audit_events": [],
+  "runtime_files": {
+    "/usr/lib/python3.13/asyncio/tasks.py": {
+      "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+      "bytes": 39757
+    },
+    "/usr/lib/python3.13/asyncio/futures.py": {
+      "sha256": "f55a99183120b7d45c34b0b3d1341e1199760ab73bae534db29b173dff9e646f",
+      "bytes": 14157
+    },
+    "/usr/lib/python3.13/concurrent/futures/_base.py": {
+      "sha256": "721c15ba4d2f4419a17e8755561151ec0973b7c2b57a49e2467e442cae514026",
+      "bytes": 22845
+    }
+  },
+  "ended_at_utc": "2026-09-11T21:12:38.171479+00:00"
+}

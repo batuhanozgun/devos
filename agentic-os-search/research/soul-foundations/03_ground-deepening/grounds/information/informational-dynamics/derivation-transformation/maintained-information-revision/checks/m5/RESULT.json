@@ -1,0 +1,233 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "D01",
+      "observed": {
+        "after_p": [
+          [
+            1,
+            2,
+            0,
+            2
+          ],
+          [
+            1,
+            2,
+            0,
+            4
+          ]
+        ],
+        "after_p_q": [
+          [
+            2,
+            0,
+            1,
+            0
+          ],
+          [
+            2,
+            0,
+            1,
+            4
+          ]
+        ],
+        "final_beliefs": [
+          [
+            "01",
+            "11"
+          ],
+          [
+            "01"
+          ]
+        ],
+        "one_step_beliefs_equal": true,
+        "one_step_inputs": 15
+      },
+      "passed": true
+    },
+    {
+      "id": "D02",
+      "observed": {
+        "extensions": [
+          {
+            "models": [
+              "10"
+            ],
+            "retained": [
+              "p"
+            ]
+          },
+          {
+            "models": [
+              "01"
+            ],
+            "retained": [
+              "q"
+            ]
+          }
+        ],
+        "incorrect_model_intersection": [],
+        "skeptical_models": [
+          "01",
+          "10"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "D03",
+      "observed": {
+        "mixed_time": {
+          "consistency_only": [
+            {
+              "models": [
+                "10",
+                "11"
+              ],
+              "retained": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "required": [
+            {
+              "models": [
+                "11"
+              ],
+              "retained": [
+                "a",
+                "b"
+              ]
+            }
+          ]
+        },
+        "static": {
+          "consistency_only": [
+            {
+              "models": [
+                "10",
+                "11"
+              ],
+              "retained": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "required": [
+            {
+              "models": [
+                "11"
+              ],
+              "retained": [
+                "a",
+                "b"
+              ]
+            }
+          ]
+        }
+      },
+      "passed": true
+    },
+    {
+      "id": "D04",
+      "observed": {
+        "inclusion_maximal": [
+          {
+            "models": [
+              "100"
+            ],
+            "retained": [
+              "a"
+            ]
+          },
+          {
+            "models": [
+              "011"
+            ],
+            "retained": [
+              "b",
+              "c"
+            ]
+          }
+        ],
+        "maximum_cardinality": [
+          {
+            "models": [
+              "011"
+            ],
+            "retained": [
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "D05",
+      "observed": {
+        "after_one": [
+          1,
+          2,
+          0,
+          4
+        ],
+        "after_three": [
+          3,
+          4,
+          0,
+          4
+        ],
+        "current_beliefs": [
+          "10"
+        ],
+        "duplicate_event_admitted_once": [
+          1,
+          2,
+          0,
+          4
+        ],
+        "next_q_beliefs": [
+          [
+            "01"
+          ],
+          [
+            "01",
+            "11"
+          ]
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "id": "one_step_profile_suffices",
+      "rejected": true
+    },
+    {
+      "id": "skeptical_intersects_models",
+      "rejected": true
+    },
+    {
+      "id": "consistent_means_required",
+      "rejected": true
+    },
+    {
+      "id": "inclusion_means_cardinality",
+      "rejected": true
+    },
+    {
+      "id": "same_answer_inert_repetition",
+      "rejected": true
+    }
+  ],
+  "python": "3.13.5",
+  "scope": "Five finite M5 checks and same-fixture false-rule controls; not live or independent taxonomy validation",
+  "script_sha256": "c9dd9b0c164173b743a0f5ade71268919b58486f84b5dd3325107f2cc7807682",
+  "spec_sha256": "b8ae998a9795c31e020537943a85389791d0bb558381cb631ab5b561374da6ea"
+}

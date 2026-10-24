@@ -1,0 +1,232 @@
+{
+  "unit": "U10",
+  "research_base": "938359a1c4b0a01dd7bab5f4647e0474872b2078",
+  "upstream_ref": "c4a5deeffa959f8ebc891e02c5bcf767aff1dd2a",
+  "executed_surface": "only _inject_context_from from full original cron/scheduler_prompt.py",
+  "source_git_blob": "91d673649d6dca8ba3120d10671a8966e67a01ce",
+  "source_sha256": "bc5fecf6dc019ad7dec221c4a0913685d07e33a3a9a974e5fca0cb5962c6654c",
+  "spec_sha256": "3d9e523beef612f0e9f150187817bb0ce6293bd6fca85210b2e251c98a4fa472",
+  "probe_sha256": "d73dc4640fce950ef6b073eab1d9ee4d4398afa6172f7b4032909ffe2c22e428",
+  "result_sha256": "cdf30b7cb1b599b3b87d2d757bfaa26ed93508669f0c26f0b6c639b95b0537f7",
+  "recorded_run_utc": [
+    "2026-09-12T07:25:53.109130+00:00",
+    "2026-09-12T07:25:53.118497+00:00"
+  ],
+  "target_rerun_during_packaging": false,
+  "archive": {
+    "path": "diagnostic-evidence.tar.xz",
+    "bytes": 13228,
+    "sha256": "be1354b2d5c47155e9866fb6596c3692bbeb1ea96a7dd7cd19897fcd1eb17036",
+    "git_blob": "dba6e9f0a44c950a0dda234e763da7e87ecc6ab4",
+    "file_members": 33
+  },
+  "raw_files": [
+    {
+      "path": "HARNESS-REVISION.md",
+      "bytes": 349,
+      "sha256": "c387d7623130c379794d6c2c5d51285cbe65eb283f18d2b861b14eee784ba719",
+      "git_blob": "92a4a282492ce83fcb8f2c07881d54e4143c49e1"
+    },
+    {
+      "path": "INPUTS.json",
+      "bytes": 2489,
+      "sha256": "b31bfd964f02f39470248e86d43c3c9a68ff767ee111a944897096a1f80ba8bc",
+      "git_blob": "fb2de1ae2186f76c617ea8fc9edba07f84d96428"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 3901,
+      "sha256": "cdf30b7cb1b599b3b87d2d757bfaa26ed93508669f0c26f0b6c639b95b0537f7",
+      "git_blob": "b342f94a1b0f20fa19a0c02cfc83fc698bb81ca2"
+    },
+    {
+      "path": "SPEC.md",
+      "bytes": 2503,
+      "sha256": "3d9e523beef612f0e9f150187817bb0ce6293bd6fca85210b2e251c98a4fa472",
+      "git_blob": "21626ccdd73c3d1518fff2bc101def28c41c52da"
+    },
+    {
+      "path": "attempt-00/probe.py",
+      "bytes": 7009,
+      "sha256": "3baeae70e2776539dc881d4f18b881c3b19bf980ca39b757d00dd0b3ba4d728f",
+      "git_blob": "f9c7f2f0b2ffb2cc6604e77a4830b70dc9f875a5"
+    },
+    {
+      "path": "attempt-00/stderr.log",
+      "bytes": 638,
+      "sha256": "91fb4e47f9cf79177698c28a6990244c025e193160a60f912709dd41f675d886",
+      "git_blob": "d5743920fc88a2a8c42aeed7bba0baba63305c9f"
+    },
+    {
+      "path": "attempt-00/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "fixtures/C01/aa11/latest.md",
+      "bytes": 54,
+      "sha256": "9c5a3d8a3c918a24573a9c5b69fa417df50cef18e8d736e86f83d782184ff58b",
+      "git_blob": "652ee19dae0daf0a0dad67e8ee2908cd23402406"
+    },
+    {
+      "path": "fixtures/C01/aa11/older.md",
+      "bytes": 53,
+      "sha256": "c57302bbb76b485f585aa5348638da8e52bea0f05907f9e856d71dd89bb633c8",
+      "git_blob": "3b785bb3866c12f438cc36518a2613fa73763659"
+    },
+    {
+      "path": "fixtures/C02/aa11/latest.md",
+      "bytes": 82,
+      "sha256": "663969dc32b3c2834ecef81092e66e7cfcaf96a0d59c5251be0e90daff1c3bc8",
+      "git_blob": "2892a4167a0b55b7bc5f933121171906255c4cc6"
+    },
+    {
+      "path": "fixtures/C02/aa11/older.md",
+      "bytes": 53,
+      "sha256": "c57302bbb76b485f585aa5348638da8e52bea0f05907f9e856d71dd89bb633c8",
+      "git_blob": "3b785bb3866c12f438cc36518a2613fa73763659"
+    },
+    {
+      "path": "fixtures/C03/aa11/latest.md",
+      "bytes": 5,
+      "sha256": "3ee42a8fa03e7fcdcb07efcd9194f20bfb64d15733407d6f90fccffd92df3666",
+      "git_blob": "006cbc97f3449f7b6a9041195f9ae6c5b2c9417e"
+    },
+    {
+      "path": "fixtures/C03/aa11/older.md",
+      "bytes": 53,
+      "sha256": "c57302bbb76b485f585aa5348638da8e52bea0f05907f9e856d71dd89bb633c8",
+      "git_blob": "3b785bb3866c12f438cc36518a2613fa73763659"
+    },
+    {
+      "path": "fixtures/C04/aa11/latest.md",
+      "bytes": 9660,
+      "sha256": "31cc001996f8a8b1389099632ce898a22aac134be167f9b672541f20297bd580",
+      "git_blob": "92abaf7394cea7487a3fde202981c1e565900219"
+    },
+    {
+      "path": "fixtures/C04/aa11/older.md",
+      "bytes": 53,
+      "sha256": "c57302bbb76b485f585aa5348638da8e52bea0f05907f9e856d71dd89bb633c8",
+      "git_blob": "3b785bb3866c12f438cc36518a2613fa73763659"
+    },
+    {
+      "path": "fixtures/C05/aa11/latest.md",
+      "bytes": 56,
+      "sha256": "04cd9bec4adbd0ef682fb9a6ba49383706f3f174addbe788f4648ef07643d98a",
+      "git_blob": "5d3e730b69aa6292d3f151a3172752747bb0dadc"
+    },
+    {
+      "path": "fixtures/C05/aa11/older.md",
+      "bytes": 53,
+      "sha256": "c57302bbb76b485f585aa5348638da8e52bea0f05907f9e856d71dd89bb633c8",
+      "git_blob": "3b785bb3866c12f438cc36518a2613fa73763659"
+    },
+    {
+      "path": "mutants/N01.py",
+      "bytes": 16050,
+      "sha256": "ea3a9613f39e79b3ebf4143cace4490d2289dc5a51023b30f62563c747620ed6",
+      "git_blob": "410818991c2845f7877bc6ca5a6faf0cd92de04f"
+    },
+    {
+      "path": "mutants/N02.py",
+      "bytes": 16050,
+      "sha256": "1d25e23b34471be37d394008247b093834d252a331f5579be740ac11df840b06",
+      "git_blob": "b28229ca277e231072c4dab116736017dac3f76d"
+    },
+    {
+      "path": "outputs/N01/C01.txt",
+      "bytes": 287,
+      "sha256": "28f4774bf411f6009ffc5723b62054613f87f1503ed61827509ac2ed08bac8f9",
+      "git_blob": "712aceeebb4100e9451a5927c73d6449b12b2a13"
+    },
+    {
+      "path": "outputs/N02/C04.txt",
+      "bytes": 9894,
+      "sha256": "64b56e2387ea812097aa98dea166a908e4035e9e94a562b1b2daf1653a1e243f",
+      "git_blob": "5aa53bf7f02523a0e5246dd4daadf2de306335fc"
+    },
+    {
+      "path": "outputs/original/C01.txt",
+      "bytes": 288,
+      "sha256": "a69a718ce24f50c6670152034b0fe5468194a654cc6a662ad817770a6255e4bf",
+      "git_blob": "67b5379577bf955d128b48f9ff4164cf2ac5fd91"
+    },
+    {
+      "path": "outputs/original/C02.txt",
+      "bytes": 316,
+      "sha256": "560e366c6497fdb610e18d759406483e8f46dbf8060e5f991a7edb8e1793157d",
+      "git_blob": "9c39e66000bd07920a39ffc149bf2804574b5a58"
+    },
+    {
+      "path": "outputs/original/C03.txt",
+      "bytes": 16,
+      "sha256": "a87c5ad8fe1652b1e3a53f65fb2cb3e19e08e881eaa524f89903468ce48d98a5",
+      "git_blob": "dbfcecc86626d7411df379b6119587207f7c5853"
+    },
+    {
+      "path": "outputs/original/C04.txt",
+      "bytes": 8263,
+      "sha256": "9d1dc830cc01d74fe963e7693f773cac3afdace1cc0759f9c7017719c2c92d8f",
+      "git_blob": "06efb6bbe7176855abc21580c4d45412db0e1d56"
+    },
+    {
+      "path": "outputs/original/C05.txt",
+      "bytes": 290,
+      "sha256": "d3e1559c9718336de9545506ee6053ef0836571b340c7a2397681a47a9c47b6d",
+      "git_blob": "76a7beb7549dee2f7cc9df6ca612f0aa4e393f15"
+    },
+    {
+      "path": "outputs/original/C06.txt",
+      "bytes": 16,
+      "sha256": "a87c5ad8fe1652b1e3a53f65fb2cb3e19e08e881eaa524f89903468ce48d98a5",
+      "git_blob": "dbfcecc86626d7411df379b6119587207f7c5853"
+    },
+    {
+      "path": "probe.py",
+      "bytes": 6865,
+      "sha256": "d73dc4640fce950ef6b073eab1d9ee4d4398afa6172f7b4032909ffe2c22e428",
+      "git_blob": "326cf60802762ddff73b8f3dbab5ef11f191e9d4"
+    },
+    {
+      "path": "source/LICENSE",
+      "bytes": 1070,
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "git_blob": "75410e73319c72cd3e991a501c5455eb78f38375"
+    },
+    {
+      "path": "source/cron/scheduler_prompt.py",
+      "bytes": 16049,
+      "sha256": "bc5fecf6dc019ad7dec221c4a0913685d07e33a3a9a974e5fca0cb5962c6654c",
+      "git_blob": "91d673649d6dca8ba3120d10671a8966e67a01ce"
+    },
+    {
+      "path": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 106,
+      "sha256": "b75ce43ebbabd25f68935cab6db4b5fd567fdaf61061ddb06a052aac07f808c7",
+      "git_blob": "e93b3a4e7676801d2117e45b4c8599e22bf03e64"
+    },
+    {
+      "path": "verify_evidence.py",
+      "bytes": 2238,
+      "sha256": "e5530ace78ad25c71170e6498c3bb95fc8fe25f29a477f992b70ce2afaf80c31",
+      "git_blob": "004b178c2e8286d16266096c976e6578eba662db"
+    }
+  ],
+  "publication_authority": "PUBLICATION.md",
+  "not_verified": [
+    "actual run_job/AIAgent/script/monitor/SessionDB",
+    "first model request",
+    "provider/network/NAS/OS/full product",
+    "semantic task quality",
+    "old Q40/Q42/Q47/Q48/Q50 validation",
+    "independent replication"
+  ]
+}

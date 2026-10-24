@@ -1,0 +1,296 @@
+{
+  "schema": "derivation-counterexamples-v1",
+  "python": "3.13.5",
+  "sqlite": "3.46.1",
+  "script_sha256": "e13c9c6fc1f874dc64423cdfdd30d8ea609f074b7ac751793abb3674ab9f3970",
+  "spec_sha256": "21270df0337a319d4263a9a7f70f462dc77f5f4341f4bbbd15d6843990464687",
+  "case_count": 14,
+  "negative_control_count": 7,
+  "cases": [
+    {
+      "id": "C01_fidelity_vs_truth",
+      "observed": {
+        "faithful": true,
+        "actual_complete": false
+      },
+      "passed": true
+    },
+    {
+      "id": "C02_entailment_vs_purpose",
+      "observed": {
+        "p_and_q_entails_p": true,
+        "projected_p_retains_q_question": false,
+        "target_functions_crosschecked": 16,
+        "identifiable_functions": 4
+      },
+      "passed": true
+    },
+    {
+      "id": "C03_accidental_correctness",
+      "observed": {
+        "realized_world": [
+          true,
+          false
+        ],
+        "conclusion_true_here": true,
+        "inference_valid": false
+      },
+      "passed": true
+    },
+    {
+      "id": "C04_reexpression_and_composition",
+      "observed": {
+        "celsius": "20",
+        "fahrenheit": "68",
+        "recovered_celsius": "20",
+        "intended_seconds": "2",
+        "milliseconds_misread_as_seconds": "2000"
+      },
+      "passed": true
+    },
+    {
+      "id": "C05_assumption_discharge",
+      "observed": {
+        "conditional_only_entails_q": false,
+        "with_p_entails_q": true
+      },
+      "passed": true
+    },
+    {
+      "id": "C06_sql_missingness",
+      "observed": {
+        "avg_observed": 3.0,
+        "observed_count": 2,
+        "row_count": 3,
+        "zero_imputed_avg": 2.0,
+        "sum_over_rows": 2.0
+      },
+      "passed": true
+    },
+    {
+      "id": "C07_sql_multiplicity",
+      "observed": {
+        "task_total": 20,
+        "joined_total": 30,
+        "distinct_value_total": 10
+      },
+      "passed": true
+    },
+    {
+      "id": "C08_alternative_joint_support",
+      "observed": {
+        "table": [
+          {
+            "inputs": [
+              false,
+              false,
+              false
+            ],
+            "supported": false
+          },
+          {
+            "inputs": [
+              false,
+              false,
+              true
+            ],
+            "supported": true
+          },
+          {
+            "inputs": [
+              false,
+              true,
+              false
+            ],
+            "supported": false
+          },
+          {
+            "inputs": [
+              false,
+              true,
+              true
+            ],
+            "supported": true
+          },
+          {
+            "inputs": [
+              true,
+              false,
+              false
+            ],
+            "supported": false
+          },
+          {
+            "inputs": [
+              true,
+              false,
+              true
+            ],
+            "supported": true
+          },
+          {
+            "inputs": [
+              true,
+              true,
+              false
+            ],
+            "supported": true
+          },
+          {
+            "inputs": [
+              true,
+              true,
+              true
+            ],
+            "supported": true
+          }
+        ],
+        "after_a_removed_c_survives": true,
+        "after_c_also_removed": false
+      },
+      "passed": true
+    },
+    {
+      "id": "C09_negative_dependency",
+      "observed": {
+        "before": [
+          "a",
+          "b"
+        ],
+        "after": [
+          "b"
+        ],
+        "positive_task_rows_unchanged": true
+      },
+      "passed": true
+    },
+    {
+      "id": "C10_correlated_evidence",
+      "observed": {
+        "copied_mean_variance": "1",
+        "independent_mean_variance": "1/2"
+      },
+      "passed": true
+    },
+    {
+      "id": "C11_revision_alternatives",
+      "observed": {
+        "maximal_preserved_literal_count": 1,
+        "tied_revised_worlds": [
+          [
+            false,
+            true
+          ],
+          [
+            true,
+            false
+          ]
+        ],
+        "p_in_every_revision": false,
+        "q_in_every_revision": false
+      },
+      "passed": true
+    },
+    {
+      "id": "C12_withdrawal_not_negation",
+      "observed": {
+        "remaining_models": [
+          [
+            true,
+            false
+          ],
+          [
+            true,
+            true
+          ]
+        ],
+        "q_entailed": false,
+        "not_q_entailed": false
+      },
+      "passed": true
+    },
+    {
+      "id": "C13_temporal_composition",
+      "observed": {
+        "p_true_at": [
+          0,
+          1
+        ],
+        "q_true_at": [
+          2,
+          3
+        ],
+        "simultaneous_support_times": []
+      },
+      "passed": true
+    },
+    {
+      "id": "C14_proposal_vs_commit",
+      "observed": {
+        "proposal": {
+          "p": true,
+          "q": false
+        },
+        "current_before_application": {
+          "p": true,
+          "q": true
+        },
+        "current_after_application": {
+          "p": true,
+          "q": false
+        }
+      },
+      "passed": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "fault": "entailed_partial_summary_is_universally_sufficient",
+      "faulty_result": true,
+      "reference_result": false,
+      "rejected": true
+    },
+    {
+      "fault": "infer_p_from_p_or_q",
+      "faulty_result": true,
+      "reference_result": false,
+      "rejected": true
+    },
+    {
+      "fault": "null_as_measured_zero",
+      "faulty_result": 2.0,
+      "reference_result": 3.0,
+      "rejected": true
+    },
+    {
+      "fault": "distinct_value_repairs_join_multiplicity",
+      "faulty_result": 10,
+      "reference_result": 20,
+      "rejected": true
+    },
+    {
+      "fault": "remove_any_support_invalidates_all",
+      "faulty_result": false,
+      "reference_result": true,
+      "rejected": true
+    },
+    {
+      "fault": "positive_inputs_unchanged_means_answer_current",
+      "faulty_result": [
+        "a",
+        "b"
+      ],
+      "reference_result": [
+        "b"
+      ],
+      "rejected": true
+    },
+    {
+      "fault": "copies_are_independent_observations",
+      "faulty_result": "1/2",
+      "reference_result": "1",
+      "rejected": true
+    }
+  ],
+  "limits": "Same-author finite fixtures and native in-memory SQL; not independent research, a live LLM/SOUL pipeline, or validation of a taxonomy."
+}
